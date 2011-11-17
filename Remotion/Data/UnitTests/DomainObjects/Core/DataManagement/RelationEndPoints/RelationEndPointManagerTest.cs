@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
 
-      _relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
+      _relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (TestableClientTransaction.DataManager);
     }
 
     [Test]
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var orderTicketDefinition =
           Configuration.GetTypeDefinition (typeof (OrderTicket)).GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
 
-      var nullObjectEndPoint = RelationEndPointManager.CreateNullEndPoint (ClientTransactionMock, orderTicketDefinition);
+      var nullObjectEndPoint = RelationEndPointManager.CreateNullEndPoint (TestableClientTransaction, orderTicketDefinition);
 
       Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullRealObjectEndPoint)));
       var objectEndPointID = RelationEndPointID.Create (null, orderTicketDefinition);
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var orderTicketDefinition =
           Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderTicket");
 
-      var nullObjectEndPoint = RelationEndPointManager.CreateNullEndPoint (ClientTransactionMock, orderTicketDefinition);
+      var nullObjectEndPoint = RelationEndPointManager.CreateNullEndPoint (TestableClientTransaction, orderTicketDefinition);
 
       Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullVirtualObjectEndPoint)));
       var objectEndPointID = RelationEndPointID.Create (null, orderTicketDefinition);
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var orderItemsDefinition = 
           Configuration.GetTypeDefinition (typeof (Order)).GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
 
-      var nullObjectEndPoint = RelationEndPointManager.CreateNullEndPoint (ClientTransactionMock, orderItemsDefinition);
+      var nullObjectEndPoint = RelationEndPointManager.CreateNullEndPoint (TestableClientTransaction, orderItemsDefinition);
 
       Assert.That (nullObjectEndPoint, Is.TypeOf (typeof (NullCollectionEndPoint)));
       var collectionEndPointID = RelationEndPointID.Create (null, orderItemsDefinition);
@@ -627,12 +627,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var locationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Location1, "Client");
       Assert.That (locationEndPointID.Definition.IsVirtual, Is.False);
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Location1], Is.Null);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Location1], Is.Null);
 
       var result = _relationEndPointManager.GetRelationEndPointWithLazyLoad (locationEndPointID);
       Assert.That (result, Is.Not.Null);
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Location1], Is.Not.Null);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Location1], Is.Not.Null);
     }
 
     [Test]
@@ -640,12 +640,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       Assert.That (endPointID.Definition.IsVirtual, Is.True);
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
 
       var result = _relationEndPointManager.GetRelationEndPointWithLazyLoad (endPointID);
       Assert.That (result, Is.Not.Null);
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
     }
 
     [Test]

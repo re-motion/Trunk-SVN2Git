@@ -1301,7 +1301,7 @@
     <Compile Include="DomainObjects\ClientTransactionBaseTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\ClientTransactionMock.cs">
+    <Compile Include="DomainObjects\TestableClientTransaction.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\TestableCommonCollection.cs">

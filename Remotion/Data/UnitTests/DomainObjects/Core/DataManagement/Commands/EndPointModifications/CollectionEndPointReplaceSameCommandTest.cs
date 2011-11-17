@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
+      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
       new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject);
     }
 
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       _command.NotifyClientTransactionOfBegin ();
     }
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       _command.NotifyClientTransactionOfEnd ();
     }
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       var relationEndPointID = RelationEndPointID.Create(_replacedRelatedObject.ID, CollectionEndPoint.Definition.GetOppositeEndPointDefinition());
-      var oppositeEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      var oppositeEndPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
 
       var steps = bidirectionalModification.GetNestedCommands ();
       Assert.That (steps.Count, Is.EqualTo (2));

@@ -31,13 +31,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
        + ".* is not marked as serializable.", MatchType = MessageMatch.Regex)]
     public void DataContainerMapIsNotSerializable ()
     {
-      Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager.DataContainers);
+      Serializer.SerializeAndDeserialize (TestableClientTransaction.DataManager.DataContainers);
     }
 
     [Test]
     public void DataContainerMapIsFlattenedSerializable ()
     {
-      DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (ClientTransactionMock.DataManager);
+      DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (TestableClientTransaction.DataManager);
 
       DataContainerMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
       Assert.IsNotNull (deserializedMap);
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataContainerMap_Content ()
     {
-      DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (ClientTransactionMock.DataManager);
+      DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (TestableClientTransaction.DataManager);
       Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreEqual (1, map.Count);
 

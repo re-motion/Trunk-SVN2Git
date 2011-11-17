@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp ();
 
-      _eventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      _eventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
     }
 
     public override void TearDown ()
@@ -74,13 +74,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void RootTransaction ()
     {
-      Assert.That (ClientTransactionMock.RootTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (TestableClientTransaction.RootTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
     public void LeafTransaction ()
     {
-      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (TestableClientTransaction.LeafTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
@@ -93,17 +93,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       oldOrderTicket.Order = newOrderTicket.Order;
       order.OrderTicket = newOrderTicket;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
-      Assert.That (ClientTransactionMock.IsDiscarded, Is.False);
+      Assert.That (TestableClientTransaction.IsDiscarded, Is.False);
 
       object orderTimestamp = order.InternalDataContainer.Timestamp;
       object oldOrderTicketTimestamp = oldOrderTicket.InternalDataContainer.Timestamp;
       object newOrderTicketTimestamp = newOrderTicket.InternalDataContainer.Timestamp;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
-      Assert.That (ClientTransactionMock.IsDiscarded, Is.False);
+      Assert.That (TestableClientTransaction.IsDiscarded, Is.False);
 
       Assert.That (order.InternalDataContainer.Timestamp, Is.EqualTo (orderTimestamp));
       Assert.That (oldOrderTicket.InternalDataContainer.Timestamp, Is.EqualTo (oldOrderTicketTimestamp));
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       oldOrderTicket.Order = newOrderTicket.Order;
       order.OrderTicket = newOrderTicket;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       object orderTimestamp = order.InternalDataContainer.Timestamp;
       object oldOrderTicketTimestamp = oldOrderTicket.InternalDataContainer.Timestamp;
@@ -131,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order.OrderTicket = oldOrderTicket;
       oldOrderOfNewOrderTicket.OrderTicket = newOrderTicket;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.That (order.InternalDataContainer.Timestamp, Is.EqualTo (orderTimestamp));
       Assert.That (oldOrderTicketTimestamp.Equals (oldOrderTicket.InternalDataContainer.Timestamp), Is.False);
@@ -145,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
       customer.Orders.Add (Order.GetObject (DomainObjectIDs.Order2));
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       DomainObjectCollection originalOrders = customer.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
       Assert.That (originalOrders.GetType(), Is.EqualTo (typeof (OrderCollection)));
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       customer.Orders.Add (Order.GetObject (DomainObjectIDs.Order2));
 
       DomainObjectCollectionDataTestHelper.MakeCollectionReadOnly (customer.Orders);
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
 
       Assert.That (customer.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders").IsReadOnly, Is.True);
       Assert.That (customer.Orders.IsReadOnly, Is.True);
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Delete ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.That (() => Computer.GetObject (DomainObjectIDs.Computer1), Throws.TypeOf<ObjectInvalidException>());
     }
@@ -182,7 +182,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       computer.Delete ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.That (() => Dev.Null = computer.SerialNumber, Throws.TypeOf<ObjectInvalidException> ());
     }
@@ -238,7 +238,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void QueryManager ()
     {
-      Assert.That (ClientTransactionMock.QueryManager, Is.Not.Null);
+      Assert.That (TestableClientTransaction.QueryManager, Is.Not.Null);
     }
 
     [Test]
@@ -324,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ClientTransactionEventsTriggeredInRightTransaction ()
     {
-      var mock = new ClientTransactionMock();
+      var mock = new TestableClientTransaction();
       int events = 0;
 // ReSharper disable AccessToModifiedClosure
       mock.Committed += delegate { ++events;
@@ -360,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ReadOnly ()
     {
-      var clientTransaction = new ClientTransactionMock ();
+      var clientTransaction = new TestableClientTransaction ();
       Assert.That (clientTransaction.IsReadOnly, Is.False);
       clientTransaction.IsReadOnly = true;
       Assert.That (clientTransaction.IsReadOnly, Is.True);
@@ -369,16 +369,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void IsDiscardedReturnsFalse ()
     {
-      Assert.That (ClientTransactionMock.IsDiscarded, Is.False);
+      Assert.That (TestableClientTransaction.IsDiscarded, Is.False);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The transaction can no longer be used because it has been discarded.")]
     public void DiscardRendersTransactionUnusable ()
     {
-      ClientTransactionMock.Discard ();
-      Assert.That (ClientTransactionMock.IsDiscarded, Is.True);
-      ClientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
+      TestableClientTransaction.Discard ();
+      Assert.That (TestableClientTransaction.IsDiscarded, Is.True);
+      TestableClientTransaction.GetObject (DomainObjectIDs.Order1, false);
     }
 
     [Test]
@@ -444,7 +444,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (order);
-        ClientTransaction.Current.CopyCollectionEventHandlers (order, ClientTransactionMock);
+        ClientTransaction.Current.CopyCollectionEventHandlers (order, TestableClientTransaction);
 
         Assert.That (HasEventHandler (order.OrderItems, "Added", addedEventHandler), Is.True);
         Assert.That (HasEventHandler (order.OrderItems, "Adding", addingEventHandler), Is.True);
@@ -457,17 +457,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInOriginalTransaction ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      int loadedObjectsBefore = ClientTransactionMock.DataManager.DataContainers.Count;
+      int loadedObjectsBefore = TestableClientTransaction.DataManager.DataContainers.Count;
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         ClientTransaction.Current.EnlistDomainObject (order);
-        ClientTransaction.Current.CopyCollectionEventHandlers (order, ClientTransactionMock);
+        ClientTransaction.Current.CopyCollectionEventHandlers (order, TestableClientTransaction);
       }
 
-      int loadedObjectsAfter = ClientTransactionMock.DataManager.DataContainers.Count;
+      int loadedObjectsAfter = TestableClientTransaction.DataManager.DataContainers.Count;
       Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
     }
 
@@ -478,7 +478,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems; // load relation in source transaction, but do not attach event handlers
 
-      var innerTransaction = new ClientTransactionMock();
+      var innerTransaction = new TestableClientTransaction();
       using (innerTransaction.EnterDiscardingScope ())
       {
         innerTransaction.EnlistDomainObject (order);
@@ -486,7 +486,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (innerTransaction);
         
         int loadedObjectsBefore = innerTransaction.DataManager.DataContainers.Count;
-        innerTransaction.CopyCollectionEventHandlers (order, ClientTransactionMock);
+        innerTransaction.CopyCollectionEventHandlers (order, TestableClientTransaction);
         int loadedObjectsAfter = innerTransaction.DataManager.DataContainers.Count;
         Assert.That (loadedObjectsAfter, Is.EqualTo (loadedObjectsBefore));
       }
@@ -498,7 +498,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var mockRepository = new MockRepository ();
       var listenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
 
-      var innerTransaction = new ClientTransactionMock ();
+      var innerTransaction = new TestableClientTransaction ();
 
       listenerMock.Stub (stub => stub.TransactionDiscard (innerTransaction));
 
@@ -526,7 +526,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         innerTransaction.AddListener (listenerMock);
         int loadedObjectsBefore = innerTransaction.DataManager.DataContainers.Count;
-        innerTransaction.CopyCollectionEventHandlers (order, ClientTransactionMock);
+        innerTransaction.CopyCollectionEventHandlers (order, TestableClientTransaction);
         int loadedObjectsAfter = innerTransaction.DataManager.DataContainers.Count;
         Assert.That (loadedObjectsAfter, Is.Not.EqualTo (loadedObjectsBefore));
       }
@@ -555,7 +555,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        ClientTransaction.Current.CopyTransactionEventHandlers (ClientTransactionMock);
+        ClientTransaction.Current.CopyTransactionEventHandlers (TestableClientTransaction);
         Assert.That (HasEventHandler (ClientTransaction.Current, "Committed", committedHandler), Is.True);
         Assert.That (HasEventHandler (ClientTransaction.Current, "Committing", committingHandler), Is.True);
         Assert.That (HasEventHandler (ClientTransaction.Current, "Loaded", loadedHandler), Is.True);
@@ -587,7 +587,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClientTransaction.Current.SubTransactionCreated += subTransactionCreatedHandler1;
         ClientTransaction.Current.SubTransactionCreated += subTransactionCreatedHandler2;
 
-        ClientTransaction.Current.CopyTransactionEventHandlers (ClientTransactionMock);
+        ClientTransaction.Current.CopyTransactionEventHandlers (TestableClientTransaction);
 
         Assert.That (HasEventHandler (ClientTransaction.Current, "Committed", committedHandler), Is.True);
         Assert.That (HasEventHandler (ClientTransaction.Current, "Committing", committingHandler), Is.True);
@@ -606,7 +606,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order o2 = Order.GetObject (DomainObjectIDs.Order2);
       Order o3 = Order.GetObject (DomainObjectIDs.Order3);
 
-      var loadedOrders = from o in ClientTransactionMock.GetEnlistedObjects<Order>()
+      var loadedOrders = from o in TestableClientTransaction.GetEnlistedObjects<Order>()
                          select o;
       Assert.That (loadedOrders.ToArray(), Is.EquivalentTo(new[] {o1, o2, o3}));
     }
@@ -614,9 +614,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ToITransaction ()
     {
-      ITransaction transaction = ClientTransactionMock.ToITransation();
+      ITransaction transaction = TestableClientTransaction.ToITransation();
 
-      Assert.That (((ClientTransactionWrapper) transaction).WrappedInstance, Is.SameAs (ClientTransactionMock));
+      Assert.That (((ClientTransactionWrapper) transaction).WrappedInstance, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]

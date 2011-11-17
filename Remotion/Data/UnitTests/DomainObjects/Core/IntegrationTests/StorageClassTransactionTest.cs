@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       computer.Delete ();
       referenceEmployee.Delete ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
     }
 
     [Test]
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer1);
       CheckDefaultValueAndValueAfterSet (computer, referenceDateTime, referenceEmployee);
 
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
       Assert.That (computer.Int32TransactionProperty, Is.EqualTo (0));
       Assert.That (computer.DateTimeTransactionProperty, Is.EqualTo (new DateTime()));
       Assert.That (computer.EmployeeTransactionProperty, Is.Null);
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       computer.DateTimeTransactionProperty = referenceDateTime;
       computer.EmployeeTransactionProperty = referenceEmployee;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         CheckPropertiesAfterSet(computer, referenceDateTime, referenceEmployee);
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Employee referenceEmployee = Employee.GetObject (DomainObjectIDs.Employee1);
 
       Computer computer;
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         computer = Computer.NewObject ();
         computer.Int32TransactionProperty = 5;
@@ -139,10 +139,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private void CheckValueAfterCommitAndRollback (Computer computer, DateTime referenceDateTime, Employee referenceEmployee)
     {
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       CheckPropertiesAfterSet (computer, referenceDateTime, referenceEmployee);
 
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
       CheckPropertiesAfterSet (computer, referenceDateTime, referenceEmployee);
     }
 

@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp();
 
-      _map = new DataContainerMap (ClientTransactionMock);
+      _map = new DataContainerMap (TestableClientTransaction);
     }
 
     [Test]
@@ -82,9 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
-          .Expect (mock => mock.DataContainerMapUnregistering (ClientTransactionMock, dataContainer))
+          .Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, dataContainer))
           .WhenCalled (mi => Assert.That (_map[dataContainer.ID], Is.Not.Null));
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
       listenerMock.Replay ();
 

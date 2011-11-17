@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManagerIsSerializable ()
     {
-      var dataManager = ClientTransactionMock.DataManager;
+      var dataManager = TestableClientTransaction.DataManager;
 
       DataManager dataManager2 = Serializer.SerializeAndDeserialize (dataManager);
       Assert.That (dataManager2, Is.Not.Null);
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void DataManager_Content ()
     {
-      DataManager dataManager = ClientTransactionMock.DataManager;
+      DataManager dataManager = TestableClientTransaction.DataManager;
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems[0];
 
@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
     public void DumpSerializedDataManager ()
     {
-      DataManager dataManager = ClientTransactionMock.DataManager;
+      DataManager dataManager = TestableClientTransaction.DataManager;
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Dev.Null = order.OrderItems[0];
 

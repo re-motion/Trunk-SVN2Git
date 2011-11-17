@@ -793,9 +793,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (computer, c => c.Employee));
-        ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (employee, e => e.Computer));
-        ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (employee2, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (computer, c => c.Employee));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee2, e => e.Computer));
 
         BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current.ParentTransaction, RelationEndPointID.Create (employee, e => e.Computer));
 
@@ -827,9 +827,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (computer, c => c.Employee));
-        ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (employee, e => e.Computer));
-        ClientTransactionMock.EnsureDataComplete (RelationEndPointID.Create (employee2, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (computer, c => c.Employee));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee2, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, false);

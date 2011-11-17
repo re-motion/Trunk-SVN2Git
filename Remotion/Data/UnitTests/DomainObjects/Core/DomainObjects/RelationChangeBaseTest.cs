@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       // Ensure all end points are loaded into the RelationEndPointManager before trying to check them
       foreach (RelationEndPointID id in endPointsInvolved)
       {
-        ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (id);
+        TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (id);
       }
 
       if (foreignKeyObject != null)
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
 
       foreach (RelationEndPointID id in endPointsInvolved)
-        Assert.IsFalse (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id).HasBeenTouched, id + " before modification");
+        Assert.IsFalse (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id).HasBeenTouched, id + " before modification");
 
       modification ();
 
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       }
 
       foreach (RelationEndPointID id in endPointsInvolved)
-        Assert.IsTrue (ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (id).HasBeenTouched, id + " after modification");
+        Assert.IsTrue (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (id).HasBeenTouched, id + " after modification");
     }
   }
 }

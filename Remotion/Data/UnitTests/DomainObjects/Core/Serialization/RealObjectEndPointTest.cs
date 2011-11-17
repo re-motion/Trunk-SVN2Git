@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Computer.GetObject (DomainObjectIDs.Computer1);
       var endPointID = RelationEndPointID.Create(DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
-      _endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      _endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       var id = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
-      var endPoint = (RealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (id);
+      var endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (id);
       Assert.That (endPoint.ForeignKeyProperty, Is.Not.Null);
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       var id = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
 
-      var deserializedDataManager = Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager);
+      var deserializedDataManager = Serializer.SerializeAndDeserialize (TestableClientTransaction.DataManager);
 
       var deserializedEndPoint = (RealObjectEndPoint) deserializedDataManager.GetRelationEndPointWithLazyLoad (id);
 

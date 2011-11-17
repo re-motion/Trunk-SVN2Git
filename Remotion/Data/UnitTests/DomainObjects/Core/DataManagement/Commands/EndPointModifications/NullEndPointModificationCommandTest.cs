@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Initialization_FromNullObjectEndPoint ()
     {
-      var endPoint = new NullObjectEndPoint (ClientTransactionMock, _id.Definition);
+      var endPoint = new NullObjectEndPoint (TestableClientTransaction, _id.Definition);
       var command = (NullEndPointModificationCommand) endPoint.CreateSetCommand (Employee.NewObject());
       Assert.AreSame (endPoint, command.AffectedEndPoint);
     }

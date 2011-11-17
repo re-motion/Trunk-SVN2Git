@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       _employee1.Computer = _computer1;
       
-      ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope();
+      TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope();
 
       _employee1.Computer.EnsureDataAvailable();
       _virtualObjectEndPoint = GetEndPoint<VirtualObjectEndPoint> (RelationEndPointID.Create (_employee1, o => o.Computer));

@@ -346,7 +346,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var original = order.InternalDataContainer;
-      Assert.That (original.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (original.ClientTransaction, Is.SameAs (TestableClientTransaction));
 
       var clone = original.Clone (DomainObjectIDs.Order1);
       Assert.That (PrivateInvoke.GetNonPublicField (clone, "_clientTransaction"), Is.Null);
@@ -363,7 +363,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CommitState_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, _newDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _newDataContainer);
 
       CheckStateNotification (_newDataContainer, dc => dc.CommitState (), StateType.Unchanged);
     }
@@ -435,7 +435,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void RollbackState_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, _existingDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _existingDataContainer);
 
       CheckStateNotification (_existingDataContainer, dc => dc.RollbackState (), StateType.Unchanged);
     }
@@ -507,7 +507,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
      [Test]
     public void Delete_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, _existingDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _existingDataContainer);
 
       CheckStateNotification (_existingDataContainer, dc => dc.Delete(), StateType.Deleted);
     }
@@ -540,7 +540,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Discard_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, _newDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _newDataContainer);
 
       CheckStateNotification (_newDataContainer, dc => dc.Discard (), StateType.Invalid);
     }
@@ -623,7 +623,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, targetDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, targetDataContainer);
       CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Unchanged);
     }
 
@@ -635,7 +635,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       targetDataContainer.Delete ();
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Deleted));
 
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, targetDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, targetDataContainer);
       CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Deleted);
     }
 
@@ -692,7 +692,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer.MarkAsChanged();
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Changed));
 
-      ClientTransactionMock.Rollback();
+      TestableClientTransaction.Rollback();
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
 
       SetDatabaseModifyable();
@@ -700,7 +700,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       dataContainer.MarkAsChanged();
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Changed));
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
       Assert.That (dataContainer.State, Is.EqualTo (StateType.Unchanged));
 
       DataContainer clone = dataContainer.Clone (DomainObjectIDs.Order1);
@@ -724,7 +724,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkAsChanged_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, _existingDataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _existingDataContainer);
 
       CheckStateNotification (_existingDataContainer, dc => dc.MarkAsChanged(), StateType.Changed);
     }
@@ -926,9 +926,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetClientTransaction ()
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      DataContainerTestHelper.SetClientTransaction (dc, ClientTransactionMock);
+      DataContainerTestHelper.SetClientTransaction (dc, TestableClientTransaction);
 
-      Assert.That (dc.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (dc.ClientTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
@@ -937,8 +937,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void SetClientTransaction_Twice ()
     {
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      DataContainerTestHelper.SetClientTransaction (dc, ClientTransactionMock);
-      DataContainerTestHelper.SetClientTransaction (dc, ClientTransactionMock);
+      DataContainerTestHelper.SetClientTransaction (dc, TestableClientTransaction);
+      DataContainerTestHelper.SetClientTransaction (dc, TestableClientTransaction);
     }
 
     [Test]
@@ -956,7 +956,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void PropertyValueChanged_RaisesStateUpdated ()
     {
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, dataContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, dataContainer);
 
       CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5, StateType.Changed);
       CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 0, StateType.Unchanged);
@@ -998,11 +998,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private void CheckStateNotification (DataContainer dataContainer, Action<DataContainer> action, StateType expectedState)
     {
-      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
 
       action (dataContainer);
 
-      listener.AssertWasCalled (mock => mock.DataContainerStateUpdated (ClientTransactionMock, dataContainer, expectedState));
+      listener.AssertWasCalled (mock => mock.DataContainerStateUpdated (TestableClientTransaction, dataContainer, expectedState));
     }
   }
 }

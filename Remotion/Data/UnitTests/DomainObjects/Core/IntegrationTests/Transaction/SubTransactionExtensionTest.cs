@@ -62,14 +62,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository = new MockRepository();
       _extensionMock = _mockRepository.StrictMock<IClientTransactionExtension>();
 
-      _subTransaction = ClientTransactionMock.CreateSubTransaction();
+      _subTransaction = TestableClientTransaction.CreateSubTransaction();
       _subTransactionScope = _subTransaction.EnterDiscardingScope();
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
 
       _extensionMock.Stub (stub => stub.Key).Return ("TestExtension");
       _extensionMock.Replay();
-      ClientTransactionMock.Extensions.Add (_extensionMock);
+      TestableClientTransaction.Extensions.Add (_extensionMock);
       _subTransaction.Extensions.Add (_extensionMock);
       _extensionMock.BackToRecord();
 
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     public override void TearDown ()
     {
-      ClientTransactionMock.Extensions.Remove ("TestExtension");
+      TestableClientTransaction.Extensions.Remove ("TestExtension");
       _subTransaction.Extensions.Remove ("TestExtension");
       _subTransactionScope.Leave ();
 
@@ -1226,9 +1226,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       QueryResult<DomainObject> subFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
 
       UnloadService.UnloadData (_subTransaction, _order1.ID); // unload _order1 to force Load events
-      ClientTransactionMock.IsReadOnly = false;
-      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1); // we only want Load events in the sub-transaction
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = false;
+      TestableClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // we only want Load events in the sub-transaction
+      TestableClientTransaction.IsReadOnly = true;
 
       _mockRepository.BackToRecordAll ();
 

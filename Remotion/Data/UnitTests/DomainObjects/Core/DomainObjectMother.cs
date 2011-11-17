@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return newInstance;
     }
 
-    public static DomainObject GetDeletedObject (ClientTransactionMock transaction, ObjectID objectID)
+    public static DomainObject GetDeletedObject (TestableClientTransaction transaction, ObjectID objectID)
     {
       var deletedInstance = LifetimeService.GetObjectReference (transaction, objectID);
       LifetimeService.DeleteObject (transaction, deletedInstance);

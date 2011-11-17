@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (StateType.Changed, customer2.State);
       Assert.AreEqual (StateType.Changed, order.State);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.AreEqual (StateType.Unchanged, customer1.State);
       Assert.AreEqual (StateType.Unchanged, customer2.State);
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       oldOrderTicket.Order = newOrderTicket.Order;
       order.OrderTicket = newOrderTicket;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
 			Assert.AreEqual (orderTimestamp, order.InternalDataContainer.Timestamp);
 			Assert.IsFalse (oldOrderTicketTimestamp.Equals (oldOrderTicket.InternalDataContainer.Timestamp));
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       subordinate.Supervisor = supervisor2;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       supervisor1 = Employee.GetObject (DomainObjectIDs.Employee1);
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       distributor.Ceo = companyCeo;
       company.Ceo = distributorCeo;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       companyCeo = Ceo.GetObject (DomainObjectIDs.Ceo1);
@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
       customer.Name = "Arthur Dent";
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       customer = Customer.GetObject (DomainObjectIDs.Customer1);
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       DomainObjectCollection originalOrderItems = order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       OrderItem.NewObject (order);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.AreNotSame (originalOrderItems, order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));
       Assert.AreEqual (order.OrderItems, order.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems"));

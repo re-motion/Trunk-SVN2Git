@@ -36,14 +36,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp ();
 
-      _eventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      _eventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
     }
 
 
     [Test]
     public void DataContainerMapLookUp ()
     {
-      DomainObject domainObject1 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
+      DomainObject domainObject1 = TestableClientTransaction.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
       Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
 
       var domainObjects = _eventReceiver.LoadedDomainObjects[0];
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (domainObjects[0], Is.SameAs (domainObject1));
       _eventReceiver.Clear ();
 
-      DomainObject domainObject2 = ClientTransactionMock.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
+      DomainObject domainObject2 = TestableClientTransaction.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
       Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
 
       Assert.That (domainObject2, Is.SameAs (domainObject1));
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ObjectID id1 = DomainObjectIDs.ClassWithAllDataTypes1;
       ObjectID id2 = DomainObjectIDs.ClassWithAllDataTypes2;
 
-      DomainObject domainObject1 = ClientTransactionMock.GetObject (id1, false);
+      DomainObject domainObject1 = TestableClientTransaction.GetObject (id1, false);
       Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
 
       var domainObjects = _eventReceiver.LoadedDomainObjects[0];
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (domainObjects[0], Is.SameAs (domainObject1));
       _eventReceiver.Clear ();
 
-      DomainObject domainObject2 = ClientTransactionMock.GetObject (id2, false);
+      DomainObject domainObject2 = TestableClientTransaction.GetObject (id2, false);
       Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
 
       domainObjects = _eventReceiver.LoadedDomainObjects[0];
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_UnloadedObjects ()
     {
-      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (
+      DomainObject[] objects = TestableClientTransaction.GetObjects<DomainObject> (
           DomainObjectIDs.Order1,
           DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
@@ -100,9 +100,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetObjects_UnloadedObjects_Events ()
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
-      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (
+      DomainObject[] objects = TestableClientTransaction.GetObjects<DomainObject> (
           DomainObjectIDs.Order1,
           DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
@@ -110,11 +110,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (_eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
-          Arg.Is (ClientTransactionMock),
+          Arg.Is (TestableClientTransaction),
           Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 })));
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
-          Arg.Is (ClientTransactionMock),
+          Arg.Is (TestableClientTransaction),
           Arg<ReadOnlyCollection<DomainObject>>.List.Equal (objects)));
     }
 
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var expectedObjects = new object[] {Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2),
           OrderItem.GetObject (DomainObjectIDs.OrderItem1)};
-      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
+      DomainObject[] objects = TestableClientTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
@@ -138,9 +138,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _eventReceiver.Clear ();
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
-      ClientTransactionMock.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1);
+      TestableClientTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1);
       Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
@@ -155,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetObjects_NewObjects ()
     {
       var expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
-      DomainObject[] objects = ClientTransactionMock.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
+      DomainObject[] objects = TestableClientTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
       Assert.That (objects, Is.EqualTo (expectedObjects));
     }
 
@@ -166,9 +166,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _eventReceiver.Clear ();
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
-      ClientTransactionMock.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
+      TestableClientTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
       Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetObjects_NotFound ()
     {
       var guid = new Guid ("33333333333333333333333333333333");
-      ClientTransactionMock.GetObjects<DomainObject> (new ObjectID (typeof (Order), guid));
+      TestableClientTransaction.GetObjects<DomainObject> (new ObjectID (typeof (Order), guid));
     }
 
     [Test]
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order newObject = Order.NewObject ();
       var guid = new Guid ("33333333333333333333333333333333");
-      Order[] objects = ClientTransactionMock.TryGetObjects<Order> (
+      Order[] objects = TestableClientTransaction.TryGetObjects<Order> (
           DomainObjectIDs.Order1,
           newObject.ID,
           new ObjectID (typeof (Order), guid),
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [ExpectedException (typeof (InvalidCastException))]
     public void GetObjects_InvalidType ()
     {
-      ClientTransactionMock.GetObjects<OrderItem> (DomainObjectIDs.Order1);
+      TestableClientTransaction.GetObjects<OrderItem> (DomainObjectIDs.Order1);
     }
 
     [Test]
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order = Order.GetObject (DomainObjectIDs.Order1);
       order.Delete ();
 
-      var result = ClientTransactionMock.GetObjects<Order> (DomainObjectIDs.Order1);
+      var result = TestableClientTransaction.GetObjects<Order> (DomainObjectIDs.Order1);
 
       Assert.That (result[0], Is.SameAs (order));
     }
@@ -231,8 +231,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       SetDatabaseModifyable ();
       ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete ();
-      ClientTransactionMock.Commit ();
-      ClientTransactionMock.GetObjects<ClassWithAllDataTypes> (DomainObjectIDs.ClassWithAllDataTypes1);
+      TestableClientTransaction.Commit ();
+      TestableClientTransaction.GetObjects<ClassWithAllDataTypes> (DomainObjectIDs.ClassWithAllDataTypes1);
     }
 
     [Test]
@@ -268,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ClientTransactionGetObjectIsIndependentOfCurrentTransaction ()
     {
-      var clientTransactionMock = new ClientTransactionMock ();
+      var clientTransactionMock = new TestableClientTransaction ();
       var order = (Order) clientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
       Assert.That (ClientTransactionScope.CurrentTransaction.IsEnlisted (order), Is.False);
       Assert.That (clientTransactionMock.IsEnlisted (order), Is.True);
@@ -288,7 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order.Delete ();
       Assert.That (order.IsInvalid, Is.True);
 
-      Assert.That (() => ClientTransactionMock.GetObjects<Order> (order.ID), Throws.TypeOf<ObjectInvalidException> ());
+      Assert.That (() => TestableClientTransaction.GetObjects<Order> (order.ID), Throws.TypeOf<ObjectInvalidException> ());
     }
 
     [Test]
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order.Delete ();
       Assert.That (order.IsInvalid, Is.True);
 
-      Assert.That (ClientTransactionMock.TryGetObjects<Order> (order.ID), Is.EqualTo (new[] { order }));
+      Assert.That (TestableClientTransaction.TryGetObjects<Order> (order.ID), Is.EqualTo (new[] { order }));
     }
   }
 }

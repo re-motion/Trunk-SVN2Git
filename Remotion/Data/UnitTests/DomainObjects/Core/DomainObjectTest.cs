@@ -34,13 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   [TestFixture]
   public class DomainObjectTest : StandardMappingTest
   {
-    private ClientTransactionMock _transaction;
+    private TestableClientTransaction _transaction;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _transaction = new ClientTransactionMock ();
+      _transaction = new TestableClientTransaction ();
     }
 
     [Test]

@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     // member fields
 
-    private ClientTransactionMock _clientTransactionMock;
+    private TestableClientTransaction _testableClientTransaction;
     private ClientTransactionScope _transactionScope;
     private TestDataContainerObjectMother _testDataContainerObjectMother;
 
@@ -57,9 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
       DisposeTransaction();
     }
 
-    protected ClientTransactionMock ClientTransactionMock
+    protected TestableClientTransaction TestableClientTransaction
     {
-      get { return _clientTransactionMock; }
+      get { return _testableClientTransaction; }
     }
 
     protected TestDataContainerObjectMother TestDataContainerObjectMother
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
         else
           ClientTransactionScope.ResetActiveScope();
         _transactionScope = null;
-        _clientTransactionMock = null;
+        _testableClientTransaction = null;
       }
     }
 
@@ -84,8 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
       DisposeTransaction();
 
-      _clientTransactionMock = new ClientTransactionMock();
-      _transactionScope = _clientTransactionMock.EnterDiscardingScope();
+      _testableClientTransaction = new TestableClientTransaction();
+      _transactionScope = _testableClientTransaction.EnterDiscardingScope();
       _testDataContainerObjectMother = new TestDataContainerObjectMother ();
     }
 

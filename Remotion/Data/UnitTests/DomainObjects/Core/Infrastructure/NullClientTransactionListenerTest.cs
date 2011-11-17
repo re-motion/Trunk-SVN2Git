@@ -42,10 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       base.SetUp();
       _listener = NullClientTransactionListener.Instance;
-      _domainObject = DomainObjectMother.CreateObjectInTransaction<Client> (ClientTransactionMock);
-      _dataContainer = _domainObject.GetInternalDataContainerForTransaction (ClientTransactionMock);
+      _domainObject = DomainObjectMother.CreateObjectInTransaction<Client> (TestableClientTransaction);
+      _dataContainer = _domainObject.GetInternalDataContainerForTransaction (TestableClientTransaction);
       _propertyValue = _dataContainer.PropertyValues[0];
-      _relationEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (_dataContainer.AssociatedRelationEndPointIDs[0]);
+      _relationEndPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_dataContainer.AssociatedRelationEndPointIDs[0]);
     }
 
     [Test]
@@ -65,188 +65,188 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RootTransactionCreating ()
     {
-      _listener.TransactionInitialize (ClientTransactionMock);
+      _listener.TransactionInitialize (TestableClientTransaction);
     }
 
     [Test]
     public void TransactionDiscard ()
     {
-      _listener.TransactionDiscard (ClientTransactionMock);
+      _listener.TransactionDiscard (TestableClientTransaction);
     }
 
     [Test]
     public void SubTransactionCreating ()
     {
-      _listener.SubTransactionCreating (ClientTransactionMock);
+      _listener.SubTransactionCreating (TestableClientTransaction);
     }
 
     [Test]
     public void SubTransactionCreated ()
     {
-      _listener.SubTransactionCreated (ClientTransactionMock, ClientTransactionMock);
+      _listener.SubTransactionCreated (TestableClientTransaction, TestableClientTransaction);
     }
 
     [Test]
     public void NewObjectCreating ()
     {
-      _listener.NewObjectCreating (ClientTransactionMock, _domainObject.GetPublicDomainObjectType(), _domainObject);
+      _listener.NewObjectCreating (TestableClientTransaction, _domainObject.GetPublicDomainObjectType(), _domainObject);
     }
 
     [Test]
     public void ObjectsLoading ()
     {
-      _listener.ObjectsLoading (ClientTransactionMock, new ReadOnlyCollection<ObjectID> (new ObjectID[0]));
+      _listener.ObjectsLoading (TestableClientTransaction, new ReadOnlyCollection<ObjectID> (new ObjectID[0]));
     }
 
     [Test]
     public void ObjectsLoaded ()
     {
-      _listener.ObjectsLoaded (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.ObjectsLoaded (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void ObjectsUnloading ()
     {
-      _listener.ObjectsUnloading (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.ObjectsUnloading (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void ObjectsUnloaded ()
     {
-      _listener.ObjectsUnloaded (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.ObjectsUnloaded (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void ObjectDeleting ()
     {
-      _listener.ObjectDeleting (ClientTransactionMock, _domainObject);
+      _listener.ObjectDeleting (TestableClientTransaction, _domainObject);
     }
 
     [Test]
     public void ObjectDeleted ()
     {
-      _listener.ObjectDeleted (ClientTransactionMock, _domainObject);
+      _listener.ObjectDeleted (TestableClientTransaction, _domainObject);
     }
 
     [Test]
     public void PropertyValueReading ()
     {
-      _listener.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Current);
+      _listener.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueRead ()
     {
-      _listener.PropertyValueRead (ClientTransactionMock, _dataContainer, _propertyValue, 0, ValueAccess.Current);
+      _listener.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueChanging ()
     {
-      _listener.PropertyValueChanging (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1);
+      _listener.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
     }
 
     [Test]
     public void PropertyValueChanged ()
     {
-      _listener.PropertyValueChanged (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1);
+      _listener.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
     }
 
     [Test]
     public void RelationReading ()
     {
-      _listener.RelationReading (ClientTransactionMock, _domainObject, _relationEndPoint.Definition, ValueAccess.Current);
+      _listener.RelationReading (TestableClientTransaction, _domainObject, _relationEndPoint.Definition, ValueAccess.Current);
     }
 
     [Test]
     public void RelationRead_SingleValue ()
     {
-      _listener.RelationRead (ClientTransactionMock, _domainObject, _relationEndPoint.Definition, _domainObject, ValueAccess.Current);
+      _listener.RelationRead (TestableClientTransaction, _domainObject, _relationEndPoint.Definition, _domainObject, ValueAccess.Current);
     }
 
     [Test]
     public void RelationRead_MultiValue ()
     {
-      _listener.RelationRead (ClientTransactionMock, _domainObject, _relationEndPoint.Definition, new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection()), ValueAccess.Current);
+      _listener.RelationRead (TestableClientTransaction, _domainObject, _relationEndPoint.Definition, new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection()), ValueAccess.Current);
     }
 
     [Test]
     public void RelationChanging ()
     {
-      _listener.RelationChanging (ClientTransactionMock, _domainObject, _relationEndPoint.Definition, _domainObject, _domainObject);
+      _listener.RelationChanging (TestableClientTransaction, _domainObject, _relationEndPoint.Definition, _domainObject, _domainObject);
     }
 
     [Test]
     public void RelationChanged ()
     {
-      _listener.RelationChanged (ClientTransactionMock, _domainObject, _relationEndPoint.Definition);
+      _listener.RelationChanged (TestableClientTransaction, _domainObject, _relationEndPoint.Definition);
     }
 
     [Test]
     public void FilterQueryResult ()
     {
       var querResult = new QueryResult<DomainObject> (MockRepository.GenerateStub<IQuery>(), new DomainObject[0]);
-      Assert.That (_listener.FilterQueryResult (ClientTransactionMock, querResult), Is.SameAs (querResult));
+      Assert.That (_listener.FilterQueryResult (TestableClientTransaction, querResult), Is.SameAs (querResult));
     }
 
     [Test]
     public void TransactionCommitting ()
     {
-      _listener.TransactionCommitting (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionCommitting (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void TransactionCommitted ()
     {
-      _listener.TransactionCommitted (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionCommitted (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void TransactionRollingBack ()
     {
-      _listener.TransactionRollingBack (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionRollingBack (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void TransactionRolledBack ()
     {
-      _listener.TransactionRolledBack (ClientTransactionMock, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionRolledBack (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
     }
 
     [Test]
     public void RelationEndPointMapRegistering ()
     {
-      _listener.RelationEndPointMapRegistering (ClientTransactionMock, _relationEndPoint);
+      _listener.RelationEndPointMapRegistering (TestableClientTransaction, _relationEndPoint);
     }
 
     [Test]
     public void RelationEndPointMapUnregistering ()
     {
-      _listener.RelationEndPointMapUnregistering (ClientTransactionMock, _relationEndPoint.ID);
+      _listener.RelationEndPointMapUnregistering (TestableClientTransaction, _relationEndPoint.ID);
     }
 
     [Test]
     public void RelationEndPointUnloading ()
     {
-      _listener.RelationEndPointUnloading (ClientTransactionMock, _relationEndPoint);
+      _listener.RelationEndPointUnloading (TestableClientTransaction, _relationEndPoint);
     }
 
     [Test]
     public void DataManagerMarkingObjectDiscarded ()
     {
-      _listener.DataManagerDiscardingObject (ClientTransactionMock, _domainObject.ID);
+      _listener.DataManagerDiscardingObject (TestableClientTransaction, _domainObject.ID);
     }
 
     [Test]
     public void DataContainerMapRegistering ()
     {
-      _listener.DataContainerMapRegistering (ClientTransactionMock, _dataContainer);
+      _listener.DataContainerMapRegistering (TestableClientTransaction, _dataContainer);
     }
 
     [Test]
     public void DataContainerMapUnregistering ()
     {
-      _listener.DataContainerMapUnregistering (ClientTransactionMock, _dataContainer);
+      _listener.DataContainerMapUnregistering (TestableClientTransaction, _dataContainer);
     }
   }
 }

@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp();
       _definition = MappingConfiguration.Current.GetTypeDefinition (typeof (Order))
           .GetRelationEndPointDefinition (typeof (Order).FullName + ".OrderItems");
-      _nullEndPoint = new NullCollectionEndPoint (ClientTransactionMock, _definition);
+      _nullEndPoint = new NullCollectionEndPoint (TestableClientTransaction, _definition);
       _relatedObject = OrderItem.NewObject();
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
     }
@@ -298,7 +298,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void EnsureDataComplete_DoesNothing ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       _nullEndPoint.EnsureDataComplete ();
     }

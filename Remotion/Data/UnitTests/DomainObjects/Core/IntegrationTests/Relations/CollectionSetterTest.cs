@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void ReplaceCollectionProperty_HasChanged ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope())
       {
         _newIndustrialSector.EnsureDataAvailable ();
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void ReplaceCollectionProperty_Commit ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var oldCompanies = _newIndustrialSector.Companies;
         var newCompanies = new ObjectList<Company> ();
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void ReplaceCollectionProperty_Rollback ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         _newIndustrialSector.EnsureDataAvailable ();
 
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void ReplaceCollectionProperty_Cascade_Rollback ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var customer1 = Customer.GetObject (DomainObjectIDs.Customer1); // Order1, OrderWithoutOrderItems
         var customer3 = Customer.GetObject (DomainObjectIDs.Customer3); // Order2

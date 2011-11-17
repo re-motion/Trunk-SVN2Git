@@ -37,15 +37,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _transaction = ClientTransactionMock.ToITransation();
+      _transaction = TestableClientTransaction.ToITransation();
     }
 
     [Test]
     public void To_ClientTransaction ()
     {
-      var actual = _transaction.To<ClientTransactionMock>();
+      var actual = _transaction.To<TestableClientTransaction>();
 
-      Assert.That (actual, Is.SameAs (ClientTransactionMock));
+      Assert.That (actual, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var domainObject1 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
       var domainObject2 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.Partner1, false);
 
-      var secondClientTransaction = ClientTransactionMock;
+      var secondClientTransaction = TestableClientTransaction;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
       Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.False);
       Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.False);
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var domainObject1 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
       var domainObject2 = LifetimeService.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
 
-      var secondClientTransaction = ClientTransactionMock;
+      var secondClientTransaction = TestableClientTransaction;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
 
       secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2 });

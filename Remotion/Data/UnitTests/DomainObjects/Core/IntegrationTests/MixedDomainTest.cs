@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     [Test]
     public void GetSetCommitRollbackPersistentProperties ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterNonDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterNonDiscardingScope ())
       {
         IMixinAddingPersistentProperties properties = TargetClassForPersistentMixin.NewObject () as IMixinAddingPersistentProperties;
         Assert.IsNotNull (properties);

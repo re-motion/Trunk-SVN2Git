@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithOptionalOneToOneRelationNotSet ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
         Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithOptionalOneToManyRelationNotSet ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
         var customer = Customer.GetObject (DomainObjectIDs.Customer1);
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithMandatoryOneToOneRelationNotSet ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
 
       Assert.That (
-          () => ClientTransactionMock.Commit(),
+          () => TestableClientTransaction.Commit(),
           Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.EqualTo (
               "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object"
               + " 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be null."));
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithMandatoryOneToManyRelationNotSet ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope ())
       {
         IndustrialSector industrialSector = IndustrialSector.GetObject (DomainObjectIDs.IndustrialSector2);
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
 
       Assert.That (
-          () => ClientTransactionMock.Commit(),
+          () => TestableClientTransaction.Commit(),
           Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.EqualTo (
               "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies' of domain object"
               + " 'IndustrialSector|8565a077-ea01-4b5d-beaa-293dc484bddc|System.Guid' contains no items."));
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void MandatoryRelationNotSetExceptionForOneToOneRelation ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
 
       OrderTicket newOrderTicket;
       using (subTransaction.EnterDiscardingScope ())
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
 
       Assert.That (
-            () => ClientTransactionMock.Commit (),
+            () => TestableClientTransaction.Commit (),
             Throws.TypeOf<MandatoryRelationNotSetException> ().With.Message.EqualTo (
                 string.Format (
                     "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object '{0}' cannot be null.",
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void MandatoryRelationNotSetExceptionForOneToManyRelation ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
 
       IndustrialSector newIndustrialSector;
       using (subTransaction.EnterDiscardingScope ())
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
 
       Assert.That (
-            () => ClientTransactionMock.Commit (),
+            () => TestableClientTransaction.Commit (),
             Throws.TypeOf<MandatoryRelationNotSetException> ().With.Message.EqualTo (
                 string.Format (
                     "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies' of domain object '{0}' contains no items.",
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithMandatoryOneToOneRelationNotSet_WithValidationExtension ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator()));
 
       using (subTransaction.EnterDiscardingScope ())
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithMandatoryOneToManyRelationNotSet_WithValidationExtension ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator ()));
 
       using (subTransaction.EnterDiscardingScope ())
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void MandatoryRelationNotSetExceptionForOneToOneRelation_WithValidationExtension ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator ()));
 
       using (subTransaction.EnterDiscardingScope ())
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void MandatoryRelationNotSetExceptionForOneToManyRelation_WithValidationExtension ()
     {
-      var subTransaction = ClientTransactionMock.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       subTransaction.Extensions.Add (new CommitValidationClientTransactionExtension (tx => new MandatoryRelationValidator ()));
 
       using (subTransaction.EnterDiscardingScope ())

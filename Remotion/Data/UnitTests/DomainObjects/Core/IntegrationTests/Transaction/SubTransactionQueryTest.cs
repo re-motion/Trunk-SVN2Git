@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ScalarQueryInSubTransaction ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter");
 
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ObjectQueryInSubTransaction ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ObjectQueryWithObjectListInSubTransaction ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ObjectQueryInSubAndRootTransaction ()
     {
       IQueryResult queriedObjectsInSub;
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       IQueryResult queriedObjects;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
@@ -129,7 +129,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Customer queriedObject;
 
       Order newOrder;
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
         query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
@@ -158,14 +158,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void AccessObjectInFilterQueryResult ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
 
         Order.GetObject (DomainObjectIDs.Order1);
         extensionMock.Stub (stub => stub.Key).Return ("stub");
         extensionMock.Replay();
-        ClientTransactionMock.Extensions.Add (extensionMock);
+        TestableClientTransaction.Extensions.Add (extensionMock);
         try
         {
           extensionMock.BackToRecord ();
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         }
         finally
         {
-          ClientTransactionMock.Extensions.Remove ("stub");
+          TestableClientTransaction.Extensions.Remove ("stub");
         }
       }
     }
@@ -294,7 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       query.Parameters.Add ("@3", DomainObjectIDs.Computer4); // no employee
       query.Parameters.Add ("@2", DomainObjectIDs.Computer1); // employee 3
 
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         var result = ClientTransaction.Current.QueryManager.GetCollection (query);
         Assert.That (result.ContainsNulls(), Is.True);

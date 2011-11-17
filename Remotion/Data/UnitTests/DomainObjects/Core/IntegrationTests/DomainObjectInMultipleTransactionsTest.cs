@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
 
-      ClientTransactionMock.EnlistDomainObject (order);
+      TestableClientTransaction.EnlistDomainObject (order);
 
       Assert.That (order.State, Is.EqualTo (StateType.NotLoadedYet));
     }
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       newTransaction.EnlistDomainObject (order);
       Assert.That (newTransaction.IsEnlisted (order), Is.True);
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
 
       Assert.That (order.OrderNumber, Is.Not.EqualTo (5));
       order.OrderNumber = 5;

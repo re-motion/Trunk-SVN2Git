@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
           .WhenCalled (mi => Assert.That (orderCollection, Is.EqualTo (new[] { _itemA, _itemB })));
       _eventReceiverMock.Replay();
 
-      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _customer.Orders.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, _customer.Orders.AssociatedEndPointID);
       orderCollection.SetEventReceiver (_eventReceiverMock);
 
       _customer.Orders.EnsureDataComplete();
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _eventReceiverMock.Replay();
       _customer.Orders.SetEventReceiver (_eventReceiverMock);
 
-      ClientTransactionMock.Rollback();
+      TestableClientTransaction.Rollback();
 
       _eventReceiverMock.VerifyAllExpectations();
     }
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _eventReceiverMock.Replay();
       _customer.Orders.SetEventReceiver (_eventReceiverMock);
 
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, _customer.Orders.AssociatedEndPointID);
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, _customer.Orders.AssociatedEndPointID);
 
       _eventReceiverMock.VerifyAllExpectations();
     }
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _eventReceiverMock.Replay();
       _customer.Orders.SetEventReceiver (_eventReceiverMock);
 
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (unsynchronizedOrder, o => o.Customer));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (unsynchronizedOrder, o => o.Customer));
 
       _eventReceiverMock.VerifyAllExpectations();
     }
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _eventReceiverMock.Replay();
       _customer.Orders.SetEventReceiver (_eventReceiverMock);
 
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         var newOrder = Order.NewObject();
         newOrder.OrderTicket = OrderTicket.NewObject();
@@ -144,19 +144,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
     private Order PrepareUnsynchronizedOrder (ObjectID orderID, ObjectID relatedCustomerID)
     {
-      var unsynchronizedOrder = (Order) LifetimeService.GetObjectReference (ClientTransactionMock, orderID);
+      var unsynchronizedOrder = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, orderID);
       var dataContainer = DataContainer.CreateForExisting (
           unsynchronizedOrder.ID,
           null,
           pd => pd.PropertyName.EndsWith ("Customer") ? relatedCustomerID : pd.DefaultValue);
       dataContainer.SetDomainObject (unsynchronizedOrder);
-      ClientTransactionMock.DataManager.RegisterDataContainer (dataContainer);
+      TestableClientTransaction.DataManager.RegisterDataContainer (dataContainer);
 
       var endPointID = RelationEndPointID.Create (unsynchronizedOrder, o => o.Customer);
-      var endPoint = (IRealObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      var endPoint = (IRealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
 
       var oppositeID = RelationEndPointID.CreateOpposite (endPoint.Definition, relatedCustomerID);
-      var oppositeEndPoint = ClientTransactionMock.DataManager.GetOrCreateVirtualEndPoint (oppositeID);
+      var oppositeEndPoint = TestableClientTransaction.DataManager.GetOrCreateVirtualEndPoint (oppositeID);
       oppositeEndPoint.EnsureDataComplete ();
 
       Assert.That (endPoint.IsSynchronized, Is.False);

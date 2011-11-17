@@ -26,13 +26,13 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects
 {
   [Serializable]
-  public class ClientTransactionMock : ClientTransaction
+  public class TestableClientTransaction : ClientTransaction
   {
-    public ClientTransactionMock () : this (RootClientTransactionComponentFactory.Create())
+    public TestableClientTransaction () : this (RootClientTransactionComponentFactory.Create())
     {
     }
 
-    protected ClientTransactionMock (IClientTransactionComponentFactory componentFactory) : base (componentFactory)
+    protected TestableClientTransaction (IClientTransactionComponentFactory componentFactory) : base (componentFactory)
     {
     }
 

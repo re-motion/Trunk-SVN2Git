@@ -47,14 +47,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      _dataManager = ClientTransactionMock.DataManager;
+      _dataManager = TestableClientTransaction.DataManager;
 
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
       _endPointManagerMock = MockRepository.GenerateStrictMock<IRelationEndPointManager> ();
 
       _invalidDomainObjectManagerMock = MockRepository.GenerateMock<IInvalidDomainObjectManager>();
       _dataManagerWithMocks = new DataManager (
-          ClientTransactionMock,
+          TestableClientTransaction,
           _invalidDomainObjectManagerMock,
           _objectLoaderMock,
           _endPointManagerMock);
@@ -89,10 +89,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetLoadedDataByObjectState ()
     {
-      var unchangedInstance = DomainObjectMother.GetUnchangedObject(ClientTransactionMock, DomainObjectIDs.Order1);
-      var changedInstance = DomainObjectMother.GetChangedObject(ClientTransactionMock, DomainObjectIDs.OrderItem1);
+      var unchangedInstance = DomainObjectMother.GetUnchangedObject(TestableClientTransaction, DomainObjectIDs.Order1);
+      var changedInstance = DomainObjectMother.GetChangedObject(TestableClientTransaction, DomainObjectIDs.OrderItem1);
       var newInstance = DomainObjectMother.GetNewObject();
-      var deletedInstance = DomainObjectMother.GetDeletedObject(ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
+      var deletedInstance = DomainObjectMother.GetDeletedObject(TestableClientTransaction, DomainObjectIDs.ClassWithAllDataTypes1);
 
       var unchangedObjects = _dataManager.GetLoadedDataByObjectState (StateType.Unchanged);
       var changedOrNewObjects = _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.New);
@@ -113,13 +113,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetNewChangedDeletedData ()
     {
-      var changedInstance = DomainObjectMother.GetChangedObject (ClientTransactionMock, DomainObjectIDs.OrderItem1);
+      var changedInstance = DomainObjectMother.GetChangedObject (TestableClientTransaction, DomainObjectIDs.OrderItem1);
       var newInstance = DomainObjectMother.GetNewObject ();
-      var deletedInstance = DomainObjectMother.GetDeletedObject (ClientTransactionMock, DomainObjectIDs.ClassWithAllDataTypes1);
+      var deletedInstance = DomainObjectMother.GetDeletedObject (TestableClientTransaction, DomainObjectIDs.ClassWithAllDataTypes1);
 
-      DomainObjectMother.GetUnchangedObject (ClientTransactionMock, DomainObjectIDs.Order1);
-      DomainObjectMother.GetInvalidObject (ClientTransactionMock);
-      DomainObjectMother.GetNotLoadedObject (ClientTransactionMock, DomainObjectIDs.Order2);
+      DomainObjectMother.GetUnchangedObject (TestableClientTransaction, DomainObjectIDs.Order1);
+      DomainObjectMother.GetInvalidObject (TestableClientTransaction);
+      DomainObjectMother.GetNotLoadedObject (TestableClientTransaction, DomainObjectIDs.Order2);
 
       var changedDomainObjects = _dataManager.GetNewChangedDeletedData ();
       
@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.RegisterDataContainer (dataContainer);
 
-      Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID).ObjectID, Is.EqualTo (dataContainer.ID));
@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.RegisterDataContainer (dataContainer);
 
-      Assert.That (dataContainer.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID), Is.Null);
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       SetDomainObject(dataContainer);
 
-      var otherTransaction = new ClientTransactionMock ();
+      var otherTransaction = new TestableClientTransaction ();
       otherTransaction.DataManager.RegisterDataContainer (dataContainer);
       Assert.That (dataContainer.IsRegistered, Is.True);
 
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       SetDomainObject (dataContainer);
 
-      var otherTransaction = new ClientTransactionMock ();
+      var otherTransaction = new TestableClientTransaction ();
       otherTransaction.DataManager.RegisterDataContainer (dataContainer);
       Assert.That (dataContainer.IsRegistered, Is.True);
 
@@ -352,12 +352,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
       _dataManager.Discard (dataContainer);
 
       Assert.That (_dataManager.ClientTransaction.IsInvalid (dataContainer.ID), Is.True);
-      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (ClientTransactionMock, dataContainer.ID));
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, dataContainer.ID));
     }
 
     [Test]
@@ -1095,7 +1095,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private PersistableData CreatePersistableData (DomainObject domainObject)
     {
-      var dataContainer = ClientTransactionMock.DataManager.DataContainers[domainObject.ID];
+      var dataContainer = TestableClientTransaction.DataManager.DataContainers[domainObject.ID];
       return new PersistableData (domainObject, domainObject.State, dataContainer, _dataManager.RelationEndPoints.Where (ep => ep.ObjectID == domainObject.ID));
     }
 

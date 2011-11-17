@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       var endPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"));
-      _endPoint = (CollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      _endPoint = (CollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
     }
 
     [Test]
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var newOpposites = industrialSector.Companies.Clone ();
       industrialSector.Companies = newOpposites;
 
-      var tuple = Tuple.Create (ClientTransactionMock, industrialSector, oldOpposites, newOpposites);
+      var tuple = Tuple.Create (TestableClientTransaction, industrialSector, oldOpposites, newOpposites);
       var deserializedTuple = Serializer.SerializeAndDeserialize (tuple);
       using (deserializedTuple.Item1.EnterDiscardingScope())
       {
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     [Test]
     public void Serialization_IntegrationWithRelationEndPointMap ()
     {
-      var deserializedTransactionMock = Serializer.SerializeAndDeserialize (ClientTransactionMock);
+      var deserializedTransactionMock = Serializer.SerializeAndDeserialize (TestableClientTransaction);
       var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (_endPoint.ID);
       Assert.That (deserializedCollectionEndPoint, Is.Not.Null);
     }

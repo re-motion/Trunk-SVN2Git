@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [Test]
     public void CloneTransaction_CurrentByDefault ()
     {
-      Assert.That (_cloner.CloneTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_cloner.CloneTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
       ClientTransaction cloneTransaction = ClientTransaction.CreateBindingTransaction ();
       _cloner.CloneTransaction = cloneTransaction;
       _cloner.CloneTransaction = null;
-      Assert.That (_cloner.CloneTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_cloner.CloneTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
@@ -219,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Cloning
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread or this object.")]
     public void NullTransaction_ForSourceTransaction ()
     {
-      _cloner.CloneTransaction = ClientTransactionMock;
+      _cloner.CloneTransaction = TestableClientTransaction;
       using (ClientTransactionScope.EnterNullScope ())
       {
         _cloner.CreateValueClone (_computer1);

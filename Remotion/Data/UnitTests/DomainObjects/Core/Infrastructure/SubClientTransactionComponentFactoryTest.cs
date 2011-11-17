@@ -38,19 +38,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   [TestFixture]
   public class SubClientTransactionComponentFactoryTest : StandardMappingTest
   {
-    private ClientTransactionMock _parentTransaction;
+    private TestableClientTransaction _parentTransaction;
     private IInvalidDomainObjectManager _parentInvalidDomainObjectManagerStub;
     private SubClientTransactionComponentFactory _factory;
-    private ClientTransactionMock _fakeConstructedTransaction;
+    private TestableClientTransaction _fakeConstructedTransaction;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _parentTransaction = new ClientTransactionMock ();
+      _parentTransaction = new TestableClientTransaction ();
       _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       _factory = SubClientTransactionComponentFactory.Create (_parentTransaction, _parentInvalidDomainObjectManagerStub);
-      _fakeConstructedTransaction = new ClientTransactionMock ();
+      _fakeConstructedTransaction = new TestableClientTransaction ();
     }
 
     [Test]

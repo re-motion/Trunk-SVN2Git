@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubUnchanged ()
     {
       DomainObject obj = GetUnchanged ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         obj.EnsureDataAvailable ();
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubChangedThroughPropertyValue ()
     {
       Order obj = GetChangedThroughPropertyValue ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         Assert.AreEqual (obj.OrderNumber, obj.Properties[typeof (Order) + ".OrderNumber"].GetOriginalValue<int> ());
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubChangedThroughRelatedObjects ()
     {
       Order obj = GetChangedThroughRelatedObjects ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         Assert.AreEqual (obj.OrderItems.Count, obj.Properties[typeof (Order) + ".OrderItems"].GetOriginalValue<ObjectList<OrderItem>> ().Count);
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubChangedThroughRelatedObjectRealSide ()
     {
       Computer obj = GetChangedThroughRelatedObjectRealSide ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         Assert.AreEqual (obj.Employee, obj.Properties[typeof (Computer) + ".Employee"].GetOriginalValue<Employee> ());
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubChangedThroughRelatedObjectVirtualSide ()
     {
       Employee obj = GetChangedThroughRelatedObjectVirtualSide ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         Assert.AreEqual (obj.Computer, obj.Properties[typeof (Employee) + ".Computer"].GetOriginalValue<Computer> ());
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubNewUnchanged ()
     {
       DomainObject obj = GetNewUnchanged ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         obj.EnsureDataAvailable ();
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubNewChanged ()
     {
       DomainObject obj = GetNewChanged ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         obj.EnsureDataAvailable ();
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubDeleted ()
     {
       Order obj = GetDeleted ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.IsTrue (obj.IsInvalid);
       }
@@ -134,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetDeleted ();
       ObjectID id = obj.ID;
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.IsTrue (obj.IsInvalid);
         Order.GetObject (id);
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Client deleted = Client.GetObject (DomainObjectIDs.Client1);
       Location obj = GetUnidirectionalWithDeleted ();
       Assert.AreEqual (StateType.Deleted, deleted.State);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         obj.EnsureDataAvailable ();
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubUnidirectionalWithDeletedThrowsWhenAccessingTheObject ()
     {
       Location obj = GetUnidirectionalWithDeleted ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Dev.Null = obj.Client;
       }
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubUnidirectionalWithDeletedNew ()
     {
       Location obj = GetUnidirectionalWithDeletedNew ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         obj.EnsureDataAvailable ();
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubUnidirectionalWithDeletedNewThrowsWhenAccessingTheObject ()
     {
       Location obj = GetUnidirectionalWithDeletedNew ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Dev.Null = obj.Client;
       }
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RootToSubDiscarded ()
     {
       DomainObject obj = GetInvalid ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.IsTrue (obj.IsInvalid);
       }

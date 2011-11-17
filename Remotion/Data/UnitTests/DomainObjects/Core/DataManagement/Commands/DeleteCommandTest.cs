@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   [TestFixture]
   public class DeleteCommandTest : StandardMappingTest
   {
-    private ClientTransactionMock _transaction;
+    private TestableClientTransaction _transaction;
     private Order _order1;
     private DeleteCommand _deleteOrder1Command;
     private ObjectList<OrderItem> _orderItemsCollection;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       base.SetUp ();
 
-      _transaction = new ClientTransactionMock();
+      _transaction = new TestableClientTransaction();
       _order1 = (Order) LifetimeService.GetObject (_transaction, DomainObjectIDs.Order1, false);
       _deleteOrder1Command = new DeleteCommand (_transaction, _order1);
       _orderItemsCollection = _transaction.Execute (() => _order1.OrderItems);

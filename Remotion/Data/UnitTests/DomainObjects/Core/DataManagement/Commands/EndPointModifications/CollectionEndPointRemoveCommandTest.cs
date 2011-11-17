@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
+      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
       new CollectionEndPointRemoveCommand (endPoint, _removedRelatedObject, CollectionDataMock, EndPointProviderStub);
     }
 
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void ExpandToAllRelatedObjects ()
     {
       var removedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_removedRelatedObject.ID, "Customer");
-      var removedEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (removedEndPointID);
+      var removedEndPoint = (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (removedEndPointID);
       Assert.That (removedEndPoint, Is.Not.Null);
 
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (removedEndPoint.ID)).Return (removedEndPoint);

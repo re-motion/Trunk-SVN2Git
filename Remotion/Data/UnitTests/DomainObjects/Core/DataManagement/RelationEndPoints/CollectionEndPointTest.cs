@@ -60,11 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
       var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
       _endPoint = new CollectionEndPoint (
-          ClientTransactionMock,
+          TestableClientTransaction,
           _customerEndPointID,
           MockRepository.GenerateStub<ILazyLoader> (),
           _endPointProviderStub,
-          new CollectionEndPointDataKeeperFactory (ClientTransactionMock, changeDetectionStrategy));
+          new CollectionEndPointDataKeeperFactory (TestableClientTransaction, changeDetectionStrategy));
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
       _endPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_customerEndPointID)).Return (_endPoint);
 
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
 
       var endPoint = new CollectionEndPoint (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           _customerEndPointID, 
           lazyLoaderStub, 
           endPointProviderStub,
@@ -224,7 +224,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
 
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
-      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 

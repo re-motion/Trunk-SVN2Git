@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private IPersistenceStrategy _persistenceStrategyMock;
     private IQueryManager _queryManagerMock;
 
-    private ClientTransactionMock _transactionWithMocks;
+    private TestableClientTransaction _transactionWithMocks;
 
     private Order _fakeDomainObject1;
     private Order _fakeDomainObject2;
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
       _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
 
-      _transactionWithMocks = ClientTransactionObjectMother.Create<ClientTransactionMock> (
+      _transactionWithMocks = ClientTransactionObjectMother.Create<TestableClientTransaction> (
           null,
           _fakeApplicationData,
           tx => { throw new NotImplementedException(); },

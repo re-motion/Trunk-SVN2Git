@@ -32,26 +32,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp ();
 
-      _eventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      _eventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
     }
 
     [Test]
     public void GetRelatedObjectForAlreadyLoadedObjects ()
     {
-      DomainObject order = ClientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
-      DomainObject orderTicket = ClientTransactionMock.GetObject (DomainObjectIDs.OrderTicket1, false);
+      DomainObject order = TestableClientTransaction.GetObject (DomainObjectIDs.Order1, false);
+      DomainObject orderTicket = TestableClientTransaction.GetObject (DomainObjectIDs.OrderTicket1, false);
 
       _eventReceiver.Clear ();
 
       Assert.That (
-          ClientTransactionMock.GetRelatedObject (
+          TestableClientTransaction.GetRelatedObject (
               RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket")),
           Is.SameAs (orderTicket));
 
       Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
 
       Assert.That (
-          ClientTransactionMock.GetRelatedObject (
+          TestableClientTransaction.GetRelatedObject (
               RelationEndPointID.Create (orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order")),
           Is.SameAs (order));
       Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
@@ -60,9 +60,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectWithLazyLoad ()
     {
-      DomainObject orderTicket = ClientTransactionMock.GetObject (DomainObjectIDs.OrderTicket1, false);
+      DomainObject orderTicket = TestableClientTransaction.GetObject (DomainObjectIDs.OrderTicket1, false);
       _eventReceiver.Clear ();
-      DomainObject order = ClientTransactionMock.GetRelatedObject (RelationEndPointID.Create (orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      DomainObject order = TestableClientTransaction.GetRelatedObject (RelationEndPointID.Create (orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
 
       Assert.That (order, Is.Not.Null);
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
@@ -76,10 +76,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectOverVirtualEndPoint ()
     {
-      DomainObject order = ClientTransactionMock.GetObject (DomainObjectIDs.Order1, false);
+      DomainObject order = TestableClientTransaction.GetObject (DomainObjectIDs.Order1, false);
       _eventReceiver.Clear ();
 
-      DomainObject orderTicket = ClientTransactionMock.GetRelatedObject (
+      DomainObject orderTicket = TestableClientTransaction.GetRelatedObject (
           RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
 
       Assert.That (orderTicket, Is.Not.Null);
@@ -96,11 +96,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var id = new ObjectID ("ClassWithValidRelations", new Guid ("{6BE4FA61-E050-469c-9DBA-B47FFBB0F8AD}"));
 
-      DomainObject classWithValidRelation = ClientTransactionMock.GetObject (id, false);
+      DomainObject classWithValidRelation = TestableClientTransaction.GetObject (id, false);
       _eventReceiver.Clear ();
 
       Assert.That (
-          ClientTransactionMock.GetRelatedObject (
+          TestableClientTransaction.GetRelatedObject (
               RelationEndPointID.Create (
                   classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional")),
           Is.Null);
@@ -113,11 +113,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
-      DomainObject classWithGuidKey = ClientTransactionMock.GetObject (id, false);
+      DomainObject classWithGuidKey = TestableClientTransaction.GetObject (id, false);
       _eventReceiver.Clear ();
 
       Assert.That (
-          ClientTransactionMock.GetRelatedObject (
+          TestableClientTransaction.GetRelatedObject (
               RelationEndPointID.Create (
                   classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional")),
           Is.Null);
@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       CountingObjectLoaderDecorator decorator = null;
       var clientTransaction =
-          ClientTransactionObjectMother.CreateTransactionWithObjectLoaderDecorator<ClientTransactionMock> (
+          ClientTransactionObjectMother.CreateTransactionWithObjectLoaderDecorator<TestableClientTransaction> (
               loader => decorator ?? (decorator = new CountingObjectLoaderDecorator (loader)));
 
       DomainObject classWithValidRelation = clientTransaction.GetObject (id, false);
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var id = new ObjectID ("ClassWithGuidKey", new Guid ("{672C8754-C617-4b7a-890C-BFEF8AC86564}"));
 
       CountingObjectLoaderDecorator decorator = null;
-      var clientTransactionMock = ClientTransactionObjectMother.CreateTransactionWithObjectLoaderDecorator<ClientTransactionMock> (
+      var clientTransactionMock = ClientTransactionObjectMother.CreateTransactionWithObjectLoaderDecorator<TestableClientTransaction> (
         loader => decorator ?? (decorator = new CountingObjectLoaderDecorator (loader)));
 
       DomainObject classWithGuidKey = clientTransactionMock.GetObject (id, false);
@@ -187,10 +187,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectWithInheritance ()
     {
-      DomainObject expectedCeo = ClientTransactionMock.GetObject (DomainObjectIDs.Ceo6, false);
-      DomainObject partner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner1, false);
+      DomainObject expectedCeo = TestableClientTransaction.GetObject (DomainObjectIDs.Ceo6, false);
+      DomainObject partner = TestableClientTransaction.GetObject (DomainObjectIDs.Partner1, false);
 
-      DomainObject actualCeo = ClientTransactionMock.GetRelatedObject (RelationEndPointID.Create (partner.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
+      DomainObject actualCeo = TestableClientTransaction.GetRelatedObject (RelationEndPointID.Create (partner.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Ceo"));
       Assert.That (actualCeo, Is.SameAs (expectedCeo));
     }
 
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
       _eventReceiver.Clear ();
 
-      DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
+      DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.That (orders, Is.Not.Null);
@@ -217,10 +217,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
       _eventReceiver.Clear ();
 
-      DomainObjectCollection orders1 = ClientTransactionMock.GetRelatedObjects (
+      DomainObjectCollection orders1 = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
-      DomainObjectCollection orders2 = ClientTransactionMock.GetRelatedObjects (
+      DomainObjectCollection orders2 = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.That (ReferenceEquals (orders1, orders2), Is.True);
@@ -237,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       _eventReceiver.Clear ();
 
-      DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
+      DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.That (orders[DomainObjectIDs.Order1], Is.SameAs (order));
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer2);
       _eventReceiver.Clear ();
 
-      DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
+      DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.That (orders, Is.Not.Null);
       Assert.IsEmpty (orders);
@@ -262,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
+      DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -275,11 +275,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Customer customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
-      DomainObjectCollection orders = ClientTransactionMock.GetRelatedObjects (
+      DomainObjectCollection orders = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.That (
-          ClientTransactionMock.GetRelatedObject (
+          TestableClientTransaction.GetRelatedObject (
               RelationEndPointID.Create (orders[0].ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer")),
           Is.SameAs (customer));
     }
@@ -287,10 +287,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetRelatedObjectsWithInheritance ()
     {
-      DomainObject industrialSector = ClientTransactionMock.GetObject (DomainObjectIDs.IndustrialSector2, false);
-      DomainObject expectedPartner = ClientTransactionMock.GetObject (DomainObjectIDs.Partner2, false);
+      DomainObject industrialSector = TestableClientTransaction.GetObject (DomainObjectIDs.IndustrialSector2, false);
+      DomainObject expectedPartner = TestableClientTransaction.GetObject (DomainObjectIDs.Partner2, false);
 
-      DomainObjectCollection companies = ClientTransactionMock.GetRelatedObjects (
+      DomainObjectCollection companies = TestableClientTransaction.GetRelatedObjects (
           RelationEndPointID.Create (industrialSector.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies"));
 
       Assert.That (companies[DomainObjectIDs.Partner2], Is.SameAs (expectedPartner));

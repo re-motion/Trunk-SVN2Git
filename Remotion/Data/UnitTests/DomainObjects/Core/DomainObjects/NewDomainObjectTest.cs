@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsNull (orderTicket.InternalDataContainer.Timestamp);
       Assert.IsNull (orderItem.InternalDataContainer.Timestamp);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       ceo = Ceo.GetObject (ceoID);
@@ -292,7 +292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       subordinate.Name = "Zarniwoop";
       supervisor.Subordinates.Add (subordinate);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       supervisor = Employee.GetObject (supervisorID);
@@ -313,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void ValidateMandatoryRelation ()
     {
       OrderItem orderItem = OrderItem.NewObject ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
     }
 
     [Test]
@@ -326,7 +326,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       newEmployee.Computer = computer;
       newEmployee.Name = "Arthur Dent";
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       computer = Computer.GetObject (DomainObjectIDs.Computer4);
@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Computer computer = Computer.NewObject ();
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.AreEqual (StateType.Unchanged, computer.State);
     }
@@ -355,7 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsTrue (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasChanged);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.IsFalse (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasChanged);
     }
@@ -368,7 +368,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsTrue (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasBeenTouched);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.IsFalse (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasBeenTouched);
     }
@@ -387,7 +387,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsNull (employee.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer"));
       Assert.IsNull (computer.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.AreSame (computer, employee.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer"));
       Assert.AreSame (employee, computer.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
@@ -406,7 +406,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (0, supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates").Count);
       Assert.IsNull (subordinate.GetOriginalRelatedObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       DomainObjectCollection originalSubordinates = supervisor.GetOriginalRelatedObjects ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates");
       Assert.AreEqual (1, originalSubordinates.Count);

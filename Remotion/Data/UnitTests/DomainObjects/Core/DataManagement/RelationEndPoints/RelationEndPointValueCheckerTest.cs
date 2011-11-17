@@ -29,10 +29,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CheckClientTransaction_MatchingTransactions ()
     {
-      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
-      var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransactionMock);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (TestableClientTransaction);
+      var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (TestableClientTransaction);
 
-      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (TestableClientTransaction, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
@@ -40,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CheckClientTransaction_NullObject ()
     {
-      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (TestableClientTransaction);
 
-      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (TestableClientTransaction, owningObject);
 
       CallCheckClientTransaction (endPointStub, null);
     }
@@ -54,10 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         + @"to the same ClientTransaction.", MatchType = MessageMatch.Regex)]
     public void CheckClientTransaction_Differ_NoObjectInBindingTransaction ()
     {
-      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (TestableClientTransaction);
       var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (ClientTransaction.CreateRootTransaction ());
 
-      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (TestableClientTransaction, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }
@@ -71,10 +71,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
 
-      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (ClientTransactionMock);
+      var owningObject = DomainObjectMother.CreateObjectInTransaction<Order> (TestableClientTransaction);
       var relatedObject = DomainObjectMother.CreateObjectInTransaction<OrderItem> (bindingTransaction);
 
-      var endPointStub = CreateRelationEndPointStub (ClientTransactionMock, owningObject);
+      var endPointStub = CreateRelationEndPointStub (TestableClientTransaction, owningObject);
 
       CallCheckClientTransaction (endPointStub, relatedObject);
     }

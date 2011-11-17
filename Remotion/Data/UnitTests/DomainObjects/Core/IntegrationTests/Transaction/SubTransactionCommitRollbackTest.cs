@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public override void SetUp ()
     {
       base.SetUp ();
-      _subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      _subTransaction = TestableClientTransaction.CreateSubTransaction ();
     }
 
     [Test]
@@ -116,14 +116,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreEqual (1, order.OrderNumber);
       order.OrderNumber = 3;
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         order.OrderNumber = 5;
         ClientTransactionScope.CurrentTransaction.Rollback ();
         Assert.AreEqual (3, order.OrderNumber);
       }
       Assert.AreEqual (3, order.OrderNumber);
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
       Assert.AreEqual (1, order.OrderNumber);
     }
 
@@ -133,12 +133,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       using (_subTransaction.EnterDiscardingScope ())
       {
-        Assert.IsTrue (ClientTransactionMock.IsReadOnly);
+        Assert.IsTrue (TestableClientTransaction.IsReadOnly);
         ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
         Assert.AreNotEqual (7, classWithAllDataTypes.Int32Property);
         classWithAllDataTypes.Int32Property = 7;
         _subTransaction.Commit ();
-        Assert.IsTrue (ClientTransactionMock.IsReadOnly);
+        Assert.IsTrue (TestableClientTransaction.IsReadOnly);
       }
     }
     
@@ -181,13 +181,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       _subTransaction.Discard ();
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         order.OrderNumber = 5;
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
       Assert.AreEqual (5, order.OrderNumber);
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
       Assert.AreEqual (1, order.OrderNumber);
     }
 

@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       ids.Add (DomainObjectIDs.Order2);
       ids.AddRange (Enumerable.Range (0, 4000).Select (i => new ObjectID (DomainObjectIDs.Order1.ClassDefinition, Guid.NewGuid ())));
 
-      var result = ClientTransactionMock.TryGetObjects<Order> (ids.ToArray());
+      var result = TestableClientTransaction.TryGetObjects<Order> (ids.ToArray());
       Assert.That (result.Length, Is.EqualTo (4002));
       Assert.That (result.Distinct().ToArray(), Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2), null }));
     }

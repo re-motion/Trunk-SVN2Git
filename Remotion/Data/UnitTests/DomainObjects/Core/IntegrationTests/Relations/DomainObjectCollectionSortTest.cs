@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     [Test]
     public void Sort_NotSortedYet_StateAndHasChangedGoToChanged_InSubTransaction ()
     {
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.That (_owningCustomer.Orders, Is.EqualTo (new[] { _itemA, _itemB }));
         Assert.That (_owningCustomer.State, Is.EqualTo (StateType.Unchanged));
@@ -134,13 +134,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       var orderCollection = _owningCustomer.Orders;
       orderCollection.SetEventReceiver (eventReceiverMock);
 
-      var eventListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      var eventListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
       try
       {
         eventListenerMock
             .Expect (
                 mock => mock.VirtualRelationEndPointStateUpdated (
-                    ClientTransactionMock,
+                    TestableClientTransaction,
                     RelationEndPointID.Create (_owningCustomer, c => c.Orders),
                     null));
         eventListenerMock.Replay ();
@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       }
       finally
       {
-        ClientTransactionMock.RemoveListener (eventListenerMock);
+        TestableClientTransaction.RemoveListener (eventListenerMock);
       }
     }
   }

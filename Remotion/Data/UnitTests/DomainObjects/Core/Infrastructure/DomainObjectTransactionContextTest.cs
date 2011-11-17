@@ -44,25 +44,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _loadedOrder1 = Order.GetObject (DomainObjectIDs.Order1);
       _notYetLoadedOrder2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      ClientTransactionMock.EnlistDomainObject (_notYetLoadedOrder2);
+      TestableClientTransaction.EnlistDomainObject (_notYetLoadedOrder2);
       _newOrder = Order.NewObject();
 
-      _loadedOrder1Context = new DomainObjectTransactionContext (_loadedOrder1, ClientTransactionMock);
-      _notYetLoadedOrder2Context = new DomainObjectTransactionContext (_notYetLoadedOrder2, ClientTransactionMock);
-      _newOrderContext = new DomainObjectTransactionContext (_newOrder, ClientTransactionMock);
+      _loadedOrder1Context = new DomainObjectTransactionContext (_loadedOrder1, TestableClientTransaction);
+      _notYetLoadedOrder2Context = new DomainObjectTransactionContext (_notYetLoadedOrder2, TestableClientTransaction);
+      _newOrderContext = new DomainObjectTransactionContext (_newOrder, TestableClientTransaction);
 
       _invalidContext = new DomainObjectTransactionContext (_newOrder, ClientTransaction.CreateRootTransaction ());
 
       var objectBeingInitialized = Order.NewObject ();
       PrivateInvoke.SetNonPublicField (objectBeingInitialized, "_isReferenceInitializeEventExecuting", true);
-      _referenceInitializationContext = new DomainObjectTransactionContext (objectBeingInitialized, ClientTransactionMock);
+      _referenceInitializationContext = new DomainObjectTransactionContext (objectBeingInitialized, TestableClientTransaction);
     }
 
     [Test]
     public void Initialization()
     {
       Assert.That (_loadedOrder1Context.DomainObject, Is.SameAs (_loadedOrder1));
-      Assert.That (_loadedOrder1Context.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_loadedOrder1Context.ClientTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
@@ -222,12 +222,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void EnsureDataAvailable ()
     {
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Null);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Null);
 
       _notYetLoadedOrder2Context.EnsureDataAvailable ();
 
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Not.Null);
-      Assert.That (ClientTransactionMock.DataManager.DataContainers[_notYetLoadedOrder2.ID].DomainObject, Is.SameAs (_notYetLoadedOrder2));
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Not.Null);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[_notYetLoadedOrder2.ID].DomainObject, Is.SameAs (_notYetLoadedOrder2));
     }
 
     [Test]
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void ClientTransaction_DuringReferenceInitialization_Allowed ()
     {
-      Assert.That (_referenceInitializationContext.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (_referenceInitializationContext.ClientTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     private void DeleteOrder (Order order)

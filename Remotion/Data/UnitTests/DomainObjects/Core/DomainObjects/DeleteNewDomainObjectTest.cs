@@ -58,8 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       _newOrderTicket.Delete ();
 
-      Assert.AreEqual (0, ClientTransactionMock.DataManager.DataContainers.Count);
-      Assert.AreEqual (0, ClientTransactionMock.DataManager.RelationEndPoints.Count);
+      Assert.AreEqual (0, TestableClientTransaction.DataManager.DataContainers.Count);
+      Assert.AreEqual (0, TestableClientTransaction.DataManager.RelationEndPoints.Count);
     }
 
     [Test]
@@ -489,16 +489,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _newOrder.Committing += new EventHandler (NewOrder_Committing);
       _newOrderTicket.Committing += new EventHandler (NewOrderTicket_Committing);
-      ClientTransactionMock.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInDomainObjectsCommittingEvent;
+      TestableClientTransaction.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInDomainObjectsCommittingEvent;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
     }
 
     [Test]
     public void DeleteNewObjectsInClientTransactionsCommittingEvent ()
     {
-      ClientTransactionMock.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInClientTransactionsCommittingEvent;
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInClientTransactionsCommittingEvent;
+      TestableClientTransaction.Commit ();
     }
 
     private void NewOrder_Committing (object sender, EventArgs e)

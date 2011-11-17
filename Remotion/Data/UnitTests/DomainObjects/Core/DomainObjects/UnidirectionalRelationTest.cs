@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       eventReceiver.Check (expectedStates);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       SequenceEventReceiver eventReceiver = new SequenceEventReceiver (new DomainObject[] { _location, _oldClient, _newClient }, new DomainObjectCollection[0]);
 
       _location.Delete ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       ChangeState[] expectedStates = new ChangeState[]
     {
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Location location3 = Location.GetObject (DomainObjectIDs.Location3);
       location3.Delete ();
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
     }
 
     [Test]
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void DeleteClientAndCommit ()
     {
       _location.Client.Delete ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       Assert.IsNull (_location.Client);
     }
 
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Location newLocation = Location.NewObject();
       newLocation.Client = _newClient;
 
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
 
       Assert.AreEqual (StateType.Unchanged, _location.State);
     }
@@ -258,7 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       ObjectID newClientID1 = newClient1.ID;
       ObjectID newClientID2 = newClient2.ID;
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {

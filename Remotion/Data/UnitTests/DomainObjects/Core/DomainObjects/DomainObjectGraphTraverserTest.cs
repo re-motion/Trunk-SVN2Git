@@ -154,20 +154,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var expected = new Set<DomainObject> (
           order,
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person7, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person3, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Person6, false));
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.OrderTicket1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.OrderItem1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.OrderItem2, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Customer1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Official1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.IndustrialSector1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Partner1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.PartnerWithoutCeo, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Supplier1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Distributor2, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Person1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Person7, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Person3, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Person6, false));
 
       Assert.That (graph, Is.EquivalentTo(expected));
     }
@@ -180,16 +180,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var expected = new Set<DomainObject> (
           order,
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderTicket1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.OrderItem2, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Customer1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Official1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.IndustrialSector1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Partner1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.PartnerWithoutCeo, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Supplier1, false),
-          LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.OrderTicket1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.OrderItem1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.OrderItem2, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Customer1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Official1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.IndustrialSector1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Partner1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.PartnerWithoutCeo, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Supplier1, false),
+          LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Distributor2, false));
 
       Assert.That (graph, Is.EquivalentTo (expected));
     }
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Set<DomainObject> graph = new DomainObjectGraphTraverser (order, new TestTraversalStrategy (false, true)).GetFlattenedRelatedObjectGraph ();
 
-      var expected = new Set<DomainObject> (LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Distributor2, false));
+      var expected = new Set<DomainObject> (LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Distributor2, false));
 
       Assert.That (graph, Is.EquivalentTo (expected));
     }

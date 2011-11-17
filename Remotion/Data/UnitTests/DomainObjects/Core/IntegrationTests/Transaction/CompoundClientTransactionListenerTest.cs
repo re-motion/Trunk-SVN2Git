@@ -98,77 +98,77 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       var realtionEndPointDefinitionMock = MockRepository.GenerateMock<IRelationEndPointDefinition>();
 
-      CheckNotification (listener => listener.TransactionInitialize (ClientTransactionMock));
-      CheckNotification (listener => listener.TransactionDiscard (ClientTransactionMock));
+      CheckNotification (listener => listener.TransactionInitialize (TestableClientTransaction));
+      CheckNotification (listener => listener.TransactionDiscard (TestableClientTransaction));
 
-      CheckNotification (listener => listener.SubTransactionCreating (ClientTransactionMock));
-      CheckNotification (listener => listener.SubTransactionInitialize (ClientTransactionMock, clientTransaction2));
-      CheckNotification (listener => listener.SubTransactionCreated (ClientTransactionMock, clientTransaction2));
+      CheckNotification (listener => listener.SubTransactionCreating (TestableClientTransaction));
+      CheckNotification (listener => listener.SubTransactionInitialize (TestableClientTransaction, clientTransaction2));
+      CheckNotification (listener => listener.SubTransactionCreated (TestableClientTransaction, clientTransaction2));
 
-      CheckNotification (listener => listener.NewObjectCreating (ClientTransactionMock, typeof (string), null));
+      CheckNotification (listener => listener.NewObjectCreating (TestableClientTransaction, typeof (string), null));
 
-      CheckNotification (listener => listener.ObjectsLoading (ClientTransactionMock, new ReadOnlyCollection<ObjectID> (new ObjectID[0])));
-      CheckNotification (listener => listener.ObjectsLoaded (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.ObjectsLoading (TestableClientTransaction, new ReadOnlyCollection<ObjectID> (new ObjectID[0])));
+      CheckNotification (listener => listener.ObjectsLoaded (TestableClientTransaction, domainObjects));
 
-      CheckNotification (listener => listener.ObjectsUnloading (ClientTransactionMock, domainObjects));
-      CheckNotification (listener => listener.ObjectsUnloaded (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.ObjectsUnloading (TestableClientTransaction, domainObjects));
+      CheckNotification (listener => listener.ObjectsUnloaded (TestableClientTransaction, domainObjects));
 
-      CheckNotification (listener => listener.ObjectDeleting (ClientTransactionMock, order));
-      CheckNotification (listener => listener.ObjectDeleted (ClientTransactionMock, order));
+      CheckNotification (listener => listener.ObjectDeleting (TestableClientTransaction, order));
+      CheckNotification (listener => listener.ObjectDeleted (TestableClientTransaction, order));
 
       CheckNotification (listener => listener.PropertyValueReading (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           order.InternalDataContainer, 
           order.InternalDataContainer.PropertyValues[0], 
           ValueAccess.Original));
       CheckNotification (listener => listener.PropertyValueRead (
-        ClientTransactionMock, 
+        TestableClientTransaction, 
         order.InternalDataContainer,
         order.InternalDataContainer.PropertyValues[0],
         "Foo", 
         ValueAccess.Original));
 
       CheckNotification (listener => listener.PropertyValueChanging (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           order.InternalDataContainer,
           order.InternalDataContainer.PropertyValues[0], 
           "Foo", 
           "Bar"));
       CheckNotification (listener => listener.PropertyValueChanged (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           order.InternalDataContainer,
           order.InternalDataContainer.PropertyValues[0], 
           "Foo", 
           "Bar"));
 
-      CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, realtionEndPointDefinitionMock, order, ValueAccess.Original));
-      CheckNotification (listener => listener.RelationRead (ClientTransactionMock, order, realtionEndPointDefinitionMock, relatedObjects, ValueAccess.Original));
-      CheckNotification (listener => listener.RelationReading (ClientTransactionMock, order, realtionEndPointDefinitionMock, ValueAccess.Current));
+      CheckNotification (listener => listener.RelationRead (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, ValueAccess.Original));
+      CheckNotification (listener => listener.RelationRead (TestableClientTransaction, order, realtionEndPointDefinitionMock, relatedObjects, ValueAccess.Original));
+      CheckNotification (listener => listener.RelationReading (TestableClientTransaction, order, realtionEndPointDefinitionMock, ValueAccess.Current));
       
-      CheckNotification (listener => listener.RelationChanging (ClientTransactionMock, order, realtionEndPointDefinitionMock, order, order2));
-      CheckNotification (listener => listener.RelationChanged (ClientTransactionMock, order, realtionEndPointDefinitionMock));
+      CheckNotification (listener => listener.RelationChanging (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, order2));
+      CheckNotification (listener => listener.RelationChanged (TestableClientTransaction, order, realtionEndPointDefinitionMock));
 
-      CheckNotification (listener => listener.TransactionCommitting (ClientTransactionMock, domainObjects));
-      CheckNotification (listener => listener.TransactionCommitValidate (ClientTransactionMock, persistableData));
-      CheckNotification (listener => listener.TransactionCommitted (ClientTransactionMock, domainObjects));
-      CheckNotification (listener => listener.TransactionRollingBack (ClientTransactionMock, domainObjects));
-      CheckNotification (listener => listener.TransactionRolledBack (ClientTransactionMock, domainObjects));
+      CheckNotification (listener => listener.TransactionCommitting (TestableClientTransaction, domainObjects));
+      CheckNotification (listener => listener.TransactionCommitValidate (TestableClientTransaction, persistableData));
+      CheckNotification (listener => listener.TransactionCommitted (TestableClientTransaction, domainObjects));
+      CheckNotification (listener => listener.TransactionRollingBack (TestableClientTransaction, domainObjects));
+      CheckNotification (listener => listener.TransactionRolledBack (TestableClientTransaction, domainObjects));
 
       var id = RelationEndPointID.Create(order.ID, typeof (Order).FullName + ".Customer");
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (id, null);
 
-      CheckNotification (listener => listener.RelationEndPointMapRegistering (ClientTransactionMock, endPoint));
+      CheckNotification (listener => listener.RelationEndPointMapRegistering (TestableClientTransaction, endPoint));
 
-      CheckNotification (listener => listener.RelationEndPointMapUnregistering (ClientTransactionMock, endPoint.ID));
-      CheckNotification (listener => listener.RelationEndPointUnloading (ClientTransactionMock, endPoint));
+      CheckNotification (listener => listener.RelationEndPointMapUnregistering (TestableClientTransaction, endPoint.ID));
+      CheckNotification (listener => listener.RelationEndPointUnloading (TestableClientTransaction, endPoint));
 
-      CheckNotification (listener => listener.DataManagerDiscardingObject (ClientTransactionMock, order.ID));
+      CheckNotification (listener => listener.DataManagerDiscardingObject (TestableClientTransaction, order.ID));
 
-      CheckNotification (listener => listener.DataContainerMapRegistering (ClientTransactionMock, order.InternalDataContainer));
-      CheckNotification (listener => listener.DataContainerMapUnregistering (ClientTransactionMock, order.InternalDataContainer));
+      CheckNotification (listener => listener.DataContainerMapRegistering (TestableClientTransaction, order.InternalDataContainer));
+      CheckNotification (listener => listener.DataContainerMapUnregistering (TestableClientTransaction, order.InternalDataContainer));
 
-      CheckNotification (listener => listener.DataContainerStateUpdated (ClientTransactionMock, order.InternalDataContainer, StateType.Deleted));
-      CheckNotification (listener => listener.VirtualRelationEndPointStateUpdated (ClientTransactionMock, endPoint.ID, true));
+      CheckNotification (listener => listener.DataContainerStateUpdated (TestableClientTransaction, order.InternalDataContainer, StateType.Deleted));
+      CheckNotification (listener => listener.VirtualRelationEndPointStateUpdated (TestableClientTransaction, endPoint.ID, true));
     }
 
     [Test]
@@ -188,10 +188,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1)});
       var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2)});
 
-      listenerMock1.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, originalResult)).Return (newResult1);
-      listenerMock2.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, newResult1)).Return (newResult2);
+      listenerMock1.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, originalResult)).Return (newResult1);
+      listenerMock2.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, newResult1)).Return (newResult2);
 
-      var finalResult = compoundListener.FilterQueryResult (ClientTransactionMock, originalResult);
+      var finalResult = compoundListener.FilterQueryResult (TestableClientTransaction, originalResult);
       Assert.That (finalResult, Is.SameAs (newResult2));
     }
 

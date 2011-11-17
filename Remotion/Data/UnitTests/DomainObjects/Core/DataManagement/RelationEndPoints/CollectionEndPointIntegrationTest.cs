@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
       _customerEndPoint = (CollectionEndPoint) 
-          ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (
+          TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (
             RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders"));
     }
 

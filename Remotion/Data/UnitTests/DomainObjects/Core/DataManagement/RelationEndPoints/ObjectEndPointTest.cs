@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
 
       var oppositeObject = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
-      _endPoint = new TestableObjectEndPoint (ClientTransactionMock, _endPointID, _endPointProviderStub, oppositeObject);
+      _endPoint = new TestableObjectEndPoint (TestableClientTransaction, _endPointID, _endPointProviderStub, oppositeObject);
     }
 
     [Test]

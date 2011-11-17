@@ -35,13 +35,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void SubTransaction_CanBeUsedToCreateAndLoadNewObjects ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Assert.That (ClientTransactionScope.CurrentTransaction, Is.SameAs (subTransaction));
         Order order = Order.NewObject ();
         Assert.That (subTransaction.IsEnlisted (order), Is.True);
-        Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+        Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
 
         order.OrderNumber = 4711;
         Assert.That (order.OrderNumber, Is.EqualTo (4711));
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Ceo ceo = Ceo.GetObject (DomainObjectIDs.Ceo1);
         Assert.That (ceo, Is.Not.Null);
         Assert.That (subTransaction.IsEnlisted (ceo), Is.True);
-        Assert.That (ClientTransactionMock.IsEnlisted (ceo), Is.True);
+        Assert.That (TestableClientTransaction.IsEnlisted (ceo), Is.True);
 
         Assert.That (Company.GetObject (DomainObjectIDs.Company1), Is.SameAs (ceo.Company));
       }
@@ -63,8 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void DomainObjects_CreatedInParent_CanBeUsedInSubTransactions ()
     {
       Order order = Order.NewObject ();
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
+      Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
       Assert.That (subTransaction.IsEnlisted (order), Is.True);
     }
 
@@ -72,45 +72,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void DomainObjects_CreatedInParent_NotLoadedYetInSubTransaction ()
     {
       Order order = Order.NewObject ();
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Assert.That (order.TransactionContext[subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
     public void DomainObjects_CreatedInSubTransaction_CanBeUsedInParent ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.NewObject ();
         Assert.That (subTransaction.IsEnlisted (order), Is.True);
-        Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+        Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
       }
     }
 
     [Test]
     public void DomainObjects_CreatedInSubTransaction_InvalidInParent ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.NewObject ();
         Assert.That (order.TransactionContext[subTransaction].State, Is.EqualTo (StateType.New));
-        Assert.That (order.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Invalid));
+        Assert.That (order.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Invalid));
       }
     }
 
     [Test]
     public void DomainObjects_CreatedInSubTransaction_CommitMakesValidInParent ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var instance = ClassWithAllDataTypes.NewObject ();
         Assert.That (instance.TransactionContext[subTransaction].State, Is.EqualTo (StateType.New));
-        Assert.That (instance.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Invalid));
+        Assert.That (instance.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Invalid));
         subTransaction.Commit ();
-        Assert.That (instance.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.New));
+        Assert.That (instance.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.New));
       }
     }
 
@@ -118,8 +118,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void DomainObjects_LoadedInParent_CanBeUsedInSubTransactions ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
+      Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
       Assert.That (subTransaction.IsEnlisted (order), Is.True);
     }
 
@@ -127,19 +127,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void DomainObjects_LoadedInParent_NotLoadedYetInSubTransaction ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Assert.That (order.TransactionContext[subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
     public void DomainObjects_LoadedInSubTransaction_CanBeUsedInParent ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Order order = Order.GetObject (DomainObjectIDs.Order1);
         Assert.That (subTransaction.IsEnlisted (order), Is.True);
-        Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+        Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
       }
     }
 
@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void SubTransaction_CanAccessObject_CreatedInParent ()
     {
       Order order = Order.NewObject ();
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         order.OrderNumber = 5;
@@ -159,7 +159,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [ExpectedException (typeof (ObjectInvalidException))]
     public void Parent_CannotAccessObject_CreatedInSubTransaction ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Order order;
       using (subTransaction.EnterDiscardingScope ())
       {
@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void SubTransaction_CanAccessObject_LoadedInParent ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         ++order.OrderNumber;
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Parent_CanAccessObject_LoadedInSubTransaction ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Order order;
       using (subTransaction.EnterDiscardingScope ())
       {
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Parent_CanReloadObject_LoadedInSubTransaction_AndGetTheSameReference ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Order order;
       using (subTransaction.EnterDiscardingScope ())
       {
@@ -211,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
 
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Assert.That (
@@ -227,7 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
 
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Assert.That (
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
 
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var objectReference = LifetimeService.GetObjectReference (subTransaction, order1.ID);
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_UnloadedObjects_Events ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
@@ -332,7 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_LoadedObjects ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var expectedObjects = new object[]
@@ -351,7 +351,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_LoadedObjects_Events ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var eventReceiver = new ClientTransactionEventReceiver (subTransaction);
@@ -379,7 +379,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_NewObjects ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var expectedObjects = new DomainObject[] { Order.NewObject (), OrderItem.NewObject () };
@@ -391,7 +391,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_NewObjects_Events ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var eventReceiver = new ClientTransactionEventReceiver (subTransaction);
@@ -421,7 +421,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void GetObjects_NotFound ()
     {
       var guid = new Guid ("33333333333333333333333333333333");
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         subTransaction.GetObjects<DomainObject> (new ObjectID (typeof (Order), guid));
@@ -432,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void TryGetObjects_NotFound ()
     {
       var guid = new Guid ("33333333333333333333333333333333");
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Order newObject = Order.NewObject ();
@@ -456,7 +456,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [ExpectedException (typeof (InvalidCastException))]
     public void GetObjects_InvalidType ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         subTransaction.GetObjects<OrderItem> (DomainObjectIDs.Order1);
@@ -466,7 +466,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void GetObjects_Deleted ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var order = Order.GetObject (DomainObjectIDs.Order1);
@@ -483,7 +483,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ExpectedMessage = "Object 'ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid' is invalid in this transaction.")]
     public void GetObjects_Invalid_Throws ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1).Delete ();
@@ -502,7 +502,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order2.Delete ();
       order3.Delete ();
 
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         Assert.That (
@@ -522,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order2.Delete ();
       order3.Delete ();
 
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       using (subTransaction.EnterDiscardingScope ())
       {
         var result = subTransaction.TryGetObjects<Order> (order1.ID, order2.ID, order3.ID);

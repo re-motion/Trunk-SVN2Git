@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointID = RelationEndPointID.Create (_owningOrder, o => o.OrderItems);
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
-      StubCollectionEndPoint (_collectionEndPointMock, ClientTransactionMock, _owningOrder);
+      StubCollectionEndPoint (_collectionEndPointMock, TestableClientTransaction, _owningOrder);
       _virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider> ();
       _virtualEndPointProviderStub
           .Stub (stub => stub.GetOrCreateVirtualEndPoint (_endPointID))
@@ -489,7 +489,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         deletedOwningObject = Order.GetObject (DomainObjectIDs.Order4);
       }
 
-      var endPointStub = CreateCollectionEndPointStub (ClientTransactionMock, deletedOwningObject);
+      var endPointStub = CreateCollectionEndPointStub (TestableClientTransaction, deletedOwningObject);
       var virtualEndPointProviderStub = MockRepository.GenerateStub<IVirtualEndPointProvider> ();
       virtualEndPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_endPointID)).Return (endPointStub);
       var data = new EndPointDelegatingCollectionData (_endPointID, virtualEndPointProviderStub);

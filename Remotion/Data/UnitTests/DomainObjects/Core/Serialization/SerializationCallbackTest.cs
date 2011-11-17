@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void SerializationEvents ()
     {
       var instance =
-          (ClassWithSerializationCallbacks) LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+          (ClassWithSerializationCallbacks) LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object)instance).GetType ());
 
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DeserializationEvents ()
     {
       var instance = (ClassWithSerializationCallbacks) 
-          LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+          LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
 

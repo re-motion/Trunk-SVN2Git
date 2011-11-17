@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var endPointID = collection.AssociatedEndPointID;
       var relatedIDs = collection.Select (obj => obj.ID).ToArray();
 
-      var deserializedCollectionAndTransaction = Serializer.SerializeAndDeserialize (Tuple.Create (collection, ClientTransactionMock));
+      var deserializedCollectionAndTransaction = Serializer.SerializeAndDeserialize (Tuple.Create (collection, TestableClientTransaction));
       var deserializedCollection = deserializedCollectionAndTransaction.Item1;
       var deserializedTransaction = deserializedCollectionAndTransaction.Item2;
 

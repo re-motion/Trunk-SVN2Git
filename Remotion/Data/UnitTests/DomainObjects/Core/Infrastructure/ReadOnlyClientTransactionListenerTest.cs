@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class ReadOnlyClientTransactionListenerTest
   {
     private ReadOnlyClientTransactionListener _listener;
-    private ClientTransactionMock _clientTransaction;
+    private TestableClientTransaction _clientTransaction;
 
     private readonly string[] _neverThrowingMethods = {
         "TransactionInitialize",
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void SetUp ()
     {
       _listener = new ReadOnlyClientTransactionListener();
-      _clientTransaction = new ClientTransactionMock();
+      _clientTransaction = new TestableClientTransaction();
     }
 
     [Test]

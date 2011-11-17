@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   [TestFixture]
   public class RelationEndPointTouchCommandTest : StandardMappingTest
   {
-    private ClientTransactionMock _transaction;
+    private TestableClientTransaction _transaction;
     private IRelationEndPoint _endPoint;
     private RelationEndPointTouchCommand _command;
 
@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp ();
 
-      _transaction = new ClientTransactionMock ();
+      _transaction = new TestableClientTransaction ();
 
       var id = RelationEndPointID.Create(DomainObjectIDs.Order1, typeof (Order).FullName + ".Customer");
       _endPoint = _transaction.Execute (() => RelationEndPointObjectMother.CreateObjectEndPoint (id, null));

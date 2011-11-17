@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void NotifyClientTransactionOfBegin ()
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
       _command.NotifyClientTransactionOfBegin();
 
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void NotifyClientTransactionOfEnd ()
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
       _command.NotifyClientTransactionOfBegin();
 
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var client = Client.GetObject (DomainObjectIDs.Client2);
       var unidirectionalEndPointID = RelationEndPointID.Create (client, c => c.ParentClient);
       var unidirectionalEndPoint =
-          (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
+          (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
       var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint);
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void ExpandToAllRelatedObjects_SetSame_Bidirectional ()
     {
       var oppositeEndPointID = RelationEndPointID.Create (_relatedObject, e => e.Computer);
-      var oppositeEndPoint = ClientTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
+      var oppositeEndPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (oppositeEndPointID);
 
       var bidirectionalModification = _command.ExpandToAllRelatedObjects();
 

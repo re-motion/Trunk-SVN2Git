@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
       _definition = DomainObjectIDs.OrderTicket1.ClassDefinition.GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
-      _nullEndPoint = new NullObjectEndPoint (ClientTransactionMock, _definition);
+      _nullEndPoint = new NullObjectEndPoint (TestableClientTransaction, _definition);
     }
 
     [Test]
@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void EnsureDataComplete_DoesNothing ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (ClientTransactionMock);
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       _nullEndPoint.EnsureDataComplete ();
     }

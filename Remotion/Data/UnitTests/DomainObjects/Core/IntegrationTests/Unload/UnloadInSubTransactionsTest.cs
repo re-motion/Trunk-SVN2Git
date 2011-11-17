@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       base.SetUp ();
 
-      _subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      _subTransaction = TestableClientTransaction.CreateSubTransaction ();
       _subTransaction.EnterDiscardingScope ();
     }
 

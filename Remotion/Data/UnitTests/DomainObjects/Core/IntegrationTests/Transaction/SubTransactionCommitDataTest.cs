@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitPropagatesChangesToLoadedObjectsToParentTransaction ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         order.OrderNumber = 5;
 
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitPropagatesChangesToNewObjectsToParentTransaction ()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject ();
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         classWithAllDataTypes.Int32Property = 7;
 
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitLeavesUnchangedObjectsLoadedInSub ()
     {
       Order order;
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         order = Order.GetObject (DomainObjectIDs.Order1);
 
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitLeavesUnchangedObjectsLoadedInRoot ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.Commit ();
         Assert.AreEqual (1, order.OrderNumber);
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitLeavesUnchangedNewObjects ()
     {
       Order order = Order.NewObject ();
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope ())
       {
         ClientTransactionScope.CurrentTransaction.Commit ();
         Assert.AreEqual (0, order.OrderNumber);
@@ -178,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       loadedOrder.OrderNumber = 5;
       newClassWithAllDataTypes.Int16Property = 7;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         loadedOrder.OrderNumber = 13;
         newClassWithAllDataTypes.Int16Property = 47;
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderItem newOrderItem;
       OrderTicket newOrderTicket;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         newOrderItem = OrderItem.NewObject ();
 
@@ -271,7 +271,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order.OrderItems.Add (orderItem2);
       order.OrderItems.Add (orderItem3);
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (order.OrderItems, Is.EqualTo (new object[] {orderItem1, orderItem2, orderItem3}));
         order.OrderItems.Clear ();
@@ -283,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         Assert.That (order.OrderItems, Is.EqualTo (new object[] { orderItem2, orderItem3, orderItem1 }));
       }
       Assert.That (order.OrderItems, Is.EqualTo (new object[] { orderItem2, orderItem3, orderItem1 }));
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (order.OrderItems, Is.EqualTo (new object[] {orderItem2, orderItem3, orderItem1}));
       }
@@ -304,7 +304,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Client newClient1 = Client.NewObject ();
       Client newClient2;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         newEmployee = Employee.NewObject ();
         computer.Employee = newEmployee;
@@ -343,7 +343,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Customer newCustomer;
       Ceo newCeo;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         order = Order.NewObject ();
         
@@ -384,7 +384,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitObjectInSubTransactionAndReloadInParent ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
         Assert.AreNotEqual (4711, orderInSub.OrderNumber);
@@ -399,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitObjectInSubTransactionAndReloadInNewSub ()
     {
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
         Assert.AreNotEqual (4711, orderInSub.OrderNumber);
@@ -407,7 +407,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ClientTransactionScope.CurrentTransaction.Commit ();
       }
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Order orderInSub = Order.GetObject (DomainObjectIDs.Order1);
         Assert.AreEqual (4711, orderInSub.OrderNumber);
@@ -438,7 +438,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
       Assert.AreEqual (7, cwadt.Int32Property);
       Assert.AreEqual (8, cwadt.Int16Property);
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
@@ -486,7 +486,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.AreEqual (StateType.Changed, cwadt.InternalDataContainer.State);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
     }
@@ -564,7 +564,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.AreEqual (32767, cwadt.InternalDataContainer.PropertyValues[typeof (ClassWithAllDataTypes).FullName + ".Int16Property"].OriginalValue);
       Assert.AreEqual (2147483647, cwadt.InternalDataContainer.PropertyValues[typeof (ClassWithAllDataTypes).FullName + ".Int32Property"].OriginalValue);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.IsFalse (cwadt.InternalDataContainer.PropertyValues[typeof (ClassWithAllDataTypes).FullName + ".Int32Property"].HasChanged);
       Assert.IsFalse (cwadt.InternalDataContainer.PropertyValues[typeof (ClassWithAllDataTypes).FullName + ".Int16Property"].HasChanged);

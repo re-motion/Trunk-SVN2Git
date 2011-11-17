@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       computer.Employee = null;
       
       SetDatabaseModifyable ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       CheckTouching (delegate { computer.Employee = null; }, computer, "Employee",
           RelationEndPointID.Create(computer.ID, typeof (Computer).FullName + ".Employee"));
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       employee.Computer = null;
 
       SetDatabaseModifyable ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       CheckTouching (delegate { employee.Computer = null; }, null, null,
           RelationEndPointID.Create(employee.ID, typeof (Employee).FullName + ".Computer"));

@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _order1.Customer = _newCustomer;
       _order1.RollingBack += Order1_RollingBack;
 
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
 
       // expectation: no ObjectInvalidException
     }
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _order1.RollingBack += Order1_RollingBack;
       _newCustomer.RollingBack += NewCustomer_RollingBack_MustNotBeCalled;
 
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
 
       // expectation: NewCustomer_RollingBack_MustNotBeCalled must not throw an AssertionException
     }
@@ -78,9 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void DiscardObjectInClientTransactionRollingBack ()
     {
       _order1.Customer = _newCustomer;
-      ClientTransactionMock.RollingBack += ClientTransaction_RollingBack;
+      TestableClientTransaction.RollingBack += ClientTransaction_RollingBack;
 
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
 
       // expectation: no ObjectInvalidException
     }
@@ -91,17 +91,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       MockRepository mockRepository = new MockRepository ();
 
       ClientTransactionMockEventReceiver clientTransactionMockEventReceiver = 
-          mockRepository.StrictMock<ClientTransactionMockEventReceiver> (ClientTransactionMock);
+          mockRepository.StrictMock<ClientTransactionMockEventReceiver> (TestableClientTransaction);
 
       using (mockRepository.Ordered ())
       {
-        clientTransactionMockEventReceiver.RollingBack (ClientTransactionMock, _newCustomer);
-        clientTransactionMockEventReceiver.RolledBack (ClientTransactionMock);
+        clientTransactionMockEventReceiver.RollingBack (TestableClientTransaction, _newCustomer);
+        clientTransactionMockEventReceiver.RolledBack (TestableClientTransaction);
       }
 
       mockRepository.ReplayAll ();
 
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
 
       mockRepository.VerifyAll ();
     }

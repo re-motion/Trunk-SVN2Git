@@ -222,7 +222,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void NoAutoRollbackWhenNoneBehavior ()
     {
-      var mock = new ClientTransactionMock();
+      var mock = new TestableClientTransaction();
       var eventCounter = new TransactionEventCounter (mock);
 
       using (mock.EnterScope (AutoRollbackBehavior.None))
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void AutoRollbackWhenRollbackBehavior ()
     {
-      var mock = new ClientTransactionMock();
+      var mock = new TestableClientTransaction();
       var eventCounter = new TransactionEventCounter (mock);
 
       using (mock.EnterScope (AutoRollbackBehavior.Rollback))

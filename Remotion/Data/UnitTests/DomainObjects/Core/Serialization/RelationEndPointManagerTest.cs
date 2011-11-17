@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public override void SetUp ()
     {
       base.SetUp ();
-      _relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (ClientTransactionMock.DataManager);
+      _relationEndPointManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (TestableClientTransaction.DataManager);
     }
 
     [Test]
@@ -59,11 +59,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (_relationEndPointManager.RelationEndPoints.Count, Is.EqualTo (7));
 
       var deserializedManager = (RelationEndPointManager) DataManagerTestHelper.GetRelationEndPointManager (
-          Serializer.SerializeAndDeserialize (ClientTransactionMock.DataManager));
+          Serializer.SerializeAndDeserialize (TestableClientTransaction.DataManager));
 
       Assert.That (deserializedManager.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedManager.ClientTransaction, Is.InstanceOf (typeof (ClientTransactionMock)));
-      Assert.That (deserializedManager.ClientTransaction, Is.Not.SameAs (ClientTransactionMock));
+      Assert.That (deserializedManager.ClientTransaction, Is.InstanceOf (typeof (TestableClientTransaction)));
+      Assert.That (deserializedManager.ClientTransaction, Is.Not.SameAs (TestableClientTransaction));
       Assert.That (deserializedManager.LazyLoader, Is.Not.Null);
       Assert.That (deserializedManager.LazyLoader, Is.TypeOf (_relationEndPointManager.LazyLoader.GetType()));
       Assert.That (deserializedManager.EndPointFactory, Is.Not.Null);

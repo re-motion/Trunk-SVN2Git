@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
+      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
       new CollectionEndPointInsertCommand (endPoint, 0, _insertedRelatedObject, CollectionDataMock, EndPointProviderStub);
     }
 
@@ -136,14 +136,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void ExpandToAllRelatedObjects ()
     {
       var insertedEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_insertedRelatedObject.ID, "Customer");
-      var insertedEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (insertedEndPointID);
+      var insertedEndPoint = (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (insertedEndPointID);
       Assert.That (insertedEndPoint, Is.Not.Null);
       
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (insertedEndPoint.ID)).Return (insertedEndPoint);
       
       var oldCustomer = _insertedRelatedObject.Customer;
       var oldRelatedEndPointOfInsertedObject =
-          ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (oldCustomer, c => c.Orders));
+          TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (oldCustomer, c => c.Orders));
       EndPointProviderStub
           .Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointOfInsertedObject.ID))
           .Return (oldRelatedEndPointOfInsertedObject);

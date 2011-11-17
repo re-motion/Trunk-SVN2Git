@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
       Assert.IsNull (instanceAsIBusinessObject.GetProperty ("Int32"));
 
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (0, instance.Int32);
         Assert.AreEqual (0, instanceAsIBusinessObject.GetProperty ("Int32"));
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
 
       instanceAsIBusinessObject.SetProperty ("Int32", 1);
       Assert.AreEqual (1, instance.Int32);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (1, instance.Int32);
         Assert.AreEqual (1, instanceAsIBusinessObject.GetProperty ("Int32"));
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       instance.Int32 = 0;
       Assert.AreEqual (0, instanceAsIBusinessObject.GetProperty ("Int32"));
 
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.AreEqual (0, instance.Int32);
         Assert.AreEqual (0, instanceAsIBusinessObject.GetProperty ("Int32"));

@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                                                                       + "Parameter name: modifiedEndPoint")]
     public void Initialization_FromNullEndPoint ()
     {
-      var endPoint = new NullCollectionEndPoint (ClientTransactionMock, RelationEndPointID.Definition);
+      var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
       new CollectionEndPointSetCollectionCommand (endPoint, _newCollection, collection => { }, _oldTransformerMock, _newTransformerMock);
     }
 
@@ -168,20 +168,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
       listenerMock.Expect (mock => mock.RelationChanging (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           DomainObject, 
           CollectionEndPoint.Definition, 
           _orderWithoutOrderItem, 
           null));
       listenerMock.Expect (mock => mock.RelationChanging (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           DomainObject, 
           CollectionEndPoint.Definition, 
           null, 
           _order2));
       listenerMock.Replay ();
 
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
       _command.NotifyClientTransactionOfBegin ();
 
@@ -198,17 +198,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
       listenerMock.Expect (mock => mock.RelationChanged (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           DomainObject, 
           CollectionEndPoint.Definition));
       listenerMock.Expect (mock => mock.RelationChanged (
-          ClientTransactionMock, 
+          TestableClientTransaction, 
           DomainObject, 
           CollectionEndPoint.Definition));
 
       listenerMock.Replay ();
 
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
       _command.NotifyClientTransactionOfEnd();
 

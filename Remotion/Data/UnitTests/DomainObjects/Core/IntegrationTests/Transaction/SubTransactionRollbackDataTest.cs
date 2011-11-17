@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       loadedOrder.OrderNumber = 5;
       newOrder.OrderNumber = 7;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         loadedOrder.OrderNumber = 13;
         newOrder.OrderNumber = 47;
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.AreEqual (1, newOrder.OrderItems.Count);
       Assert.IsTrue (newOrder.OrderItems.ContainsObject (orderItem));
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         newOrder.OrderItems.Clear ();
         newOrder.OrderItems.Add (OrderItem.NewObject ());
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Client client = Client.NewObject ();
       location.Client = client;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         computer.Employee = Employee.NewObject ();
         location.Client = null;
@@ -118,13 +118,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       order.OrderNumber = 5;
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         order.OrderNumber = 3;
         ClientTransactionScope.CurrentTransaction.Rollback ();
       }
       Assert.AreEqual (5, order.OrderNumber);
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.Rollback ();
       Assert.AreEqual (1, order.OrderNumber);
     }
   }

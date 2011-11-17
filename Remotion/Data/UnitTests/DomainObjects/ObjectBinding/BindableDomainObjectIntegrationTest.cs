@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     {
       IBusinessObjectWithIdentity businessObject = (SampleBindableDomainObjectWithOverriddenDisplayName)
                                                    LifetimeService.NewObject (
-                                                       ClientTransactionMock,
+                                                       TestableClientTransaction,
                                                        typeof (SampleBindableDomainObjectWithOverriddenDisplayName),
                                                        ParamList.Empty);
       var implementation =

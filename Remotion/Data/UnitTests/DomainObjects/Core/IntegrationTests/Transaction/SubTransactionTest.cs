@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CreateSubTransaction ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
       Assert.That (subTransaction, Is.Not.Null);
       Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction), Is.TypeOf (typeof (SubPersistenceStrategy)));
     }
@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CreateSubTransaction_OfSubTransaction ()
     {
-      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction();
+      ClientTransaction subTransaction1 = TestableClientTransaction.CreateSubTransaction();
       ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction();
       Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction2), Is.TypeOf (typeof (SubPersistenceStrategy)));
     }
@@ -47,9 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CreateSubTransaction_SetsParentReadonly ()
     {
-      Assert.That (ClientTransactionMock.IsReadOnly, Is.False);
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.That (ClientTransactionMock.IsReadOnly, Is.True);
+      Assert.That (TestableClientTransaction.IsReadOnly, Is.False);
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
+      Assert.That (TestableClientTransaction.IsReadOnly, Is.True);
       Assert.That (subTransaction.IsReadOnly, Is.False);
 
       ClientTransaction subTransaction2 = subTransaction.CreateSubTransaction();
@@ -60,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ParentTransaction ()
     {
-      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
-      Assert.That (subTransaction1.ParentTransaction, Is.SameAs (ClientTransactionMock));
+      ClientTransaction subTransaction1 = TestableClientTransaction.CreateSubTransaction ();
+      Assert.That (subTransaction1.ParentTransaction, Is.SameAs (TestableClientTransaction));
 
       ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
       Assert.That (subTransaction2.ParentTransaction, Is.SameAs (subTransaction1));
@@ -70,8 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ActiveSubTansaction ()
     {
-      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
-      Assert.That (ClientTransactionMock.SubTransaction, Is.SameAs (subTransaction1));
+      ClientTransaction subTransaction1 = TestableClientTransaction.CreateSubTransaction ();
+      Assert.That (TestableClientTransaction.SubTransaction, Is.SameAs (subTransaction1));
 
       ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
       Assert.That (subTransaction1.SubTransaction, Is.SameAs (subTransaction2));
@@ -80,51 +80,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       subTransaction2.Discard();
 
       Assert.That (subTransaction1.SubTransaction, Is.Null);
-      Assert.That (ClientTransactionMock.SubTransaction, Is.SameAs (subTransaction1));
+      Assert.That (TestableClientTransaction.SubTransaction, Is.SameAs (subTransaction1));
 
       subTransaction1.Discard();
-      Assert.That (ClientTransactionMock.SubTransaction, Is.Null);
+      Assert.That (TestableClientTransaction.SubTransaction, Is.Null);
     }
 
     [Test]
     public void RootTransaction ()
     {
-      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction1 = TestableClientTransaction.CreateSubTransaction ();
       ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
 
-      Assert.That (ClientTransactionMock.RootTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (subTransaction1.RootTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (subTransaction2.RootTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (TestableClientTransaction.RootTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (subTransaction1.RootTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (subTransaction2.RootTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
     public void LeafTransaction ()
     {
-      ClientTransaction subTransaction1 = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction1 = TestableClientTransaction.CreateSubTransaction ();
       ClientTransaction subTransaction2 = subTransaction1.CreateSubTransaction ();
 
-      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (subTransaction2));
+      Assert.That (TestableClientTransaction.LeafTransaction, Is.SameAs (subTransaction2));
       Assert.That (subTransaction1.LeafTransaction, Is.SameAs (subTransaction2));
       Assert.That (subTransaction2.LeafTransaction, Is.SameAs (subTransaction2));
 
       subTransaction2.Discard();
 
-      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (subTransaction1));
+      Assert.That (TestableClientTransaction.LeafTransaction, Is.SameAs (subTransaction1));
       Assert.That (subTransaction1.LeafTransaction, Is.SameAs (subTransaction1));
 
       subTransaction1.Discard ();
 
-      Assert.That (ClientTransactionMock.LeafTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (TestableClientTransaction.LeafTransaction, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]
     public void CreateEmptyTransactionOfSameType_ForSubTransaction ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
       subTransaction.Discard();
       ClientTransaction newSubTransaction = subTransaction.CreateEmptyTransactionOfSameType();
-      Assert.That (subTransaction.ParentTransaction, Is.SameAs (ClientTransactionMock));
-      Assert.That (subTransaction.RootTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (subTransaction.ParentTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (subTransaction.RootTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (newSubTransaction, Is.Not.SameAs (subTransaction));
       Assert.That (newSubTransaction.GetType(), Is.EqualTo (subTransaction.GetType()));
     }
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void EnterDiscardingScopeEnablesDiscardBehavior ()
     {
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.That (ClientTransactionScope.ActiveScope.AutoRollbackBehavior, Is.EqualTo (AutoRollbackBehavior.Discard));
       }
@@ -157,28 +157,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void SubTransactionHasDifferentExtensions ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.That (subTransaction.Extensions, Is.Not.SameAs (ClientTransactionMock.Extensions));
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
+      Assert.That (subTransaction.Extensions, Is.Not.SameAs (TestableClientTransaction.Extensions));
 
       var extensionStub1 = MockRepository.GenerateStub<IClientTransactionExtension>();
       extensionStub1.Stub (stub => stub.Key).Return ("E1");
       var extensionStub2 = MockRepository.GenerateStub<IClientTransactionExtension>();
       extensionStub2.Stub (stub => stub.Key).Return ("E2");
 
-      ClientTransactionMock.Extensions.Add (extensionStub1);
-      Assert.That (ClientTransactionMock.Extensions, Has.Member (extensionStub1));
+      TestableClientTransaction.Extensions.Add (extensionStub1);
+      Assert.That (TestableClientTransaction.Extensions, Has.Member (extensionStub1));
       Assert.That (subTransaction.Extensions, Has.No.Member (extensionStub1));
 
       subTransaction.Extensions.Add (extensionStub2);
       Assert.That (subTransaction.Extensions, Has.Member (extensionStub2));
-      Assert.That (ClientTransactionMock.Extensions, Has.No.Member (extensionStub2));
+      Assert.That (TestableClientTransaction.Extensions, Has.No.Member (extensionStub2));
     }
 
     [Test]
     public void SubTransactionHasSameApplicationData ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
-      Assert.That (subTransaction.ApplicationData, Is.SameAs (ClientTransactionMock.ApplicationData));
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
+      Assert.That (subTransaction.ApplicationData, Is.SameAs (TestableClientTransaction.ApplicationData));
     }
 
     [Test]
@@ -187,22 +187,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         )]
     public void NoTwoSubTransactionsAtSameTime ()
     {
-      ClientTransactionMock.CreateSubTransaction();
-      ClientTransactionMock.CreateSubTransaction();
+      TestableClientTransaction.CreateSubTransaction();
+      TestableClientTransaction.CreateSubTransaction();
     }
 
    [Test]
     public void EnlistedObjects_SharedWithParentTransaction ()
     {
-      var subTx = ClientTransactionMock.CreateSubTransaction ();
+      var subTx = TestableClientTransaction.CreateSubTransaction ();
 
       var order = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
       Assert.That (subTx.IsEnlisted (order), Is.False);
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.False);
+      Assert.That (TestableClientTransaction.IsEnlisted (order), Is.False);
 
       subTx.EnlistDomainObject (order);
       Assert.That (subTx.IsEnlisted (order), Is.True);
-      Assert.That (ClientTransactionMock.IsEnlisted (order), Is.True);
+      Assert.That (TestableClientTransaction.IsEnlisted (order), Is.True);
     }
 
 
@@ -212,32 +212,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClientTransaction subTransactionFromEvent = null;
 
-      ClientTransactionMock.SubTransactionCreated += delegate (object sender, SubTransactionCreatedEventArgs args)
+      TestableClientTransaction.SubTransactionCreated += delegate (object sender, SubTransactionCreatedEventArgs args)
       {
-        Assert.That (sender, Is.SameAs (ClientTransactionMock));
+        Assert.That (sender, Is.SameAs (TestableClientTransaction));
         Assert.That (args.SubTransaction, Is.Not.Null);
         subTransactionFromEvent = args.SubTransaction;
       };
 
       Assert.That (subTransactionFromEvent, Is.Null);
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
       Assert.That (subTransactionFromEvent, Is.Not.Null);
       Assert.That (subTransactionFromEvent, Is.SameAs (subTransaction));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "The ClientTransactionMock cannot be made writeable twice. A common reason for this error is that a subtransaction is accessed while its "
+        "The TestableClientTransaction cannot be made writeable twice. A common reason for this error is that a subtransaction is accessed while its "
         + "parent transaction is engaged in a load operation. During such an operation, the subtransaction cannot be used.")]
     public void Throws_WhenUsedWhileParentIsWriteable ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope())
       {
         Type unlockerType = typeof (ClientTransaction).Assembly.GetType ("Remotion.Data.DomainObjects.Infrastructure.TransactionUnlocker");
         object unlocker =
             Activator.CreateInstance (
-                unlockerType, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] { ClientTransactionMock }, null);
+                unlockerType, BindingFlags.NonPublic | BindingFlags.Instance, null, new object[] { TestableClientTransaction }, null);
         using ((IDisposable) unlocker)
         {
           Order.GetObject (DomainObjectIDs.Order1);
@@ -247,14 +247,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "The ClientTransactionMock cannot be made writeable twice. A common reason for this error is that a subtransaction is accessed while its " 
+        "The TestableClientTransaction cannot be made writeable twice. A common reason for this error is that a subtransaction is accessed while its " 
         + "parent transaction is engaged in a load operation. During such an operation, the subtransaction cannot be used.")]
     public void Throws_WhenUsedWhileParentIsWriteable_IntegrationTest ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
       using (subTransaction.EnterDiscardingScope())
       {
-        ClientTransactionMock.Loaded += delegate { subTransaction.GetObjects<Order> (DomainObjectIDs.Order1); };
+        TestableClientTransaction.Loaded += delegate { subTransaction.GetObjects<Order> (DomainObjectIDs.Order1); };
         Order.GetObject (DomainObjectIDs.Order2);
       }
     }

@@ -42,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
 
       // these do nothing
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1, oi => oi.Order));
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
 
       CheckSyncState (orderItem1, oi => oi.Order, true);
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
@@ -63,8 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
 
       // these do nothing
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1, oi => oi.Order));
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
 
       CheckSyncState (orderItem1, oi => oi.Order, true);
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (otherCompany, c => c.IndustrialSector, true);
 
       CheckActionWorks (company.Delete);
-      ClientTransactionMock.Rollback (); // required so that the remaining actions can be tried below
+      TestableClientTransaction.Rollback (); // required so that the remaining actions can be tried below
 
       // sync states not changed by Rollback
       CheckSyncState (company, c => c.IndustrialSector, true);
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (companiesOfIndustrialSector, Has.Member(company));
       CheckSyncState (industrialSector, s => s.Companies, false);
 
-      UnloadService.UnloadData (ClientTransactionMock, company.ID);
+      UnloadService.UnloadData (TestableClientTransaction, company.ID);
       company.EnsureDataAvailable();
 
       CheckSyncState (industrialSector, s => s.Companies, true);
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (industrialSector1, s => s.Companies, true);
       CheckSyncState (industrialSector2, s => s.Companies, false);
 
-      BidirectionalRelationSyncService.Synchronize (ClientTransactionMock, RelationEndPointID.Create (industrialSector2, s => s.Companies));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (industrialSector2, s => s.Companies));
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
       Assert.That (industrialSector1.Companies, Has.Member(company));
@@ -292,7 +292,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (industrialSector, s => s.Companies, true);
       CheckSyncState (newCompany, c => c.IndustrialSector, false);
 
-      UnloadService.UnloadData (ClientTransactionMock, newCompany.ID);
+      UnloadService.UnloadData (TestableClientTransaction, newCompany.ID);
 
       Assert.That (industrialSector.Companies.IsDataComplete, Is.True);
 

@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (newOrder.State, Is.EqualTo (StateType.New));
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (newOrder.State, Is.EqualTo (StateType.NotLoadedYet));
 
@@ -60,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order loadedChangedOrder = Order.GetObject (DomainObjectIDs.Order2);
       loadedChangedOrder.OrderNumber = 13;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (loadedUnchangedOrder));
         Assert.That (Order.GetObject (DomainObjectIDs.Order2), Is.SameAs (loadedChangedOrder));
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderTicket loadedChangedOrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
       loadedChangedOrderTicket.Int32TransactionProperty = 13;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (OrderTicket.GetObject (DomainObjectIDs.OrderTicket1), Is.SameAs (loadedUnchangedOrderTicket));
         Assert.That (OrderTicket.GetObject (DomainObjectIDs.OrderTicket2), Is.SameAs (loadedChangedOrderTicket));
@@ -108,12 +108,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order loadedChangedOrder = Order.GetObject (DomainObjectIDs.Order2);
       loadedChangedOrder.OrderNumber = 13;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         newChangedOrder.OrderNumber = 17;
         loadedChangedOrder.OrderNumber = 4;
 
-        using (ClientTransactionMock.EnterDiscardingScope ())
+        using (TestableClientTransaction.EnterDiscardingScope ())
         {
           Assert.That (newChangedOrder.OrderNumber, Is.EqualTo (4711));
           Assert.That (loadedChangedOrder.OrderNumber, Is.EqualTo (13));

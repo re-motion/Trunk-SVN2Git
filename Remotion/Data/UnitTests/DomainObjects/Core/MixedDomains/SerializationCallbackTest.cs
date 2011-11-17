@@ -31,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void SerializationEvents_OnTarget ()
     {
       var instance = (ClassWithSerializationCallbacks) 
-          LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+          LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType());
       Assert.IsTrue (instance is IMixinTarget);
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void DeserializationEvents_OnTarget ()
     {
       var instance = (ClassWithSerializationCallbacks) 
-          LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+          LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType());
       Assert.IsTrue (instance is IMixinTarget);
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void SerializationEvents_OnMixin ()
     {
       var instance = (ClassWithSerializationCallbacks) 
-          LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+          LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
       Assert.IsTrue (instance is IMixinTarget);
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     public void DeserializationEvents_OnMixin ()
     {
       var instance = (ClassWithSerializationCallbacks)
-          LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
+          LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithSerializationCallbacks), ParamList.Empty);
 
       Assert.AreNotSame (typeof (ClassWithSerializationCallbacks), ((object) instance).GetType ());
       Assert.IsTrue (instance is IMixinTarget);

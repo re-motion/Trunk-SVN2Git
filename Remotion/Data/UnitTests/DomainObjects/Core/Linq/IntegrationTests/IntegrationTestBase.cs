@@ -64,14 +64,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       if(expectedObjectIDs==null)
         return new T[] { null };
       return (from id in expectedObjectIDs 
-              select (id == null ? null : (T) LifetimeService.GetObject (ClientTransactionMock, id, false))).ToArray ();
+              select (id == null ? null : (T) LifetimeService.GetObject (TestableClientTransaction, id, false))).ToArray ();
     }
 
     protected void CheckDataContainersRegistered (params ObjectID[] objectIDs)
     {
       // check that related objects have been loaded
       foreach (var id in objectIDs)
-        Assert.That (ClientTransactionMock.DataManager.DataContainers[id], Is.Not.Null);
+        Assert.That (TestableClientTransaction.DataManager.DataContainers[id], Is.Not.Null);
     }
 
     protected void CheckCollectionRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)
@@ -81,10 +81,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
               originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
 
       var endPointID = RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition);
-      var collectionEndPoint = (ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      var collectionEndPoint = (ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (collectionEndPoint, Is.Not.Null);
 
-      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (ClientTransactionMock, id, false)).ToArray ();
+      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (TestableClientTransaction, id, false)).ToArray ();
       if (checkOrdering)
         Assert.That (collectionEndPoint.Collection, Is.EqualTo (expectedRelatedObjects));
       else
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
               longPropertyName);
 
       var endPointID = RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition);
-      var objectEndPoint = (IObjectEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      var objectEndPoint = (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (objectEndPoint, Is.Not.Null);
       Assert.That (objectEndPoint.OppositeObjectID, Is.EqualTo (expectedRelatedObjectID));
     }

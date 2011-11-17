@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
   {
     private MockRepository _mockRepository;
     private IClientTransactionExtension _extensionMock;
-    private ClientTransactionMock _newTransaction;
+    private TestableClientTransaction _newTransaction;
 
     private Order _order1;
     private Computer _computerWithoutRelatedObjects;
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _computerWithoutRelatedObjects = Computer.GetObject (DomainObjectIDs.Computer5);
 
-      _newTransaction = new ClientTransactionMock();
+      _newTransaction = new TestableClientTransaction();
       _newTransaction.EnlistDomainObjects (_order1);
       _order1.TransactionContext[_newTransaction].EnsureDataAvailable();
       _newTransaction.EnlistDomainObjects (_computerWithoutRelatedObjects);
@@ -77,14 +77,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _extensionMock.Stub (stub => stub.Key).Return ("TestExtension");
       _extensionMock.Replay();
-      ClientTransactionMock.Extensions.Add (_extensionMock);
+      TestableClientTransaction.Extensions.Add (_extensionMock);
       _newTransaction.Extensions.Add (_extensionMock);
       _extensionMock.BackToRecord();
     }
 
     public override void TearDown ()
     {
-      ClientTransactionMock.Extensions.Remove ("TestExtension");
+      TestableClientTransaction.Extensions.Remove ("TestExtension");
       _newTransaction.Extensions.Remove ("TestExtension");
       base.TearDown ();
     }
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Extensions ()
     {
-      Assert.That (ClientTransactionMock.Extensions, Has.Member(_extensionMock));
+      Assert.That (TestableClientTransaction.Extensions, Has.Member(_extensionMock));
     }
 
     [Test]
@@ -124,10 +124,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void TransactionDiscard ()
     {
-      _extensionMock.Expect (mock => mock.TransactionDiscard (ClientTransactionMock));
+      _extensionMock.Expect (mock => mock.TransactionDiscard (TestableClientTransaction));
       _extensionMock.Replay ();
 
-      ClientTransactionMock.Discard();
+      TestableClientTransaction.Discard();
 
       _extensionMock.VerifyAllExpectations ();
     }
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void NewObjectCreation ()
     {
-      _extensionMock.Expect (mock => mock.NewObjectCreating (ClientTransactionMock, typeof (Order)));
+      _extensionMock.Expect (mock => mock.NewObjectCreating (TestableClientTransaction, typeof (Order)));
 
       _mockRepository.ReplayAll();
       
@@ -150,10 +150,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.Expect (mock => mock.ObjectsLoading (
-            Arg.Is (ClientTransactionMock), 
+            Arg.Is (TestableClientTransaction), 
             Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 })));
         _extensionMock.Expect (mock => mock.ObjectsLoaded (
-            Arg.Is (ClientTransactionMock), 
+            Arg.Is (TestableClientTransaction), 
             Arg<ReadOnlyCollection<DomainObject>>.Matches (loadedObjects => loadedObjects.Count == 1 && loadedObjects[0].ID == DomainObjectIDs.Order2)));
       }
 
@@ -373,10 +373,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, _computerWithoutRelatedObjects));
+        _extensionMock.Expect (mock => mock.ObjectDeleting (TestableClientTransaction, _computerWithoutRelatedObjects));
         eventReceiverMock.Expect (mock => mock.Deleting (_computerWithoutRelatedObjects, EventArgs.Empty));
         eventReceiverMock.Expect (mock => mock.Deleted (_computerWithoutRelatedObjects, EventArgs.Empty));
-        _extensionMock.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, _computerWithoutRelatedObjects));
+        _extensionMock.Expect (mock => mock.ObjectDeleted (TestableClientTransaction, _computerWithoutRelatedObjects));
       }
 
       _mockRepository.ReplayAll();
@@ -1489,19 +1489,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extensionMock
             .Expect (mock => mock.ObjectsUnloading (
-                        Arg.Is (ClientTransactionMock),
+                        Arg.Is (TestableClientTransaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainers[_order1.ID] != null));
+            .WhenCalled (mi => Assert.That (TestableClientTransaction.DataManager.DataContainers[_order1.ID] != null));
         _extensionMock
             .Expect (mock => mock.ObjectsUnloaded (
-                        Arg.Is (ClientTransactionMock),
+                        Arg.Is (TestableClientTransaction),
                         Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _order1 })))
-            .WhenCalled (mi => Assert.That (ClientTransactionMock.DataManager.DataContainers[_order1.ID] == null));
+            .WhenCalled (mi => Assert.That (TestableClientTransaction.DataManager.DataContainers[_order1.ID] == null));
       }
 
       _mockRepository.ReplayAll ();
 
-      UnloadService.UnloadData (ClientTransactionMock, _order1.ID);
+      UnloadService.UnloadData (TestableClientTransaction, _order1.ID);
 
       _mockRepository.VerifyAll ();
     }

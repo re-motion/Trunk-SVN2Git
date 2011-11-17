@@ -165,13 +165,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.TransactionInitialize (ClientTransactionMock));
-        _extension2.Expect (mock => mock.TransactionInitialize (ClientTransactionMock));
+        _extension1.Expect (mock => mock.TransactionInitialize (TestableClientTransaction));
+        _extension2.Expect (mock => mock.TransactionInitialize (TestableClientTransaction));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.TransactionInitialize (ClientTransactionMock);
+      _collectionWithExtensions.TransactionInitialize (TestableClientTransaction);
 
       _mockRepository.VerifyAll ();
     }
@@ -181,13 +181,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.TransactionDiscard (ClientTransactionMock));
-        _extension2.Expect (mock => mock.TransactionDiscard (ClientTransactionMock));
+        _extension1.Expect (mock => mock.TransactionDiscard (TestableClientTransaction));
+        _extension2.Expect (mock => mock.TransactionDiscard (TestableClientTransaction));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.TransactionDiscard (ClientTransactionMock);
+      _collectionWithExtensions.TransactionDiscard (TestableClientTransaction);
 
       _mockRepository.VerifyAll ();
     }
@@ -197,13 +197,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.SubTransactionCreating (ClientTransactionMock));
-        _extension2.Expect (mock => mock.SubTransactionCreating (ClientTransactionMock));
+        _extension1.Expect (mock => mock.SubTransactionCreating (TestableClientTransaction));
+        _extension2.Expect (mock => mock.SubTransactionCreating (TestableClientTransaction));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.SubTransactionCreating (ClientTransactionMock);
+      _collectionWithExtensions.SubTransactionCreating (TestableClientTransaction);
 
       _mockRepository.VerifyAll ();
     }
@@ -211,17 +211,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void SubTransactionInitialize ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
 
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.SubTransactionInitialize (ClientTransactionMock, subTransaction));
-        _extension2.Expect (mock => mock.SubTransactionInitialize (ClientTransactionMock, subTransaction));
+        _extension1.Expect (mock => mock.SubTransactionInitialize (TestableClientTransaction, subTransaction));
+        _extension2.Expect (mock => mock.SubTransactionInitialize (TestableClientTransaction, subTransaction));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.SubTransactionInitialize (ClientTransactionMock, subTransaction);
+      _collectionWithExtensions.SubTransactionInitialize (TestableClientTransaction, subTransaction);
 
       _mockRepository.VerifyAll ();
     }
@@ -229,17 +229,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void SubTransactionCreated ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
 
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.SubTransactionCreated (ClientTransactionMock, subTransaction));
-        _extension2.Expect (mock => mock.SubTransactionCreated (ClientTransactionMock, subTransaction));
+        _extension1.Expect (mock => mock.SubTransactionCreated (TestableClientTransaction, subTransaction));
+        _extension2.Expect (mock => mock.SubTransactionCreated (TestableClientTransaction, subTransaction));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.SubTransactionCreated (ClientTransactionMock, subTransaction);
+      _collectionWithExtensions.SubTransactionCreated (TestableClientTransaction, subTransaction);
 
       _mockRepository.VerifyAll ();
     }
@@ -249,13 +249,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueChanging (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1));
-        _extension2.Expect (mock => mock.PropertyValueChanging (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1));
+        _extension1.Expect (mock => mock.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
+        _extension2.Expect (mock => mock.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueChanging (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1);
+      _collectionWithExtensions.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
 
       _mockRepository.VerifyAll ();
     }
@@ -265,13 +265,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueChanged (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1));
-        _extension2.Expect (mock => mock.PropertyValueChanged (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1));
+        _extension1.Expect (mock => mock.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
+        _extension2.Expect (mock => mock.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueChanged (ClientTransactionMock, _dataContainer, _propertyValue, 0, 1);
+      _collectionWithExtensions.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
 
       _mockRepository.VerifyAll ();
     }
@@ -281,13 +281,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Original));
-        _extension2.Expect (mock => mock.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Original));
+        _extension1.Expect (mock => mock.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original));
+        _extension2.Expect (mock => mock.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Original);
+      _collectionWithExtensions.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }
@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       Stopwatch sw = Stopwatch.StartNew ();
       for (int i = 0; i < 100000; ++i)
-        coll.PropertyValueReading (ClientTransactionMock, _dataContainer, _propertyValue, ValueAccess.Original);
+        coll.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original);
       sw.Stop ();
       Console.WriteLine (sw.Elapsed);
       Console.WriteLine (sw.ElapsedMilliseconds / 100000.0);
@@ -311,13 +311,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueRead (ClientTransactionMock, _dataContainer, _propertyValue, 0, ValueAccess.Original));
-        _extension2.Expect (mock => mock.PropertyValueRead (ClientTransactionMock, _dataContainer, _propertyValue, 0, ValueAccess.Original));
+        _extension1.Expect (mock => mock.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Original));
+        _extension2.Expect (mock => mock.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Original));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueRead (ClientTransactionMock, _dataContainer, _propertyValue, 0, ValueAccess.Original);
+      _collectionWithExtensions.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }
@@ -332,13 +332,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RelationChanging (ClientTransactionMock, _order, relationEndPointDefinition, orderTicket, newOrderTicket));
-        _extension2.Expect (mock => mock.RelationChanging (ClientTransactionMock, _order, relationEndPointDefinition, orderTicket, newOrderTicket));
+        _extension1.Expect (mock => mock.RelationChanging (TestableClientTransaction, _order, relationEndPointDefinition, orderTicket, newOrderTicket));
+        _extension2.Expect (mock => mock.RelationChanging (TestableClientTransaction, _order, relationEndPointDefinition, orderTicket, newOrderTicket));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationChanging (ClientTransactionMock, _order, relationEndPointDefinition, orderTicket, newOrderTicket);
+      _collectionWithExtensions.RelationChanging (TestableClientTransaction, _order, relationEndPointDefinition, orderTicket, newOrderTicket);
       
       _mockRepository.VerifyAll ();
     }
@@ -350,13 +350,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RelationChanged (ClientTransactionMock, _order, relationEndPointDefinition));
-        _extension2.Expect (mock => mock.RelationChanged (ClientTransactionMock, _order, relationEndPointDefinition));
+        _extension1.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition));
+        _extension2.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationChanged (ClientTransactionMock, _order, relationEndPointDefinition);
+      _collectionWithExtensions.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition);
 
       _mockRepository.VerifyAll ();
     }
@@ -366,13 +366,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.NewObjectCreating (ClientTransactionMock, typeof(Order)));
-        _extension2.Expect (mock => mock.NewObjectCreating (ClientTransactionMock, typeof (Order)));
+        _extension1.Expect (mock => mock.NewObjectCreating (TestableClientTransaction, typeof(Order)));
+        _extension2.Expect (mock => mock.NewObjectCreating (TestableClientTransaction, typeof (Order)));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.NewObjectCreating (ClientTransactionMock, typeof (Order));
+      _collectionWithExtensions.NewObjectCreating (TestableClientTransaction, typeof (Order));
 
       _mockRepository.VerifyAll ();
     }
@@ -382,13 +382,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, _order));
-        _extension2.Expect (mock => mock.ObjectDeleting (ClientTransactionMock, _order));
+        _extension1.Expect (mock => mock.ObjectDeleting (TestableClientTransaction, _order));
+        _extension2.Expect (mock => mock.ObjectDeleting (TestableClientTransaction, _order));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.ObjectDeleting (ClientTransactionMock, _order);
+      _collectionWithExtensions.ObjectDeleting (TestableClientTransaction, _order);
 
       _mockRepository.VerifyAll ();
     }
@@ -398,13 +398,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, _order));
-        _extension2.Expect (mock => mock.ObjectDeleted (ClientTransactionMock, _order));
+        _extension1.Expect (mock => mock.ObjectDeleted (TestableClientTransaction, _order));
+        _extension2.Expect (mock => mock.ObjectDeleted (TestableClientTransaction, _order));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.ObjectDeleted (ClientTransactionMock, _order);
+      _collectionWithExtensions.ObjectDeleted (TestableClientTransaction, _order);
 
       _mockRepository.VerifyAll ();
     }
@@ -415,13 +415,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.Committing (ClientTransactionMock, data));
-        _extension2.Expect (mock => mock.Committing (ClientTransactionMock, data));
+        _extension1.Expect (mock => mock.Committing (TestableClientTransaction, data));
+        _extension2.Expect (mock => mock.Committing (TestableClientTransaction, data));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.Committing (ClientTransactionMock, data);
+      _collectionWithExtensions.Committing (TestableClientTransaction, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -432,13 +432,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var data = new ReadOnlyCollection<PersistableData> (new PersistableData[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.CommitValidate (ClientTransactionMock, data));
-        _extension2.Expect (mock => mock.CommitValidate (ClientTransactionMock, data));
+        _extension1.Expect (mock => mock.CommitValidate (TestableClientTransaction, data));
+        _extension2.Expect (mock => mock.CommitValidate (TestableClientTransaction, data));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.CommitValidate (ClientTransactionMock, data);
+      _collectionWithExtensions.CommitValidate (TestableClientTransaction, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -449,13 +449,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.Committed (ClientTransactionMock, data));
-        _extension2.Expect (mock => mock.Committed (ClientTransactionMock, data));
+        _extension1.Expect (mock => mock.Committed (TestableClientTransaction, data));
+        _extension2.Expect (mock => mock.Committed (TestableClientTransaction, data));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.Committed (ClientTransactionMock, data);
+      _collectionWithExtensions.Committed (TestableClientTransaction, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -466,13 +466,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RollingBack (ClientTransactionMock, data));
-        _extension2.Expect (mock => mock.RollingBack (ClientTransactionMock, data));
+        _extension1.Expect (mock => mock.RollingBack (TestableClientTransaction, data));
+        _extension2.Expect (mock => mock.RollingBack (TestableClientTransaction, data));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RollingBack (ClientTransactionMock, data);
+      _collectionWithExtensions.RollingBack (TestableClientTransaction, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -483,13 +483,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RolledBack (ClientTransactionMock, data));
-        _extension2.Expect (mock => mock.RolledBack (ClientTransactionMock, data));
+        _extension1.Expect (mock => mock.RolledBack (TestableClientTransaction, data));
+        _extension2.Expect (mock => mock.RolledBack (TestableClientTransaction, data));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RolledBack (ClientTransactionMock, data);
+      _collectionWithExtensions.RolledBack (TestableClientTransaction, data);
 
       _mockRepository.VerifyAll ();
     }
@@ -501,13 +501,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.ObjectsLoaded (ClientTransactionMock, loadedDomainObjects));
-        _extension2.Expect (mock => mock.ObjectsLoaded (ClientTransactionMock, loadedDomainObjects));
+        _extension1.Expect (mock => mock.ObjectsLoaded (TestableClientTransaction, loadedDomainObjects));
+        _extension2.Expect (mock => mock.ObjectsLoaded (TestableClientTransaction, loadedDomainObjects));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.ObjectsLoaded (ClientTransactionMock, loadedDomainObjects);
+      _collectionWithExtensions.ObjectsLoaded (TestableClientTransaction, loadedDomainObjects);
 
       _mockRepository.VerifyAll ();
     }
@@ -519,13 +519,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.ObjectsLoading (ClientTransactionMock, objectIDs));
-        _extension2.Expect (mock => mock.ObjectsLoading (ClientTransactionMock, objectIDs));
+        _extension1.Expect (mock => mock.ObjectsLoading (TestableClientTransaction, objectIDs));
+        _extension2.Expect (mock => mock.ObjectsLoading (TestableClientTransaction, objectIDs));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.ObjectsLoading (ClientTransactionMock, objectIDs);
+      _collectionWithExtensions.ObjectsLoading (TestableClientTransaction, objectIDs);
 
       _mockRepository.VerifyAll ();
     }
@@ -537,13 +537,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.ObjectsUnloaded (ClientTransactionMock, unloadedDomainObjects));
-        _extension2.Expect (mock => mock.ObjectsUnloaded (ClientTransactionMock, unloadedDomainObjects));
+        _extension1.Expect (mock => mock.ObjectsUnloaded (TestableClientTransaction, unloadedDomainObjects));
+        _extension2.Expect (mock => mock.ObjectsUnloaded (TestableClientTransaction, unloadedDomainObjects));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.ObjectsUnloaded (ClientTransactionMock, unloadedDomainObjects);
+      _collectionWithExtensions.ObjectsUnloaded (TestableClientTransaction, unloadedDomainObjects);
 
       _mockRepository.VerifyAll ();
     }
@@ -555,13 +555,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.ObjectsUnloading (ClientTransactionMock, unloadedDomainObjects));
-        _extension2.Expect (mock => mock.ObjectsUnloading (ClientTransactionMock, unloadedDomainObjects));
+        _extension1.Expect (mock => mock.ObjectsUnloading (TestableClientTransaction, unloadedDomainObjects));
+        _extension2.Expect (mock => mock.ObjectsUnloading (TestableClientTransaction, unloadedDomainObjects));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.ObjectsUnloading (ClientTransactionMock, unloadedDomainObjects);
+      _collectionWithExtensions.ObjectsUnloading (TestableClientTransaction, unloadedDomainObjects);
 
       _mockRepository.VerifyAll ();
     }
@@ -574,13 +574,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1) });
       var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2) });
 
-      _extension1.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, originalResult)).Return (newResult1);
-      _extension2.Expect (mock => mock.FilterQueryResult (ClientTransactionMock, newResult1)).Return (newResult2);
+      _extension1.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, originalResult)).Return (newResult1);
+      _extension2.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, newResult1)).Return (newResult2);
 
       _extension1.Replay ();
       _extension2.Replay ();
 
-      var finalResult = _collectionWithExtensions.FilterQueryResult (ClientTransactionMock, originalResult);
+      var finalResult = _collectionWithExtensions.FilterQueryResult (TestableClientTransaction, originalResult);
       Assert.That (finalResult, Is.SameAs (newResult2));
 
       _extension1.VerifyAllExpectations ();
@@ -593,13 +593,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RelationReading (ClientTransactionMock, _order, endPointDefinition, ValueAccess.Current));
-        _extension2.Expect (mock => mock.RelationReading (ClientTransactionMock, _order, endPointDefinition, ValueAccess.Current));
+        _extension1.Expect (mock => mock.RelationReading (TestableClientTransaction, _order, endPointDefinition, ValueAccess.Current));
+        _extension2.Expect (mock => mock.RelationReading (TestableClientTransaction, _order, endPointDefinition, ValueAccess.Current));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationReading (ClientTransactionMock, _order, endPointDefinition, ValueAccess.Current);
+      _collectionWithExtensions.RelationReading (TestableClientTransaction, _order, endPointDefinition, ValueAccess.Current);
 
       _mockRepository.VerifyAll ();
     }
@@ -611,13 +611,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition;
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderTicket, ValueAccess.Original));
-        _extension2.Expect (mock => mock.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderTicket, ValueAccess.Original));
+        _extension1.Expect (mock => mock.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderTicket, ValueAccess.Original));
+        _extension2.Expect (mock => mock.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderTicket, ValueAccess.Original));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderTicket, ValueAccess.Original);
+      _collectionWithExtensions.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderTicket, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }
@@ -629,13 +629,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderItems, ValueAccess.Original));
-        _extension2.Expect (mock => mock.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderItems, ValueAccess.Original));
+        _extension1.Expect (mock => mock.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderItems, ValueAccess.Original));
+        _extension2.Expect (mock => mock.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderItems, ValueAccess.Original));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationRead (ClientTransactionMock, _order, endPointDefinition, orderItems, ValueAccess.Original);
+      _collectionWithExtensions.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderItems, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }

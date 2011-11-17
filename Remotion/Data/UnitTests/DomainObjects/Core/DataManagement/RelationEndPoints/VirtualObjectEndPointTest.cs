@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     
       _lazyLoaderStub = MockRepository.GenerateStub<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (ClientTransactionMock);
+      _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (TestableClientTransaction);
       _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
 
       _endPoint = new VirtualObjectEndPoint (
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _dataKeeperFactory);
 
       Assert.That (endPoint.ID, Is.EqualTo (_endPointID));
-      Assert.That (endPoint.ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (endPoint.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderStub));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_dataKeeperFactory));
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Initialization_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (ClientTransactionMock, id, _lazyLoaderStub, _endPointProviderStub, _dataKeeperFactory);
+      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderStub, _endPointProviderStub, _dataKeeperFactory);
     }
 
     [Test]
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteVirtualObjectEndPointLoadState)));
 
       Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
-      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (ClientTransactionMock));
+      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 
@@ -472,7 +472,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetOppositeObjectDataFromSubTransaction ()
     {
-      var source = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, ClientTransactionMock);
+      var source = RelationEndPointObjectMother.CreateVirtualObjectEndPoint (_endPointID, TestableClientTransaction);
 
       _loadStateMock.Expect (mock => mock.SetDataFromSubTransaction (_endPoint, VirtualObjectEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay();

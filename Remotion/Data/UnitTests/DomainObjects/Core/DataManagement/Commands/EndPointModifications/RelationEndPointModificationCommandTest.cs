@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   [TestFixture]
   public class RelationEndPointModificationCommandTest : StandardMappingTest
   {
-    private ClientTransactionMock _transaction;
+    private TestableClientTransaction _transaction;
     private ObjectID _objectID;
     
     private IRelationEndPoint _endPointMock;
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp ();
 
-      _transaction = new ClientTransactionMock ();
+      _transaction = new TestableClientTransaction ();
       _objectID = DomainObjectIDs.Order1;
 
       _endPointMock = MockRepository.GenerateMock<IRelationEndPoint> ();

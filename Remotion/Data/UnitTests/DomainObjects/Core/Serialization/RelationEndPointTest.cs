@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       base.SetUp();
       var id = RelationEndPointID.Create(DomainObjectIDs.Computer1, ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee"));
-      _endPoint = new TestableRelationEndPoint (ClientTransactionMock, id);
+      _endPoint = new TestableRelationEndPoint (TestableClientTransaction, id);
     }
 
     [Test]

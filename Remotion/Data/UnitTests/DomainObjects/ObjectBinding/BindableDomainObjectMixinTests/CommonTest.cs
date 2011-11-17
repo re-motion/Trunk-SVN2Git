@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
       SampleBindableMixinDomainObject value = SampleBindableMixinDomainObject.NewObject ();
       Assert.AreNotEqual ("Earl", value.Name);
       value.Name = "Earl";
-      Tuple<ClientTransactionMock, SampleBindableMixinDomainObject> deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransactionMock, value));
+      Tuple<TestableClientTransaction, SampleBindableMixinDomainObject> deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (TestableClientTransaction, value));
 
       using (deserialized.Item1.EnterDiscardingScope ())
       {
@@ -53,9 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     public void SerializeAndDeserialize_WithNewBindableObjectProvider ()
     {
       SampleBindableMixinDomainObject value = SampleBindableMixinDomainObject.NewObject ();
-      byte[] serialized = Serializer.Serialize (Tuple.Create (ClientTransactionMock, value));
+      byte[] serialized = Serializer.Serialize (Tuple.Create (TestableClientTransaction, value));
       BusinessObjectProvider.SetProvider (typeof (BindableDomainObjectProviderAttribute), null);
-      Tuple<ClientTransactionMock, SampleBindableMixinDomainObject> deserialized = (Tuple<ClientTransactionMock, SampleBindableMixinDomainObject>) Serializer.Deserialize (serialized);
+      Tuple<TestableClientTransaction, SampleBindableMixinDomainObject> deserialized = (Tuple<TestableClientTransaction, SampleBindableMixinDomainObject>) Serializer.Deserialize (serialized);
 
       using (deserialized.Item1.EnterDiscardingScope ())
       {

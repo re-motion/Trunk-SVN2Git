@@ -44,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      _endPoint = new TestableRelationEndPoint(ClientTransactionMock, _endPointID);
-      _endPointWithNullObject = new TestableRelationEndPoint (ClientTransactionMock, RelationEndPointID.Create(null, _endPointID.Definition));
-      _endPointWithInvalidObject = new TestableRelationEndPoint (ClientTransactionMock, RelationEndPointID.Create(_invalidObject.ID, _endPointID.Definition));
+      _endPoint = new TestableRelationEndPoint(TestableClientTransaction, _endPointID);
+      _endPointWithNullObject = new TestableRelationEndPoint (TestableClientTransaction, RelationEndPointID.Create(null, _endPointID.Definition));
+      _endPointWithInvalidObject = new TestableRelationEndPoint (TestableClientTransaction, RelationEndPointID.Create(_invalidObject.ID, _endPointID.Definition));
     }
 
     [Test]
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject = _endPoint.GetDomainObjectReference ();
 
       Assert.That (domainObject.State, Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (domainObject, Is.SameAs (LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1)));
+      Assert.That (domainObject, Is.SameAs (LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order1)));
     }
 
     [Test]

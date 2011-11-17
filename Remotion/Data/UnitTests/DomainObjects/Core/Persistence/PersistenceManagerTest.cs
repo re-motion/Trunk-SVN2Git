@@ -344,8 +344,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       DataContainer orderContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Order1);
       DataContainer officialContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Official1);
 
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, orderContainer);
-      ClientTransactionTestHelper.RegisterDataContainer (ClientTransactionMock, officialContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, orderContainer);
+      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, officialContainer);
 
       var dataContainers = new DataContainerCollection { orderContainer, officialContainer };
 

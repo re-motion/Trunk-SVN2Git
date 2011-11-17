@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
 
-      DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, ClientTransactionMock);
+      DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, TestableClientTransaction);
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var relatedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       relatedObject.Delete ();
 
-      DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, ClientTransactionMock);
+      DomainObjectCheckUtility.EnsureNotDeleted (relatedObject, TestableClientTransaction);
     }
   }
 }

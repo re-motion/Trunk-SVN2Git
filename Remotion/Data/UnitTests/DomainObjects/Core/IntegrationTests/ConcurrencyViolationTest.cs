@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       try
       {
-        ClientTransactionMock.Commit ();
+        TestableClientTransaction.Commit ();
         Assert.Fail ("Expected ConcurrencyViolationException");
       }
       catch (ConcurrencyViolationException)
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       try
       {
-        ClientTransactionMock.Commit ();
+        TestableClientTransaction.Commit ();
         Assert.Fail ("Expected ConcurrencyViolationException");
       }
       catch (ConcurrencyViolationException)

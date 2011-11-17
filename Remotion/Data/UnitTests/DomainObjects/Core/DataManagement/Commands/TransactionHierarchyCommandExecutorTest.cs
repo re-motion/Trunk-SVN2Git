@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     private ClientTransaction _rootTransactionWithSub;
     private ClientTransaction _leafSubTransaction;
 
-    private ClientTransactionMock _readOnlyTransaction;
+    private TestableClientTransaction _readOnlyTransaction;
 
     private MockRepository _mockRepository;
     private ICommandFactory _commandFactoryMock;
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _rootTransactionWithSub = ClientTransaction.CreateRootTransaction ();
       _leafSubTransaction = _rootTransactionWithSub.CreateSubTransaction();
 
-      _readOnlyTransaction = new ClientTransactionMock { IsReadOnly = true };
+      _readOnlyTransaction = new TestableClientTransaction { IsReadOnly = true };
 
       _mockRepository = new MockRepository();
       _commandFactoryMock = _mockRepository.StrictMock<ICommandFactory>();

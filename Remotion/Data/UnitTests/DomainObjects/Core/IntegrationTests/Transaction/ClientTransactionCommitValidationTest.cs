@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
       employee.Computer = null;
 
-      Assert.That (() => ClientTransactionMock.Commit(), Throws.Nothing);
+      Assert.That (() => TestableClientTransaction.Commit(), Throws.Nothing);
     }
 
     [Test]
@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         order.Customer = Customer.GetObject (DomainObjectIDs.Customer2);
 
       Assert.That (customer.Orders, Is.Empty);
-      Assert.That (() => ClientTransactionMock.Commit(), Throws.Nothing);
+      Assert.That (() => TestableClientTransaction.Commit(), Throws.Nothing);
     }
     
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       order.OrderTicket = newOrderTicket;
 
       Assert.That (
-          () => ClientTransactionMock.Commit(),
+          () => TestableClientTransaction.Commit(),
           Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.EqualTo (
               "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object"
               + " 'OrderTicket|058ef259-f9cd-4cb1-85e5-5c05119ab596|System.Guid' cannot be null."));
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       industrialSector.Companies.Clear();
 
       Assert.That (
-          () => ClientTransactionMock.Commit(),
+          () => TestableClientTransaction.Commit(),
           Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.EqualTo (
               "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies' of domain object"
               + " 'IndustrialSector|8565a077-ea01-4b5d-beaa-293dc484bddc|System.Guid' contains no items."));
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       OrderTicket newOrderTicket = OrderTicket.NewObject();
 
       Assert.That (
-          () => ClientTransactionMock.Commit(),
+          () => TestableClientTransaction.Commit(),
           Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.EqualTo (
               string.Format (
                   "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' of domain object '{0}' cannot be null.",
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       IndustrialSector newIndustrialSector = IndustrialSector.NewObject();
 
       Assert.That (
-          () => ClientTransactionMock.Commit(),
+          () => TestableClientTransaction.Commit(),
           Throws.TypeOf<MandatoryRelationNotSetException>().With.Message.EqualTo (
               string.Format (
                   "Mandatory relation property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.IndustrialSector.Companies' of domain object '{0}' contains no items.",

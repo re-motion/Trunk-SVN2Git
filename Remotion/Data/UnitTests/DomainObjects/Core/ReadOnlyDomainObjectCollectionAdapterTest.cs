@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var associatedCollection = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       UnloadService.UnloadVirtualEndPoint (
-          ClientTransactionMock,
+          TestableClientTransaction,
           associatedCollection.AssociatedEndPointID);
 
       var readOnlyAdapter = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (associatedCollection);

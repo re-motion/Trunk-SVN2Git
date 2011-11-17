@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetChangedThroughPropertyValue ();
       Assert.AreEqual (StateType.Changed, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ++obj.OrderNumber;
         Assert.AreEqual (StateType.Changed, obj.State);
@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetChangedThroughPropertyValue ();
       Assert.AreEqual (StateType.Changed, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetChangedThroughPropertyValue ();
       Assert.AreEqual (StateType.Changed, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetChangedThroughPropertyValue ();
       Assert.AreEqual (StateType.Changed, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         FullyDeleteOrder (obj);
         Assert.AreEqual (StateType.Deleted, obj.State);
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetUnchanged();
       Assert.AreEqual (StateType.Unchanged, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         ++obj.OrderNumber;
         Assert.AreEqual (StateType.Changed, obj.State);
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetUnchanged();
       Assert.AreEqual (StateType.Unchanged, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetUnchanged ();
       Assert.AreEqual (StateType.Unchanged, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetUnchanged();
       Assert.AreEqual (StateType.Unchanged, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         FullyDeleteOrder (obj);
         Assert.AreEqual (StateType.Deleted, obj.State);
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClassWithAllDataTypes obj = GetNewUnchanged();
       Assert.AreEqual (StateType.New, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         ++obj.Int32Property;
         Assert.AreEqual (StateType.Changed, obj.State);
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClassWithAllDataTypes obj = GetNewUnchanged ();
       Assert.AreEqual (StateType.New, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, obj.State);
@@ -167,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClassWithAllDataTypes obj = GetNewUnchanged ();
       Assert.AreEqual (StateType.New, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.AreEqual (StateType.NotLoadedYet, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit ();
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClassWithAllDataTypes obj = GetNewUnchanged ();
       Assert.AreEqual (StateType.New, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj.Delete();
         Assert.AreEqual (StateType.Deleted, obj.State);
@@ -194,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order obj = GetDeleted();
       Assert.AreEqual (StateType.Deleted, obj.State);
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.IsTrue (obj.IsInvalid);
         ClientTransactionScope.CurrentTransaction.Commit();
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitRootDiscardedSubDiscarded ()
     {
       Order obj = GetInvalid();
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         Assert.IsTrue (obj.IsInvalid);
         ClientTransactionScope.CurrentTransaction.Commit();
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitRootUnknownSubChanged ()
     {
       Order obj;
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetChangedThroughPropertyValue();
         Assert.AreEqual (StateType.Changed, obj.State);
@@ -231,13 +231,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitRootUnknownSubUnchanged ()
     {
       Order obj;
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetUnchanged();
         Assert.AreEqual (StateType.Unchanged, obj.State);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsNotNull (ClientTransactionMock.DataManager.DataContainers[obj.ID]);
+      Assert.IsNotNull (TestableClientTransaction.DataManager.DataContainers[obj.ID]);
       Assert.AreEqual (StateType.Unchanged, obj.State);
     }
 
@@ -245,7 +245,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitRootUnknownSubNew ()
     {
       ClassWithAllDataTypes obj;
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetNewUnchanged();
         Assert.AreEqual (StateType.New, obj.State);
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ClassWithAllDataTypes objectCreatedInSub;
       ClassWithAllDataTypes objectCreatedInSubSub;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         objectCreatedInSub = GetNewUnchanged ();
         Assert.AreEqual (StateType.New, objectCreatedInSub.State);
@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitRootUnknownSubDeleted ()
     {
       Order obj;
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetDeleted();
         Assert.AreEqual (StateType.Deleted, obj.State);
@@ -308,13 +308,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CommitRootUnknownSubDiscarded ()
     {
       Order obj;
-      using (ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope())
+      using (TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope())
       {
         obj = GetInvalid();
         Assert.IsTrue (obj.IsInvalid);
         ClientTransactionScope.CurrentTransaction.Commit();
       }
-      Assert.IsNull (ClientTransactionMock.DataManager.DataContainers[obj.ID]);
+      Assert.IsNull (TestableClientTransaction.DataManager.DataContainers[obj.ID]);
     }
 
     [Test]
@@ -324,7 +324,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ++order.OrderNumber;
       Assert.That (order.State, Is.EqualTo (StateType.Changed));
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         --order.OrderNumber;
         ClientTransaction.Current.Commit ();

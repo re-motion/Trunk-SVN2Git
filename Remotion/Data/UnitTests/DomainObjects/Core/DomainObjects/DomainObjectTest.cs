@@ -189,7 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var id = new ObjectID ("ClassWithAllDataTypes", new Guid ("{3F647D79-0CAF-4a53-BAA7-A56831F8CE2D}"));
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (id);
 
@@ -209,7 +209,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (1));
       Assert.That (classWithAllDataTypes.OnLoadedLoadMode, Is.EqualTo (LoadMode.WholeDomainObjectInitialized));
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         ClassWithAllDataTypes.GetObject (id);
 
@@ -225,7 +225,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (classWithAllDataTypes.OnLoadedCalled, Is.False);
       Assert.That (classWithAllDataTypes.OnLoadedCallCount, Is.EqualTo (0));
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Dev.Null = classWithAllDataTypes.Int32Property;
 
@@ -348,11 +348,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         customer.EnsureDataAvailable ();
 
         Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
-        Assert.That (customer.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Changed));
+        Assert.That (customer.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Changed));
 
         using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
         {
-          Assert.That (customer.TransactionContext[ClientTransactionMock].State, Is.EqualTo (StateType.Changed)); // must not throw a ClientTransactionDiffersException
+          Assert.That (customer.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Changed)); // must not throw a ClientTransactionDiffersException
         }
       }
     }
@@ -373,7 +373,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (newObjectDataContainer.State, Is.EqualTo (StateType.Invalid));
 
       loadedObject.Delete ();
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
 
       Assert.That (loadedObject.IsInvalid, Is.True);
       Assert.That (loadedObject.State, Is.EqualTo (StateType.Invalid));
@@ -479,7 +479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order deletedNewOrder = Order.NewObject ();
       deletedNewOrder.Delete ();
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       CheckIfObjectIsDeleted (DomainObjectIDs.Order1);
@@ -560,7 +560,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       supervisor1.Delete ();
       subordinate4.Delete ();
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       newSupervisor1 = Employee.GetObject (newSupervisor1ID);
@@ -607,7 +607,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       newDeletedEmployee.Delete ();
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       computer4 = Computer.GetObject (DomainObjectIDs.Computer4);
@@ -623,7 +623,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       partner.ContactPerson = newPerson;
       partner.IndustrialSector.Delete ();
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       partner = Partner.GetObject (DomainObjectIDs.Partner2);
@@ -655,7 +655,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void MultiplePropertiesWithSameShortName ()
     {
-      var derivedClass = (DerivedClassWithDifferentProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
+      var derivedClass = (DerivedClassWithDifferentProperties) LifetimeService.NewObject (TestableClientTransaction, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
       ClassWithDifferentProperties baseClass = derivedClass;
 
       derivedClass.String = "Derived";

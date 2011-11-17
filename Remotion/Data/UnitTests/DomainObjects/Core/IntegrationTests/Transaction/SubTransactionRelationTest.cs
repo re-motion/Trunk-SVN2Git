@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Parent_CanReloadRelatedObject_LoadedInSubTransaction_AndGetTheSameReference ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Order order;
       OrderTicket orderTicket;
       using (subTransaction.EnterDiscardingScope ())
@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Parent_CanReloadNullRelatedObject_LoadedInSubTransaction ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Computer computer;
       Employee employee;
       using (subTransaction.EnterDiscardingScope ())
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Parent_CanReloadRelatedObjectCollection_LoadedInSubTransaction_AndGetTheSameReferences ()
     {
-      ClientTransaction subTransaction = ClientTransactionMock.CreateSubTransaction ();
+      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction ();
       Order order;
       var orderItems = new Set<OrderItem> ();
       using (subTransaction.EnterDiscardingScope ())
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       client.Delete ();
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Dev.Null = location.Client;
       }
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       location.Client = Client.NewObject ();
       location.Client.Delete ();
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Dev.Null = location.Client;
       }
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void OverwritingUnidirectionalInSubTransactionWorks ()
     {
       Location location = Location.NewObject ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         location.Client = Client.NewObject ();
       }
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       location.Client = Client.NewObject ();
       location.Client.Delete ();
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         location.Client = Client.NewObject ();
       }
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       location.Client = Client.GetObject (DomainObjectIDs.Client1);
       location.Client.Delete ();
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         location.Client = Client.NewObject ();
       }
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void OverwritingCollections ()
     {
       Customer location = Customer.NewObject ();
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         location.Orders = new OrderCollection ();
       }
@@ -164,9 +164,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var order = Order.GetObject (DomainObjectIDs.Order1);
 
       // cause parent tx to require reload of data containers...
-      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, order.OrderItems.AssociatedEndPointID);
+      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, order.OrderItems.AssociatedEndPointID);
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         var relatedObjects = order.OrderItems.ToArray ();
         Assert.That (relatedObjects,
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       newItem3.Product = "FooBar, the energy bar with extra Foo";
       newOrder.OrderItems.Add (newItem3);
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (Order.GetObject (DomainObjectIDs.Order1), Is.SameAs (loadedOrder));
         Assert.That (loadedOrder.OrderItems, Is.Not.SameAs (loadedItems));
@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var sortExpression = ((VirtualRelationEndPointDefinition) customer1.Orders.AssociatedEndPointID.Definition).GetSortExpression ();
       Assert.That (sortExpression, Is.Not.Null);
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (customer1.Orders, Is.EqualTo (orders), "This would not be equal if the sort expression was executed.");
         Assert.That (customer1.Properties[typeof (Customer).FullName + ".Orders"].HasChanged, Is.False);
@@ -246,7 +246,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void SubTransactionCanGetRelatedObjectCollectionEvenWhenObjectsHaveBeenDiscarded ()
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         OrderItem orderItem1 = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
         orderItem1.Delete ();
@@ -270,12 +270,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Order newOrder = Order.NewObject ();
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         loadedOrder.OrderItems.Clear ();
         newOrder.OrderItems.Add (OrderItem.NewObject ());
 
-        using (ClientTransactionMock.EnterDiscardingScope ())
+        using (TestableClientTransaction.EnterDiscardingScope ())
         {
           Assert.That (loadedOrder.OrderItems.Count, Is.EqualTo (2));
           Assert.That (loadedOrder.OrderItems[0], Is.SameAs (loadedItem1));
@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Employee newEmployee = Employee.NewObject ();
       newEmployee.Computer = newComputer;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         Assert.That (Computer.GetObject (DomainObjectIDs.Computer1), Is.SameAs (loadedComputer));
         Assert.That (Employee.GetObject (DomainObjectIDs.Employee1), Is.SameAs (loadedEmployee));
@@ -323,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Employee newEmployee = Employee.NewObject ();
       newEmployee.Computer = newComputer;
 
-      using (ClientTransactionMock.CreateSubTransaction ().EnterDiscardingScope ())
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         loadedComputer.Employee = Employee.NewObject ();
         loadedEmployee.Computer = Computer.NewObject ();
@@ -331,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         newComputer.Employee = Employee.NewObject ();
         newEmployee.Computer = Computer.NewObject ();
 
-        using (ClientTransactionMock.EnterDiscardingScope ())
+        using (TestableClientTransaction.EnterDiscardingScope ())
         {
           Assert.That (loadedEmployee.Computer, Is.SameAs (loadedComputer));
           Assert.That (loadedComputer.Employee, Is.SameAs (loadedEmployee));

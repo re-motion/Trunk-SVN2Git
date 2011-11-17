@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     {
       base.SetUp ();
 
-      _dataManager = ClientTransactionMock.DataManager;
+      _dataManager = TestableClientTransaction.DataManager;
     }
 
     [Test]
@@ -54,11 +54,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (ClientTransactionMock, virtualEndPointID);
+      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, virtualEndPointID);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);
 
-      UnloadService.UnloadData (ClientTransactionMock, unsynchronizedCompany.ID);
+      UnloadService.UnloadData (TestableClientTransaction, unsynchronizedCompany.ID);
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
       
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadData (ClientTransactionMock, unsynchronizedSubordinate.ID);
+      UnloadService.UnloadData (TestableClientTransaction, unsynchronizedSubordinate.ID);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
     }
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       var employee = Employee.GetObject (DomainObjectIDs.Employee3);
       var virtualEndPointID = RelationEndPointID.Create (employee, e => e.Computer);
-      ClientTransactionMock.EnsureDataComplete (virtualEndPointID);
+      TestableClientTransaction.EnsureDataComplete (virtualEndPointID);
 
       var unsynchronizedComputerID =
           DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (
@@ -109,11 +109,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadData (ClientTransactionMock, employee.Computer.ID);
+      UnloadService.UnloadData (TestableClientTransaction, employee.Computer.ID);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);
 
-      UnloadService.UnloadData (ClientTransactionMock, unsynchronizedComputer.ID);
+      UnloadService.UnloadData (TestableClientTransaction, unsynchronizedComputer.ID);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
     }
 
@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       var employee = Employee.GetObject (DomainObjectIDs.Employee1);
       var virtualEndPointID = RelationEndPointID.Create (employee, e => e.Computer);
-      ClientTransactionMock.EnsureDataComplete (virtualEndPointID);
+      TestableClientTransaction.EnsureDataComplete (virtualEndPointID);
       Assert.That (employee.Computer, Is.Null);
 
       var unsynchronizedComputerID =
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadData (ClientTransactionMock, unsynchronizedComputer.ID);
+      UnloadService.UnloadData (TestableClientTransaction, unsynchronizedComputer.ID);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
     }
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, virtualEndPointID);
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, virtualEndPointID);
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
 
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, virtualEndPointID);
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, virtualEndPointID);
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, virtualEndPointID);
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, virtualEndPointID);
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
     }
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, virtualEndPointID);
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, virtualEndPointID);
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);

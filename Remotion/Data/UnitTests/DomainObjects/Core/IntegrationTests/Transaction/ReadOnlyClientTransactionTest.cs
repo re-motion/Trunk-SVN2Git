@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         + "ClientTransaction is read-only. Offending transaction modification: NewObjectCreating.")]
     public void ThrowsOnNewObject ()
     {
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Order.NewObject ();
     }
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order newOrder = Order.NewObject ();
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       newOrder.Delete ();
     }
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClassWithAllDataTypes loadedCwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       loadedCwadt.Delete ();
     }
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
       
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Dev.Null = loadedOrder.OrderNumber;
     }
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       loadedOrder.OrderNumber = 42;
     }
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreSame (loadedOrder, order);
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         + "ClientTransaction is read-only. Offending transaction modification: ObjectsLoading.")]
     public void ThrowsOnGetObjectIfNotLoaded ()
     {
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1);
     }
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
       OrderItem loadedOrderItem = loadedOrder.OrderItems[0];
       
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       OrderItem orderItem = loadedOrder.OrderItems[0];
       Assert.AreSame (loadedOrderItem, orderItem);
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Dev.Null = loadedOrder.OrderItems[0];
     }
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ObjectList<Order> loadedOrders = loadedOfficial.Orders;
       Assert.AreEqual (0, loadedOrders.Count);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       ObjectList<Order> orders = loadedOfficial.Orders;
       Assert.AreSame (loadedOrders, orders);
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Official loadedOfficial = Official.GetObject (DomainObjectIDs.Official2);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Dev.Null = loadedOfficial.Orders;
     }
@@ -165,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ObjectList<OrderItem> loadedOrderItems = loadedOrder.OrderItems;
       OrderItem newItem = OrderItem.NewObject ();
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       loadedOrderItems.Add (newItem);
     }
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Order loadedOrder = Order.GetObject (DomainObjectIDs.Order1);
       OrderItem loadedOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Order order = loadedOrderItem.Order;
       Assert.AreSame (loadedOrder, order);
@@ -193,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       OrderItem loadedOrderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Dev.Null = loadedOrderItem.Order;
     }
@@ -205,7 +205,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Client loadedClient = Client.GetObject (DomainObjectIDs.Client1);
       Assert.IsNull (loadedClient.ParentClient);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Assert.IsNull (loadedClient.ParentClient);
     }
@@ -215,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Client loadedClient = Client.GetObject (DomainObjectIDs.Client1);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Assert.IsNull (loadedClient.ParentClient);
     }
@@ -228,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Client loadedClient = Client.GetObject (DomainObjectIDs.Client1);
       Client newClient = Client.NewObject ();
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       loadedClient.ParentClient = newClient;
     }
@@ -243,7 +243,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Computer loadedComputer = Computer.GetObject (DomainObjectIDs.Computer1);
       Employee loadedEmployee = loadedComputer.Employee;
       
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Employee employee = loadedComputer.Employee;
       Assert.AreSame (loadedEmployee, employee);
@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Computer loadedComputer = Computer.GetObject (DomainObjectIDs.Computer1);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Dev.Null = loadedComputer.Employee;
     }
@@ -268,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Dev.Null = computer.Employee;
       Assert.IsNull (computer.Employee);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Assert.IsNull (computer.Employee);
     }
@@ -278,7 +278,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Assert.IsNull (computer.Employee);
     }
@@ -291,7 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
       Employee newEmployee = Employee.NewObject ();
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       computer.Employee = newEmployee;
     }
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Employee loadedEmployee = Employee.GetObject (DomainObjectIDs.Employee3);
       Computer loadedComputer = loadedEmployee.Computer;
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Computer computer = loadedEmployee.Computer;
       Assert.AreSame (loadedComputer, computer);
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Employee loadedEmployee = Employee.GetObject (DomainObjectIDs.Employee3);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Dev.Null = loadedEmployee.Computer;
     }
@@ -330,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee7);
       Assert.IsNull (employee.Computer);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Assert.IsNull (employee.Computer);
     }
@@ -342,7 +342,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee7);
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       Assert.IsNull (employee.Computer);
     }
@@ -357,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Computer newComputer = Computer.NewObject ();
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
       employee.Computer = newComputer;
     }
@@ -369,8 +369,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         + "ClientTransaction is read-only. Offending transaction modification: TransactionCommitting.")]
     public void ThrowsOnCommit ()
     {
-      ClientTransactionMock.IsReadOnly = true;
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.IsReadOnly = true;
+      TestableClientTransaction.Commit ();
     }
 
     [Test]
@@ -378,19 +378,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         + "ClientTransaction is read-only. Offending transaction modification: TransactionRollingBack.")]
     public void ThrowsOnRollback ()
     {
-      ClientTransactionMock.IsReadOnly = true;
-      ClientTransactionMock.Rollback ();
+      TestableClientTransaction.IsReadOnly = true;
+      TestableClientTransaction.Rollback ();
     }
 
     [Test]
     public void CanExecuteQueryIfAlreadyLoaded ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
-      var loadedOrders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
+      var loadedOrders = (OrderCollection) TestableClientTransaction.QueryManager.GetCollection (query).ToCustomCollection();
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
       
-      var orders = (OrderCollection) ClientTransactionMock.QueryManager.GetCollection (query).ToCustomCollection();
+      var orders = (OrderCollection) TestableClientTransaction.QueryManager.GetCollection (query).ToCustomCollection();
       Assert.AreEqual (loadedOrders.Count, orders.Count);
       Assert.AreSame (loadedOrders[0], orders[0]);
     }
@@ -402,9 +402,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
 
-      ClientTransactionMock.IsReadOnly = true;
+      TestableClientTransaction.IsReadOnly = true;
 
-      ClientTransactionMock.QueryManager.GetCollection (query);
+      TestableClientTransaction.QueryManager.GetCollection (query);
     }
 
     [Test]
@@ -412,8 +412,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         + "ClientTransaction is read-only. Offending transaction modification: SubTransactionCreating.")]
     public void ThrowsOnCreateSubTransaction ()
     {
-      ClientTransactionMock.IsReadOnly = true;
-      ClientTransactionMock.CreateSubTransaction();
+      TestableClientTransaction.IsReadOnly = true;
+      TestableClientTransaction.CreateSubTransaction();
     }
 
     [Test]
@@ -425,8 +425,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var endPointID = customer.Orders.AssociatedEndPointID;
       customer.Orders.EnsureDataComplete();
 
-      ClientTransactionMock.IsReadOnly = true;
-      ((ICollectionEndPoint) ClientTransactionMock.DataManager.GetRelationEndPointWithoutLoading (endPointID)).MarkDataIncomplete();
+      TestableClientTransaction.IsReadOnly = true;
+      ((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID)).MarkDataIncomplete();
     }
 
     [Test]
@@ -435,10 +435,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         + "ObjectsUnloading.")]
     public void ThrowsOnUnloadData_WithEndPoints ()
     {
-      ClientTransactionMock.EnsureDataAvailable (DomainObjectIDs.Order1);
+      TestableClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1);
 
-      ClientTransactionMock.IsReadOnly = true;
-      var command = ClientTransactionMock.DataManager.CreateUnloadCommand (DomainObjectIDs.Order1);
+      TestableClientTransaction.IsReadOnly = true;
+      var command = TestableClientTransaction.DataManager.CreateUnloadCommand (DomainObjectIDs.Order1);
       command.NotifyAndPerform ();
     }
   }

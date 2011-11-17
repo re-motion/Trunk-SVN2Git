@@ -40,13 +40,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class RootClientTransactionComponentFactoryTest
   {
     private RootClientTransactionComponentFactory _factory;
-    private ClientTransactionMock _fakeConstructedTransaction;
+    private TestableClientTransaction _fakeConstructedTransaction;
 
     [SetUp]
     public void SetUp ()
     {
       _factory = RootClientTransactionComponentFactory.Create ();
-      _fakeConstructedTransaction = new ClientTransactionMock ();
+      _fakeConstructedTransaction = new TestableClientTransaction ();
     }
 
     [Test]

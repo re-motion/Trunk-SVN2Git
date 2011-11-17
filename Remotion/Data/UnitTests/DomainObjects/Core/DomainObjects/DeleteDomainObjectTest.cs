@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (StateType.Deleted, deletedSubordinate4.State);
       Assert.AreEqual (StateType.Deleted, deletedSubordinate5.State);
 
-      ClientTransactionMock.Commit ();
+      TestableClientTransaction.Commit ();
       ReInitializeTransaction ();
 
       CheckIfObjectIsDeleted (DomainObjectIDs.Employee1);

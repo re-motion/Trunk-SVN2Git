@@ -644,7 +644,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetValueWithoutEvents_NoEvents ()
     {
-      var clientTransactionMock = new ClientTransactionMock();
+      var clientTransactionMock = new TestableClientTransaction();
       using (clientTransactionMock.EnterDiscardingScope())
       {
         PropertyValue propertyValue = Order.NewObject().InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];

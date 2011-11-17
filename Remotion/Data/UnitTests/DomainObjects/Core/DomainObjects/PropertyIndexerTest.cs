@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void ShortNameAndTypeWithShadowedProperties ()
     {
       var classWithMixedProperties = (DerivedClassWithDifferentProperties) 
-          LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
+          LifetimeService.NewObject (TestableClientTransaction, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
 
       var indexer = new PropertyIndexer(classWithMixedProperties);
       Assert.That (
@@ -317,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void Find_Generic_WithInferredType ()
     {
       var classWithMixedProperties =
-          (DerivedClassWithDifferentProperties) LifetimeService.NewObject (ClientTransactionMock, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
+          (DerivedClassWithDifferentProperties) LifetimeService.NewObject (TestableClientTransaction, typeof (DerivedClassWithDifferentProperties), ParamList.Empty);
       var indexer = new PropertyIndexer (classWithMixedProperties);
       
       var resultOnDerived = indexer.Find (classWithMixedProperties, "String");

@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       base.SetUp ();
 
-      _queryManager = ClientTransactionMock.QueryManager;
+      _queryManager = TestableClientTransaction.QueryManager;
     }
 
     [Test]
@@ -211,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.AreEqual (2, orders.Count, "Order count");
 
       foreach (Order order in orders)
-        Assert.IsTrue (ClientTransactionMock.IsEnlisted (order));
+        Assert.IsTrue (TestableClientTransaction.IsEnlisted (order));
 
       int orderNumberSum = orders.Sum (order => order.OrderNumber);
 
@@ -244,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
-      ClientTransactionMock.DataManager.Commit();
+      TestableClientTransaction.DataManager.Commit();
 
       var query = QueryFactory.CreateCollectionQuery (
           "test",
@@ -262,14 +262,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.FilterQueryResult (Arg.Is (TestableClientTransaction), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ())
           .WhenCalled (mi => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
       query.Parameters.Add ("customerID", DomainObjectIDs.Customer1);
-      ClientTransactionMock.QueryManager.GetCollection (query);
+      TestableClientTransaction.QueryManager.GetCollection (query);
 
       listenerMock.VerifyAllExpectations ();
       listenerMock.BackToRecord (); // For Discarding
@@ -280,11 +280,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       listenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg.Is (ClientTransactionMock), Arg<QueryResult<DomainObject>>.Is.Anything))
+          .Expect (mock => mock.FilterQueryResult (Arg.Is (TestableClientTransaction), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ());
-      ClientTransactionMock.AddListener (listenerMock);
+      TestableClientTransaction.AddListener (listenerMock);
 
-      using (ClientTransactionMock.EnterNonDiscardingScope ())
+      using (TestableClientTransaction.EnterNonDiscardingScope ())
       {
         var query = from o in QueryFactory.CreateLinqQuery<Order> () where o.Customer.ID == DomainObjectIDs.Customer1 select o;
         query.ToArray ();

@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       _newOrderItem = OrderItem.NewObject();
       _orderWithUnloadedCollection = Order.GetObject (DomainObjectIDs.Order1);
       _originalOrderItemCount = _orderWithUnloadedCollection.OrderItems.Count;
-      UnloadService.UnloadVirtualEndPoint (ClientTransactionMock, _orderWithUnloadedCollection.OrderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, _orderWithUnloadedCollection.OrderItems.AssociatedEndPointID);
     }
 
     [Test]

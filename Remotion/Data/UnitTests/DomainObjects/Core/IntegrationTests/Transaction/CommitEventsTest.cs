@@ -47,9 +47,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _customer.Name = "New name";
 
       var domainObjectEventReceiver = new DomainObjectEventReceiver (_customer);
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.IsTrue (domainObjectEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (domainObjectEventReceiver.HasCommittedEventBeenCalled);
@@ -76,9 +76,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Ceo ceo = _customer.Ceo;
 
       var ceoEventReceiver = new DomainObjectEventReceiver (ceo);
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.IsTrue (ceoEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (ceoEventReceiver.HasCommittedEventBeenCalled);
@@ -103,14 +103,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ModifyOtherObjectInClientTransactionCommitting ()
     {
       _customer.Name = "New name";
-      ClientTransactionMock.Committing += ClientTransaction_CommittingForModifyOtherObjectInClientTransactionCommitting;
+      TestableClientTransaction.Committing += ClientTransaction_CommittingForModifyOtherObjectInClientTransactionCommitting;
 
       Ceo ceo = _customer.Ceo;
 
       var ceoEventReceiver = new DomainObjectEventReceiver (ceo);
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.IsTrue (ceoEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (ceoEventReceiver.HasCommittedEventBeenCalled);
@@ -151,12 +151,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var customerEventReceiver = new DomainObjectEventReceiver (_customer);
       var orderEventReceiver = new DomainObjectEventReceiver (order);
       var industrialSectorEventReceiver = new DomainObjectEventReceiver (industrialSector);
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
 
       _customer.Committing += Customer_CommittingForModifyOtherObjects;
-      ClientTransactionMock.Committing += ClientTransactionMock_CommittingForModifyOtherObjects;
+      TestableClientTransaction.Committing += ClientTransactionMock_CommittingForModifyOtherObjects;
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.IsTrue (ceoEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (ceoEventReceiver.HasCommittedEventBeenCalled);
@@ -196,9 +196,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithoutChanges ()
     {
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
@@ -213,14 +213,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CommitWithExistingObjectDeleted ()
     {
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
 
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
       ObjectID classWithAllDataTypesID = classWithAllDataTypes.ID;
 
       classWithAllDataTypes.Delete();
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittingDomainObjects.Count);
       Assert.AreEqual (1, clientTransactionEventReceiver.CommittedDomainObjects.Count);
@@ -240,10 +240,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _customer.Name = "New name";
 
       var customerEventReceiver = new DomainObjectEventReceiver (_customer);
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
       _customer.Committing += Customer_CommittingForCommittedEventForObjectChangedBackToOriginal;
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.IsTrue (customerEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsFalse (customerEventReceiver.HasCommittedEventBeenCalled);
@@ -264,10 +264,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _customer.MarkAsChanged();
 
       var customerEventReceiver = new DomainObjectEventReceiver (_customer);
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (ClientTransactionMock);
+      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
       _customer.Committing += Customer_CommittingForCommittedEventForObjectChangedBackToOriginal;
 
-      ClientTransactionMock.Commit();
+      TestableClientTransaction.Commit();
 
       Assert.IsTrue (customerEventReceiver.HasCommittingEventBeenCalled);
       Assert.IsTrue (customerEventReceiver.HasCommittedEventBeenCalled);

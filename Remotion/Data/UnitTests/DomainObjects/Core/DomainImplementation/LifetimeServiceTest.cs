@@ -34,13 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [ExpectedException (typeof (MappingException), ExpectedMessage = "Mapping does not contain class 'System.Object'.")]
     public void NewObject_InvalidType ()
     {
-      LifetimeService.NewObject (ClientTransactionMock, typeof (object), ParamList.Empty);
+      LifetimeService.NewObject (TestableClientTransaction, typeof (object), ParamList.Empty);
     }
 
     [Test]
     public void NewObject_NoCtorArgs ()
     {
-      var instance = (Order) LifetimeService.NewObject (ClientTransactionMock, typeof (Order), ParamList.Empty);
+      var instance = (Order) LifetimeService.NewObject (TestableClientTransaction, typeof (Order), ParamList.Empty);
       Assert.IsNotNull (instance);
       Assert.IsTrue (instance.CtorCalled);
     }
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void NewObject_WithCtorArgs ()
     {
       var order = Order.NewObject();
-      var instance = (OrderItem) LifetimeService.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (order));
+      var instance = (OrderItem) LifetimeService.NewObject (TestableClientTransaction, typeof (OrderItem), ParamList.Create (order));
       Assert.IsNotNull (instance);
       Assert.AreSame (order, instance.Order);
     }
@@ -59,13 +59,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
                                                                            + "OrderItem does not support the requested constructor with signature (System.Decimal).")]
     public void NewObject_WrongCtorArgs ()
     {
-      LifetimeService.NewObject (ClientTransactionMock, typeof (OrderItem), ParamList.Create (0m));
+      LifetimeService.NewObject (TestableClientTransaction, typeof (OrderItem), ParamList.Create (0m));
     }
 
     [Test]
     public void NewObject_InitializesMixins ()
     {
-      var domainObject = LifetimeService.NewObject (ClientTransactionMock, typeof (ClassWithAllDataTypes), ParamList.Empty);
+      var domainObject = LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithAllDataTypes), ParamList.Empty);
       var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (domainObject);
       Assert.That (mixin, Is.Not.Null);
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [Test]
     public void GetObject ()
     {
-      var order = (Order) LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
+      var order = (Order) LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, false);
       Assert.IsNotNull (order);
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.IsFalse (order.CtorCalled);
@@ -86,14 +86,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void GetObject_IncludeDeleted_False ()
     {
       Order.GetObject (DomainObjectIDs.Order1).Delete();
-      LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, false);
+      LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, false);
     }
 
     [Test]
     public void GetObject_IncludeDeleted_True ()
     {
       Order.GetObject (DomainObjectIDs.Order1).Delete ();
-      var order = (Order) LifetimeService.GetObject (ClientTransactionMock, DomainObjectIDs.Order1, true);
+      var order = (Order) LifetimeService.GetObject (TestableClientTransaction, DomainObjectIDs.Order1, true);
       Assert.IsNotNull (order);
       Assert.AreEqual (DomainObjectIDs.Order1, order.ID);
       Assert.AreEqual (StateType.Deleted, order.State);
@@ -106,14 +106,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       instance.Delete ();
       Assert.That (instance.IsInvalid, Is.True);
 
-      Assert.That (() => LifetimeService.GetObject (ClientTransactionMock, instance.ID, false), Throws.TypeOf<ObjectInvalidException> ());
-      Assert.That (() => LifetimeService.GetObject (ClientTransactionMock, instance.ID, true), Throws.TypeOf<ObjectInvalidException> ());
+      Assert.That (() => LifetimeService.GetObject (TestableClientTransaction, instance.ID, false), Throws.TypeOf<ObjectInvalidException> ());
+      Assert.That (() => LifetimeService.GetObject (TestableClientTransaction, instance.ID, true), Throws.TypeOf<ObjectInvalidException> ());
     }
 
     [Test]
     public void GetObjectReference ()
     {
-      var result = LifetimeService.GetObjectReference (ClientTransactionMock, DomainObjectIDs.Order1);
+      var result = LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order1);
 
       Assert.That (result, Is.InstanceOf (typeof (Order)));
       Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       instance.Delete();
       Assert.That (instance.IsInvalid, Is.True);
 
-      var result = LifetimeService.GetObjectReference (ClientTransactionMock, instance.ID);
+      var result = LifetimeService.GetObjectReference (TestableClientTransaction, instance.ID);
 
       Assert.That (result, Is.SameAs (instance));
     }
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
       Assert.AreNotEqual (StateType.Deleted, order.State);
-      LifetimeService.DeleteObject (ClientTransactionMock, order);
+      LifetimeService.DeleteObject (TestableClientTransaction, order);
       Assert.AreEqual (StateType.Deleted, order.State);
     }
 
@@ -145,8 +145,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void DeleteObject_Twice ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
-      LifetimeService.DeleteObject (ClientTransactionMock, order);
-      LifetimeService.DeleteObject (ClientTransactionMock, order);
+      LifetimeService.DeleteObject (TestableClientTransaction, order);
+      LifetimeService.DeleteObject (TestableClientTransaction, order);
     }
   }
 }

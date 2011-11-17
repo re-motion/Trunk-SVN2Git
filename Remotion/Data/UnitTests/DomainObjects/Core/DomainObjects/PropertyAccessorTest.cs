@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetValue_WithObjectList_Notifies ()
     {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
 
       IndustrialSector sector = IndustrialSector.NewObject ();
       var newCompanies = new ObjectList<Company> { Company.NewObject() };
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       propertyAccessor.SetValue (newCompanies);
 
       listenerMock.AssertWasCalled (
-        mock => mock.RelationChanged (ClientTransactionMock, sector, propertyAccessor.PropertyData.RelationEndPointDefinition));
+        mock => mock.RelationChanged (TestableClientTransaction, sector, propertyAccessor.PropertyData.RelationEndPointDefinition));
     }
 
     [Test]
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void SetValue_WithRelatedObject_Notifies ()
     {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransactionMock);
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
 
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var newTicket = OrderTicket.NewObject ();
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       propertyAccessor.SetValue (newTicket);
 
       listenerMock.AssertWasCalled (
-          mock => mock.RelationChanged (ClientTransactionMock, order, propertyAccessor.PropertyData.RelationEndPointDefinition));
+          mock => mock.RelationChanged (TestableClientTransaction, order, propertyAccessor.PropertyData.RelationEndPointDefinition));
     }
 
     [Test]

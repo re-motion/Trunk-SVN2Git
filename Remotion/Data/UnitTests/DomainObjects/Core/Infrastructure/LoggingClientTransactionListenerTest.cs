@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class LoggingClientTransactionListenerTest : StandardMappingTest
   {
     private MemoryAppender _memoryAppender;
-    private ClientTransactionMock _clientTransaction;
+    private TestableClientTransaction _clientTransaction;
     private LoggingClientTransactionListener _listener;
     private Client _domainObject;
     private Client _domainObject2;
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _memoryAppender = new MemoryAppender();
       BasicConfigurator.Configure (_memoryAppender);
 
-      _clientTransaction = new ClientTransactionMock();
+      _clientTransaction = new TestableClientTransaction();
 
       _listener = new LoggingClientTransactionListener();
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void NewObjectCreating ()
     {
-      ClientTransactionMock.CreateRootTransaction();
+      TestableClientTransaction.CreateRootTransaction();
 
       _listener.NewObjectCreating (_clientTransaction, typeof (string), _domainObject);
       var loggingEvents = GetLoggingEvents();

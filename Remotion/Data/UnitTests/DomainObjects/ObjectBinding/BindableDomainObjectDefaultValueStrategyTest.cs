@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
     public void IsDefaultDefault_StateIsNotNew ()
     {
       var instance = SampleBindableDomainObject.NewObject ();
-      ClientTransactionMock.Delete (instance);
+      TestableClientTransaction.Delete (instance);
 
       var property = GetProperty (instance);
       var strategy = (IDefaultValueStrategy) new BindableDomainObjectDefaultValueStrategy ();

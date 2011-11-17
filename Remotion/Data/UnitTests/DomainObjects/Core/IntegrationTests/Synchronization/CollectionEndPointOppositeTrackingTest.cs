@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       _folder1.FileSystemItems.Add (_fileSystemItem1);
       _folder1.FileSystemItems.Add (_fileSystemItem2);
       
-      ClientTransactionMock.CreateSubTransaction().EnterDiscardingScope();
+      TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope();
 
       _folder1.FileSystemItems.EnsureDataComplete();
       _collectionEndPoint = GetEndPoint<CollectionEndPoint> (RelationEndPointID.Create (_folder1, o => o.FileSystemItems));
