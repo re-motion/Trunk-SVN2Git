@@ -651,6 +651,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.SortCurrentData (comparison);
 
       _loadStateMock.VerifyAllExpectations();
+      Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
 
     [Test]

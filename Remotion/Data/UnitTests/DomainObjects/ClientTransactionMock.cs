@@ -28,14 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
   [Serializable]
   public class ClientTransactionMock : ClientTransaction
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
-
     public ClientTransactionMock () : this (RootClientTransactionComponentFactory.Create())
     {
     }
@@ -44,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
     }
 
-    public IClientTransactionListener TransactionEventSink
+    public CompoundClientTransactionListener TransactionEventSink
     {
-      get { return (IClientTransactionListener) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "TransactionEventSink"); }
+      get { return (CompoundClientTransactionListener) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "TransactionEventSink"); }
     }
 
     public new DomainObject GetObject (ObjectID id, bool includeDeleted)
@@ -89,6 +81,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public new void AddListener (IClientTransactionListener listener)
     {
       base.AddListener (listener);
+    }
+
+    public new void RemoveListener (IClientTransactionListener listener)
+    {
+      base.RemoveListener (listener);
     }
 
     public new void Delete (DomainObject domainObject)

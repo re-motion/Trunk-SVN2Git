@@ -50,29 +50,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _listener2 = _mockRepository.StrictMock<IClientTransactionListener> ();
 
       _compoundListener = new CompoundClientTransactionListener ();
-      _compoundListener.AddListener (_listener1);
-      _compoundListener.AddListener (_listener2);
     }
 
-    private void CheckNotification (Action<IClientTransactionListener> notificationCall)
+    [Test]
+    public void AddListener ()
     {
-      _mockRepository.BackToRecordAll ();
-      using (_mockRepository.Ordered ())
-      {
-        _listener1.Expect (notificationCall);
-        _listener2.Expect (notificationCall);
-      }
+      Assert.That (_compoundListener.Listeners, Is.Empty);
 
-      _mockRepository.ReplayAll ();
+      _compoundListener.AddListener (_listener1);
 
-      notificationCall (_compoundListener);
+      Assert.That (_compoundListener.Listeners, Is.EqualTo (new[] { _listener1 }));
+    }
 
-      _mockRepository.VerifyAll ();
+    [Test]
+    public void RemoveListener ()
+    {
+      _compoundListener.AddListener (_listener1);
+      Assert.That (_compoundListener.Listeners, Is.EqualTo (new[] { _listener1 }));
+
+      _compoundListener.RemoveListener (_listener1);
+
+      Assert.That (_compoundListener.Listeners, Is.Empty);
+    }
+
+    [Test]
+    public void RemoveListener_NotFound ()
+    {
+      Assert.That (_compoundListener.Listeners, Is.Empty);
+
+      _compoundListener.RemoveListener (_listener1);
+
+      Assert.That (_compoundListener.Listeners, Is.Empty);
     }
 
     [Test]
     public void AggregatedClientsAreNotified ()
     {
+      _compoundListener.AddListener (_listener1);
+      _compoundListener.AddListener (_listener2);
+
       var order = Order.NewObject();
       var order2 = Order.NewObject();
       var domainObjects = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
@@ -158,6 +174,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void FilterQueryResult ()
     {
+      _compoundListener.AddListener (_listener1);
+      _compoundListener.AddListener (_listener2);
+
       var listenerMock1 = MockRepository.GenerateMock<IClientTransactionListener> ();
       var listenerMock2 = MockRepository.GenerateMock<IClientTransactionListener> ();
 
@@ -175,5 +194,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var finalResult = compoundListener.FilterQueryResult (ClientTransactionMock, originalResult);
       Assert.That (finalResult, Is.SameAs (newResult2));
     }
+
+    private void CheckNotification (Action<IClientTransactionListener> notificationCall)
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _listener1.Expect (notificationCall);
+        _listener2.Expect (notificationCall);
+      }
+
+      _mockRepository.ReplayAll ();
+
+      notificationCall (_compoundListener);
+
+      _mockRepository.VerifyAll ();
+    }
+
   }
 }

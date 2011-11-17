@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (T) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (T), componentFactory);
     }
 
-    public static ClientTransaction Create (
+    public static T Create<T> (
         ClientTransaction parentTransaction,
         Dictionary<Enum, object> applicationData,
         Func<ClientTransaction, ClientTransaction> cloneFactory,
@@ -70,6 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         CompoundClientTransactionListener[] listeners,
         IPersistenceStrategy persistenceStrategy,
         IQueryManager queryManager)
+      where T : ClientTransaction
     {
       var componentFactoryStub = CreateComponentFactory (
           parentTransaction,
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           persistenceStrategy,
           queryManager);
 
-      return Create<ClientTransaction> (componentFactoryStub);
+      return Create<T> (componentFactoryStub);
     }
 
     public static IClientTransactionComponentFactory CreateComponentFactory (

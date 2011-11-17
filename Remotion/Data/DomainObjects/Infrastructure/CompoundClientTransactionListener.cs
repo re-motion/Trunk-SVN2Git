@@ -47,6 +47,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _listeners.Add (listener);
     }
 
+    public void RemoveListener (IClientTransactionListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      _listeners.Remove (listener);
+    }
+
     public void TransactionInitialize (ClientTransaction clientTransaction)
     {
       foreach (var listener in _listeners)

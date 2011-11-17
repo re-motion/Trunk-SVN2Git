@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       IQuery query = _cache.GetQuery<Order> ("id", orders => from o in orders where o.OrderNumber > 1 select o);
 
       var queryManagerMock = MockRepository.GenerateMock<IQueryManager> ();
-      var clientTransactionStub = ClientTransactionObjectMother.Create (
+      var clientTransactionStub = ClientTransactionObjectMother.Create<ClientTransaction> (
           null,
           new Dictionary<Enum, object>(),
           tx => { throw new Exception ("Should not be called."); },

@@ -572,6 +572,13 @@ namespace Remotion.Data.DomainObjects
       _dataStrategy.ToArray ().CopyTo (array, index);
     }
 
+    protected void Sort (Comparison<DomainObject> comparison)
+    {
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+
+      _dataStrategy.Sort (comparison);
+    }
+
     /// <summary>
     /// Creates a shallow copy of this collection, i.e. a collection of the same type and with the same contents as this collection. 
     /// No <see cref="Adding"/>, <see cref="Added"/>, <see cref="Removing"/>, or <see cref="Removed"/> 

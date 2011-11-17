@@ -107,5 +107,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       if (_eventReceiver != null)
         _eventReceiver.OnReplaceData ();
     }
+
+    public new void Sort (Comparison<DomainObject> comparison)
+    {
+      base.Sort (comparison);
+    }
   }
 }

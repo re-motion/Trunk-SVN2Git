@@ -334,6 +334,11 @@ public class ClientTransaction
     _eventSink.AddListener (listener);
   }
 
+  protected internal void RemoveListener (IClientTransactionListener listener)
+  {
+    _eventSink.RemoveListener (listener);
+  }
+
   /// <summary>
   /// Discards this transaction (rendering it unusable) and, if this transaction is a subtransaction, returns control to the parent transaction.
   /// </summary>

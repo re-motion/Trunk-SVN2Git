@@ -50,6 +50,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
         case OperationKind.Remove:
           _eventRaiser.BeginRemove (index, affectedObject);
           break;
+        case OperationKind.Sort:
+          break;
         default:
           throw new InvalidOperationException ("Invalid operation: " + operation);
       }
@@ -64,6 +66,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
           break;
         case OperationKind.Remove:
           _eventRaiser.EndRemove (index, affectedObject);
+          break;
+        case OperationKind.Sort:
+          _eventRaiser.WithinReplaceData();
           break;
         default:
           throw new InvalidOperationException ("Invalid operation: " + operation);

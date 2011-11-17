@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private IPersistenceStrategy _persistenceStrategyMock;
     private IQueryManager _queryManagerMock;
 
-    private ClientTransaction _transactionWithMocks;
+    private ClientTransactionMock _transactionWithMocks;
 
     private Order _fakeDomainObject1;
     private Order _fakeDomainObject2;
@@ -69,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       base.SetUp ();
 
-      _transaction = ClientTransaction.CreateRootTransaction ();
+      _transaction = ClientTransaction.CreateRootTransaction();
       _dataManager = ClientTransactionTestHelper.GetDataManager (_transaction);
 
       _mockRepository = new MockRepository();
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
       _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
 
-      _transactionWithMocks = ClientTransactionObjectMother.Create (
+      _transactionWithMocks = ClientTransactionObjectMother.Create<ClientTransactionMock> (
           null,
           _fakeApplicationData,
           tx => { throw new NotImplementedException(); },
@@ -272,6 +272,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var subTransaction2 = subTransaction1.CreateSubTransaction ();
 
       Assert.That (_transaction.LeafTransaction, Is.SameAs (subTransaction2));
+    }
+
+    [Test]
+    public void AddListener ()
+    {
+      var listenerStub = MockRepository.GenerateStub<IClientTransactionListener>();
+      _transactionWithMocks.AddListener (listenerStub);
+
+      Assert.That (_transactionWithMocks.TransactionEventSink.Listeners, Has.Some.SameAs (listenerStub));
+    }
+
+    [Test]
+    public void RemoveListener ()
+    {
+      var listenerStub = MockRepository.GenerateStub<IClientTransactionListener> ();
+      _transactionWithMocks.AddListener (listenerStub);
+      Assert.That (_transactionWithMocks.TransactionEventSink.Listeners, Has.Some.SameAs (listenerStub));
+
+      _transactionWithMocks.RemoveListener (listenerStub);
+
+      Assert.That (_transactionWithMocks.TransactionEventSink.Listeners, Has.None.SameAs (listenerStub));
     }
 
     [Test]
@@ -1329,7 +1350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     private ClientTransaction CreateTransactionInHierarchy (ClientTransaction parent)
     {
-      return ClientTransactionObjectMother.Create (
+      return ClientTransactionObjectMother.Create<ClientTransaction> (
           parent,
           _fakeApplicationData,
           tx => { throw new NotImplementedException (); },

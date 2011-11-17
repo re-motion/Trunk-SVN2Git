@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
@@ -183,6 +184,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndRemove (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.BeginAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
       _eventRaiserMock.AssertWasNotCalled (mock => mock.EndAdd (Arg<int>.Is.Anything, Arg<DomainObject>.Is.Anything));
+    }
+
+    [Test]
+    public void Sort ()
+    {
+      _eventRaiserMock
+          .Expect (mock => mock.WithinReplaceData())
+          .WhenCalled (mi => Assert.That (_eventRaisingDecoratorWithRealContent, Is.EqualTo (new[] { _order3, _order2, _order1 })));
+      _eventRaiserMock.Replay();
+
+      var weight = new Dictionary<DomainObject, int> { { _order1, 3 }, { _order2, 2 }, { _order3, 1 } };
+      _eventRaisingDecoratorWithRealContent.Sort ((one, two) => weight[one].CompareTo (weight[two]));
+
+      _eventRaiserMock.VerifyAllExpectations();
     }
 
     [Test]

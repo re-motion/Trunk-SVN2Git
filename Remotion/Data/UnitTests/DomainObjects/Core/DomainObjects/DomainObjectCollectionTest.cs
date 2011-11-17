@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -475,6 +476,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       emptyCollection.CopyTo (array, 0);
 
       // expectation: no exception
+    }
+
+    [Test]
+    public void Sort ()
+    {
+      Assert.That (_collection, Is.EqualTo (new[] { _customer1, _customer2 }));
+
+      var weights = new Dictionary<DomainObject, int> { { _customer1, 2 }, { _customer2, 1 } };
+      Comparison<DomainObject> comparison = ((one, two) => weights[one].CompareTo (weights[two]));
+      PrivateInvoke.InvokeNonPublicMethod (_collection, "Sort", comparison);
+
+      Assert.That (_collection, Is.EqualTo (new[] { _customer2, _customer1 }));
     }
 
     [Test]

@@ -233,6 +233,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("comparison", comparison);
       _loadState.SortCurrentData (this, comparison);
+      Touch();
     }
 
     public IDomainObjectCollectionData CreateDelegatingCollectionData ()

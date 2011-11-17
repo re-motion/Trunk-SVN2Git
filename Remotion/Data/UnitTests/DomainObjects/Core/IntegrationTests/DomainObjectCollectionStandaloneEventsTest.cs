@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
@@ -31,6 +33,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     private DomainObjectCollection _collection;
 
+    private OrderCollection.ICollectionEventReceiver _eventReceiverMock;
+    
+    private Order _itemA;
+    private Order _itemB;
+    private Order _itemCNotInCollection;
+    
+    private OrderCollection _collectionX;
+
     public override void SetUp ()
     {
       base.SetUp();
@@ -40,6 +50,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       _customer3NotInCollection = Customer.GetObject (DomainObjectIDs.Customer3);
 
       _collection = new DomainObjectCollection (new[] { _customer1, _customer2 }, typeof (Customer));
+
+      _eventReceiverMock = MockRepository.GenerateStrictMock<OrderCollection.ICollectionEventReceiver> ();
+      
+      _itemA = DomainObjectMother.CreateFakeObject<Order> ();
+      _itemB = DomainObjectMother.CreateFakeObject<Order> ();
+      _itemCNotInCollection = DomainObjectMother.CreateFakeObject<Order> ();
+
+      _collectionX = new OrderCollection (new[] { _itemA, _itemB });
     }
 
     [Test]
@@ -295,6 +313,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (eventReceiver.RemovingDomainObjects[_customer2.ID], Is.SameAs (_customer2));
       Assert.That (eventReceiver.RemovedDomainObjects[_customer1.ID], Is.SameAs (_customer1));
       Assert.That (eventReceiver.RemovedDomainObjects[_customer2.ID], Is.SameAs (_customer2));
+    }
+
+    [Test]
+    public void Sort_Events ()
+    {
+      _collectionX.SetEventReceiver (_eventReceiverMock);
+      _eventReceiverMock.Expect (mock => mock.OnReplaceData()).WhenCalled (mi => Assert.That (_collectionX, Is.EqualTo (new[] { _itemB, _itemA})));
+      _eventReceiverMock.Replay();
+
+      var weights = new Dictionary<DomainObject, int> { { _itemA, 2 }, { _itemB, 1 } };
+      _collectionX.Sort ((one, two) => weights[one].CompareTo (weights[two]));
+
+      _eventReceiverMock.VerifyAllExpectations();
     }
   }
 }
