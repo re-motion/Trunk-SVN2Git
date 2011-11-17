@@ -187,6 +187,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Cannot sort a read-only collection.")]
+    public void Sort_Throws ()
+    {
+      _readOnlyDecorator.Sort ((one, two) => 0);
+    }
+
+    [Test]
     public void Serializable ()
     {
       var decorator = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (new[] { _order1, _order2, _order3 }), false);

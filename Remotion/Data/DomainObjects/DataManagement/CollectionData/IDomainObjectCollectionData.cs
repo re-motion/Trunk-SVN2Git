@@ -48,6 +48,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
     bool Remove (DomainObject domainObject); // this overload should be called from DomainObjectCollection.Remove (DomainObject)
     bool Remove (ObjectID objectID); // this overload should be called from DomainObjectCollection.Remove (ObjectID)
     void Replace (int index, DomainObject value);
+
     void Sort (Comparison<DomainObject> comparison);
   }
 }

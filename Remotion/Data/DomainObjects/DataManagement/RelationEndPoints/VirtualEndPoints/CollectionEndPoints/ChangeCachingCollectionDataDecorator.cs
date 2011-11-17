@@ -17,7 +17,6 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
@@ -196,25 +195,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("comparison", comparison);
 
-      Sort (WrappedData, comparison);
+      WrappedData.Sort (comparison);
 
       // If the original collection has been copied, we must sort it manually. This might cause the change state cache to be wrong, so it is 
       // invalidated.
       if (_originalData.IsContentsCopied)
       {
-        Sort (_originalData, comparison);
+        _originalData.Sort (comparison);
         OnChangeStateUnclear ();
       }
-    }
-
-    private static void Sort (IDomainObjectCollectionData collectionData, Comparison<DomainObject> comparer)
-    {
-      ArgumentUtility.CheckNotNull ("collectionData", collectionData);
-      ArgumentUtility.CheckNotNull ("comparer", comparer);
-
-      var items = collectionData.ToArray ();
-      Array.Sort (items, comparer);
-      collectionData.ReplaceContents (items);
     }
 
     protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)

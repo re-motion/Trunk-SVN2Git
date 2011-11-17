@@ -70,6 +70,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       throw new NotSupportedException ("Cannot replace an item in a read-only collection.");
     }
 
+    public override void Sort (Comparison<DomainObject> comparison)
+    {
+      throw new NotSupportedException ("Cannot sort a read-only collection.");
+    }
+
     public override IDomainObjectCollectionData GetDataStore ()
     {
       if (IsGetDataStoreAllowed)
