@@ -572,6 +572,12 @@ namespace Remotion.Data.DomainObjects
       _dataStrategy.ToArray ().CopyTo (array, index);
     }
 
+    /// <summary>
+    /// Sorts this collection using the specified <see cref="Comparison{T}"/> without triggering bidirectional changes or raising any modification
+    /// events apart from <see cref="OnReplaceData"/>. The operation causes the associated <see cref="CollectionEndPoint"/> to become touched, and it 
+    /// might affect the change state of the <see cref="CollectionEndPoint"/> and the owning object.
+    /// </summary>
+    /// <param name="comparison">The comparison.</param>
     [Obsolete ("This member is meant exclusively for the implementation of indexed DomainObjectCollections. It will be removed when re-store " 
         + "implements a base class for indexed DomainObjectCollections. Don't use this API for any other use case. (1.13.130)", false)]
     protected void Sort (Comparison<DomainObject> comparison)
