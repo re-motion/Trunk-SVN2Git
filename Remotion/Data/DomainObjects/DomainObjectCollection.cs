@@ -572,7 +572,8 @@ namespace Remotion.Data.DomainObjects
       _dataStrategy.ToArray ().CopyTo (array, index);
     }
 
-    [Obsolete ("This member is only added as a temporary workaround. Prefer using IndexedCollectionRelationService.RepairOrdering instead. (1.13.130)", false)]
+    [Obsolete ("This member is meant exclusively for the implementation of indexed DomainObjectCollections. It will be removed when re-store " 
+        + "implements a base class for indexed DomainObjectCollections. Don't use this API for any other use case. (1.13.130)", false)]
     protected void Sort (Comparison<DomainObject> comparison)
     {
       ArgumentUtility.CheckNotNull ("comparison", comparison);
