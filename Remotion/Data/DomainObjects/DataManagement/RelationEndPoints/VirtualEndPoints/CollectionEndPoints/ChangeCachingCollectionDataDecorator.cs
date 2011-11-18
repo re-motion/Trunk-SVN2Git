@@ -21,21 +21,30 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
-  /// Decorates another <see cref="IDomainObjectCollectionData"/> object and provides an <see cref="HasChanged"/> method that determines
-  /// whether the contents of that <see cref="IDomainObjectCollectionData"/> object has changed when compared to an original 
-  /// <see cref="DomainObjectCollection"/> instance. The result of the comparison is cached until the <see cref="OnDataChanged"/> method is
-  /// called or a modifying method is called on <see cref="ChangeCachingCollectionDataDecorator"/>.
+  /// Decorates another <see cref="IDomainObjectCollectionData"/> object and manages change state, keeping around a (lazily created) copy of the 
+  /// original data until <see cref="Commit"/> or <see cref="Rollback"/> are called. The change state is cached, and the cache is invalidated by 
+  /// modifying operations. An change state invalidation also triggers a notification via <see cref="IVirtualEndPointStateUpdateListener"/>.
   /// </summary>
   /// <remarks>
   /// <para>
-  /// This class also manages the <see cref="OriginalData"/> associated with the changed data. The original data collection is a 
-  /// <see cref="CopyOnWriteDomainObjectCollectionData"/> and is exposed only through a read-only wrapper. As a result, the 
-  /// <see cref="ChangeCachingCollectionDataDecorator"/> class is the only class that can change that original data.
+  /// The <see cref="OriginalData"/> is a <see cref="CopyOnWriteDomainObjectCollectionData"/> and is exposed only through a read-only wrapper. 
+  /// As a  result, the  <see cref="ChangeCachingCollectionDataDecorator"/> class is the only class that can change that original data.
+  /// </para>
+  /// <para>
+  /// There are a few operations (e.g., <see cref="SortOriginalAndCurrent"/>) that do not invalidate the change state of this collection (unless the
+  /// collection was already changed before) because they affect both the current and original data of this 
+  /// <see cref="ChangeCachingCollectionDataDecorator"/>.
   /// </para>
   /// </remarks>
   [Serializable]
-  public class ChangeCachingCollectionDataDecorator : ObservableCollectionDataDecorator
+  public class ChangeCachingCollectionDataDecorator : DomainObjectCollectionDataDecoratorBase
   {
+    // Used for operations causing _originalData to CopyOnWrite and WrappedData_CollectionChanged to raise _stateUpdateListener events
+    private readonly ObservableCollectionDataDecorator _observedWrappedData;
+    // Used for operations private to this class that want to change this collection and _originalData in the same way.
+    // Using this property circumvents _stateUpdateListener events and _originalData.CopyOnWrite.
+    private readonly IDomainObjectCollectionData _unobservedWrappedData;
+
     private readonly CopyOnWriteDomainObjectCollectionData _originalData;
     
     private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
@@ -46,11 +55,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     public ChangeCachingCollectionDataDecorator (
         IDomainObjectCollectionData wrappedData, 
         IVirtualEndPointStateUpdateListener stateUpdateListener)
-      : base (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData))
+      : base (new ObservableCollectionDataDecorator (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData)))
     {
       ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
-      _originalData = new CopyOnWriteDomainObjectCollectionData (this);
+      _observedWrappedData = (ObservableCollectionDataDecorator) WrappedData;
+      _unobservedWrappedData = wrappedData;
+
+      _originalData = new CopyOnWriteDomainObjectCollectionData (_observedWrappedData);
+      _observedWrappedData.CollectionChanged += WrappedData_CollectionChanged();
       _stateUpdateListener = stateUpdateListener;
     }
 
@@ -110,21 +123,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
+      // Original collection must not contain this item
       if (_originalData.ContainsObjectID (domainObject.ID))
       {
         var message = string.Format ("The original collection already contains a domain object with ID '{0}'.", domainObject.ID);
         throw new InvalidOperationException (message);
       }
 
-      if (!WrappedData.ContainsObjectID (domainObject.ID))
+      // Check if this collection does not contain the item
+      if (!_unobservedWrappedData.ContainsObjectID (domainObject.ID))
       {
         // Standard case: Neither collection contains the item; the item is added to both, and the state cache stays valid
 
-        // Add the item to the WrappedData collection. That way, if the original collection has not yet been copied, it will automatically contain the 
-        // item and the state cache remains valid.
-        WrappedData.Add (domainObject);
+        // Add the item to the unobserved inner collection to avoid copy on write: if the contents hasn't been copied, we want to modify both 
+        // collections at the same time!
+        // This way, if the original collection has not yet been copied, it will automatically contain the  item and the state cache remains valid.
+        _unobservedWrappedData.Add (domainObject);
 
-        // If the original collection has been copied, we must add the item manually. The state cache still remains valid because we always add
+        // If the original collection has already been copied, we must add the item manually. The state cache still remains valid because we always add
         // the item at the end. If the collections were equal before, they remain equal now. If they were different before, they remain different.
         if (_originalData.IsContentsCopied)
           _originalData.Add (domainObject);
@@ -153,21 +169,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
+      // Original collection must contain this item
       if (!_originalData.ContainsObjectID (objectID))
       {
         var message = string.Format ("The original collection does not contain a domain object with ID '{0}'.", objectID);
         throw new InvalidOperationException (message);
       }
 
-      if (WrappedData.ContainsObjectID (objectID))
+      // Check if this collection contains the item
+      if (ContainsObjectID (objectID))
       {
-        // Standard case: Both collections contain the item; the item is removed from bothd
+        // Standard case: Both collections contain the item; the item is removed from both.
 
-        // Remove the item from the WrappedData collection. That way, if the original collection has not yet been copied, it will automatically not 
-        // contain the item and the state cache remains valid.
-        WrappedData.Remove (objectID);
+        // Remove the item from the unobserved inner collection to avoid copy on write: if the contents hasn't been copied, we want to modify both 
+        // collections at the same time!
+        // This way, if the original collection has not yet been copied, it will automatically not contain the item and the state cache remains valid.
+        _unobservedWrappedData.Remove (objectID);
 
-        // If the original collection has been copied, we must remove the item manually and invalidate the state cache: Collections previously 
+        // If the original collection has already been copied, we must remove the item manually and invalidate the state cache: Collections previously 
         // different because the item was in different places might now be the same.
         if (_originalData.IsContentsCopied)
         {
@@ -179,7 +198,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       {
         // Special case: The current collection does not contain the item
 
-        // We must remove the item to the original collection only and raise a potential state change notification
+        // We must remove the item from the original collection only and raise a potential state change notification
         _originalData.Remove (objectID);
         OnChangeStateUnclear ();
       }
@@ -195,10 +214,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("comparison", comparison);
 
-      WrappedData.Sort (comparison);
+      // Sort the unobserved inner collection to avoid copy on write: if the contents hasn't been copied, we want to sort both 
+      // collections at the same time!
+      _unobservedWrappedData.Sort (comparison);
 
-      // If the original collection has been copied, we must sort it manually. This might cause the change state cache to be wrong, so it is 
-      // invalidated.
+      // If the original collection has already been copied, we must sort it manually. This might cause the change state cache to be wrong, so it is 
+      // invalidated (and a notification raised).
       if (_originalData.IsContentsCopied)
       {
         _originalData.Sort (comparison);
@@ -206,10 +227,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
     }
 
-    protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)
+    private EventHandler<ObservableCollectionDataDecorator.DataChangeEventArgs> WrappedData_CollectionChanged ()
     {
-      OnChangeStateUnclear();
-      base.OnDataChanged (operation, affectedObject, index);
+      return (sender, args) => OnChangeStateUnclear ();
     }
 
     private void OnChangeStateUnclear ()

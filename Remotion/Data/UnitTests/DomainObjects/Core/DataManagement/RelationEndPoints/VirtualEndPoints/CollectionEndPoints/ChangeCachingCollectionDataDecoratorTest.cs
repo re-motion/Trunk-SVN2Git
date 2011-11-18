@@ -131,37 +131,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void OnDataChanged ()
+    public void OnWrappedDataChanged ()
     {
       _decoratorWithRealData.HasChanged (_strategyStrictMock);
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
 
-      CallOnDataChanged (_decoratorWithRealData);
+      CallOnDataChangedOnWrappedData (_decoratorWithRealData);
 
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
     }
 
     [Test]
-    public void OnDataChanged_RaisesEvent ()
+    public void OnWrappedDataChanged_RaisesStateNotification ()
     {
-      ObservableCollectionDataDecorator.DataChangeEventArgs eventArgs = null;
-      _decoratorWithRealData.CollectionChanged += (sender, args) => { eventArgs = args; };
-      
-      CallOnDataChanged (_decoratorWithRealData);
-
-      Assert.That (eventArgs, Is.Not.Null);
-    }
-
-    [Test]
-    public void OnDataChanged_RaisesStateNotification ()
-    {
-      CallOnDataChanged (_decoratorWithRealData);
+      CallOnDataChangedOnWrappedData (_decoratorWithRealData);
 
       _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (null));
     }
 
     [Test]
-    public void OnDataChanged_InvalidatedCacheLeadsToReEvaluation ()
+    public void OnWrappedDataChanged_InvalidatedCacheLeadsToReEvaluation ()
     {
       using (_strategyStrictMock.GetMockRepository ().Ordered ())
       {
@@ -173,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
 
       var result1 = _decoratorWithRealData.HasChanged (_strategyStrictMock);
-      CallOnDataChanged (_decoratorWithRealData);
+      CallOnDataChangedOnWrappedData (_decoratorWithRealData);
 
       var result2 = _decoratorWithRealData.HasChanged (_strategyStrictMock);
 
@@ -539,11 +528,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _decoratorWithRealData.UnregisterOriginalItem (_domainObject.ID);
 
-      var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
-          _decoratorWithRealData.OriginalData);
-
-      var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
-      Assert.That (originalDataStore, Is.SameAs (_decoratorWithRealData));
+      CheckOriginalDataNotCopied (_decoratorWithRealData);
     }
 
     [Test]
@@ -738,9 +723,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (decorator.IsCacheUpToDate, Is.True);
     }
 
-    private void CallOnDataChanged (ChangeCachingCollectionDataDecorator decorator)
+    private void CallOnDataChangedOnWrappedData (ChangeCachingCollectionDataDecorator decorator)
     {
-      PrivateInvoke.InvokeNonPublicMethod (decorator, "OnDataChanged", ObservableCollectionDataDecoratorBase.OperationKind.Remove, _domainObject, 12);
+      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<ObservableCollectionDataDecorator> (decorator);
+      PrivateInvoke.InvokeNonPublicMethod (wrappedData, "OnDataChanged", ObservableCollectionDataDecoratorBase.OperationKind.Remove, _domainObject, 12);
     }
 
     private void CheckOriginalValuesCopiedBeforeModification (Action<ChangeCachingCollectionDataDecorator, DomainObject> action)
@@ -788,7 +774,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           decorator.OriginalData);
 
       var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
-      Assert.That (originalDataStore, Is.SameAs (decorator));
+      var observedWrappedData = PrivateInvoke.GetNonPublicField (decorator, "_observedWrappedData");
+      Assert.That (originalDataStore, Is.SameAs (observedWrappedData));
     }
 
     private void PrepareCheckChangeFlagInvalidated (ChangeCachingCollectionDataDecorator decorator, bool hasChanged)
