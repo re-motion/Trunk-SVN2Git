@@ -20,7 +20,6 @@ using System.Collections.ObjectModel;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
@@ -33,33 +32,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
     {
-      private readonly List<Func<DomainObject>> _domainObjectAccessors = new List<Func<DomainObject>> ();
       private readonly List<DataContainer> _dataContainersToBeRegistered = new List<DataContainer> ();
 
       public void VisitFreshlyLoadedObject (FreshlyLoadedObjectData freshlyLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("freshlyLoadedObjectData", freshlyLoadedObjectData);
-      
         _dataContainersToBeRegistered.Add (freshlyLoadedObjectData.FreshlyLoadedDataContainer);
-        _domainObjectAccessors.Add (() => freshlyLoadedObjectData.FreshlyLoadedDataContainer.DomainObject);
       }
 
       public void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObjectData alreadyExistingLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("alreadyExistingLoadedObjectData", alreadyExistingLoadedObjectData);
-        _domainObjectAccessors.Add (() => alreadyExistingLoadedObjectData.ExistingDataContainer.DomainObject);
       }
 
       public void VisitNullLoadedObject (NullLoadedObjectData nullLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("nullLoadedObjectData", nullLoadedObjectData);
-        _domainObjectAccessors.Add (() => null);
       }
 
       public void VisitInvalidLoadedObject (InvalidLoadedObjectData invalidLoadedObjectData)
       {
         ArgumentUtility.CheckNotNull ("invalidLoadedObjectData", invalidLoadedObjectData);
-        _domainObjectAccessors.Add (() => invalidLoadedObjectData.InvalidObjectReference);
       }
 
       public void RegisterAllDataContainers (
@@ -108,11 +101,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
         }
       }
-
-      public IEnumerable<DomainObject> GetAllDomainObjects ()
-      {
-        return _domainObjectAccessors.Select(accessor => accessor());
-      }
     }
 
     private readonly ClientTransaction _clientTransaction;
@@ -137,15 +125,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _transactionEventSink; }
     }
 
-    public DomainObject RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager)
+    public void RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager)
     {
       ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
 
-      return RegisterIfRequired (new[] { loadedObjectData }, lifetimeManager).Single ();
+      RegisterIfRequired (new[] { loadedObjectData }, lifetimeManager);
     }
 
-    public IEnumerable<DomainObject> RegisterIfRequired (
-        IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager)
+    public void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 
@@ -154,7 +141,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         loadedObject.Accept (visitor);
 
       visitor.RegisterAllDataContainers (lifetimeManager, _clientTransaction, _transactionEventSink);
-      return visitor.GetAllDomainObjects ();
     }
   }
 }
