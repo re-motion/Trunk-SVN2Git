@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -26,18 +27,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
   public class InvalidLoadedObjectDataTest : StandardMappingTest
   {
     private InvalidLoadedObjectData _loadedObjectData;
+    private DomainObject _invalidObjectReference;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _loadedObjectData = new InvalidLoadedObjectData (DomainObjectMother.CreateFakeObject<Order>());
+      _invalidObjectReference = DomainObjectMother.CreateFakeObject<Order>();
+      _loadedObjectData = new InvalidLoadedObjectData (_invalidObjectReference);
     }
 
     [Test]
     public void ObjectID ()
     {
-      Assert.That (_loadedObjectData.ObjectID, Is.EqualTo (_loadedObjectData.InvalidObjectReference.ID));
+      Assert.That (_loadedObjectData.ObjectID, Is.EqualTo (_invalidObjectReference.ID));
+    }
+
+    [Test]
+    public void GetDomainObjectReference ()
+    {
+      var reference = _loadedObjectData.GetDomainObjectReference ();
+
+      Assert.That (reference, Is.SameAs (_invalidObjectReference));
     }
 
     [Test]

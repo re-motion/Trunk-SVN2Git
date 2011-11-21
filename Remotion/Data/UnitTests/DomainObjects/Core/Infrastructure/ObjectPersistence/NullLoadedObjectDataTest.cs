@@ -39,6 +39,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
+    public void GetDomainObjectReference ()
+    {
+      var reference = _loadedObjectData.GetDomainObjectReference ();
+
+      Assert.That (reference, Is.Null);
+    }
+
+    [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ILoadedObjectVisitor>();

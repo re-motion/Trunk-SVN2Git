@@ -29,6 +29,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return null; }
     }
 
+    public DomainObject GetDomainObjectReference ()
+    {
+      return null;
+    }
+
     public void Accept (ILoadedObjectVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);

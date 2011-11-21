@@ -59,6 +59,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           Throws.ArgumentException.With.Message.EqualTo (
               "The DataContainer must have been registered with a ClientTransaction.\r\nParameter name: existingDataContainer"));
     }
+
+    [Test]
+    public void GetDomainObjectReference ()
+    {
+      var reference = _loadedObjectData.GetDomainObjectReference();
+
+      Assert.That (reference, Is.SameAs (_dataContainer.DomainObject));
+    }
     
     [Test]
     public void Accept ()

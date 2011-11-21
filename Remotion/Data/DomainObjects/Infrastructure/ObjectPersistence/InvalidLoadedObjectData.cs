@@ -43,6 +43,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _invalidObjectReference; }
     }
 
+    public DomainObject GetDomainObjectReference ()
+    {
+      return _invalidObjectReference;
+    }
+
     public void Accept (ILoadedObjectVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);

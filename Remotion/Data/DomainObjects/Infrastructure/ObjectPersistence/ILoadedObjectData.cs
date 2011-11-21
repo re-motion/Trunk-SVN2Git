@@ -6,6 +6,7 @@
   public interface ILoadedObjectData
   {
     ObjectID ObjectID { get; }
+    DomainObject GetDomainObjectReference ();
 
     void Accept (ILoadedObjectVisitor visitor);
   }

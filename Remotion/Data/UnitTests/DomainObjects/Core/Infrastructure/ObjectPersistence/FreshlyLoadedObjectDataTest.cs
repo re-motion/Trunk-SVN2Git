@@ -70,6 +70,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
+    public void GetDomainObjectReference ()
+    {
+      Assert.That (
+          () => _loadedObjectData.GetDomainObjectReference (), 
+          Throws.InvalidOperationException.With.Message.EqualTo ("Cannot obtain a DomainObject reference for a freshly loaded object."));
+    }
+
+    [Test]
     public void Accept ()
     {
       var visitorMock = MockRepository.GenerateStrictMock<ILoadedObjectVisitor>();
