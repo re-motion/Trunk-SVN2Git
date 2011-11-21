@@ -70,11 +70,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void GetDomainObjectReference ()
+    public void GetDomainObjectReference_BeforeRegistration ()
     {
       Assert.That (
           () => _loadedObjectData.GetDomainObjectReference (), 
-          Throws.InvalidOperationException.With.Message.EqualTo ("Cannot obtain a DomainObject reference for a freshly loaded object."));
+          Throws.InvalidOperationException.With.Message.EqualTo (
+            "Cannot obtain a DomainObject reference for a freshly loaded object that has not yet been registered."));
+    }
+
+    [Test]
+    public void GetDomainObjectReference_AfterRegistration ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order> (_dataContainer.ID);
+      _dataContainer.SetDomainObject (domainObject);
+
+      Assert.That (_loadedObjectData.GetDomainObjectReference (), Is.SameAs (domainObject));
     }
 
     [Test]

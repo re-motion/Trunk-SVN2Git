@@ -36,7 +36,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     public DomainObject GetDomainObjectReference ()
     {
-      throw new InvalidOperationException ("Cannot obtain a DomainObject reference for a freshly loaded object.");
+      if (!_freshlyLoadedDataContainer.HasDomainObject)
+        throw new InvalidOperationException ("Cannot obtain a DomainObject reference for a freshly loaded object that has not yet been registered.");
+      
+      return _freshlyLoadedDataContainer.DomainObject;
     }
 
     public void Accept (ILoadedObjectVisitor visitor)
