@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       var idsToBeLoadedAsCollection = idsToBeLoaded.ConvertToCollection();
       var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoadedAsCollection, throwOnNotFound);
 
-      // TODO 4428
+      // TODO 4509
       //Assertion.IsTrue (dataContainers.Count == idsToBeLoaded.Count, "Persistence strategy must return exactly as many items as requested.");
       //Assertion.DebugAssert (
       //    dataContainers.Select ((dc, i) => dc != null ? dc.ID : idsToBeLoaded[i]).SequenceEqual (idsToBeLoaded), 
