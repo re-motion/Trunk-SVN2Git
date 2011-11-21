@@ -46,13 +46,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
     private Order _originatingOrder1;
     private Order _originatingOrder2;
+    private ILoadedObjectData _originatingOrderData1;
+    private ILoadedObjectData _originatingOrderData2;
 
     private OrderItem _fetchedOrderItem1;
     private OrderItem _fetchedOrderItem2;
     private OrderItem _fetchedOrderItem3;
+    private ILoadedObjectData _fetchedOrderItemData1;
+    private ILoadedObjectData _fetchedOrderItemData2;
+    private ILoadedObjectData _fetchedOrderItemData3;
 
     private Customer _fetchedCustomer;
+    private ILoadedObjectData _fetchedCustomerData;
     private IndustrialSector _indirectFetchedIndustrialSector;
+    private ILoadedObjectData _indirectFetchedIndustrialSectorData;
 
     public override void SetUp ()
     {
@@ -73,13 +80,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _originatingOrder1 = DomainObjectMother.CreateFakeObject<Order>();
       _originatingOrder2 = DomainObjectMother.CreateFakeObject<Order>();
+      
+      _originatingOrderData1 = MockRepository.GenerateStub<ILoadedObjectData>();
+      _originatingOrderData1.Stub (stub => stub.GetDomainObjectReference()).Return (_originatingOrder1);
+      _originatingOrderData2 = MockRepository.GenerateStub<ILoadedObjectData> ();
+      _originatingOrderData2.Stub (stub => stub.GetDomainObjectReference ()).Return (_originatingOrder2);
 
       _fetchedOrderItem1 = DomainObjectMother.CreateFakeObject<OrderItem>();
       _fetchedOrderItem2 = DomainObjectMother.CreateFakeObject<OrderItem>();
       _fetchedOrderItem3 = DomainObjectMother.CreateFakeObject<OrderItem>();
 
+      _fetchedOrderItemData1 = MockRepository.GenerateStub<ILoadedObjectData> ();
+      _fetchedOrderItemData1.Stub (stub => stub.GetDomainObjectReference ()).Return (_fetchedOrderItem1);
+      _fetchedOrderItemData2 = MockRepository.GenerateStub<ILoadedObjectData> ();
+      _fetchedOrderItemData2.Stub (stub => stub.GetDomainObjectReference ()).Return (_fetchedOrderItem2);
+      _fetchedOrderItemData3 = MockRepository.GenerateStub<ILoadedObjectData> ();
+      _fetchedOrderItemData3.Stub (stub => stub.GetDomainObjectReference ()).Return (_fetchedOrderItem3);
+
       _fetchedCustomer = DomainObjectMother.CreateFakeObject<Customer>();
+      _fetchedCustomerData = MockRepository.GenerateStub<ILoadedObjectData> ();
+      _fetchedCustomerData.Stub (stub => stub.GetDomainObjectReference ()).Return (_fetchedCustomer);
       _indirectFetchedIndustrialSector = DomainObjectMother.CreateFakeObject<IndustrialSector> ();
+      _indirectFetchedIndustrialSectorData = MockRepository.GenerateStub<ILoadedObjectData> ();
+      _indirectFetchedIndustrialSectorData.Stub (stub => stub.GetDomainObjectReference ()).Return (_indirectFetchedIndustrialSector);
     }
 
     [Test]
@@ -103,15 +126,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjects1 = new[] { _fetchedOrderItem1, _fetchedOrderItem2, _fetchedOrderItem3 };
       var relatedObjects2 = new[] { _fetchedCustomer };
 
+      var originatingObjectsData = new[] { _originatingOrderData1, _originatingOrderData2 };
+      var relatedObjectsData1 = new[] { _fetchedOrderItemData1, _fetchedOrderItemData2, _fetchedOrderItemData3 };
+      var relatedObjectsData2 = new[] { _fetchedCustomerData };
+
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<Order> (_queryStub))
-          .Return (originatingObjects);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_queryStub))
+          .Return (originatingObjectsData);
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_fetchQueryStub1))
-          .Return (relatedObjects1);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_fetchQueryStub1))
+          .Return (relatedObjectsData1);
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_fetchQueryStub2))
-          .Return (relatedObjects2);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_fetchQueryStub2))
+          .Return (relatedObjectsData2);
       _decoratedObjectLoaderMock.Replay();
 
       _registrationAgentMock
@@ -120,11 +147,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (mock => mock.GroupAndRegisterRelatedObjects (_customerEndPointDefinition, originatingObjects, relatedObjects2));
       _registrationAgentMock.Replay();
 
-      var result = _decorator.GetOrLoadCollectionQueryResult<Order> (_queryStub);
+      var result = _decorator.GetOrLoadCollectionQueryResult (_queryStub);
 
       _decoratedObjectLoaderMock.VerifyAllExpectations();
       _registrationAgentMock.VerifyAllExpectations();
-      Assert.That (result, Is.EqualTo (originatingObjects));
+      Assert.That (result, Is.EqualTo (originatingObjectsData));
     }
 
     [Test]
@@ -144,15 +171,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var relatedObjects = new[] { _fetchedCustomer };
       var indirectRelatedObjects = new[] { _indirectFetchedIndustrialSector };
 
+      var originatingObjectsData = new[] { _originatingOrderData1, _originatingOrderData2 };
+      var relatedObjectsData = new[] { _fetchedCustomerData };
+      var indirectRelatedObjectsData = new[] { _indirectFetchedIndustrialSectorData };
+
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<Order> (_queryStub))
-          .Return (originatingObjects);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_queryStub))
+          .Return (originatingObjectsData);
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_fetchQueryStub1))
-          .Return (relatedObjects);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_fetchQueryStub1))
+          .Return (relatedObjectsData);
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_fetchQueryStub2))
-          .Return (indirectRelatedObjects);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_fetchQueryStub2))
+          .Return (indirectRelatedObjectsData);
       _decoratedObjectLoaderMock.Replay ();
 
       _registrationAgentMock
@@ -161,11 +192,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Expect (mock => mock.GroupAndRegisterRelatedObjects (_industrialSectorEndPointDefinition, relatedObjects, indirectRelatedObjects));
       _registrationAgentMock.Replay ();
 
-      var result = _decorator.GetOrLoadCollectionQueryResult<Order> (_queryStub);
+      var result = _decorator.GetOrLoadCollectionQueryResult (_queryStub);
 
       _decoratedObjectLoaderMock.VerifyAllExpectations ();
       _registrationAgentMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (originatingObjects));
+      Assert.That (result, Is.EqualTo (originatingObjectsData));
     }
 
     [Test]
@@ -181,12 +212,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var originatingObjects = new[] { _originatingOrder1, _originatingOrder2 };
       var relatedObjects = new[] { _fetchedOrderItem1, _fetchedOrderItem2, _fetchedOrderItem3 };
 
+      var originatingObjectsData = new[] { _originatingOrderData1, _originatingOrderData2 };
+      var relatedObjectsData = new[] { _fetchedOrderItemData1, _fetchedOrderItemData2, _fetchedOrderItemData3 };
+
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<Order> (_queryStub))
-          .Return (originatingObjects);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_queryStub))
+          .Return (originatingObjectsData);
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_fetchQueryStub1))
-          .Return (relatedObjects);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_fetchQueryStub1))
+          .Return (relatedObjectsData);
       _decoratedObjectLoaderMock.Replay();
 
       var invalidOperationException = new InvalidOperationException ("There was a problem registering stuff.");
@@ -199,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       Assert.That (
           () =>
-          _decorator.GetOrLoadCollectionQueryResult<Order> (_queryStub),
+          _decorator.GetOrLoadCollectionQueryResult (_queryStub),
           Throws.Exception.TypeOf<UnexpectedQueryResultException> ()
               .And.With.InnerException.SameAs (invalidOperationException)
               .And.With.Message.EqualTo ("Eager fetching encountered an unexpected query result: There was a problem registering stuff."));
@@ -215,17 +249,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
           .Stub (stub => stub.EagerFetchQueries)
           .Return (new EagerFetchQueryCollection { { _orderTicketEndPointDefinition, _fetchQueryStub1 } });
 
-      var originatingObjects = new Order[0];
+      var originatingObjects = new DomainObject[0];
+      var originatingObjectsData = new ILoadedObjectData[0];
 
       _decoratedObjectLoaderMock
-          .Expect (mock => mock.GetOrLoadCollectionQueryResult<Order> (_queryStub))
-          .Return (originatingObjects);
+          .Expect (mock => mock.GetOrLoadCollectionQueryResult (_queryStub))
+          .Return (originatingObjectsData);
       _decoratedObjectLoaderMock.Replay ();
       _registrationAgentMock.Replay ();
 
-      var result = _decorator.GetOrLoadCollectionQueryResult<Order> (_queryStub);
+      var result = _decorator.GetOrLoadCollectionQueryResult (_queryStub);
 
-      _decoratedObjectLoaderMock.AssertWasNotCalled (mock => mock.GetOrLoadCollectionQueryResult<DomainObject> (_fetchQueryStub1));
+      _decoratedObjectLoaderMock.AssertWasNotCalled (mock => mock.GetOrLoadCollectionQueryResult (_fetchQueryStub1));
 
       _decoratedObjectLoaderMock.VerifyAllExpectations ();
       _registrationAgentMock.VerifyAllExpectations ();

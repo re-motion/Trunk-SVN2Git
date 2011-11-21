@@ -26,27 +26,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableObjectLoaderFake : IObjectLoader
   {
-    public DomainObject LoadObject (ObjectID id)
+    public ILoadedObjectData LoadObject (ObjectID id)
     {
       throw new NotImplementedException();
     }
 
-    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+    public ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
     {
       throw new NotImplementedException();
     }
 
-    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
+    public ILoadedObjectData GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
     {
       throw new NotImplementedException();
     }
 
-    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
+    public ICollection<ILoadedObjectData> GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
     {
       throw new NotImplementedException();
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query) where T: DomainObject
+    public ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query)
     {
       throw new NotImplementedException();
     }

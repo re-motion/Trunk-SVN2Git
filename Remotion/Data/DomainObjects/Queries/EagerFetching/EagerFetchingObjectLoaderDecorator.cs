@@ -21,11 +21,12 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 {
   /// <summary>
-  /// Decorates <see cref="IObjectLoader"/> to include eager fetching when executing <see cref="IObjectLoader.GetOrLoadCollectionQueryResult{T}"/>.
+  /// Decorates <see cref="IObjectLoader"/> to include eager fetching when executing <see cref="IObjectLoader.GetOrLoadCollectionQueryResult"/>.
   /// </summary>
   [Serializable]
   public class EagerFetchingObjectLoaderDecorator : IObjectLoader
@@ -54,41 +55,41 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       get { return _registrationAgent; }
     }
 
-    public DomainObject LoadObject (ObjectID id)
+    public ILoadedObjectData LoadObject (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       return _decoratedObjectLoader.LoadObject (id);
     }
 
-    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+    public ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
       return _decoratedObjectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound);
     }
 
-    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
+    public ILoadedObjectData GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       return _decoratedObjectLoader.GetOrLoadRelatedObject (relationEndPointID);
     }
 
-    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
+    public ICollection<ILoadedObjectData> GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       return _decoratedObjectLoader.GetOrLoadRelatedObjects (relationEndPointID);
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query) where T : DomainObject
+    public ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
-      var queryResult = _decoratedObjectLoader.GetOrLoadCollectionQueryResult<T> (query);
+      var queryResult = _decoratedObjectLoader.GetOrLoadCollectionQueryResult (query);
 
-      if (queryResult.Length > 0)
+      if (queryResult.Count > 0)
       {
         foreach (var fetchQuery in query.EagerFetchQueries)
         {
           PerformEagerFetching (
-              queryResult,
+              queryResult.Select (data => data.GetDomainObjectReference()).ToArray(),
               fetchQuery.Key,
               fetchQuery.Value);
         }
@@ -109,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
           fetchQuery.Statement);
 
       // Since we are calling GetOrLoadCollectionQueryResult on this (rather than _decoratedObjectLoader), this will trigger nested eager fetching.
-      var fetchedObjects = GetOrLoadCollectionQueryResult<DomainObject> (fetchQuery);
+      var fetchedObjects = GetOrLoadCollectionQueryResult (fetchQuery).Select (data => data.GetDomainObjectReference()).ToArray();
       s_log.DebugFormat (
           "The eager fetch query for {0} yielded {1} related objects for {2} original objects.",
           relationEndPointDefinition.PropertyName,

@@ -243,7 +243,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (collectionEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var domainObjects = _objectLoader.GetOrLoadRelatedObjects (collectionEndPoint.ID);
+      var loadedData = _objectLoader.GetOrLoadRelatedObjects (collectionEndPoint.ID);
+      var domainObjects = loadedData.Select (data => data.GetDomainObjectReference()).ToArray();
       collectionEndPoint.MarkDataComplete (domainObjects);
     }
 
@@ -257,7 +258,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (virtualObjectEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var domainObject = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID);
+      var loadedObjectData = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID);
+      var domainObject = loadedObjectData.GetDomainObjectReference();
 
       // Since RelationEndPointManager.RegisterEndPoint contains a query optimization for 1:1 relations, it is possible that
       // loading the related object has already marked the end-point complete. In that case, we won't call it again (to avoid an exception).

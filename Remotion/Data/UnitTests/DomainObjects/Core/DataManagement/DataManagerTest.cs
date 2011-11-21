@@ -800,7 +800,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _objectLoaderMock
           .Expect (mock => mock.LoadObject (dataContainer.ID))
           .WhenCalled (mi => DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, dataContainer))
-          .Return (dataContainer.DomainObject);
+          .Return (new FreshlyLoadedObjectData (dataContainer));
       _objectLoaderMock.Replay ();
 
       var result = _dataManagerWithMocks.GetDataContainerWithLazyLoad (dataContainer.ID);
@@ -836,7 +836,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
                 DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, nonLoadedDataContainer1);
                 DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, nonLoadedDataContainer2);
               })
-          .Return (new[] { nonLoadedDataContainer1.DomainObject, nonLoadedDataContainer2.DomainObject });
+          .Return (new[] { new FreshlyLoadedObjectData (nonLoadedDataContainer1), new FreshlyLoadedObjectData (nonLoadedDataContainer2) });
       _objectLoaderMock.Replay ();
 
       var result = _dataManagerWithMocks.GetDataContainersWithLazyLoad (
@@ -854,7 +854,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           .Expect (mock => mock.LoadObjects (
               Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 }),
               Arg.Is (false)))
-          .Return (new DomainObject[] { null });
+          .Return (new[] { new NullLoadedObjectData() });
       _objectLoaderMock.Replay ();
 
       var result = _dataManagerWithMocks.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1 }, false);
@@ -886,21 +886,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      var loaderResult = new[] { DomainObjectMother.CreateFakeObject<OrderItem> () };
+      var fakeOrderItem = DomainObjectMother.CreateFakeObject<OrderItem>();
+      var loadedObjectDataStub = MockRepository.GenerateStub<ILoadedObjectData>();
+      loadedObjectDataStub.Stub (stub => stub.GetDomainObjectReference()).Return (fakeOrderItem);
 
       var endPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
       endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
       endPointMock.Stub(stub => stub.IsDataComplete).Return(false);
-      endPointMock.Expect (mock => mock.MarkDataComplete (loaderResult));
+      endPointMock.Expect (mock => mock.MarkDataComplete (Arg<DomainObject[]>.List.Equal (new[] { fakeOrderItem })));
       endPointMock.Replay();
 
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.GetOrLoadRelatedObjects (
-              Arg.Is (endPointID)))
-          .Return (loaderResult);
+          .Expect (mock => mock.GetOrLoadRelatedObjects (Arg.Is (endPointID)))
+          .Return (new[] { loadedObjectDataStub });
       _objectLoaderMock.Replay ();
 
       _dataManagerWithMocks.LoadLazyCollectionEndPoint (endPointMock);
@@ -938,8 +939,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var loaderResult = DomainObjectMother.CreateFakeObject<OrderTicket>();
-
+      var fakeOrderTicket = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+      var loadedObjectDataStub = MockRepository.GenerateStub<ILoadedObjectData> ();
+      loadedObjectDataStub.Stub (stub => stub.GetDomainObjectReference ()).Return (fakeOrderTicket);
+      
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
       endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
@@ -949,9 +952,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.GetOrLoadRelatedObject (
-              Arg.Is (endPointID)))
-          .Return (loaderResult)
+          .Expect (mock => mock.GetOrLoadRelatedObject (Arg.Is (endPointID)))
+          .Return (loadedObjectDataStub)
           .WhenCalled (mi => endPointMock.Stub (stub => stub.IsDataComplete).Return (true));
       _objectLoaderMock.Replay ();
 
@@ -959,7 +961,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _objectLoaderMock.VerifyAllExpectations ();
 
-      endPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (loaderResult));
+      endPointMock.AssertWasNotCalled (mock => mock.MarkDataComplete (fakeOrderTicket));
       endPointMock.VerifyAllExpectations ();
     }
 
@@ -968,21 +970,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      var loaderResult = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+      var fakeOrderTicket = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+      var loadedObjectDataStub = MockRepository.GenerateStub<ILoadedObjectData> ();
+      loadedObjectDataStub.Stub (stub => stub.GetDomainObjectReference ()).Return (fakeOrderTicket);
 
       var endPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
       endPointMock.Stub (stub => stub.Definition).Return (endPointID.Definition);
       endPointMock.Stub (stub => stub.IsDataComplete).Return (false);
-      endPointMock.Expect (mock => mock.MarkDataComplete (loaderResult));
+      endPointMock.Expect (mock => mock.MarkDataComplete (fakeOrderTicket));
       endPointMock.Replay ();
 
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
 
       _objectLoaderMock
-          .Expect (mock => mock.GetOrLoadRelatedObject (
-              Arg.Is (endPointID)))
-          .Return (loaderResult);
+          .Expect (mock => mock.GetOrLoadRelatedObject (Arg.Is (endPointID)))
+          .Return (loadedObjectDataStub);
       _objectLoaderMock.Replay ();
 
       _dataManagerWithMocks.LoadLazyVirtualObjectEndPoint (endPointMock);
@@ -1016,17 +1019,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void LoadLazyDataContainer ()
     {
-      var fakeObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      var fakeDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      fakeDataContainer.SetDomainObject (fakeObject);
+      var fakeDataContainer = PrepareNonLoadedDataContainer ();
 
       _objectLoaderMock
-          .Expect (mock => mock.LoadObject (DomainObjectIDs.Order1))
-          .Return (fakeObject)
+          .Expect (mock => mock.LoadObject (fakeDataContainer.ID))
+          .Return (new FreshlyLoadedObjectData (fakeDataContainer))
           .WhenCalled (mi => DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, fakeDataContainer));
       _objectLoaderMock.Replay();
 
-      var result = _dataManagerWithMocks.LoadLazyDataContainer (DomainObjectIDs.Order1);
+      var result = _dataManagerWithMocks.LoadLazyDataContainer (fakeDataContainer.ID);
 
       _objectLoaderMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeDataContainer));
@@ -1128,7 +1129,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var nonLoadedDomainObject = DomainObjectMother.CreateFakeObject<Order> ();
       var nonLoadedDataContainer = DataContainer.CreateNew (nonLoadedDomainObject.ID);
-      nonLoadedDataContainer.SetDomainObject (nonLoadedDomainObject);
       return nonLoadedDataContainer;
     }
 

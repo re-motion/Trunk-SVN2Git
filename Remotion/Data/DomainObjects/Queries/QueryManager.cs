@@ -19,6 +19,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
@@ -157,10 +158,26 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.QueryType == QueryType.Scalar)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
-      var resultArray = _objectLoader.GetOrLoadCollectionQueryResult<T> (
-          query);
+      var resultArray = _objectLoader
+          .GetOrLoadCollectionQueryResult (query)
+          .Select (data => ConvertLoadedDomainObject<T> (data.GetDomainObjectReference())).ToArray();
       var queryResult = new QueryResult<T> (query, resultArray);
       return _transactionEventSink.FilterQueryResult (_clientTransaction, queryResult);
     }
+
+    private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject
+    {
+      if (domainObject == null || domainObject is T)
+        return (T) domainObject;
+      else
+      {
+        var message = string.Format (
+            "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
+            domainObject.GetPublicDomainObjectType (),
+            typeof (T));
+        throw new UnexpectedQueryResultException (message);
+      }
+    }
+
   }
 }

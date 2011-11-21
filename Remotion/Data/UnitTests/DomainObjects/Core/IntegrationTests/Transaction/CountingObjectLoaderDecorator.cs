@@ -34,31 +34,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public int NumberOfCallsToLoadObject { get; set; }
     public int NumberOfCallsToLoadRelatedObject { get; set; }
 
-    public DomainObject LoadObject (ObjectID id)
+    public ILoadedObjectData LoadObject (ObjectID id)
     {
       ++NumberOfCallsToLoadObject;
       return _decorated.LoadObject (id);
     }
 
-    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+    public ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
     {
       return _decorated.LoadObjects (idsToBeLoaded, throwOnNotFound);
     }
 
-    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
+    public ILoadedObjectData GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
     {
       ++NumberOfCallsToLoadRelatedObject;
       return _decorated.GetOrLoadRelatedObject (relationEndPointID);
     }
 
-    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
+    public ICollection<ILoadedObjectData> GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
     {
       return _decorated.GetOrLoadRelatedObjects (relationEndPointID);
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query) where T: DomainObject
+    public ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query)
     {
-      return _decorated.GetOrLoadCollectionQueryResult<T> (query);
+      return _decorated.GetOrLoadCollectionQueryResult (query);
     }
   }
 }

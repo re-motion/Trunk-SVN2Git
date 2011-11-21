@@ -27,11 +27,14 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Implements the mechanisms for loading a set of <see cref="DomainObject"/> objects into a <see cref="ClientTransaction"/>.
-  /// This class should only be used by <see cref="ClientTransaction"/> and its subclasses.
+  /// Implements the mechanisms for loading a set of <see cref="DomainObject"/> objects into a <see cref="ClientTransaction"/> by acting as a
+  /// facade for <see cref="IPersistenceStrategy"/> and <see cref="ILoadedObjectDataRegistrationAgent"/>.
   /// </summary>
   /// <remarks>
-  /// This class signals all load-related events, but it does not signal the <see cref="IClientTransactionListener.FilterQueryResult{T}"/> event.
+  /// <para>
+  /// This class (indirectly, via <see cref="ObjectPersistence.LoadedObjectDataRegistrationAgent"/>) signals all load-related events, but it does not 
+  /// signal the <see cref="IClientTransactionListener.FilterQueryResult{T}"/> event.
+  /// </para>
   /// </remarks>
   [Serializable]
   public class ObjectLoader : IObjectLoader
@@ -78,15 +81,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _loadedObjectDataProvider; }
     }
 
-    public DomainObject LoadObject (ObjectID id)
+    public ILoadedObjectData LoadObject (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
       var loadedObjectData = _persistenceStrategy.LoadObjectData (id);
-      return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      return loadedObjectData;
     }
 
-    public DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
+    public ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
 
@@ -99,10 +103,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
 
       _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
-      return loadedObjectData.Select (data => data.GetDomainObjectReference()).ToArray();
+      return loadedObjectData;
     }
 
-    public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
+    public ILoadedObjectData GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       
@@ -113,46 +117,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
       var loadedObjectData = _persistenceStrategy.ResolveObjectRelationData (relationEndPointID, _loadedObjectDataProvider);
-      return _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      return loadedObjectData;
     }
 
-    public DomainObject[] GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
+    public ICollection<ILoadedObjectData> GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
 
       if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("GetOrLoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
-      var loadedObjects = _persistenceStrategy.ResolveCollectionRelationData (relationEndPointID, _loadedObjectDataProvider);
-      return _loadedObjectDataRegistrationAgent
-          .RegisterIfRequired (loadedObjects, _dataContainerLifetimeManager)
-          .Select (ConvertLoadedDomainObject<DomainObject>)
-          .ToArray();
+      var loadedObjectData = _persistenceStrategy.ResolveCollectionRelationData (relationEndPointID, _loadedObjectDataProvider).ConvertToCollection();
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      return loadedObjectData;
     }
 
-    public T[] GetOrLoadCollectionQueryResult<T> (IQuery query) where T: DomainObject
+    public ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, _loadedObjectDataProvider);
-      return _loadedObjectDataRegistrationAgent
-          .RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager)
-          .Select (ConvertLoadedDomainObject<T>)
-          .ToArray ();
-    }
-
-    private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject
-    {
-      if (domainObject == null || domainObject is T)
-        return (T) domainObject;
-      else
-      {
-        var message = string.Format (
-            "The query returned an object of type '{0}', but a query result of type '{1}' was expected.",
-            domainObject.GetPublicDomainObjectType (),
-            typeof (T));
-        throw new UnexpectedQueryResultException (message);
-      }
+      var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, _loadedObjectDataProvider).ConvertToCollection();
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      return loadedObjectData;
     }
   }
 }

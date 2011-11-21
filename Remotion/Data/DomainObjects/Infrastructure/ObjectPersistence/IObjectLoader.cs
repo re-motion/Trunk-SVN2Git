@@ -25,16 +25,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// </summary>
   public interface IObjectLoader
   {
-    DomainObject LoadObject (ObjectID id);
-    DomainObject[] LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound);
+    ILoadedObjectData LoadObject (ObjectID id);
+    ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound);
 
-    DomainObject GetOrLoadRelatedObject (
-        RelationEndPointID relationEndPointID);
+    ILoadedObjectData GetOrLoadRelatedObject (RelationEndPointID relationEndPointID);
+    ICollection<ILoadedObjectData> GetOrLoadRelatedObjects (RelationEndPointID relationEndPointID);
 
-    DomainObject[] GetOrLoadRelatedObjects (
-        RelationEndPointID relationEndPointID);
-
-    T[] GetOrLoadCollectionQueryResult<T> (
-        IQuery query) where T: DomainObject;
+    ICollection<ILoadedObjectData> GetOrLoadCollectionQueryResult (IQuery query);
   }
 }
