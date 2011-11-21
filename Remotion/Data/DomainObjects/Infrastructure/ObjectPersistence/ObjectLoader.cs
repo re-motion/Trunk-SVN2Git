@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
@@ -92,20 +91,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
 
       var idsToBeLoadedAsCollection = idsToBeLoaded.ConvertToCollection();
-      var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoadedAsCollection, throwOnNotFound);
+      var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoadedAsCollection, throwOnNotFound).ConvertToCollection();
 
-      // TODO 4509
-      //Assertion.IsTrue (dataContainers.Count == idsToBeLoaded.Count, "Persistence strategy must return exactly as many items as requested.");
-      //Assertion.DebugAssert (
-      //    dataContainers.Select ((dc, i) => dc != null ? dc.ID : idsToBeLoaded[i]).SequenceEqual (idsToBeLoaded), 
-      //    "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
+      Assertion.IsTrue (loadedObjectData.Count == idsToBeLoadedAsCollection.Count, "Persistence strategy must return exactly as many items as requested.");
+      Assertion.DebugAssert (
+          loadedObjectData.Zip (idsToBeLoadedAsCollection).All (tuple => tuple.Item1.ObjectID == null || tuple.Item1.ObjectID == tuple.Item2), 
+          "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
 
-      var objectDictionary = _loadedObjectDataRegistrationAgent
-          .RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager)
-          .Select (ConvertLoadedDomainObject<DomainObject>)
-          .Where (domainObject => domainObject != null)
-          .ToDictionary (domainObject => domainObject.ID);
-      return idsToBeLoadedAsCollection.Select (id => objectDictionary.GetValueOrDefault (id)).ToArray ();
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      return loadedObjectData.Select (data => data.GetDomainObjectReference()).ToArray();
     }
 
     public DomainObject GetOrLoadRelatedObject (RelationEndPointID relationEndPointID)

@@ -77,11 +77,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       {
         var dataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
         return dataContainers.Select (
-            dataContainer =>
-            {
-              Assertion.IsNotNull (dataContainer);
-              return (ILoadedObjectData) new FreshlyLoadedObjectData (dataContainer);
-            });
+            dataContainer => dataContainer == null 
+                ? (ILoadedObjectData) new NullLoadedObjectData() 
+                : new FreshlyLoadedObjectData (dataContainer));
       }
     }
 

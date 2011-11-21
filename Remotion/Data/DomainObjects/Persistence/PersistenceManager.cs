@@ -121,27 +121,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       return result.LocatedObject;
     }
 
-    private Exception CheckLoadedDataContainer (ObjectLookupResult<DataContainer> lookupResult, bool throwOnNotFound)
-    {
-      if (lookupResult.LocatedObject != null)
-      {
-        if (lookupResult.ObjectID.ClassID != lookupResult.LocatedObject.ID.ClassID)
-        {
-          return CreatePersistenceException (
-              "The ClassID of the provided ObjectID '{0}' and the ClassID of the loaded DataContainer '{1}' differ.",
-              lookupResult.ObjectID,
-              lookupResult.LocatedObject.ID);
-        }
-        else
-          return null;
-      }
-      else if (throwOnNotFound)
-        return new ObjectNotFoundException (lookupResult.ObjectID);
-      else
-        return null;
-    }
-
-    public DataContainerCollection LoadDataContainers (IEnumerable<ObjectID> ids, bool throwOnNotFound)
+    public IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids, bool throwOnNotFound)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("ids", ids);
@@ -149,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       var idsByProvider = GroupIDsByProvider (ids);
       var exceptions = new List<Exception>();
 
-      var unorderedResultCollection = new DataContainerCollection();
+      var unorderedResultDictionary = new Dictionary<ObjectID, DataContainer>();
       foreach (var idGroup in idsByProvider)
       {
         var provider = _storageProviderManager.GetMandatory (idGroup.Key);
@@ -159,34 +139,14 @@ namespace Remotion.Data.DomainObjects.Persistence
           if (exception != null)
             exceptions.Add (exception);
           else if (dataContainerLookupResult.LocatedObject != null)
-            unorderedResultCollection.Add (dataContainerLookupResult.LocatedObject);
+            unorderedResultDictionary.Add (dataContainerLookupResult.ObjectID, dataContainerLookupResult.LocatedObject);
         }
       }
 
       if (exceptions.Count > 0)
         throw new BulkLoadException (exceptions);
 
-      return SortDataContainers (unorderedResultCollection, ids);
-    }
-
-    private DataContainerCollection SortDataContainers (DataContainerCollection dataContainers, IEnumerable<ObjectID> orderedIDs)
-    {
-      var orderedResultCollection = new DataContainerCollection();
-      foreach (ObjectID id in orderedIDs)
-      {
-        DataContainer dataContainer = dataContainers[id];
-        if (dataContainer != null)
-          orderedResultCollection.Add (dataContainer);
-      }
-      return orderedResultCollection;
-    }
-
-    private IEnumerable<KeyValuePair<string, List<ObjectID>>> GroupIDsByProvider (IEnumerable<ObjectID> ids)
-    {
-      var result = new MultiDictionary<string, ObjectID>();
-      foreach (var id in ids)
-        result[id.StorageProviderDefinition.Name].Add (id);
-      return result;
+      return ids.Select (id => unorderedResultDictionary.GetValueOrDefault(id));
     }
 
     public DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)
@@ -326,5 +286,34 @@ namespace Remotion.Data.DomainObjects.Persistence
       if (_disposed)
         throw new ObjectDisposedException ("PersistenceManager", "A disposed PersistenceManager cannot be accessed.");
     }
+
+    private Exception CheckLoadedDataContainer (ObjectLookupResult<DataContainer> lookupResult, bool throwOnNotFound)
+    {
+      if (lookupResult.LocatedObject != null)
+      {
+        if (lookupResult.ObjectID.ClassID != lookupResult.LocatedObject.ID.ClassID)
+        {
+          return CreatePersistenceException (
+              "The ClassID of the provided ObjectID '{0}' and the ClassID of the loaded DataContainer '{1}' differ.",
+              lookupResult.ObjectID,
+              lookupResult.LocatedObject.ID);
+        }
+        else
+          return null;
+      }
+      else if (throwOnNotFound)
+        return new ObjectNotFoundException (lookupResult.ObjectID);
+      else
+        return null;
+    }
+
+    private IEnumerable<KeyValuePair<string, List<ObjectID>>> GroupIDsByProvider (IEnumerable<ObjectID> ids)
+    {
+      var result = new MultiDictionary<string, ObjectID> ();
+      foreach (var id in ids)
+        result[id.StorageProviderDefinition.Name].Add (id);
+      return result;
+    }
+
   }
 }

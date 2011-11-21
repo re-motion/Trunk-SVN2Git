@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Mocks_List = Rhino.Mocks.Constraints.List;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
@@ -75,14 +76,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     public void LoadDataContainers ()
     {
       Assert.AreNotEqual (DomainObjectIDs.Order1.StorageProviderDefinition.Name, DomainObjectIDs.Official1, "Different storage providers");
-      var officialStorageProvider =
-          (UnitTestStorageProviderStub)
-          _persistenceManager.StorageProviderManager.GetMandatory (DomainObjectIDs.Official1.StorageProviderDefinition.Name);
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
 
-      var mockRepository = new MockRepository();
-      var mockProvider = mockRepository.StrictMock<StorageProvider> (
-          officialStorageProvider.StorageProviderDefinition, storageNameProvider, SqlDialect.Instance, NullPersistenceExtension.Instance);
+      var mockRepository = new MockRepository ();
+      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
+      var storageProviderMock = mockRepository.StrictMock<StorageProvider> (
+          UnitTestStorageProviderDefinition, 
+          storageNameProvider, 
+          SqlDialect.Instance, 
+          NullPersistenceExtension.Instance);
 
       var officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);
       var officialDC2 = DataContainer.CreateNew (DomainObjectIDs.Official2);
@@ -91,18 +92,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       officialDCs.Add (new ObjectLookupResult<DataContainer>(DomainObjectIDs.Official1, officialDC1));
       officialDCs.Add (new ObjectLookupResult<DataContainer>(DomainObjectIDs.Official2, officialDC2));
 
-      Expect.Call (mockProvider.LoadDataContainers (null)).Constraints (
-          Mocks_List.Equal (
-              new object[]
-              {
-                  DomainObjectIDs.Official1,
-                  DomainObjectIDs.Official2
-              })).Return (officialDCs);
+      storageProviderMock
+          .Expect (mock => mock.LoadDataContainers (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Official1, DomainObjectIDs.Official2 })))
+          .Return (officialDCs);
 
       mockRepository.ReplayAll();
 
-      DataContainerCollection actualDataContainers;
-      using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (mockProvider))
+      DataContainer[] actualDataContainers;
+      using (UnitTestStorageProviderStub.EnterMockStorageProviderScope (storageProviderMock))
       {
         actualDataContainers = _persistenceManager.LoadDataContainers (
             new[]
@@ -110,12 +107,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
                 DomainObjectIDs.Order1, DomainObjectIDs.Official1, DomainObjectIDs.Order2,
                 DomainObjectIDs.Official2
             },
-            true);
+            true).ToArray();
       }
 
-      mockRepository.VerifyAll();
+      mockRepository.VerifyAll ();
 
-      Assert.AreEqual (4, actualDataContainers.Count);
+      Assert.AreEqual (4, actualDataContainers.Length);
       Assert.AreEqual (DomainObjectIDs.Order1, actualDataContainers[0].ID);
       Assert.AreSame (officialDC1, actualDataContainers[1]);
       Assert.AreEqual (DomainObjectIDs.Order2, actualDataContainers[2].ID);
@@ -142,10 +139,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       Guid guid1 = new Guid ("11111111111111111111111111111111");
       Guid guid2 = new Guid ("22222222222222222222222222222222");
-      DataContainerCollection dataContainers = _persistenceManager.LoadDataContainers (
-          new [] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 }, false);
-      Assert.AreEqual (1, dataContainers.Count);
-      Assert.AreEqual (DomainObjectIDs.Order1, dataContainers[0].ID);
+      var objectIds = new[] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 };
+      
+      var dataContainers = _persistenceManager.LoadDataContainers (objectIds, false).ToArray();
+      
+      Assert.AreEqual (3, dataContainers.Length);
+      Assert.IsNull (dataContainers[0]);
+      Assert.IsNull (dataContainers[1]);
+      Assert.AreEqual (DomainObjectIDs.Order1, dataContainers[2].ID);
     }
 
     [Test]

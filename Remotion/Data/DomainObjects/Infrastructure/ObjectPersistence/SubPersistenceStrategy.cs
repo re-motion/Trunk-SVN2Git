@@ -81,13 +81,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         {
           // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
           // TransferParentObject below will throw on invalid IDs.
-          parentObjects = parentTransactionOperations.TryGetObjects (objectIDs).Where (obj => obj != null);
+          parentObjects = parentTransactionOperations.TryGetObjects (objectIDs);
         }
 
         // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
         return parentObjects
-            .Select (parentObject => (ILoadedObjectData) TransferParentObject (parentObject.ID, parentTransactionOperations))
-            .ToList ();
+          .Select (parentObject => 
+              parentObject == null 
+              ? (ILoadedObjectData) new NullLoadedObjectData() 
+              : TransferParentObject (parentObject.ID, parentTransactionOperations))
+          .ToList ();
       }
     }
 
