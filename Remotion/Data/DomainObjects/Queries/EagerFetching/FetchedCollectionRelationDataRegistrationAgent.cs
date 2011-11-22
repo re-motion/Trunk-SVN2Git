@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
 using Remotion.Utilities;
@@ -58,9 +59,9 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     public override void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects)
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        ICollection<ILoadedObjectData> originatingObjects, 
+        ICollection<ILoadedObjectData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
@@ -76,27 +77,28 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       RegisterEndPointData (relationEndPointDefinition, originatingObjects, groupedRelatedObjects);
     }
 
-    private ILookup<ObjectID, DomainObject> CorrelateRelatedObjects (
-        IEnumerable<DomainObject> relatedObjects, VirtualRelationEndPointDefinition relationEndPointDefinition)
+    private ILookup<ObjectID, ILoadedObjectData> CorrelateRelatedObjects (
+        IEnumerable<ILoadedObjectData> relatedObjects, 
+        VirtualRelationEndPointDefinition relationEndPointDefinition)
     {
-      var relatedObjectsWithForeignKey =
+      var relatedObjectsWithForeignKey = 
           GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, _loadedDataContainerProvider);
       return relatedObjectsWithForeignKey.ToLookup (k => k.Item1, k => k.Item2);
     }
 
     private void RegisterEndPointData (
        IRelationEndPointDefinition relationEndPointDefinition,
-       IEnumerable<DomainObject> originatingObjects,
-       ILookup<ObjectID, DomainObject> groupedRelatedObjects)
+       IEnumerable<ILoadedObjectData> originatingObjects,
+       ILookup<ObjectID, ILoadedObjectData> groupedRelatedObjects)
     {
       var relatedObjectsByOriginalObject = groupedRelatedObjects;
       foreach (var originalObject in originatingObjects)
       {
-        if (originalObject != null)
+        if (!originalObject.IsNull)
         {
-          var relationEndPointID = RelationEndPointID.Create (originalObject.ID, relationEndPointDefinition);
-          var relatedObjects = relatedObjectsByOriginalObject[originalObject.ID];
-          if (!TrySetCollectionEndPointData (relationEndPointID, relatedObjects.ToArray ()))
+          var relationEndPointID = RelationEndPointID.Create (originalObject.ObjectID, relationEndPointDefinition);
+          var relatedObjects = relatedObjectsByOriginalObject[originalObject.ObjectID];
+          if (!TrySetCollectionEndPointData (relationEndPointID, relatedObjects.Select (data => data.GetDomainObjectReference()) .ToArray ()))
             s_log.DebugFormat ("Relation data for relation end-point '{0}' is discarded; the end-point has already been loaded.", relationEndPointID);
         }
       }

@@ -217,6 +217,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\InvalidLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationAgentTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TestableClientTransactionComponentFactoryBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingTest.cs" />

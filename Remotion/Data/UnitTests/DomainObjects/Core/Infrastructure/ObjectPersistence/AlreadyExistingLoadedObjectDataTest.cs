@@ -79,5 +79,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       visitorMock.VerifyAllExpectations();
     }
+
+    [Test]
+    public void IsNull ()
+    {
+      Assert.That (((INullObject) _loadedObjectData).IsNull, Is.False);
+    }
   }
 }

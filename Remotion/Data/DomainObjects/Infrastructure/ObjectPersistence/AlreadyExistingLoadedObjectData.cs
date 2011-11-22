@@ -60,6 +60,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitAlreadyExistingLoadedObject (this);
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
  
 

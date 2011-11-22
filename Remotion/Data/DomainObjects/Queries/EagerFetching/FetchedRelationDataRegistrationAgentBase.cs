@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -30,23 +31,24 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   [Serializable]
   public abstract class FetchedRelationDataRegistrationAgentBase : IFetchedRelationDataRegistrationAgent
   {
-    public abstract void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects);
+    public abstract void GroupAndRegisterRelatedObjects (
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        ICollection<ILoadedObjectData> originatingObjects, 
+        ICollection<ILoadedObjectData> relatedObjects);
 
-    protected void CheckOriginatingObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<DomainObject> originatingObjects)
+    protected void CheckOriginatingObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<ILoadedObjectData> originatingObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
 
       foreach (var originatingObject in originatingObjects)
       {
-        if (originatingObject != null)
+        if (!originatingObject.IsNull)
           CheckClassDefinitionOfOriginatingObject (relationEndPointDefinition, originatingObject);
       }
     }
 
-    protected void CheckRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        IEnumerable<DomainObject> relatedObjects)
+    protected void CheckRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<ILoadedObjectData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
@@ -55,25 +57,25 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
       foreach (var fetchedObject in relatedObjects)
       {
-        if (fetchedObject != null)
+        if (!fetchedObject.IsNull)
           CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, fetchedObject, oppositeEndPointDefinition);
       }
     }
 
-    protected void CheckClassDefinitionOfOriginatingObject (IRelationEndPointDefinition relationEndPointDefinition, DomainObject originatingObject)
+    protected void CheckClassDefinitionOfOriginatingObject (IRelationEndPointDefinition relationEndPointDefinition, ILoadedObjectData originatingObject)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObject", originatingObject);
 
-      if (!relationEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (originatingObject.ID.ClassDefinition))
+      if (!relationEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (originatingObject.ObjectID.ClassDefinition))
       {
         var message = string.Format (
             "Cannot register relation end-point '{0}' for domain object '{1}'. The end-point belongs to an object of "
             + "class '{2}' but the domain object has class '{3}'.",
             relationEndPointDefinition.PropertyName,
-            originatingObject.ID,
+            originatingObject.ObjectID,
             relationEndPointDefinition.ClassDefinition.ID,
-            originatingObject.ID.ClassDefinition.ID);
+            originatingObject.ObjectID.ClassDefinition.ID);
 
         throw new InvalidOperationException (message);
       }
@@ -81,18 +83,18 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
     protected void CheckClassDefinitionOfRelatedObject (
         IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject relatedObject,
+        ILoadedObjectData relatedObject,
         IRelationEndPointDefinition oppositeEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("relatedObject", relatedObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointDefinition", oppositeEndPointDefinition);
 
-      if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObject.ID.ClassDefinition))
+      if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObject.ObjectID.ClassDefinition))
       {
         var message = string.Format (
             "Cannot associate object '{0}' with the relation end-point '{1}'. An object of type '{2}' was expected.",
-            relatedObject.ID,
+            relatedObject.ObjectID,
             relationEndPointDefinition.PropertyName,
             oppositeEndPointDefinition.ClassDefinition.ClassType);
 
@@ -100,33 +102,40 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       }
     }
 
-    protected IEnumerable<Tuple<ObjectID, DomainObject>> GetForeignKeysForVirtualEndPointDefinition (
-        IEnumerable<DomainObject> domainObjects, 
+    protected IEnumerable<Tuple<ObjectID, ILoadedObjectData>> GetForeignKeysForVirtualEndPointDefinition (
+        IEnumerable<ILoadedObjectData> domainObjects, 
         VirtualRelationEndPointDefinition virtualEndPointDefinition, 
         ILoadedDataContainerProvider loadedDataContainerProvider)
     {
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+      ArgumentUtility.CheckNotNull ("virtualEndPointDefinition", virtualEndPointDefinition);
+      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
+
       var oppositeEndPointDefinition = (RelationEndPointDefinition) virtualEndPointDefinition.GetOppositeEndPointDefinition ();
 
       // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query, so we can use it to correlate the related
       // objects with the originating objects.
-      // Bug: DataContainers from the ClientTransaction might mix with the query result, see  https://www.re-motion.org/jira/browse/RM-3995.
+      // TODO 3995: Bug: DataContainers from the ClientTransaction might mix with the query result, see  https://www.re-motion.org/jira/browse/RM-3995.
       return from relatedObject in domainObjects
-             where relatedObject != null
-             let dataContainer =
-                 CheckRelatedObjectAndGetDataContainer (relatedObject, virtualEndPointDefinition, oppositeEndPointDefinition, loadedDataContainerProvider)
+             where !relatedObject.IsNull
+             let dataContainer = CheckRelatedObjectAndGetDataContainer (
+                 relatedObject,
+                 virtualEndPointDefinition,
+                 oppositeEndPointDefinition,
+                 loadedDataContainerProvider)
              let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyDefinition.PropertyName]
              let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
              select Tuple.Create (originatingObjectID, relatedObject);
     }
 
     private DataContainer CheckRelatedObjectAndGetDataContainer (
-        DomainObject relatedObject,
+        ILoadedObjectData relatedObject,
         IRelationEndPointDefinition relationEndPointDefinition, 
         IRelationEndPointDefinition oppositeEndPointDefinition,
         ILoadedDataContainerProvider loadedDataContainerProvider)
     {
       CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
-      return loadedDataContainerProvider.GetDataContainerWithoutLoading (relatedObject.ID);
+      return loadedDataContainerProvider.GetDataContainerWithoutLoading (relatedObject.ObjectID);
     }
   }
 }

@@ -16,11 +16,11 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -32,14 +32,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
   {
     private FetchedRealObjectRelationDataRegistrationAgent _agent;
 
-    private OrderTicket _originatingOrderTicket1;
-    private OrderTicket _originatingOrderTicket2;
+    private ILoadedObjectData _originatingOrderTicketData1;
+    private ILoadedObjectData _originatingOrderTicketData2;
 
-    private Order _fetchedOrder1;
-    private Order _fetchedOrder2;
-    private Order _fetchedOrder3;
+    private ILoadedObjectData _fetchedOrderData1;
+    private ILoadedObjectData _fetchedOrderData2;
+    private ILoadedObjectData _fetchedOrderData3;
 
-    private ILoadedDataContainerProvider _loadedDataContainerProviderStub;
     private IVirtualEndPointProvider _virtualEndPointProviderMock;
 
     private IRelationEndPointDefinition _endPointDefinition;
@@ -50,14 +49,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent = new FetchedRealObjectRelationDataRegistrationAgent ();
 
-      _originatingOrderTicket1 = DomainObjectMother.CreateFakeObject<OrderTicket> ();
-      _originatingOrderTicket2 = DomainObjectMother.CreateFakeObject<OrderTicket> ();
+      var originatingOrderTicket1 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
+      var originatingOrderTicket2 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2);
 
-      _fetchedOrder1 = DomainObjectMother.CreateFakeObject<Order> ();
-      _fetchedOrder2 = DomainObjectMother.CreateFakeObject<Order> ();
-      _fetchedOrder3 = DomainObjectMother.CreateFakeObject<Order> ();
+      _originatingOrderTicketData1 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (originatingOrderTicket1);
+      _originatingOrderTicketData2 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (originatingOrderTicket2);
 
-      _loadedDataContainerProviderStub = MockRepository.GenerateStub<ILoadedDataContainerProvider> ();
+      var fetchedOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      var fetchedOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
+      var fetchedOrder3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
+
+      _fetchedOrderData1 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (fetchedOrder1);
+      _fetchedOrderData2 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (fetchedOrder2);
+      _fetchedOrderData3 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (fetchedOrder3);
+      
       _virtualEndPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
 
       _endPointDefinition = GetEndPointDefinition (typeof (OrderTicket), "Order");
@@ -70,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent.GroupAndRegisterRelatedObjects(
           _endPointDefinition,
-          new[] { _originatingOrderTicket1, _originatingOrderTicket2 },
-          new[] { _fetchedOrder1, _fetchedOrder2, _fetchedOrder3 });
+          new[] { _originatingOrderTicketData1, _originatingOrderTicketData2 },
+          new[] { _fetchedOrderData1, _fetchedOrderData2, _fetchedOrderData3 });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -81,10 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       _virtualEndPointProviderMock.Replay ();
 
-      _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition,
-          new DomainObject[] { null },
-          new DomainObject[0]);
+      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { new NullLoadedObjectData() }, new ILoadedObjectData[0]);
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -94,46 +96,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       _virtualEndPointProviderMock.Replay ();
 
-      _agent.GroupAndRegisterRelatedObjects (
-        _endPointDefinition,
-          new[] { _originatingOrderTicket1 },
-        new DomainObject[] { null });
+      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingOrderTicketData1 }, new[] { new NullLoadedObjectData() });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot register relation end-point "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' for domain object "
+        "Cannot register relation end-point 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order' for domain object "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid'. The end-point belongs to an object of class 'OrderTicket' but the domain object "
         + "has class 'Order'.")]
     public void GroupAndRegisterRelatedObjects_InvalidOriginalObject ()
     {
       _virtualEndPointProviderMock.Replay();
 
-      var invalidOriginalObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      _agent.GroupAndRegisterRelatedObjects (
-          _endPointDefinition,
-          new[] { invalidOriginalObject },
-          new DomainObject[0]);
+      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _fetchedOrderData1 }, new ILoadedObjectData[0]);
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "Cannot associate object 'OrderItem|2f4d42c7-7ffa-490d-bfcd-a9101bbf4e1a|System.Guid' with the relation end-point "
+        "Cannot associate object 'OrderTicket|0005bdf4-4ccc-4a41-b9b5-baab3eb95237|System.Guid' with the relation end-point " 
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order'. An object of type "
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' was expected.")]
     public void GroupAndRegisterRelatedObjects_InvalidRelatedObject ()
     {
       _virtualEndPointProviderMock.Replay();
 
-      var invalidFetchedObject = DomainObjectMother.CreateFakeObject<OrderItem> (DomainObjectIDs.OrderItem1);
-
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
-          new[] { _originatingOrderTicket1, _originatingOrderTicket2 }, 
-          new[] { invalidFetchedObject });
+          new[] { _originatingOrderTicketData1 }, 
+          new[] { _originatingOrderTicketData2 });
     }
 
     [Test]
@@ -142,7 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
 
       Assert.That (
-          () => _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { _originatingOrderTicket1 }, new[] { _fetchedOrder1 }), 
+          () => _agent.GroupAndRegisterRelatedObjects (endPointDefinition, new[] { _originatingOrderTicketData1 }, new[] { _fetchedOrderData1 }), 
           Throws.ArgumentException.With.Message.EqualTo (
               "Only non-virtual object-valued relation end-points can be handled by this registration agent.\r\nParameter name: relationEndPointDefinition"));
     }

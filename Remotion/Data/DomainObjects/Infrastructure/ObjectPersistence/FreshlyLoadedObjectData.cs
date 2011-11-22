@@ -47,5 +47,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitFreshlyLoadedObject (this);
     }
+
+    bool INullObject.IsNull
+    {
+      get { return false; }
+    }
   }
 }

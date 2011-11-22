@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -27,10 +29,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   [Serializable]
   public class FetchedRealObjectRelationDataRegistrationAgent : FetchedRelationDataRegistrationAgentBase
   {
-    public override void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects)
+    public override void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, ICollection<ILoadedObjectData> originatingObjects, ICollection<ILoadedObjectData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);

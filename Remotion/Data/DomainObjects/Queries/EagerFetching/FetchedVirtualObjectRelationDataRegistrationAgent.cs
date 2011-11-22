@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
 using Remotion.Utilities;
@@ -57,9 +58,9 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     public override void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects)
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        ICollection<ILoadedObjectData> originatingObjects, 
+        ICollection<ILoadedObjectData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
@@ -79,13 +80,15 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       RegisterEndPointData (relationEndPointDefinition, originatingObjects, groupedRelatedObjects);
     }
 
-    private IDictionary<ObjectID, DomainObject> CorrelateRelatedObjects (
-        IEnumerable<DomainObject> relatedObjects,
+    private IDictionary<ObjectID, ILoadedObjectData> CorrelateRelatedObjects (
+        IEnumerable<ILoadedObjectData> relatedObjects,
         VirtualRelationEndPointDefinition relationEndPointDefinition)
     {
       var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (
-          relatedObjects, relationEndPointDefinition, _loadedDataContainerProvider);
-      var dictionary = new Dictionary<ObjectID, DomainObject>();
+          relatedObjects,
+          relationEndPointDefinition,
+          _loadedDataContainerProvider);
+      var dictionary = new Dictionary<ObjectID, ILoadedObjectData>();
       foreach (var tuple in relatedObjectsWithForeignKey.Where (tuple => tuple.Item1 != null))
       {
         try
@@ -97,8 +100,8 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
           var message = string.Format (
               "Two items in the related object result set point back to the same object. This is not allowed in a 1:1 relation. "
               + "Object 1: '{0}'. Object 2: '{1}'. Foreign key property: '{2}'",
-              dictionary[tuple.Item1].ID,
-              tuple.Item2,
+              dictionary[tuple.Item1].ObjectID,
+              tuple.Item2.ObjectID,
               relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyName);
           throw new InvalidOperationException (message, ex);
         }
@@ -108,17 +111,17 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
     private void RegisterEndPointData (
        IRelationEndPointDefinition relationEndPointDefinition,
-       IEnumerable<DomainObject> originatingObjects,
-       IDictionary<ObjectID, DomainObject> groupedRelatedObjects)
+       IEnumerable<ILoadedObjectData> originatingObjects,
+       IDictionary<ObjectID, ILoadedObjectData> groupedRelatedObjects)
     {
       var relatedObjectsByOriginalObject = groupedRelatedObjects;
       foreach (var originalObject in originatingObjects)
       {
-        if (originalObject != null)
+        if (!originalObject.IsNull)
         {
-          var relationEndPointID = RelationEndPointID.Create (originalObject.ID, relationEndPointDefinition);
-          var relatedObject = relatedObjectsByOriginalObject.GetValueOrDefault (originalObject.ID);
-          if (!TrySetVirtualObjectEndPointData (relationEndPointID, relatedObject))
+          var relationEndPointID = RelationEndPointID.Create (originalObject.ObjectID, relationEndPointDefinition);
+          var relatedObject = relatedObjectsByOriginalObject.GetValueOrDefault (originalObject.ObjectID) ?? new NullLoadedObjectData();
+          if (!TrySetVirtualObjectEndPointData (relationEndPointID, relatedObject.GetDomainObjectReference()))
             s_log.DebugFormat ("Relation data for relation end-point '{0}' is discarded; the end-point has already been loaded.", relationEndPointID);
         }
       }

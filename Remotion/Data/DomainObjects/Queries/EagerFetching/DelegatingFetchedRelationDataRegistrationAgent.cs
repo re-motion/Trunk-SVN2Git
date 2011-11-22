@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -61,16 +63,15 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     public void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition,
-        DomainObject[] originatingObjects,
-        DomainObject[] relatedObjects)
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        ICollection<ILoadedObjectData> originatingObjects, 
+        ICollection<ILoadedObjectData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNullOrEmpty ("originatingObjects", originatingObjects);
 
       var specificAgent = GetSpecificAgent (relationEndPointDefinition);
-      specificAgent.GroupAndRegisterRelatedObjects (
-          relationEndPointDefinition, originatingObjects, relatedObjects);
+      specificAgent.GroupAndRegisterRelatedObjects (relationEndPointDefinition, originatingObjects, relatedObjects);
     }
 
     private IFetchedRelationDataRegistrationAgent GetSpecificAgent (IRelationEndPointDefinition relationEndPointDefinition)

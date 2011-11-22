@@ -16,9 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
@@ -38,10 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
     private DelegatingFetchedRelationDataRegistrationAgent _agent;
 
-    private ILoadedDataContainerProvider _loadedDataContainerProviderStub;
-    private IRelationEndPointProvider _relationEndPointProviderStub;
-    private DomainObject[] _originatingObjects;
-    private DomainObject[] _relatedObjects;
+    private ILoadedObjectData[] _originatingObjects;
+    private ILoadedObjectData[] _relatedObjects;
 
     public override void SetUp ()
     {
@@ -54,10 +50,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
 
       _agent = new DelegatingFetchedRelationDataRegistrationAgent (_realObjectAgentMock, _virtualObjectAgentMock, _collectionAgentMock);
 
-      _loadedDataContainerProviderStub = MockRepository.GenerateStub<ILoadedDataContainerProvider> ();
-      _relationEndPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _originatingObjects = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order> () };
-      _relatedObjects = new DomainObject[] { DomainObjectMother.CreateFakeObject<Order> () };
+      _originatingObjects = new[] { MockRepository.GenerateStub<ILoadedObjectData>() };
+      _relatedObjects = new[] { MockRepository.GenerateStub<ILoadedObjectData>() };
     }
 
     [Test]
@@ -145,12 +139,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
 
-      var relatedObjects = new DomainObject[0];
-      _collectionAgentMock
-          .Expect (
-              mock =>
-              mock.GroupAndRegisterRelatedObjects (
-                  endPointDefinition, _originatingObjects, relatedObjects));
+      var relatedObjects = new ILoadedObjectData[0];
+      _collectionAgentMock.Expect (mock => mock.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, relatedObjects));
 
       _mockRepository.ReplayAll ();
 

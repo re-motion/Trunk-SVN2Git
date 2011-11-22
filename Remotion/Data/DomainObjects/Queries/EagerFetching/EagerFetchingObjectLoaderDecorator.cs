@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Logging;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 {
@@ -89,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         foreach (var fetchQuery in query.EagerFetchQueries)
         {
           PerformEagerFetching (
-              queryResult.Select (data => data.GetDomainObjectReference()).ToArray(),
+              queryResult,
               fetchQuery.Key,
               fetchQuery.Value);
         }
@@ -99,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     private void PerformEagerFetching (
-        DomainObject[] originalObjects,
+        ICollection<ILoadedObjectData> originalObjects,
         IRelationEndPointDefinition relationEndPointDefinition,
         IQuery fetchQuery)
     {
@@ -110,12 +109,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
           fetchQuery.Statement);
 
       // Since we are calling GetOrLoadCollectionQueryResult on this (rather than _decoratedObjectLoader), this will trigger nested eager fetching.
-      var fetchedObjects = GetOrLoadCollectionQueryResult (fetchQuery).Select (data => data.GetDomainObjectReference()).ToArray();
+      var fetchedObjects = GetOrLoadCollectionQueryResult (fetchQuery);
       s_log.DebugFormat (
           "The eager fetch query for {0} yielded {1} related objects for {2} original objects.",
           relationEndPointDefinition.PropertyName,
-          fetchedObjects.Length,
-          originalObjects.Length);
+          fetchedObjects.Count,
+          originalObjects.Count);
 
       try
       {

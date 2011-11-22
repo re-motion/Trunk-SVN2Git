@@ -14,21 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Mapping;
+using Rhino.Mocks;
 
-namespace Remotion.Data.DomainObjects.Queries.EagerFetching
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
 {
-  /// <summary>
-  /// Registers a set of related objects with a set of originating objects based on an <see cref="IRelationEndPointDefinition"/>. If one of the 
-  /// relation end-points already has data registered, the new related object data is ignored.
-  /// </summary>
-  public interface IFetchedRelationDataRegistrationAgent
+  public static class LoadedObjectDataTestHelper
   {
-    void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition, 
-        ICollection<ILoadedObjectData> originatingObjects, 
-        ICollection<ILoadedObjectData> relatedObjects);
+    public static ILoadedObjectData CreateLoadedObjectDataStub (DomainObject domainObjectReference)
+    {
+      var originatingDataStub = MockRepository.GenerateStub<ILoadedObjectData>();
+      originatingDataStub.Stub (stub => stub.ObjectID).Return (domainObjectReference.ID);
+      originatingDataStub.Stub (stub => stub.GetDomainObjectReference ()).Return (domainObjectReference);
+      return originatingDataStub;
+    }
   }
 }

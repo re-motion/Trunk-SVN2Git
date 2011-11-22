@@ -15,7 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 
@@ -24,7 +25,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableFetchedRelationDataRegistrationAgentFake : IFetchedRelationDataRegistrationAgent
   {
-    public void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, DomainObject[] originatingObjects, DomainObject[] relatedObjects)
+    public void GroupAndRegisterRelatedObjects (
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        ICollection<ILoadedObjectData> originatingObjects, 
+        ICollection<ILoadedObjectData> relatedObjects)
     {
       throw new NotImplementedException();
     }
