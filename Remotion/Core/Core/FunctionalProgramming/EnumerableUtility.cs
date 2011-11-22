@@ -17,6 +17,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.FunctionalProgramming
 {
@@ -101,6 +103,21 @@ namespace Remotion.FunctionalProgramming
     public static IEnumerable<TItem> Singleton<TItem> (TItem item)
     {
       yield return item;
+    }
+
+    /// <summary>
+    /// Recursively select items from a tree data structure defined by a start element and a child selector function. 
+    /// Iterating the resulting sequence performs a depth-first traversal of the data structure.
+    /// </summary>
+    /// <typeparam name="T">The item type to select.</typeparam>
+    /// <param name="start">The item to start with.</param>
+    /// <param name="childrenSelector">A selector function that returns the child items of a given parent item.</param>
+    /// <returns>A sequence containing all items in the tree in a depth-first order.</returns>
+    public static IEnumerable<T> SelectRecursiveDepthFirst<T> (T start, Func<T, IEnumerable<T>> childrenSelector)
+    {
+      ArgumentUtility.CheckNotNull ("childrenSelector", childrenSelector);
+
+      return Singleton (start).Concat (childrenSelector (start).SelectMany (child => SelectRecursiveDepthFirst (child, childrenSelector)));
     }
   }
 }

@@ -217,6 +217,7 @@
     <Compile Include="ExtensibleEnums\TestDomain\MetallicColorExtensions.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\WrongColorValuesGeneric.cs" />
     <Compile Include="FunctionalProgramming\MaybeTest.cs" />
+    <Compile Include="FunctionalProgramming\TestDomain\RecursiveItem.cs" />
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="Interfaces\BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="Interfaces\BridgeInterfaces\IBootstrapStorageProviderTest.cs" />
