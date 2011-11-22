@@ -213,6 +213,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointProviderFake.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionComponentFactoryBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectDataTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectDataWithDataContainerFromDataSourceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\FreshlyLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\InvalidLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataProviderTest.cs" />

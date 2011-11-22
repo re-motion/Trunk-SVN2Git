@@ -7,7 +7,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// <summary>
   /// Represents an object that was freshly loaded from the data source.
   /// </summary>
-  public class FreshlyLoadedObjectData : ILoadedObjectData
+  public class FreshlyLoadedObjectData : ILoadedObjectDataWithDataContainerFromDataSource
   {
     private readonly DataContainer _freshlyLoadedDataContainer;
 
@@ -46,6 +46,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
       visitor.VisitFreshlyLoadedObject (this);
+    }
+
+    DataContainer ILoadedObjectDataWithDataContainerFromDataSource.GetDataContainerFromDataSource ()
+    {
+      return _freshlyLoadedDataContainer;
     }
 
     bool INullObject.IsNull

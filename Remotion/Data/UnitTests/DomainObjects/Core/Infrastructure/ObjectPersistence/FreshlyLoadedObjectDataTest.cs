@@ -100,6 +100,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
+    public void GetDataContainerFromDataSource ()
+    {
+      var result = ((ILoadedObjectDataWithDataContainerFromDataSource) _loadedObjectData).GetDataContainerFromDataSource();
+
+      Assert.That (result, Is.SameAs (_dataContainer));
+    }
+
+    [Test]
     public void IsNull ()
     {
       Assert.That (((INullObject) _loadedObjectData).IsNull, Is.False);
