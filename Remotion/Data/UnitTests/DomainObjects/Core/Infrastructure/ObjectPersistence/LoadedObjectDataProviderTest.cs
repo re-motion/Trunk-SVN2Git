@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -117,10 +118,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     [Test]
     public void Serializable ()
     {
-      var clientTransaction = ClientTransaction.CreateRootTransaction();
       var provider = new LoadedObjectDataProvider (
-          ClientTransactionTestHelper.GetDataManager (clientTransaction),
-          ClientTransactionTestHelper.GetInvalidDomainObjectManager (clientTransaction));
+        new SerializableLoadedDataContainerProviderFake(),
+        new SerializableInvalidDomainObjectManagerFake());
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (provider);
 

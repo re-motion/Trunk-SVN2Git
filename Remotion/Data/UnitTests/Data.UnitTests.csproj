@@ -210,6 +210,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableEagerFetcherFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchEnabledObjectLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchedRelationDataRegistrationAgentFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableInvalidDomainObjectManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedDataContainerProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableObjectLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointProviderFake.cs" />
