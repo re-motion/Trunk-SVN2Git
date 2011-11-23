@@ -237,6 +237,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionNewObjectGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionPropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\ObjectNotFoundExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
     <Compile Include="UnitTesting\ConstraintExpressionExtensions.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionBaseTest.cs" />

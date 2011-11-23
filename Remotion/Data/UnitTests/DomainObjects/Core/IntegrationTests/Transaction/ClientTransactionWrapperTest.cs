@@ -143,7 +143,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     [Test]
     [ExpectedException (typeof (BulkLoadException),
-        ExpectedMessage = "There were errors when loading a bulk of DomainObjects:\r\nObject 'Partner|",
+        ExpectedMessage = "'Partner|",
         MatchType = MessageMatch.Contains)]
     public void RegisterObjects_WithNewObject ()
     {

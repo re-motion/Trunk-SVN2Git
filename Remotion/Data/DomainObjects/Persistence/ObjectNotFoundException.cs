@@ -15,73 +15,67 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
-[Serializable]
-public class ObjectNotFoundException : StorageProviderException
-{
-  // types
-
-  // static members and constants
-
-  // member fields
-
-  private ObjectID _id;
-
-  // construction and disposing
-
-  public ObjectNotFoundException () : this ("Object could not be found.") 
+  /// <summary>
+  /// Thrown when one or multiple objects can't be found in the underlying data source.
+  /// </summary>
+  [Serializable]
+  public class ObjectNotFoundException : StorageProviderException
   {
+    private static string BuildMessage (IEnumerable<ObjectID> ids)
+    {
+      return string.Format ("Object(s) could not be found: {0}.", SeparatedStringBuilder.Build (", ", ids, id => "'" + id + "'"));
+    }
+    
+    private readonly ObjectID[] _ids;
+
+    public ObjectNotFoundException (ObjectID[] ids)
+      : this (ids, null)
+    {
+    }
+
+    public ObjectNotFoundException (ObjectID[] ids, Exception inner)
+        : this (BuildMessage(ids), ids, inner)
+    {
+    }
+
+    public ObjectNotFoundException (string message, ObjectID[] ids, Exception inner)
+      : base (message, inner)
+    {
+      ArgumentUtility.CheckNotNull ("ids", ids);
+
+      _ids = ids;
+    }
+
+    protected ObjectNotFoundException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
+    {
+      _ids = (ObjectID[]) info.GetValue ("_ids", typeof (ObjectID[]));
+    }
+
+    [Obsolete ("This property is obsolete. Use IDs instead. (1.13.131)", true)]
+    public ObjectID ID
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public ReadOnlyCollection<ObjectID> IDs
+    {
+      get { return Array.AsReadOnly (_ids); }
+    }
+
+    public override void GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      base.GetObjectData (info, context);
+
+      info.AddValue ("_ids", _ids);
+    }
   }
-
-  public ObjectNotFoundException (string message) : base (message) 
-  {
-  }
-
-  public ObjectNotFoundException (string message, Exception inner) : base (message, inner) 
-  {
-  }
-
-  protected ObjectNotFoundException (SerializationInfo info, StreamingContext context) : base (info, context) 
-  {
-    _id = (ObjectID) info.GetValue ("ID", typeof (ObjectID));
-  }
-
-  public ObjectNotFoundException (ObjectID id, Exception inner) : this (string.Format ("Object '{0}' could not be found.", id), id, inner)
-  {
-  }
-
-  public ObjectNotFoundException (ObjectID id) : this (id, null)
-  {
-  }
-
-  public ObjectNotFoundException (string message, ObjectID id) : this (message, id, null) 
-  {
-  }
-
-  public ObjectNotFoundException (string message, ObjectID id, Exception inner)
-    : base (message, inner)
-  {
-    ArgumentUtility.CheckNotNull ("id", id);
-
-    _id = id;
-  }
-
-  // methods and properties
-
-  public ObjectID ID
-  {
-    get { return _id; }
-  }
-
-  public override void GetObjectData (SerializationInfo info, StreamingContext context)
-  {
-    base.GetObjectData (info, context);
-
-    info.AddValue ("ID", _id);
-  }
-}
 }

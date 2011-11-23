@@ -302,7 +302,7 @@ namespace Remotion.Data.DomainObjects.Persistence
           return null;
       }
       else if (throwOnNotFound)
-        return new ObjectNotFoundException (lookupResult.ObjectID);
+        return new ObjectNotFoundException (new[] { lookupResult.ObjectID });
       else
         return null;
     }

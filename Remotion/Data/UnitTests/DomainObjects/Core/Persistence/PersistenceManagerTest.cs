@@ -29,6 +29,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Mocks_List = Rhino.Mocks.Constraints.List;
 using System.Linq;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
@@ -37,11 +38,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
   {
     private PersistenceManager _persistenceManager;
 
+    private ObjectID _invalidOrderID1;
+    private ObjectID _invalidOrderID2;
+
     [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
       _persistenceManager = new PersistenceManager (NullPersistenceExtension.Instance);
+
+      var guid1 = new Guid ("11111111111111111111111111111111");
+      var guid2 = new Guid ("22222222222222222222222222222222");
+      _invalidOrderID1 = new ObjectID (typeof (Order), guid1);
+      _invalidOrderID2 = new ObjectID (typeof (Order), guid2);
     }
 
     public override void TearDown ()
@@ -70,6 +79,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       var actualDataContainer = _persistenceManager.LoadDataContainer (DomainObjectIDs.Order1);
       Assert.AreEqual (DomainObjectIDs.Order1, actualDataContainer.ID);
+    }
+
+    [Test]
+    public void LoadDataContainer_WithNonExistingValue ()
+    {
+      Assert.That (
+          () => _persistenceManager.LoadDataContainer (_invalidOrderID1),
+          Throws.TypeOf<ObjectNotFoundException>()
+              .With.Message.EqualTo ("Object(s) could not be found: '" + _invalidOrderID1 + "'.")
+              .And.Property<ObjectNotFoundException>(ex => ex.IDs).EqualTo (new[] { _invalidOrderID1 }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (PersistenceException),
+        ExpectedMessage = "The ClassID of the provided ObjectID 'Distributor|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid'"
+                          + " and the ClassID of the loaded DataContainer 'Partner|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid' differ.")]
+    public void LoadDataContainer_WithInvalidClassID ()
+    {
+      ObjectID id = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
+      _persistenceManager.LoadDataContainer (id);
     }
 
     [Test]
@@ -120,26 +149,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     }
 
     [Test]
-    [ExpectedException (typeof (BulkLoadException), ExpectedMessage = "There were errors when loading a bulk of DomainObjects:\r\n"
-                                                                      +
-                                                                      "Object 'Order|11111111-1111-1111-1111-111111111111|System.Guid' could not be found.\r\n"
-                                                                      +
-                                                                      "Object 'Order|22222222-2222-2222-2222-222222222222|System.Guid' could not be found.\r\n"
-        )]
+    [Ignore ("TODO 4407")]
     public void LoadDataContainers_ThrowOnNotFound ()
     {
-      Guid guid1 = new Guid ("11111111111111111111111111111111");
-      Guid guid2 = new Guid ("22222222222222222222222222222222");
-      _persistenceManager.LoadDataContainers (
-          new [] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 }, true);
+      Assert.That (
+          () => _persistenceManager.LoadDataContainers (new[] { _invalidOrderID1, _invalidOrderID2, DomainObjectIDs.Order1 }, true),
+          Throws.TypeOf<ObjectNotFoundException> ()
+              .With.Message.EqualTo ("Object(s) could not be found: '" + _invalidOrderID1 + "', '" + _invalidOrderID2 + "'.")
+              .And.Property<ObjectNotFoundException> (ex => ex.IDs).EqualTo (new[] { _invalidOrderID1, _invalidOrderID2 }));
     }
 
     [Test]
     public void LoadDataContainers_NoThrowOnNotFound ()
     {
-      Guid guid1 = new Guid ("11111111111111111111111111111111");
-      Guid guid2 = new Guid ("22222222222222222222222222222222");
-      var objectIds = new[] { new ObjectID (typeof (Order), guid1), new ObjectID (typeof (Order), guid2), DomainObjectIDs.Order1 };
+      var objectIds = new[] { _invalidOrderID1, _invalidOrderID2, DomainObjectIDs.Order1 };
       
       var dataContainers = _persistenceManager.LoadDataContainers (objectIds, false).ToArray();
       
@@ -147,6 +170,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.IsNull (dataContainers[0]);
       Assert.IsNull (dataContainers[1]);
       Assert.AreEqual (DomainObjectIDs.Order1, dataContainers[2].ID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (PersistenceException),
+        ExpectedMessage = "The ClassID of the provided ObjectID 'Distributor|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid'"
+                          + " and the ClassID of the loaded DataContainer 'Partner|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid' differ.")]
+    [Ignore ("TODO 4407")]
+    public void LoadDataContainers_WithInvalidClassID ()
+    {
+      ObjectID id = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
+      _persistenceManager.LoadDataContainers (new[] { id }, false);
     }
 
     [Test]
@@ -246,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     [ExpectedException (typeof (PersistenceException), ExpectedMessage =
         "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Ceo.Company' of the loaded DataContainer "
         + "'Ceo|c3db20d6-138e-4ced-8576-e81bb4b7961f|System.Guid' refers to ClassID 'Customer', but the actual ClassID is 'Company'.")]
-    public void LoadRelatedDataContainerW_ithInvalidClassIDOverVirtualEndPoint ()
+    public void LoadRelatedDataContainer_WithInvalidClassIDOverVirtualEndPoint ()
     {
       ObjectID companyID = new ObjectID ("Company", new Guid ("{C3DB20D6-138E-4ced-8576-E81BB4B7961F}"));
 
@@ -394,27 +428,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.IsNotNull (container.ID);
     }
 
-    [Test]
-    [ExpectedException (typeof (ObjectNotFoundException),
-        ExpectedMessage = "Object 'Order|c3f486ae-ba6a-4bac-a084-0ccbf445523e|System.Guid' could not be found.")]
-    public void LoadDataContainerWithNonExistingValue ()
-    {
-      Guid nonExistingID = new Guid ("{C3F486AE-BA6A-4bac-A084-0CCBF445523E}");
-      ObjectID id = new ObjectID ("Order", nonExistingID);
-
-      _persistenceManager.LoadDataContainer (id);
-    }
-
-    [Test]
-    [ExpectedException (typeof (PersistenceException),
-        ExpectedMessage = "The ClassID of the provided ObjectID 'Distributor|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid'"
-                          + " and the ClassID of the loaded DataContainer 'Partner|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid' differ.")]
-    public void LoadDataContainerWithInvalidClassID ()
-    {
-      ObjectID id = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
-      _persistenceManager.LoadDataContainer (id);
-    }
-    
     private DataContainer CreateDataContainer (ClassDefinition classDefinition)
     {
       return DataContainer.CreateNew (_persistenceManager.CreateNewObjectID (classDefinition));

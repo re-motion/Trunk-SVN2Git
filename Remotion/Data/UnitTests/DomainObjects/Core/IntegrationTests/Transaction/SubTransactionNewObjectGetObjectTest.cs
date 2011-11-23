@@ -414,10 +414,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (BulkLoadException), ExpectedMessage = "There were errors when loading a bulk of DomainObjects:\r\n"
-                                                                      +
-                                                                      "Object 'Order|33333333-3333-3333-3333-333333333333|System.Guid' could not be found.\r\n"
-        )]
+    [ExpectedException (typeof (BulkLoadException), ExpectedMessage = 
+        "There were errors when loading a bulk of DomainObjects:\r\n"
+        + "Object(s) could not be found: 'Order|33333333-3333-3333-3333-333333333333|System.Guid'.\r\n")]
     public void GetObjects_NotFound ()
     {
       var guid = new Guid ("33333333333333333333333333333333");
