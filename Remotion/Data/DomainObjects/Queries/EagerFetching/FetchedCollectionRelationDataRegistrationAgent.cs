@@ -59,9 +59,9 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     public override void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition, 
-        ICollection<ILoadedObjectData> originatingObjects, 
-        ICollection<ILoadedObjectData> relatedObjects)
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ICollection<ILoadedObjectData> originatingObjects,
+        ICollection<LoadedObjectDataWithDataSourceData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
@@ -78,12 +78,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     private ILookup<ObjectID, ILoadedObjectData> CorrelateRelatedObjects (
-        IEnumerable<ILoadedObjectData> relatedObjects, 
+        IEnumerable<LoadedObjectDataWithDataSourceData> relatedObjects, 
         VirtualRelationEndPointDefinition relationEndPointDefinition)
     {
       var relatedObjectsWithForeignKey = 
           GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, _loadedDataContainerProvider);
-      return relatedObjectsWithForeignKey.ToLookup (k => k.Item1, k => k.Item2);
+      return relatedObjectsWithForeignKey.ToLookup (k => k.Item1, k => k.Item2.LoadedObjectData);
     }
 
     private void RegisterEndPointData (

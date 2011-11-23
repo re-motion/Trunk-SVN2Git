@@ -192,12 +192,14 @@
     <Compile Include="DataManagement\RelationEndPoints\IVirtualEndPointProvider.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
-    <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectDataWithDataContainerFromDataSource.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\IFetchEnabledPersistenceStrategy.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FreshlyLoadedObjectData.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\IFetchEnabledObjectLoader.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectDataProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectDataRegistrationAgent.cs" />
-    <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectDataWithDataContainerFromDataSource.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataWithDataSourceData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectVisitor.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\InvalidLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\IParentTransactionContext.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionOperations.cs" />
+    <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\PersistableData.cs" />

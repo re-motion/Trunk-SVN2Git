@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding
 
     public T CreateStubbableTransaction<T> () where T : ClientTransaction
     {
-      _persistenceStrategyStub = MockRepository.GenerateStub<IPersistenceStrategy>();
+      _persistenceStrategyStub = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy>();
       _persistenceStrategyStub
           .Stub (stub => stub.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything))
           .Return (null)

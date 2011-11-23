@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,16 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement;
+using System;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Queries;
 
-namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Represents an object loaded via an implementation of <see cref="IPersistenceStrategy"/> that provides access to the <see cref="DataContainer"/> 
-  /// originally loaded from thedata source.
-  /// </summary>
-  public interface ILoadedObjectDataWithDataContainerFromDataSource : ILoadedObjectData
+  [Serializable]
+  public class SerializableFetchEnabledObjectLoaderFake : SerializableObjectLoaderFake, IFetchEnabledObjectLoader
   {
-    DataContainer GetDataContainerFromDataSource ();
+    public ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

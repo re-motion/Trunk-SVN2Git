@@ -58,9 +58,9 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     public override void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition, 
-        ICollection<ILoadedObjectData> originatingObjects, 
-        ICollection<ILoadedObjectData> relatedObjects)
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ICollection<ILoadedObjectData> originatingObjects,
+        ICollection<LoadedObjectDataWithDataSourceData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     }
 
     private IDictionary<ObjectID, ILoadedObjectData> CorrelateRelatedObjects (
-        IEnumerable<ILoadedObjectData> relatedObjects,
+        IEnumerable<LoadedObjectDataWithDataSourceData> relatedObjects,
         VirtualRelationEndPointDefinition relationEndPointDefinition)
     {
       var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (
@@ -93,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       {
         try
         {
-          dictionary.Add (tuple.Item1, tuple.Item2);
+          dictionary.Add (tuple.Item1, tuple.Item2.LoadedObjectData);
         }
         catch (ArgumentException ex)
         {
@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
               "Two items in the related object result set point back to the same object. This is not allowed in a 1:1 relation. "
               + "Object 1: '{0}'. Object 2: '{1}'. Foreign key property: '{2}'",
               dictionary[tuple.Item1].ObjectID,
-              tuple.Item2.ObjectID,
+              tuple.Item2.LoadedObjectData.ObjectID,
               relationEndPointDefinition.GetOppositeEndPointDefinition().PropertyName);
           throw new InvalidOperationException (message, ex);
         }

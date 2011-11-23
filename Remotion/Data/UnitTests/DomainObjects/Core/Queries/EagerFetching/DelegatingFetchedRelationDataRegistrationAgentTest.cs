@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -37,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     private DelegatingFetchedRelationDataRegistrationAgent _agent;
 
     private ILoadedObjectData[] _originatingObjects;
-    private ILoadedObjectData[] _relatedObjects;
+    private LoadedObjectDataWithDataSourceData[] _relatedObjects;
 
     public override void SetUp ()
     {
@@ -51,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _agent = new DelegatingFetchedRelationDataRegistrationAgent (_realObjectAgentMock, _virtualObjectAgentMock, _collectionAgentMock);
 
       _originatingObjects = new[] { MockRepository.GenerateStub<ILoadedObjectData>() };
-      _relatedObjects = new[] { MockRepository.GenerateStub<ILoadedObjectData>() };
+      _relatedObjects = new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData() };
     }
 
     [Test]
@@ -139,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
 
-      var relatedObjects = new ILoadedObjectData[0];
+      var relatedObjects = new LoadedObjectDataWithDataSourceData[0];
       _collectionAgentMock.Expect (mock => mock.GroupAndRegisterRelatedObjects (endPointDefinition, _originatingObjects, relatedObjects));
 
       _mockRepository.ReplayAll ();

@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// Represents a top-level <see cref="ClientTransaction"/>, which does not have a parent transaction.
   /// </summary>
   [Serializable]
-  public class RootPersistenceStrategy : IPersistenceStrategy
+  public class RootPersistenceStrategy : IFetchEnabledPersistenceStrategy
   {
     private readonly Guid _transactionID;
 
@@ -88,6 +88,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
 
       using (var persistenceManager = CreatePersistenceManager())
       {
@@ -100,7 +101,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         RelationEndPointID relationEndPointID, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
-
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
+      
       using (var persistenceManager = CreatePersistenceManager())
       {
         var dataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
@@ -110,17 +112,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     public virtual IEnumerable<ILoadedObjectData> ExecuteCollectionQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
-      ArgumentUtility.CheckNotNull ("query", query);
+      ArgumentUtility.CheckNotNull ("query", query);ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
+      
 
       if (query.QueryType != QueryType.Collection)
         throw new ArgumentException ("Only collection queries can be used to load data containers.", "query");
 
+      var dataContainers = ExecuteDataContainerQuery(query);
+      return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
+    }
+
+    private IEnumerable<DataContainer> ExecuteDataContainerQuery (IQuery query)
+    {
+      IEnumerable<DataContainer> dataContainers;
       using (var storageProviderManager = CreateStorageProviderManager())
       {
-        StorageProvider provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
-        var dataContainers = provider.ExecuteCollectionQuery (query);
-        return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
+        var provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
+        dataContainers = provider.ExecuteCollectionQuery (query);
       }
+      return dataContainers;
     }
 
     public virtual object ExecuteScalarQuery (IQuery query)
@@ -154,6 +164,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
 
+    public IEnumerable<LoadedObjectDataWithDataSourceData> ExecuteFetchQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
+
+      if (query.QueryType != QueryType.Collection)
+        throw new ArgumentException ("Only collection queries can be used for fetching.", "query");
+
+      var dataContainers = ExecuteDataContainerQuery (query);
+      return dataContainers.Select (dc => new LoadedObjectDataWithDataSourceData (GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider), dc));
+
+    }
+
     private PersistenceManager CreatePersistenceManager ()
     {
       return new PersistenceManager (CreatePersistenceExtension());
@@ -170,7 +193,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return new CompoundPersistenceExtension (listenerFactories.SelectMany (f => f.CreatePersistenceExtensions (_transactionID)));
     }
 
-    private ILoadedObjectData GetLoadedObjectData (DataContainer dataContainer, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    private ILoadedObjectData GetLoadedObjectData (DataContainer dataContainer,  ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       if (dataContainer == null)
         return new NullLoadedObjectData();

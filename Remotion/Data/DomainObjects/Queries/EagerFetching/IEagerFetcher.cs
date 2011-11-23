@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 
@@ -25,9 +26,8 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   public interface IEagerFetcher
   {
     void PerformEagerFetching (
-        DomainObject[] originalObjects,
-        IRelationEndPointDefinition relationEndPointDefinition,
-        IQuery fetchQuery,
-        IObjectLoader fetchQueryResultLoader);
+        ICollection<ILoadedObjectData> originatingObjects,
+        IEnumerable<KeyValuePair<IRelationEndPointDefinition, IQuery>> fetchQueries,
+        IFetchEnabledObjectLoader fetchResultLoader);
   }
 }

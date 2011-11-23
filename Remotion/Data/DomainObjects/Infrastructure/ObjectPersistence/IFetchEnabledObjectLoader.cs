@@ -14,20 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.DomainObjects.Queries;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
+namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
-  [Serializable]
-  public class SerializableFetchedRelationDataRegistrationAgentFake : IFetchedRelationDataRegistrationAgent
+  /// <summary>
+  /// Extends <see cref="IObjectLoader"/> with functionality for loading the objects returned by an eager fetch query.
+  /// </summary>
+  public interface IFetchEnabledObjectLoader : IObjectLoader
   {
-    public void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, ICollection<ILoadedObjectData> originatingObjects, ICollection<LoadedObjectDataWithDataSourceData> relatedObjects)
-    {
-      throw new NotImplementedException();
-    }
+    ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query);
   }
 }

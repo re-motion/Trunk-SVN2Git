@@ -126,18 +126,47 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
-      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      var fetchEnabledPersistenceStrategy = 
+          ArgumentUtility.CheckNotNullAndType<IFetchEnabledPersistenceStrategy> ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      
-      var objectLoader = CreateBasicObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
+
+      var objectLoader = CreateBasicObjectLoader (
+          constructedTransaction,
+          eventSink,
+          fetchEnabledPersistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
 
       IFetchedRelationDataRegistrationAgent registrationAgent =
           new DelegatingFetchedRelationDataRegistrationAgent (
               new FetchedRealObjectRelationDataRegistrationAgent(),
               new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager, dataManager),
               new FetchedCollectionRelationDataRegistrationAgent (dataManager, dataManager));
-      return new EagerFetchingObjectLoaderDecorator (objectLoader, registrationAgent);
+      var eagerFetcher = new EagerFetcher (registrationAgent);
+      return new EagerFetchingObjectLoaderDecorator (objectLoader, eagerFetcher);
+    }
+
+    protected virtual IFetchEnabledObjectLoader CreateBasicObjectLoader (
+        ClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IFetchEnabledPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
+      var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
+      var loadedObjectDataRegistrationAgent = new LoadedObjectDataRegistrationAgent (constructedTransaction, eventSink);
+      return new FetchEnabledObjectLoader (
+          persistenceStrategy,
+          loadedObjectDataRegistrationAgent,
+          dataManager,
+          loadedObjectDataProvider);
     }
   }
 }

@@ -15,29 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Utilities;
+using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Represents a loaded object whose data already exists in the target <see cref="ClientTransaction"/>, and provides access to the both the data
-  /// from the transaction and the data loaded from the data source.
+  /// Provides a common interface for classes that can load <see cref="DataContainer"/> instances from a data source and persist them, including
+  /// support for executing fetch queries.
   /// </summary>
-  public class AlreadyExistingLoadedObjectDataWithDataContainerFromDataSource : AlreadyExistingLoadedObjectData, ILoadedObjectDataWithDataContainerFromDataSource
+  public interface IFetchEnabledPersistenceStrategy : IPersistenceStrategy
   {
-    private readonly DataContainer _dataContainerFromDataSource;
-
-    public AlreadyExistingLoadedObjectDataWithDataContainerFromDataSource (DataContainer existingDataContainer, DataContainer dataContainerFromDataSource)
-        : base (existingDataContainer)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainerFromDataSource", dataContainerFromDataSource);
-      _dataContainerFromDataSource = dataContainerFromDataSource;
-    }
-
-    public DataContainer GetDataContainerFromDataSource ()
-    {
-      return _dataContainerFromDataSource;
-    }
+    IEnumerable<LoadedObjectDataWithDataSourceData> ExecuteFetchQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
   }
 }

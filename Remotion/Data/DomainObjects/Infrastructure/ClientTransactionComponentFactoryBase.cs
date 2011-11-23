@@ -123,20 +123,5 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       return dataManager;
     }
-
-    protected virtual IObjectLoader CreateBasicObjectLoader (
-        ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
-        IPersistenceStrategy persistenceStrategy,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager)
-    {
-      var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
-      return new ObjectLoader (
-          persistenceStrategy,
-          new LoadedObjectDataRegistrationAgent (constructedTransaction, eventSink),
-          dataManager,
-          loadedObjectDataProvider);
-    }
   }
 }

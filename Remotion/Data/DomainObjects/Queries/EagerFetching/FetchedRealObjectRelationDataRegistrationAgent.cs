@@ -29,7 +29,10 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   [Serializable]
   public class FetchedRealObjectRelationDataRegistrationAgent : FetchedRelationDataRegistrationAgentBase
   {
-    public override void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, ICollection<ILoadedObjectData> originatingObjects, ICollection<ILoadedObjectData> relatedObjects)
+    public override void GroupAndRegisterRelatedObjects (
+        IRelationEndPointDefinition relationEndPointDefinition, 
+        ICollection<ILoadedObjectData> originatingObjects, 
+        ICollection<LoadedObjectDataWithDataSourceData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("originatingObjects", originatingObjects);

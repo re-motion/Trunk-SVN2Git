@@ -18,9 +18,9 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Logging;
 using Remotion.Utilities;
+using System.Linq;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 {
@@ -28,20 +28,18 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   /// Decorates <see cref="IObjectLoader"/> to include eager fetching when executing <see cref="IObjectLoader.GetOrLoadCollectionQueryResult"/>.
   /// </summary>
   [Serializable]
-  public class EagerFetchingObjectLoaderDecorator : IObjectLoader
+  public class EagerFetchingObjectLoaderDecorator : IFetchEnabledObjectLoader
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (EagerFetchingObjectLoaderDecorator));
+    private readonly IFetchEnabledObjectLoader _decoratedObjectLoader;
+    private readonly IEagerFetcher _eagerFetcher;
 
-    private readonly IObjectLoader _decoratedObjectLoader;
-    private readonly IFetchedRelationDataRegistrationAgent _registrationAgent;
-
-    public EagerFetchingObjectLoaderDecorator (IObjectLoader decoratedObjectLoader, IFetchedRelationDataRegistrationAgent registrationAgent)
+    public EagerFetchingObjectLoaderDecorator (IFetchEnabledObjectLoader decoratedObjectLoader, IEagerFetcher eagerFetcher)
     {
       ArgumentUtility.CheckNotNull ("decoratedObjectLoader", decoratedObjectLoader);
-      ArgumentUtility.CheckNotNull ("registrationAgent", registrationAgent);
+      ArgumentUtility.CheckNotNull ("eagerFetcher", eagerFetcher);
 
       _decoratedObjectLoader = decoratedObjectLoader;
-      _registrationAgent = registrationAgent;
+      _eagerFetcher = eagerFetcher;
     }
 
     public IObjectLoader DecoratedObjectLoader
@@ -49,9 +47,9 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       get { return _decoratedObjectLoader; }
     }
 
-    public IFetchedRelationDataRegistrationAgent RegistrationAgent
+    public IEagerFetcher EagerFetcher
     {
-      get { return _registrationAgent; }
+      get { return _eagerFetcher; }
     }
 
     public ILoadedObjectData LoadObject (ObjectID id)
@@ -83,50 +81,20 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       ArgumentUtility.CheckNotNull ("query", query);
       var queryResult = _decoratedObjectLoader.GetOrLoadCollectionQueryResult (query);
 
-      if (queryResult.Count > 0)
-      {
-        foreach (var fetchQuery in query.EagerFetchQueries)
-        {
-          PerformEagerFetching (
-              queryResult,
-              fetchQuery.Key,
-              fetchQuery.Value);
-        }
-      }
+      _eagerFetcher.PerformEagerFetching (queryResult, query.EagerFetchQueries, this);
 
       return queryResult;
     }
 
-    private void PerformEagerFetching (
-        ICollection<ILoadedObjectData> originalObjects,
-        IRelationEndPointDefinition relationEndPointDefinition,
-        IQuery fetchQuery)
+    public ICollection<LoadedObjectDataWithDataSourceData> GetOrLoadFetchQueryResult (IQuery query)
     {
-      s_log.DebugFormat (
-          "Eager fetching objects for {0} via query {1} ('{2}').",
-          relationEndPointDefinition.PropertyName,
-          fetchQuery.ID,
-          fetchQuery.Statement);
+      ArgumentUtility.CheckNotNull ("query", query);
+      var queryResult = _decoratedObjectLoader.GetOrLoadFetchQueryResult (query);
 
-      // Since we are calling GetOrLoadCollectionQueryResult on this (rather than _decoratedObjectLoader), this will trigger nested eager fetching.
-      var fetchedObjects = GetOrLoadCollectionQueryResult (fetchQuery);
-      s_log.DebugFormat (
-          "The eager fetch query for {0} yielded {1} related objects for {2} original objects.",
-          relationEndPointDefinition.PropertyName,
-          fetchedObjects.Count,
-          originalObjects.Count);
+      var loadedObjectData = queryResult.Select (data => data.LoadedObjectData).ConvertToCollection ();
+      _eagerFetcher.PerformEagerFetching (loadedObjectData, query.EagerFetchQueries, this);
 
-      try
-      {
-        _registrationAgent.GroupAndRegisterRelatedObjects (
-            relationEndPointDefinition,
-            originalObjects,
-            fetchedObjects);
-      }
-      catch (InvalidOperationException ex)
-      {
-        throw new UnexpectedQueryResultException ("Eager fetching encountered an unexpected query result: " + ex.Message, ex);
-      }
+      return queryResult;
     }
   }
 }

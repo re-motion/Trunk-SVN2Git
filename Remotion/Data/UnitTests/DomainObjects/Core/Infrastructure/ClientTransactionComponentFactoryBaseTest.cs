@@ -186,36 +186,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result, Is.SameAs (dataManager));
     }
-
-    [Test]
-    public void CreateBasicObjectLoader ()
-    {
-      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
-      var dataManager = MockRepository.GenerateStub<IDataManager> ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
-
-      var result = _factory.CallCreateBasicObjectLoader (
-          _fakeConstructedTransaction,
-          eventSink,
-          persistenceStrategy,
-          invalidDomainObjectManager,
-          dataManager);
-
-      Assert.That (result, Is.TypeOf (typeof (ObjectLoader)));
-      var objectLoader = (ObjectLoader) result;
-      Assert.That (objectLoader.PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (
-          objectLoader.LoadedObjectDataRegistrationAgent,
-          Is.TypeOf<LoadedObjectDataRegistrationAgent> ()
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
-      Assert.That (objectLoader.DataContainerLifetimeManager, Is.SameAs (dataManager));
-
-      Assert.That (objectLoader.LoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ());
-      var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;
-      Assert.That (loadedObjectDataProvider.LoadedDataContainerProvider, Is.SameAs (dataManager));
-      Assert.That (loadedObjectDataProvider.InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
-    }
   }
 }

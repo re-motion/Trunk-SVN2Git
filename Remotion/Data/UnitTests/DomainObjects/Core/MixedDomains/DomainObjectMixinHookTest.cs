@@ -186,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
     private ClientTransaction CreateTransactionWithStubbedLoading (DataContainer loadableDataContainer)
     {
-      var persistenceStrategyStub = MockRepository.GenerateStub<IPersistenceStrategy>();
+      var persistenceStrategyStub = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy>();
       persistenceStrategyStub.Stub (stub => stub.LoadObjectData (loadableDataContainer.ID)).Return (new FreshlyLoadedObjectData (loadableDataContainer));
       return ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (persistenceStrategyStub);
     }

@@ -168,12 +168,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectLoader ()
     {
-      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      var persistenceStrategy = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy> ();
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
 
-      var fakeBasicObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+      var fakeBasicObjectLoader = MockRepository.GenerateStub<IFetchEnabledObjectLoader> ();
 
       var factoryPartialMock = MockRepository.GeneratePartialMock<RootClientTransactionComponentFactory> ();
       factoryPartialMock
@@ -200,20 +200,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (result, Is.TypeOf (typeof (EagerFetchingObjectLoaderDecorator)));
       var objectLoader = (EagerFetchingObjectLoaderDecorator) result;
       Assert.That (objectLoader.DecoratedObjectLoader, Is.SameAs (fakeBasicObjectLoader));
-      Assert.That (objectLoader.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
+      Assert.That (objectLoader.EagerFetcher, Is.TypeOf<EagerFetcher> ());
+
+      var eagerFetcher = (EagerFetcher) objectLoader.EagerFetcher;
+      Assert.That (eagerFetcher.RegistrationAgent, Is.TypeOf<DelegatingFetchedRelationDataRegistrationAgent> ());
       Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).RealObjectDataRegistrationAgent,
+          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).RealObjectDataRegistrationAgent,
           Is.TypeOf<FetchedRealObjectRelationDataRegistrationAgent> ());
       Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).VirtualObjectDataRegistrationAgent,
+          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).VirtualObjectDataRegistrationAgent,
           Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ()
               .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
               .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
       Assert.That (
-          ((DelegatingFetchedRelationDataRegistrationAgent) objectLoader.RegistrationAgent).CollectionDataRegistrationAgent,
+          ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).CollectionDataRegistrationAgent,
           Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ()
               .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
               .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
+    }
+
+    [Test]
+    public void CreateBasicObjectLoader ()
+    {
+      var persistenceStrategy = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy> ();
+      var dataManager = MockRepository.GenerateStub<IDataManager> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+
+      var result = CallCreateBasicObjectLoader (
+          _factory,
+          _fakeConstructedTransaction,
+          eventSink,
+          persistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
+
+      Assert.That (result, Is.TypeOf (typeof (FetchEnabledObjectLoader)));
+      var objectLoader = (ObjectLoader) result;
+      Assert.That (objectLoader.PersistenceStrategy, Is.SameAs (persistenceStrategy));
+      Assert.That (
+          objectLoader.LoadedObjectDataRegistrationAgent,
+          Is.TypeOf<LoadedObjectDataRegistrationAgent> ()
+              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
+              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
+      Assert.That (objectLoader.DataContainerLifetimeManager, Is.SameAs (dataManager));
+
+      Assert.That (objectLoader.LoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ());
+      var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;
+      Assert.That (loadedObjectDataProvider.LoadedDataContainerProvider, Is.SameAs (dataManager));
+      Assert.That (loadedObjectDataProvider.InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
+    }
+
+    private object CallCreateBasicObjectLoader (
+        RootClientTransactionComponentFactory factory,
+        TestableClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IFetchEnabledPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager)
+    {
+      return PrivateInvoke.InvokeNonPublicMethod (
+          factory,
+          "CreateBasicObjectLoader",
+          constructedTransaction,
+          eventSink,
+          persistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
     }
   }
 }

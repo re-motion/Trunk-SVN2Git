@@ -14,20 +14,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects;
+using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Rhino.Mocks;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.EagerFetching;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  public static class LoadedObjectDataTestHelper
+  [Serializable]
+  public class SerializableEagerFetcherFake : IEagerFetcher
   {
-    public static ILoadedObjectData CreateLoadedObjectDataStub (DomainObject domainObjectReference)
+    public void PerformEagerFetching (
+        ICollection<ILoadedObjectData> originatingObjects,
+        IEnumerable<KeyValuePair<IRelationEndPointDefinition, IQuery>> fetchQueries,
+        IFetchEnabledObjectLoader fetchResultLoader)
     {
-      var originatingDataStub = MockRepository.GenerateStub<ILoadedObjectData>();
-      originatingDataStub.Stub (stub => stub.ObjectID).Return (domainObjectReference.ID);
-      originatingDataStub.Stub (stub => stub.GetDomainObjectReference ()).Return (domainObjectReference);
-      return originatingDataStub;
+      throw new NotImplementedException();
     }
   }
 }

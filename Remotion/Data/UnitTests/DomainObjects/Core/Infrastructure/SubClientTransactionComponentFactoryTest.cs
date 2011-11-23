@@ -32,6 +32,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -192,14 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           _parentTransaction, 
           _parentInvalidDomainObjectManagerStub);
       factoryPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (
-              mock,
-              "CreateBasicObjectLoader",
-              _fakeConstructedTransaction,
-              eventSink,
-              persistenceStrategy,
-              invalidDomainObjectManager,
-              dataManager))
+          .Expect (mock => CallCreateBasicObjectLoader(mock, _fakeConstructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager))
           .Return (fakeBasicObjectLoader);
       factoryPartialMock.Replay ();
 
@@ -213,6 +207,56 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           dataManager);
 
       Assert.That (result, Is.SameAs (fakeBasicObjectLoader));
+    }
+
+    [Test]
+    public void CreateBasicObjectLoader ()
+    {
+      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
+      var dataManager = MockRepository.GenerateStub<IDataManager> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+
+      var result = CallCreateBasicObjectLoader (
+          _factory,
+          _fakeConstructedTransaction,
+          eventSink,
+          persistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectLoader)));
+      var objectLoader = (ObjectLoader) result;
+      Assert.That (objectLoader.PersistenceStrategy, Is.SameAs (persistenceStrategy));
+      Assert.That (
+          objectLoader.LoadedObjectDataRegistrationAgent,
+          Is.TypeOf<LoadedObjectDataRegistrationAgent> ()
+              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
+              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
+      Assert.That (objectLoader.DataContainerLifetimeManager, Is.SameAs (dataManager));
+
+      Assert.That (objectLoader.LoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ());
+      var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;
+      Assert.That (loadedObjectDataProvider.LoadedDataContainerProvider, Is.SameAs (dataManager));
+      Assert.That (loadedObjectDataProvider.InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
+    }
+
+    private object CallCreateBasicObjectLoader (
+        SubClientTransactionComponentFactory factory,
+        TestableClientTransaction constructedTransaction,
+        IClientTransactionListener eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager)
+    {
+      return PrivateInvoke.InvokeNonPublicMethod (
+          factory,
+          "CreateBasicObjectLoader",
+          constructedTransaction,
+          eventSink,
+          persistenceStrategy,
+          invalidDomainObjectManager,
+          dataManager);
     }
   }
 }

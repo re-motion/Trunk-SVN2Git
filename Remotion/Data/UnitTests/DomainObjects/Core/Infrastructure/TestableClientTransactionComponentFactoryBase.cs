@@ -85,16 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       return CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
     }
 
-    public IObjectLoader CallCreateBasicObjectLoader (
-        ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
-        IPersistenceStrategy persistenceStrategy,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager)
-    {
-      return CreateBasicObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
-    }
-
     public IRelationEndPointProvider CallGetEndPointProvider (IDataManager dataManager)
     {
       return GetEndPointProvider (dataManager);

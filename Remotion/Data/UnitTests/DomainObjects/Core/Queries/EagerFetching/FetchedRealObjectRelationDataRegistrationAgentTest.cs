@@ -35,9 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     private ILoadedObjectData _originatingOrderTicketData1;
     private ILoadedObjectData _originatingOrderTicketData2;
 
-    private ILoadedObjectData _fetchedOrderData1;
-    private ILoadedObjectData _fetchedOrderData2;
-    private ILoadedObjectData _fetchedOrderData3;
+    private LoadedObjectDataWithDataSourceData _fetchedOrderData1;
+    private LoadedObjectDataWithDataSourceData _fetchedOrderData2;
+    private LoadedObjectDataWithDataSourceData _fetchedOrderData3;
 
     private IVirtualEndPointProvider _virtualEndPointProviderMock;
 
@@ -52,16 +52,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       var originatingOrderTicket1 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
       var originatingOrderTicket2 = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket2);
 
-      _originatingOrderTicketData1 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (originatingOrderTicket1);
-      _originatingOrderTicketData2 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (originatingOrderTicket2);
+      _originatingOrderTicketData1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingOrderTicket1);
+      _originatingOrderTicketData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (originatingOrderTicket2);
 
       var fetchedOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       var fetchedOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
       var fetchedOrder3 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order3);
 
-      _fetchedOrderData1 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (fetchedOrder1);
-      _fetchedOrderData2 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (fetchedOrder2);
-      _fetchedOrderData3 = LoadedObjectDataTestHelper.CreateLoadedObjectDataStub (fetchedOrder3);
+      _fetchedOrderData1 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedOrder1);
+      _fetchedOrderData2 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedOrder2);
+      _fetchedOrderData3 = LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (fetchedOrder3);
       
       _virtualEndPointProviderMock = MockRepository.GenerateStrictMock<IRelationEndPointProvider> ();
 
@@ -86,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       _virtualEndPointProviderMock.Replay ();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { new NullLoadedObjectData() }, new ILoadedObjectData[0]);
+      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { new NullLoadedObjectData() }, new LoadedObjectDataWithDataSourceData[0]);
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -96,7 +96,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       _virtualEndPointProviderMock.Replay ();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _originatingOrderTicketData1 }, new[] { new NullLoadedObjectData() });
+      _agent.GroupAndRegisterRelatedObjects (
+          _endPointDefinition, 
+          new[] { _originatingOrderTicketData1 }, 
+          new[] { LoadedObjectDataObjectMother.CreateNullLoadedObjectDataWithDataSourceData() });
 
       _virtualEndPointProviderMock.VerifyAllExpectations ();
     }
@@ -110,7 +113,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       _virtualEndPointProviderMock.Replay();
 
-      _agent.GroupAndRegisterRelatedObjects (_endPointDefinition, new[] { _fetchedOrderData1 }, new ILoadedObjectData[0]);
+      _agent.GroupAndRegisterRelatedObjects (
+          _endPointDefinition,
+          new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataStub (DomainObjectIDs.Order1) },
+          new LoadedObjectDataWithDataSourceData[0]);
     }
 
     [Test]
@@ -125,7 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _agent.GroupAndRegisterRelatedObjects (
           _endPointDefinition,
           new[] { _originatingOrderTicketData1 }, 
-          new[] { _originatingOrderTicketData2 });
+          new[] { LoadedObjectDataObjectMother.CreateLoadedObjectDataWithDataSourceData (DomainObjectIDs.OrderTicket2) });
     }
 
     [Test]

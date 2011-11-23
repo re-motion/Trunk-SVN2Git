@@ -92,15 +92,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
           typeof (DomainObjectCollection));
       outerQuery.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
 
-      var persistenceStrategyMock = MockRepository.GenerateStrictMock<IPersistenceStrategy> ();
+      var persistenceStrategyMock = MockRepository.GenerateStrictMock<IFetchEnabledPersistenceStrategy> ();
       var customerDataContainer = TestDataContainerObjectMother.CreateCustomer1DataContainer ();
       var orderDataContainer = TestDataContainerObjectMother.CreateOrder1DataContainer ();
       persistenceStrategyMock
           .Expect (mock => mock.ExecuteCollectionQuery (Arg.Is (outerQuery), Arg<ILoadedObjectDataProvider>.Is.Anything))
           .Return (new[] { new FreshlyLoadedObjectData (customerDataContainer) });
       persistenceStrategyMock
-          .Expect (mock => mock.ExecuteCollectionQuery (Arg.Is (fetchQuery), Arg<ILoadedObjectDataProvider>.Is.Anything))
-          .Return (new[] { new FreshlyLoadedObjectData (orderDataContainer) })
+          .Expect (mock => mock.ExecuteFetchQuery (Arg.Is (fetchQuery), Arg<ILoadedObjectDataProvider>.Is.Anything))
+          .Return (new[] { new LoadedObjectDataWithDataSourceData (new FreshlyLoadedObjectData (orderDataContainer), orderDataContainer) })
           .Repeat.Once ();
       persistenceStrategyMock.Replay ();
 

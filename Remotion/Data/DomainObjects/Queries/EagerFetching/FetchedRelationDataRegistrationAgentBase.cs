@@ -31,10 +31,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   [Serializable]
   public abstract class FetchedRelationDataRegistrationAgentBase : IFetchedRelationDataRegistrationAgent
   {
-    public abstract void GroupAndRegisterRelatedObjects (
-        IRelationEndPointDefinition relationEndPointDefinition, 
-        ICollection<ILoadedObjectData> originatingObjects, 
-        ICollection<ILoadedObjectData> relatedObjects);
+    public abstract void GroupAndRegisterRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, ICollection<ILoadedObjectData> originatingObjects, ICollection<LoadedObjectDataWithDataSourceData> relatedObjects);
 
     protected void CheckOriginatingObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<ILoadedObjectData> originatingObjects)
     {
@@ -48,17 +45,17 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       }
     }
 
-    protected void CheckRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<ILoadedObjectData> relatedObjects)
+    protected void CheckRelatedObjects (IRelationEndPointDefinition relationEndPointDefinition, IEnumerable<LoadedObjectDataWithDataSourceData> relatedObjects)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("relatedObjects", relatedObjects);
 
       var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
 
-      foreach (var fetchedObject in relatedObjects)
+      foreach (var relatedObject in relatedObjects)
       {
-        if (!fetchedObject.IsNull)
-          CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, fetchedObject, oppositeEndPointDefinition);
+        if (!relatedObject.IsNull)
+          CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition, relatedObject.LoadedObjectData.ObjectID);
       }
     }
 
@@ -83,18 +80,18 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
     protected void CheckClassDefinitionOfRelatedObject (
         IRelationEndPointDefinition relationEndPointDefinition,
-        ILoadedObjectData relatedObject,
-        IRelationEndPointDefinition oppositeEndPointDefinition)
+        LoadedObjectDataWithDataSourceData relatedObject,
+        IRelationEndPointDefinition oppositeEndPointDefinition, ObjectID relatedObjectID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
       ArgumentUtility.CheckNotNull ("relatedObject", relatedObject);
       ArgumentUtility.CheckNotNull ("oppositeEndPointDefinition", oppositeEndPointDefinition);
 
-      if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObject.ObjectID.ClassDefinition))
+      if (!oppositeEndPointDefinition.ClassDefinition.IsSameOrBaseClassOf (relatedObjectID.ClassDefinition))
       {
         var message = string.Format (
             "Cannot associate object '{0}' with the relation end-point '{1}'. An object of type '{2}' was expected.",
-            relatedObject.ObjectID,
+            relatedObjectID,
             relationEndPointDefinition.PropertyName,
             oppositeEndPointDefinition.ClassDefinition.ClassType);
 
@@ -102,12 +99,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       }
     }
 
-    protected IEnumerable<Tuple<ObjectID, ILoadedObjectData>> GetForeignKeysForVirtualEndPointDefinition (
-        IEnumerable<ILoadedObjectData> domainObjects, 
+    protected IEnumerable<Tuple<ObjectID, LoadedObjectDataWithDataSourceData>> GetForeignKeysForVirtualEndPointDefinition (
+        IEnumerable<LoadedObjectDataWithDataSourceData> loadedObjectData, 
         VirtualRelationEndPointDefinition virtualEndPointDefinition, 
         ILoadedDataContainerProvider loadedDataContainerProvider)
     {
-      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+      ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
       ArgumentUtility.CheckNotNull ("virtualEndPointDefinition", virtualEndPointDefinition);
       ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
 
@@ -116,26 +113,26 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query, so we can use it to correlate the related
       // objects with the originating objects.
       // TODO 3995: Bug: DataContainers from the ClientTransaction might mix with the query result, see  https://www.re-motion.org/jira/browse/RM-3995.
-      return from relatedObject in domainObjects
-             where !relatedObject.IsNull
+      return from data in loadedObjectData
+             where !data.IsNull
              let dataContainer = CheckRelatedObjectAndGetDataContainer (
-                 relatedObject,
+                 data,
                  virtualEndPointDefinition,
                  oppositeEndPointDefinition,
                  loadedDataContainerProvider)
              let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyDefinition.PropertyName]
              let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
-             select Tuple.Create (originatingObjectID, relatedObject);
+             select Tuple.Create (originatingObjectID, data);
     }
 
     private DataContainer CheckRelatedObjectAndGetDataContainer (
-        ILoadedObjectData relatedObject,
+        LoadedObjectDataWithDataSourceData relatedObject,
         IRelationEndPointDefinition relationEndPointDefinition, 
         IRelationEndPointDefinition oppositeEndPointDefinition,
         ILoadedDataContainerProvider loadedDataContainerProvider)
     {
-      CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition);
-      return loadedDataContainerProvider.GetDataContainerWithoutLoading (relatedObject.ObjectID);
+      CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition, relatedObject.LoadedObjectData.ObjectID);
+      return loadedDataContainerProvider.GetDataContainerWithoutLoading (relatedObject.LoadedObjectData.ObjectID);
     }
   }
 }
