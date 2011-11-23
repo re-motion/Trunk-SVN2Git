@@ -156,10 +156,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     {
       var agent = new DelegatingFetchedRelationDataRegistrationAgent (
           new FetchedRealObjectRelationDataRegistrationAgent(),
-          new FetchedVirtualObjectRelationDataRegistrationAgent (
-              new SerializableLoadedDataContainerProviderFake(), new SerializableVirtualEndPointProviderFake()),
-          new FetchedCollectionRelationDataRegistrationAgent (
-              new SerializableLoadedDataContainerProviderFake(), new SerializableVirtualEndPointProviderFake()));
+          new FetchedVirtualObjectRelationDataRegistrationAgent (new SerializableVirtualEndPointProviderFake()),
+          new FetchedCollectionRelationDataRegistrationAgent (new SerializableVirtualEndPointProviderFake()));
 
       var deserializedAgent = Serializer.SerializeAndDeserialize (agent);
 

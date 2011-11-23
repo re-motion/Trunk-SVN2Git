@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
@@ -34,23 +33,12 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (FetchedCollectionRelationDataRegistrationAgent));
 
-    private readonly ILoadedDataContainerProvider _loadedDataContainerProvider;
     private readonly IVirtualEndPointProvider _virtualEndPointProvider;
 
-    public FetchedCollectionRelationDataRegistrationAgent (
-        ILoadedDataContainerProvider loadedDataContainerProvider, 
-        IVirtualEndPointProvider virtualEndPointProvider)
+    public FetchedCollectionRelationDataRegistrationAgent (IVirtualEndPointProvider virtualEndPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
       ArgumentUtility.CheckNotNull ("virtualEndPointProvider", virtualEndPointProvider);
-
-      _loadedDataContainerProvider = loadedDataContainerProvider;
       _virtualEndPointProvider = virtualEndPointProvider;
-    }
-
-    public ILoadedDataContainerProvider LoadedDataContainerProvider
-    {
-      get { return _loadedDataContainerProvider; }
     }
 
     public IVirtualEndPointProvider VirtualEndPointProvider
@@ -81,8 +69,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
         IEnumerable<LoadedObjectDataWithDataSourceData> relatedObjects, 
         VirtualRelationEndPointDefinition relationEndPointDefinition)
     {
-      var relatedObjectsWithForeignKey = 
-          GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition, _loadedDataContainerProvider);
+      var relatedObjectsWithForeignKey = GetForeignKeysForVirtualEndPointDefinition (relatedObjects, relationEndPointDefinition);
       return relatedObjectsWithForeignKey.ToLookup (k => k.Item1, k => k.Item2.LoadedObjectData);
     }
 

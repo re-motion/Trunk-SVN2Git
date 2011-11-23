@@ -101,25 +101,18 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
 
     protected IEnumerable<Tuple<ObjectID, LoadedObjectDataWithDataSourceData>> GetForeignKeysForVirtualEndPointDefinition (
         IEnumerable<LoadedObjectDataWithDataSourceData> loadedObjectData, 
-        VirtualRelationEndPointDefinition virtualEndPointDefinition, 
-        ILoadedDataContainerProvider loadedDataContainerProvider)
+        VirtualRelationEndPointDefinition virtualEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
       ArgumentUtility.CheckNotNull ("virtualEndPointDefinition", virtualEndPointDefinition);
-      ArgumentUtility.CheckNotNull ("loadedDataContainerProvider", loadedDataContainerProvider);
 
       var oppositeEndPointDefinition = (RelationEndPointDefinition) virtualEndPointDefinition.GetOppositeEndPointDefinition ();
-
-      // The DataContainer for relatedObject has been registered when the IObjectLoader executed the query, so we can use it to correlate the related
-      // objects with the originating objects.
-      // TODO 3995: Bug: DataContainers from the ClientTransaction might mix with the query result, see  https://www.re-motion.org/jira/browse/RM-3995.
       return from data in loadedObjectData
              where !data.IsNull
              let dataContainer = CheckRelatedObjectAndGetDataContainer (
                  data,
                  virtualEndPointDefinition,
-                 oppositeEndPointDefinition,
-                 loadedDataContainerProvider)
+                 oppositeEndPointDefinition)
              let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyDefinition.PropertyName]
              let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
              select Tuple.Create (originatingObjectID, data);
@@ -128,11 +121,10 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
     private DataContainer CheckRelatedObjectAndGetDataContainer (
         LoadedObjectDataWithDataSourceData relatedObject,
         IRelationEndPointDefinition relationEndPointDefinition, 
-        IRelationEndPointDefinition oppositeEndPointDefinition,
-        ILoadedDataContainerProvider loadedDataContainerProvider)
+        IRelationEndPointDefinition oppositeEndPointDefinition)
     {
       CheckClassDefinitionOfRelatedObject (relationEndPointDefinition, relatedObject, oppositeEndPointDefinition, relatedObject.LoadedObjectData.ObjectID);
-      return loadedDataContainerProvider.GetDataContainerWithoutLoading (relatedObject.LoadedObjectData.ObjectID);
+      return relatedObject.DataSourceData;
     }
   }
 }

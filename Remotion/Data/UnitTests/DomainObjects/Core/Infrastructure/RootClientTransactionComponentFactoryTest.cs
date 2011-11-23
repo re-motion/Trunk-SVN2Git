@@ -210,13 +210,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (
           ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).VirtualObjectDataRegistrationAgent,
           Is.TypeOf<FetchedVirtualObjectRelationDataRegistrationAgent> ()
-              .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
-              .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
+              .With.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
       Assert.That (
           ((DelegatingFetchedRelationDataRegistrationAgent) eagerFetcher.RegistrationAgent).CollectionDataRegistrationAgent,
           Is.TypeOf<FetchedCollectionRelationDataRegistrationAgent> ()
-              .With.Property<FetchedVirtualObjectRelationDataRegistrationAgent> (a => a.LoadedDataContainerProvider).SameAs (dataManager)
-              .And.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
+              .With.Property<FetchedCollectionRelationDataRegistrationAgent> (a => a.VirtualEndPointProvider).SameAs (dataManager));
     }
 
     [Test]

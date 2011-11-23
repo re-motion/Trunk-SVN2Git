@@ -141,8 +141,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       IFetchedRelationDataRegistrationAgent registrationAgent =
           new DelegatingFetchedRelationDataRegistrationAgent (
               new FetchedRealObjectRelationDataRegistrationAgent(),
-              new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager, dataManager),
-              new FetchedCollectionRelationDataRegistrationAgent (dataManager, dataManager));
+              new FetchedVirtualObjectRelationDataRegistrationAgent (dataManager),
+              new FetchedCollectionRelationDataRegistrationAgent (dataManager));
       var eagerFetcher = new EagerFetcher (registrationAgent);
       return new EagerFetchingObjectLoaderDecorator (objectLoader, eagerFetcher);
     }

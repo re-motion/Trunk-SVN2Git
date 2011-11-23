@@ -73,7 +73,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
     }
 
     [Test]
-    [Ignore ("TODO 4510")]
     public void EagerFetching_UsesForeignKeyDataFromDatabase_NotTransaction ()
     {
       // This will retrieve Order1.

@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
       _loadedDataContainerProviderStub = MockRepository.GenerateStub<ILoadedDataContainerProvider> ();
       _virtualEndPointProviderMock = MockRepository.GenerateStrictMock<IVirtualEndPointProvider> ();
 
-      _agent = new FetchedVirtualObjectRelationDataRegistrationAgent (_loadedDataContainerProviderStub, _virtualEndPointProviderMock);
+      _agent = new FetchedVirtualObjectRelationDataRegistrationAgent (_virtualEndPointProviderMock);
 
       _originatingOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _originatingOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
@@ -277,12 +277,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries.EagerFetching
     [Test]
     public void Serialization ()
     {
-      var agent = new FetchedVirtualObjectRelationDataRegistrationAgent (
-          new SerializableLoadedDataContainerProviderFake (), new SerializableVirtualEndPointProviderFake ());
+      var agent = new FetchedVirtualObjectRelationDataRegistrationAgent (new SerializableVirtualEndPointProviderFake ());
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (agent);
 
-      Assert.That (deserializedInstance.LoadedDataContainerProvider, Is.Not.Null);
       Assert.That (deserializedInstance.VirtualEndPointProvider, Is.Not.Null);
     }
 
