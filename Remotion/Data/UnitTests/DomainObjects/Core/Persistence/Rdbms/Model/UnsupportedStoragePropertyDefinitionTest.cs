@@ -25,51 +25,92 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
   public class UnsupportedStoragePropertyDefinitionTest
   {
     private UnsupportedStoragePropertyDefinition _columnDefinition;
+    private Exception _innerException;
 
     [SetUp]
     public void SetUp ()
     {
-      _columnDefinition = new UnsupportedStoragePropertyDefinition (typeof (int), "Message");
+      _innerException = new Exception ("Inner!");
+      _columnDefinition = new UnsupportedStoragePropertyDefinition (typeof (int), "Message", _innerException);
     }
 
     [Test]
-    public void Message ()
+    public void Initialization ()
     {
       Assert.That (_columnDefinition.Message, Is.EqualTo ("Message"));
+      Assert.That (_columnDefinition.PropertyType, Is.SameAs (typeof (int)));
+      Assert.That (_columnDefinition.InnerException, Is.SameAs (_innerException));
+    }
+
+    [Test]
+    public void Initialization_WithNullInnerException ()
+    {
+      var columnDefinition = new UnsupportedStoragePropertyDefinition (typeof (int), "Message", null);
+
+      Assert.That (columnDefinition.InnerException, Is.Null);
+      Assert.That (
+          () => columnDefinition.GetColumns(), 
+          Throws.TypeOf<NotSupportedException>().With.InnerException.Null);
     }
 
     [Test]
     public void GetColumns ()
     {
-      _columnDefinition.GetColumns();
+      Assert.That (
+          () => _columnDefinition.GetColumns (),
+          Throws.TypeOf<NotSupportedException> ()
+              .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
+              .And.InnerException.SameAs (_innerException));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void GetColumnsForComparison ()
     {
-      _columnDefinition.GetColumnsForComparison();
+      Assert.That (
+          () => _columnDefinition.GetColumnsForComparison(), 
+          Throws.TypeOf<NotSupportedException>()
+              .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
+              .And.InnerException.SameAs (_innerException));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void SplitValue ()
     {
-      _columnDefinition.SplitValue (null);
+      Assert.That (
+          () => _columnDefinition.SplitValue (null),
+          Throws.TypeOf<NotSupportedException> ()
+              .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
+              .And.InnerException.SameAs (_innerException));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
     public void SplitValueForComparison ()
     {
-      _columnDefinition.SplitValueForComparison (null);
+      Assert.That (
+          () => { _columnDefinition.SplitValueForComparison (null); },
+          Throws.TypeOf<NotSupportedException> ()
+              .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
+              .And.InnerException.SameAs (_innerException));
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException))]
+    public void SplitValuesForComparison ()
+    {
+      Assert.That (
+          () => _columnDefinition.SplitValuesForComparison (null),
+          Throws.TypeOf<NotSupportedException> ()
+              .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
+              .And.InnerException.SameAs (_innerException));
+    }
+
+    [Test]
     public void CombineValue ()
     {
-      _columnDefinition.CombineValue (MockRepository.GenerateStub<IColumnValueProvider>());
+      Assert.That (
+          () => _columnDefinition.CombineValue (MockRepository.GenerateStub<IColumnValueProvider> ()),
+          Throws.TypeOf<NotSupportedException> ()
+              .With.Message.EqualTo ("This operation is not supported because the storage property is invalid. Reason: Message")
+              .And.InnerException.SameAs (_innerException));
     }
   }
 }

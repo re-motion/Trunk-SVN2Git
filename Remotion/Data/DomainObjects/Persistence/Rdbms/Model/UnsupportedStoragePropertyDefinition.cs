@@ -24,14 +24,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
   {
     private readonly Type _propertyType;
     private readonly string _message;
+    private readonly Exception _innerException;
 
-    public UnsupportedStoragePropertyDefinition (Type propertyType, string message)
+    public UnsupportedStoragePropertyDefinition (Type propertyType, string message, Exception innerException)
     {
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
       ArgumentUtility.CheckNotNullOrEmpty ("message", message);
 
       _propertyType = propertyType;
       _message = message;
+      _innerException = innerException;
     }
 
     public string Message
@@ -44,34 +46,44 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       get { return _propertyType; }
     }
 
+    public Exception InnerException
+    {
+      get { return _innerException; }
+    }
+
     public IEnumerable<ColumnDefinition> GetColumns ()
     {
-      return new ColumnDefinition[0];
+      throw CreateNotSupportedException ();
     }
 
     public IEnumerable<ColumnDefinition> GetColumnsForComparison ()
     {
-      throw new NotSupportedException();
+      throw CreateNotSupportedException();
     }
 
     public IEnumerable<ColumnValue> SplitValue (object value)
     {
-      throw new NotSupportedException();
+      throw CreateNotSupportedException();
     }
 
     public IEnumerable<ColumnValue> SplitValueForComparison (object value)
     {
-      throw new NotSupportedException ();
+      throw CreateNotSupportedException ();
     }
 
     public ColumnValueTable SplitValuesForComparison (IEnumerable<object> values)
     {
-      throw new NotSupportedException();
+      throw CreateNotSupportedException ();
     }
 
     public object CombineValue (IColumnValueProvider columnValueProvider)
     {
-      throw new NotSupportedException();
+      throw CreateNotSupportedException ();
+    }
+
+    private NotSupportedException CreateNotSupportedException ()
+    {
+      return new NotSupportedException ("This operation is not supported because the storage property is invalid. Reason: " + Message, InnerException);
     }
   }
 }

@@ -74,7 +74,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         }
         catch (NotSupportedException ex)
         {
-          return new UnsupportedStoragePropertyDefinition (propertyDefinition.PropertyType, ex.Message);
+          var message = string.Format (
+              "There was an error when retrieving storage type for property '{0}' (declaring class: '{1}'): {2}",
+              propertyDefinition.PropertyName,
+              propertyDefinition.ClassDefinition.ID,
+              ex.Message);
+          return new UnsupportedStoragePropertyDefinition (propertyDefinition.PropertyType, message, ex);
         }
         var columnName = _storageNameProvider.GetColumnName (propertyDefinition);
         return CreateValueStoragePropertyDefinition (columnName, storageType, propertyDefinition.PropertyType);
@@ -98,7 +103,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
         }
         catch (NotSupportedException ex)
         {
-          return new UnsupportedStoragePropertyDefinition (propertyType, ex.Message);
+          var message = string.Format (
+              "There was an error when retrieving storage type for value of type '{0}': {1}",
+              propertyType.Name,
+              ex.Message);
+          return new UnsupportedStoragePropertyDefinition (propertyType, message, ex);
         }
         return CreateValueStoragePropertyDefinition ("Value", storageType, propertyType);
       }

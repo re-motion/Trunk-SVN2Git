@@ -27,6 +27,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
@@ -86,19 +87,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_NotSupportedType ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition);
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition, "Test");
+      var exception = new NotSupportedException ("Msg.");
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType (Arg.Is (propertyDefinition), Arg<bool>.Is.Anything))
-          .Throw (new NotSupportedException ("Msg."));
+          .Throw (exception);
       _storageTypeInformationProviderStrictMock.Replay();
 
       var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
       _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
 
-      Assert.That (result, Is
-          .TypeOf (typeof (UnsupportedStoragePropertyDefinition))
-          .With.Property ("Message").EqualTo ("Msg.")
-          .And.Property ("PropertyType").EqualTo (propertyDefinition.PropertyType));
+      Assert.That (result, Is.TypeOf<UnsupportedStoragePropertyDefinition> ()
+          .With.Property<UnsupportedStoragePropertyDefinition> (pd => pd.Message).EqualTo (
+            "There was an error when retrieving storage type for property 'Test' (declaring class: 'ClassWithAllDataTypes'): Msg.")
+          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.PropertyType).EqualTo (typeof (string))
+          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.InnerException).SameAs (exception));
     }
 
     [Test]
@@ -374,18 +377,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void CreateStoragePropertyDefinition_ForValue_NotSupportedType ()
     {
+      var exception = new NotSupportedException ("Msg.");
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageType ("Test"))
-          .Throw (new NotSupportedException ("Msg."));
+          .Throw (exception);
       _storageTypeInformationProviderStrictMock.Replay ();
 
       var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition ("Test");
+      
       _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result, Is
-          .TypeOf (typeof (UnsupportedStoragePropertyDefinition))
-          .With.Property ("Message").EqualTo ("Msg.")
-          .And.Property ("PropertyType").EqualTo (typeof (string)));
+      Assert.That (result, Is.TypeOf<UnsupportedStoragePropertyDefinition>()
+          .With.Property<UnsupportedStoragePropertyDefinition> (pd => pd.Message).EqualTo (
+            "There was an error when retrieving storage type for value of type 'String': Msg.")
+          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.PropertyType).EqualTo (typeof (string))
+          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.InnerException).SameAs (exception));
     }
 
     [Test]
