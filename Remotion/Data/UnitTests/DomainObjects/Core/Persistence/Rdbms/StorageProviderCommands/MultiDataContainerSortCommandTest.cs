@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void Execute ()
     {
       var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }, _commandStub);
-      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order2Container });
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order2Container, _order1Container });
 
       var result = command.Execute (_executionContext).ToList ();
 
