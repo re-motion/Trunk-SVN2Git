@@ -132,6 +132,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     }
 
     [Test]
+    public void CreateForDataContainerQuery_ParameterYieldsUnsupportedStorageProperty ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.Statement).Return ("statement");
+      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection { new QueryParameter ("p1", Tuple.Create (1, "a")) });
+
+      var notSupportedException = new NotSupportedException ("Message.");
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Stub (stub => stub.CreateStoragePropertyDefinition (Tuple.Create (1, "a")))
+          .Return (new UnsupportedStoragePropertyDefinition (typeof (string), "X", null));
+      _dataStoragePropertyDefinitionFactoryStrictMock.Replay ();
+
+      Assert.That (
+          () => _factory.CreateForDataContainerQuery (queryStub), 
+          Throws.TypeOf<InvalidOperationException>()
+              .With.Message.EqualTo ("The query parameter 'p1' cannot be converted to a database value: This operation is not supported. Reason: Message.")
+              .And.InnerException.SameAs (notSupportedException));
+    }
+
+    [Test]
     public void CreateForScalarQuery ()
     {
       _dataStoragePropertyDefinitionFactoryStrictMock

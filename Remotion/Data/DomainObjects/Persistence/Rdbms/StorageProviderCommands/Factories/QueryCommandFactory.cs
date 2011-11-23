@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
@@ -81,7 +82,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     private QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter)
     {
       var storagePropertyDefinition = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (parameter.Value);
-      var columnValues = storagePropertyDefinition.SplitValueForComparison (parameter.Value).ToArray();
+      ColumnValue[] columnValues;
+      try
+      {
+        columnValues = storagePropertyDefinition.SplitValueForComparison (parameter.Value).ToArray ();
+      }
+      catch (NotSupportedException ex)
+      {
+        var message = string.Format ("The query parameter '{0}' cannot be converted to a database value: {1}", parameter.Name, ex.Message);
+        throw new InvalidOperationException (message, ex);
+      }
       if (columnValues.Length != 1)
       {
         var message = string.Format (
