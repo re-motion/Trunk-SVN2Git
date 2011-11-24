@@ -611,7 +611,7 @@ public class ClientTransaction
   /// <exception cref="ClientTransactionsDifferException">One of the given <paramref name="objectIDs"/> cannot be used in this 
   /// <see cref="ClientTransaction"/>.</exception>
   /// <exception cref="ObjectInvalidException">One of the given <paramref name="objectIDs"/> is invalid in this transaction.</exception>
-  /// <exception cref="BulkLoadException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
+  /// <exception cref="ObjectNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
   /// was not found in the underlying data source.</exception>
   public void EnsureDataAvailable (IEnumerable<ObjectID> objectIDs)
   {
@@ -946,8 +946,8 @@ public class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the expected type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
-  /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
-  /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
+  /// <exception cref="ObjectNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
+  /// was not found in the underlying data source.</exception>
   public T[] GetObjects<T> (params ObjectID[] objectIDs) 
       where T : DomainObject
   {
@@ -965,8 +965,8 @@ public class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the expected type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
-  /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
-  /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
+  /// <exception cref="ObjectNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
+  /// was not found in the underlying data source.</exception>
   public T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {
@@ -989,8 +989,6 @@ public class ClientTransaction
   /// <paramref name="objectIDs"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
-  /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   public T[] TryGetObjects<T> (params ObjectID[] objectIDs) 
       where T : DomainObject
   {
@@ -1007,8 +1005,6 @@ public class ClientTransaction
   /// <paramref name="objectIDs"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  /// <exception cref="BulkLoadException">The data source found one or more errors when loading the objects. The exceptions can be accessed via the
-  /// <see cref="BulkLoadException.Exceptions"/> property.</exception>
   public T[] TryGetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {

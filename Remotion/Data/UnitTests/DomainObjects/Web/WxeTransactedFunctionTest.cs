@@ -237,9 +237,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [ExpectedException (typeof (BulkLoadException), ExpectedMessage =
-        "There were errors when loading a bulk of DomainObjects:\r\n"
-        + "Object 'ClassWithAllDataTypes|.*|System.Guid' could not be found.\r\nObject 'ClassWithAllDataTypes|.*|System.Guid' could not be found.",
+    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage =
+        @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid', 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateRootThrowsWhenInvalidInParameter ()
     {
@@ -262,9 +261,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [ExpectedException (typeof (BulkLoadException), ExpectedMessage =
-        "There were errors when loading a bulk of DomainObjects:\r\n"
-        + "Object 'ClassWithAllDataTypes|.*|System.Guid' could not be found.\r\nObject 'ClassWithAllDataTypes|.*|System.Guid' could not be found.",
+    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage =
+        @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateRootThrowsWhenInvalidOutParameter ()
     {
@@ -290,8 +288,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
 
     [Test]
     [ExpectedException (typeof (ObjectInvalidException), ExpectedMessage =
-        "Remotion.Data.DomainObjects.DataManagement.ObjectInvalidException : Object 'ClassWithAllDataTypes|.*|System.Guid' is invalid in this "
-        + "transaction.",
+        @"Object 'ClassWithAllDataTypes\|.*\|System.Guid' is invalid in this transaction\.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateChildWithInvalidInParameter ()
     {
@@ -317,7 +314,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     [ExpectedException (
         typeof (ObjectInvalidException), 
-        ExpectedMessage = "Object 'ClassWithAllDataTypes|.*|System.Guid' is invalid in this transaction.",
+        ExpectedMessage = @"Object 'ClassWithAllDataTypes\|.*\|System.Guid' is invalid in this transaction\.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateChildWithInvalidOutParameter ()
     {

@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.Persistence
   /// <summary>
   /// Thrown when the process of loading multiple objects at the same time fails.
   /// </summary>
+  [Obsolete ("This class is not obsolete, ObjectNotFoundException is thrown with multiple IDs instead. (1.13.131)", true)]
   public class BulkLoadException : DomainObjectException
   {
     /// <summary>

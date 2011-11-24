@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Remotion.Text;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence
 {
@@ -36,22 +37,22 @@ namespace Remotion.Data.DomainObjects.Persistence
     
     private readonly ObjectID[] _ids;
 
-    public ObjectNotFoundException (ObjectID[] ids)
+    public ObjectNotFoundException (IEnumerable<ObjectID> ids)
       : this (ids, null)
     {
     }
 
-    public ObjectNotFoundException (ObjectID[] ids, Exception inner)
+    public ObjectNotFoundException (IEnumerable<ObjectID> ids, Exception inner)
         : this (BuildMessage(ids), ids, inner)
     {
     }
 
-    public ObjectNotFoundException (string message, ObjectID[] ids, Exception inner)
+    public ObjectNotFoundException (string message, IEnumerable<ObjectID> ids, Exception inner)
       : base (message, inner)
     {
       ArgumentUtility.CheckNotNull ("ids", ids);
 
-      _ids = ids;
+      _ids = ids.ToArray();
     }
 
     protected ObjectNotFoundException (SerializationInfo info, StreamingContext context)

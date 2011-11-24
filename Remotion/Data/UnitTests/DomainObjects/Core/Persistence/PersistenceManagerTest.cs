@@ -149,7 +149,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     }
 
     [Test]
-    [Ignore ("TODO 4407")]
     public void LoadDataContainers_ThrowOnNotFound ()
     {
       Assert.That (

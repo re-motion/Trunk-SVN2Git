@@ -114,9 +114,9 @@ namespace Remotion.Data.DomainObjects.Persistence
       var provider = _storageProviderManager.GetMandatory (id.StorageProviderDefinition.Name);
       var result = provider.LoadDataContainer (id);
 
-      var exception = CheckLoadedDataContainer (result, true);
-      if (exception != null)
-        throw exception;
+      CheckClassIDOfLookupResult (result);
+      if (result.LocatedObject == null)
+        throw new ObjectNotFoundException (new[] { id });
 
       return result.LocatedObject;
     }
@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       ArgumentUtility.CheckNotNull ("ids", ids);
 
       var idsByProvider = GroupIDsByProvider (ids);
-      var exceptions = new List<Exception>();
+      var notFoundIDs = new List<ObjectID>();
 
       var unorderedResultDictionary = new Dictionary<ObjectID, DataContainer>();
       foreach (var idGroup in idsByProvider)
@@ -135,16 +135,16 @@ namespace Remotion.Data.DomainObjects.Persistence
         var provider = _storageProviderManager.GetMandatory (idGroup.Key);
         foreach (var dataContainerLookupResult in provider.LoadDataContainers (idGroup.Value))
         {
-          var exception = CheckLoadedDataContainer (dataContainerLookupResult, throwOnNotFound);
-          if (exception != null)
-            exceptions.Add (exception);
-          else if (dataContainerLookupResult.LocatedObject != null)
+          CheckClassIDOfLookupResult (dataContainerLookupResult);
+          if (dataContainerLookupResult.LocatedObject == null)
+            notFoundIDs.Add (dataContainerLookupResult.ObjectID);
+          else
             unorderedResultDictionary.Add (dataContainerLookupResult.ObjectID, dataContainerLookupResult.LocatedObject);
         }
       }
 
-      if (exceptions.Count > 0)
-        throw new BulkLoadException (exceptions);
+      if (notFoundIDs.Count > 0 && throwOnNotFound)
+        throw new ObjectNotFoundException (notFoundIDs);
 
       return ids.Select (id => unorderedResultDictionary.GetValueOrDefault(id));
     }
@@ -287,24 +287,18 @@ namespace Remotion.Data.DomainObjects.Persistence
         throw new ObjectDisposedException ("PersistenceManager", "A disposed PersistenceManager cannot be accessed.");
     }
 
-    private Exception CheckLoadedDataContainer (ObjectLookupResult<DataContainer> lookupResult, bool throwOnNotFound)
+    private void CheckClassIDOfLookupResult (ObjectLookupResult<DataContainer> lookupResult)
     {
       if (lookupResult.LocatedObject != null)
       {
         if (lookupResult.ObjectID.ClassID != lookupResult.LocatedObject.ID.ClassID)
         {
-          return CreatePersistenceException (
+          throw CreatePersistenceException (
               "The ClassID of the provided ObjectID '{0}' and the ClassID of the loaded DataContainer '{1}' differ.",
               lookupResult.ObjectID,
               lookupResult.LocatedObject.ID);
         }
-        else
-          return null;
       }
-      else if (throwOnNotFound)
-        return new ObjectNotFoundException (new[] { lookupResult.ObjectID });
-      else
-        return null;
     }
 
     private IEnumerable<KeyValuePair<string, List<ObjectID>>> GroupIDsByProvider (IEnumerable<ObjectID> ids)

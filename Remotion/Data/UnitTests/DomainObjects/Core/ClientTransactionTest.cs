@@ -670,7 +670,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (BulkLoadException))]
+    [ExpectedException (typeof (ObjectNotFoundException))]
     public void EnsureDataAvailable_Many_NotFound ()
     {
       var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
