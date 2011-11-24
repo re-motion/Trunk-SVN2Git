@@ -453,7 +453,7 @@ public class ClientTransaction
   /// <value>The domain objects enlisted in this transaction.</value>
   /// <remarks>
   /// The <see cref="DataContainer"/>s of the returned objects might not have been loaded yet. In that case, they will be loaded on first
-  /// access of the respective objects' properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
+  /// access of the respective objects' properties, and this might trigger an <see cref="ObjectsNotFoundException"/> if the container cannot be loaded.
   /// </remarks>
   public IEnumerable<DomainObject> GetEnlistedDomainObjects ()
   {
@@ -471,7 +471,7 @@ public class ClientTransaction
   /// </returns>
   /// <remarks>
   /// The <see cref="DataContainer"/> of the returned object might not have been loaded yet. In that case, it will be loaded on first
-  /// access of the object's properties, and this might trigger an <see cref="ObjectNotFoundException"/> if the container cannot be loaded.
+  /// access of the object's properties, and this might trigger an <see cref="ObjectsNotFoundException"/> if the container cannot be loaded.
   /// </remarks>
   public DomainObject GetEnlistedDomainObject (ObjectID objectID)
   {
@@ -518,7 +518,7 @@ public class ClientTransaction
   /// </para>
   /// <para>The data for the <see cref="DomainObject"/> is not loaded immediately by this method, but will be retrieved when the object is first
   /// used in this transaction. If the object has been deleted from the underlying database, access to such an object will result in an
-  /// <see cref="ObjectNotFoundException"/>.</para>
+  /// <see cref="ObjectsNotFoundException"/>.</para>
   /// </remarks>
   /// <exception cref="InvalidOperationException">The domain object cannot be enlisted, e.g., because another <see cref="DomainObject"/> with the same
   /// <see cref="ObjectID"/> has already been associated with this transaction..</exception>
@@ -561,7 +561,7 @@ public class ClientTransaction
   /// <exception cref="InvalidOperationException">A domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
   /// <see cref="ObjectID"/> has already been associated with this transaction.</exception>
   /// <remarks>This method also enlists objects that do not exist in the database; accessing such an object in the context of this transaction will
-  /// result in an <see cref="ObjectNotFoundException"/>.</remarks>
+  /// result in an <see cref="ObjectsNotFoundException"/>.</remarks>
   public void EnlistDomainObjects (IEnumerable<DomainObject> domainObjects)
   {
     ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
@@ -578,7 +578,7 @@ public class ClientTransaction
   /// <exception cref="InvalidOperationException">A domain object cannot be enlisted, because another <see cref="DomainObject"/> with the same
   /// <see cref="ObjectID"/> has already been associated with this transaction.</exception>
   /// <remarks>This method also enlists objects that do not exist in the database; accessing such an object in the context of this transaction will
-  /// result in an <see cref="ObjectNotFoundException"/>.</remarks>
+  /// result in an <see cref="ObjectsNotFoundException"/>.</remarks>
   public void EnlistDomainObjects (params DomainObject[] domainObjects)
   {
     ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
@@ -593,7 +593,7 @@ public class ClientTransaction
   /// <param name="objectID">The domain object whose data must be loaded.</param>
   /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
   /// <exception cref="ObjectInvalidException">The given <paramref name="objectID"/> is invalid in this transaction.</exception>
-  /// <exception cref="ObjectNotFoundException">No data could be loaded for the given <paramref name="objectID"/> because the object was not
+  /// <exception cref="ObjectsNotFoundException">No data could be loaded for the given <paramref name="objectID"/> because the object was not
   /// found in the underlying data source.</exception>
   public void EnsureDataAvailable (ObjectID objectID)
   {
@@ -611,7 +611,7 @@ public class ClientTransaction
   /// <exception cref="ClientTransactionsDifferException">One of the given <paramref name="objectIDs"/> cannot be used in this 
   /// <see cref="ClientTransaction"/>.</exception>
   /// <exception cref="ObjectInvalidException">One of the given <paramref name="objectIDs"/> is invalid in this transaction.</exception>
-  /// <exception cref="ObjectNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
+  /// <exception cref="ObjectsNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
   /// was not found in the underlying data source.</exception>
   public void EnsureDataAvailable (IEnumerable<ObjectID> objectIDs)
   {
@@ -666,7 +666,7 @@ public class ClientTransaction
   /// to one transaction. To avoid having to manually re-register all such event handlers in all transactions after calling
   /// <see cref="EnlistDomainObject"/>, this method copies all collection event handlers from a source transaction to this transaction.
   /// </remarks>
-  /// <exception cref="ObjectNotFoundException">The <paramref name="domainObject"/> could not be found in either the current transaction or the
+  /// <exception cref="ObjectsNotFoundException">The <paramref name="domainObject"/> could not be found in either the current transaction or the
   /// <paramref name="sourceTransaction"/>.</exception>
   /// <exception cref="ObjectInvalidException">The <paramref name="domainObject"/> is invalid in either the current transaction or the
   /// <paramref name="sourceTransaction"/>.</exception>
@@ -831,7 +831,7 @@ public class ClientTransaction
   /// <returns>The <see cref="DomainObject"/> with the specified <paramref name="id"/>.</returns>
   /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
   /// <exception cref="ObjectDeletedException"><paramref name="includeDeleted"/> is false and the DomainObject with <paramref name="id"/> has been deleted.</exception>
-  /// <exception cref="ObjectNotFoundException">The object could not be found in the database.</exception>
+  /// <exception cref="ObjectsNotFoundException">The object could not be found in the database.</exception>
   /// <exception cref="ObjectInvalidException">The object is invalid in this transaction.</exception>
   /// <exception cref="Persistence.StorageProviderException">
   ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
@@ -869,7 +869,7 @@ public class ClientTransaction
   /// an object in <see cref="StateType.NotLoadedYet"/> state is created and enlisted without loading its data from the data source. In such a case,
   /// the object's data is loaded when it's first needed; e.g., when one of its properties is accessed or when 
   /// <see cref="EnsureDataAvailable(Remotion.Data.DomainObjects.ObjectID)"/> is called for its <see cref="ObjectID"/>. At that point, an
-  /// <see cref="ObjectNotFoundException"/> may be triggered when the object's data cannot be found.
+  /// <see cref="ObjectsNotFoundException"/> may be triggered when the object's data cannot be found.
   /// </para>
   /// </remarks>
   /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
@@ -946,7 +946,7 @@ public class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the expected type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
-  /// <exception cref="ObjectNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
+  /// <exception cref="ObjectsNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
   /// was not found in the underlying data source.</exception>
   public T[] GetObjects<T> (params ObjectID[] objectIDs) 
       where T : DomainObject
@@ -965,7 +965,7 @@ public class ClientTransaction
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the expected type <typeparamref name="T"/>.</exception>
   /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
-  /// <exception cref="ObjectNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
+  /// <exception cref="ObjectsNotFoundException">No data could be loaded for one or more of the given <paramref name="objectIDs"/> because the object 
   /// was not found in the underlying data source.</exception>
   public T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject

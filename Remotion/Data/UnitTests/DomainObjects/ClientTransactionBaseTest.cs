@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
         DomainObject domainObject = TestDomainBase.GetObject (id, true);
         Assert.IsNull (domainObject, string.Format ("Object '{0}' was not deleted.", id));
       }
-      catch (ObjectNotFoundException)
+      catch (ObjectsNotFoundException)
       {
       }
     }

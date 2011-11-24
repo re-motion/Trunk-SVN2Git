@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage = "Object 'Order|.*|System.Guid' could not be found.",
+    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage = "Object 'Order|.*|System.Guid' could not be found.",
         MatchType = MessageMatch.Regex)]
     public void Load_Inexistent ()
     {

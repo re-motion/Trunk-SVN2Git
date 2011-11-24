@@ -180,9 +180,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.TableInher
         try
         {
           TICustomer.GetObject (DomainObjectIDs.Customer);
-          Assert.Fail ("ObjectNotFoundException was expected.");
+          Assert.Fail ("ObjectsNotFoundException was expected.");
         }
-        catch (ObjectNotFoundException)
+        catch (ObjectsNotFoundException)
         {
         }
       }

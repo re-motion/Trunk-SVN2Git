@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException),
+    [ExpectedException (typeof (ObjectsNotFoundException),
         ExpectedMessage = "Object(s) could not be found: 'Employee|3c4f3fc8-0db2-4c1f-aa00-ade72e9edb32|System.Guid'.")]
     public void RelatedObjectChanges_NonExistentObject_RealSide ()
     {

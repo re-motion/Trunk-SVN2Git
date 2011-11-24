@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Transport
     /// </summary>
     /// <param name="stream">The <see cref="Stream"/> from which to load the data.</param>
     /// <returns>A container holding the objects loaded from the given data.</returns>
-    /// <exception cref="ObjectNotFoundException">A referenced related object is not part of the transported data and does not exist on the
+    /// <exception cref="ObjectsNotFoundException">A referenced related object is not part of the transported data and does not exist on the
     /// target system.</exception>
     /// <remarks>
     /// Given a <see cref="DomainObjectTransporter"/>, the binary data can be retrieved from <see cref="Export(System.IO.Stream)"/>.
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Transport
     /// <param name="stream">The <see cref="Stream"/> from which to load the data.</param>
     /// <param name="strategy">The strategy to use when importing data. This must match the strategy being used with <see cref="Export(System.IO.Stream,Remotion.Data.DomainObjects.Transport.IExportStrategy)"/>.</param>
     /// <returns>A container holding the objects loaded from the given data.</returns>
-    /// <exception cref="ObjectNotFoundException">A referenced related object is not part of the transported data and does not exist on the
+    /// <exception cref="ObjectsNotFoundException">A referenced related object is not part of the transported data and does not exist on the
     /// target system.</exception>
     /// <remarks>
     /// Given a <see cref="DomainObjectTransporter"/>, the binary data can be retrieved from <see cref="Export(System.IO.Stream,Remotion.Data.DomainObjects.Transport.IExportStrategy)"/>.

@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage = 
+    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage = 
         "Object(s) could not be found: 'Order|33333333-3333-3333-3333-333333333333|System.Guid'.")]
     public void GetObjects_NotFound ()
     {

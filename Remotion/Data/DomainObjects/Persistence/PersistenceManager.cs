@@ -116,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Persistence
 
       CheckClassIDOfLookupResult (result);
       if (result.LocatedObject == null)
-        throw new ObjectNotFoundException (new[] { id });
+        throw new ObjectsNotFoundException (new[] { id });
 
       return result.LocatedObject;
     }
@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       }
 
       if (notFoundIDs.Count > 0 && throwOnNotFound)
-        throw new ObjectNotFoundException (notFoundIDs);
+        throw new ObjectsNotFoundException (notFoundIDs);
 
       return ids.Select (id => unorderedResultDictionary.GetValueOrDefault(id));
     }

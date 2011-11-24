@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
       var instance = (ClassWithInvalidRelation) ClassWithInvalidRelation.GetObject (id);
 
-      Assert.That (() => instance.ClassWithGuidKey, Throws.TypeOf <ObjectNotFoundException>());
+      Assert.That (() => instance.ClassWithGuidKey, Throws.TypeOf <ObjectsNotFoundException>());
     }
   }
 }

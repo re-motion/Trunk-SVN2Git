@@ -86,9 +86,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       Assert.That (
           () => _persistenceManager.LoadDataContainer (_invalidOrderID1),
-          Throws.TypeOf<ObjectNotFoundException>()
+          Throws.TypeOf<ObjectsNotFoundException>()
               .With.Message.EqualTo ("Object(s) could not be found: '" + _invalidOrderID1 + "'.")
-              .And.Property<ObjectNotFoundException>(ex => ex.IDs).EqualTo (new[] { _invalidOrderID1 }));
+              .And.Property<ObjectsNotFoundException>(ex => ex.IDs).EqualTo (new[] { _invalidOrderID1 }));
     }
 
     [Test]
@@ -153,9 +153,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       Assert.That (
           () => _persistenceManager.LoadDataContainers (new[] { _invalidOrderID1, _invalidOrderID2, DomainObjectIDs.Order1 }, true),
-          Throws.TypeOf<ObjectNotFoundException> ()
+          Throws.TypeOf<ObjectsNotFoundException> ()
               .With.Message.EqualTo ("Object(s) could not be found: '" + _invalidOrderID1 + "', '" + _invalidOrderID2 + "'.")
-              .And.Property<ObjectNotFoundException> (ex => ex.IDs).EqualTo (new[] { _invalidOrderID1, _invalidOrderID2 }));
+              .And.Property<ObjectsNotFoundException> (ex => ex.IDs).EqualTo (new[] { _invalidOrderID1, _invalidOrderID2 }));
     }
 
     [Test]
@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       _persistenceManager.Save (new DataContainerCollection { dataContainer });
       Assert.That (dataContainer.Timestamp, Is.SameAs (timestampBefore));
 
-      Assert.That (() => _persistenceManager.LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1), Throws.TypeOf<ObjectNotFoundException>());
+      Assert.That (() => _persistenceManager.LoadDataContainer (DomainObjectIDs.ClassWithAllDataTypes1), Throws.TypeOf<ObjectsNotFoundException>());
     }
 
     [Test]

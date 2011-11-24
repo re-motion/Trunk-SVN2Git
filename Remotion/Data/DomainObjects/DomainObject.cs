@@ -557,7 +557,7 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
-    /// <exception cref="ObjectNotFoundException">No data could be loaded for this <see cref="DomainObject"/> because the object was not
+    /// <exception cref="ObjectsNotFoundException">No data could be loaded for this <see cref="DomainObject"/> because the object was not
     /// found in the data source.</exception>
     public void EnsureDataAvailable ()
     {

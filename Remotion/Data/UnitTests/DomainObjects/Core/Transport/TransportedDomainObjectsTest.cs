@@ -187,9 +187,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Transport
         try
         {
           ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-          Assert.Fail ("Expected ObjectNotFoundException");
+          Assert.Fail ("Expected ObjectsNotFoundException");
         }
-        catch (ObjectNotFoundException)
+        catch (ObjectsNotFoundException)
         {
           // ok
         }

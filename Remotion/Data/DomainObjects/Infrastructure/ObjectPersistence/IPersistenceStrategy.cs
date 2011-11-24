@@ -60,7 +60,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// Loads the data for a number of <see cref="ObjectID"/> values from the underlying data source.
     /// </summary>
     /// <param name="objectIDs">The ids of the data to load.</param>
-    /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="ObjectNotFoundException"/> if a data container 
+    /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="ObjectsNotFoundException"/> if a data container 
     ///   cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, the method should represent the unknown ID as a 
     ///   <see cref="NullLoadedObjectData"/> object.
     /// </param>

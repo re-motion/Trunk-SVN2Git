@@ -237,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage =
+    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage =
         @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid', 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateRootThrowsWhenInvalidInParameter ()
@@ -261,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException), ExpectedMessage =
+    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage =
         @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
         MatchType = MessageMatch.Regex)]
     public void AutoEnlistingCreateRootThrowsWhenInvalidOutParameter ()

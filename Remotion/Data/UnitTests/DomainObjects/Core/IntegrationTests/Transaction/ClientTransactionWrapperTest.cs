@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException),
+    [ExpectedException (typeof (ObjectsNotFoundException),
         ExpectedMessage = "'Partner|",
         MatchType = MessageMatch.Contains)]
     public void RegisterObjects_WithNewObject ()

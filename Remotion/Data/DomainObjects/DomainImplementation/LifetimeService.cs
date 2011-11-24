@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// The <see cref="DomainObject"/> with the specified <paramref name="objectID"/>.
     /// </returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="clientTransaction"/> or <paramref name="objectID"/> are <see langword="null"/>.</exception>
-    /// <exception cref="ObjectNotFoundException">The object could not be found in the data source.</exception>
+    /// <exception cref="ObjectsNotFoundException">The object could not be found in the data source.</exception>
     /// <exception cref="ObjectInvalidException">The object is invalid in this transaction.</exception>
     /// <exception cref="Persistence.StorageProviderException">
     /// The Mapping does not contain a class definition for the given <paramref name="objectID"/>.<br/> -or- <br/>
@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// an object in <see cref="StateType.NotLoadedYet"/> state is created and enlisted without loading its data from the data source. In such a case,
     /// the object's data is loaded when it's first needed; e.g., when one of its properties is accessed or when
     /// <see cref="DomainObject.EnsureDataAvailable"/> is called on it. At that point, an
-    /// <see cref="ObjectNotFoundException"/> may be triggered when the object's data cannot be found.
+    /// <see cref="ObjectsNotFoundException"/> may be triggered when the object's data cannot be found.
     /// </remarks>
     /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ObjectInvalidException">The object with the given <paramref name="objectID"/> is invalid in the given 

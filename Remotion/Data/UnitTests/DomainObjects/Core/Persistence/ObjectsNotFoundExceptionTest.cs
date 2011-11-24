@@ -22,13 +22,13 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
   [TestFixture]
-  public class ObjectNotFoundExceptionTest : StandardMappingTest
+  public class ObjectsNotFoundExceptionTest : StandardMappingTest
   {
     [Test]
     public void Serialization ()
     {
       var innerException = new Exception ("Test");
-      var exception = new ObjectNotFoundException ("Message", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, innerException);
+      var exception = new ObjectsNotFoundException ("Message", new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, innerException);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (exception);
 

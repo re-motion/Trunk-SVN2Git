@@ -398,7 +398,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       {
         UnitTestStorageProviderStub.ExecuteWithMock (storageProviderMock, () => 
             ClientTransactionTestHelper.CallGetObject (_transaction, invalidObject.ID, false));
-        Assert.Fail ("Expected ObjectNotFoundException.");
+        Assert.Fail ("Expected ObjectsNotFoundException.");
       }
       catch (ObjectInvalidException)
       {
@@ -568,7 +568,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectsNotFoundException))]
     public void EnsureDataAvailable_NotFound ()
     {
       var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
@@ -670,7 +670,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectNotFoundException))]
+    [ExpectedException (typeof (ObjectsNotFoundException))]
     public void EnsureDataAvailable_Many_NotFound ()
     {
       var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();

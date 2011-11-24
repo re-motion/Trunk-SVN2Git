@@ -872,7 +872,7 @@
     <Compile Include="Persistence\ConverterException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Persistence\ObjectNotFoundException.cs">
+    <Compile Include="Persistence\ObjectsNotFoundException.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Persistence\PersistenceException.cs">
