@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -15,13 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Relations
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.ShadowedProperties
 {
+  [Instantiable]
   [DBTable]
-  [TestDomain]
-  public class DerivedInheritanceRootClass2 : AboveInheritanceRootClassWithRelation
+  public abstract class Base : DomainObject
   {
+    public int Name
+    {
+      get { return Properties[typeof (Base), "Name"].GetValue<int> (); }
+    }
   }
 }

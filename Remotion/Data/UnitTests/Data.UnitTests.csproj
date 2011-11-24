@@ -237,6 +237,11 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionNewObjectGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionPropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\When_TwoClasses_InheritARelation_FromAboveInheritanceRoot.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ShadowedProperties\Base.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\MappingReflectionIntegrationTestBase.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ShadowedProperties\When_ADerivedClass_RedefinesAProperty.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ShadowedProperties\Shadower.cs" />
     <Compile Include="DomainObjects\Core\Persistence\ObjectsNotFoundExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
     <Compile Include="UnitTesting\ConstraintExpressionExtensions.cs" />
@@ -500,7 +505,7 @@
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassDefinitionWithNullEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ClassReflectorTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\MappingReflectorIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ReferenceMappingComparisonTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\PropertyFinderTests\NameBasedPropertyFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\ReflectionBasedMappingObjectFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionChecker.cs" />
@@ -750,10 +755,10 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot\BaseClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot\Class1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\RelationReflector\RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot\DerivedClass2.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Relations\AboveInheritanceRootClassWithRelation.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Relations\DerivedInheritanceRootClass1.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Relations\DerivedInheritanceRootClass2.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Relations\UnidirectionalRelationClass.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\AboveInheritanceRootClassWithRelation.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\DerivedInheritanceRootClass1.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\DerivedInheritanceRootClass2.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\UnidirectionalRelationClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Simple\ClassWithPropertyTypeInOtherAssembly.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\BaseOfBaseValidationDomainObjectClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\BaseValidationDomainObjectClass.cs" />
