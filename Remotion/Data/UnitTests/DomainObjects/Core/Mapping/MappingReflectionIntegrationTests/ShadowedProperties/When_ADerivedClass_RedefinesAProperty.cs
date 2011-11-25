@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
       _derivedClassDefinition = ClassDefinitions[typeof (Shadower)];
       _baseClassDefinition = _derivedClassDefinition.BaseClass;
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
       var basePropertyDefinitionOnBaseClass = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
 
       Assert.That (_derivedClassDefinition.MyPropertyDefinitions, Has.No.Member (basePropertyDefinitionOnBaseClass));
-      Assert.That (_derivedClassDefinition.GetPropertyDefinitions (), Has.Member (basePropertyDefinitionOnBaseClass));
+      Assert.That (_derivedClassDefinition.GetPropertyDefinitions(), Has.Member (basePropertyDefinitionOnBaseClass));
     }
   }
 }
