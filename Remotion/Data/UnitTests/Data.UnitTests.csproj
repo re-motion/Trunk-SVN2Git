@@ -660,8 +660,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\FileSystemItem.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Folder.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\IndustrialSector.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\InheritanceRootSample\AboveInheritanceRootClass.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\InheritanceRootSample\StorageGroupClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\IOrder.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Location.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\MixedMapping\BaseForMixinAddingPersistentProperties.cs" />
@@ -706,7 +704,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\OrderWithNewPropertyAccess.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Partner.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\Person.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\BaseClassWithoutStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassDerivedFromClassWithInterface.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClassHavingStorageSpecificIdentifierAttribute.cs" />
@@ -729,7 +726,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\ClosedGenericClassWithVirtualRelationEndPoints.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithDifferentProperties.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithoutStorageGroupWithDifferentProperties.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\DerivedClassWithStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\GenericClassNotInMapping.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\GenericClassWithRealRelationEndPointsNotInMapping.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Integration\ReflectionBasedMappingSample\GenericClassWithVirtualRelationEndPointsNotInMapping.cs" />
