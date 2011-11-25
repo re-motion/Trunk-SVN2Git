@@ -612,7 +612,6 @@
     <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionDefinitionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionDefinitionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\SortExpressions\SortExpressionParserTest.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\BaseClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\BaseClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertieRealSides.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassAndMixinWithSameRelationPropertiesMixedSides.cs" />
@@ -626,7 +625,6 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\ClassWithSameClassID.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\Derived1ClassWithStorageGroupAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\Derived2ClassWithStorageGroupAttribute.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\DerivedClassHavingAnOverriddenPropertyWithMappingAttribute.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\GenericClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\MixinAddingBidirectionalRelationTwice.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Errors\OtherClassWithInvalidBidirectionalRelationLeftSide.cs" />
@@ -755,7 +753,6 @@
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\DerivedInheritanceRootClass1.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\DerivedInheritanceRootClass2.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\UnidirectionalRelationClass.cs" />
-    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Simple\ClassWithPropertyTypeInOtherAssembly.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\BaseOfBaseValidationDomainObjectClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\BaseValidationDomainObjectClass.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\ClassOutOfInheritanceHierarchy.cs" />
