@@ -44,20 +44,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
     }
 
     [Test]
-    public void BothProperties_ShouldHavePropertyDefinitions ()
+    public void BothProperties_ShouldHaveDifferentPropertyDefinitions ()
     {
       var basePropertyDefinition = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
       Assert.That (basePropertyDefinition, Is.Not.Null);
 
       var newPropertyDefinition = _derivedClassDefinition.ResolveProperty (_newPropertyInfo);
       Assert.That (newPropertyDefinition, Is.Not.Null);
-    }
-
-    [Test]
-    public void ThePropertyDefinitions_ShouldBeDifferent ()
-    {
-      var basePropertyDefinition = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
-      var newPropertyDefinition = _derivedClassDefinition.ResolveProperty (_newPropertyInfo);
 
       Assert.That (newPropertyDefinition, Is.Not.SameAs (basePropertyDefinition));
     }
