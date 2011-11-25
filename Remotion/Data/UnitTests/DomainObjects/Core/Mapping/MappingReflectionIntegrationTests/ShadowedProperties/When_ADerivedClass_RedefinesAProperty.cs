@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
     }
 
     [Test]
-    public void BothProperties_ShouldBePresent ()
+    public void BothProperties_ShouldHavePropertyDefinitions ()
     {
       var basePropertyDefinition = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
       Assert.That (basePropertyDefinition, Is.Not.Null);
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
     }
 
     [Test]
-    public void TheProperties_ShouldBeDifferent ()
+    public void ThePropertyDefinitions_ShouldBeDifferent ()
     {
       var basePropertyDefinition = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
       var newPropertyDefinition = _derivedClassDefinition.ResolveProperty (_newPropertyInfo);
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
     }
 
     [Test]
-    public void TheDerivedClass_ShouldAlsoHaveTheBaseProperty_AsPartOfItsInheritedProperties ()
+    public void TheDerivedClass_ShouldAlsoHaveTheBasePropertyDefinition_AsPartOfItsInheritedProperties ()
     {
       var basePropertyDefinitionOnBaseClass = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
 
