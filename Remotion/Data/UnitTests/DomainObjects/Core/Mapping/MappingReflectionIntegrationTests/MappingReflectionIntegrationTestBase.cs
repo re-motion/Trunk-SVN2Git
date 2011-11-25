@@ -29,6 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
 {
   public abstract class MappingReflectionIntegrationTestBase
   {
+    private static readonly IEnumerable<Type> s_domainObjectTypes = 
+        typeof (MappingReflectionTestBase).Assembly.GetTypes ().Where (t => typeof (DomainObject).IsAssignableFrom (t)).ToArray ();
+
     private MappingReflector _mappingReflector;
     private IDictionary<Type, ClassDefinition> _classDefinitions;
     private RelationDefinition[] _relationDefinitions;
@@ -58,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
 
     private IEnumerable<Type> AllDomainObjectTypesFromThisNamespace ()
     {
-      return GetType ().Assembly.GetTypes ().Where (t => typeof(DomainObject).IsAssignableFrom (t) && t.Namespace == GetType ().Namespace);
+      return s_domainObjectTypes.Where (t => t.Namespace == GetType ().Namespace);
     }
 
     private MappingReflector CreateMappingReflector (Type[] reflectedTypes)

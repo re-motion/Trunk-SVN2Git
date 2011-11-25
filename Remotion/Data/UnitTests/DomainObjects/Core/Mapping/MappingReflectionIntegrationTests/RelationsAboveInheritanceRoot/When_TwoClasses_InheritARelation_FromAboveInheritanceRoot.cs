@@ -16,23 +16,33 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot
 {
   [TestFixture]
   public class When_TwoClasses_InheritARelation_FromAboveInheritanceRoot : MappingReflectionIntegrationTestBase
   {
+    private ClassDefinition _derivedClass1;
+    private ClassDefinition _derivedClass2;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _derivedClass1 = ClassDefinitions[typeof (DerivedInheritanceRootClass1)];
+      _derivedClass2 = ClassDefinitions[typeof (DerivedInheritanceRootClass2)];
+    }
+
     [Test]
     public void TheDerivedClasses_ShouldGetSeparateRelationDefinitions_WithDifferentIDs ()
     {
-      var derivedClass1 = ClassDefinitions[typeof (DerivedInheritanceRootClass1)];
-      var derivedClass2 = ClassDefinitions[typeof (DerivedInheritanceRootClass2)];
-
-      var endPointInDerivedClass1 = GetRelationEndPointDefinition (derivedClass1, typeof (AboveInheritanceRootClassWithRelation), "RelationClass");
-      var endPointInDerivedClass2 = GetRelationEndPointDefinition (derivedClass2, typeof (AboveInheritanceRootClassWithRelation), "RelationClass");
-
+      var endPointInDerivedClass1 = GetRelationEndPointDefinition (_derivedClass1, typeof (AboveInheritanceRootClassWithRelation), "RelationClass");
       Assert.That (endPointInDerivedClass1, Is.Not.Null);
+
+      var endPointInDerivedClass2 = GetRelationEndPointDefinition (_derivedClass2, typeof (AboveInheritanceRootClassWithRelation), "RelationClass");
       Assert.That (endPointInDerivedClass2, Is.Not.Null);
+
       Assert.That (endPointInDerivedClass1.RelationDefinition, Is.Not.SameAs (endPointInDerivedClass2.RelationDefinition));
 
       Assert.That (
