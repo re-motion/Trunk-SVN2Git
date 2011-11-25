@@ -17,6 +17,7 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.ShadowedProperties
@@ -24,27 +25,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
   [TestFixture]
   public class When_ADerivedClass_RedefinesAProperty : MappingReflectionIntegrationTestBase
   {
+    private ClassDefinition _derivedClassDefinition;
+    private ClassDefinition _baseClassDefinition;
+    private PropertyInfoAdapter _basePropertyInfo;
+    private PropertyInfoAdapter _newPropertyInfo;
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _derivedClassDefinition = ClassDefinitions[typeof (Shadower)];
+      _baseClassDefinition = _derivedClassDefinition.BaseClass;
+
+      _basePropertyInfo = PropertyInfoAdapter.Create (
+          typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+      _newPropertyInfo = PropertyInfoAdapter.Create (
+          typeof (Shadower).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+    }
+
     [Test]
     public void BothProperties_ShouldBePresent ()
     {
-      var derivedClassDefinition = ClassDefinitions[typeof (Shadower)];
-      var baseClassDefinition = derivedClassDefinition.BaseClass;
-
-      var basePropertyInfo = PropertyInfoAdapter.Create (
-          typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-      var basePropertyDefinition = baseClassDefinition.ResolveProperty (basePropertyInfo);
+      var basePropertyDefinition = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
       Assert.That (basePropertyDefinition, Is.Not.Null);
 
-      var newPropertyInfo = PropertyInfoAdapter.Create (
-          typeof (Shadower).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-      var newPropertyDefinition = derivedClassDefinition.ResolveProperty (newPropertyInfo);
+      var newPropertyDefinition = _derivedClassDefinition.ResolveProperty (_newPropertyInfo);
       Assert.That (newPropertyDefinition, Is.Not.Null);
+    }
+
+    [Test]
+    public void TheProperties_ShouldBeDifferent ()
+    {
+      var basePropertyDefinition = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
+      var newPropertyDefinition = _derivedClassDefinition.ResolveProperty (_newPropertyInfo);
 
       Assert.That (newPropertyDefinition, Is.Not.SameAs (basePropertyDefinition));
+    }
 
-      var basePropertyDefinitionOnDerivedClass = derivedClassDefinition.ResolveProperty (basePropertyInfo);
-      Assert.That (basePropertyDefinitionOnDerivedClass, Is.Not.Null);
-      Assert.That (basePropertyDefinitionOnDerivedClass, Is.SameAs (basePropertyDefinition));
+    [Test]
+    public void TheDerivedClass_ShouldAlsoHaveTheBaseProperty_AsPartOfItsInheritedProperties ()
+    {
+      var basePropertyDefinitionOnBaseClass = _baseClassDefinition.ResolveProperty (_basePropertyInfo);
+
+      Assert.That (_derivedClassDefinition.MyPropertyDefinitions, Has.No.Member (basePropertyDefinitionOnBaseClass));
+      Assert.That (_derivedClassDefinition.GetPropertyDefinitions (), Has.Member (basePropertyDefinitionOnBaseClass));
     }
   }
 }
