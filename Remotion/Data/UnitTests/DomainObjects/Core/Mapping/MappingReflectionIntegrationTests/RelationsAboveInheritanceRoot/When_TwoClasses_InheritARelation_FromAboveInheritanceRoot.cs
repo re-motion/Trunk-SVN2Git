@@ -30,8 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
     {
       base.SetUp ();
 
-      _derivedClass1 = ClassDefinitions[typeof (DerivedInheritanceRootClass1)];
-      _derivedClass2 = ClassDefinitions[typeof (DerivedInheritanceRootClass2)];
+      _derivedClass1 = TypeDefinitions[typeof (DerivedInheritanceRootClass1)];
+      _derivedClass2 = TypeDefinitions[typeof (DerivedInheritanceRootClass2)];
     }
 
     [Test]

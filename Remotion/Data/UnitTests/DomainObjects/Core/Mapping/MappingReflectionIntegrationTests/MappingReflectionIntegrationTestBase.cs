@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Rhino.Mocks;
 using System.Linq;
@@ -32,31 +33,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
     private static readonly IEnumerable<Type> s_domainObjectTypes = 
         typeof (MappingReflectionTestBase).Assembly.GetTypes ().Where (t => typeof (DomainObject).IsAssignableFrom (t)).ToArray ();
 
-    private MappingReflector _mappingReflector;
-    private IDictionary<Type, ClassDefinition> _classDefinitions;
-    private RelationDefinition[] _relationDefinitions;
+    private IDictionary<Type, ClassDefinition> _typeDefinitions;
+    private MappingConfiguration _mappingConfiguration;
 
     [SetUp]
     public virtual void SetUp ()
     {
       var reflectedTypes = ForTheseReflectedTypes().ToArray();
-      _mappingReflector = CreateMappingReflector (reflectedTypes);
+      var mappingReflector = CreateMappingReflector (reflectedTypes);
 
-      _classDefinitions = _mappingReflector.GetClassDefinitions ().ToDictionary (cd => cd.ClassType);
-      _mappingReflector.CreateClassDefinitionValidator ().Validate (_classDefinitions.Values);
+      var storageGroupBasedStorageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (
+          StandardConfiguration.Instance.GetPersistenceConfiguration ());
+      var persistenceModelLoader = new PersistenceModelLoader (storageGroupBasedStorageProviderDefinitionFinder);
+      _mappingConfiguration = new MappingConfiguration (mappingReflector, persistenceModelLoader);
 
-      _relationDefinitions = _mappingReflector.GetRelationDefinitions (_classDefinitions);
-      _mappingReflector.CreateRelationDefinitionValidator ().Validate (_relationDefinitions);
+      _typeDefinitions = _mappingConfiguration.GetTypeDefinitions().ToDictionary (cd => cd.ClassType);
     }
 
-    protected IDictionary<Type, ClassDefinition> ClassDefinitions
+    protected MappingConfiguration MappingConfiguration
     {
-      get { return _classDefinitions; }
+      get { return _mappingConfiguration; }
+    }
+
+    protected IDictionary<Type, ClassDefinition> TypeDefinitions
+    {
+      get { return _typeDefinitions; }
     }
 
     protected virtual IEnumerable<Type> ForTheseReflectedTypes ()
     {
       return AllDomainObjectTypesFromThisNamespace ();
+    }
+
+    protected IRelationEndPointDefinition GetRelationEndPointDefinition (ClassDefinition classDefinition, Type declaringType, string shortPropertyName)
+    {
+      return classDefinition.GetRelationEndPointDefinition (declaringType.FullName + "." + shortPropertyName);
     }
 
     private IEnumerable<Type> AllDomainObjectTypesFromThisNamespace ()
@@ -72,11 +83,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
           .Return (reflectedTypes);
 
       return MappingReflectorObjectMother.CreateMappingReflector (typeDiscoveryServiceStub);
-    }
-
-    protected IRelationEndPointDefinition GetRelationEndPointDefinition (ClassDefinition classDefinition, Type declaringType, string shortPropertyName)
-    {
-      return classDefinition.GetRelationEndPointDefinition (declaringType.FullName + "." + shortPropertyName);
     }
   }
 }

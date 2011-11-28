@@ -237,6 +237,11 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionNewObjectGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionPropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Base.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Derived.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\MixinAddingRelation.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\RelationTarget.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\When_ADerivedClass_ReceivesARelationViaMixin.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\RelationsAboveInheritanceRoot\When_TwoClasses_InheritARelation_FromAboveInheritanceRoot.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ShadowedProperties\Base.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\MappingReflectionIntegrationTestBase.cs" />

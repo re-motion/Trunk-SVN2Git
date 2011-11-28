@@ -34,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
     {
       base.SetUp();
 
-      _derivedClassDefinition = ClassDefinitions[typeof (Shadower)];
+      _derivedClassDefinition = TypeDefinitions[typeof (Shadower)];
       _baseClassDefinition = _derivedClassDefinition.BaseClass;
 
       _basePropertyInfo = PropertyInfoAdapter.Create (
