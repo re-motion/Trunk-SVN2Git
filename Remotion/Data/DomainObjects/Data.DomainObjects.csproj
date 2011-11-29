@@ -167,6 +167,7 @@
     <Compile Include="Cloning\CompleteCloneStrategy.cs" />
     <Compile Include="Cloning\DomainObjectCloner.cs" />
     <Compile Include="Cloning\ICloneStrategy.cs" />
+    <Compile Include="ConfigurationLoader\IMappingValidatorFactory.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\AllMappingPropertiesFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\ClassIDProvider.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\DomainModelConstraintProvider.cs" />
@@ -209,6 +210,8 @@
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionOperations.cs" />
+    <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
+    <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />

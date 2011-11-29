@@ -17,20 +17,14 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Mapping.Validation;
 
 namespace Remotion.Data.DomainObjects.ConfigurationLoader
 {
-  public interface IMappingLoader
+  public interface IMappingLoader : IMappingValidatorFactory
   {
     ClassDefinition[] GetClassDefinitions();
     RelationDefinition[] GetRelationDefinitions (IDictionary<Type, ClassDefinition> classDefinitions);
     bool ResolveTypes { get; }
     IMappingNameResolver NameResolver { get; }
-
-    IClassDefinitionValidator CreateClassDefinitionValidator ();
-    IPropertyDefinitionValidator CreatePropertyDefinitionValidator ();
-    IRelationDefinitionValidator CreateRelationDefinitionValidator ();
-    ISortExpressionValidator CreateSortExpressionValidator ();
   }
 }

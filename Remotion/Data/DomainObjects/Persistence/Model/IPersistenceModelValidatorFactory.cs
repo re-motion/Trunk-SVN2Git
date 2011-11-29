@@ -15,21 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel.Design;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Factories
+namespace Remotion.Data.DomainObjects.Persistence.Model
 {
-  public class MappingReflectorObjectMother
+  /// <summary>
+  /// Provides an interface for classes creating validators for the elements contained in a persistence model.
+  /// </summary>
+  public interface IPersistenceModelValidatorFactory
   {
-    public static MappingReflector CreateMappingReflector (ITypeDiscoveryService typeDiscoveryService)
-    {
-      ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
-
-      return new MappingReflector (
-          typeDiscoveryService, new ClassIDProvider(), new DomainModelConstraintProvider(), new ReflectionBasedNameResolver());
-    }
+    IPersistenceMappingValidator CreatePersistenceMappingValidator (ClassDefinition classDefinition);
   }
 }

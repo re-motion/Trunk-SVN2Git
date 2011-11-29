@@ -15,21 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel.Design;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Utilities;
+using Remotion.Data.DomainObjects.Mapping.Validation;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Factories
+namespace Remotion.Data.DomainObjects.ConfigurationLoader
 {
-  public class MappingReflectorObjectMother
+  /// <summary>
+  /// Provides an interface for classes creating validators for the elements contained in a mapping.
+  /// </summary>
+  public interface IMappingValidatorFactory
   {
-    public static MappingReflector CreateMappingReflector (ITypeDiscoveryService typeDiscoveryService)
-    {
-      ArgumentUtility.CheckNotNull ("typeDiscoveryService", typeDiscoveryService);
-
-      return new MappingReflector (
-          typeDiscoveryService, new ClassIDProvider(), new DomainModelConstraintProvider(), new ReflectionBasedNameResolver());
-    }
+    IClassDefinitionValidator CreateClassDefinitionValidator ();
+    IPropertyDefinitionValidator CreatePropertyDefinitionValidator ();
+    IRelationDefinitionValidator CreateRelationDefinitionValidator ();
+    ISortExpressionValidator CreateSortExpressionValidator ();
   }
 }
