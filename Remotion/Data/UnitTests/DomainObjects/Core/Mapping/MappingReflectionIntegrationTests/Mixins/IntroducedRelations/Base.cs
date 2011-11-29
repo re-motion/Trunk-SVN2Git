@@ -18,6 +18,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.Mixins.IntroducedRelations
 {
+  [DBTable]
   public class Base : DomainObject
   {
   }

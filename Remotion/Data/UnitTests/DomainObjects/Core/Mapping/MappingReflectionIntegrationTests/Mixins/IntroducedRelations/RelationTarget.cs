@@ -18,9 +18,10 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.Mixins.IntroducedRelations
 {
+  [DBTable]
   public class RelationTarget : DomainObject
   {
-    [DBBidirectionalRelation ("RelationTarget ", ContainsForeignKey = true)]
+    [DBBidirectionalRelation ("RelationTarget", ContainsForeignKey = true)]
     public virtual Derived Derived { get; set; }
   }
 }

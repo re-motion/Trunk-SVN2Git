@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
       Assert.That (relationEndPointInDerivedClass.RelationDefinition, Is.SameAs (relationEndPointInRelationTargetClass.RelationDefinition));
       Assert.That (
           relationEndPointInDerivedClass.RelationDefinition.EndPointDefinitions, 
-          Is.EqualTo (new[] { relationEndPointInRelationTargetClass, relationEndPointInDerivedClass }));
+          Is.EquivalentTo (new[] { relationEndPointInRelationTargetClass, relationEndPointInDerivedClass }));
     }
   }
 }
