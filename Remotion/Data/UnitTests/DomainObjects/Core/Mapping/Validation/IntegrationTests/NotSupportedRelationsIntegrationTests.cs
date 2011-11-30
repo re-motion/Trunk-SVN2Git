@@ -180,6 +180,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
       ValidateMapping ("NotSupportedRelations.BidirectionalRelation_RelatedObjectTypeDoesNotMatchOppositeProperty_BelowInheritanceRoot");
     }
 
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+      "The type 'Base' does not match the type of the opposite relation propery 'RelationPropertyPointingToDerived' declared on type 'InvalidRelationClass'.\r\n\r\n"
+      + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations."
+      + "BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot.Base\r\n"
+      + "Property: RelationProperty")]
+    public void BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot ()
+    {
+      ValidateMapping ("NotSupportedRelations.BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot");
+    }
+
     //CheckForTypeNotFoundClassDefinitionValidationRule
     [Test]
     [ExpectedException(typeof(MappingException), ExpectedMessage =

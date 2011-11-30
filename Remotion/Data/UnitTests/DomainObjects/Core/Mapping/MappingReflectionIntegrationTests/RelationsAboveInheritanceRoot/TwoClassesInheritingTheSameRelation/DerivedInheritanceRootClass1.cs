@@ -15,11 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.TwoClassesInheritingTheSameRelation
 {
-  public class AboveInheritanceRootClassWithRelation : DomainObject
+  [DBTable]
+  [TestDomain]
+  public class DerivedInheritanceRootClass1 : AboveInheritanceRootClassWithRelation
   {
-    public virtual UnidirectionalRelationClass RelationClass { get; set; }
   }
 }

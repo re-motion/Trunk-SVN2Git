@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
@@ -37,10 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
       _derivedClassDefinition = TypeDefinitions[typeof (Shadower)];
       _baseClassDefinition = _derivedClassDefinition.BaseClass;
 
-      _basePropertyInfo = PropertyInfoAdapter.Create (
-          typeof (Base).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-      _newPropertyInfo = PropertyInfoAdapter.Create (
-          typeof (Shadower).GetProperty ("Name", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+      _basePropertyInfo = GetPropertyInformation ((Base b) => b.Name);
+      _newPropertyInfo = GetPropertyInformation ((Shadower s) => s.Name);
     }
 
     [Test]

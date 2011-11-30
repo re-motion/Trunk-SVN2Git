@@ -128,8 +128,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The propertyAccessExpression must be a simple member access expression.\r\nParameter name: propertyAccessExpression")]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The memberAccessExpression must be a simple member access expression.\r\nParameter name: memberAccessExpression")]
     public void GetPropertyAccessorData_InvalidExpression ()
     {
       _orderCache.GetPropertyAccessorData ((Order o) => o.OrderNumber + 5);

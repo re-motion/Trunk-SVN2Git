@@ -14,11 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.TwoClassesInheritingTheSameRelation
 {
   [TestFixture]
   public class When_TwoClasses_InheritARelation_FromAboveInheritanceRoot : MappingReflectionIntegrationTestBase
@@ -48,13 +47,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
       Assert.That (
           endPointInDerivedClass1.RelationDefinition.ID,
           Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.DerivedInheritanceRootClass1:"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.AboveInheritanceRootClassWithRelation.RelationClass"));
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.TwoClassesInheritingTheSameRelation.DerivedInheritanceRootClass1:"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.TwoClassesInheritingTheSameRelation.AboveInheritanceRootClassWithRelation.RelationClass"));
       Assert.That (
           endPointInDerivedClass2.RelationDefinition.ID,
           Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.DerivedInheritanceRootClass2:"
-              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.AboveInheritanceRootClassWithRelation.RelationClass"));
+              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.TwoClassesInheritingTheSameRelation.DerivedInheritanceRootClass2:"
+              + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot.TwoClassesInheritingTheSameRelation.AboveInheritanceRootClassWithRelation.RelationClass"));
     }
   }
 }

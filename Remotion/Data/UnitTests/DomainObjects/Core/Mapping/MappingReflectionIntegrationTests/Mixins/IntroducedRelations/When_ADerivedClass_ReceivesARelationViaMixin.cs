@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
@@ -23,7 +22,6 @@ using Remotion.Reflection;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.Mixins.IntroducedRelations
 {
   [TestFixture]
-  [Ignore ("TODO 4537")]
   public class When_ADerivedClass_ReceivesARelationViaMixin : MappingReflectionIntegrationTestBase
   {
     private ClassDefinition _derivedClass;
@@ -39,10 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
       _derivedClass = TypeDefinitions[typeof (Derived)];
       _relationTarget = TypeDefinitions[typeof (RelationTarget)];
 
-      _relationEndPointPropertyInMixin = PropertyInfoAdapter.Create (
-          typeof (MixinAddingRelation).GetProperty ("RelationTarget", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-      _relationEndPointPropertyInRelationTarget = PropertyInfoAdapter.Create (
-          typeof (RelationTarget).GetProperty ("Derived", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+      _relationEndPointPropertyInMixin = GetPropertyInformation ((MixinAddingRelation m) => m.RelationTarget);
+      _relationEndPointPropertyInRelationTarget = GetPropertyInformation ((RelationTarget t) => t.Derived);
     }
 
     [Test]

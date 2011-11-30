@@ -15,13 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests.RelationsAboveInheritanceRoot
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot
 {
   [DBTable]
-  [TestDomain]
-  public class DerivedInheritanceRootClass1 : AboveInheritanceRootClassWithRelation
+  public class InvalidRelationClass : DomainObject
   {
+    [DBBidirectionalRelation ("RelationProperty", ContainsForeignKey = true)]
+    public Derived RelationPropertyPointingToDerived { get; set; }
   }
 }

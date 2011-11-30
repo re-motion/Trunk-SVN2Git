@@ -402,54 +402,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetMetadata_OppositeClassDefinition_IsDeclaringTypeOfProperty_WithOverriddenProperty ()
-    {
-      var originatingClass =
-          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1));
-      originatingClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      originatingClass.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var originatingProperty = EnsurePropertyDefinitionExisitsOnClassDefinition (
-          originatingClass,
-          typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.Class1),
-          "RelationProperty");
-      var classDeclaringOppositeProperty =
-          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2));
-      classDeclaringOppositeProperty.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      classDeclaringOppositeProperty.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      var oppositeProperty = EnsurePropertyDefinitionExisitsOnClassDefinition (
-          classDeclaringOppositeProperty,
-          typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.BaseClass2),
-          "OverriddenProperty");
-      var derivedOfClassDeclaringOppositeProperty =
-          ClassDefinitionObjectMother.CreateClassDefinition (
-              typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.DerivedClass2),
-              classDeclaringOppositeProperty);
-      derivedOfClassDeclaringOppositeProperty.SetPropertyDefinitions (new PropertyDefinitionCollection());
-      derivedOfClassDeclaringOppositeProperty.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      EnsurePropertyDefinitionExisitsOnClassDefinition (
-          derivedOfClassDeclaringOppositeProperty,
-          typeof (TestDomain.RelationReflector.RelatedTypeDoesNotMatchOverriddenOppositeProperty_BelowInheritanceRoot.DerivedClass2),
-          "OverriddenProperty");
-
-      // This tests the scenario that the relation property's return type is a subclass of the opposite property's declaring type
-      Assert.That (originatingProperty.PropertyType, Is.Not.SameAs (classDeclaringOppositeProperty.ClassType));
-      Assert.That (originatingProperty.PropertyType.BaseType, Is.SameAs (classDeclaringOppositeProperty.ClassType));
-
-      var classDefinitions = new[] { originatingClass, classDeclaringOppositeProperty, derivedOfClassDeclaringOppositeProperty }
-          .ToDictionary (cd => cd.ClassType);
-
-      var relationReflector = new RelationReflector (originatingClass, originatingProperty, _nameResolver);
-      var result = relationReflector.GetMetadata (classDefinitions);
-
-      Assert.That (result.EndPointDefinitions[0].PropertyInfo, Is.SameAs (originatingProperty));
-      Assert.That (result.EndPointDefinitions[0].ClassDefinition, Is.SameAs (originatingClass));
-      Assert.That (result.EndPointDefinitions[1].PropertyInfo, Is.SameAs (oppositeProperty));
-      Assert.That (result.EndPointDefinitions[1].ClassDefinition, Is.SameAs (classDeclaringOppositeProperty));
-    }
-
-    [Test]
     public void GetMetadata_OppositeClassDefinition_IsInheritanceRoot_IfDeclaringTypeOfPropertyIsNotInMapping ()
     {
       var originatingClass = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
