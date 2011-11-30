@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
 
-      var member = GetMemberFromExpression (propertyAccessExpression);
+      var member = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression);
       return GetPropertyAccessorData (member.DeclaringType, member.Name);
     }
 
@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
 
-      var member = GetMemberFromExpression (propertyAccessExpression);
+      var member = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression);
       return GetMandatoryPropertyAccessorData (member.DeclaringType, member.Name);
     }
 
@@ -123,22 +123,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       return domainObjectType.FullName + "." + shortPropertyName;
     }
-
-    private MemberInfo GetMemberFromExpression<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression)
-    {
-      MemberExpression memberExpression;
-      try
-      {
-        memberExpression = (MemberExpression) propertyAccessExpression.Body;
-      }
-      catch (InvalidCastException ex)
-      {
-        throw new ArgumentException ("The propertyAccessExpression must be a simple member access expression.", "propertyAccessExpression", ex);
-      }
-
-      return memberExpression.Member;
-    }
-
 
     private Dictionary<string, PropertyAccessorData> BuildAccessorDataDictionary ()
     {
