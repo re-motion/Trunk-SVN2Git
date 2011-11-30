@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Collections;
 
@@ -397,6 +398,23 @@ namespace Remotion.Utilities
         return ascribeeType.IsAssignableFrom (type);
       else
         return ascribeeType.IsAssignableFrom (type.GetGenericTypeDefinition ());
+    }
+
+    public static MemberInfo GetMemberFromExpression<TSourceObject, TResult> (Expression<Func<TSourceObject, TResult>> memberAccessExpression)
+    {
+      ArgumentUtility.CheckNotNull ("memberAccessExpression", memberAccessExpression);
+
+      MemberExpression memberExpression;
+      try
+      {
+        memberExpression = (MemberExpression) memberAccessExpression.Body;
+      }
+      catch (InvalidCastException ex)
+      {
+        throw new ArgumentException ("The memberAccessExpression must be a simple member access expression.", "memberAccessExpression", ex);
+      }
+
+      return memberExpression.Member;
     }
   }
 }
