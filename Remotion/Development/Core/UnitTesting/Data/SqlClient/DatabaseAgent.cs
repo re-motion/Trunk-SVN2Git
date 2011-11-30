@@ -187,7 +187,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
     {
       var lineNumber = 1;
       var command = new BatchCommand (lineNumber, commandBatch.Length);
-      foreach (var line in commandBatch.Split (new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+      foreach (var line in commandBatch.Split (new[] { "\n", "\r\n" }, StringSplitOptions.None))
       {
         if (line.Trim ().Equals ("GO", StringComparison.OrdinalIgnoreCase))
         {
