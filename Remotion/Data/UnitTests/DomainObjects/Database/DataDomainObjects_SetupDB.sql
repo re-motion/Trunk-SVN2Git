@@ -133,6 +133,10 @@ IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'RelationTa
   DROP VIEW [dbo].[RelationTargetForPersistentMixinView]
 GO
 
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'TargetClassWithSameInterfaceAsPersistentMixinView' AND TABLE_SCHEMA = 'dbo')
+  DROP VIEW [dbo].[TargetClassForPersistentMixinView]
+GO
+
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Views WHERE TABLE_NAME = 'StorageGroupClassView' AND TABLE_SCHEMA = 'dbo')
   DROP VIEW [dbo].[StorageGroupClassView]
 GO
@@ -203,6 +207,10 @@ GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_TargetWithUnidirectionalMixin2') 
   DROP TABLE [MixedDomains_TargetWithUnidirectionalMixin2]
+GO
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'MixedDomains_TargetClassWithSameInterfaceAsPersistentMixin')
+  DROP TABLE [dbo].[MixedDomains_TargetClassWithSameInterfaceAsPersistentMixin]
 GO
 
 IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.Tables WHERE TABLE_NAME = 'Location') 
@@ -1062,6 +1070,17 @@ CREATE TABLE [MixedDomains_TargetWithUnidirectionalMixin2] (
 ) 
 GO
 
+CREATE TABLE [MixedDomains_TargetClassWithSameInterfaceAsPersistentMixin] (
+  [ID] uniqueidentifier NOT NULL,
+  [ClassID] varchar (100) NOT NULL,
+  [Timestamp] rowversion NOT NULL,
+  
+  [PersistentPropertyRedirectedToMixin] int NOT NULL,
+  
+  CONSTRAINT [PK_MixedDomains_TargetClassWithSameInterfaceAsPersistentMixin] PRIMARY KEY CLUSTERED ([ID])
+) 
+GO
+
 CREATE TABLE [SampleBindableDomainObject] (
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
@@ -1542,6 +1561,13 @@ CREATE VIEW [dbo].[RelationTargetForPersistentMixinView] ([ID], [ClassID], [Time
   SELECT [ID], [ClassID], [Timestamp], [RelationProperty2ID], [RelationProperty2IDClassID], [RelationProperty3ID], [RelationProperty3IDClassID]
     FROM [dbo].[MixedDomains_RelationTarget]
     WHERE [ClassID] IN ('RelationTargetForPersistentMixin')
+  WITH CHECK OPTION
+GO
+
+CREATE VIEW [dbo].[TargetClassWithSameInterfaceAsPersistentMixinView] ([ID], [ClassID], [Timestamp], [PersistentPropertyRedirectedToMixin])
+  WITH SCHEMABINDING AS
+  SELECT [ID], [ClassID], [Timestamp], [PersistentPropertyRedirectedToMixin]
+    FROM [dbo].[MixedDomains_TargetClassWithSameInterfaceAsPersistentMixin]
   WITH CHECK OPTION
 GO
 

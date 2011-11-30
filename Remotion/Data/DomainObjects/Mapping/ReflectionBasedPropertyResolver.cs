@@ -41,7 +41,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       {
         var implementingTypes = GetImplementingType (classDefinition, propertyInformation);
         propertyImplementationCandidates = implementingTypes
-            .Select (t => propertyInformation.FindInterfaceImplementation (t))
+            .Select (propertyInformation.FindInterfaceImplementation)
             .Where (pi => pi != null);
       }
       else

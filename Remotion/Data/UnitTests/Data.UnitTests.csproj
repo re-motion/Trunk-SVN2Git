@@ -258,6 +258,9 @@
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot\Base.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot\Derived.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot\InvalidRelationClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IInterfaceImplementedByMixinAndTargetClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\MixinAddingInterfaceAlsoImplementedOnTargetClass.cs" />
+    <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithSameInterfaceAsPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\ObjectsNotFoundExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
     <Compile Include="UnitTesting\ConstraintExpressionExtensions.cs" />

@@ -68,11 +68,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void PropertyRedirectedToMixin ()
+    public void PropertyRedirectedToInterface_ImplementedByMixin ()
     {
       var query =
           from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
           where o.RedirectedPersistentProperty == 1
+          select o;
+      CheckQueryResult (query);
+    }
+
+    [Test]
+    [Ignore ("TODO 4541")]
+    public void PropertyRedirectedToInterface_ImplementedByMixinAndTargetClass ()
+    {
+      var query =
+          from o in QueryFactory.CreateLinqQuery<TargetClassWithSameInterfaceAsPersistentMixin>()
+          where o.PersistentPropertyRedirectedToMixin == 1
           select o;
       CheckQueryResult (query);
     }
