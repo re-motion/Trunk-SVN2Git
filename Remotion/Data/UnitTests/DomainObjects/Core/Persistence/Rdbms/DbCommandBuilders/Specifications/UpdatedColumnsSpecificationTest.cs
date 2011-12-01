@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommandBuilders.Specifications
@@ -57,6 +58,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DbCommand
       _sqlDialectStub = MockRepository.GenerateStub<ISqlDialect> ();
       _dbCommandStub = MockRepository.GenerateStub<IDbCommand> ();
       _statement = new StringBuilder ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentEmptyException))]
+    public void Initialization_Empty ()
+    {
+      new UpdatedColumnsSpecification (new ColumnValue[0]);
     }
 
     [Test]

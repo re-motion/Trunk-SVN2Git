@@ -27,7 +27,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specifications
 {
   /// <summary>
-  /// <see cref="UpdatedColumnsSpecification"/> defines the API for all implementations that specify the columns to update with the specified values.
+  /// <see cref="UpdatedColumnsSpecification"/> specifies what columns should be updated, and with what values.
   /// </summary>
   public class UpdatedColumnsSpecification : IUpdatedColumnsSpecification
   {
@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders.Specif
 
     public UpdatedColumnsSpecification (IEnumerable<ColumnValue> columnValues)
     {
-      ArgumentUtility.CheckNotNull ("columnValues", columnValues);
+      ArgumentUtility.CheckNotNullOrEmpty ("columnValues", columnValues);
 
       _columnValues = columnValues.ToArray();
     }
