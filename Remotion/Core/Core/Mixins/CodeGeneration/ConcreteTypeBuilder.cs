@@ -213,16 +213,16 @@ namespace Remotion.Mixins.CodeGeneration
     /// <returns>An array containing the paths of the assembly files saved.</returns>
     /// <remarks>
     /// <para>
-    /// This is similar to directly calling <c>Scope.SaveAssemblies</c>, but in addition resets the <see cref="Scope"/> to a new instance of
+    /// This method is similar to directly calling <c>Scope.SaveAssemblies</c>, but in addition resets the <see cref="Scope"/> to a new instance of
     /// <see cref="IModuleManager"/>. That way, the builder can continue to generate types even when the dynamic assemblies have been saved.
     /// Note that each time this method is called, only the types generated since the last save operation are persisted. Also, if the scope isn't
     /// reconfigured to save at different paths, previously saved assemblies might be overwritten.
     /// </para>
     /// <para>
     /// Having different assemblies with the same names loaded into one AppDomain can lead to sporadic
-    /// <see cref="TypeLoadException">TypeLoadExceptions</see> in reflective scenarios. To avoid running into such errors, set the 
-    /// <see cref="IModuleManager.SignedAssemblyName"/> and <see cref="IModuleManager.UnsignedAssemblyName"/> properties of the
-    /// <see cref="Scope"/> to new, unique names after calling this method.
+    /// <see cref="TypeLoadException">TypeLoadExceptions</see> in reflective scenarios. To avoid such errors, the  
+    /// <see cref="ModuleManager.SignedAssemblyName"/> and <see cref="ModuleManager.UnsignedAssemblyName"/> properties by default include a counter
+    /// that is increased every time the scope is reset; that way, the assembly names change every time.
     /// </para>
     /// </remarks>
     public string[] SaveAndResetDynamicScope ()
@@ -236,8 +236,18 @@ namespace Remotion.Mixins.CodeGeneration
         else
           paths = new string[0];
 
-        _scope = null;
+        ResetDynamicScope();
         return paths.LogAndReturn (s_log, LogLevel.Info, result => "Saved files: " + SeparatedStringBuilder.Build (", ", result));
+      }
+    }
+
+    /// <inheritdoc />
+    public void ResetDynamicScope ()
+    {
+      s_log.Info ("Resetting the code generation scope. All types are generated in a new scope from now on.");
+      lock (_scopeLockObject)
+      {
+        _scope = null;
       }
     }
 
@@ -277,7 +287,7 @@ namespace Remotion.Mixins.CodeGeneration
         }
 
         var types = assembly.GetExportedTypes();
-        s_log.InfoFormat ("Assembly {0} has {1} exported types.", types.Length);
+        s_log.InfoFormat ("Assembly {0} has {1} exported types.", assemblyName, types.Length);
         Cache.ImportTypes (types, new AttributeBasedMetadataImporter());
       }
     }
