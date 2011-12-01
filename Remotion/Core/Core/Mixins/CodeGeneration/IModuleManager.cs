@@ -17,10 +17,13 @@
 using System;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
+using Remotion.Implementation;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
 
 namespace Remotion.Mixins.CodeGeneration
 {
+  [ConcreteImplementation (typeof (ModuleManager))]
   public interface IModuleManager : ICodeGenerationModule
   {
     ITypeGenerator CreateTypeGenerator (

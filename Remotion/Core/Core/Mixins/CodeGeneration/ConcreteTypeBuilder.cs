@@ -18,9 +18,11 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities.Singleton;
 using Remotion.Reflection;
+using Remotion.ServiceLocation;
 using Remotion.Text;
 using Remotion.Utilities;
 using Remotion.Mixins.Context;
@@ -85,7 +87,7 @@ namespace Remotion.Mixins.CodeGeneration
         lock (_scopeLockObject)
         {
           if (_scope == null)
-            _scope = new ModuleManager();
+            _scope = SafeServiceLocator.Current.GetInstance<IModuleManager>();
           return _scope;
         }
       }

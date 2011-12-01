@@ -19,6 +19,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
@@ -460,6 +461,22 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _builder.Scope = null;
       Assert.That (_builder.Scope, Is.Not.Null);
       Assert.That (_builder.Scope, Is.Not.SameAs (oldModuleManager));
+    }
+
+    [Test]
+    public void Scope_UsesServiceLocator ()
+    {
+      var fakeScope = MockRepository.GenerateStub<IModuleManager> ();
+      var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
+      serviceLocatorStub.Stub (stub => stub.GetInstance<IModuleManager> ()).Return (fakeScope);
+
+      _builder.Scope = null;
+
+      using (new ServiceLocatorScope (serviceLocatorStub))
+      {
+        IModuleManager scope = _builder.Scope;
+        Assert.That (scope, Is.SameAs (fakeScope));
+      }
     }
 
     [Test]
