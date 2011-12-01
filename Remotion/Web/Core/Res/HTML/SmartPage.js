@@ -208,7 +208,17 @@ function SmartPage_Context(
         delete this._scriptDisposes[updatePanelID];
       }
     }
-    this._destroyTree(updatePanelElement);
+    if (TypeUtility.IsDefined(this._destroyTree)) // .NET 3.5 AJAX library
+    {
+      this._destroyTree(updatePanelElement);
+    }
+    else if (TypeUtility.IsDefined(Sys.Application.disposeElement)) // .NET 4.0 AJAX library
+    {
+      Sys.Application.disposeElement(updatePanelElement, true);
+    }
+    else {
+      throw "Unsupported AJAX library detected."
+    }
     $(updatePanelElement).empty().append(rendering);
   }
 
