@@ -44,9 +44,13 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     private string _signedSavedModulePath;
     private string _unsignedSavedModulePath;
     private string[] _savedModulePaths;
+
+    private ClassContext _signedSavedContext;
+    private ClassContext _unsignedSavedContext;
+
     private Type _signedSavedType;
     private Type _unsignedSavedType;
-
+    
     [SetUp]
     public override void SetUp ()
     {
@@ -88,11 +92,11 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       };
       var savedBuilder = new ConcreteTypeBuilder {Scope = _savedModuleManager};
 
-      var signedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (object));
-      var unsignedSavdContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
+      _signedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (object));
+      _unsignedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
 
-      _signedSavedType = savedBuilder.GetConcreteType (signedSavedContext);
-      _unsignedSavedType = savedBuilder.GetConcreteType (unsignedSavdContext);
+      _signedSavedType = savedBuilder.GetConcreteType (_signedSavedContext);
+      _unsignedSavedType = savedBuilder.GetConcreteType (_unsignedSavedContext);
 
       _savedModulePaths = _savedModuleManager.SaveAssemblies ();
       
@@ -193,6 +197,31 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       AssemblyName unsignedName = AssemblyName.GetAssemblyName (_unsignedSavedModulePath);
       Assert.AreEqual (Path.GetFileNameWithoutExtension (c_unsignedAssemblyFileName), unsignedName.Name);
+    }
+
+    [Test]
+    public void Reset ()
+    {
+      var concreteTypeBuilder = new ConcreteTypeBuilder { Scope = _unsavedModuleManager };
+      var signedSavedTypeBefore = concreteTypeBuilder.GetConcreteType (_signedSavedContext);
+      var unsignedSavedTypeBefore = concreteTypeBuilder.GetConcreteType (_unsignedSavedContext);
+      
+      Assert.That (_unsavedModuleManager.HasAssemblies, Is.True);
+      var signedNameBefore = _unsavedModuleManager.SignedAssemblyName;
+      var unsignedNameBefore = _unsavedModuleManager.UnsignedAssemblyName;
+
+      _unsavedModuleManager.Reset();
+
+      Assert.That (_unsavedModuleManager.HasAssemblies, Is.False);
+      Assert.That (_unsavedModuleManager.SignedAssemblyName, Is.Not.EqualTo (signedNameBefore));
+      Assert.That (_unsavedModuleManager.UnsignedAssemblyName, Is.Not.EqualTo (unsignedNameBefore));
+
+      concreteTypeBuilder.Cache.Clear();
+      var signedSavedTypeAfter = concreteTypeBuilder.GetConcreteType (_signedSavedContext);
+      var unsignedSavedTypeAfter = concreteTypeBuilder.GetConcreteType (_unsignedSavedContext);
+
+      Assert.That (signedSavedTypeAfter.Assembly, Is.Not.SameAs (signedSavedTypeBefore.Assembly));
+      Assert.That (unsignedSavedTypeAfter.Assembly, Is.Not.SameAs (unsignedSavedTypeBefore.Assembly));
     }
 
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "The name can only be set before the first type is built.")]

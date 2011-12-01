@@ -56,7 +56,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private static int s_counter = 0; // we count the instances of this class so that we can generate unique assembly names
 
-    private readonly int _currentCount;
+    private int _currentCount;
 
     private string _weakAssemblyName;
     private string _weakModulePath;
@@ -67,6 +67,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private ModuleScope _scope;
 
     public ModuleManager ()
+    {
+      InitializeScope();
+    }
+
+    private void InitializeScope ()
     {
       _currentCount = Interlocked.Increment (ref s_counter);
       _strongModulePath = FormatModuleOrAssemblyName (DefaultStrongModulePath);
@@ -238,6 +243,12 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
         return AssemblySaver.SaveAssemblies (_scope);
       }
+    }
+
+    public void Reset ()
+    {
+      _scope = null;
+      InitializeScope();
     }
 
     public void InitializeMixinTarget (IMixinTarget target)

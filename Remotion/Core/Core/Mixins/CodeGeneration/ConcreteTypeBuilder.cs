@@ -236,18 +236,8 @@ namespace Remotion.Mixins.CodeGeneration
         else
           paths = new string[0];
 
-        ResetDynamicScope();
+        _scope.Reset();
         return paths.LogAndReturn (s_log, LogLevel.Info, result => "Saved files: " + SeparatedStringBuilder.Build (", ", result));
-      }
-    }
-
-    /// <inheritdoc />
-    public void ResetDynamicScope ()
-    {
-      s_log.Info ("Resetting the code generation scope. All types are generated in a new scope from now on.");
-      lock (_scopeLockObject)
-      {
-        _scope = null;
       }
     }
 

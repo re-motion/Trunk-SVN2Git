@@ -44,6 +44,7 @@ namespace Remotion.Mixins.CodeGeneration
     bool HasUnsignedAssembly { get; }
 
     string[] SaveAssemblies ();
+    void Reset ();
 
     void InitializeMixinTarget (IMixinTarget target);
     void InitializeDeserializedMixinTarget (IMixinTarget instance, object[] mixinInstances);

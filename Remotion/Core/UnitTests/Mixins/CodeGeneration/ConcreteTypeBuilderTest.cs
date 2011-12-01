@@ -179,9 +179,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 
       using (repository.Ordered())
       {
-        Expect.Call (managerMock.HasSignedAssembly).Return (false);
-        Expect.Call (managerMock.HasUnsignedAssembly).Return (true);
-        Expect.Call (managerMock.SaveAssemblies()).Return (paths);
+        managerMock.Expect (mock => mock.HasSignedAssembly).Return (false);
+        managerMock.Expect (mock => mock.HasUnsignedAssembly).Return (true);
+        managerMock.Expect (mock => mock.SaveAssemblies ()).Return (paths);
+        managerMock.Expect (mock => mock.Reset());
       }
 
       repository.ReplayAll();
@@ -203,9 +204,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void SaveAndResetDynamicScope_ResetsScopeWhenSaving ()
     {
       var builder = new ConcreteTypeBuilder();
-      IModuleManager scopeBefore = builder.Scope;
+      var signedAssemblyNameBefore = builder.Scope.SignedAssemblyName;
+      var unsignedAssemblyNameBefore = builder.Scope.UnsignedAssemblyName;
+
       builder.SaveAndResetDynamicScope();
-      Assert.That (builder.Scope, Is.Not.SameAs (scopeBefore));
+
+      Assert.That (builder.Scope.HasAssemblies, Is.False);
+      Assert.That (builder.Scope.SignedAssemblyName, Is.Not.EqualTo (signedAssemblyNameBefore));
+      Assert.That (builder.Scope.UnsignedAssemblyName, Is.Not.EqualTo (unsignedAssemblyNameBefore));
     }
 
     [Test]
@@ -245,9 +251,14 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void ResetDynamicScope ()
     {
       var builder = new ConcreteTypeBuilder ();
-      IModuleManager scopeBefore = builder.Scope;
+      var signedAssemblyNameBefore = builder.Scope.SignedAssemblyName;
+      var unsignedAssemblyNameBefore = builder.Scope.UnsignedAssemblyName;
+
       builder.SaveAndResetDynamicScope ();
-      Assert.That (builder.Scope, Is.Not.SameAs (scopeBefore));
+
+      Assert.That (builder.Scope.HasAssemblies, Is.False);
+      Assert.That (builder.Scope.SignedAssemblyName, Is.Not.EqualTo (signedAssemblyNameBefore));
+      Assert.That (builder.Scope.UnsignedAssemblyName, Is.Not.EqualTo (unsignedAssemblyNameBefore));
     }
 
     [Test]
