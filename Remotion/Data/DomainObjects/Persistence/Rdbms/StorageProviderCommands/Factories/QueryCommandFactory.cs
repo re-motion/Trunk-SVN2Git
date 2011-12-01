@@ -51,7 +51,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _dataStoragePropertyDefinitionFactory = dataStoragePropertyDefinitionFactory;
     }
 
-    public IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
+    public IObjectReaderFactory ObjectReaderFactory
+    {
+      get { return _objectReaderFactory; }
+    }
+
+    public IDbCommandBuilderFactory DbCommandBuilderFactory
+    {
+      get { return _dbCommandBuilderFactory; }
+    }
+
+    public IDataStoragePropertyDefinitionFactory DataStoragePropertyDefinitionFactory
+    {
+      get { return _dataStoragePropertyDefinitionFactory; }
+    }
+
+    public virtual IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForDataContainerQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -60,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
-    public IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext> CreateForScalarQuery (IQuery query)
+    public virtual IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext> CreateForScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -68,18 +83,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return new ScalarValueLoadCommand (dbCommandBuilder);
     }
 
-    private IDbCommandBuilder CreateDbCommandBuilder (IQuery query)
-    {
-      // Use ToList to trigger error detection here
-      var queryParametersWithType = query.Parameters
-          .Cast<QueryParameter> ()
-          .Select (GetQueryParameterWithType)
-          .ToList();
-
-      return _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
-    }
-
-    private QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter)
+    protected virtual QueryParameterWithType GetQueryParameterWithType (QueryParameter parameter)
     {
       var storagePropertyDefinition = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (parameter.Value);
       ColumnValue[] columnValues;
@@ -104,6 +108,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
       var adaptedParameter = new QueryParameter (parameter.Name, columnValues[0].Value, parameter.ParameterType);
       return new QueryParameterWithType (adaptedParameter, columnValues[0].Column.StorageTypeInfo);
+    }
+
+    private IDbCommandBuilder CreateDbCommandBuilder (IQuery query)
+    {
+      // Use ToList to trigger error detection here
+      var queryParametersWithType = query.Parameters
+          .Cast<QueryParameter> ()
+          .Select (GetQueryParameterWithType)
+          .ToList ();
+
+      return _dbCommandBuilderFactory.CreateForQuery (query.Statement, queryParametersWithType);
     }
   }
 }

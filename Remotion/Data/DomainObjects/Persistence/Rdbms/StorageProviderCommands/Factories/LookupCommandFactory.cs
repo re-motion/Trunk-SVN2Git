@@ -54,7 +54,27 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _tableDefinitionFinder = tableDefinitionFinder;
     }
 
-    public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
+    }
+
+    public IDbCommandBuilderFactory DbCommandBuilderFactory
+    {
+      get { return _dbCommandBuilderFactory; }
+    }
+
+    public IObjectReaderFactory ObjectReaderFactory
+    {
+      get { return _objectReaderFactory; }
+    }
+
+    public ITableDefinitionFinder TableDefinitionFinder
+    {
+      get { return _tableDefinitionFinder; }
+    }
+
+    public virtual IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
@@ -69,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
     }
 
-    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForSortedMultiIDLookup (
+    public virtual IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForSortedMultiIDLookup (
         IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -89,7 +109,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return new MultiDataContainerSortCommand (objectIDList, loadCommand);
     }
 
-    public IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (
+    public virtual IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (
         IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
@@ -117,7 +137,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
               }));
     }
 
-    private IDbCommandBuilder CreateIDLookupDbCommandBuilder (
+    protected virtual IDbCommandBuilder CreateIDLookupDbCommandBuilder (
         TableDefinition tableDefinition,
         IEnumerable<ColumnDefinition> selectedColumns,
         IEnumerable<ObjectID> objectIDs)

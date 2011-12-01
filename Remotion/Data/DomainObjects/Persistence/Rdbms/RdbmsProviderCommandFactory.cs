@@ -33,10 +33,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   /// </summary>
   public class RdbmsProviderCommandFactory : IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>
   {
+    private readonly RdbmsProviderDefinition _storageProviderDefinition;
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly IObjectReaderFactory _objectReaderFactory;
     private readonly ITableDefinitionFinder _tableDefinitionFinder;
+    private readonly IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
+
     private readonly LookupCommandFactory _lookupCommandFactory;
     private readonly RelationLookupCommandFactory _relationLookupCommandFactory;
     private readonly SaveCommandFactory _saveCommandFactory;
@@ -57,25 +60,24 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("tableDefinitionFinder", tableDefinitionFinder);
       ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
+      _storageProviderDefinition = storageProviderDefinition;
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _objectReaderFactory = objectReaderFactory;
       _tableDefinitionFinder = tableDefinitionFinder;
-      _lookupCommandFactory = new LookupCommandFactory (
-          storageProviderDefinition,
-          _dbCommandBuilderFactory,
-          _objectReaderFactory,
-          _tableDefinitionFinder);
-      _relationLookupCommandFactory = new RelationLookupCommandFactory (
-          this,
-          _dbCommandBuilderFactory,
-          _rdbmsPersistenceModelProvider,
-          _objectReaderFactory);
-      _saveCommandFactory = new SaveCommandFactory (_dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder);
-      _queryCommandFactory = new QueryCommandFactory (
-          objectReaderFactory, 
-          dbCommandBuilderFactory,
-          dataStoragePropertyDefinitionFactory);
+      _dataStoragePropertyDefinitionFactory = dataStoragePropertyDefinitionFactory;
+
+// ReSharper disable DoNotCallOverridableMethodsInConstructor
+      _lookupCommandFactory = CreateLookupCommandFactory ();
+      _relationLookupCommandFactory = CreateRelationLookupCommandFactory ();
+      _saveCommandFactory = CreateSaveCommandFactory ();
+      _queryCommandFactory = CreateQueryCommandFactory ();
+// ReSharper restore DoNotCallOverridableMethodsInConstructor
+    }
+
+    public RdbmsProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
     }
 
     public IDbCommandBuilderFactory DbCommandBuilderFactory
@@ -91,6 +93,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     public IObjectReaderFactory ObjectReaderFactory
     {
       get { return _objectReaderFactory; }
+    }
+
+    public ITableDefinitionFinder TableDefinitionFinder
+    {
+      get { return _tableDefinitionFinder; }
+    }
+
+    public IDataStoragePropertyDefinitionFactory DataStoragePropertyDefinitionFactory
+    {
+      get { return _dataStoragePropertyDefinitionFactory; }
     }
 
     public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
@@ -144,6 +156,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
 
       return _saveCommandFactory.CreateForSave (dataContainers);
+    }
+
+    protected virtual LookupCommandFactory CreateLookupCommandFactory ()
+    {
+      return new LookupCommandFactory (_storageProviderDefinition, _dbCommandBuilderFactory, _objectReaderFactory, _tableDefinitionFinder);
+    }
+
+    protected virtual RelationLookupCommandFactory CreateRelationLookupCommandFactory ()
+    {
+      return new RelationLookupCommandFactory (this, _dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _objectReaderFactory);
+    }
+
+    protected virtual SaveCommandFactory CreateSaveCommandFactory ()
+    {
+      return new SaveCommandFactory (_dbCommandBuilderFactory, _rdbmsPersistenceModelProvider, _tableDefinitionFinder);
+    }
+
+    protected virtual QueryCommandFactory CreateQueryCommandFactory ()
+    {
+      return new QueryCommandFactory (_objectReaderFactory, _dbCommandBuilderFactory, _dataStoragePropertyDefinitionFactory);
     }
   }
 }

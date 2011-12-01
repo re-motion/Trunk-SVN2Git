@@ -49,7 +49,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       _tableDefinitionFinder = tableDefinitionFinder;
     }
 
-    public IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
+    public IDbCommandBuilderFactory DbCommandBuilderFactory
+    {
+      get { return _dbCommandBuilderFactory; }
+    }
+
+    public IRdbmsPersistenceModelProvider RdbmsPersistenceModelProvider
+    {
+      get { return _rdbmsPersistenceModelProvider; }
+    }
+
+    public ITableDefinitionFinder TableDefinitionFinder
+    {
+      get { return _tableDefinitionFinder; }
+    }
+
+    public virtual IStorageProviderCommand<IRdbmsProviderCommandExecutionContext> CreateForSave (IEnumerable<DataContainer> dataContainers)
     {
       ArgumentUtility.CheckNotNull ("dataContainers", dataContainers);
 
@@ -66,9 +81,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       {
         var tableDefinition = _tableDefinitionFinder.GetTableDefinition (dataContainer.ID);
 
-        if (dataContainer.State == StateType.New)
+        if (ShouldCreateInsertCommand (dataContainer))
           insertCommands.Add (Tuple.Create (dataContainer.ID, CreateDbCommandForInsert (dataContainer, tableDefinition)));
-        if (dataContainer.State == StateType.Deleted)
+        if (ShouldCreateDeleteCommand(dataContainer))
           deleteCommands.Add (Tuple.Create (dataContainer.ID, CreateDbCommandForDelete (dataContainer, tableDefinition)));
 
         var updatedColumnValues = GetUpdatedColumnValues (dataContainer, tableDefinition);
@@ -82,31 +97,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return insertCommands.Concat (updateCommands).Concat (deleteCommands);
     }
 
-    private IDbCommandBuilder CreateDbCommandForUpdate (
-        DataContainer dataContainer,
-        TableDefinition tableDefinition,
-        IEnumerable<ColumnValue> updatedColumnValues)
+    protected virtual bool ShouldCreateInsertCommand (DataContainer dataContainer)
     {
-      var comparedColumnValues = GetComparedColumnValuesForUpdate (dataContainer, tableDefinition);
-
-      return _dbCommandBuilderFactory.CreateForUpdate (tableDefinition, updatedColumnValues, comparedColumnValues);
+      return dataContainer.State == StateType.New;
     }
 
-    private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer, TableDefinition tableDefinition)
+    protected virtual bool ShouldCreateDeleteCommand (DataContainer dataContainer)
     {
-      var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
-
-      return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, columnValues);
+      return dataContainer.State == StateType.Deleted;
     }
 
-    private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
-    {
-      var columnValues = GetComparedColumnValuesForDelete (dataContainer, tableDefinition);
-
-      return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, columnValues);
-    }
-
-    private IEnumerable<ColumnValue> GetComparedColumnValuesForUpdate (DataContainer dataContainer, TableDefinition tableDefinition)
+    protected virtual IEnumerable<ColumnValue> GetComparedColumnValuesForUpdate (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var objectIDColumnValues = tableDefinition.ObjectIDProperty.SplitValueForComparison (dataContainer.ID);
       if (dataContainer.State != StateType.New)
@@ -115,7 +116,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         return objectIDColumnValues;
     }
 
-    private IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
+    protected virtual IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var objectIDColumnValues = tableDefinition.ObjectIDProperty.SplitValueForComparison (dataContainer.ID);
       var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue>().Any (propertyValue => propertyValue.Definition.IsObjectID);
@@ -125,7 +126,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         return objectIDColumnValues;
     }
 
-    private IEnumerable<ColumnValue> GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
+    protected virtual IEnumerable<ColumnValue> GetUpdatedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
 
@@ -143,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return dataStorageColumnValues;
     }
 
-    private IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
+    protected virtual IEnumerable<ColumnValue> GetInsertedColumnValues (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var objectIDStoragePropertyDefinition = (IRdbmsStoragePropertyDefinition) ((IRdbmsStorageEntityDefinition) tableDefinition).ObjectIDProperty;
       var columnValuesForID = objectIDStoragePropertyDefinition.SplitValue (dataContainer.ID);
@@ -154,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return columnValuesForID.Concat (columnValuesForDataProperties);
     }
 
-    private Func<PropertyValue, bool> GetUpdatedPropertyFilter (DataContainer dataContainer)
+    protected virtual Func<PropertyValue, bool> GetUpdatedPropertyFilter (DataContainer dataContainer)
     {
       if (dataContainer.State == StateType.New || dataContainer.State == StateType.Deleted)
         return pv => pv.Definition.IsObjectID;
@@ -164,11 +165,35 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
         return pv => false;
     }
 
-    private IEnumerable<ColumnValue> GetColumnValuesForPropertyValue (PropertyValue propertyValue)
+    protected virtual IEnumerable<ColumnValue> GetColumnValuesForPropertyValue (PropertyValue propertyValue)
     {
       var storageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyValue.Definition);
       var columnValues = storageProperty.SplitValue (propertyValue.GetValueWithoutEvents (ValueAccess.Current));
       return columnValues;
+    }
+
+    private IDbCommandBuilder CreateDbCommandForInsert (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      var columnValues = GetInsertedColumnValues (dataContainer, tableDefinition);
+
+      return _dbCommandBuilderFactory.CreateForInsert (tableDefinition, columnValues);
+    }
+
+    private IDbCommandBuilder CreateDbCommandForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
+    {
+      var columnValues = GetComparedColumnValuesForDelete (dataContainer, tableDefinition);
+
+      return _dbCommandBuilderFactory.CreateForDelete (tableDefinition, columnValues);
+    }
+
+    private IDbCommandBuilder CreateDbCommandForUpdate (
+    DataContainer dataContainer,
+    TableDefinition tableDefinition,
+    IEnumerable<ColumnValue> updatedColumnValues)
+    {
+      var comparedColumnValues = GetComparedColumnValuesForUpdate (dataContainer, tableDefinition);
+
+      return _dbCommandBuilderFactory.CreateForUpdate (tableDefinition, updatedColumnValues, comparedColumnValues);
     }
   }
 }
