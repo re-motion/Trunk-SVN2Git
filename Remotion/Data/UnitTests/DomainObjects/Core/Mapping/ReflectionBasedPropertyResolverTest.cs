@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver;
 using Remotion.Data.UnitTests.DomainObjects.ObjectBinding.IntegrationTests.TestDomain;
 using Remotion.Reflection;
 
@@ -40,6 +41,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     private ClassDefinition _classWithInterfaceWithMissingAccessors;
     private ClassDefinition _classWithMixinAddingInterface;
     private ClassDefinition _derivedClassWithMixinWithDuplicateInterface;
+    private ClassDefinition _classWithSameInterfaceAsMixin_ButStorageClassNone;
+    private ClassDefinition _classWithSameInterfaceAsMixin_BothStorageClassPersistent;
 
     public override void SetUp ()
     {
@@ -57,7 +60,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _classDerivedFromClassWithInterface.SetPropertyDefinitions (new PropertyDefinitionCollection());
       _classWithInterfaceWithMissingAccessors = CreateDefinitionForClassWithInterfaceWithMissingAccessors();
       _classWithMixinAddingInterface = CreateDefinitionForClassWithMixinAddingInterface();
-      _derivedClassWithMixinWithDuplicateInterface = CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface();
+      _derivedClassWithMixinWithDuplicateInterface = CreateDefinitionForDerivedClassWithMixinWithDuplicateInterface ();
+      _classWithSameInterfaceAsMixin_ButStorageClassNone = CreateDefinitionForClassWithWithSameInterfaceAsMixin_ButStorageClassNone ();
+      _classWithSameInterfaceAsMixin_BothStorageClassPersistent = CreateDefinitionForClassWithWithSameInterfaceAsMixin_BothStorageClassPersistent();
     }
 
     [Test]
@@ -254,15 +259,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void ResolveDefinition_MixinWithDuplicateInterface ()
+    public void ResolveDefinition_MixinWithDuplicateInterface_DueToInheritance ()
     {
       var property = PropertyInfoAdapter.Create (typeof (IMixinAddingProperty).GetProperty ("Property"));
 
       var result = ReflectionBasedPropertyResolver.ResolveDefinition (
-          property, _derivedClassWithMixinWithDuplicateInterface, _derivedClassWithMixinWithDuplicateInterface.GetPropertyDefinition);
+     property, _derivedClassWithMixinWithDuplicateInterface, _derivedClassWithMixinWithDuplicateInterface.GetPropertyDefinition);
 
       var expected = _derivedClassWithMixinWithDuplicateInterface.GetPropertyDefinition (typeof (MixinAddingPropertyBase).FullName + ".Property");
       Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveDefinition_ClassWithSameInterfaceAsMixin_ButStorageClassNone ()
+    {
+      var property = PropertyInfoAdapter.Create (typeof (IInterfaceWithProperty).GetProperty ("Property"));
+
+      var result = ReflectionBasedPropertyResolver.ResolveDefinition (
+          property, _classWithSameInterfaceAsMixin_ButStorageClassNone, _classWithSameInterfaceAsMixin_ButStorageClassNone.GetPropertyDefinition);
+
+      var expected = _classWithSameInterfaceAsMixin_ButStorageClassNone.GetPropertyDefinition (
+          typeof (MixinImplementingInterfaceWithProperty_StorageClassPersistent).FullName + ".Property");
+      Assert.That (result, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void ResolveDefinition_ClassWithSameInterfaceAsMixin_BothStorageClassPersistent ()
+    {
+      var property = PropertyInfoAdapter.Create (typeof (IInterfaceWithProperty).GetProperty ("Property"));
+
+      Assert.That (() => ReflectionBasedPropertyResolver.ResolveDefinition (
+          property, _classWithSameInterfaceAsMixin_BothStorageClassPersistent, _classWithSameInterfaceAsMixin_BothStorageClassPersistent.GetPropertyDefinition),
+          Throws.TypeOf<InvalidOperationException> ().With.Message.EqualTo (
+              "The property 'Property' is ambiguous, it is implemented by the following types valid in the context of class "
+              + "'ClassImplementingInterfaceWithProperty_StorageClassPersistent': "
+              + "'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver.ClassImplementingInterfaceWithProperty_StorageClassPersistent', "
+              + "'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver.MixinImplementingInterfaceWithProperty_StorageClassPersistent'."));
     }
 
     private ClassDefinition CreateDefinitionForClassWithInterface ()
@@ -327,6 +359,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               {
                   PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
                       classWithMixinAddingInterface, typeof (MixinAddingPropertyBase), "Property")
+              },
+              true));
+      return classWithMixinAddingInterface;
+    }
+
+    private ClassDefinition CreateDefinitionForClassWithWithSameInterfaceAsMixin_ButStorageClassNone ()
+    {
+      var classWithMixinAddingInterface =
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
+            typeof (ClassImplementingInterfaceWithProperty_StorageClassNone), 
+            typeof (MixinImplementingInterfaceWithProperty_StorageClassPersistent));
+      classWithMixinAddingInterface.SetPropertyDefinitions (
+          new PropertyDefinitionCollection (
+              new[]
+              {
+                  PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
+                      classWithMixinAddingInterface, typeof (MixinImplementingInterfaceWithProperty_StorageClassPersistent), "Property")
+              },
+              true));
+      return classWithMixinAddingInterface;
+    }
+
+    private ClassDefinition CreateDefinitionForClassWithWithSameInterfaceAsMixin_BothStorageClassPersistent ()
+    {
+      var classWithMixinAddingInterface =
+          ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
+            typeof (ClassImplementingInterfaceWithProperty_StorageClassPersistent),
+            typeof (MixinImplementingInterfaceWithProperty_StorageClassPersistent));
+      classWithMixinAddingInterface.SetPropertyDefinitions (
+          new PropertyDefinitionCollection (
+              new[]
+              {
+                  PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
+                      classWithMixinAddingInterface, typeof (ClassImplementingInterfaceWithProperty_StorageClassPersistent), "Property"),
+                  PropertyDefinitionObjectMother.CreateForRealPropertyInfo (
+                      classWithMixinAddingInterface, typeof (MixinImplementingInterfaceWithProperty_StorageClassPersistent), "Property")
               },
               true));
       return classWithMixinAddingInterface;

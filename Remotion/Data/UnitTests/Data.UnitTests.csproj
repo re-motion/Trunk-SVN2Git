@@ -255,6 +255,10 @@
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ShadowedProperties\Base.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ShadowedProperties\When_ADerivedClass_RedefinesAProperty.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\ShadowedProperties\Shadower.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\ReflectionBasedPropertyResolver\ClassImplementingInterfaceWithProperty_StorageClassNone.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\ReflectionBasedPropertyResolver\Copy of ClassImplementingInterfaceWithProperty_StorageClassNone.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\ReflectionBasedPropertyResolver\IInterfaceWithProperty.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\ReflectionBasedPropertyResolver\MixinImplementingInterfaceWithProperty_StorageClassPersistent.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot\Base.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot\Derived.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_RelatedObjectTypeIsBaseClassOfOppositePropertyType_BelowInheritanceRoot\InvalidRelationClass.cs" />

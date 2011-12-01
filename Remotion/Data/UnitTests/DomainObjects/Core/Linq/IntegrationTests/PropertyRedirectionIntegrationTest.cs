@@ -78,7 +78,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4541")]
     public void PropertyRedirectedToInterface_ImplementedByMixinAndTargetClass ()
     {
       var query =

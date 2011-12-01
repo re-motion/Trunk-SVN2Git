@@ -18,8 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -36,10 +38,31 @@ namespace Remotion.Data.DomainObjects.Mapping
       ArgumentUtility.CheckNotNull ("definitionGetter", definitionGetter);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      var matchingImplementations = GetMatchingDefinitions (propertyInformation, classDefinition, definitionGetter);
+
+      if (matchingImplementations.Count > 1)
+      {
+        var implementingTypeNames = matchingImplementations.Select (tuple => "'" + tuple.Item1.DeclaringType + "'").OrderBy (name => name);
+        var message = string.Format (
+            "The property '{0}' is ambiguous, it is implemented by the following types valid in the context of class '{1}': {2}.",
+            propertyInformation.Name,
+            classDefinition.ClassType.Name,
+            SeparatedStringBuilder.Build (", ", implementingTypeNames));
+        throw new InvalidOperationException (message);
+      }
+
+      return matchingImplementations.Select (tuple => tuple.Item2).SingleOrDefault();
+    }
+
+    private static List<Tuple<IPropertyInformation, T>> GetMatchingDefinitions<T> (
+        IPropertyInformation propertyInformation, 
+        ClassDefinition classDefinition, 
+        Func<string, T> definitionGetter) where T: class
+    {
       IEnumerable<IPropertyInformation> propertyImplementationCandidates;
       if (propertyInformation.DeclaringType.IsInterface)
       {
-        var implementingTypes = GetImplementingType (classDefinition, propertyInformation);
+        var implementingTypes = GetImplementingTypes (classDefinition, propertyInformation);
         propertyImplementationCandidates = implementingTypes
             .Select (propertyInformation.FindInterfaceImplementation)
             .Where (pi => pi != null);
@@ -53,22 +76,28 @@ namespace Remotion.Data.DomainObjects.Mapping
               let propertyIdentifier = MappingConfiguration.Current.NameResolver.GetPropertyName (pi)
               let definition = definitionGetter (propertyIdentifier)
               where definition != null
-              select definition).FirstOrDefault();
+              select Tuple.Create (pi, definition))
+          .Distinct (new DelegateBasedEqualityComparer<Tuple<IPropertyInformation, T>> (
+                         (x, y) => object.Equals (x.Item1, y.Item1), 
+                         x => x.Item1.GetHashCode()))
+          .ToList();
     }
 
-    private static IEnumerable<Type> GetImplementingType (ClassDefinition classDefinition, IPropertyInformation interfaceProperty)
+    private static IEnumerable<Type> GetImplementingTypes (ClassDefinition classDefinition, IPropertyInformation interfaceProperty)
     {
       Assertion.IsTrue (interfaceProperty.DeclaringType.IsInterface);
 
       if (interfaceProperty.DeclaringType.IsAssignableFrom (TypeAdapter.Create (classDefinition.ClassType)))
-        return new[] { classDefinition.ClassType };
-      else
-      {
-        var allPersistentMixins = classDefinition
-            .CreateSequence (cd => cd.BaseClass)
-            .SelectMany (cd => cd.PersistentMixins);
-        return allPersistentMixins.Where (m => interfaceProperty.DeclaringType.IsAssignableFrom (TypeAdapter.Create (m))).ToArray();
-      }
+        yield return classDefinition.ClassType;
+
+      var implementingPersistentMixins = 
+          from cd in classDefinition.CreateSequence (cd => cd.BaseClass)
+          from mixinType in cd.PersistentMixins
+          where interfaceProperty.DeclaringType.IsAssignableFrom (TypeAdapter.Create (mixinType))
+          select mixinType;
+
+      foreach (var implementingPersistentMixin in implementingPersistentMixins)
+        yield return implementingPersistentMixin;
     }
   }
 }
