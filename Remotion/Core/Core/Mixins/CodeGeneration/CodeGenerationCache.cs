@@ -72,6 +72,13 @@ namespace Remotion.Mixins.CodeGeneration
       _concreteTypeBuilder = concreteTypeBuilder;
     }
 
+    public void Clear()
+    {
+      _typeCache.Clear ();
+      _mixinTypeCache.Clear ();
+      _constructorLookupInfos.Clear();
+    }
+
     public Type GetOrCreateConcreteType (
         IModuleManager moduleManager, 
         ClassContext classContext,
@@ -114,11 +121,11 @@ namespace Remotion.Mixins.CodeGeneration
     }
 
     public IConstructorLookupInfo GetOrCreateConstructorLookupInfo (
-    IModuleManager manager,
-    ClassContext classContext,
-    IConcreteMixedTypeNameProvider nameProvider,
-    IConcreteMixinTypeNameProvider mixinNameProvider,
-    bool allowNonPublic)
+        IModuleManager manager,
+        ClassContext classContext,
+        IConcreteMixedTypeNameProvider nameProvider,
+        IConcreteMixinTypeNameProvider mixinNameProvider,
+        bool allowNonPublic)
     {
       lock (_lockObject)
       {
