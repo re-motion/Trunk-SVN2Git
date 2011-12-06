@@ -154,6 +154,17 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecoratorIntegrationTest.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundMixinTypeGeneratorDecoratorTest.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecoratorTest.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundTypeGeneratorDecoratorTest.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\TestDomain\MixedClass5.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\TestDomain\MixedClass4.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\TestDomain\MixedClassWithMixinNeedingConcreteType.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\TestDomain\MixedClass3.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\TestDomain\MixedClass2.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\TestDomain\MixedClass1.cs" />
+    <Compile Include="Core\UnitTesting\Mixins\TestDomain\NullMixin.cs" />
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FilteringTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FixedTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Resources\ResourceUtilityTest.cs" />

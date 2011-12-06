@@ -129,6 +129,9 @@
     <Compile Include="UnitTesting\AppDomainRunner.cs" />
     <Compile Include="UnitTesting\AssemblyCompiler.cs" />
     <Compile Include="UnitTesting\AssemblyCompilationException.cs" />
+    <Compile Include="UnitTesting\Mixins\DebuggerWorkaroundMixinTypeGeneratorDecorator.cs" />
+    <Compile Include="UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecorator.cs" />
+    <Compile Include="UnitTesting\Mixins\DebuggerWorkaroundTypeGeneratorDecorator.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\CompoundPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigSystemHelper.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigurationHelper.cs" />
