@@ -58,19 +58,12 @@ namespace Remotion.Mixins.CodeGeneration
     private static readonly ILog s_log = LogManager.GetLogger (typeof (CodeGenerationCache));
     
     private readonly object _lockObject = new object();
-    private readonly ConcreteTypeBuilder _concreteTypeBuilder;
     private readonly Cache<ClassContext, Type> _typeCache = new Cache<ClassContext, Type> ();
     private readonly Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> _mixinTypeCache = 
         new Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> ();
 
     private readonly LockingCacheDecorator<CtorLookupInfoKey, IConstructorLookupInfo> _constructorLookupInfos =
         CacheFactory.CreateWithLocking<CtorLookupInfoKey, IConstructorLookupInfo>();
-
-    public CodeGenerationCache (ConcreteTypeBuilder concreteTypeBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("concreteTypeBuilder", concreteTypeBuilder);
-      _concreteTypeBuilder = concreteTypeBuilder;
-    }
 
     public void Clear()
     {
@@ -83,18 +76,18 @@ namespace Remotion.Mixins.CodeGeneration
         IModuleManager moduleManager, 
         ClassContext classContext,
         IConcreteMixedTypeNameProvider nameProvider,
-        IConcreteMixinTypeNameProvider mixinNameProvider)
+        IConcreteMixinTypeProvider concreteMixinTypeProvider)
     {
       ArgumentUtility.CheckNotNull ("moduleManager", moduleManager);
       ArgumentUtility.CheckNotNull ("classContext", classContext);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
-      ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeProvider", concreteMixinTypeProvider);
 
       lock (_lockObject)
       {
         return _typeCache.GetOrCreateValue (
             classContext,
-            key => GenerateConcreteType (moduleManager, key, nameProvider, mixinNameProvider));
+            key => GenerateConcreteType (moduleManager, key, nameProvider, concreteMixinTypeProvider));
       }
     }
 
@@ -102,7 +95,7 @@ namespace Remotion.Mixins.CodeGeneration
         IModuleManager moduleManager, 
         ClassContext classContext, 
         IConcreteMixedTypeNameProvider nameProvider, 
-        IConcreteMixinTypeNameProvider mixinNameProvider)
+        IConcreteMixinTypeProvider concreteMixinTypeProvider)
     {
       s_log.InfoFormat ("Generating concrete type for {0}.", classContext);
 
@@ -110,11 +103,7 @@ namespace Remotion.Mixins.CodeGeneration
       using (new CodeGenerationTimer ())
       {
         var targetClassDefinition = TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
-        ITypeGenerator generator = moduleManager.CreateTypeGenerator (
-            this,
-            targetClassDefinition,
-            nameProvider,
-            mixinNameProvider);
+        var generator = moduleManager.CreateTypeGenerator (targetClassDefinition, nameProvider, concreteMixinTypeProvider);
 
         return generator.GetBuiltType();
       }
@@ -124,23 +113,30 @@ namespace Remotion.Mixins.CodeGeneration
         IModuleManager manager,
         ClassContext classContext,
         IConcreteMixedTypeNameProvider nameProvider,
-        IConcreteMixinTypeNameProvider mixinNameProvider,
+        IConcreteMixinTypeProvider concreteMixinTypeProvider,
         bool allowNonPublic)
     {
+      ArgumentUtility.CheckNotNull ("manager", manager);
+      ArgumentUtility.CheckNotNull ("classContext", classContext);
+      ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeProvider", concreteMixinTypeProvider);
+
       lock (_lockObject)
       {
         return _constructorLookupInfos.GetOrCreateValue (new CtorLookupInfoKey (classContext, allowNonPublic), cc =>
         {
-          var concreteType = GetOrCreateConcreteType (manager, classContext, nameProvider, mixinNameProvider);
+          var concreteType = GetOrCreateConcreteType (manager, classContext, nameProvider, concreteMixinTypeProvider);
           return new MixedTypeConstructorLookupInfo (concreteType, classContext.Type, allowNonPublic);
         });
       }
     }
 
     public ConcreteMixinType GetOrCreateConcreteMixinType (
+        IModuleManager moduleManager,
         ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier,
         IConcreteMixinTypeNameProvider mixinNameProvider)
     {
+      ArgumentUtility.CheckNotNull ("moduleManager", moduleManager);
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
       ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
 
@@ -148,18 +144,19 @@ namespace Remotion.Mixins.CodeGeneration
       {
         return _mixinTypeCache.GetOrCreateValue (
               concreteMixinTypeIdentifier,
-              key => GenerateConcreteMixinType (concreteMixinTypeIdentifier, mixinNameProvider));
+              key => GenerateConcreteMixinType (moduleManager, concreteMixinTypeIdentifier, mixinNameProvider));
       }
     }
 
     private ConcreteMixinType GenerateConcreteMixinType (
+        IModuleManager moduleManager,
         ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier,
         IConcreteMixinTypeNameProvider mixinNameProvider)
     {
       s_log.InfoFormat ("Generating concrete mixin type for {0}.", concreteMixinTypeIdentifier.MixinType);
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {elapsed}."))
       {
-        return _concreteTypeBuilder.Scope.CreateMixinTypeGenerator (concreteMixinTypeIdentifier, mixinNameProvider).GetBuiltType ();
+        return moduleManager.CreateMixinTypeGenerator (concreteMixinTypeIdentifier, mixinNameProvider).GetBuiltType ();
       }
     }
 

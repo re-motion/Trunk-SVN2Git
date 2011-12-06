@@ -360,11 +360,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       _builderWithModuleManagerMock.LoadAssemblyIntoCache (assemblyMock);
       _moduleManagerMockForLoading.BackToRecord();
       _moduleManagerMockForLoading
-            .Expect (mock => mock.CreateTypeGenerator (
-                Arg<CodeGenerationCache>.Is.Anything,
-                Arg<TargetClassDefinition>.Is.Anything, 
-                Arg<IConcreteMixedTypeNameProvider>.Is.Anything,
-                Arg<IConcreteMixinTypeNameProvider>.Is.Anything))
+            .Expect (mock => mock.CreateTypeGenerator (Arg<TargetClassDefinition>.Is.Anything, 
+                Arg<IConcreteMixedTypeNameProvider>.Is.Anything, Arg.Is (_builderWithModuleManagerMock)))
             .Return (typeGeneratorMock);
       _moduleManagerMockForLoading.Replay();
 
@@ -525,11 +522,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
                       {TypeNameProvider = mixedTypeNameProvider, MixinTypeNameProvider = mixinTypeNameProvider, Scope = moduleManagerMock};
 
       moduleManagerMock
-          .Expect (mock => mock.CreateTypeGenerator (
-              Arg<CodeGenerationCache>.Is.Anything, 
-              Arg<TargetClassDefinition>.Is.Anything,
-              Arg.Is (mixedTypeNameProvider),
-              Arg.Is (mixinTypeNameProvider)))
+          .Expect (mock => mock.CreateTypeGenerator (Arg<TargetClassDefinition>.Is.Anything,
+              Arg.Is (mixedTypeNameProvider), Arg.Is (builder)))
           .Return (typeGeneratorMock);
       moduleManagerMock.Replay();
 

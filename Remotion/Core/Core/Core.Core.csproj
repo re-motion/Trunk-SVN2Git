@@ -142,6 +142,8 @@
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
+    <Compile Include="Mixins\CodeGeneration\IConcreteMixinTypeProvider.cs" />
+    <Compile Include="Mixins\CodeGeneration\IConcreteTypeProvider.cs" />
     <Compile Include="Mixins\TypeExtensions.cs" />
     <Compile Include="Mixins\Validation\ValidatedDefinitionDescription.cs" />
     <Compile Include="Mixins\Validation\ValidationLogData.cs" />

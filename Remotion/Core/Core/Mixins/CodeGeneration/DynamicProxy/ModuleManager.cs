@@ -86,14 +86,13 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     }
 
     public ITypeGenerator CreateTypeGenerator (
-        CodeGenerationCache cache, 
-        TargetClassDefinition configuration, 
+        TargetClassDefinition configuration,
         IConcreteMixedTypeNameProvider nameProvider,
-        IConcreteMixinTypeNameProvider mixinNameProvider)
+        IConcreteMixinTypeProvider concreteMixinTypeProvider)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
       ArgumentUtility.CheckNotNull ("nameProvider", nameProvider);
-      ArgumentUtility.CheckNotNull ("mixinNameProvider", mixinNameProvider);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeProvider", concreteMixinTypeProvider);
 
       if (configuration.Type.IsInterface)
       {
@@ -101,7 +100,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         throw new ArgumentException (message, "configuration");
       }
 
-      return new TypeGenerator (cache, this, configuration, nameProvider, mixinNameProvider);
+      return new TypeGenerator (this, configuration, nameProvider, concreteMixinTypeProvider);
     }
 
     public IMixinTypeGenerator CreateMixinTypeGenerator (

@@ -115,7 +115,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
-      ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (ConcreteTypeBuilder.Current.Cache, bt1, GuidNameProvider.Instance, GuidNameProvider.Instance);
+      ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (bt1, GuidNameProvider.Instance, ConcreteTypeBuilder.Current);
       Assert.IsNotNull (generator);
       Assert.IsTrue (bt1.Type.IsAssignableFrom (generator.GetBuiltType()));
     }
@@ -125,11 +125,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var configuration = new TargetClassDefinition (new ClassContext (typeof (IServiceProvider)));
       Assert.That (
-          () => SavedTypeBuilder.Scope.CreateTypeGenerator (
-              ConcreteTypeBuilder.Current.Cache,
-              configuration,
-              GuidNameProvider.Instance,
-              GuidNameProvider.Instance),
+          () => SavedTypeBuilder.Scope.CreateTypeGenerator (configuration, GuidNameProvider.Instance, ConcreteTypeBuilder.Current),
           Throws.ArgumentException.With.Message.EqualTo (
               "Cannot generate a mixed type for type 'System.IServiceProvider' because it's an interface.\r\nParameter name: configuration"));
     }

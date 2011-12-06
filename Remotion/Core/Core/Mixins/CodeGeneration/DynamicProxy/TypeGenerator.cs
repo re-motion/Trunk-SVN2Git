@@ -35,7 +35,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   public class TypeGenerator : ITypeGenerator
   {
-    private readonly CodeGenerationCache _codeGenerationCache;
+    private readonly IConcreteMixinTypeProvider _concreteMixinTypeProvider;
     private readonly ICodeGenerationModule _module;
     private readonly TargetClassDefinition _configuration;
     private readonly IClassEmitter _emitter;
@@ -56,24 +56,23 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     private readonly Dictionary<MethodInfo, MethodInfo> _baseCallMethods = new Dictionary<MethodInfo, MethodInfo> ();
 
     public TypeGenerator (
-        CodeGenerationCache codeGenerationCache, 
         ICodeGenerationModule module, 
         TargetClassDefinition configuration, 
         IConcreteMixedTypeNameProvider nameProvider, 
-        IConcreteMixinTypeNameProvider mixinNameProvider)
+        IConcreteMixinTypeProvider concreteMixinTypeProvider)
     {
-      ArgumentUtility.CheckNotNull ("codeGenerationCache", codeGenerationCache);
+      ArgumentUtility.CheckNotNull ("concreteMixinTypeProvider", concreteMixinTypeProvider);
       ArgumentUtility.CheckNotNull ("module", module);
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
-      _codeGenerationCache = codeGenerationCache;
+      _concreteMixinTypeProvider = concreteMixinTypeProvider;
       _module = module;
       _configuration = configuration;
 
       string typeName = nameProvider.GetNameForConcreteMixedType (configuration);
       typeName = CustomClassEmitter.FlattenTypeName (typeName);
 
-      var concreteMixinTypes = GetConcreteMixinTypes (mixinNameProvider); // elements may be null
+      var concreteMixinTypes = GetConcreteMixinTypes (); // elements may be null
       Assertion.IsTrue (concreteMixinTypes.Length == _configuration.Mixins.Count);
 
       var implementedInterfaceFinder = new ImplementedInterfaceFinder (
@@ -142,11 +141,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private IEnumerable<Type> GetMixinTypes ()
     {
-      foreach (MixinDefinition mixin in Configuration.Mixins)
-        yield return mixin.Type;
+      return Configuration.Mixins.Select (mixin => mixin.Type);
     }
 
-    private ConcreteMixinType[] GetConcreteMixinTypes (IConcreteMixinTypeNameProvider mixinNameProvider)
+    private ConcreteMixinType[] GetConcreteMixinTypes ()
     {
       var concreteMixinTypes = new ConcreteMixinType[Configuration.Mixins.Count];
       for (int i = 0; i < concreteMixinTypes.Length; ++i)
@@ -154,9 +152,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         MixinDefinition mixinDefinition = Configuration.Mixins[i];
         if (mixinDefinition.NeedsDerivedMixinType ())
         {
-          concreteMixinTypes[i] = _codeGenerationCache.GetOrCreateConcreteMixinType (
-              mixinDefinition.GetConcreteMixinTypeIdentifier(),
-              mixinNameProvider);
+          concreteMixinTypes[i] = _concreteMixinTypeProvider.GetConcreteMixinType (mixinDefinition.GetConcreteMixinTypeIdentifier());
         }
       }
       return concreteMixinTypes;
@@ -202,17 +198,6 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
           _classContextField, 
           _mixinArrayInitializerField);
       codeGenerator.ImplementTypeInitializer (Emitter);
-    }
-
-    internal static LocalReference GetFirstAttributeLocal (ConstructorEmitter emitter, Type attributeType)
-    {
-      LocalReference thisTypeLocal = emitter.CodeBuilder.DeclareLocal (typeof (Type));
-      emitter.CodeBuilder.AddStatement (new AssignStatement (thisTypeLocal, new TypeTokenExpression (emitter.ConstructorBuilder.DeclaringType)));
-
-      Expression firstAttributeExpression = new CustomAttributeExpression (thisTypeLocal, attributeType, 0, false);
-      LocalReference firstAttributeLocal = emitter.CodeBuilder.DeclareLocal (attributeType);
-      emitter.CodeBuilder.AddStatement (new AssignStatement (firstAttributeLocal, firstAttributeExpression));
-      return firstAttributeLocal;
     }
 
     private void ImplementISerializable ()
@@ -447,15 +432,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private bool IsSuppressedByMixin (AttributeDefinition attribute)
     {
-      ICustomAttributeProvider declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
-      foreach (AttributeIntroductionDefinition suppressAttribute in Configuration.ReceivedAttributes[typeof (SuppressAttributesAttribute)])
-      {
-        var suppressAttributeInstance = (SuppressAttributesAttribute)suppressAttribute.Attribute.Instance;
-        ICustomAttributeProvider suppressingEntity = suppressAttribute.Attribute.DeclaringDefinition.CustomAttributeProvider;
-        if (suppressAttributeInstance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity))
-          return true;
-      }
-      return false;
+      var declaringEntity = attribute.DeclaringDefinition.CustomAttributeProvider;
+      var suppressAttributesAttributes =
+          from suppressAttribute in Configuration.ReceivedAttributes[typeof (SuppressAttributesAttribute)]
+          let suppressAttributeInstance = (SuppressAttributesAttribute) suppressAttribute.Attribute.Instance
+          let suppressingEntity = suppressAttribute.Attribute.DeclaringDefinition.CustomAttributeProvider
+          where suppressAttributeInstance.IsSuppressed (attribute.AttributeType, declaringEntity, suppressingEntity)
+          select suppressAttributeInstance;
+      return suppressAttributesAttributes.Any();
     }
 
     private bool CanInheritAttributesFromBase (IAttributeIntroductionTarget configuration)
@@ -488,7 +472,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     public MethodInfo GetBaseCallMethod (MethodInfo overriddenMethod)
     {
-      ArgumentUtility.CheckNotNull ("method", overriddenMethod);
+      ArgumentUtility.CheckNotNull ("overriddenMethod", overriddenMethod);
       if (!overriddenMethod.DeclaringType.IsAssignableFrom (TypeBuilder.BaseType))
       {
         string message = String.Format (

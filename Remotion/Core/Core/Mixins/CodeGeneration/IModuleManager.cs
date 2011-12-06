@@ -26,11 +26,7 @@ namespace Remotion.Mixins.CodeGeneration
   [ConcreteImplementation (typeof (ModuleManager))]
   public interface IModuleManager : ICodeGenerationModule
   {
-    ITypeGenerator CreateTypeGenerator (
-        CodeGenerationCache codeGenerationCache, 
-        TargetClassDefinition configuration, 
-        IConcreteMixedTypeNameProvider nameProvider, 
-        IConcreteMixinTypeNameProvider mixinNameProvider);
+    ITypeGenerator CreateTypeGenerator (TargetClassDefinition configuration, IConcreteMixedTypeNameProvider nameProvider, IConcreteMixinTypeProvider concreteMixinTypeProvider);
     IMixinTypeGenerator CreateMixinTypeGenerator (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier, IConcreteMixinTypeNameProvider mixinNameProvider);
 
     string SignedAssemblyName { get; set; }
