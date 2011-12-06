@@ -82,7 +82,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public static IObjectReference BeginDeserialization (Type publicDomainObjectType, SerializationInfo info, StreamingContext context)
     {
-      ArgumentUtility.CheckNotNull ("baseType", publicDomainObjectType);
+      ArgumentUtility.CheckNotNull ("publicDomainObjectType", publicDomainObjectType);
       ArgumentUtility.CheckNotNull ("info", info);
 
       IObjectReference objectReference;
