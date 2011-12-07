@@ -67,9 +67,12 @@ namespace Remotion.Mixins.CodeGeneration
 
     public void Clear()
     {
-      _typeCache.Clear ();
-      _mixinTypeCache.Clear ();
-      _constructorLookupInfos.Clear();
+      lock (_lockObject)
+      {
+        _typeCache.Clear();
+        _mixinTypeCache.Clear();
+        _constructorLookupInfos.Clear();
+      }
     }
 
     public Type GetOrCreateConcreteType (
