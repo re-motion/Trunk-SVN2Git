@@ -60,7 +60,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
                 .ForClass<Page> ().AddMixin (typeof (NullMixin))
                 .EnterScope())
             {
-              Mixer mixer = Mixer.Create ("Signed", "Unsigned", _assemblyOutputDirectory, GuidNameProvider.Instance);
+              Mixer mixer = Mixer.Create ("Signed", "Unsigned", _assemblyOutputDirectory, new GuidNameProvider());
               mixer.PrepareOutputDirectory();
               mixer.Execute (MixinConfiguration.ActiveConfiguration);
 
@@ -79,7 +79,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
               var concreteTypeFromSystemAssembly = types.Where (t => t.BaseType == typeof (Page)).SingleOrDefault ();
               Assert.That (concreteTypeFromSystemAssembly, Is.Not.Null);
               
-              ConcreteTypeBuilder.Current.LoadAssemblyIntoCache (theAssembly);
+              ConcreteTypeBuilder.Current.LoadConcreteTypes (theAssembly);
               Type concreteTypeFromFactory = TypeFactory.GetConcreteType (typeof (BaseType1));
               Assert.That (concreteTypeFromFactory, Is.SameAs (concreteType));
 

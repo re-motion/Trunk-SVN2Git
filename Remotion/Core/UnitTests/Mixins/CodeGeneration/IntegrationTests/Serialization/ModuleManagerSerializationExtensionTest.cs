@@ -35,7 +35,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.Serializatio
     public void SetUp ()
     {
       _identityTransformer = delegate (Type t) { return t; };
-      _moduleManager = ConcreteTypeBuilder.Current.Scope;
+      _moduleManager = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ();
     }
 
     [Test]

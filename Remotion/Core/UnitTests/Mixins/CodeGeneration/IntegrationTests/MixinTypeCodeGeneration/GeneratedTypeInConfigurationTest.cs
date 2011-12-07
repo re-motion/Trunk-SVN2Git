@@ -20,8 +20,6 @@ using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using Remotion.Mixins;
-using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCodeGeneration.TestDomain;
@@ -34,7 +32,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void GeneratedMixinTypeWithOverriddenMethodWorks ()
     {
-      var moduleScope = ((ModuleManager)ConcreteTypeBuilder.Current.Scope).Scope;
+      var moduleScope = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager().Scope;
       var typeEmitter = new CustomClassEmitter (moduleScope, "GeneratedMixinTypeWithOverriddenMethodWorks", typeof (Mixin<object>));
       Type generatedType = typeEmitter.BuildType ();
 
@@ -48,7 +46,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void GeneratedTargetTypeOverridingMixinMethodWorks ()
     {
-      var typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
+      var typeEmitter = new CustomClassEmitter (ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ().Scope,
           "GeneratedTargetTypeOverridingMixinMethodWorks", typeof (object));
       typeEmitter.CreateMethod ("ToString", MethodAttributes.Public)
           .SetReturnType (typeof (string))

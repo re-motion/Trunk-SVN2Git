@@ -34,7 +34,7 @@ namespace Remotion.Mixins.MixerTools
 {
   /// <summary>
   /// Provides functionality for pre-generating mixed types and saving them to disk to be later loaded via 
-  /// <see cref="ConcreteTypeBuilder.LoadAssemblyIntoCache(System.Reflection.Assembly)"/>.
+  /// <see cref="ConcreteTypeBuilder.LoadConcreteTypes"/>.
   /// </summary>
   public class Mixer
   {
@@ -161,7 +161,7 @@ namespace Remotion.Mixins.MixerTools
 
     private void Save (IConcreteTypeBuilder builder)
     {
-      string[] paths = builder.SaveAndResetDynamicScope ();
+      string[] paths = builder.SaveGeneratedConcreteTypes ();
       if (paths.Length == 0)
         s_log.Info ("No assemblies generated.");
       else

@@ -135,7 +135,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
         FormatterServices.PopulateObjectMembers (_deserializedObject, baseMembers, _baseMemberValues);
       }
 
-      ConcreteTypeBuilder.Current.Scope.InitializeDeserializedMixinTarget (_deserializedObject, _extensions);
+      ConcreteTypeBuilder.Current.InitializeDeserializedInstance (_deserializedObject, _extensions);
 
       SerializationImplementer.RaiseOnDeserialized (_deserializedObject, _context);
       SerializationImplementer.RaiseOnDeserialization (_deserializedObject, sender);

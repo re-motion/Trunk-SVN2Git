@@ -171,10 +171,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void NameProviderIsUsedWhenTypeIsGenerated ()
     {
-      var builder = new ConcreteTypeBuilder {Scope = SavedTypeBuilder.Scope};
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixedTypeNameProvider> ();
-      builder.TypeNameProvider = nameProviderMock;
+
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
       Expect.Call (nameProviderMock.GetNameForConcreteMixedType (Arg<TargetClassDefinition>.Matches (tcd => tcd.Type == typeof (BaseType1)))).Return ("Foo");
@@ -191,10 +191,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void NamesOfNestedTypesAreFlattened ()
     {
-      var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixedTypeNameProvider> ();
-      builder.TypeNameProvider = nameProviderMock;
+
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
       Expect.Call (nameProviderMock.GetNameForConcreteMixedType (Arg<TargetClassDefinition>.Matches (tcd => tcd.Type == typeof (BaseType1)))).Return ("Foo+Bar");

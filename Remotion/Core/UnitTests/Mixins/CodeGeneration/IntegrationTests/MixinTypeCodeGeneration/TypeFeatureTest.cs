@@ -62,10 +62,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void NameProviderIsUsedWhenTypeIsGenerated ()
     {
-      var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
-      builder.MixinTypeNameProvider = nameProviderMock;
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
       nameProviderMock.Expect (mock => mock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra");
@@ -83,10 +82,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixinTypeCod
     [Test]
     public void NamesOfNestedTypesAreFlattened ()
     {
-      var builder = new ConcreteTypeBuilder { Scope = SavedTypeBuilder.Scope };
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
-      builder.MixinTypeNameProvider = nameProviderMock;
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
       Expect.Call (nameProviderMock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra+Oof");

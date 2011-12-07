@@ -31,8 +31,10 @@ namespace Remotion.Mixins.Utilities
     {
       get
       {
-        if (ConcreteTypeBuilder.HasCurrent && ConcreteTypeBuilder.Current.Scope.UnsignedModule != null)
-          return (AssemblyBuilder) ConcreteTypeBuilder.Current.Scope.UnsignedModule.Assembly;
+        if (ConcreteTypeBuilder.HasCurrent 
+            && ConcreteTypeBuilder.Current is ConcreteTypeBuilder 
+            && ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).Scope.UnsignedModule != null)
+          return ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).Scope.UnsignedModule.Assembly as AssemblyBuilder;
         else
           return null;
       }
@@ -42,8 +44,10 @@ namespace Remotion.Mixins.Utilities
     {
       get
       {
-        if (ConcreteTypeBuilder.HasCurrent && ConcreteTypeBuilder.Current.Scope.SignedModule != null)
-          return (AssemblyBuilder) ConcreteTypeBuilder.Current.Scope.SignedModule.Assembly;
+        if (ConcreteTypeBuilder.HasCurrent 
+            && ConcreteTypeBuilder.Current is ConcreteTypeBuilder 
+            && ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).Scope.SignedModule != null)
+          return ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).Scope.SignedModule.Assembly as AssemblyBuilder;
         else
           return null;
       }

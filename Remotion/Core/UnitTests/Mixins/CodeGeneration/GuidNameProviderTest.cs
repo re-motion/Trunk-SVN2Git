@@ -25,11 +25,19 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   [TestFixture]
   public class GuidNameProviderTest
   {
+    private GuidNameProvider _nameProvider;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _nameProvider = new GuidNameProvider();
+    }
+
     [Test]
     public void GetNameForConcreteMixedType ()
     {
       var definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (object));
-      var name = GuidNameProvider.Instance.GetNameForConcreteMixedType (definition);
+      var name = _nameProvider.GetNameForConcreteMixedType (definition);
       Assert.That (name, Is.StringStarting("System.Object_Mixed_"));
     }
 
@@ -37,8 +45,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetNameForConcreteMixedType_UniqueNames ()
     {
       var definition = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (object));
-      var name1 = GuidNameProvider.Instance.GetNameForConcreteMixedType (definition);
-      var name2 = GuidNameProvider.Instance.GetNameForConcreteMixedType (definition);
+      var name1 = _nameProvider.GetNameForConcreteMixedType (definition);
+      var name2 = _nameProvider.GetNameForConcreteMixedType (definition);
 
       Assert.That (name1, Is.Not.EqualTo (name2));
     }
@@ -47,7 +55,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetNameForConcreteMixinType ()
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
-      var name = GuidNameProvider.Instance.GetNameForConcreteMixinType (identifier);
+      var name = _nameProvider.GetNameForConcreteMixinType (identifier);
       Assert.That (name, Is.StringStarting("System.Object_GeneratedMixin_"));
     }
 
@@ -55,7 +63,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetNameForConcreteMixinType_GenericNameSimplified () // required because .NET chokes otherwise
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (List<int>), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
-      var name = GuidNameProvider.Instance.GetNameForConcreteMixinType (identifier);
+      var name = _nameProvider.GetNameForConcreteMixinType (identifier);
       Assert.That (name, Is.StringStarting("System.Collections.Generic.List`1_GeneratedMixin_"));
     }
 
@@ -63,8 +71,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void GetNameForConcreteMixinType_UniqueNames ()
     {
       var identifier = new ConcreteMixinTypeIdentifier (typeof (object), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
-      var name1 = GuidNameProvider.Instance.GetNameForConcreteMixinType (identifier);
-      var name2 = GuidNameProvider.Instance.GetNameForConcreteMixinType (identifier);
+      var name1 = _nameProvider.GetNameForConcreteMixinType (identifier);
+      var name2 = _nameProvider.GetNameForConcreteMixinType (identifier);
       Assert.That (name1, Is.Not.EqualTo (name2));
     }
   }

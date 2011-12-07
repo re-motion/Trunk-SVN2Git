@@ -17,8 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Mixins;
-using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.TestDomain;
@@ -31,8 +29,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void GeneratedMixinTypeWorks()
     {
-      var typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
-                                                "GeneratedTypeInConfigurationTest.GeneratedMixinTypeWorks", typeof (object));
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ();
+      var typeEmitter = new CustomClassEmitter (moduleManager.Scope, "GeneratedTypeInConfigurationTest.GeneratedMixinTypeWorks", typeof (object));
       Type generatedType = typeEmitter.BuildType();
 
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget>().Clear().AddMixins (generatedType).EnterScope())
@@ -45,8 +43,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.MixedTypeCod
     [Test]
     public void GeneratedTargetTypeWorks()
     {
-      var typeEmitter = new CustomClassEmitter (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope,
-                                                "GeneratedTypeInConfigurationTest.GeneratedTargetTypeWorks", typeof (object));
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ();
+      var typeEmitter = new CustomClassEmitter (moduleManager.Scope, "GeneratedTypeInConfigurationTest.GeneratedTargetTypeWorks", typeof (object));
       Type generatedType = typeEmitter.BuildType();
 
       using (MixinConfiguration.BuildFromActive().ForClass (generatedType).Clear().AddMixins (typeof (NullMixin)).EnterScope())

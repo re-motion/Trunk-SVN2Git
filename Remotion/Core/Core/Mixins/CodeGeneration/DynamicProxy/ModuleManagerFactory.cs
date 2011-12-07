@@ -15,16 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Implementation;
 
-namespace Remotion.Mixins.CodeGeneration
+namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   /// <summary>
-  /// Defines an interface for classes providing a mechanism to retrieve a name for a generated concrete mixin type.
+  /// Implements <see cref="IModuleManagerFactory"/> by creating instances of <see cref="ModuleManager"/> with the default assembly names.
   /// </summary>
-  [ConcreteImplementation (typeof (GuidNameProvider), Lifetime = LifetimeKind.Singleton)]
-  public interface IConcreteMixinTypeNameProvider
+  public class ModuleManagerFactory : IModuleManagerFactory
   {
-    string GetNameForConcreteMixinType (ConcreteMixinTypeIdentifier identifier);
+    public IModuleManager Create ()
+    {
+      return new ModuleManager();
+    }
   }
 }

@@ -154,6 +154,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecoratorFactoryTest.cs" />
     <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecoratorIntegrationTest.cs" />
     <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundMixinTypeGeneratorDecoratorTest.cs" />
     <Compile Include="Core\UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecoratorTest.cs" />

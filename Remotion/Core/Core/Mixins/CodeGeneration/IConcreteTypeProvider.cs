@@ -16,12 +16,18 @@
 // 
 using System;
 using Remotion.Mixins.Context;
+using Remotion.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration
 {
   /// <summary>
   /// Provides a concrete, mixed type for a given <see cref="ClassContext"/>.
   /// </summary>
+  /// <remarks>
+  /// This interface is mostly for internal reasons, users should use 
+  /// <see cref="ObjectFactory.Create(System.Type,Remotion.Reflection.ParamList,object[])"/> or <see cref="TypeFactory.GetConcreteType(System.Type)"/> 
+  /// instead.
+  /// </remarks>
   public interface IConcreteTypeProvider
   {
     /// <summary>
@@ -29,7 +35,19 @@ namespace Remotion.Mixins.CodeGeneration
     /// </summary>
     /// <param name="classContext">The <see cref="ClassContext"/> holding the mixin configuration for the target class.</param>
     /// <returns>A concrete type with all mixins from <paramref name="classContext"/> mixed in.</returns>
-    /// <remarks>This is mostly for internal reasons, users should use <see cref="TypeFactory.GetConcreteType(Type)"/> instead.</remarks>
     Type GetConcreteType (ClassContext classContext);
+
+    /// <summary>
+    /// Gets an <see cref="IConstructorLookupInfo"/> object that can be used to construct the concrete mixed type for the given target class
+    /// configuration either from the cache or by generating it.
+    /// </summary>
+    /// <param name="classContext">The <see cref="ClassContext"/> holding the mixin configuration for the target class.</param>
+    /// <param name="allowNonPublic">If set to <see langword="true"/>, the result object supports calling non-public constructors. Otherwise,
+    /// only public constructors are allowed.</param>
+    /// <returns>
+    /// An <see cref="IConstructorLookupInfo"/> instance instantiating the same type <see cref="GetConcreteType"/> would have returned for the given
+    /// <paramref name="classContext"/>.
+    /// </returns>
+    IConstructorLookupInfo GetConstructorLookupInfo (ClassContext classContext, bool allowNonPublic);
   }
 }

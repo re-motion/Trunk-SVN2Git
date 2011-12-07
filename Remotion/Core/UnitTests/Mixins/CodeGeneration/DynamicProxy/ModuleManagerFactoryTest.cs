@@ -14,17 +14,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Implementation;
+using NUnit.Framework;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 
-namespace Remotion.Mixins.CodeGeneration
+namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 {
-  /// <summary>
-  /// Defines an interface for classes providing a mechanism to retrieve a name for a generated concrete mixin type.
-  /// </summary>
-  [ConcreteImplementation (typeof (GuidNameProvider), Lifetime = LifetimeKind.Singleton)]
-  public interface IConcreteMixinTypeNameProvider
+  [TestFixture]
+  public class ModuleManagerFactoryTest
   {
-    string GetNameForConcreteMixinType (ConcreteMixinTypeIdentifier identifier);
+    private ModuleManagerFactory _factory;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _factory = new ModuleManagerFactory();
+    }
+
+    [Test]
+    public void Create ()
+    {
+      var result = _factory.Create();
+
+      Assert.That (result, Is.TypeOf<ModuleManager> ());
+      Assert.That (((ModuleManager) result).SignedAssemblyName, Is.StringMatching (@"Remotion\.Mixins\.Generated\.Signed\..*"));
+      Assert.That (((ModuleManager) result).UnsignedAssemblyName, Is.StringMatching (@"Remotion\.Mixins\.Generated\.Unsigned\..*"));
+    }
   }
 }

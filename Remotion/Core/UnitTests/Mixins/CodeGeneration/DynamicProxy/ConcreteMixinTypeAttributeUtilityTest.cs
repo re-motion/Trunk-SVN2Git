@@ -21,7 +21,6 @@ using System.Reflection.Emit;
 using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
@@ -35,7 +34,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       var identifier = new ConcreteMixinTypeIdentifier (typeof (double), new HashSet<MethodInfo> (), new HashSet<MethodInfo> ());
       CustomAttributeBuilder builder = ConcreteMixinTypeAttributeUtility.CreateAttributeBuilder (identifier);
 
-      TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager();
+      TypeBuilder typeBuilder = moduleManager
+          .Scope
           .ObtainDynamicModuleWithWeakName ()
           .DefineType ("Test_ConcreteMixinTypeAttribute");
       typeBuilder.SetCustomAttribute (builder);

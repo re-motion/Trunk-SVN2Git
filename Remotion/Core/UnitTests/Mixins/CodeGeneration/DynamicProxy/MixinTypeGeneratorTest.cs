@@ -21,7 +21,6 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Samples.UsesAndExtends.Core;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.Definitions.TestDomain;
@@ -41,8 +40,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
     private MethodInfo _protectedInternalOverrider;
 
     private ConcreteMixinTypeIdentifier _identifier;
-    private MixinTypeGenerator _mixinTypeGenerator;
+    private GuidNameProvider _guidNameProvider;
 
+    private MixinTypeGenerator _mixinTypeGenerator;
+    
     [SetUp]
     public void SetUp ()
     {
@@ -66,7 +67,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
           new HashSet<MethodInfo> { _publicOverrider, _protectedOverrider, _protectedInternalOverrider },
           new HashSet<MethodInfo> ());
 
-      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _identifier, GuidNameProvider.Instance);
+      _guidNameProvider = new GuidNameProvider();
+
+      _mixinTypeGenerator = new MockRepository().PartialMock<MixinTypeGenerator> (_moduleMock, _identifier, _guidNameProvider);
     }
 
     [Test]
@@ -113,7 +116,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (false)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, identifier, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, identifier, _guidNameProvider);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -131,7 +134,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, identifier, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, identifier, _guidNameProvider);
 
       moduleMock.VerifyAllExpectations ();
     }
@@ -151,7 +154,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
               Arg<string>.Is.Anything, Arg<Type>.Is.Anything, Arg<Type[]>.Is.Anything, Arg<TypeAttributes>.Is.Anything, Arg<bool>.Is.Equal (true)))
               .Return (_classEmitterMock);
 
-      new MixinTypeGenerator (moduleMock, identifier, GuidNameProvider.Instance);
+      new MixinTypeGenerator (moduleMock, identifier, _guidNameProvider);
 
       moduleMock.VerifyAllExpectations ();
     }

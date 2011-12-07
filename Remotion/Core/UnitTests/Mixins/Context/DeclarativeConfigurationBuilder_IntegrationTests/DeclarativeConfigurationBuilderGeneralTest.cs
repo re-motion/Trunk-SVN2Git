@@ -106,7 +106,7 @@ namespace Remotion.UnitTests.Mixins.Context.DeclarativeConfigurationBuilder_Inte
     {
       ConcreteTypeBuilder.SetCurrent (null);
       TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
-      string[] paths = ConcreteTypeBuilder.Current.SaveAndResetDynamicScope();
+      string[] paths = ConcreteTypeBuilder.Current.SaveGeneratedConcreteTypes();
       try
       {
         Assert.That (paths.Length, Is.EqualTo (1));

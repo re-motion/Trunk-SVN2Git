@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
@@ -27,10 +25,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   [TestFixture]
   public class NamespaceChangingNameProviderTest
   {
+    private NamespaceChangingNameProvider _namespaceChangingNameProvider;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _namespaceChangingNameProvider = new NamespaceChangingNameProvider();
+    }
+    
     [Test]
     public void GetNameForConcreteMixedType_NormalNameGetsExtendedNamespace ()
     {
-      var nameProvider = NamespaceChangingNameProvider.Instance;
+      var nameProvider = _namespaceChangingNameProvider;
 
       TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
       string newName = nameProvider.GetNameForConcreteMixedType (definition);
@@ -41,7 +47,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void GetNameForConcreteMixedType_GenericNameGetsExtendedNamespacePlusCharacterReplacements ()
     {
-      var nameProvider = NamespaceChangingNameProvider.Instance;
+      var nameProvider = _namespaceChangingNameProvider;
 
       TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition_Force (
           typeof (GenericTargetClass<int>));

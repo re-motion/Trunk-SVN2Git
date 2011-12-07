@@ -56,8 +56,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
 
       // setup mixin builder to generate files into the same directory
       ConcreteTypeBuilder.SetCurrent (null); // reinitialize ConcreteTypeBuilder
-      ConcreteTypeBuilder.Current.Scope.SignedModulePath = Path.Combine (AssemblyDirectory, ConcreteTypeBuilder.Current.Scope.SignedAssemblyName + ".dll");
-      ConcreteTypeBuilder.Current.Scope.UnsignedModulePath = Path.Combine (AssemblyDirectory, ConcreteTypeBuilder.Current.Scope.UnsignedAssemblyName + ".dll");
+      
+      var scope = ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).Scope;
+      scope.SignedModulePath = Path.Combine (AssemblyDirectory, scope.SignedAssemblyName + ".dll");
+      scope.UnsignedModulePath = Path.Combine (AssemblyDirectory, scope.UnsignedAssemblyName + ".dll");
     }
 
     private string AssemblyDirectory
@@ -97,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Interception
     {
       string[] paths = Factory.SaveGeneratedAssemblies ();
       // save mixins as well, we need those files if the intercepted types depend on mixed types
-      ConcreteTypeBuilder.Current.SaveAndResetDynamicScope ();
+      ConcreteTypeBuilder.Current.SaveGeneratedConcreteTypes ();
 
 #if !NO_PEVERIFY
       foreach (string path in paths)

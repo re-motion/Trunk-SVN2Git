@@ -62,7 +62,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
 
       Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).SignedAssemblyName, Is.EqualTo (_parameters.SignedAssemblyName));
       Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).UnsignedAssemblyName, Is.EqualTo (_parameters.UnsignedAssemblyName));
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.SameAs (GuidNameProvider.Instance));
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.TypeOf<GuidNameProvider>());
       Assert.That (mixer.AssemblyOutputDirectory, Is.EqualTo (_parameters.AssemblyOutputDirectory));
     }
 
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
       _parameters.KeepTypeNames = true;
       var mixer = CallCreateMixer (runner);
 
-      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.SameAs (NamespaceChangingNameProvider.Instance));
+      Assert.That (((ConcreteTypeBuilderFactory) mixer.ConcreteTypeBuilderFactory).TypeNameProvider, Is.TypeOf<NamespaceChangingNameProvider>());
     }
 
     [Test]

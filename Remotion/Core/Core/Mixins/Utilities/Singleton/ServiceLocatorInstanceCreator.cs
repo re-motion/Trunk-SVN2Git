@@ -14,17 +14,25 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Implementation;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 
-namespace Remotion.Mixins.CodeGeneration
+namespace Remotion.Mixins.Utilities.Singleton
 {
   /// <summary>
-  /// Defines an interface for classes providing a mechanism to retrieve a name for a generated concrete mixin type.
+  /// Implements <see cref="IInstanceCreator{T}"/> by delegating to <see cref="ServiceLocator"/> to resolve an instance implementing
+  /// <typeparamref name="T"/>.
   /// </summary>
-  [ConcreteImplementation (typeof (GuidNameProvider), Lifetime = LifetimeKind.Singleton)]
-  public interface IConcreteMixinTypeNameProvider
+  /// <typeparam name="T">The type to resolve from the <see cref="ServiceLocator"/>.</typeparam>
+  /// <remarks>
+  /// This class uses the <see cref="SafeServiceLocator"/>, so it will use an instance of <see cref="DefaultServiceLocator"/> if no other
+  /// <see cref="IServiceLocator"/> was installed.
+  /// </remarks>
+  public class ServiceLocatorInstanceCreator<T> : IInstanceCreator<T>
   {
-    string GetNameForConcreteMixinType (ConcreteMixinTypeIdentifier identifier);
+    public T CreateInstance()
+    {
+      return SafeServiceLocator.Current.GetInstance<T>();
+    }
   }
 }

@@ -44,9 +44,11 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
       _debuggerInterfaceStub = MockRepository.GenerateStub<IDebuggerInterface>();
 
       var temporaryServiceLocator = new DefaultServiceLocator();
-      temporaryServiceLocator.Register (typeof (IModuleManager), () => new DebuggerWorkaroundModuleManagerDecorator (3, new ModuleManager (), _debuggerInterfaceStub));
+      temporaryServiceLocator.Register (
+          typeof (IModuleManagerFactory),
+          () => new DebuggerWorkaroundModuleManagerDecoratorFactory (3, _debuggerInterfaceStub, new ModuleManagerFactory()));
       _serviceLocatorScope = new ServiceLocatorScope (temporaryServiceLocator);
-      ConcreteTypeBuilder.Current.Scope = null;
+      ConcreteTypeBuilder.SetCurrent (null);
     }
 
     [TearDown]
@@ -60,7 +62,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
     [Test]
     public void ScopeInitialization ()
     {
-      Assert.That (ConcreteTypeBuilder.Current.Scope, Is.TypeOf<DebuggerWorkaroundModuleManagerDecorator> ());
+      Assert.That (((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).Scope, Is.TypeOf<DebuggerWorkaroundModuleManagerDecorator> ());
     }
 
     [Test]
@@ -183,7 +185,11 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
 
     private DebuggerWorkaroundModuleManagerDecorator CurrentModuleManagerDecorator
     {
-      get { return (DebuggerWorkaroundModuleManagerDecorator) ConcreteTypeBuilder.Current.Scope; }
+      get
+      {
+        var concreteTypeBuilder = (ConcreteTypeBuilder) ConcreteTypeBuilder.Current;
+        return (DebuggerWorkaroundModuleManagerDecorator) concreteTypeBuilder.Scope;
+      }
     }
   }
 }

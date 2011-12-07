@@ -22,21 +22,21 @@ namespace Remotion.Mixins.Utilities.Singleton
       where TSelf : class
       where TCreator : IInstanceCreator<TSelf>, new()
   {
-    private static ThreadSafeSingleton<TSelf> s_instance = new ThreadSafeSingleton<TSelf> (new TCreator().CreateInstance);
+    private static readonly DoubleCheckedLockingContainer<TSelf> s_instance = new DoubleCheckedLockingContainer<TSelf> (new TCreator().CreateInstance);
 
     public static TSelf Current
     {
-      get { return s_instance.Current; }
+      get { return s_instance.Value; }
     }
 
     public static bool HasCurrent
     {
-      get { return s_instance.HasCurrent; }
+      get { return s_instance.HasValue; }
     }
 
-    public static void SetCurrent(TSelf value)
+    public static void SetCurrent (TSelf value)
     {
-      s_instance.SetCurrent (value);
+      s_instance.Value = value;
     }
   }
 }

@@ -30,12 +30,14 @@ namespace Remotion.Development.UnitTesting.Mixins
 {
   /// <summary>
   /// Decorates an <see cref="IModuleManager"/>, counting the generated types and resetting the inner <see cref="IModuleManager"/> when the number 
-  /// of types exceeds the given threshold.
+  /// of types exceeds the given threshold. This can be used as a workaround for the Reflection.Emit bug where calls to 
+  /// <see cref="TypeBuilder.CreateType"/> take a very long time to complete  when the debugger is attached and a large number of types is generated 
+  /// into the same AssemblyBuilder.
   /// </summary>
   public class DebuggerWorkaroundModuleManagerDecorator : IModuleManager
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (DebuggerWorkaroundModuleManagerDecorator));
-    private static readonly TimeSpan s_warningThreshold = TimeSpan.FromSeconds (1.0);
+    private static readonly TimeSpan s_warningThreshold = TimeSpan.FromSeconds (0.5);
 
     private readonly int _maximumTypesPerAssembly;
     private readonly IModuleManager _innerModuleManager;
@@ -44,7 +46,7 @@ namespace Remotion.Development.UnitTesting.Mixins
     private int _generatedTypeCountForCurrentScope;
     private int _resetCount;
 
-    public DebuggerWorkaroundModuleManagerDecorator (int maximumTypesPerAssembly, IModuleManager innerModuleManager, IDebuggerInterface debuggerInterface)
+    public DebuggerWorkaroundModuleManagerDecorator (int maximumTypesPerAssembly, IDebuggerInterface debuggerInterface, IModuleManager innerModuleManager)
     {
       ArgumentUtility.CheckNotNull ("innerModuleManager", innerModuleManager);
       ArgumentUtility.CheckNotNull ("debuggerInterface", debuggerInterface);

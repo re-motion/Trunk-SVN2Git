@@ -30,7 +30,7 @@ using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.UnitTests.Mixins.TestDomain;
 
-namespace Remotion.UnitTests.Mixins.CodeGeneration
+namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
 {
   [TestFixture]
   public class ModuleManagerTest : CodeGenerationBaseTest
@@ -90,13 +90,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
         SignedModulePath = c_signedAssemblyFileName,
         UnsignedModulePath = c_unsignedAssemblyFileName
       };
-      var savedBuilder = new ConcreteTypeBuilder {Scope = _savedModuleManager};
 
       _signedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (object));
       _unsignedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
 
-      _signedSavedType = savedBuilder.GetConcreteType (_signedSavedContext);
-      _unsignedSavedType = savedBuilder.GetConcreteType (_unsignedSavedContext);
+      _signedSavedType = GetConcreteType (_savedModuleManager, _signedSavedContext);
+      _unsignedSavedType = GetConcreteType (_savedModuleManager, _unsignedSavedContext);
 
       _savedModulePaths = _savedModuleManager.SaveAssemblies ();
       
@@ -115,7 +114,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
-      ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (bt1, GuidNameProvider.Instance, ConcreteTypeBuilder.Current);
+      ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (bt1, new GuidNameProvider(), ConcreteTypeBuilder.Current);
       Assert.IsNotNull (generator);
       Assert.IsTrue (bt1.Type.IsAssignableFrom (generator.GetBuiltType()));
     }
@@ -125,7 +124,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       var configuration = new TargetClassDefinition (new ClassContext (typeof (IServiceProvider)));
       Assert.That (
-          () => SavedTypeBuilder.Scope.CreateTypeGenerator (configuration, GuidNameProvider.Instance, ConcreteTypeBuilder.Current),
+          () => SavedTypeBuilder.Scope.CreateTypeGenerator (configuration, new GuidNameProvider(), ConcreteTypeBuilder.Current),
           Throws.ArgumentException.With.Message.EqualTo (
               "Cannot generate a mixed type for type 'System.IServiceProvider' because it's an interface.\r\nParameter name: configuration"));
     }
@@ -138,9 +137,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
           typeof (MixinWithAbstractMembers))).Mixins[0];
       var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
 
-      var generator = SavedTypeBuilder.Scope.CreateMixinTypeGenerator (
-          identifier, 
-          GuidNameProvider.Instance);
+      var generator = SavedTypeBuilder.Scope.CreateMixinTypeGenerator (identifier, new GuidNameProvider());
       Assert.IsNotNull (generator);
       Assert.IsTrue (identifier.MixinType.IsAssignableFrom (generator.GetBuiltType ().GeneratedType));
     }
@@ -153,7 +150,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
 
       Assert.That (
-          () => SavedTypeBuilder.Scope.CreateMixinTypeGenerator (identifier, GuidNameProvider.Instance),
+          () => SavedTypeBuilder.Scope.CreateMixinTypeGenerator (identifier, new GuidNameProvider()),
           Throws.ArgumentException.With.Message.EqualTo (
               "Cannot generate a mixin type for type 'System.IServiceProvider' because it's an interface.\r\nParameter name: concreteMixinTypeIdentifier"));
     }
@@ -198,9 +195,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     [Test]
     public void Reset ()
     {
-      var concreteTypeBuilder = new ConcreteTypeBuilder { Scope = _unsavedModuleManager };
-      var signedSavedTypeBefore = concreteTypeBuilder.GetConcreteType (_signedSavedContext);
-      var unsignedSavedTypeBefore = concreteTypeBuilder.GetConcreteType (_unsignedSavedContext);
+      var signedSavedTypeBefore = GetConcreteType (_unsavedModuleManager, _signedSavedContext);
+      var unsignedSavedTypeBefore = GetConcreteType (_unsavedModuleManager, _unsignedSavedContext);
       
       Assert.That (_unsavedModuleManager.HasAssemblies, Is.True);
       var signedNameBefore = _unsavedModuleManager.SignedAssemblyName;
@@ -212,9 +208,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (_unsavedModuleManager.SignedAssemblyName, Is.Not.EqualTo (signedNameBefore));
       Assert.That (_unsavedModuleManager.UnsignedAssemblyName, Is.Not.EqualTo (unsignedNameBefore));
 
-      concreteTypeBuilder.Cache.Clear();
-      var signedSavedTypeAfter = concreteTypeBuilder.GetConcreteType (_signedSavedContext);
-      var unsignedSavedTypeAfter = concreteTypeBuilder.GetConcreteType (_unsignedSavedContext);
+      var signedSavedTypeAfter = GetConcreteType (_unsavedModuleManager, _signedSavedContext);
+      var unsignedSavedTypeAfter = GetConcreteType (_unsavedModuleManager, _unsignedSavedContext);
 
       Assert.That (signedSavedTypeAfter.Assembly, Is.Not.SameAs (signedSavedTypeBefore.Assembly));
       Assert.That (unsignedSavedTypeAfter.Assembly, Is.Not.SameAs (unsignedSavedTypeBefore.Assembly));
@@ -378,6 +373,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       Assert.That (type.GetInterface (typeof (IMarkerInterface).FullName), Is.SameAs (typeof (IMarkerInterface)));
       Assert.That (type.Attributes, Is.EqualTo (TypeAttributes.Public));
       Assert.That (ReflectionUtility.IsAssemblySigned (type.Assembly), Is.False);
+    }
+    
+    private Type GetConcreteType (ModuleManager moduleManager, ClassContext classContext)
+    {
+      var concreteTypeBuilder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilderWithFixedModuleManager (moduleManager);
+      return concreteTypeBuilder.GetConcreteType (classContext);
     }
   }
 }

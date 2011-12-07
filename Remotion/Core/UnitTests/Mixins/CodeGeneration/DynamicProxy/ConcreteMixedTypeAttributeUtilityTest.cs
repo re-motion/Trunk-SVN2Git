@@ -39,8 +39,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       var orderedMixinTypes = new[] { typeof (string), typeof (double) };
 
       CustomAttributeBuilder builder = ConcreteMixedTypeAttributeUtility.CreateAttributeBuilder (context, orderedMixinTypes);
-      
-      TypeBuilder typeBuilder = ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.ObtainDynamicModuleWithWeakName ().DefineType ("Test_ConcreteMixedTypeAttribute");
+
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetCurrentModuleManager();
+      TypeBuilder typeBuilder = moduleManager.Scope.ObtainDynamicModuleWithWeakName ().DefineType ("Test_ConcreteMixedTypeAttribute");
       typeBuilder.SetCustomAttribute (builder);
       Type type = typeBuilder.CreateType ();
       var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (type, false);

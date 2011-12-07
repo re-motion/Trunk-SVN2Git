@@ -30,9 +30,7 @@ namespace Remotion.Mixins.CodeGeneration
   /// </remarks>
   public class NamespaceChangingNameProvider : IConcreteMixedTypeNameProvider
   {
-    public static readonly NamespaceChangingNameProvider Instance = new NamespaceChangingNameProvider ();
-
-    private NamespaceChangingNameProvider ()
+    public NamespaceChangingNameProvider ()
     {
     }
 

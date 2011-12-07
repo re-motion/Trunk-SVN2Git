@@ -47,8 +47,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void SetUp()
     {
       ResetGeneratedAssemblies ();
-      s_savedTypeBuilder = new ConcreteTypeBuilder ();
-      s_alternativeTypeBuilder = new ConcreteTypeBuilder ();
+      s_savedTypeBuilder = new ConcreteTypeBuilder (new ModuleManagerFactory(), new GuidNameProvider(), new GuidNameProvider());
+      s_alternativeTypeBuilder = new ConcreteTypeBuilder (new ModuleManagerFactory(), new GuidNameProvider(), new GuidNameProvider());
     }
 
     [TearDown]
@@ -60,12 +60,12 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       string[] paths;
       try
       {
-        paths = s_savedTypeBuilder.SaveAndResetDynamicScope ();
+        paths = s_savedTypeBuilder.SaveGeneratedConcreteTypes ();
       }
       catch (Exception ex)
       {
         Assert.Fail ("Error when saving assemblies: {0}", ex);
-        return;
+        throw;
       }
 
       foreach (string path in paths)

@@ -229,7 +229,11 @@
     <Compile Include="Logging\ILogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilderTestHelper.cs" />
+    <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilderObjectMother.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\CompleteInterfaceTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ModuleManagerFactoryTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ModuleManagerFactoryObjectMother.cs" />
     <Compile Include="Mixins\ComposedObjectTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\CompleteInterfaceAnalyisTest.cs" />
     <Compile Include="Mixins\TestDomain\BaseClassWithHasCompleteInterface.cs" />
@@ -310,6 +314,10 @@
     <Compile Include="Mixins\TestDomain\MixinIntroducingInterfacesImplementingEachOther.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\Serialization\AttributeConcreteMixinTypeIdentifierDeserializerTest.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\ServiceLocatorInstanceCreatorTest.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\TestDomain\ConcreteImplementationOfInterface.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\TestDomain\IInterfaceWithConcreteImplementation.cs" />
+    <Compile Include="Mixins\Utilities\Singleton\TestDomain\SecondaryImplementationOfInterface.cs" />
     <Compile Include="Mixins\Validation\ValidatedDefinitionDescriptionTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionResultItemTest.cs" />
     <Compile Include="Mixins\Validation\ValidationExceptionTest.cs" />
@@ -679,7 +687,7 @@
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\OverrideTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\StrongNameTest.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixinTypeCodeGeneration\TypeFeatureTest.cs" />
-    <Compile Include="Mixins\CodeGeneration\ModuleManagerTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ModuleManagerTest.cs" />
     <Compile Include="Mixins\CodeGeneration\NamespaceChangingNameProviderTest.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\ClassOverridingSingleMixinMethod.cs" />
     <Compile Include="Mixins\CodeGeneration\TestDomain\ClassWithCopyCustomAttributes.cs" />

@@ -14,36 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Utilities;
+using Remotion.Implementation;
 
-namespace Remotion.Mixins.Utilities.Singleton
+namespace Remotion.UnitTests.Mixins.Utilities.Singleton.TestDomain
 {
-  public class ThreadSafeSingleton<T>
-      where T : class
+  [ConcreteImplementation(typeof (ConcreteImplementationOfInterface))]
+  public interface IInterfaceWithConcreteImplementation
   {
-    private DoubleCheckedLockingContainer<T> _instanceHolder;
-
-    public ThreadSafeSingleton (Func<T> creator)
-    {
-      ArgumentUtility.CheckNotNull ("creator", creator);
-
-      _instanceHolder = new DoubleCheckedLockingContainer<T> (creator);
-    }
-
-    public bool HasCurrent
-    {
-      get { return _instanceHolder.HasValue; }
-    }
-
-    public T Current
-    {
-      get { return _instanceHolder.Value; }
-    }
-
-    public void SetCurrent (T value)
-    {
-      _instanceHolder.Value = value;
-    }
+    
   }
 }

@@ -101,8 +101,8 @@ namespace Remotion.Mixins.MixerTools
     {
       var typeNameProvider = 
           _parameters.KeepTypeNames 
-          ? (IConcreteMixedTypeNameProvider) NamespaceChangingNameProvider.Instance 
-          : GuidNameProvider.Instance;
+          ? (IConcreteMixedTypeNameProvider) new NamespaceChangingNameProvider()
+          : new GuidNameProvider();
 
       var mixer = Mixer.Create (
           _parameters.SignedAssemblyName, 

@@ -21,7 +21,7 @@ using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.UnitTests.Mixins.CodeGeneration;
 using Remotion.UnitTests.Mixins.TestDomain;
 using Rhino.Mocks;
 
@@ -35,7 +35,7 @@ namespace Remotion.UnitTests.Mixins
     {
       ConcreteTypeBuilder.SetCurrent (null);
       // ensure compatibility with Rhino.Mocks
-      ((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope = new ModuleScope (false);
+      ConcreteTypeBuilderTestHelper.GetModuleManager (ConcreteTypeBuilder.Current).Scope = new ModuleScope (false);
     }
 
     [TearDown]

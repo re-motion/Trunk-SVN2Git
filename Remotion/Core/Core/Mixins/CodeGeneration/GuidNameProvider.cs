@@ -26,9 +26,7 @@ namespace Remotion.Mixins.CodeGeneration
   /// </summary>
   public class GuidNameProvider : IConcreteMixedTypeNameProvider, IConcreteMixinTypeNameProvider
   {
-    public static readonly GuidNameProvider Instance = new GuidNameProvider ();
-
-    private GuidNameProvider ()
+    public GuidNameProvider ()
     {
     }
     

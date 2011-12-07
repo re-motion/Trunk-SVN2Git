@@ -49,7 +49,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
     {
       _innerModuleManagerMock = MockRepository.GenerateStrictMock<IModuleManager>();
       _debuggerInterfaceStub = MockRepository.GenerateStub<IDebuggerInterface>();
-      _decorator = new DebuggerWorkaroundModuleManagerDecorator (3, _innerModuleManagerMock, _debuggerInterfaceStub);
+      _decorator = new DebuggerWorkaroundModuleManagerDecorator (3, _debuggerInterfaceStub, _innerModuleManagerMock);
 
       _innerTypeGeneratorStub = MockRepository.GenerateStub<ITypeGenerator> ();
       _innerMixinTypeGeneratorStub = MockRepository.GenerateStub<IMixinTypeGenerator> ();

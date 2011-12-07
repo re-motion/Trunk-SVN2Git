@@ -92,9 +92,10 @@ namespace Remotion.UnitTests.ServiceLocation
     public void GetDefaultConfiguration_UnitTestAssembly ()
     {
       var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
-          new[] { Assembly.GetExecutingAssembly() });
+          new[] { GetType().Assembly });
 
-      Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (9)); //ServiceLocation.TestDomain services
+      var testDomainEntries = serviceConfigurationEntries.Where (entry => entry.ServiceType.Namespace.StartsWith (GetType().Namespace + ".TestDomain"));
+      Assert.That (testDomainEntries.Count(), Is.EqualTo (9));
     }
     
   }

@@ -69,7 +69,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
       _concreteTypeBuilderFactoryStub.Stub (stub => stub.GetUnsignedModulePath (_assemblyOutputDirectoy)).Return (_unsignedModulePath);
       _concreteTypeBuilderFactoryStub.Stub (stub => stub.CreateTypeBuilder (_assemblyOutputDirectoy)).Return (_concreteTypeBuilderStub);
 
-      _concreteTypeBuilderStub.Stub (stub => stub.SaveAndResetDynamicScope ()).Return (new string[0]);
+      _concreteTypeBuilderStub.Stub (stub => stub.SaveGeneratedConcreteTypes ()).Return (new string[0]);
 
       _mixer = new Mixer (_classContextFinderStub, _concreteTypeBuilderFactoryStub, _assemblyOutputDirectoy);
     }
@@ -159,7 +159,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
     {
       var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
       concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Return (typeof (FakeConcreteMixedType));
-      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope()).Return (new string[0]);
+      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes()).Return (new string[0]);
       concreteTypeBuilderMock.Replay ();
 
       RedefineFactoryStub (concreteTypeBuilderMock);
@@ -176,7 +176,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
 
       var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
       concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Throw (validationException);
-      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope ()).Return (new string[0]);
+      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes ()).Return (new string[0]);
       concreteTypeBuilderMock.Replay ();
 
       RedefineFactoryStub (concreteTypeBuilderMock);
@@ -200,7 +200,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
 
       var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
       concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Throw (exception);
-      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope ()).Return (new string[0]);
+      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes ()).Return (new string[0]);
       concreteTypeBuilderMock.Replay ();
 
       RedefineFactoryStub (concreteTypeBuilderMock);
@@ -222,7 +222,7 @@ namespace Remotion.UnitTests.Mixins.MixerTools
     {
       var concreteTypeBuilderMock = new MockRepository ().StrictMock<IConcreteTypeBuilder> ();
       concreteTypeBuilderMock.Expect (mock => mock.GetConcreteType (_context)).Return (typeof (FakeConcreteMixedType));
-      concreteTypeBuilderMock.Expect (mock => mock.SaveAndResetDynamicScope ()).Return (new[] { "a", "b" });
+      concreteTypeBuilderMock.Expect (mock => mock.SaveGeneratedConcreteTypes ()).Return (new[] { "a", "b" });
       concreteTypeBuilderMock.Replay ();
 
       RedefineFactoryStub (concreteTypeBuilderMock);

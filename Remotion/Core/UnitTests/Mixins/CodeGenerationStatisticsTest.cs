@@ -20,9 +20,9 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
+using Remotion.UnitTests.Mixins.CodeGeneration;
 using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins
@@ -51,7 +51,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CurrentUnsignedAssemblyBuilder_Null_WithExistingConcreteTypeBuilder ()
     {
-      ConcreteTypeBuilder.SetCurrent (new ConcreteTypeBuilder());
+      ConcreteTypeBuilder.SetCurrent (ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder());
       Assert.That (CodeGenerationStatistics.CurrentUnsignedAssemblyBuilder, Is.Null);
     }
 
@@ -60,8 +60,8 @@ namespace Remotion.UnitTests.Mixins
     {
       ObjectFactory.Create<BaseType1>(ParamList.Empty);
       Assert.That (CodeGenerationStatistics.CurrentUnsignedAssemblyBuilder, Is.Not.Null);
-      Assert.That (CodeGenerationStatistics.CurrentUnsignedAssemblyBuilder, 
-          Is.SameAs (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.WeakNamedModule.Assembly));
+      Assert.That (CodeGenerationStatistics.CurrentUnsignedAssemblyBuilder,
+          Is.SameAs (ConcreteTypeBuilderTestHelper.GetModuleManager (ConcreteTypeBuilder.Current).Scope.WeakNamedModule.Assembly));
     }
 
     [Test]
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Mixins
     [Test]
     public void CurrentSignedAssemblyBuilder_Null_WithExistingConcreteTypeBuilder ()
     {
-      ConcreteTypeBuilder.SetCurrent (new ConcreteTypeBuilder ());
+      ConcreteTypeBuilder.SetCurrent (ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder());
       Assert.That (CodeGenerationStatistics.CurrentSignedAssemblyBuilder, Is.Null);
     }
 
@@ -83,7 +83,7 @@ namespace Remotion.UnitTests.Mixins
       ObjectFactory.Create<object> (ParamList.Empty, GenerationPolicy.ForceGeneration);
       Assert.That (CodeGenerationStatistics.CurrentSignedAssemblyBuilder, Is.Not.Null);
       Assert.That (CodeGenerationStatistics.CurrentSignedAssemblyBuilder,
-          Is.SameAs (((ModuleManager) ConcreteTypeBuilder.Current.Scope).Scope.StrongNamedModule.Assembly));
+          Is.SameAs (ConcreteTypeBuilderTestHelper.GetModuleManager (ConcreteTypeBuilder.Current).Scope.StrongNamedModule.Assembly));
     }
 
     [Test]

@@ -131,6 +131,7 @@
     <Compile Include="UnitTesting\AssemblyCompilationException.cs" />
     <Compile Include="UnitTesting\Mixins\DebuggerWorkaroundMixinTypeGeneratorDecorator.cs" />
     <Compile Include="UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecorator.cs" />
+    <Compile Include="UnitTesting\Mixins\DebuggerWorkaroundModuleManagerDecoratorFactory.cs" />
     <Compile Include="UnitTesting\Mixins\DebuggerWorkaroundTypeGeneratorDecorator.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\CompoundPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigSystemHelper.cs" />
