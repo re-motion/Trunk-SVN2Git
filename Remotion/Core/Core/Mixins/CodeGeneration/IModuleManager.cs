@@ -45,10 +45,14 @@ namespace Remotion.Mixins.CodeGeneration
     string[] SaveAssemblies ();
     void Reset ();
 
+    // Must be implemented in a thread-safe way
     void InitializeMixinTarget (IMixinTarget target);
+    // Must be implemented in a thread-safe way
     void InitializeDeserializedMixinTarget (IMixinTarget instance, object[] mixinInstances);
 
+    // Must be implemented in a thread-safe way
     IObjectReference BeginDeserialization (Func<Type, Type> typeTransformer, SerializationInfo info, StreamingContext context);
+    // Must be implemented in a thread-safe way
     void FinishDeserialization (IObjectReference objectReference);
   }
 }

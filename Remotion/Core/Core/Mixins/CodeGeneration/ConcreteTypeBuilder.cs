@@ -130,14 +130,22 @@ namespace Remotion.Mixins.CodeGeneration
     public Type GetConcreteType (ClassContext classContext)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
-      return Cache.GetOrCreateConcreteType (Scope, classContext, _mixedTypeNameProvider, this);
+
+      lock (_scopeLockObject)
+      {
+        return Cache.GetOrCreateConcreteType (Scope, classContext, _mixedTypeNameProvider, this);
+      }
     }
 
     /// <inheritdoc />
     public IConstructorLookupInfo GetConstructorLookupInfo (ClassContext classContext, bool allowNonPublic)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
-      return Cache.GetOrCreateConstructorLookupInfo (Scope, classContext, _mixedTypeNameProvider, this, allowNonPublic);
+
+      lock (_scopeLockObject)
+      {
+        return Cache.GetOrCreateConstructorLookupInfo (Scope, classContext, _mixedTypeNameProvider, this, allowNonPublic);
+      }
     }
 
     /// <summary>
@@ -149,9 +157,11 @@ namespace Remotion.Mixins.CodeGeneration
     public ConcreteMixinType GetConcreteMixinType (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
-     
-      ConcreteMixinType concreteMixinType = Cache.GetOrCreateConcreteMixinType (Scope, concreteMixinTypeIdentifier, _mixinTypeNameProvider);
-      return concreteMixinType;
+
+      lock (_scopeLockObject)
+      {
+        return Cache.GetOrCreateConcreteMixinType (Scope, concreteMixinTypeIdentifier, _mixinTypeNameProvider);
+      }
     }
 
     /// <summary>

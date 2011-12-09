@@ -250,12 +250,14 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       InitializeScope();
     }
 
+    // Must be implemented in a thread-safe way
     public void InitializeMixinTarget (IMixinTarget target)
     {
       ArgumentUtility.CheckNotNull ("target", target);
       ((IInitializableMixinTarget) target).Initialize ();
     }
 
+    // Must be implemented in a thread-safe way
     public void InitializeDeserializedMixinTarget (IMixinTarget instance, object[] mixinInstances)
     {
       ArgumentUtility.CheckNotNull ("instance", instance);
@@ -264,6 +266,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       ((IInitializableMixinTarget) instance).InitializeAfterDeserialization (mixinInstances);
     }
 
+    // Must be implemented in a thread-safe way
     public IObjectReference BeginDeserialization (Func<Type, Type> typeTransformer, SerializationInfo info, StreamingContext context)
     {
       ArgumentUtility.CheckNotNull ("typeTransformer", typeTransformer);
@@ -272,6 +275,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       return new SerializationHelper (info, context, typeTransformer);
     }
 
+    // Must be implemented in a thread-safe way
     public void FinishDeserialization (IObjectReference objectReference)
     {
       ArgumentUtility.CheckNotNull ("objectReference", objectReference);
