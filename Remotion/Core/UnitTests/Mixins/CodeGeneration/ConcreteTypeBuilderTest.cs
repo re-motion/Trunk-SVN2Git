@@ -228,20 +228,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     }
 
     [Test]
-    public void ResetDynamicScope ()
-    {
-      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder();
-      var signedAssemblyNameBefore = builder.Scope.SignedAssemblyName;
-      var unsignedAssemblyNameBefore = builder.Scope.UnsignedAssemblyName;
-
-      builder.SaveGeneratedConcreteTypes();
-
-      Assert.That (builder.Scope.HasAssemblies, Is.False);
-      Assert.That (builder.Scope.SignedAssemblyName, Is.Not.EqualTo (signedAssemblyNameBefore));
-      Assert.That (builder.Scope.UnsignedAssemblyName, Is.Not.EqualTo (unsignedAssemblyNameBefore));
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Cannot load assembly 'Remotion.Mixins.Generated.Signed.*' into the cache "
                                                                       +
                                                                       "because it has the same name as one of the dynamic assemblies used by the mixin engine. Having two assemblies with the same name loaded "
