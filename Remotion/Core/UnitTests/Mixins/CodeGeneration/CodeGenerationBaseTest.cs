@@ -24,14 +24,9 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
   public abstract class CodeGenerationBaseTest
   {
-    private IModuleManager _savedScope;
-    private IModuleManager _alternativeScope;
-
     [SetUp]
     public virtual void SetUp()
     {
-      _savedScope = SavedTypeBuilder.Scope;
-      _alternativeScope = AlternativeTypeBuilder.Scope;
       ConcreteTypeBuilder.SetCurrent (SavedTypeBuilder);
     }
 
@@ -39,8 +34,6 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public virtual void TearDown()
     {
       ConcreteTypeBuilder.SetCurrent (null);
-      SavedTypeBuilder.Scope = _savedScope;
-      AlternativeTypeBuilder.Scope = _alternativeScope;
     }
 
     public ConcreteTypeBuilder SavedTypeBuilder

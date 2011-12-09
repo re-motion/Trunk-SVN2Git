@@ -31,5 +31,10 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     {
       return (ModuleManager) ((ConcreteTypeBuilder) concreteTypeBuilder).Scope;
     }
+
+    public static IModuleManager GetIModuleManager (IConcreteTypeBuilder concreteTypeBuilder)
+    {
+      return ((ConcreteTypeBuilder) concreteTypeBuilder).Scope;
+    }
   }
 }

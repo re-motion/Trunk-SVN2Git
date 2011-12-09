@@ -232,8 +232,7 @@
     <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilderTestHelper.cs" />
     <Compile Include="Mixins\CodeGeneration\ConcreteTypeBuilderObjectMother.cs" />
     <Compile Include="Mixins\CodeGeneration\IntegrationTests\MixedTypeCodeGeneration\CompleteInterfaceTest.cs" />
-    <Compile Include="Mixins\CodeGeneration\DynamicProxy\ModuleManagerFactoryTest.cs" />
-    <Compile Include="Mixins\CodeGeneration\ModuleManagerFactoryObjectMother.cs" />
+    <Compile Include="Mixins\CodeGeneration\ResetCheckingModuleManager.cs" />
     <Compile Include="Mixins\ComposedObjectTest.cs" />
     <Compile Include="Mixins\Context\DeclarativeConfigurationBuilder_IntegrationTests\CompleteInterfaceAnalyisTest.cs" />
     <Compile Include="Mixins\TestDomain\BaseClassWithHasCompleteInterface.cs" />

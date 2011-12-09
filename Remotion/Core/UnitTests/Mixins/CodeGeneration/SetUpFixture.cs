@@ -47,8 +47,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public void SetUp()
     {
       ResetGeneratedAssemblies ();
-      s_savedTypeBuilder = new ConcreteTypeBuilder (new ModuleManagerFactory(), new GuidNameProvider(), new GuidNameProvider());
-      s_alternativeTypeBuilder = new ConcreteTypeBuilder (new ModuleManagerFactory(), new GuidNameProvider(), new GuidNameProvider());
+      s_savedTypeBuilder = new ConcreteTypeBuilder (new ResetCheckingModuleManager(false), new GuidNameProvider(), new GuidNameProvider());
+      s_alternativeTypeBuilder = new ConcreteTypeBuilder (new ModuleManager(), new GuidNameProvider (), new GuidNameProvider ());
     }
 
     [TearDown]
@@ -60,6 +60,8 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       string[] paths;
       try
       {
+        ((ResetCheckingModuleManager) s_savedTypeBuilder.Scope).AllowReset = true;
+
         paths = s_savedTypeBuilder.SaveGeneratedConcreteTypes ();
       }
       catch (Exception ex)
@@ -120,6 +122,5 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
       foreach (string file in Directory.GetFiles (Environment.CurrentDirectory, searchPattern))
         FileUtility.DeleteAndWaitForCompletion (file);
     }
-
   }
 }

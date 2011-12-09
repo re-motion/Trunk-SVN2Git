@@ -28,6 +28,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.Reflection.CodeGeneration;
+using Remotion.ServiceLocation;
 using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
@@ -374,10 +375,17 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.DynamicProxy
       Assert.That (type.Attributes, Is.EqualTo (TypeAttributes.Public));
       Assert.That (ReflectionUtility.IsAssemblySigned (type.Assembly), Is.False);
     }
+
+    [Test]
+    public void DefaultImplementation ()
+    {
+      var instance = new DefaultServiceLocator().GetInstance<IModuleManager>();
+      Assert.That (instance, Is.TypeOf<ModuleManager>());
+    }
     
     private Type GetConcreteType (ModuleManager moduleManager, ClassContext classContext)
     {
-      var concreteTypeBuilder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilderWithFixedModuleManager (moduleManager);
+      var concreteTypeBuilder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (moduleManager);
       return concreteTypeBuilder.GetConcreteType (classContext);
     }
   }

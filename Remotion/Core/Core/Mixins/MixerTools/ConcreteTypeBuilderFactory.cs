@@ -24,32 +24,6 @@ namespace Remotion.Mixins.MixerTools
 {
   public class ConcreteTypeBuilderFactory : IConcreteTypeBuilderFactory
   {
-    private class ModuleManagerFactory : IModuleManagerFactory
-    {
-      private readonly ConcreteTypeBuilderFactory _concreteTypeBuilderFactory;
-      private readonly string _assemblyOutputDirectory;
-
-      public ModuleManagerFactory (ConcreteTypeBuilderFactory concreteTypeBuilderFactory, string assemblyOutputDirectory)
-      {
-        ArgumentUtility.CheckNotNull ("concreteTypeBuilderFactory", concreteTypeBuilderFactory);
-        ArgumentUtility.CheckNotNullOrEmpty ("assemblyOutputDirectory", assemblyOutputDirectory)
-          ;
-        _concreteTypeBuilderFactory = concreteTypeBuilderFactory;
-        _assemblyOutputDirectory = assemblyOutputDirectory;
-      }
-
-      public IModuleManager Create ()
-      {
-        return new ModuleManager
-               {
-                   SignedAssemblyName = _concreteTypeBuilderFactory.SignedAssemblyName,
-                   SignedModulePath = _concreteTypeBuilderFactory.GetSignedModulePath (_assemblyOutputDirectory),
-                   UnsignedAssemblyName = _concreteTypeBuilderFactory.UnsignedAssemblyName,
-                   UnsignedModulePath = _concreteTypeBuilderFactory.GetUnsignedModulePath (_assemblyOutputDirectory)
-               };
-      }
-    }
-
     private readonly IConcreteMixedTypeNameProvider _typeNameProvider;
     private readonly string _signedAssemblyName;
     private readonly string _unsignedAssemblyName;
@@ -85,8 +59,14 @@ namespace Remotion.Mixins.MixerTools
 
     public IConcreteTypeBuilder CreateTypeBuilder (string assemblyOutputDirectory)
     {
-      var moduleManagerFactory = new ModuleManagerFactory (this, assemblyOutputDirectory);
-      return new ConcreteTypeBuilder (moduleManagerFactory, _typeNameProvider, new GuidNameProvider());
+      var moduleManager = new ModuleManager
+      {
+        SignedAssemblyName = SignedAssemblyName,
+        SignedModulePath = GetSignedModulePath (assemblyOutputDirectory),
+        UnsignedAssemblyName = UnsignedAssemblyName,
+        UnsignedModulePath = GetUnsignedModulePath (assemblyOutputDirectory)
+      };
+      return new ConcreteTypeBuilder (moduleManager, _typeNameProvider, new GuidNameProvider());
     }
 
     public string GetSignedModulePath (string assemblyOutputDirectory)

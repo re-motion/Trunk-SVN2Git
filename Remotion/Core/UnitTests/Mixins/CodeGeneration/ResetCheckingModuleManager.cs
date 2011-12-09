@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,18 +14,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Mixins.CodeGeneration;
-using Rhino.Mocks;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 
 namespace Remotion.UnitTests.Mixins.CodeGeneration
 {
-  public class ModuleManagerFactoryObjectMother
+  /// <summary>
+  /// Used by <see cref="SetUpFixture"/> to ensure the integration tests don't reset the shared scope.
+  /// </summary>
+  public class ResetCheckingModuleManager : ModuleManager, IModuleManager
   {
-    public static IModuleManagerFactory CreateFixedModuleManagerFactory (IModuleManager moduleManager)
+    public ResetCheckingModuleManager (bool allowReset)
     {
-      var factory = MockRepository.GenerateStub<IModuleManagerFactory>();
-      factory.Stub (stub => stub.Create ()).Return (moduleManager);
-      return factory;
+      AllowReset = allowReset;
+    }
+
+    public bool AllowReset { get; set; }
+
+    public new void Reset ()
+    {
+      if (!AllowReset)
+        throw new InvalidOperationException ("This IModuleManager cannot be reset.");
+
+      base.Reset ();
     }
   }
 }

@@ -45,8 +45,8 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
 
       var temporaryServiceLocator = new DefaultServiceLocator();
       temporaryServiceLocator.Register (
-          typeof (IModuleManagerFactory),
-          () => new DebuggerWorkaroundModuleManagerDecoratorFactory (3, _debuggerInterfaceStub, new ModuleManagerFactory()));
+          typeof (IModuleManager),
+          () => new DebuggerWorkaroundModuleManagerDecorator (3, _debuggerInterfaceStub, new ModuleManager()));
       _serviceLocatorScope = new ServiceLocatorScope (temporaryServiceLocator);
       ConcreteTypeBuilder.SetCurrent (null);
     }

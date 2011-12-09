@@ -24,19 +24,18 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
   {
     public static ConcreteTypeBuilder CreateConcreteTypeBuilder ()
     {
-      return new ConcreteTypeBuilder (new ModuleManagerFactory (), new GuidNameProvider (), new GuidNameProvider ());
+      return new ConcreteTypeBuilder (new ModuleManager(), new GuidNameProvider (), new GuidNameProvider ());
     }
 
-    public static ConcreteTypeBuilder CreateConcreteTypeBuilderWithFixedModuleManager (IModuleManager moduleManager)
+    public static ConcreteTypeBuilder CreateConcreteTypeBuilder (IModuleManager moduleManager)
     {
-      var factory = ModuleManagerFactoryObjectMother.CreateFixedModuleManagerFactory (moduleManager);
-      return new ConcreteTypeBuilder (factory, new GuidNameProvider (), new GuidNameProvider ());
+      return new ConcreteTypeBuilder (moduleManager, new GuidNameProvider (), new GuidNameProvider ());
     }
 
     public static ConcreteTypeBuilder CreateConcreteTypeBuilder (IModuleManager moduleManager, IConcreteMixedTypeNameProvider nameProviderMock)
     {
       return new ConcreteTypeBuilder (
-          ModuleManagerFactoryObjectMother.CreateFixedModuleManagerFactory (moduleManager),
+          moduleManager,
           nameProviderMock,
           new GuidNameProvider ());
     }
@@ -44,7 +43,7 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration
     public static IConcreteTypeBuilder CreateConcreteTypeBuilder (IModuleManager moduleManager, IConcreteMixinTypeNameProvider nameProviderMock)
     {
       return new ConcreteTypeBuilder (
-          ModuleManagerFactoryObjectMother.CreateFixedModuleManagerFactory (moduleManager),
+          moduleManager,
           new GuidNameProvider(),
           nameProviderMock);
     }
