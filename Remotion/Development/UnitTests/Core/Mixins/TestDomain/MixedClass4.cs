@@ -16,10 +16,10 @@
 // 
 using Remotion.Mixins;
 
-namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins.TestDomain
+namespace Remotion.Development.UnitTests.Core.Mixins.TestDomain
 {
   [Uses (typeof (NullMixin))]
-  public class MixedClass5
+  public class MixedClass4
   {
     
   }

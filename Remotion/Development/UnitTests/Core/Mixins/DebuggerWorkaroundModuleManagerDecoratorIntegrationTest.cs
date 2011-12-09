@@ -14,12 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Context;
 using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.Mixins;
-using Remotion.Development.UnitTests.Core.UnitTesting.Mixins.TestDomain;
+using Remotion.Development.Mixins;
+using Remotion.Development.UnitTests.Core.Mixins.TestDomain;
 using Remotion.Diagnostics;
 using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
@@ -27,7 +26,7 @@ using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
-namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
+namespace Remotion.Development.UnitTests.Core.Mixins
 {
   [TestFixture]
   public class DebuggerWorkaroundModuleManagerDecoratorIntegrationTest

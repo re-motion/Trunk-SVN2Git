@@ -14,16 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.Mixins;
+using Remotion.Development.Mixins;
 using Remotion.Diagnostics;
 using Remotion.Mixins.CodeGeneration;
 using Rhino.Mocks;
 
-namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
+namespace Remotion.Development.UnitTests.Core.Mixins
 {
   [TestFixture]
   public class DebuggerWorkaroundMixinTypeGeneratorDecoratorTest

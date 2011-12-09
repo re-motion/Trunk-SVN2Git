@@ -19,14 +19,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.Mixins;
+using Remotion.Development.Mixins;
 using Remotion.Diagnostics;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Rhino.Mocks;
 
-namespace Remotion.Development.UnitTests.Core.UnitTesting.Mixins
+namespace Remotion.Development.UnitTests.Core.Mixins
 {
   [TestFixture]
   public class DebuggerWorkaroundModuleManagerDecoratorTest

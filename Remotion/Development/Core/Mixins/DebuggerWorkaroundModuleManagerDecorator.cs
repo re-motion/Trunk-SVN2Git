@@ -26,7 +26,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Utilities;
 
-namespace Remotion.Development.UnitTesting.Mixins
+namespace Remotion.Development.Mixins
 {
   /// <summary>
   /// Decorates an <see cref="IModuleManager"/>, counting the generated types and resetting the inner <see cref="IModuleManager"/> when the number 

@@ -5,7 +5,7 @@ using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
-namespace Remotion.Development.UnitTesting.Mixins
+namespace Remotion.Development.Mixins
 {
   /// <summary>
   /// Decorates <see cref="ITypeGenerator"/> in order to notify <see cref="DebuggerWorkaroundModuleManagerDecorator"/> when the type is actually 
