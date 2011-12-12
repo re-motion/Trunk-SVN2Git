@@ -83,10 +83,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     public void CopyOnWrite_Twice ()
     {
       _copyOnWriteData.CopyOnWrite ();
-      var data1 = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (_copyOnWriteData);
+      var data1 = DomainObjectCollectionDataTestHelper.GetWrappedData (_copyOnWriteData);
 
       _copyOnWriteData.CopyOnWrite ();
-      var data2 = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (_copyOnWriteData);
+      var data2 = DomainObjectCollectionDataTestHelper.GetWrappedData (_copyOnWriteData);
       
       Assert.That (data1, Is.SameAs (data2));
     }

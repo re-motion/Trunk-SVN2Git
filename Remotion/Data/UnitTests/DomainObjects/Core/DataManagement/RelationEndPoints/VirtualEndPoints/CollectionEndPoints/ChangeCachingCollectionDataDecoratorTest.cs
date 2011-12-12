@@ -773,7 +773,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var originalData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<CopyOnWriteDomainObjectCollectionData> (
           decorator.OriginalData);
 
-      var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (originalData);
+      var originalDataStore = DomainObjectCollectionDataTestHelper.GetWrappedData (originalData);
       var observedWrappedData = PrivateInvoke.GetNonPublicField (decorator, "_observedWrappedData");
       Assert.That (originalDataStore, Is.SameAs (observedWrappedData));
     }

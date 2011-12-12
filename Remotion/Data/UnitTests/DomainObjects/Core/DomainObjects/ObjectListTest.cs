@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var givenData = new ModificationCheckingCollectionDataDecorator (typeof (Customer), new DomainObjectCollectionData ());
       var collection = new ObjectList<Customer> (givenData);
 
-      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
+      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategy (collection);
       Assert.That (actualData, Is.SameAs (givenData));
     }
 
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       var collection = new ObjectList<Customer> (dataStub);
 
-      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
+      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategy (collection);
       Assert.That (actualData, Is.SameAs (dataStub));
       Assert.That (actualData.RequiredItemType, Is.Null);
     }

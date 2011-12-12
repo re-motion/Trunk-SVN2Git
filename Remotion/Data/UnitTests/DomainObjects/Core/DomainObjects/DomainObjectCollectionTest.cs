@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.That (collection.IsReadOnly, Is.False);
       Assert.That (collection.AssociatedEndPointID, Is.Null);
 
-      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
+      var actualData = DomainObjectCollectionDataTestHelper.GetDataStrategy (collection);
       Assert.That (actualData, Is.SameAs (givenData));
     }
 

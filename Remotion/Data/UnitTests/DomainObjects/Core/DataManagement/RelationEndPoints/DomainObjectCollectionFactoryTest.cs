@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     
     private void CheckDataStrategy (DomainObjectCollection collection, IDomainObjectCollectionData expectedData)
     {
-      var data = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
+      var data = DomainObjectCollectionDataTestHelper.GetDataStrategy (collection);
       Assert.That (data, Is.SameAs (expectedData));
     }
   }

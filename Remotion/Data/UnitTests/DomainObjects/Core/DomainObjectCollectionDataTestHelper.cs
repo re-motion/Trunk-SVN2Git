@@ -45,9 +45,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static T GetWrappedDataAndCheckType<T> (DomainObjectCollectionDataDecoratorBase decorator) where T : IDomainObjectCollectionData
     {
-      var data = PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
+      object data = GetWrappedData(decorator);
       Assert.That (data, Is.InstanceOf (typeof (T)));
       return (T) data;
+    }
+
+    public static IDomainObjectCollectionData GetWrappedData (DomainObjectCollectionDataDecoratorBase decorator)
+    {
+      return (IDomainObjectCollectionData) PrivateInvoke.GetNonPublicField (decorator, "_wrappedData");
     }
 
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, RelationEndPointID expectedEndPointID)
@@ -112,9 +117,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       // strip off all decorators
       var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
-      var originalStrategy = GetWrappedDataAndCheckType<IDomainObjectCollectionData> (checkingDecorator);
+      var originalStrategy = GetWrappedData (checkingDecorator);
       if (originalStrategy is EventRaisingCollectionDataDecorator)
-        originalStrategy = GetWrappedDataAndCheckType<IDomainObjectCollectionData> ((EventRaisingCollectionDataDecorator) originalStrategy);
+        originalStrategy = GetWrappedData ((EventRaisingCollectionDataDecorator) originalStrategy);
 
       var newStrategy = new ReadOnlyCollectionDataDecorator (originalStrategy, true);
       SetDataStrategy (collection, newStrategy);

@@ -98,8 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy(oldOpposites, typeof (Order));
 
       // old collection got a new data store...
-      var dataStoreOfOldOpposites = 
-          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (oldOpposites).GetDataStore();
+      var dataStoreOfOldOpposites = DomainObjectCollectionDataTestHelper.GetDataStrategy (oldOpposites).GetDataStore();
       Assert.That (dataStoreOfOldOpposites, Is.Not.SameAs (originalDataStoreOfOldOpposites));
 
       // with the data it had before!
@@ -283,8 +282,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Rollback_AfterReplace_RestoresDelegationChain ()
     {
       var oldCollection = _customerEndPoint.Collection;
-      var oldCollectionDataStore = 
-          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (oldCollection).GetDataStore ();
+      var oldCollectionDataStore = DomainObjectCollectionDataTestHelper.GetDataStrategy (oldCollection).GetDataStore ();
 
       var newCollection = new OrderCollection { _order2 };
       SetCollectionAndNotify (_customerEndPoint, newCollection);
@@ -469,7 +467,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IDomainObjectCollectionData GetDomainObjectCollectionData (DomainObjectCollection collection)
     {
       var decorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
-      return DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (decorator);
+      return DomainObjectCollectionDataTestHelper.GetWrappedData (decorator);
     }
 
     private void SetCollectionAndNotify (CollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection)

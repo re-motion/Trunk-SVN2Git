@@ -775,7 +775,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = _endPoint.GetCollectionWithOriginalData();
 
       Assert.That (result, Is.TypeOf (typeof (OrderCollection)));
-      var actualCollectionData = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (result);
+      var actualCollectionData = DomainObjectCollectionDataTestHelper.GetDataStrategy (result);
       Assert.That (actualCollectionData, Is.SameAs (readOnlyCollectionDataDecorator));
     }
 

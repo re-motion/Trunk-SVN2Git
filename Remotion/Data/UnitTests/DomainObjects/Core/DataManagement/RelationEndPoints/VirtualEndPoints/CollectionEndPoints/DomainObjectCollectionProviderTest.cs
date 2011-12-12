@@ -50,9 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = _provider.GetCollection (_endPointID, () => _dataStrategyStub);
 
       Assert.That (result, Is.TypeOf<OrderCollection>());
-      Assert.That (
-          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (result), 
-          Is.SameAs (_dataStrategyStub));
+      Assert.That (DomainObjectCollectionDataTestHelper.GetDataStrategy (result), Is.SameAs (_dataStrategyStub));
     }
 
     [Test]
@@ -70,9 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = _provider.GetCollectionWithOriginalData (_endPointID, () => _dataStrategyStub);
 
       Assert.That (result, Is.TypeOf<OrderCollection> ());
-      Assert.That (
-          DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<IDomainObjectCollectionData> (result),
-          Is.SameAs (_dataStrategyStub));
+      Assert.That (DomainObjectCollectionDataTestHelper.GetDataStrategy (result), Is.SameAs (_dataStrategyStub));
     }
 
     [Test]

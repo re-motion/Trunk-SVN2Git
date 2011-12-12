@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = _loadState.GetData (_collectionEndPointMock);
 
       Assert.That (result, Is.TypeOf (typeof (ReadOnlyCollectionDataDecorator)));
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<IDomainObjectCollectionData> (result);
+      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedData (result);
       Assert.That (wrappedData, Is.SameAs (collectionDataStub));
     }
 
