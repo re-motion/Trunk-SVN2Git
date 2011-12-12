@@ -147,7 +147,7 @@ public class ClientTransaction
 
   private readonly CompoundClientTransactionListener _eventSink;
 
-  private readonly IEnlistedObjectManager<ObjectID, DomainObject> _enlistedDomainObjectManager;
+  private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
   private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
@@ -444,7 +444,7 @@ public class ClientTransaction
   /// <value>The number of domain objects enlisted in this <see cref="ClientTransaction"/>.</value>
   public int EnlistedDomainObjectCount
   {
-    get { return _enlistedDomainObjectManager.EnlistedObjectCount; }
+    get { return _enlistedDomainObjectManager.EnlistedDomainObjectCount; }
   }
 
   /// <summary>
@@ -457,7 +457,7 @@ public class ClientTransaction
   /// </remarks>
   public IEnumerable<DomainObject> GetEnlistedDomainObjects ()
   {
-    return _enlistedDomainObjectManager.GetEnlistedObjects ();
+    return _enlistedDomainObjectManager.GetEnlistedDomainObjects ();
   }
 
   /// <summary>
@@ -476,7 +476,7 @@ public class ClientTransaction
   public DomainObject GetEnlistedDomainObject (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return _enlistedDomainObjectManager.GetEnlistedObject (objectID);
+    return _enlistedDomainObjectManager.GetEnlistedDomainObject (objectID);
   }
 
   /// <summary>
@@ -528,7 +528,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     
     CheckDomainObjectForEnlisting (domainObject);
-    return _enlistedDomainObjectManager.EnlistObject (domainObject);
+    return _enlistedDomainObjectManager.EnlistDomainObject (domainObject);
   }
 
   /// <summary>
@@ -745,7 +745,7 @@ public class ClientTransaction
   /// </para>
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction (
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedObjectManager<ObjectID, DomainObject>, ClientTransaction> subTransactionFactory)
+      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> subTransactionFactory)
   {
     ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 

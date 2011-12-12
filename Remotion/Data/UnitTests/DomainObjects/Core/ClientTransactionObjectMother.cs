@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         Dictionary<Enum, object> applicationData,
         Func<ClientTransaction, ClientTransaction> cloneFactory,
         IDataManager dataManager,
-        IEnlistedObjectManager<ObjectID, DomainObject> enlistedObjectManager,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         CompoundClientTransactionListener[] listeners,
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           applicationData,
           cloneFactory,
           dataManager,
-          enlistedObjectManager,
+          enlistedDomainObjectManager,
           extensions,
           invalidDomainObjectManager,
           listeners,
@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         Dictionary<Enum, object> applicationData,
         Func<ClientTransaction, ClientTransaction> cloneFactory,
         IDataManager dataManager,
-        IEnlistedObjectManager<ObjectID, DomainObject> enlistedObjectManager,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         CompoundClientTransactionListener[] listeners,
@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IInvalidDomainObjectManager>.Is.Anything, 
               Arg<IPersistenceStrategy>.Is.Anything))
           .Return (dataManager);
-      componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (enlistedObjectManager);
+      componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (enlistedDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
       componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (invalidDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);

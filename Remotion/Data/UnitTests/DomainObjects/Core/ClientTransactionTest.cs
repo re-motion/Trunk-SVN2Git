@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private MockRepository _mockRepository;
     private Dictionary<Enum, object> _fakeApplicationData;
     private IDataManager _dataManagerMock;
-    private IEnlistedObjectManager<ObjectID, DomainObject> _enlistedDomainObjectManagerMock;
+    private IEnlistedDomainObjectManager _enlistedObjectManagerMock;
     private ClientTransactionExtensionCollection _fakeExtensions;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
     private CompoundClientTransactionListener _fakeListeners;
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository = new MockRepository();
       _fakeApplicationData = new Dictionary<Enum, object>();
       _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
-      _enlistedDomainObjectManagerMock = _mockRepository.StrictMock<IEnlistedObjectManager<ObjectID, DomainObject>> ();
+      _enlistedObjectManagerMock = _mockRepository.StrictMock<IEnlistedDomainObjectManager> ();
       _fakeExtensions = new ClientTransactionExtensionCollection("test");
       _invalidDomainObjectManagerMock = _mockRepository.StrictMock<IInvalidDomainObjectManager> ();
       _fakeListeners = new CompoundClientTransactionListener();
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _fakeApplicationData,
           tx => { throw new NotImplementedException(); },
           _dataManagerMock,
-          _enlistedDomainObjectManagerMock,
+          _enlistedObjectManagerMock,
           _fakeExtensions,
           _invalidDomainObjectManagerMock,
           new[] { _fakeListeners },
@@ -154,14 +154,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 });
         componentFactoryMock
             .Expect (mock => mock.CreateEnlistedObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
-            .Return (_enlistedDomainObjectManagerMock)
+            .Return (_enlistedObjectManagerMock)
             .WhenCalled (mi => Assert.That (transactionEventSink.Listeners, Has.Member (listenerMock)));
         componentFactoryMock
             .Expect (mock => mock.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_invalidDomainObjectManagerMock)
             .WhenCalled (
                 mi => Assert.That (
-                    ClientTransactionTestHelper.GetEnlistedDomainObjectManager (constructedTransaction), Is.SameAs (_enlistedDomainObjectManagerMock)));
+                    ClientTransactionTestHelper.GetEnlistedDomainObjectManager (constructedTransaction), Is.SameAs (_enlistedObjectManagerMock)));
         componentFactoryMock
             .Expect (mock => mock.CreatePersistenceStrategy (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_persistenceStrategyMock)
@@ -307,9 +307,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
       _fakeListeners.AddListener (listenerMock);
 
-      _enlistedDomainObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject1)).Return (true);
-      _enlistedDomainObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject2)).Return (true);
-      _enlistedDomainObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject3)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject1)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject2)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject3)).Return (true);
 
       _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject1.ID)).Return (false);
       _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject2.ID)).Return (false);
@@ -841,9 +841,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (subTransaction.ApplicationData, Is.SameAs (_transaction.ApplicationData));
       
       var enlistedObjectManager = ClientTransactionTestHelper.GetEnlistedDomainObjectManager (subTransaction);
-      Assert.That (enlistedObjectManager, Is.TypeOf (typeof (DelegatingEnlistedObjectManager<ObjectID, DomainObject>)));
+      Assert.That (enlistedObjectManager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
       Assert.That (
-          ((DelegatingEnlistedObjectManager<ObjectID, DomainObject>) enlistedObjectManager).TargetManager,
+          ((DelegatingEnlistedDomainObjectManager) enlistedObjectManager).TargetManager,
           Is.SameAs (ClientTransactionTestHelper.GetEnlistedDomainObjectManager (_transaction)));
 
       var invalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (subTransaction);
@@ -859,7 +859,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void CreateSubTransaction_WithCustomFactory ()
     {
       ClientTransaction fakeSubTransaction = null;
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedObjectManager<ObjectID, DomainObject>, ClientTransaction> factoryMock =
+      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> factoryMock =
           (tx, invalidDomainObjectManager, enlistedDomainObjectManager) =>
           {
             fakeSubTransaction = CreateTransactionInHierarchy (_transaction);
@@ -924,7 +924,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var eventReceiverMock = MockRepository.GenerateStrictMock<ClientTransactionMockEventReceiver> (_transaction);
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedObjectManager<ObjectID, DomainObject>, ClientTransaction> factoryMock = 
+      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> factoryMock = 
           (tx, invalidDomainObjectManager, enlistedDomainobjectManager) =>
           {
             Assert.Fail ("Must not be called.");
@@ -959,7 +959,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void CreateSubTransaction_ExceptionInFactory ()
     {
       var exception = new InvalidOperationException ("Canceled");
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedObjectManager<ObjectID, DomainObject>, ClientTransaction> factoryMock = 
+      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> factoryMock = 
           (tx, invalidDomainObjectManager, enlistedDomainObjectManager) => { throw (exception); };
 
       try
@@ -1360,7 +1360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _fakeApplicationData,
           tx => { throw new NotImplementedException (); },
           _dataManagerMock,
-          _enlistedDomainObjectManagerMock,
+          _enlistedObjectManagerMock,
           _fakeExtensions,
           _invalidDomainObjectManagerMock,
           new[] { _fakeListeners },

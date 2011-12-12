@@ -39,7 +39,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public static SubClientTransactionComponentFactory Create (
         ClientTransaction parentTransaction,
         IInvalidDomainObjectManager parentInvalidDomainObjectManager,
-        IEnlistedObjectManager<ObjectID, DomainObject> parentEnlistedDomainObjectManager)
+        IEnlistedDomainObjectManager parentEnlistedDomainObjectManager)
     {
       return ObjectFactory.Create<SubClientTransactionComponentFactory> (
           true, 
@@ -48,12 +48,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private readonly ClientTransaction _parentTransaction;
     private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
-    private readonly IEnlistedObjectManager<ObjectID, DomainObject> _parentEnlistedDomainObjectManager;
+    private readonly IEnlistedDomainObjectManager _parentEnlistedDomainObjectManager;
 
     protected SubClientTransactionComponentFactory (
         ClientTransaction parentTransaction,
         IInvalidDomainObjectManager parentInvalidDomainObjectManager,
-        IEnlistedObjectManager<ObjectID, DomainObject> parentEnlistedDomainObjectManager)
+        IEnlistedDomainObjectManager parentEnlistedDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
       ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
@@ -82,10 +82,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return base.CreateListeners (constructedTransaction).Concat (new[] { new SubClientTransactionListener (_parentInvalidDomainObjectManager) });
     }
 
-    public override IEnlistedObjectManager<ObjectID, DomainObject> CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
+    public override IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new DelegatingEnlistedObjectManager<ObjectID, DomainObject> (_parentEnlistedDomainObjectManager);
+      return new DelegatingEnlistedDomainObjectManager (_parentEnlistedDomainObjectManager);
     }
 
     public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)

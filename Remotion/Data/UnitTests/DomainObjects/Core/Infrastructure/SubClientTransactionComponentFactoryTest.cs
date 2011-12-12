@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   {
     private TestableClientTransaction _parentTransaction;
     private IInvalidDomainObjectManager _parentInvalidDomainObjectManagerStub;
-    private IEnlistedObjectManager<ObjectID, DomainObject> _parentEnlistedDomainObjectManagerStub;
+    private IEnlistedDomainObjectManager _parentEnlistedDomainObjectManagerStub;
     private SubClientTransactionComponentFactory _factory;
     private TestableClientTransaction _fakeConstructedTransaction;
 
@@ -51,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _parentTransaction = new TestableClientTransaction ();
       _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      _parentEnlistedDomainObjectManagerStub = MockRepository.GenerateStub<IEnlistedObjectManager<ObjectID, DomainObject>> ();
+      _parentEnlistedDomainObjectManagerStub = MockRepository.GenerateStub<IEnlistedDomainObjectManager> ();
       _factory = SubClientTransactionComponentFactory.Create (
           _parentTransaction, _parentInvalidDomainObjectManagerStub, _parentEnlistedDomainObjectManagerStub);
       _fakeConstructedTransaction = new TestableClientTransaction ();
@@ -88,9 +88,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateEnlistedObjectManager ()
     {
       var manager = _factory.CreateEnlistedObjectManager (_fakeConstructedTransaction);
-      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedObjectManager<ObjectID, DomainObject>)));
+      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
       Assert.That (
-          ((DelegatingEnlistedObjectManager<ObjectID, DomainObject>) manager).TargetManager,
+          ((DelegatingEnlistedDomainObjectManager) manager).TargetManager,
           Is.SameAs (_parentEnlistedDomainObjectManagerStub));
     }
 

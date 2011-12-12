@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           new Dictionary<Enum, object>(),
           tx => { throw new Exception ("Should not be called."); },
           MockRepository.GenerateStub<IDataManager>(),
-          MockRepository.GenerateStub<IEnlistedObjectManager<ObjectID, DomainObject>> (),
+          MockRepository.GenerateStub<IEnlistedDomainObjectManager>(),
           new ClientTransactionExtensionCollection("test"),
           MockRepository.GenerateStub<IInvalidDomainObjectManager>(),
           new CompoundClientTransactionListener[0],

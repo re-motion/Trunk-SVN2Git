@@ -21,48 +21,48 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
 {
   /// <summary>
-  /// Implements the <see cref="IEnlistedObjectManager{TKey,TObject}"/> interface by delegating to a given <see cref="TargetManager"/>. 
-  /// Every object registered with this manager is actually registered in the <see cref="TargetManager"/>.
+  /// Implements the <see cref="IEnlistedDomainObjectManager"/> by delegating to a given <see cref="TargetManager"/>. Every object registered with
+  /// this manager actually is registered in the <see cref="TargetManager"/>.
   /// </summary>
   [Serializable]
-  public class DelegatingEnlistedObjectManager<TKey, TObject> : IEnlistedObjectManager<TKey, TObject>
+  public class DelegatingEnlistedDomainObjectManager : IEnlistedDomainObjectManager
   {
-    private readonly IEnlistedObjectManager<TKey, TObject> _targetManager;
+    private readonly IEnlistedDomainObjectManager _targetManager;
 
-    public DelegatingEnlistedObjectManager (IEnlistedObjectManager<TKey, TObject> targetManager)
+    public DelegatingEnlistedDomainObjectManager (IEnlistedDomainObjectManager targetManager)
     {
       ArgumentUtility.CheckNotNull ("targetManager", targetManager);
       _targetManager = targetManager;
     }
 
-    public IEnlistedObjectManager<TKey, TObject> TargetManager
+    public IEnlistedDomainObjectManager TargetManager
     {
       get { return _targetManager; }
     }
 
-    public int EnlistedObjectCount
+    public int EnlistedDomainObjectCount
     {
-      get { return _targetManager.EnlistedObjectCount; }
+      get { return _targetManager.EnlistedDomainObjectCount; }
     }
 
-    public IEnumerable<TObject> GetEnlistedObjects ()
+    public IEnumerable<DomainObject> GetEnlistedDomainObjects ()
     {
-      return _targetManager.GetEnlistedObjects ();
+      return _targetManager.GetEnlistedDomainObjects ();
     }
 
-    public TObject GetEnlistedObject (TKey key)
+    public DomainObject GetEnlistedDomainObject (ObjectID objectID)
     {
-      return _targetManager.GetEnlistedObject (key);
+      return _targetManager.GetEnlistedDomainObject (objectID);
     }
 
-    public bool EnlistObject (TObject instance)
+    public bool EnlistDomainObject (DomainObject domainObject)
     {
-      return _targetManager.EnlistObject (instance);
+      return _targetManager.EnlistDomainObject (domainObject);
     }
 
-    public bool IsEnlisted (TObject instance)
+    public bool IsEnlisted (DomainObject domainObject)
     {
-      return _targetManager.IsEnlisted (instance);
+      return _targetManager.IsEnlisted (domainObject);
     }
   }
 }
