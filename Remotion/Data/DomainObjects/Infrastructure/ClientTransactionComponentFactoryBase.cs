@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     public abstract ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction);
     public abstract Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
-    public abstract IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
+    public abstract IEnlistedObjectManager<ObjectID, DomainObject> CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
     public abstract IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction);
     public abstract IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
     public abstract Func<ClientTransaction, ClientTransaction> CreateCloneFactory ();

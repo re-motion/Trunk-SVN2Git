@@ -41,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   {
     private TestableClientTransaction _parentTransaction;
     private IInvalidDomainObjectManager _parentInvalidDomainObjectManagerStub;
+    private IEnlistedObjectManager<ObjectID, DomainObject> _parentEnlistedDomainObjectManagerStub;
     private SubClientTransactionComponentFactory _factory;
     private TestableClientTransaction _fakeConstructedTransaction;
 
@@ -50,7 +51,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _parentTransaction = new TestableClientTransaction ();
       _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      _factory = SubClientTransactionComponentFactory.Create (_parentTransaction, _parentInvalidDomainObjectManagerStub);
+      _parentEnlistedDomainObjectManagerStub = MockRepository.GenerateStub<IEnlistedObjectManager<ObjectID, DomainObject>> ();
+      _factory = SubClientTransactionComponentFactory.Create (
+          _parentTransaction, _parentInvalidDomainObjectManagerStub, _parentEnlistedDomainObjectManagerStub);
       _fakeConstructedTransaction = new TestableClientTransaction ();
     }
 
@@ -85,8 +88,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateEnlistedObjectManager ()
     {
       var manager = _factory.CreateEnlistedObjectManager (_fakeConstructedTransaction);
-      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
-      Assert.That (((DelegatingEnlistedDomainObjectManager) manager).TargetTransaction, Is.SameAs (_parentTransaction));
+      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedObjectManager<ObjectID, DomainObject>)));
+      Assert.That (
+          ((DelegatingEnlistedObjectManager<ObjectID, DomainObject>) manager).TargetManager,
+          Is.SameAs (_parentEnlistedDomainObjectManagerStub));
     }
 
     [Test]
@@ -191,7 +196,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var factoryPartialMock = MockRepository.GeneratePartialMock<SubClientTransactionComponentFactory> (
           _parentTransaction, 
-          _parentInvalidDomainObjectManagerStub);
+          _parentInvalidDomainObjectManagerStub,
+          _parentEnlistedDomainObjectManagerStub);
       factoryPartialMock
           .Expect (mock => CallCreateBasicObjectLoader(mock, _fakeConstructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager))
           .Return (fakeBasicObjectLoader);

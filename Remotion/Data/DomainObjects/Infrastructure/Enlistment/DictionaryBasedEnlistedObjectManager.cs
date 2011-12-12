@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
+using Remotion.Collections;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
 {
@@ -24,43 +25,49 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
   /// Manages the enlisted objects via a <see cref="Dictionary{TKey,TValue}"/>.
   /// </summary>
   [Serializable]
-  public class DictionaryBasedEnlistedDomainObjectManager : IEnlistedDomainObjectManager
+  public class DictionaryBasedEnlistedObjectManager<TKey, TObject> : IEnlistedObjectManager<TKey, TObject>
+      where TObject : class
   {
-    private readonly Dictionary<ObjectID, DomainObject> _enlistedObjects = new Dictionary<ObjectID, DomainObject> ();
+    private readonly Func<TObject, TKey> _keyFunc;
+    private readonly Dictionary<TKey, TObject> _enlistedObjects = new Dictionary<TKey, TObject> ();
 
-    public int EnlistedDomainObjectCount
+    public DictionaryBasedEnlistedObjectManager (Func<TObject, TKey> keyFunc)
+    {
+      ArgumentUtility.CheckNotNull ("keyFunc", keyFunc);
+      _keyFunc = keyFunc;
+    }
+
+    public int EnlistedObjectCount
     {
       get { return _enlistedObjects.Count; }
     }
 
-    public IEnumerable<DomainObject> GetEnlistedDomainObjects ()
+    public IEnumerable<TObject> GetEnlistedObjects ()
     {
       return _enlistedObjects.Values;
     }
 
-    public DomainObject GetEnlistedDomainObject (ObjectID objectID)
+    public TObject GetEnlistedObject (TKey key)
     {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      ArgumentUtility.CheckNotNull ("key", key);
 
-      DomainObject domainObject;
-      _enlistedObjects.TryGetValue (objectID, out domainObject);
-      
-      return domainObject;
+      return _enlistedObjects.GetValueOrDefault (key);
     }
 
-    public bool EnlistDomainObject (DomainObject domainObject)
+    public bool EnlistObject (TObject instance)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("instance", instance);
 
-      DomainObject alreadyEnlistedObject = GetEnlistedDomainObject (domainObject.ID);
-      if (alreadyEnlistedObject != null && alreadyEnlistedObject != domainObject)
+      var key = _keyFunc (instance);
+      var alreadyEnlistedObject = GetEnlistedObject (key);
+      if (alreadyEnlistedObject != null && alreadyEnlistedObject != instance)
       {
-        string message = string.Format ("A domain object instance for object '{0}' already exists in this transaction.", domainObject.ID);
+        string message = string.Format ("An instance for object '{0}' already exists in this transaction.", key);
         throw new InvalidOperationException (message);
       }
       else if (alreadyEnlistedObject == null)
       {
-        _enlistedObjects.Add (domainObject.ID, domainObject);
+        _enlistedObjects.Add (key, instance);
         return true;
       }
       else
@@ -69,11 +76,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
       }
     }
 
-    public bool IsEnlisted (DomainObject domainObject)
+    public bool IsEnlisted (TObject instance)
     {
-      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("instance", instance);
 
-      return GetEnlistedDomainObject (domainObject.ID) == domainObject;
+      var key = _keyFunc (instance);
+      return GetEnlistedObject (key) == instance;
     }
   }
 }

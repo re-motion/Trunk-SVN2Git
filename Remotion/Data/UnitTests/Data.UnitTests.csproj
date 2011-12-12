@@ -1021,8 +1021,8 @@
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollectionWrapperTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\CollectionDeletionState.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\UnloadServiceTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DelegatingEnlistedDomainObjectManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DictionaryBasedEnlistedDomainObjectManagerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DelegatingEnlistedObjectManagerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\Enlistment\DictionaryBasedEnlistedObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadInSubTransactionsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\DomainObjectCollectionStandaloneEventsTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\PropertyAccessorDataTest.cs" />

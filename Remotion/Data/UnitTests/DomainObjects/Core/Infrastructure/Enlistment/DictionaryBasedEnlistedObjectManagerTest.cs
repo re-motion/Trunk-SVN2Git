@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
@@ -23,16 +24,16 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
 {
   [TestFixture]
-  public class DictionaryBasedEnlistedDomainObjectManagerTest : StandardMappingTest
+  public class DictionaryBasedEnlistedObjectManagerTest : StandardMappingTest
   {
-    private DictionaryBasedEnlistedDomainObjectManager _manager;
+    private DictionaryBasedEnlistedObjectManager<ObjectID, DomainObject> _manager;
     private Order _order;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _manager = new DictionaryBasedEnlistedDomainObjectManager ();
+      _manager = new DictionaryBasedEnlistedObjectManager<ObjectID, DomainObject> (obj => obj.ID);
       _order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
     }
 
@@ -41,62 +42,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
     {
       Assert.That (_manager.IsEnlisted (_order), Is.False);
 
-      _manager.EnlistDomainObject (_order);
+      var result = _manager.EnlistObject (_order);
 
+      Assert.That (result, Is.True);
       Assert.That (_manager.IsEnlisted (_order), Is.True);
     }
 
     [Test]
-    public void EnlistedDomainObjectCount ()
+    public void EnlistDomainObject_Twice_WithSameObject ()
     {
-      Assert.That (_manager.EnlistedDomainObjectCount, Is.EqualTo (0));
+      _manager.EnlistObject (_order);
+      var result = _manager.EnlistObject (_order);
 
-      _manager.EnlistDomainObject (_order);
-
-      Assert.That (_manager.EnlistedDomainObjectCount, Is.EqualTo (1));
-    }
-
-    [Test]
-    public void EnlistDomainObject_Multiple ()
-    {
-      _manager.EnlistDomainObject (_order);
-      _manager.EnlistDomainObject (_order);
-
+      Assert.That (result, Is.False);
       Assert.That (_manager.IsEnlisted (_order), Is.True);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "A domain object instance for object "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "An instance for object "
         + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction.")]
     public void EnlistDomainObject_IDAlreadyEnlisted ()
     {
       var orderA = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
       var orderB = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
 
-      _manager.EnlistDomainObject (orderA);
-      _manager.EnlistDomainObject (orderB);
+      _manager.EnlistObject (orderA);
+      _manager.EnlistObject (orderB);
+    }
+
+    [Test]
+    public void EnlistedDomainObjectCount ()
+    {
+      Assert.That (_manager.EnlistedObjectCount, Is.EqualTo (0));
+
+      _manager.EnlistObject (_order);
+
+      Assert.That (_manager.EnlistedObjectCount, Is.EqualTo (1));
     }
 
     [Test]
     public void GetEnlistedDomainObjects ()
     {
-      _manager.EnlistDomainObject (_order);
+      _manager.EnlistObject (_order);
 
-      Assert.That (_manager.GetEnlistedDomainObjects ().ToArray(), Is.EqualTo (new[] { _order }));
+      Assert.That (_manager.GetEnlistedObjects ().ToArray(), Is.EqualTo (new[] { _order }));
     }
 
     [Test]
     public void GetEnlistedDomainObject ()
     {
-      _manager.EnlistDomainObject (_order);
+      _manager.EnlistObject (_order);
 
-      Assert.That (_manager.GetEnlistedDomainObject (_order.ID), Is.SameAs (_order));
+      Assert.That (_manager.GetEnlistedObject (_order.ID), Is.SameAs (_order));
     }
 
     [Test]
     public void GetEnlistedDomainObject_NotEnlisted ()
     {
-      Assert.That (_manager.GetEnlistedDomainObject (_order.ID), Is.Null);
+      Assert.That (_manager.GetEnlistedObject (_order.ID), Is.Null);
     }
   }
 }

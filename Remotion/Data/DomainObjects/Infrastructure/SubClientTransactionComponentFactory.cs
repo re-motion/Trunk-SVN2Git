@@ -37,21 +37,31 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class SubClientTransactionComponentFactory : ClientTransactionComponentFactoryBase
   {
     public static SubClientTransactionComponentFactory Create (
-        ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
+        ClientTransaction parentTransaction,
+        IInvalidDomainObjectManager parentInvalidDomainObjectManager,
+        IEnlistedObjectManager<ObjectID, DomainObject> parentEnlistedDomainObjectManager)
     {
-      return ObjectFactory.Create<SubClientTransactionComponentFactory> (true, ParamList.Create (parentTransaction, parentInvalidDomainObjectManager));
+      return ObjectFactory.Create<SubClientTransactionComponentFactory> (
+          true, 
+          ParamList.Create (parentTransaction, parentInvalidDomainObjectManager, parentEnlistedDomainObjectManager));
     }
 
     private readonly ClientTransaction _parentTransaction;
     private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
+    private readonly IEnlistedObjectManager<ObjectID, DomainObject> _parentEnlistedDomainObjectManager;
 
-    protected SubClientTransactionComponentFactory (ClientTransaction parentTransaction, IInvalidDomainObjectManager parentInvalidDomainObjectManager)
+    protected SubClientTransactionComponentFactory (
+        ClientTransaction parentTransaction,
+        IInvalidDomainObjectManager parentInvalidDomainObjectManager,
+        IEnlistedObjectManager<ObjectID, DomainObject> parentEnlistedDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
       ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("parentEnlistedDomainObjectManager", parentEnlistedDomainObjectManager);
 
       _parentTransaction = parentTransaction;
       _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
+      _parentEnlistedDomainObjectManager = parentEnlistedDomainObjectManager;
     }
 
     public override ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction)
@@ -72,10 +82,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return base.CreateListeners (constructedTransaction).Concat (new[] { new SubClientTransactionListener (_parentInvalidDomainObjectManager) });
     }
 
-    public override IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
+    public override IEnlistedObjectManager<ObjectID, DomainObject> CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new DelegatingEnlistedDomainObjectManager (_parentTransaction);
+      return new DelegatingEnlistedObjectManager<ObjectID, DomainObject> (_parentEnlistedDomainObjectManager);
     }
 
     public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)

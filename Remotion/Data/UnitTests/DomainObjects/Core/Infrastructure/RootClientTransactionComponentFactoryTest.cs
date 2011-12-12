@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateEnlistedDomainObjectManager ()
     {
       var manager = _factory.CreateEnlistedObjectManager (_fakeConstructedTransaction);
-      Assert.That (manager, Is.TypeOf<DictionaryBasedEnlistedDomainObjectManager>());
+      Assert.That (manager, Is.TypeOf<DictionaryBasedEnlistedObjectManager<ObjectID, DomainObject>>());
     }
 
     [Test]

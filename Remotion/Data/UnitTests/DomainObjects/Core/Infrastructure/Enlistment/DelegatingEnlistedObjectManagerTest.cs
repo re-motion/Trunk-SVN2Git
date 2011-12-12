@@ -24,10 +24,10 @@ using System.Linq;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
 {
   [TestFixture]
-  public class DelegatingEnlistedDomainObjectManagerTest : StandardMappingTest
+  public class DelegatingEnlistedObjectManagerTest : StandardMappingTest
   {
     private ClientTransaction _otherTransaction;
-    private DelegatingEnlistedDomainObjectManager _manager;
+    private DelegatingEnlistedObjectManager<ObjectID, DomainObject> _manager;
     private Order _order;
 
     public override void SetUp ()
@@ -35,7 +35,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
       base.SetUp ();
 
       _otherTransaction = ClientTransaction.CreateRootTransaction ();
-      _manager = new DelegatingEnlistedDomainObjectManager (_otherTransaction);
+      var otherManager = ClientTransactionTestHelper.GetEnlistedDomainObjectManager (_otherTransaction);
+      _manager = new DelegatingEnlistedObjectManager<ObjectID, DomainObject> (otherManager);
       _order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
     }
 
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
     {
       Assert.That (_otherTransaction.IsEnlisted (_order), Is.False);
 
-      _manager.EnlistDomainObject (_order);
+      _manager.EnlistObject (_order);
 
       Assert.That (_otherTransaction.IsEnlisted (_order), Is.True);
     }
@@ -62,11 +63,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
     [Test]
     public void EnlistedDomainObjectCount_Delegates ()
     {
-      Assert.That (_manager.EnlistedDomainObjectCount, Is.EqualTo (0));
+      Assert.That (_manager.EnlistedObjectCount, Is.EqualTo (0));
 
       _otherTransaction.EnlistDomainObject (_order);
 
-      Assert.That (_manager.EnlistedDomainObjectCount, Is.EqualTo (1));
+      Assert.That (_manager.EnlistedObjectCount, Is.EqualTo (1));
     }
 
     [Test]
@@ -74,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
     {
       _otherTransaction.EnlistDomainObject (_order);
 
-      Assert.That (_manager.GetEnlistedDomainObjects ().ToArray(), Is.EqualTo (new[] { _order }));
+      Assert.That (_manager.GetEnlistedObjects ().ToArray(), Is.EqualTo (new[] { _order }));
     }
 
     [Test]
@@ -82,13 +83,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
     {
       _otherTransaction.EnlistDomainObject (_order);
 
-      Assert.That (_manager.GetEnlistedDomainObject (_order.ID), Is.SameAs (_order));
+      Assert.That (_manager.GetEnlistedObject (_order.ID), Is.SameAs (_order));
     }
 
     [Test]
     public void GetEnlistedDomainObject_NotEnlisted ()
     {
-      Assert.That (_manager.GetEnlistedDomainObject (_order.ID), Is.Null);
+      Assert.That (_manager.GetEnlistedObject (_order.ID), Is.Null);
     }
   }
 }

@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return DataManagementService.GetDataManager (clientTransaction);
     }
 
-    public static IEnlistedDomainObjectManager GetEnlistedDomainObjectManager (ClientTransaction clientTransaction)
+    public static IEnlistedObjectManager<ObjectID, DomainObject> GetEnlistedDomainObjectManager (ClientTransaction clientTransaction)
     {
-      return (IEnlistedDomainObjectManager) PrivateInvoke.GetNonPublicField (clientTransaction, "_enlistedObjectManager");
+      return (IEnlistedObjectManager<ObjectID, DomainObject>) PrivateInvoke.GetNonPublicField (clientTransaction, "_enlistedDomainObjectManager");
     }
 
     public static IInvalidDomainObjectManager GetInvalidDomainObjectManager (ClientTransaction clientTransaction)

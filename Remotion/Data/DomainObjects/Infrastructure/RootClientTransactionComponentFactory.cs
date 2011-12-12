@@ -59,10 +59,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new Dictionary<Enum, object> ();
     }
 
-    public override IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
+    public override IEnlistedObjectManager<ObjectID, DomainObject> CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new DictionaryBasedEnlistedDomainObjectManager ();
+      return new DictionaryBasedEnlistedObjectManager<ObjectID, DomainObject> (obj => obj.ID);
     }
 
 

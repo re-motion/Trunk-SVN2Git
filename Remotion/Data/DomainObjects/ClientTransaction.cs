@@ -147,7 +147,7 @@ public class ClientTransaction
 
   private readonly CompoundClientTransactionListener _eventSink;
 
-  private readonly IEnlistedDomainObjectManager _enlistedObjectManager;
+  private readonly IEnlistedObjectManager<ObjectID, DomainObject> _enlistedDomainObjectManager;
   private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
@@ -174,7 +174,7 @@ public class ClientTransaction
     foreach (var listener in componentFactory.CreateListeners (this))
       _eventSink.AddListener (listener);
 
-    _enlistedObjectManager = componentFactory.CreateEnlistedObjectManager (this);
+    _enlistedDomainObjectManager = componentFactory.CreateEnlistedObjectManager (this);
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
     _dataManager = componentFactory.CreateDataManager (this, _eventSink, _invalidDomainObjectManager, _persistenceStrategy);
@@ -444,7 +444,7 @@ public class ClientTransaction
   /// <value>The number of domain objects enlisted in this <see cref="ClientTransaction"/>.</value>
   public int EnlistedDomainObjectCount
   {
-    get { return _enlistedObjectManager.EnlistedDomainObjectCount; }
+    get { return _enlistedDomainObjectManager.EnlistedObjectCount; }
   }
 
   /// <summary>
@@ -457,7 +457,7 @@ public class ClientTransaction
   /// </remarks>
   public IEnumerable<DomainObject> GetEnlistedDomainObjects ()
   {
-    return _enlistedObjectManager.GetEnlistedDomainObjects ();
+    return _enlistedDomainObjectManager.GetEnlistedObjects ();
   }
 
   /// <summary>
@@ -476,7 +476,7 @@ public class ClientTransaction
   public DomainObject GetEnlistedDomainObject (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return _enlistedObjectManager.GetEnlistedDomainObject (objectID);
+    return _enlistedDomainObjectManager.GetEnlistedObject (objectID);
   }
 
   /// <summary>
@@ -489,7 +489,7 @@ public class ClientTransaction
   public bool IsEnlisted (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    return _enlistedObjectManager.IsEnlisted (domainObject);
+    return _enlistedDomainObjectManager.IsEnlisted (domainObject);
   }
 
   /// <summary>
@@ -528,7 +528,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
     
     CheckDomainObjectForEnlisting (domainObject);
-    return _enlistedObjectManager.EnlistDomainObject (domainObject);
+    return _enlistedDomainObjectManager.EnlistObject (domainObject);
   }
 
   /// <summary>
@@ -722,9 +722,9 @@ public class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    return CreateSubTransaction ((parentTx, invalidDomainObjectManager) =>
+    return CreateSubTransaction ((parentTx, invalidDomainObjectManager, enlistedDomainObjectManager) =>
     {
-      var componentFactory = SubClientTransactionComponentFactory.Create (parentTx, invalidDomainObjectManager);
+      var componentFactory = SubClientTransactionComponentFactory.Create (parentTx, invalidDomainObjectManager, enlistedDomainObjectManager);
       return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
     });
   }
@@ -744,7 +744,8 @@ public class ClientTransaction
   /// scope created by <see cref="EnterDiscardingScope"/> is left.
   /// </para>
   /// </remarks>
-  public virtual ClientTransaction CreateSubTransaction (Func<ClientTransaction, IInvalidDomainObjectManager, ClientTransaction> subTransactionFactory)
+  public virtual ClientTransaction CreateSubTransaction (
+      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedObjectManager<ObjectID, DomainObject>, ClientTransaction> subTransactionFactory)
   {
     ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 
@@ -755,7 +756,7 @@ public class ClientTransaction
     ClientTransaction subTransaction;
     try
     {
-      subTransaction = subTransactionFactory (this, _invalidDomainObjectManager);
+      subTransaction = subTransactionFactory (this, _invalidDomainObjectManager, _enlistedDomainObjectManager);
       if (subTransaction.ParentTransaction != this)
         throw new InvalidOperationException ("The given component factory did not create a sub-transaction for this transaction.");
     }
