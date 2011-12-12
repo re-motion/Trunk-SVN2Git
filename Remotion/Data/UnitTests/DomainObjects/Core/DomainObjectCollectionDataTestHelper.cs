@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -27,9 +26,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public static class DomainObjectCollectionDataTestHelper
   {
+    public static IDomainObjectCollectionData GetDataStrategy (DomainObjectCollection collection)
+    {
+      return (IDomainObjectCollectionData) PrivateInvoke.GetNonPublicField (collection, "_dataStrategy");
+    }
+
     public static T GetDataStrategyAndCheckType<T> (DomainObjectCollection collection) where T : IDomainObjectCollectionData
     {
-      var data = PrivateInvoke.GetNonPublicField (collection, "_dataStrategy");
+      var data = GetDataStrategy (collection);
       Assert.That (data, Is.InstanceOf (typeof (T)));
       return (T) data;
     }

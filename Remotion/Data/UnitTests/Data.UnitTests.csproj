@@ -207,6 +207,7 @@
     </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DelegatingDataManagerTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\DomainObjectCollectionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableEagerFetcherFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchEnabledObjectLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableFetchedRelationDataRegistrationAgentFake.cs" />
