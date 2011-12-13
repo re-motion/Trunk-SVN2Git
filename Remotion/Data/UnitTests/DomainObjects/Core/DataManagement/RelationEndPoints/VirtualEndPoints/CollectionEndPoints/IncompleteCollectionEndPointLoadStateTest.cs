@@ -218,8 +218,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObjectCollection = new DomainObjectCollection ();
 
       Action<DomainObjectCollection> fakeSetter = collection => { };
+      var fakeManager = MockRepository.GenerateStub<IDomainObjectCollectionManager>();
       CheckOperationDelegatesToCompleteState (
-          s => s.CreateSetCollectionCommand (_collectionEndPointMock, domainObjectCollection, fakeSetter),
+          s => s.CreateSetCollectionCommand (_collectionEndPointMock, domainObjectCollection, fakeSetter, fakeManager),
           s => s.CreateSetCollectionCommand (domainObjectCollection),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }

@@ -62,7 +62,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       collectionEndPoint.SortCurrentData (comparison);
     }
 
-    public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, Action<DomainObjectCollection> collectionSetter)
+    public IDataManagementCommand CreateSetCollectionCommand (
+        ICollectionEndPoint collectionEndPoint,
+        DomainObjectCollection newCollection,
+        Action<DomainObjectCollection> collectionSetter,
+        IDomainObjectCollectionManager domainObjectCollectionManager)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);

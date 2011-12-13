@@ -39,7 +39,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject);
 
     void SortCurrentData (Comparison<DomainObject> comparison);
-
-    IDomainObjectCollectionData CreateDelegatingCollectionData ();
   }
 }

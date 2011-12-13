@@ -47,6 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private Order _relatedObject;
     private IRealObjectEndPoint _relatedEndPointStub;
     private Customer _owningObject;
+    private IDomainObjectCollectionManager _collectionManagerStub;
 
     [SetUp]
     public override void SetUp ()
@@ -69,6 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relatedEndPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
       _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
       _owningObject = DomainObjectMother.CreateFakeObject<Customer>();
+      _collectionManagerStub = MockRepository.GenerateStub<IDomainObjectCollectionManager> ();
     }
 
     [Test]
@@ -219,36 +221,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter, _collectionManagerStub);
 
       Assert.That (command, Is.TypeOf (typeof (CollectionEndPointSetCollectionCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (newCollection));
-      Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollectionTransformer, Is.SameAs (newCollection));
-      Assert.That (((CollectionEndPointSetCollectionCommand) command).OldCollectionTransformer, Is.SameAs (fakeCollection));
-      Assert.That (PrivateInvoke.GetNonPublicField (command, "_collectionSetter"), Is.SameAs (fakeSetter));
-    }
-
-    [Test]
-    public void CreateSetCollectionCommand_SelfReplace ()
-    {
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
-
-      var fakeCollection = new DomainObjectCollection ();
-      _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
-      _collectionEndPointMock.Stub (mock => mock.Collection).Return (fakeCollection);
-      _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _collectionEndPointMock.Replay ();
-
-      Action<DomainObjectCollection> fakeSetter = collection => { };
-
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, fakeCollection, fakeSetter);
-
-      Assert.That (command, Is.TypeOf (typeof (CollectionEndPointSetCollectionCommand)));
-      Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
-      Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (_collectionEndPointMock.Collection));
-      Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollectionTransformer, Is.SameAs (fakeCollection));
-      Assert.That (((CollectionEndPointSetCollectionCommand) command).OldCollectionTransformer, Is.SameAs (fakeCollection));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).DomainObjectCollectionManager, Is.SameAs (_collectionManagerStub));
       Assert.That (PrivateInvoke.GetNonPublicField (command, "_collectionSetter"), Is.SameAs (fakeSetter));
     }
 
@@ -266,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
-      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter);
+      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter, _collectionManagerStub);
     }
 
     [Test]
@@ -283,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
-      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter);
+      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter, _collectionManagerStub);
     }
 
     [Test]

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Utilities;
@@ -95,8 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     protected PropertyDefinition GetPropertyDefinition (Type declaringType, string shortPropertyName)
     {
-      var propertyDefinition = Configuration
-          .GetTypeDefinition (declaringType)
+      var propertyDefinition = GetTypeDefinition (declaringType)
           .PropertyAccessorDataCache
           .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
           .PropertyDefinition;
@@ -106,8 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     protected IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
     {
-      var endPointDefinition = Configuration
-          .GetTypeDefinition (declaringType)
+      var endPointDefinition = GetTypeDefinition (declaringType)
           .PropertyAccessorDataCache
           .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
           .RelationEndPointDefinition;
@@ -128,6 +127,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
     protected string GetPropertyIdentifier (Type declaringType, string shortPropertyName)
     {
       return declaringType.FullName + "." + shortPropertyName;
+    }
+
+    protected ClassDefinition GetTypeDefinition (Type classType)
+    {
+      return Configuration.GetTypeDefinition (classType);
     }
   }
 }

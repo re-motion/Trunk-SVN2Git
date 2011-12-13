@@ -752,11 +752,12 @@ namespace Remotion.Data.DomainObjects
       Deleted += source.Deleted;
     }
 
-    void IAssociatableDomainObjectCollection.TransformToAssociated (ICollectionEndPoint endPoint)
+    void IAssociatableDomainObjectCollection.TransformToAssociated (
+        ICollectionEndPoint endPoint, IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      var endPointDelegatingCollectionData = endPoint.CreateDelegatingCollectionData ();
+      var endPointDelegatingCollectionData = associatedCollectionDataStrategyFactory.CreateDataStrategyForEndPoint (endPoint);
       endPointDelegatingCollectionData.GetDataStore ().ReplaceContents (_dataStrategy.GetDataStore ()); // copy data
 
       _dataStrategy = endPointDelegatingCollectionData;
@@ -764,8 +765,6 @@ namespace Remotion.Data.DomainObjects
 
     void IAssociatableDomainObjectCollection.TransformToStandAlone ()
     {
-      Assertion.IsFalse (IsAssociatedWith (null));
-
       var standAloneDataStore = new DomainObjectCollectionData (_dataStrategy.GetDataStore ()); // copy data
       _dataStrategy = CreateDataStrategyForStandAloneCollection (standAloneDataStore, RequiredItemType, this);
     }

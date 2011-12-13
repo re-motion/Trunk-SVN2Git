@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,19 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
-  /// Defines an interface for classes providing and keeping track of the <see cref="DomainObjectCollection"/> instances used by 
-  /// <see cref="CollectionEndPoint"/> objects in a <see cref="ClientTransaction"/>.
+  /// Defines an API for classes creating <see cref="IDomainObjectCollectionData"/> instances for the <see cref="DomainObjectCollection"/> objects 
+  /// associated with a <see cref="CollectionEndPoint"/>.
   /// </summary>
-  public interface IDomainObjectCollectionProvider
+  public interface IAssociatedCollectionDataStrategyFactory
   {
-    DomainObjectCollection GetCollection (RelationEndPointID endPointID, Func<IDomainObjectCollectionData> dataStrategyProvider);
-    DomainObjectCollection GetCollectionWithOriginalData (RelationEndPointID endPointID, Func<IDomainObjectCollectionData> originalDataStrategyProvider);
-    void RegisterCollection (RelationEndPointID endPointID, DomainObjectCollection domainObjectCollection);
+    IDomainObjectCollectionData CreateDataStrategyForEndPoint (ICollectionEndPoint collectionEndPoint);
   }
 }

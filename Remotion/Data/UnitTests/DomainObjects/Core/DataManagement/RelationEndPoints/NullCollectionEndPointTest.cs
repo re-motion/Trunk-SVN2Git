@@ -219,13 +219,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException))]
-    public void CreateDelegatingCollectionData ()
-    {
-      _nullEndPoint.CreateDelegatingCollectionData();
-    }
-
-    [Test]
     public void RegisterOriginalOppositeEndPoint ()
     {
       var relatedEndPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();

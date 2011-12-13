@@ -32,6 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
+    private readonly IDomainObjectCollectionManager _collectionManager;
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactory;
@@ -45,22 +46,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
+        IDomainObjectCollectionManager collectionManager,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
+      ArgumentUtility.CheckNotNull ("collectionManager", collectionManager);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
       _hasBeenTouched = false;
+      _collectionManager = collectionManager;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
       _dataKeeperFactory = dataKeeperFactory;
 
-      _collection = CreateCollection(CreateDelegatingCollectionData ());
-
+      _collection = collectionManager.GetInitialCollection (this);
       _originalCollection = _collection;
 
       SetIncompleteLoadState ();
@@ -78,6 +81,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
         ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, null);
       }
+    }
+
+    public IDomainObjectCollectionManager CollectionManager
+    {
+      get { return _collectionManager; }
     }
 
     public ILazyLoader LazyLoader
@@ -236,12 +244,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       Touch();
     }
 
-    public IDomainObjectCollectionData CreateDelegatingCollectionData ()
-    {
-      var requiredItemType = Definition.GetOppositeEndPointDefinition().ClassDefinition.ClassType;
-      return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (ID, EndPointProvider));
-    }
-
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
@@ -290,7 +292,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
-      return _loadState.CreateSetCollectionCommand (this, newCollection, collection => Collection = collection);
+      return _loadState.CreateSetCollectionCommand (this, newCollection, collection => Collection = collection, _collectionManager);
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
@@ -355,6 +357,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collection = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
+      _collectionManager = info.GetValueForHandle<IDomainObjectCollectionManager>();
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
@@ -366,6 +369,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_collection);
       info.AddHandle (_originalCollection);
       info.AddBoolValue (_hasBeenTouched);
+      info.AddHandle (_collectionManager);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
       info.AddHandle (_dataKeeperFactory);

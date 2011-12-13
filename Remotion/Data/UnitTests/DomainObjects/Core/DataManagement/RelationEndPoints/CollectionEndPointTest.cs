@@ -22,10 +22,8 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
@@ -38,7 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointID _customerEndPointID;
     private Order _order1; // Customer1
     private Order _order2; // Customer3
-    
+
+    private OrderCollection _fakeCollection;
+    private IDomainObjectCollectionManager _collectionManagerStub;
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
 
@@ -54,6 +54,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
+      _fakeCollection = new OrderCollection ();
+      _collectionManagerStub = MockRepository.GenerateStub<IDomainObjectCollectionManager> ();
+      _collectionManagerStub
+          .Stub (stub => stub.GetInitialCollection (Arg<ICollectionEndPoint>.Matches (ep => ep.ID == _customerEndPointID)))
+          .Return (_fakeCollection);
       _lazyLoaderMock = MockRepository.GenerateMock<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       
@@ -62,6 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint = new CollectionEndPoint (
           TestableClientTransaction,
           _customerEndPointID,
+          _collectionManagerStub,
           MockRepository.GenerateStub<ILazyLoader> (),
           _endPointProviderStub,
           new CollectionEndPointDataKeeperFactory (TestableClientTransaction, changeDetectionStrategy));
@@ -74,25 +80,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Initialize ()
     {
-      var lazyLoaderStub = MockRepository.GenerateStub<ILazyLoader> ();
-      var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-
       var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
       dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-
       var dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
 
       var endPoint = new CollectionEndPoint (
           TestableClientTransaction, 
           _customerEndPointID, 
-          lazyLoaderStub, 
-          endPointProviderStub,
+          _collectionManagerStub,
+          _lazyLoaderMock, 
+          _endPointProviderStub,
           dataKeeperFactoryStub);
 
       Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
-      Assert.That (endPoint.LazyLoader, Is.SameAs (lazyLoaderStub));
-      Assert.That (endPoint.EndPointProvider, Is.SameAs (endPointProviderStub));
+      Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderMock));
+      Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (endPoint.DataKeeperFactory, Is.SameAs (dataKeeperFactoryStub));
+      Assert.That (endPoint.Collection, Is.SameAs (_fakeCollection));
 
       var loadState = CollectionEndPointTestHelper.GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
@@ -100,31 +104,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void Initialize_UsesEndPointDelegatingData ()
-    {
-      var dataDecorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (
-          _endPoint.Collection);
-      var wrappedData = DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (dataDecorator);
-      Assert.That (wrappedData.EndPointID, Is.EqualTo (_customerEndPointID));
-      Assert.That (wrappedData.VirtualEndPointProvider, Is.SameAs (_endPointProviderStub));
-    }
-
-    [Test]
     [ExpectedException (typeof (ArgumentNullException))]
     public void Initialize_WithInvalidRelationEndPointID_Throws ()
     {
       RelationEndPointObjectMother.CreateCollectionEndPoint (null, new DomainObject[0]);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MissingMethodException))]
-    public void Initialize_WithoutCollectionCtorTakingData_Throws ()
-    {
-      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (DomainObjectWithCollectionMissingCtor));
-
-      var endPointID = RelationEndPointID.Create(new ObjectID (classDefinition, Guid.NewGuid ()), 
-                              typeof (DomainObjectWithCollectionMissingCtor) + ".OppositeObjects");
-      RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, new DomainObject[0]);
     }
 
     [Test]
@@ -197,7 +180,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadStateMock.VerifyAllExpectations ();
     }
-
     
     [Test]
     public void MarkDataComplete ()
@@ -350,7 +332,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
               mock => mock.CreateSetCollectionCommand (
                   Arg.Is (_endPoint),
                   Arg.Is (oldCollection),
-                  Arg<Action<DomainObjectCollection>>.Is.Anything))
+                  Arg<Action<DomainObjectCollection>>.Is.Anything, 
+                  Arg.Is (_collectionManagerStub)))
           .Return (commandMock)
           .WhenCalled (mi =>
           {
@@ -556,7 +539,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
               mock => mock.CreateSetCollectionCommand (
                   Arg.Is (_endPoint),
                   Arg.Is (oppositeDomainObjects),
-                  Arg<Action<DomainObjectCollection>>.Is.Anything))
+                  Arg<Action<DomainObjectCollection>>.Is.Anything,
+                  Arg.Is (_collectionManagerStub)))
           .Return (fakeResult)
           .WhenCalled (mi => { collectionSetter = (Action<DomainObjectCollection>) mi.Arguments[2]; });
       _loadStateMock.Replay ();
@@ -655,19 +639,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void CreateDelegatingCollectionData ()
-    {
-      var data = _endPoint.CreateDelegatingCollectionData ();
-
-      Assert.That (data, Is.TypeOf<ModificationCheckingCollectionDataDecorator> ());
-      var wrappedData =
-          DomainObjectCollectionDataTestHelper.GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (
-              (ModificationCheckingCollectionDataDecorator) data);
-      Assert.That (wrappedData.EndPointID, Is.EqualTo (_endPoint.ID));
-      Assert.That (wrappedData.VirtualEndPointProvider, Is.SameAs (_endPoint.EndPointProvider));
-    }
-
-    [Test]
     public void Collection_Get_DoesNotLoadData ()
     {
       Dev.Null = _endPoint.Collection;
@@ -678,8 +649,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Collection_Set ()
     {
-      var delegatingData = _endPoint.CreateDelegatingCollectionData ();
-      var newCollection = new OrderCollection (delegatingData);
+      var newCollection = new OrderCollection();
 
       CollectionEndPointTestHelper.SetCollection (_endPoint, newCollection);
 
@@ -689,8 +659,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Collection_Set_DoesNotLoadData ()
     {
-      var delegatingData = _endPoint.CreateDelegatingCollectionData ();
-      var newCollection = new OrderCollection (delegatingData);
+      var newCollection = new OrderCollection();
 
       CollectionEndPointTestHelper.SetCollection (_endPoint, newCollection);
 
@@ -700,8 +669,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Collection_Set_TouchesEndPoint ()
     {
-      var delegatingData = _endPoint.CreateDelegatingCollectionData ();
-      var newCollection = new OrderCollection (delegatingData);
+      var newCollection = new OrderCollection();
 
       CollectionEndPointTestHelper.SetCollection (_endPoint, newCollection);
 
@@ -713,8 +681,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (_endPoint.ClientTransaction);
 
-      var delegatingData = _endPoint.CreateDelegatingCollectionData ();
-      var newCollection = new OrderCollection (delegatingData);
+      var newCollection = new OrderCollection();
       CollectionEndPointTestHelper.SetCollection (_endPoint, newCollection);
 
       listener.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_endPoint.ClientTransaction, _endPoint.ID, null));

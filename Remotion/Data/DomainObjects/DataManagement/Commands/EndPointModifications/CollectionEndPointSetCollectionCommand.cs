@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -32,8 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly DomainObjectCollection _newCollection;
     private readonly Action<DomainObjectCollection> _collectionSetter;
 
-    private readonly IAssociatableDomainObjectCollection _oldCollectionTransformer;
-    private readonly IAssociatableDomainObjectCollection _newCollectionTransformer;
+    private readonly IDomainObjectCollectionManager _domainObjectCollectionManager;
 
     private DomainObject[] _removedObjects;
     private DomainObject[] _addedObjects;
@@ -42,14 +41,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         ICollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newCollection,
         Action<DomainObjectCollection> collectionSetter,
-        IAssociatableDomainObjectCollection oldCollectionTransformer,
-        IAssociatableDomainObjectCollection newCollectionTransformer)
+        IDomainObjectCollectionManager domainObjectCollectionManager)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
       ArgumentUtility.CheckNotNull ("collectionSetter", collectionSetter);
-      ArgumentUtility.CheckNotNull ("oldCollectionTransformer", oldCollectionTransformer);
-      ArgumentUtility.CheckNotNull ("newCollectionTransformer", newCollectionTransformer);
+      ArgumentUtility.CheckNotNull ("domainObjectCollectionManager", domainObjectCollectionManager);
 
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
@@ -58,8 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       _newCollection = newCollection;
       _collectionSetter = collectionSetter;
 
-      _oldCollectionTransformer = oldCollectionTransformer;
-      _newCollectionTransformer = newCollectionTransformer;
+      _domainObjectCollectionManager = domainObjectCollectionManager;
     }
 
     public new ICollectionEndPoint ModifiedEndPoint
@@ -72,14 +68,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _newCollection; }
     }
 
-    public IAssociatableDomainObjectCollection OldCollectionTransformer
+    public IDomainObjectCollectionManager DomainObjectCollectionManager
     {
-      get { return _oldCollectionTransformer; }
-    }
-
-    public IAssociatableDomainObjectCollection NewCollectionTransformer
-    {
-      get { return _newCollectionTransformer; }
+      get { return _domainObjectCollectionManager; }
     }
 
     public DomainObject[] RemovedObjects
@@ -128,15 +119,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      // only transform the old collection to stand-alone if it is still associated with this end point
-      // rationale: during rollback, the old relation might have already been associated with another end-point, we must not overwrite this!
-      if (OldCollectionTransformer.IsAssociatedWith (ModifiedEndPoint))
-        OldCollectionTransformer.TransformToStandAlone();
+      DomainObjectCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint, NewCollection);
 
-      // we must always associate the new collection with the end point, however - even during rollback phase
-      NewCollectionTransformer.TransformToAssociated (ModifiedEndPoint);
-
-      // now make end point refer to the new collection by reference, too
       _collectionSetter (NewCollection); // this also touches the end point
       Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);
     }

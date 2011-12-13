@@ -169,6 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var originalEndPoint = new CollectionEndPoint (
           ClientTransaction.Current,
           endPointID,
+          new SerializableDomainObjectCollectionManagerFake(),
           new SerializableLazyLoaderFake(),
           new SerializableRelationEndPointProviderFake(),
           new SerializableCollectionEndPointDataKeeperFactoryFake());
@@ -177,7 +178,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       var deserializedLoadState = PrivateInvoke.GetNonPublicField (deserializedEndPoint, "_loadState");
       Assert.That (deserializedLoadState, Is.Not.Null);
-      
+
+      Assert.That (deserializedEndPoint.CollectionManager, Is.Not.Null);
       Assert.That (deserializedEndPoint.LazyLoader, Is.Not.Null);
       Assert.That (deserializedEndPoint.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedEndPoint.DataKeeperFactory, Is.Not.Null);

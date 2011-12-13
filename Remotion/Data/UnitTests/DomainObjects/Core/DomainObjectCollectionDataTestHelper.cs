@@ -58,8 +58,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static void CheckAssociatedCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, RelationEndPointID expectedEndPointID)
     {
       // collection => checking checking decorator => end point data => actual data store
+      var checkingDecorator = GetDataStrategy (collection);
+      CheckAssociatedCollectionStrategy (checkingDecorator, expectedRequiredItemType, expectedEndPointID);
+    }
 
-      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
+    public static void CheckAssociatedCollectionStrategy (
+        IDomainObjectCollectionData domainObjectCollectionData, 
+        Type expectedRequiredItemType, 
+        RelationEndPointID expectedEndPointID)
+    {
+      Assert.That (domainObjectCollectionData, Is.TypeOf<ModificationCheckingCollectionDataDecorator> ());
+      var checkingDecorator = (ModificationCheckingCollectionDataDecorator) domainObjectCollectionData;
       Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);

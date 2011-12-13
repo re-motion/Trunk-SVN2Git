@@ -200,11 +200,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       throw new InvalidOperationException ("SortCurrentData cannot be called on a NullCollectionEndPoint.");
     }
 
-    public IDomainObjectCollectionData CreateDelegatingCollectionData ()
-    {
-      throw new InvalidOperationException ("CreateDelegatingCollectionData cannot be called on a NullCollectionEndPoint.");
-    }
-
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       oppositeEndPoint.MarkSynchronized();

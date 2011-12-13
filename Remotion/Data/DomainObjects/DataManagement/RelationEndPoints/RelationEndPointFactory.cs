@@ -101,16 +101,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (markDataComplete)
         virtualObjectEndPoint.MarkDataComplete (null);
       return virtualObjectEndPoint;
-
     }
 
     public ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID, bool markDataComplete)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
+      var manager = new DomainObjectCollectionManager (new AssociatedCollectionDataStrategyFactory (_endPointProvider));
       var collectionEndPoint = new CollectionEndPoint (
           _clientTransaction,
           endPointID,
+          manager,
           _lazyLoader,
           _endPointProvider,
           _collectionEndPointDataKeeperFactory);
