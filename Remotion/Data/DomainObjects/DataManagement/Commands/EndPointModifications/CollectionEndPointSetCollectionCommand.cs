@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       CollectionEndPointCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint, NewCollection);
 
       _collectionSetter (NewCollection); // this also touches the end point
-      Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);
+      ModifiedEndPoint.Touch();
     }
 
     protected override void ScopedEnd ()

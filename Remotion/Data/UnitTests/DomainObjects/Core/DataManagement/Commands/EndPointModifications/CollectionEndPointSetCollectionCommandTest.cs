@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Collections.Generic;
@@ -32,8 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
   public class CollectionEndPointSetCollectionCommandTest : CollectionEndPointModificationCommandTestBase
   {
     private DomainObjectCollection _newCollection;
-
-    private Action<DomainObjectCollection> _collectionSetter;
 
     private MockRepository _mockRepository;
     private ICollectionEndPointCollectionManager _collectionManagerMock;
@@ -50,15 +47,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _newCollection = new OrderCollection();
 
-      _collectionSetter = collection => CollectionEndPointTestHelper.SetCollection (CollectionEndPoint, collection);
-
       _mockRepository = new MockRepository ();
       _collectionManagerMock = _mockRepository.StrictMock<ICollectionEndPointCollectionManager> ();
 
       _command = new CollectionEndPointSetCollectionCommand (
           CollectionEndPoint, 
           _newCollection,
-          _collectionSetter,
+          collection => { },
           _collectionManagerMock);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -222,7 +217,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
       _collectionManagerMock.Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint, _newCollection));
-
       _mockRepository.ReplayAll ();
       
       _command.Perform ();
@@ -232,7 +226,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
 
-      Assert.That (CollectionEndPoint.Collection, Is.SameAs (_newCollection));
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
 

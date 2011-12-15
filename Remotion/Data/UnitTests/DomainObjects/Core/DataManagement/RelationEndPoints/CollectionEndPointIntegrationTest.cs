@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
@@ -67,6 +68,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _orderWithoutOrderItem }), "changes go down to actual data store");
       Assert.That (_order1.Customer, Is.Null, "bidirectional modification");
+    }
+
+    [Test]
+    public void GetCollection_DoesNotLoadData ()
+    {
+      _customerEndPoint.MarkDataIncomplete();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+
+      Dev.Null = _customerEndPoint.Collection;
+
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
     }
 
     [Test]
@@ -258,6 +270,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void OriginalCollection_Get_DoesNotLoadData ()
+    {
+      _customerEndPoint.MarkDataIncomplete ();
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+
+      Dev.Null = _customerEndPoint.OriginalCollection;
+
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException))]
     public void GetCollectionWithOriginalData_IsReadOnly ()
     {
@@ -334,6 +357,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void Rollback_UnchangedUnloaded_DoesNotLoadData ()
+    {
+      _customerEndPoint.MarkDataIncomplete();
+      Assert.That (_customerEndPoint.HasChanged, Is.False);
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+
+      _customerEndPoint.Rollback();
+
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+    }
+
+    [Test]
     public void Commit_AfterReplace_SavesReference ()
     {
       var oldOpposites = _customerEndPoint.Collection;
@@ -396,7 +431,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedAddAndRemove_LeavingSameElements ()
+    public void HasBeenTouched_AddAndRemove_LeavingSameElements ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
       _customerEndPoint.Collection.Add (Order.NewObject ());
@@ -406,7 +441,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedInsert ()
+    public void HasBeenTouched_Insert ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
       _customerEndPoint.Collection.Insert (0, Order.NewObject ());
@@ -414,7 +449,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedRemove ()
+    public void HasBeenTouched_Remove ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
       _customerEndPoint.Collection.Remove (_customerEndPoint.Collection[0]);
@@ -422,7 +457,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedRemoveNonExisting ()
+    public void HasBeenTouched_RemoveNonExisting ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
       _customerEndPoint.Collection.Remove (Order.NewObject ());
@@ -430,7 +465,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedClear ()
+    public void HasBeenTouched_Clear ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
       _customerEndPoint.Collection.Clear ();
@@ -438,7 +473,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedClearEmpty ()
+    public void HasBeenTouched_ClearEmpty ()
     {
       _customerEndPoint.Collection.Clear ();
       _customerEndPoint.Commit ();
@@ -449,7 +484,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedReplace ()
+    public void HasBeenTouched_Replace ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
       _customerEndPoint.Collection[0] = Order.NewObject ();
@@ -457,13 +492,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasBeenTouchedReplaceWithSame ()
+    public void HasBeenTouched_ReplaceWithSame ()
     {
       Assert.That (_customerEndPoint.HasBeenTouched, Is.False);
       _customerEndPoint.Collection[0] = _customerEndPoint.Collection[0];
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
     }
 
+    [Test]
+    public void HasBeenTouched_DoesNotLoadData ()
+    {
+      _customerEndPoint.Touch();
+      _customerEndPoint.MarkDataIncomplete();
+      
+      var result = _customerEndPoint.HasBeenTouched;
+
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void Touch_DoesNotLoadData ()
+    {
+      _customerEndPoint.MarkDataIncomplete ();
+
+      _customerEndPoint.Touch ();
+
+      Assert.That (_customerEndPoint.IsDataComplete, Is.False);
+      Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
+    }
+    
     private IDomainObjectCollectionData GetDomainObjectCollectionData (DomainObjectCollection collection)
     {
       var decorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);

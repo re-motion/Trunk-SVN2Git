@@ -37,8 +37,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactory;
     
-    private DomainObjectCollection _collection; // points to _dataKeeper by using EndPointDelegatingCollectionData as its data strategy
-    private DomainObjectCollection _originalCollection; // keeps the original reference of the _collection for rollback
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
 
     private bool _hasBeenTouched;
@@ -63,24 +61,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _endPointProvider = endPointProvider;
       _dataKeeperFactory = dataKeeperFactory;
 
-      _collection = collectionManager.GetInitialCollection (this);
-      _originalCollection = _collection;
-
       SetIncompleteLoadState ();
     }
 
+    // TODO 4527: Reorder members for better semantics?
+
     public DomainObjectCollection Collection
     {
-      get { return _collection; }
-      private set
-      {
-        ArgumentUtility.CheckNotNull ("value", value);
-
-        _collection = value;
-        Touch();
-
-        ClientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (ClientTransaction, ID, null);
-      }
+      get { return _collectionManager.GetCurrentCollectionReference (this); }
     }
 
     public ICollectionEndPointCollectionManager CollectionManager
@@ -105,7 +93,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public DomainObjectCollection OriginalCollection
     {
-      get { return _originalCollection; }
+      get { return _collectionManager.GetOriginalCollectionReference (this); }
     }
 
     public ReadOnlyCollectionDataDecorator GetData ()
@@ -145,7 +133,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override bool HasChanged
     {
-      get { return OriginalCollection != Collection || _loadState.HasChanged(); }
+      get { return _collectionManager.HasCollectionReferenceChanged (this) || _loadState.HasChanged(); }
     }
 
     public override bool HasBeenTouched
@@ -190,8 +178,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       if (HasChanged)
       {
-        _loadState.Commit(this);
-        _originalCollection = _collection;
+        _collectionManager.CommitCollectionReference (this);
+        _loadState.Commit (this);
       }
 
       _hasBeenTouched = false;
@@ -201,16 +189,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       if (HasChanged)
       {
-        if (_collection != _originalCollection)
-        {
-          var command = CreateSetCollectionCommand (_originalCollection);
-          command.Perform(); // no notifications, no bidirectional changes, we only change the collections' associations
-        }
-        Assertion.IsTrue (_collection == _originalCollection);
-
-        //_collection.ReplaceItemsWithoutNotifications (GetOriginalData());
-
-        _loadState.Rollback(this);
+        _collectionManager.RollbackCollectionReference (this);
+        _loadState.Rollback (this);
       }
 
       _hasBeenTouched = false;
@@ -226,7 +206,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       // In order to perform the mandatory check, we need to load data. It's up to the caller to decide whether an incomplete end-point should be 
       // checked. (DataManager will not check incomplete end-points, as it also ignores not-yet-loaded end-points.)
 
-      if (_loadState.GetData (this).Count == 0)
+      if (GetData ().Count == 0)
       {
         var objectReference = GetDomainObjectReference ();
         var message = String.Format (
@@ -292,7 +272,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
-      return _loadState.CreateSetCollectionCommand (this, newCollection, collection => Collection = collection, _collectionManager);
+      // TODO 4527: Remove collection setter
+      return _loadState.CreateSetCollectionCommand (this, newCollection, collection => { }, _collectionManager);
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
@@ -354,8 +335,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _collection = info.GetValueForHandle<DomainObjectCollection>();
-      _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
       _collectionManager = info.GetValueForHandle<ICollectionEndPointCollectionManager>();
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
@@ -366,8 +345,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddHandle (_collection);
-      info.AddHandle (_originalCollection);
       info.AddBoolValue (_hasBeenTouched);
       info.AddHandle (_collectionManager);
       info.AddHandle (_lazyLoader);

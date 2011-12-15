@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
@@ -29,13 +30,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   [Serializable]
   public class CollectionEndPointCollectionManager : ICollectionEndPointCollectionManager
   {
-    private readonly Cache<RelationEndPointID, DomainObjectCollection> _collectionCache = new Cache<RelationEndPointID, DomainObjectCollection>();
+    private readonly SimpleDataStore<RelationEndPointID, DomainObjectCollection> _originalCollectionReferences =
+        new SimpleDataStore<RelationEndPointID, DomainObjectCollection>();
+    private readonly SimpleDataStore<RelationEndPointID, DomainObjectCollection> _currentCollectionReferences =
+        new SimpleDataStore<RelationEndPointID, DomainObjectCollection> ();
     private readonly IAssociatedCollectionDataStrategyFactory _dataStrategyFactory;
 
-    public CollectionEndPointCollectionManager (IAssociatedCollectionDataStrategyFactory dataStrategyFactory)
+    private readonly ClientTransaction _clientTransaction;
+    private readonly IClientTransactionListener _transactionEventSink;
+
+    public CollectionEndPointCollectionManager (
+        IAssociatedCollectionDataStrategyFactory dataStrategyFactory, 
+        ClientTransaction clientTransaction, 
+        IClientTransactionListener transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("dataStrategyFactory", dataStrategyFactory);
       _dataStrategyFactory = dataStrategyFactory;
+      _clientTransaction = clientTransaction;
+      _transactionEventSink = transactionEventSink;
     }
 
     public IAssociatedCollectionDataStrategyFactory DataStrategyFactory
@@ -43,11 +55,30 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _dataStrategyFactory; }
     }
 
-    public DomainObjectCollection GetInitialCollection (ICollectionEndPoint endPoint)
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
+    public IClientTransactionListener TransactionEventSink
+    {
+      get { return _transactionEventSink; }
+    }
+
+    public DomainObjectCollection GetOriginalCollectionReference (ICollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      return _collectionCache.GetOrCreateValue (endPoint.ID, id => CreateCollection (id, _dataStrategyFactory.CreateDataStrategyForEndPoint (endPoint)));
+      return _originalCollectionReferences.GetOrCreateValue (
+          endPoint.ID,
+          id => CreateCollection (id, _dataStrategyFactory.CreateDataStrategyForEndPoint (endPoint)));
+    }
+
+    public DomainObjectCollection GetCurrentCollectionReference (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      return _currentCollectionReferences.GetOrCreateValue (endPoint.ID, id => GetOriginalCollectionReference (endPoint));
     }
 
     public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint endPoint, IDomainObjectCollectionData originalData)
@@ -62,15 +93,91 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
 
-      // If the end-point's current collection is still associated with this end point, transform it to stand-alone.
-      // (During rollback, the current relation might have already been associated with another end-point, we must not overwrite this!)
-      var oldCollection = (IAssociatableDomainObjectCollection) endPoint.Collection;
-      if (oldCollection.IsAssociatedWith (endPoint))
-        oldCollection.TransformToStandAlone();
+      var oldCollection = (IAssociatableDomainObjectCollection) GetCurrentCollectionReference (endPoint);
+      Assertion.IsTrue (oldCollection.IsAssociatedWith (endPoint));
+      oldCollection.TransformToStandAlone();
 
-      // we must always associate the new collection with the end point, however - even during rollback phase
       ((IAssociatableDomainObjectCollection) newCollection).TransformToAssociated (endPoint, _dataStrategyFactory);
-      _collectionCache.Add (endPoint.ID, newCollection);
+      _currentCollectionReferences[endPoint.ID] = newCollection;
+      _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPoint.ID, null);
+    }
+
+    public bool HasCollectionReferenceChanged (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPoint.ID);
+      if (originalCollection == null)
+      {
+        Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPoint.ID));
+        return false;
+      }
+
+      var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPoint.ID);
+      if (currentCollection == null)
+        return false;
+
+      return currentCollection != originalCollection;
+    }
+
+    public void CommitCollectionReference (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPoint.ID);
+      if (originalCollection == null)
+      {
+        Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPoint.ID));
+        return;
+      }
+
+      var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPoint.ID);
+      if (currentCollection == null)
+        return;
+
+      _originalCollectionReferences[endPoint.ID] = currentCollection;
+      Assertion.DebugAssert (!HasCollectionReferenceChanged (endPoint));
+    }
+
+    public void RollbackCollectionReference (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+
+      try
+      {
+        var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPoint.ID);
+        if (originalCollection == null)
+        {
+          Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPoint.ID));
+          return;
+        }
+
+        var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPoint.ID);
+        if (currentCollection == null)
+          return;
+
+        if (originalCollection == currentCollection)
+          return;
+
+        // If the end-point's current collection is still associated with this end point, transform it to stand-alone.
+        // (During rollback, the current relation might have already been associated with another end-point, we must not overwrite this!)
+        var oldCollection = (IAssociatableDomainObjectCollection) GetCurrentCollectionReference (endPoint);
+        if (oldCollection.IsAssociatedWith (endPoint))
+          oldCollection.TransformToStandAlone();
+
+        // We must always associate the new collection with the end point, however - even during rollback phase,
+        ((IAssociatableDomainObjectCollection) originalCollection).TransformToAssociated (endPoint, _dataStrategyFactory);
+        _currentCollectionReferences[endPoint.ID] = originalCollection;
+
+        // TODO 4527: Consider whether this method should raise the VirtualRelationEndPointStateUpdated. If so, Commit should probably raise it as well.
+        // TODO 4527: Also note that ChangeCachingCollectionDataDecorator raises StateUpdated (false) events that are translated into
+        // VirtualRelationEndPointStateUpdated (false) events without taking the reference change state into account.
+        _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPoint.ID, null);
+      }
+      finally
+      {
+        Assertion.DebugAssert (!HasCollectionReferenceChanged (endPoint));
+      }
     }
 
     private DomainObjectCollection CreateCollection (RelationEndPointID endPointID, IDomainObjectCollectionData dataStrategy)

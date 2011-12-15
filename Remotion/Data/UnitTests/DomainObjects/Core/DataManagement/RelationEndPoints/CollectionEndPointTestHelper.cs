@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -28,11 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 {
   public static class CollectionEndPointTestHelper
   {
-    public static void SetCollection (CollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection)
-    {
-      PrivateInvoke.SetPublicProperty (collectionEndPoint, "Collection", newCollection);
-    }
-
     public static IRealObjectEndPoint GetFakeOppositeEndPoint (DomainObject item)
     {
       var fakeEndPoint = MockRepository.GenerateStub<IRealObjectEndPoint>();

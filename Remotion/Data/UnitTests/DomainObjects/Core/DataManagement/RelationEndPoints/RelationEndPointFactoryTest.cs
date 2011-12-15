@@ -127,6 +127,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           ((CollectionEndPointCollectionManager) ((CollectionEndPoint) endPoint).CollectionManager).DataStrategyFactory,
           Is.TypeOf<AssociatedCollectionDataStrategyFactory>()
               .With.Property ((AssociatedCollectionDataStrategyFactory f) => f.VirtualEndPointProvider).SameAs (_endPointProviderStub));
+      Assert.That (
+          ((CollectionEndPointCollectionManager) ((CollectionEndPoint) endPoint).CollectionManager).ClientTransaction,
+          Is.SameAs (_clientTransaction));
+      Assert.That (
+          ((CollectionEndPointCollectionManager) ((CollectionEndPoint) endPoint).CollectionManager).TransactionEventSink,
+          Is.SameAs (ClientTransactionTestHelper.GetTransactionEventSink (_clientTransaction)));
       Assert.That (((CollectionEndPoint) endPoint).LazyLoader, Is.SameAs (_lazyLoaderStub));
       Assert.That (((CollectionEndPoint) endPoint).EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (((CollectionEndPoint) endPoint).DataKeeperFactory, Is.SameAs (_collectionEndPointDataKeeperFactoryStub));

@@ -37,12 +37,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         RelationEndPointID endPointID,
         IEnumerable<DomainObject> initialContents)
     {
-      var dataManager = ClientTransactionTestHelper.GetDataManager (ClientTransaction.Current);
+      var clientTransaction = ClientTransaction.Current;
+      var dataManager = ClientTransactionTestHelper.GetDataManager (clientTransaction);
       var changeDetectionStrategy = new RootCollectionEndPointChangeDetectionStrategy();
+      var transactionEventSink = ClientTransactionTestHelper.GetTransactionEventSink (clientTransaction);
       var collectionEndPoint = new CollectionEndPoint (
-          ClientTransaction.Current,
+          clientTransaction,
           endPointID,
-          new CollectionEndPointCollectionManager (new AssociatedCollectionDataStrategyFactory (dataManager)),
+          new CollectionEndPointCollectionManager (new AssociatedCollectionDataStrategyFactory (dataManager), clientTransaction, transactionEventSink),
           dataManager,
           dataManager,
           new CollectionEndPointDataKeeperFactory (dataManager.ClientTransaction, changeDetectionStrategy));

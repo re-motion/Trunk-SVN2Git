@@ -132,8 +132,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
-
-      Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
 
     [Test]

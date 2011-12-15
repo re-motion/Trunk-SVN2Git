@@ -25,7 +25,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableCollectionEndPointCollectionManagerFake : ICollectionEndPointCollectionManager
   {
-    public DomainObjectCollection GetInitialCollection (ICollectionEndPoint endPoint)
+    public DomainObjectCollection GetOriginalCollectionReference (ICollectionEndPoint endPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public DomainObjectCollection GetCurrentCollectionReference (ICollectionEndPoint endPoint)
     {
       return new DomainObjectCollection();
     }
@@ -36,6 +41,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     }
 
     public void AssociateCollectionWithEndPoint (ICollectionEndPoint endPoint, DomainObjectCollection newCollection)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool HasCollectionReferenceChanged (ICollectionEndPoint endPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void CommitCollectionReference (ICollectionEndPoint endPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void RollbackCollectionReference (ICollectionEndPoint endPoint)
     {
       throw new NotImplementedException();
     }

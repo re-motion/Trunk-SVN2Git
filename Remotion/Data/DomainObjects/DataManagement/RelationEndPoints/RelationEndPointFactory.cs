@@ -107,11 +107,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var manager = new CollectionEndPointCollectionManager (new AssociatedCollectionDataStrategyFactory (_endPointProvider));
+      var collectionManager = new CollectionEndPointCollectionManager (
+          new AssociatedCollectionDataStrategyFactory (_endPointProvider),
+          _clientTransaction,
+          _clientTransaction.TransactionEventSink);
       var collectionEndPoint = new CollectionEndPoint (
           _clientTransaction,
           endPointID,
-          manager,
+          collectionManager,
           _lazyLoader,
           _endPointProvider,
           _collectionEndPointDataKeeperFactory);
