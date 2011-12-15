@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private Order _relatedObject;
     private IRealObjectEndPoint _relatedEndPointStub;
     private Customer _owningObject;
-    private IDomainObjectCollectionManager _collectionManagerStub;
+    private ICollectionEndPointCollectionManager _collectionManagerStub;
 
     [SetUp]
     public override void SetUp ()
@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relatedEndPointStub.Stub (stub => stub.GetDomainObjectReference ()).Return (_relatedObject);
       _relatedEndPointStub.Stub (stub => stub.ObjectID).Return (_relatedObject.ID);
       _owningObject = DomainObjectMother.CreateFakeObject<Customer>();
-      _collectionManagerStub = MockRepository.GenerateStub<IDomainObjectCollectionManager> ();
+      _collectionManagerStub = MockRepository.GenerateStub<ICollectionEndPointCollectionManager> ();
     }
 
     [Test]
@@ -226,7 +226,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command, Is.TypeOf (typeof (CollectionEndPointSetCollectionCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (newCollection));
-      Assert.That (((CollectionEndPointSetCollectionCommand) command).DomainObjectCollectionManager, Is.SameAs (_collectionManagerStub));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).CollectionEndPointCollectionManager, Is.SameAs (_collectionManagerStub));
       Assert.That (PrivateInvoke.GetNonPublicField (command, "_collectionSetter"), Is.SameAs (fakeSetter));
     }
 

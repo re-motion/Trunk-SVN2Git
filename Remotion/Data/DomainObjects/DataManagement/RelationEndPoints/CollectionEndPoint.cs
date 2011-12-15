@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
-    private readonly IDomainObjectCollectionManager _collectionManager;
+    private readonly ICollectionEndPointCollectionManager _collectionManager;
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactory;
@@ -46,7 +46,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
-        IDomainObjectCollectionManager collectionManager,
+        ICollectionEndPointCollectionManager collectionManager,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
     }
 
-    public IDomainObjectCollectionManager CollectionManager
+    public ICollectionEndPointCollectionManager CollectionManager
     {
       get { return _collectionManager; }
     }
@@ -357,7 +357,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collection = info.GetValueForHandle<DomainObjectCollection>();
       _originalCollection = info.GetValueForHandle<DomainObjectCollection> ();
       _hasBeenTouched = info.GetBoolValue();
-      _collectionManager = info.GetValueForHandle<IDomainObjectCollectionManager>();
+      _collectionManager = info.GetValueForHandle<ICollectionEndPointCollectionManager>();
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();

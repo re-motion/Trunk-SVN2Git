@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       var originalEndPoint = new CollectionEndPoint (
           ClientTransaction.Current,
           endPointID,
-          new SerializableDomainObjectCollectionManagerFake(),
+          new SerializableCollectionEndPointCollectionManagerFake(),
           new SerializableLazyLoaderFake(),
           new SerializableRelationEndPointProviderFake(),
           new SerializableCollectionEndPointDataKeeperFactoryFake());

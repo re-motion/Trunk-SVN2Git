@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
-  public class SerializableDomainObjectCollectionManagerFake : IDomainObjectCollectionManager
+  public class SerializableCollectionEndPointCollectionManagerFake : ICollectionEndPointCollectionManager
   {
     public DomainObjectCollection GetInitialCollection (ICollectionEndPoint endPoint)
     {

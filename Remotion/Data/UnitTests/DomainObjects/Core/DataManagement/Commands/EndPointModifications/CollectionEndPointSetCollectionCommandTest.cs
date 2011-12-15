@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private Action<DomainObjectCollection> _collectionSetter;
 
     private MockRepository _mockRepository;
-    private IDomainObjectCollectionManager _collectionManagerMock;
+    private ICollectionEndPointCollectionManager _collectionManagerMock;
 
     private CollectionEndPointSetCollectionCommand _command;
 
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _collectionSetter = collection => CollectionEndPointTestHelper.SetCollection (CollectionEndPoint, collection);
 
       _mockRepository = new MockRepository ();
-      _collectionManagerMock = _mockRepository.StrictMock<IDomainObjectCollectionManager> ();
+      _collectionManagerMock = _mockRepository.StrictMock<ICollectionEndPointCollectionManager> ();
 
       _command = new CollectionEndPointSetCollectionCommand (
           CollectionEndPoint, 
@@ -79,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (_command.OldRelatedObject, Is.Null);
       Assert.That (_command.NewRelatedObject, Is.Null);
       Assert.That (_command.NewCollection, Is.SameAs (_newCollection));
-      Assert.That (_command.DomainObjectCollectionManager, Is.SameAs (_collectionManagerMock));
+      Assert.That (_command.CollectionEndPointCollectionManager, Is.SameAs (_collectionManagerMock));
     }
 
     [Test]

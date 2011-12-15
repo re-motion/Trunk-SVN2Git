@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var manager = new DomainObjectCollectionManager (new AssociatedCollectionDataStrategyFactory (_endPointProvider));
+      var manager = new CollectionEndPointCollectionManager (new AssociatedCollectionDataStrategyFactory (_endPointProvider));
       var collectionEndPoint = new CollectionEndPoint (
           _clientTransaction,
           endPointID,

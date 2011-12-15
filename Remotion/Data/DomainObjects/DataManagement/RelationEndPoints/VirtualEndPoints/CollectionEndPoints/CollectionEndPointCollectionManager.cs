@@ -23,16 +23,16 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
-  /// Implements <see cref="IDomainObjectCollectionManager"/> by storing the active <see cref="DomainObjectCollection"/> instances for a
+  /// Implements <see cref="ICollectionEndPointCollectionManager"/> by storing the active <see cref="DomainObjectCollection"/> instances for a
   /// <see cref="ClientTransaction"/> in a <see cref="Dictionary{TKey,TValue}"/>.
   /// </summary>
   [Serializable]
-  public class DomainObjectCollectionManager : IDomainObjectCollectionManager
+  public class CollectionEndPointCollectionManager : ICollectionEndPointCollectionManager
   {
     private readonly Cache<RelationEndPointID, DomainObjectCollection> _collectionCache = new Cache<RelationEndPointID, DomainObjectCollection>();
     private readonly IAssociatedCollectionDataStrategyFactory _dataStrategyFactory;
 
-    public DomainObjectCollectionManager (IAssociatedCollectionDataStrategyFactory dataStrategyFactory)
+    public CollectionEndPointCollectionManager (IAssociatedCollectionDataStrategyFactory dataStrategyFactory)
     {
       ArgumentUtility.CheckNotNull ("dataStrategyFactory", dataStrategyFactory);
       _dataStrategyFactory = dataStrategyFactory;

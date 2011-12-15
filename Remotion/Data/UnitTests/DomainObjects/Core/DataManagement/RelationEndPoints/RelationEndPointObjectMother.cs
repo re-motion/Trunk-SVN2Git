@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var collectionEndPoint = new CollectionEndPoint (
           ClientTransaction.Current,
           endPointID,
-          new DomainObjectCollectionManager (new AssociatedCollectionDataStrategyFactory (dataManager)),
+          new CollectionEndPointCollectionManager (new AssociatedCollectionDataStrategyFactory (dataManager)),
           dataManager,
           dataManager,
           new CollectionEndPointDataKeeperFactory (dataManager.ClientTransaction, changeDetectionStrategy));

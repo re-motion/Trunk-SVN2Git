@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// Defines an interface for classes providing and keeping track of the <see cref="DomainObjectCollection"/> instances used by 
   /// <see cref="CollectionEndPoint"/> objects in a <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface IDomainObjectCollectionManager
+  public interface ICollectionEndPointCollectionManager
   {
     DomainObjectCollection GetInitialCollection (ICollectionEndPoint endPoint);
     DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint endPoint, IDomainObjectCollectionData originalData);

@@ -29,10 +29,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   [TestFixture]
-  public class DomainObjectCollectionManagerTest : StandardMappingTest
+  public class CollectionEndPointCollectionManagerTest : StandardMappingTest
   {
     private IAssociatedCollectionDataStrategyFactory _associatedCollectionDataStrategyFactoryMock;
-    private DomainObjectCollectionManager _manager;
+    private CollectionEndPointCollectionManager _manager;
 
     private RelationEndPointID _endPointID;
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp ();
 
       _associatedCollectionDataStrategyFactoryMock = MockRepository.GenerateStrictMock<IAssociatedCollectionDataStrategyFactory>();
-      _manager = new DomainObjectCollectionManager (_associatedCollectionDataStrategyFactoryMock);
+      _manager = new CollectionEndPointCollectionManager (_associatedCollectionDataStrategyFactoryMock);
 
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
     
@@ -194,7 +194,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Serialization ()
     {
-      var instance = new DomainObjectCollectionManager (new SerializableAssociatedCollectionDataStrategyFactoryFake());
+      var instance = new CollectionEndPointCollectionManager (new SerializableAssociatedCollectionDataStrategyFactoryFake());
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
 

@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         ICollectionEndPoint collectionEndPoint,
         DomainObjectCollection newCollection,
         Action<DomainObjectCollection> collectionSetter,
-        IDomainObjectCollectionManager domainObjectCollectionManager)
+        ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);

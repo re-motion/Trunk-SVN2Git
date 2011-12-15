@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly DomainObjectCollection _newCollection;
     private readonly Action<DomainObjectCollection> _collectionSetter;
 
-    private readonly IDomainObjectCollectionManager _domainObjectCollectionManager;
+    private readonly ICollectionEndPointCollectionManager _collectionEndPointCollectionManager;
 
     private DomainObject[] _removedObjects;
     private DomainObject[] _addedObjects;
@@ -41,12 +41,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         ICollectionEndPoint modifiedEndPoint, 
         DomainObjectCollection newCollection,
         Action<DomainObjectCollection> collectionSetter,
-        IDomainObjectCollectionManager domainObjectCollectionManager)
+        ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
       ArgumentUtility.CheckNotNull ("collectionSetter", collectionSetter);
-      ArgumentUtility.CheckNotNull ("domainObjectCollectionManager", domainObjectCollectionManager);
+      ArgumentUtility.CheckNotNull ("collectionEndPointCollectionManager", collectionEndPointCollectionManager);
 
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       _newCollection = newCollection;
       _collectionSetter = collectionSetter;
 
-      _domainObjectCollectionManager = domainObjectCollectionManager;
+      _collectionEndPointCollectionManager = collectionEndPointCollectionManager;
     }
 
     public new ICollectionEndPoint ModifiedEndPoint
@@ -68,9 +68,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _newCollection; }
     }
 
-    public IDomainObjectCollectionManager DomainObjectCollectionManager
+    public ICollectionEndPointCollectionManager CollectionEndPointCollectionManager
     {
-      get { return _domainObjectCollectionManager; }
+      get { return _collectionEndPointCollectionManager; }
     }
 
     public DomainObject[] RemovedObjects
@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      DomainObjectCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint, NewCollection);
+      CollectionEndPointCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint, NewCollection);
 
       _collectionSetter (NewCollection); // this also touches the end point
       Assertion.IsTrue (ModifiedEndPoint.HasBeenTouched);

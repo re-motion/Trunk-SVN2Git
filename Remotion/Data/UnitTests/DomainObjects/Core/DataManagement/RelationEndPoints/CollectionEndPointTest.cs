@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private Order _order2; // Customer3
 
     private OrderCollection _fakeCollection;
-    private IDomainObjectCollectionManager _collectionManagerStub;
+    private ICollectionEndPointCollectionManager _collectionManagerStub;
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
 
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
       _fakeCollection = new OrderCollection ();
-      _collectionManagerStub = MockRepository.GenerateStub<IDomainObjectCollectionManager> ();
+      _collectionManagerStub = MockRepository.GenerateStub<ICollectionEndPointCollectionManager> ();
       _collectionManagerStub
           .Stub (stub => stub.GetInitialCollection (Arg<ICollectionEndPoint>.Matches (ep => ep.ID == _customerEndPointID)))
           .Return (_fakeCollection);
