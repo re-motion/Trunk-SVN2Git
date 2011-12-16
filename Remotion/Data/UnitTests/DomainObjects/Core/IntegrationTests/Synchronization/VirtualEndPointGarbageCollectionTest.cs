@@ -37,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    [Ignore ("TODO 4504")]
     public void UnloadLastFK_CausesCollectionEndPointToBeRemoved_ButKeepsDomainObjectCollectionInMemory ()
     {
       SetDatabaseModifyable();
@@ -142,7 +141,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     }
 
     [Test]
-    [Ignore ("TODO 4504")]
     public void UnloadCollectionEndPoint_WithoutReferences_CausesEndPointToBeRemoved_ButKeepsDomainObjectCollectionInMemory ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
@@ -210,6 +208,58 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);
+    }
+
+    [Test]
+    public void UnloadCollectionEndPoint_WithoutReferences_AfterSettingDifferentCollection_AndCommit_CausesEndPointToBeRemoved_ButKeepsDomainObjectCollectionInMemory ()
+    {
+      SetDatabaseModifyable();
+
+      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+
+      var newCustomerOrders = new OrderCollection();
+      customer.Orders = newCustomerOrders;
+      Assert.That (customer.Orders, Is.Empty);
+
+      TestableClientTransaction.Commit();
+
+      var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
+
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, virtualEndPointID);
+
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
+
+      // But DomainObjectCollection stays valid - and uses new collection
+      Assert.That (newCustomerOrders, Is.SameAs (customer.Orders));
+    }
+
+    [Test]
+    public void UnloadCollectionEndPoint_WithoutReferences_AfterSettingDifferentCollection_AndRollback_CausesEndPointToBeRemoved_ButKeepsDomainObjectCollectionInMemory ()
+    {
+      SetDatabaseModifyable ();
+
+      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      var oldCustomerOrders = customer.Orders;
+      Assert.That (customer.Orders, Is.Empty);
+
+      var newCustomerOrders = new OrderCollection ();
+      customer.Orders = newCustomerOrders;
+      Assert.That (customer.Orders, Is.Empty);
+
+      TestableClientTransaction.Rollback ();
+
+      var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
+
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, virtualEndPointID);
+
+      Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Null);
+
+      // But DomainObjectCollection stays valid - and uses original collection
+      Assert.That (oldCustomerOrders, Is.SameAs (customer.Orders));
     }
 
     protected ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
