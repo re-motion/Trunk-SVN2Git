@@ -64,13 +64,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       SetIncompleteLoadState ();
     }
 
-    // TODO 4527: Reorder members for better semantics?
-
-    public DomainObjectCollection Collection
-    {
-      get { return _collectionManager.GetCurrentCollectionReference (this); }
-    }
-
     public ICollectionEndPointCollectionManager CollectionManager
     {
       get { return _collectionManager; }
@@ -91,9 +84,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _dataKeeperFactory; }
     }
 
+    public DomainObjectCollection Collection
+    {
+      get { return _collectionManager.GetCurrentCollectionReference (this); }
+    }
+
     public DomainObjectCollection OriginalCollection
     {
       get { return _collectionManager.GetOriginalCollectionReference (this); }
+    }
+
+    public IDomainObjectCollectionEventRaiser GetCollectionEventRaiser ()
+    {
+      return Collection;
+    }
+
+    public DomainObjectCollection GetCollectionWithOriginalData ()
+    {
+      return CreateCollection (_loadState.GetOriginalData (this));
     }
 
     public ReadOnlyCollectionDataDecorator GetData ()
@@ -104,16 +112,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public ReadOnlyCollectionDataDecorator GetOriginalData ()
     {
       return _loadState.GetOriginalData (this);
-    }
-
-    public IDomainObjectCollectionEventRaiser GetCollectionEventRaiser ()
-    {
-      return Collection;
-    }
-
-    public DomainObjectCollection GetCollectionWithOriginalData ()
-    {
-      return CreateCollection ( _loadState.GetOriginalData (this));
     }
 
     public override bool IsDataComplete
@@ -157,21 +155,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _loadState.MarkDataIncomplete (this, SetIncompleteLoadState);
     }
 
-    public override void SetDataFromSubTransaction (IRelationEndPoint source)
+    public override void Touch ()
     {
-      var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
-      if (Definition != sourceCollectionEndPoint.Definition)
-      {
-        var message = string.Format (
-            "Cannot set this end point's value from '{0}'; the end points do not have the same end point definition.",
-            source.ID);
-        throw new ArgumentException (message, "source");
-      }
-
-      _loadState.SetDataFromSubTransaction (this, sourceCollectionEndPoint._loadState);
-
-      if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
-        Touch ();
+      _hasBeenTouched = true;
     }
 
     public override void Commit ()
@@ -194,11 +180,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       }
 
       _hasBeenTouched = false;
-    }
-
-    public override void Touch ()
-    {
-      _hasBeenTouched = true;
     }
 
     public override void ValidateMandatory ()
@@ -313,6 +294,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       return from oppositeDomainObject in _loadState.GetData (this)
              select RelationEndPointID.Create (oppositeDomainObject.ID, oppositeEndPointDefinition);
+    }
+
+    public override void SetDataFromSubTransaction (IRelationEndPoint source)
+    {
+      var sourceCollectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("source", source);
+      if (Definition != sourceCollectionEndPoint.Definition)
+      {
+        var message = string.Format (
+            "Cannot set this end point's value from '{0}'; the end points do not have the same end point definition.",
+            source.ID);
+        throw new ArgumentException (message, "source");
+      }
+
+      _loadState.SetDataFromSubTransaction (this, sourceCollectionEndPoint._loadState);
+
+      if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
+        Touch ();
     }
 
     private void SetCompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
