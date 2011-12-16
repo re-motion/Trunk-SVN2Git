@@ -173,15 +173,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (endPointFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (endPointFactory.LazyLoader, Is.SameAs (lazyLoader));
       Assert.That (endPointFactory.EndPointProvider, Is.SameAs (endPointProvider));
+      
       Assert.That (endPointFactory.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
-
       var collectionEndPointDataKeeperFactory = ((CollectionEndPointDataKeeperFactory) endPointFactory.CollectionEndPointDataKeeperFactory);
       Assert.That (collectionEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (collectionEndPointDataKeeperFactory.ChangeDetectionStrategy, Is.TypeOf<SubCollectionEndPointChangeDetectionStrategy> ());
+      
       Assert.That (endPointFactory.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf<VirtualObjectEndPointDataKeeperFactory> ());
-
       var virtualObjectEndPointDataKeeperFactory = ((VirtualObjectEndPointDataKeeperFactory) endPointFactory.VirtualObjectEndPointDataKeeperFactory);
       Assert.That (virtualObjectEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
+
+      Assert.That (endPointFactory.CollectionEndPointCollectionManager, Is.TypeOf<CollectionEndPointCollectionManager> ());
+      var collectionEndPointCollectionManager = (CollectionEndPointCollectionManager) endPointFactory.CollectionEndPointCollectionManager;
+      Assert.That (
+          collectionEndPointCollectionManager.DataStrategyFactory,
+          Is.TypeOf<AssociatedCollectionDataStrategyFactory>()
+              .With.Property ((AssociatedCollectionDataStrategyFactory f) => f.VirtualEndPointProvider).SameAs (endPointProvider));
+      Assert.That (collectionEndPointCollectionManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
+      Assert.That (
+          collectionEndPointCollectionManager.TransactionEventSink,
+          Is.SameAs (ClientTransactionTestHelper.GetTransactionEventSink (_fakeConstructedTransaction)));
     }
 
     [Test]

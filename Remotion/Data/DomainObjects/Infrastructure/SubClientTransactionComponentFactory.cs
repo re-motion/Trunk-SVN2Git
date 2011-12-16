@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
@@ -131,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (clientTransaction, endPointChangeDetectionStrategy);
       var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
 
-      var relationEndPointFactory = new RelationEndPointFactory (
+      var relationEndPointFactory = CreateRelationEndPointFactory(
           clientTransaction,
           endPointProvider,
           lazyLoader,
@@ -139,6 +140,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           collectionEndPointDataKeeperFactory);
       var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (endPointProvider);
       return new RelationEndPointManager (clientTransaction, lazyLoader, relationEndPointFactory, relationEndPointRegistrationAgent);
+    }
+
+    protected virtual RelationEndPointFactory CreateRelationEndPointFactory (
+        ClientTransaction clientTransaction,
+        IRelationEndPointProvider endPointProvider,
+        ILazyLoader lazyLoader,
+        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> virtualObjectEndPointDataKeeperFactory,
+        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataKeeperFactory", virtualObjectEndPointDataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
+
+      var collectionEndPointCollectionManager = new CollectionEndPointCollectionManager (
+          new AssociatedCollectionDataStrategyFactory (endPointProvider),
+          clientTransaction,
+          clientTransaction.TransactionEventSink);
+      return new RelationEndPointFactory (
+          clientTransaction,
+          endPointProvider,
+          lazyLoader,
+          virtualObjectEndPointDataKeeperFactory,
+          collectionEndPointDataKeeperFactory, 
+          collectionEndPointCollectionManager);
     }
 
     protected override IObjectLoader CreateObjectLoader (

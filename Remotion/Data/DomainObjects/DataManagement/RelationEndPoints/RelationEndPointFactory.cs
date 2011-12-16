@@ -34,25 +34,29 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ILazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
+    private readonly ICollectionEndPointCollectionManager _collectionEndPointCollectionManager;
 
     public RelationEndPointFactory (
         ClientTransaction clientTransaction,
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader,
         IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> virtualObjectEndPointDataKeeperFactory,
-        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory)
+        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory, 
+        ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataKeeperFactory", virtualObjectEndPointDataKeeperFactory);
       ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("collectionEndPointCollectionManager", collectionEndPointCollectionManager);
 
       _clientTransaction = clientTransaction;
       _endPointProvider = endPointProvider;
       _lazyLoader = lazyLoader;
       _virtualObjectEndPointDataKeeperFactory = virtualObjectEndPointDataKeeperFactory;
       _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
+      _collectionEndPointCollectionManager = collectionEndPointCollectionManager;
     }
 
     public ClientTransaction ClientTransaction
@@ -78,6 +82,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> CollectionEndPointDataKeeperFactory
     {
       get { return _collectionEndPointDataKeeperFactory; }
+    }
+
+    public ICollectionEndPointCollectionManager CollectionEndPointCollectionManager
+    {
+      get { return _collectionEndPointCollectionManager; }
     }
 
     public IRealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)
@@ -107,14 +116,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var collectionManager = new CollectionEndPointCollectionManager (
-          new AssociatedCollectionDataStrategyFactory (_endPointProvider),
-          _clientTransaction,
-          _clientTransaction.TransactionEventSink);
       var collectionEndPoint = new CollectionEndPoint (
           _clientTransaction,
           endPointID,
-          collectionManager,
+          _collectionEndPointCollectionManager,
           _lazyLoader,
           _endPointProvider,
           _collectionEndPointDataKeeperFactory);
