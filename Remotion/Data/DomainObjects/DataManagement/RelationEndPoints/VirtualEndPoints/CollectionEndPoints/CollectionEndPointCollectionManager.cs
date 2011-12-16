@@ -169,8 +169,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         ((IAssociatableDomainObjectCollection) originalCollection).TransformToAssociated (endPointID, _dataStrategyFactory);
         _currentCollectionReferences[endPointID] = originalCollection;
 
-        // TODO 4527: Consider whether this method should raise the VirtualRelationEndPointStateUpdated. If so, Commit should probably raise it as well.
-        // TODO 4527: Also note that ChangeCachingCollectionDataDecorator raises StateUpdated (false) events that are translated into
+        // TODO 4529: Consider whether this method should raise the VirtualRelationEndPointStateUpdated. If so, Commit should probably raise it as well.
+        // TODO 4529: Also note that ChangeCachingCollectionDataDecorator raises StateUpdated (false) events that are translated into
         // VirtualRelationEndPointStateUpdated (false) events without taking the reference change state into account.
         _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, null);
       }
