@@ -107,12 +107,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     public IDataManagementCommand CreateSetCollectionCommand (
         ICollectionEndPoint collectionEndPoint,
         DomainObjectCollection newCollection,
-        Action<DomainObjectCollection> collectionSetter,
         ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
-      ArgumentUtility.CheckNotNull ("collectionSetter", collectionSetter);
       ArgumentUtility.CheckNotNull ("collectionEndPointCollectionManager", collectionEndPointCollectionManager);
 
       if (UnsynchronizedOppositeEndPoints.Count != 0)
@@ -141,11 +139,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      return new CollectionEndPointSetCollectionCommand (
-          collectionEndPoint,
-          newCollection,
-          collectionSetter,
-          collectionEndPointCollectionManager);
+      return new CollectionEndPointSetCollectionCommand (collectionEndPoint, newCollection, collectionEndPointCollectionManager);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)

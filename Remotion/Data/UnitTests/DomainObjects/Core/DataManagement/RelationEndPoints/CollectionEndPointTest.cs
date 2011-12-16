@@ -567,7 +567,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
               mock => mock.CreateSetCollectionCommand (
                   Arg.Is (_endPoint),
                   Arg.Is (oppositeDomainObjects),
-                  Arg<Action<DomainObjectCollection>>.Is.Anything,
                   Arg.Is (_collectionManagerMock)))
           .Return (fakeResult);
       _loadStateMock.Replay ();

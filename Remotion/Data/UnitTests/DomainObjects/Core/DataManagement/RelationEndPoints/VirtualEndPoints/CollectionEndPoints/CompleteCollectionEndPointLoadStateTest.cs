@@ -218,16 +218,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
       _collectionEndPointMock.Replay ();
 
-      Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
-      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter, _collectionManagerStub);
+      var command = (RelationEndPointModificationCommand) _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, _collectionManagerStub);
 
       Assert.That (command, Is.TypeOf (typeof (CollectionEndPointSetCollectionCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (newCollection));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).CollectionEndPointCollectionManager, Is.SameAs (_collectionManagerStub));
-      Assert.That (PrivateInvoke.GetNonPublicField (command, "_collectionSetter"), Is.SameAs (fakeSetter));
     }
 
     [Test]
@@ -241,10 +239,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
 
-      Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
-      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter, _collectionManagerStub);
+      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, _collectionManagerStub);
     }
 
     [Test]
@@ -258,10 +255,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
 
-      Action<DomainObjectCollection> fakeSetter = collection => { };
       var newCollection = new OrderCollection ();
 
-      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, fakeSetter, _collectionManagerStub);
+      _loadState.CreateSetCollectionCommand (_collectionEndPointMock, newCollection, _collectionManagerStub);
     }
 
     [Test]

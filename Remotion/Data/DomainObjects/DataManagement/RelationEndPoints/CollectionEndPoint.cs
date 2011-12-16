@@ -253,8 +253,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
-      // TODO 4527: Remove collection setter
-      return _loadState.CreateSetCollectionCommand (this, newCollection, collection => { }, _collectionManager);
+      return _loadState.CreateSetCollectionCommand (this, newCollection, _collectionManager);
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)

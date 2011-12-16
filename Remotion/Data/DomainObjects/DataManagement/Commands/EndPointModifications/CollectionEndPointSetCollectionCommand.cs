@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   {
     private readonly ICollectionEndPoint _modifiedEndPoint;
     private readonly DomainObjectCollection _newCollection;
-    private readonly Action<DomainObjectCollection> _collectionSetter;
 
     private readonly ICollectionEndPointCollectionManager _collectionEndPointCollectionManager;
 
@@ -38,14 +37,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private DomainObject[] _addedObjects;
 
     public CollectionEndPointSetCollectionCommand (
-        ICollectionEndPoint modifiedEndPoint, 
+        ICollectionEndPoint modifiedEndPoint,
         DomainObjectCollection newCollection,
-        Action<DomainObjectCollection> collectionSetter,
         ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
-      ArgumentUtility.CheckNotNull ("collectionSetter", collectionSetter);
       ArgumentUtility.CheckNotNull ("collectionEndPointCollectionManager", collectionEndPointCollectionManager);
 
       if (modifiedEndPoint.IsNull)
@@ -53,7 +50,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       _modifiedEndPoint = modifiedEndPoint;
       _newCollection = newCollection;
-      _collectionSetter = collectionSetter;
 
       _collectionEndPointCollectionManager = collectionEndPointCollectionManager;
     }
@@ -120,8 +116,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public override void Perform ()
     {
       CollectionEndPointCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint, NewCollection);
-
-      _collectionSetter (NewCollection); // this also touches the end point
       ModifiedEndPoint.Touch();
     }
 
