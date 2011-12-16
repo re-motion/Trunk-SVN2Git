@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Collection ()
     {
-      _collectionManagerMock.Stub (stub => stub.GetCurrentCollectionReference (_endPoint)).Return (_fakeCollection);
+      _collectionManagerMock.Stub (stub => stub.GetCurrentCollectionReference (_endPoint.ID)).Return (_fakeCollection);
 
       Assert.That (_endPoint.Collection, Is.SameAs (_fakeCollection));
     }
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void OriginalCollection ()
     {
-      _collectionManagerMock.Stub (stub => stub.GetOriginalCollectionReference (_endPoint)).Return (_fakeCollection);
+      _collectionManagerMock.Stub (stub => stub.GetOriginalCollectionReference (_endPoint.ID)).Return (_fakeCollection);
 
       Assert.That (_endPoint.OriginalCollection, Is.SameAs (_fakeCollection));
     }
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetCollectionEventRaiser ()
     {
-      _collectionManagerMock.Stub (stub => stub.GetCurrentCollectionReference (_endPoint)).Return (_fakeCollection);
+      _collectionManagerMock.Stub (stub => stub.GetCurrentCollectionReference (_endPoint.ID)).Return (_fakeCollection);
 
       var result = _endPoint.GetCollectionEventRaiser ();
 
@@ -210,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void HasChanged_True_CollectionChanged ()
     {
       _loadStateMock.Replay();
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (true);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (true);
 
       var result = _endPoint.HasChanged;
 
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void HasChanged_True_LoadState ()
     {
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
 
       var result = _endPoint.HasChanged;
@@ -232,7 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void HasChanged_False ()
     {
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
 
       var result = _endPoint.HasChanged;
@@ -315,7 +315,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Commit_TouchedUnchanged ()
     {
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
       _collectionManagerMock.Replay ();
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
@@ -327,7 +327,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPoint.Commit();
 
-      _collectionManagerMock.AssertWasNotCalled (mock => mock.CommitCollectionReference (_endPoint));
+      _collectionManagerMock.AssertWasNotCalled (mock => mock.CommitCollectionReference (_endPoint.ID));
       _loadStateMock.AssertWasNotCalled (mock => mock.Commit (_endPoint));
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
@@ -335,8 +335,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Commit_ChangedCollectionReference ()
     {
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (true);
-      _collectionManagerMock.Expect (mock => mock.CommitCollectionReference (_endPoint));
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (true);
+      _collectionManagerMock.Expect (mock => mock.CommitCollectionReference (_endPoint.ID));
       _collectionManagerMock.Replay ();
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
@@ -358,8 +358,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Commit_ChangedLoadState ()
     {
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
-      _collectionManagerMock.Expect (mock => mock.CommitCollectionReference (_endPoint));
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
+      _collectionManagerMock.Expect (mock => mock.CommitCollectionReference (_endPoint.ID));
       _collectionManagerMock.Replay ();
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
@@ -381,8 +381,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Rollback_ChangedCollectionReference ()
     {
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (true);
-      _collectionManagerMock.Expect (mock => mock.RollbackCollectionReference (_endPoint));
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (true);
+      _collectionManagerMock.Expect (mock => mock.RollbackCollectionReference (_endPoint.ID));
       _collectionManagerMock.Replay();
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
@@ -402,8 +402,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Rollback_ChangedLoadState ()
     {
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
-      _collectionManagerMock.Expect (mock => mock.RollbackCollectionReference (_endPoint));
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
+      _collectionManagerMock.Expect (mock => mock.RollbackCollectionReference (_endPoint.ID));
       _collectionManagerMock.Replay ();
 
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
@@ -426,7 +426,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.Touch();
 
       _loadStateMock.Stub (stub => stub.HasChanged()).Return (false);
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       Assert.That (_endPoint.HasChanged, Is.False);
       Assert.That (_endPoint.HasBeenTouched, Is.True);
@@ -673,7 +673,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       _endPoint.SetDataFromSubTransaction (source);
 
@@ -690,7 +690,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
@@ -708,7 +708,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
@@ -726,7 +726,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (true);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (true);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
@@ -744,7 +744,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint)).Return (false);
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 

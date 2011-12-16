@@ -11,16 +11,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
   public interface IAssociatableDomainObjectCollection
   {
     /// <summary>
-    /// Transforms the collection to an associated collection. The collection will represent the data stored by <paramref name="endPoint"/>,  
-    /// and all modifications will be performed on that <see cref="ICollectionEndPoint"/>.
+    /// Transforms the collection to an associated collection. The collection will represent the data stored by the <see cref="ICollectionEndPoint"/>
+    /// represented by <paramref name="endPointID"/>, and all modifications will be performed on that <see cref="ICollectionEndPoint"/>.
     /// This interface is used by <see cref="CollectionEndPointSetCollectionCommand"/> and should usually not be called by framework
     /// users.
     /// </summary>
-    /// <param name="endPoint">The <see cref="ICollectionEndPoint"/> to associate with.</param>
+    /// <param name="endPointID">The <see cref="RelationEndPointID"/> of the <see cref="ICollectionEndPoint"/> to associate with.</param>
     /// <param name="associatedCollectionDataStrategyFactory">
     ///   The <see cref="IAssociatedCollectionDataStrategyFactory"/> to get the new data strategy from.
     /// </param>
-    void TransformToAssociated (ICollectionEndPoint endPoint, IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory);
+    void TransformToAssociated (RelationEndPointID endPointID, IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory);
 
     /// <summary>
     /// Transforms the collection to a stand-alone collection. The collection will get its own data store and will not be associated with an 

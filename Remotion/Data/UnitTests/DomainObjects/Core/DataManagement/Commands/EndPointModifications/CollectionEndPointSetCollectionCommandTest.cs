@@ -215,7 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      _collectionManagerMock.Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint, _newCollection));
+      _collectionManagerMock.Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint.ID, _newCollection));
       _mockRepository.ReplayAll ();
       
       _command.Perform ();

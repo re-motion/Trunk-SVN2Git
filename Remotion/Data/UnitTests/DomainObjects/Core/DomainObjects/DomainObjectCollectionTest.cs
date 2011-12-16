@@ -579,13 +579,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void TransformToAssociated ()
     {
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
       var contents = _collection.Cast<DomainObject> ().ToArray ();
       var associatedCollectionDataStrategyFactory = new AssociatedCollectionDataStrategyFactory (TestableClientTransaction.DataManager);
-      
-      ((IAssociatableDomainObjectCollection) _collection).TransformToAssociated (endPoint, associatedCollectionDataStrategyFactory);
 
-      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (_collection, typeof (Order), endPoint.ID);
+      ((IAssociatableDomainObjectCollection) _collection).TransformToAssociated (endPointID, associatedCollectionDataStrategyFactory);
+
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (_collection, typeof (Order), endPointID);
       Assert.That (_collection, Is.EqualTo (contents));
     }
 

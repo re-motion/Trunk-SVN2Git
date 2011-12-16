@@ -65,94 +65,94 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _transactionEventSink; }
     }
 
-    public DomainObjectCollection GetOriginalCollectionReference (ICollectionEndPoint endPoint)
+    public DomainObjectCollection GetOriginalCollectionReference (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       return _originalCollectionReferences.GetOrCreateValue (
-          endPoint.ID,
-          id => CreateCollection (id, _dataStrategyFactory.CreateDataStrategyForEndPoint (endPoint)));
+          endPointID,
+          id => CreateCollection (id, _dataStrategyFactory.CreateDataStrategyForEndPoint (endPointID)));
     }
 
-    public DomainObjectCollection GetCurrentCollectionReference (ICollectionEndPoint endPoint)
+    public DomainObjectCollection GetCurrentCollectionReference (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      return _currentCollectionReferences.GetOrCreateValue (endPoint.ID, id => GetOriginalCollectionReference (endPoint));
+      return _currentCollectionReferences.GetOrCreateValue (endPointID, id => GetOriginalCollectionReference (endPointID));
     }
 
-    public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint endPoint, IDomainObjectCollectionData originalData)
+    public DomainObjectCollection GetCollectionWithOriginalData (RelationEndPointID endPointID, IDomainObjectCollectionData originalData)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      return CreateCollection (endPoint.ID, originalData);
+      return CreateCollection (endPointID, originalData);
     }
 
-    public void AssociateCollectionWithEndPoint (ICollectionEndPoint endPoint, DomainObjectCollection newCollection)
+    public void AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
 
-      var oldCollection = (IAssociatableDomainObjectCollection) GetCurrentCollectionReference (endPoint);
-      Assertion.IsTrue (oldCollection.IsAssociatedWith (endPoint));
+      var oldCollection = (IAssociatableDomainObjectCollection) GetCurrentCollectionReference (endPointID);
+      Assertion.IsTrue (oldCollection.AssociatedEndPointID == endPointID);
       oldCollection.TransformToStandAlone();
 
-      ((IAssociatableDomainObjectCollection) newCollection).TransformToAssociated (endPoint, _dataStrategyFactory);
-      _currentCollectionReferences[endPoint.ID] = newCollection;
-      _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPoint.ID, null);
+      ((IAssociatableDomainObjectCollection) newCollection).TransformToAssociated (endPointID, _dataStrategyFactory);
+      _currentCollectionReferences[endPointID] = newCollection;
+      _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, null);
     }
 
-    public bool HasCollectionReferenceChanged (ICollectionEndPoint endPoint)
+    public bool HasCollectionReferenceChanged (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPoint.ID);
+      var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPointID);
       if (originalCollection == null)
       {
-        Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPoint.ID));
+        Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPointID));
         return false;
       }
 
-      var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPoint.ID);
+      var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPointID);
       if (currentCollection == null)
         return false;
 
       return currentCollection != originalCollection;
     }
 
-    public void CommitCollectionReference (ICollectionEndPoint endPoint)
+    public void CommitCollectionReference (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPoint.ID);
+      var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPointID);
       if (originalCollection == null)
       {
-        Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPoint.ID));
+        Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPointID));
         return;
       }
 
-      var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPoint.ID);
+      var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPointID);
       if (currentCollection == null)
         return;
 
-      _originalCollectionReferences[endPoint.ID] = currentCollection;
-      Assertion.DebugAssert (!HasCollectionReferenceChanged (endPoint));
+      _originalCollectionReferences[endPointID] = currentCollection;
+      Assertion.DebugAssert (!HasCollectionReferenceChanged (endPointID));
     }
 
-    public void RollbackCollectionReference (ICollectionEndPoint endPoint)
+    public void RollbackCollectionReference (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
       try
       {
-        var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPoint.ID);
+        var originalCollection = _originalCollectionReferences.GetValueOrDefault (endPointID);
         if (originalCollection == null)
         {
-          Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPoint.ID));
+          Assertion.DebugAssert (!_currentCollectionReferences.ContainsKey (endPointID));
           return;
         }
 
-        var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPoint.ID);
+        var currentCollection = _currentCollectionReferences.GetValueOrDefault (endPointID);
         if (currentCollection == null)
           return;
 
@@ -161,22 +161,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
         // If the end-point's current collection is still associated with this end point, transform it to stand-alone.
         // (During rollback, the current relation might have already been associated with another end-point, we must not overwrite this!)
-        var oldCollection = (IAssociatableDomainObjectCollection) GetCurrentCollectionReference (endPoint);
-        if (oldCollection.IsAssociatedWith (endPoint))
+        var oldCollection = (IAssociatableDomainObjectCollection) GetCurrentCollectionReference (endPointID);
+        if (oldCollection.AssociatedEndPointID == endPointID)
           oldCollection.TransformToStandAlone();
 
         // We must always associate the new collection with the end point, however - even during rollback phase,
-        ((IAssociatableDomainObjectCollection) originalCollection).TransformToAssociated (endPoint, _dataStrategyFactory);
-        _currentCollectionReferences[endPoint.ID] = originalCollection;
+        ((IAssociatableDomainObjectCollection) originalCollection).TransformToAssociated (endPointID, _dataStrategyFactory);
+        _currentCollectionReferences[endPointID] = originalCollection;
 
         // TODO 4527: Consider whether this method should raise the VirtualRelationEndPointStateUpdated. If so, Commit should probably raise it as well.
         // TODO 4527: Also note that ChangeCachingCollectionDataDecorator raises StateUpdated (false) events that are translated into
         // VirtualRelationEndPointStateUpdated (false) events without taking the reference change state into account.
-        _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPoint.ID, null);
+        _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, null);
       }
       finally
       {
-        Assertion.DebugAssert (!HasCollectionReferenceChanged (endPoint));
+        Assertion.DebugAssert (!HasCollectionReferenceChanged (endPointID));
       }
     }
 

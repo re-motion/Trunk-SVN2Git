@@ -43,11 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var ordersEndPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
 
-      var collectionEndPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      collectionEndPointStub.Stub (stub => stub.ID).Return (ordersEndPointID);
-      collectionEndPointStub.Stub (stub => stub.Definition).Return (ordersEndPointID.Definition);
-
-      var result = _factory.CreateDataStrategyForEndPoint (collectionEndPointStub);
+      var result = _factory.CreateDataStrategyForEndPoint (ordersEndPointID);
 
       Assert.That (result, Is.TypeOf<ModificationCheckingCollectionDataDecorator> ());
       var checkingDecorator = (ModificationCheckingCollectionDataDecorator) result;

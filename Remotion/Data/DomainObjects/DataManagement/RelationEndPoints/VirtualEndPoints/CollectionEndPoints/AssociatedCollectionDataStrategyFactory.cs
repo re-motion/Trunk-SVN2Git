@@ -40,12 +40,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _virtualEndPointProvider; }
     }
 
-    public IDomainObjectCollectionData CreateDataStrategyForEndPoint (ICollectionEndPoint collectionEndPoint)
+    public IDomainObjectCollectionData CreateDataStrategyForEndPoint (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var requiredItemType = collectionEndPoint.Definition.GetOppositeEndPointDefinition ().ClassDefinition.ClassType;
-      return new ModificationCheckingCollectionDataDecorator (requiredItemType, new EndPointDelegatingCollectionData (collectionEndPoint.ID, _virtualEndPointProvider));
+      var requiredItemType = endPointID.Definition.GetOppositeEndPointDefinition ().ClassDefinition.ClassType;
+      return new ModificationCheckingCollectionDataDecorator (
+          requiredItemType, new EndPointDelegatingCollectionData (endPointID, _virtualEndPointProvider));
     }
   }
 }

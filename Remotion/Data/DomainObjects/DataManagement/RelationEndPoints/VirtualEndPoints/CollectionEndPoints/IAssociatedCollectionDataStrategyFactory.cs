@@ -24,6 +24,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// </summary>
   public interface IAssociatedCollectionDataStrategyFactory
   {
-    IDomainObjectCollectionData CreateDataStrategyForEndPoint (ICollectionEndPoint collectionEndPoint);
+    IDomainObjectCollectionData CreateDataStrategyForEndPoint (RelationEndPointID endPointID);
   }
 }

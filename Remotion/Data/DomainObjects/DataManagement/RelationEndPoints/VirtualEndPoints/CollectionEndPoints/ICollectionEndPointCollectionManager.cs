@@ -25,14 +25,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// </summary>
   public interface ICollectionEndPointCollectionManager
   {
-    DomainObjectCollection GetOriginalCollectionReference (ICollectionEndPoint endPoint);
-    DomainObjectCollection GetCurrentCollectionReference (ICollectionEndPoint endPoint);
+    DomainObjectCollection GetOriginalCollectionReference (RelationEndPointID endPointID);
+    DomainObjectCollection GetCurrentCollectionReference (RelationEndPointID endPointID);
 
-    DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint endPoint, IDomainObjectCollectionData originalData);
+    DomainObjectCollection GetCollectionWithOriginalData (RelationEndPointID endPointID, IDomainObjectCollectionData originalData);
     
-    void AssociateCollectionWithEndPoint (ICollectionEndPoint endPoint, DomainObjectCollection newCollection);
-    bool HasCollectionReferenceChanged (ICollectionEndPoint endPoint);
-    void CommitCollectionReference (ICollectionEndPoint endPoint);
-    void RollbackCollectionReference (ICollectionEndPoint endPoint);
+    void AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection);
+    bool HasCollectionReferenceChanged (RelationEndPointID endPointID);
+    void CommitCollectionReference (RelationEndPointID endPointID);
+    void RollbackCollectionReference (RelationEndPointID endPointID);
   }
 }

@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public override void Perform ()
     {
-      CollectionEndPointCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint, NewCollection);
+      CollectionEndPointCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint.ID, NewCollection);
       ModifiedEndPoint.Touch();
     }
 

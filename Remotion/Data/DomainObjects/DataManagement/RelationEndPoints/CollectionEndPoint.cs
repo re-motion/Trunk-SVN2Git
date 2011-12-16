@@ -86,12 +86,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public DomainObjectCollection Collection
     {
-      get { return _collectionManager.GetCurrentCollectionReference (this); }
+      get { return _collectionManager.GetCurrentCollectionReference (ID); }
     }
 
     public DomainObjectCollection OriginalCollection
     {
-      get { return _collectionManager.GetOriginalCollectionReference (this); }
+      get { return _collectionManager.GetOriginalCollectionReference (ID); }
     }
 
     public IDomainObjectCollectionEventRaiser GetCollectionEventRaiser ()
@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override bool HasChanged
     {
-      get { return _collectionManager.HasCollectionReferenceChanged (this) || _loadState.HasChanged(); }
+      get { return _collectionManager.HasCollectionReferenceChanged (ID) || _loadState.HasChanged (); }
     }
 
     public override bool HasBeenTouched
@@ -164,7 +164,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       if (HasChanged)
       {
-        _collectionManager.CommitCollectionReference (this);
+        _collectionManager.CommitCollectionReference (ID);
         _loadState.Commit (this);
       }
 
@@ -175,7 +175,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       if (HasChanged)
       {
-        _collectionManager.RollbackCollectionReference (this);
+        _collectionManager.RollbackCollectionReference (ID);
         _loadState.Rollback (this);
       }
 

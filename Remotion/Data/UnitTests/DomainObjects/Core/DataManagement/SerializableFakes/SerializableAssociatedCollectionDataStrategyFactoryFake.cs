@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableAssociatedCollectionDataStrategyFactoryFake : IAssociatedCollectionDataStrategyFactory
   {
-    public IDomainObjectCollectionData CreateDataStrategyForEndPoint (ICollectionEndPoint collectionEndPoint)
+    public IDomainObjectCollectionData CreateDataStrategyForEndPoint (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }

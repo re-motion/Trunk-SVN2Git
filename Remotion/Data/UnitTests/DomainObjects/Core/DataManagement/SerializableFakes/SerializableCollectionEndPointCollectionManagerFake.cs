@@ -25,37 +25,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableCollectionEndPointCollectionManagerFake : ICollectionEndPointCollectionManager
   {
-    public DomainObjectCollection GetOriginalCollectionReference (ICollectionEndPoint endPoint)
+    public DomainObjectCollection GetOriginalCollectionReference (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }
 
-    public DomainObjectCollection GetCurrentCollectionReference (ICollectionEndPoint endPoint)
+    public DomainObjectCollection GetCurrentCollectionReference (RelationEndPointID endPointID)
     {
       return new DomainObjectCollection();
     }
 
-    public DomainObjectCollection GetCollectionWithOriginalData (ICollectionEndPoint endPoint, IDomainObjectCollectionData originalData)
+    public DomainObjectCollection GetCollectionWithOriginalData (RelationEndPointID endPointID, IDomainObjectCollectionData originalData)
     {
       throw new NotImplementedException();
     }
 
-    public void AssociateCollectionWithEndPoint (ICollectionEndPoint endPoint, DomainObjectCollection newCollection)
+    public void AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection)
     {
       throw new NotImplementedException();
     }
 
-    public bool HasCollectionReferenceChanged (ICollectionEndPoint endPoint)
+    public bool HasCollectionReferenceChanged (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }
 
-    public void CommitCollectionReference (ICollectionEndPoint endPoint)
+    public void CommitCollectionReference (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }
 
-    public void RollbackCollectionReference (ICollectionEndPoint endPoint)
+    public void RollbackCollectionReference (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }

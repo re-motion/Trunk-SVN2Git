@@ -753,11 +753,11 @@ namespace Remotion.Data.DomainObjects
     }
 
     void IAssociatableDomainObjectCollection.TransformToAssociated (
-        ICollectionEndPoint endPoint, IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory)
+        RelationEndPointID endPointID, IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory)
     {
-      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var endPointDelegatingCollectionData = associatedCollectionDataStrategyFactory.CreateDataStrategyForEndPoint (endPoint);
+      var endPointDelegatingCollectionData = associatedCollectionDataStrategyFactory.CreateDataStrategyForEndPoint (endPointID);
       endPointDelegatingCollectionData.GetDataStore ().ReplaceContents (_dataStrategy.GetDataStore ()); // copy data
 
       _dataStrategy = endPointDelegatingCollectionData;
