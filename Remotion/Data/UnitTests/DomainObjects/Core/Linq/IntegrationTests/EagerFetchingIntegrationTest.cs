@@ -144,7 +144,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4564")]
     public void EagerFetching_MultipleFetches_OnSameLevel ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
