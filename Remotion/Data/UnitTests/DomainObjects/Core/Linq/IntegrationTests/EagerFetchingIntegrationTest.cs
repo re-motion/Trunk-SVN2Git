@@ -144,6 +144,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 4564")]
+    public void EagerFetching_MultipleFetches_OnSameLevel ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == 1
+                   select o)
+          .Distinct ()
+          .FetchMany (o => o.OrderItems)
+          .FetchOne (o => o.Customer).ThenFetchMany (c => c.Orders).ThenFetchOne (c => c.OrderTicket)
+          .FetchOne (o => o.Customer).ThenFetchMany (c => c.Orders).ThenFetchMany (c => c.OrderItems)
+          .FetchMany (o => o.OrderItems);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+
+      CheckDataContainersRegistered (
+          DomainObjectIDs.Order1, // the original order
+          DomainObjectIDs.Customer1, // the customer
+          DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem, // the customer's orders
+          DomainObjectIDs.OrderTicket1, DomainObjectIDs.OrderTicket2, // the customer's orders' tickets
+          DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2 // the customer's orders' items
+          );
+      
+      CheckObjectRelationRegistered (DomainObjectIDs.Order1, "Customer", DomainObjectIDs.Customer1);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", true, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
+
+      CheckObjectRelationRegistered (DomainObjectIDs.Order1, "OrderTicket", DomainObjectIDs.OrderTicket1);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderTicket1, "Order", DomainObjectIDs.Order1);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderTicket", DomainObjectIDs.OrderTicket2);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderTicket2, "Order", DomainObjectIDs.OrderWithoutOrderItem);
+
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderItem1, "Order", DomainObjectIDs.Order1);
+      CheckObjectRelationRegistered (DomainObjectIDs.OrderItem2, "Order", DomainObjectIDs.Order1);
+      CheckCollectionRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderItems", false);
+    }
+
+    [Test]
     public void EagerFetching_WithTakeResultOperator ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
