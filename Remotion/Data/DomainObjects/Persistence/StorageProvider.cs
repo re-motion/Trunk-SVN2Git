@@ -17,13 +17,10 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Tracing;
@@ -47,23 +44,15 @@ namespace Remotion.Data.DomainObjects.Persistence
     private StorageProviderDefinition _storageProviderDefinition;
     private bool _disposed;
     private readonly IPersistenceExtension _persistenceExtension;
-    private readonly IStorageNameProvider _storageNameProvider;
-    private readonly ISqlDialect _sqlDialect;
 
     protected StorageProvider (
         StorageProviderDefinition storageProviderDefinition,
-        IStorageNameProvider storageNameProvider,
-        ISqlDialect sqlDialect,
         IPersistenceExtension persistenceExtension)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("sqlDialect", sqlDialect);
       ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
 
       _storageProviderDefinition = storageProviderDefinition;
-      _storageNameProvider = storageNameProvider;
-      _sqlDialect = sqlDialect;
       _persistenceExtension = persistenceExtension;
     }
 
@@ -76,16 +65,6 @@ namespace Remotion.Data.DomainObjects.Persistence
     {
       Dispose (true);
       GC.SuppressFinalize (this);
-    }
-
-    public IStorageNameProvider StorageNameProvider
-    {
-      get { return _storageNameProvider; }
-    }
-
-    public ISqlDialect SqlDialect
-    {
-      get { return _sqlDialect; }
     }
 
     protected virtual void Dispose (bool disposing)

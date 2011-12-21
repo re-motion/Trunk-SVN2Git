@@ -26,8 +26,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -48,11 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     }
 
     private MockRepository _mockRepository;
-
-    private ISqlDialect _dialectStub;
-    private IStorageNameProvider _storageNameProviderStub;
     private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _commandFactoryMock;
-
     private IDbConnection _connectionStub;
     private IDbTransaction _transactionStub;
     private IDbCommand _commandMock;
@@ -66,14 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository = new MockRepository();
 
-      _dialectStub = _mockRepository.Stub<ISqlDialect>();
-
-      _storageNameProviderStub = _mockRepository.Stub<IStorageNameProvider>();
-      _storageNameProviderStub.Stub (stub => stub.GetIDColumnName()).Return ("ID");
-      _storageNameProviderStub.Stub (stub => stub.GetClassIDColumnName()).Return ("ClassID");
-      _storageNameProviderStub.Stub (stub => stub.GetTimestampColumnName()).Return ("Timestamp");
-      _storageNameProviderStub.Replay();
-
       _commandFactoryMock = _mockRepository.StrictMock<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
 
       _connectionStub = MockRepository.GenerateStub<IDbConnection> ();
@@ -85,8 +71,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _provider = new TestableRdbmsProvider (
           TestDomainStorageProviderDefinition,
-          _storageNameProviderStub,
-          _dialectStub,
           NullPersistenceExtension.Instance,
           _commandFactoryMock,
           () => _connectionCreatorMock.CreateConnection());
@@ -478,8 +462,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
       var providerWithDifferentID = new RdbmsProvider (
           new RdbmsProviderDefinition ("Test", new SqlStorageObjectFactory(), TestDomainConnectionString),
-          _storageNameProviderStub,
-          SqlDialect.Instance,
           NullPersistenceExtension.Instance,
           _commandFactoryMock,
           () => new SqlConnection());

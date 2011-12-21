@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Tracing;
 
@@ -31,10 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         RdbmsProviderDefinition storageProviderDefinition,
         IStorageTypeInformationProvider storageTypeInformationProvider,
         IDbCommandBuilderFactory dbCommandBuilderFactory,
-        SqlDialect dialect,
-        Func
-            <RdbmsProviderDefinition, IStorageNameProvider, ISqlDialect, IPersistenceExtension,
-            IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>, RdbmsProvider> ctorCall)
+        Func<RdbmsProviderDefinition, IPersistenceExtension, IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>, RdbmsProvider> ctorCall)
     {
       var storageNameProvider = new ReflectionBasedStorageNameProvider ();
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
@@ -53,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
           new TableDefinitionFinder (rdbmsPersistenceModelProvider),
           dataStoragePropertyDefinitionFactory);
 
-      return ctorCall (storageProviderDefinition, storageNameProvider, dialect, NullPersistenceExtension.Instance, commandFactory);
+      return ctorCall (storageProviderDefinition, NullPersistenceExtension.Instance, commandFactory);
     }
   }
 }

@@ -164,7 +164,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       return _parentTransaction.DataManager.CreateDeleteCommand (deletedObject);
     }
-      
+
+    public void Discard (DataContainer dataContainer)
+    {
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      CheckDisposed();
+
+      _parentTransaction.DataManager.Discard (dataContainer);
+    }
+
     private void CheckDisposed ()
     {
       if (_disposed)

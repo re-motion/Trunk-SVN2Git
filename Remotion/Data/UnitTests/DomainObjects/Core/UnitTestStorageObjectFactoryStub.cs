@@ -43,9 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var providerDefiniton = ArgumentUtility.CheckNotNullAndType<UnitTestStorageProviderStubDefinition> (
           "storageProviderDefinition", storageProviderDefinition);
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
-
-      return new UnitTestStorageProviderStub (providerDefiniton, storageNameProvider, persistenceExtension);
+      return new UnitTestStorageProviderStub (providerDefiniton, persistenceExtension);
     }
 
     public IPersistenceModelLoader CreatePersistenceModelLoader (

@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
@@ -53,12 +52,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           TestDomainStorageProviderDefinition,
           new SqlStorageTypeInformationProvider(),
           new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          SqlDialect.Instance,
-          (providerDefinition, nameProvider, dialect, persistenceListener, commandFactory) =>
+          (providerDefinition, persistenceListener, commandFactory) =>
           new RdbmsProvider (
               providerDefinition,
-              nameProvider,
-              dialect,
               NullPersistenceExtension.Instance,
               commandFactory,
               () => new SqlConnection()));

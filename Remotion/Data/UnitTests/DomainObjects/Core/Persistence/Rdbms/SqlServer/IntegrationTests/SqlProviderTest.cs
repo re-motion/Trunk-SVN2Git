@@ -17,21 +17,12 @@
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.IntegrationTests
 {
   [TestFixture]
   public class SqlProviderTest : SqlProviderBaseTest
   {
-    [Test]
-    public void Dialect ()
-    {
-      var dialect = PrivateInvoke.GetNonPublicField (Provider, typeof (RdbmsProvider), "_sqlDialect");
-      Assert.That (dialect, Is.SameAs (SqlDialect.Instance));
-    }
-
     [Test]
     public void IsConnectedFalse ()
     {

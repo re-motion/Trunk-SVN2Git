@@ -65,8 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       _provider = new RdbmsProvider (
           TableInheritanceTestDomainStorageProviderDefinition,
-          storageNameProvider,
-          SqlDialect.Instance,
           NullPersistenceExtension.Instance,
           commandFactory,
           () => new SqlConnection ());

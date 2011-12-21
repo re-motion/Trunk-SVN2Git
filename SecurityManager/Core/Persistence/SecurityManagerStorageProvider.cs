@@ -21,43 +21,27 @@ using System.Data;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.SecurityManager.Persistence
 {
   public class SecurityManagerRdbmsProvider : RdbmsProvider
   {
-    // constants
-
-    // types
-
-    // static members
-
-    // member fields
-
     private readonly RevisionStorageProviderExtension _revisionExtension;
-
-    // construction and disposing
 
     public SecurityManagerRdbmsProvider (
         RdbmsProviderDefinition definition,
-        IStorageNameProvider storageNameProvider,
         IPersistenceExtension persistenceExtension,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
         Func<IDbConnection> connectionFactory)
         : base (
             definition,
-            storageNameProvider,
-            Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance,
             persistenceExtension,
             commandFactory,
             connectionFactory)
     {
       _revisionExtension = new RevisionStorageProviderExtension();
     }
-
-    // methods and properties
 
     public override void Save (IEnumerable<DataContainer> dataContainers)
     {

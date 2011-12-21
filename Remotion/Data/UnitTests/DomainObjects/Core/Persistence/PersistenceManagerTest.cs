@@ -22,12 +22,9 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
-using Mocks_List = Rhino.Mocks.Constraints.List;
 using System.Linq;
 using Remotion.Data.UnitTests.UnitTesting;
 
@@ -107,11 +104,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.AreNotEqual (DomainObjectIDs.Order1.StorageProviderDefinition.Name, DomainObjectIDs.Official1, "Different storage providers");
 
       var mockRepository = new MockRepository ();
-      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
       var storageProviderMock = mockRepository.StrictMock<StorageProvider> (
           UnitTestStorageProviderDefinition, 
-          storageNameProvider, 
-          SqlDialect.Instance, 
           NullPersistenceExtension.Instance);
 
       var officialDC1 = DataContainer.CreateNew (DomainObjectIDs.Official1);

@@ -46,12 +46,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           rdbmsProviderDefinition,
           new SqlStorageTypeInformationProvider(),
           new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          SqlDialect.Instance,
-          (providerDefinition, nameProvider, dialect, persistenceListener, commandFactory) =>
+          (providerDefinition, persistenceListener, commandFactory) =>
           new ObservableRdbmsProvider (
               providerDefinition,
-              nameProvider,
-              dialect,
               NullPersistenceExtension.Instance,
               commandFactory,
               () => new SqlConnection(),
@@ -182,12 +179,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _rdbmsProviderDefinition,
           new SqlStorageTypeInformationProvider (),
           new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          SqlDialect.Instance,
-          (providerDefinition, nameProvider, dialect, persistenceListener, commandFactory) =>
+          (providerDefinition, persistenceListener, commandFactory) =>
           new RdbmsProvider (
               providerDefinition,
-              nameProvider,
-              dialect,
               NullPersistenceExtension.Instance,
               commandFactory,
               () => new SqlConnection ())))

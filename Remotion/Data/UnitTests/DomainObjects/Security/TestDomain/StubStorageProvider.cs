@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
@@ -31,8 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   public class StubStorageProvider : StorageProvider
   {
-    public StubStorageProvider (StorageProviderDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceExtension persistenceExtension)
-      : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceExtension)
+    public StubStorageProvider (StorageProviderDefinition definition, IPersistenceExtension persistenceExtension)
+      : base (definition, persistenceExtension)
     {
     }
 
@@ -50,12 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      List<DataContainer> collection = new List<DataContainer> ();
+      var collection = new List<DataContainer> ();
       if (query.ID == "GetSecurableObjects")
         collection.Add (DataContainer.CreateNew (CreateNewObjectID (MappingConfiguration.Current.GetTypeDefinition (typeof (SecurableObject)))));
 
       return collection.ToArray ();
-      ;
     }
 
     public override object ExecuteScalarQuery (IQuery query)

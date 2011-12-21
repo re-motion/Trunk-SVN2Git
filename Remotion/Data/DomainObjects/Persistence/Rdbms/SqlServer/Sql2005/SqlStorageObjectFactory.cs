@@ -68,26 +68,22 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageNameProvider,
           infrastructureStoragePropertyDefinitionFactory, 
           dataStoragePropertyDefinitionFactory, storageTypeInformationProvider);
-      return CreateStorageProvider (persistenceExtension, rdbmsProviderDefinition, storageNameProvider, commandFactory);
+      return CreateStorageProvider (persistenceExtension, rdbmsProviderDefinition, commandFactory);
     }
 
     protected virtual StorageProvider CreateStorageProvider (
         IPersistenceExtension persistenceExtension,
         RdbmsProviderDefinition rdbmsProviderDefinition,
-        IStorageNameProvider storageNameProvider,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
 
       return
           ObjectFactory.Create<RdbmsProvider> (
               ParamList.Create (
                   rdbmsProviderDefinition,
-                  storageNameProvider,
-                  SqlDialect.Instance,
                   persistenceExtension,
                   commandFactory,
                   (Func<IDbConnection>) (() => new SqlConnection())));

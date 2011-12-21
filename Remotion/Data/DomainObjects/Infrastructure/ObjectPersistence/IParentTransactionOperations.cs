@@ -33,5 +33,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     void RegisterDataContainer (DataContainer dataContainer);
     IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject);
+    void Discard (DataContainer dataContainer);
   }
 }

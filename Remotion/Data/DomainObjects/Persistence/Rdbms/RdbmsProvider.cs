@@ -40,12 +40,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 
     public RdbmsProvider (
         RdbmsProviderDefinition definition,
-        IStorageNameProvider storageNameProvider,
-        ISqlDialect sqlDialect,
         IPersistenceExtension persistenceExtension,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
         Func<IDbConnection> connectionFactory)
-        : base (definition, storageNameProvider, sqlDialect, persistenceExtension)
+        : base (definition, persistenceExtension)
     {
       ArgumentUtility.CheckNotNull ("storageProviderCommandFactory", storageProviderCommandFactory);
       ArgumentUtility.CheckNotNull ("connectionFactory", connectionFactory);

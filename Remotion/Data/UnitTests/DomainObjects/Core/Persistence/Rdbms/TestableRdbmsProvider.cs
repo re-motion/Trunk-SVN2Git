@@ -18,7 +18,6 @@ using System;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
@@ -27,12 +26,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
   {
     public TestableRdbmsProvider (
         RdbmsProviderDefinition definition,
-        IStorageNameProvider storageNameProvider,
-        ISqlDialect dialect,
         IPersistenceExtension persistenceExtension,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory,
         Func<IDbConnection> connectionFactory)
-      : base (definition, storageNameProvider, dialect, persistenceExtension, commandFactory, connectionFactory)
+      : base (definition, persistenceExtension, commandFactory, connectionFactory)
     {
 
     }

@@ -19,8 +19,6 @@ using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Rhino.Mocks;
@@ -30,7 +28,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
   [TestFixture]
   public class StorageProviderCollectionTest : StandardMappingTest
   {
-    private IStorageNameProvider _storageNameProviderStub;
     private IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> _storageProviderCommandFactoryStub;
 
     private StorageProvider _provider;
@@ -41,13 +38,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     {
       base.SetUp();
 
-      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
       _storageProviderCommandFactoryStub = MockRepository.GenerateStub<IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext>>();
 
       _provider = new RdbmsProvider (
           new RdbmsProviderDefinition ("TestDomain", new SqlStorageObjectFactory(), "ConnectionString"),
-          _storageNameProviderStub,
-          SqlDialect.Instance,
           NullPersistenceExtension.Instance,
           _storageProviderCommandFactoryStub,
           () => new SqlConnection());
@@ -69,8 +63,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       StorageProvider copy = new RdbmsProvider (
           (RdbmsProviderDefinition) _provider.StorageProviderDefinition,
-          _storageNameProviderStub,
-          SqlDialect.Instance,
           NullPersistenceExtension.Instance,
           _storageProviderCommandFactoryStub,
           () => new SqlConnection());

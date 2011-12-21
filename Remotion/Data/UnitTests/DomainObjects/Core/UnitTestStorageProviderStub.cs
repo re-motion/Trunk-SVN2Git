@@ -78,17 +78,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var storageProviderID =
           MappingConfiguration.Current.GetTypeDefinition (typeof (Official)).StorageEntityDefinition.StorageProviderDefinition.Name;
       var storageProviderDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      return MockRepository.GenerateMock<StorageProvider> (
-          storageProviderDefinition,
-          storageNameProvider,
-          Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance,
-          NullPersistenceExtension.Instance);
+      return MockRepository.GenerateMock<StorageProvider> (storageProviderDefinition, NullPersistenceExtension.Instance);
     }
 
     public UnitTestStorageProviderStub (
-        UnitTestStorageProviderStubDefinition definition, IStorageNameProvider storageNameProvider, IPersistenceExtension persistenceExtension)
-        : base (definition, storageNameProvider, Data.DomainObjects.Persistence.Rdbms.SqlServer.SqlDialect.Instance, persistenceExtension)
+        UnitTestStorageProviderStubDefinition definition, IPersistenceExtension persistenceExtension)
+        : base (definition, persistenceExtension)
     {
     }
 
@@ -114,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 return propertyDefinition.DefaultValue;
             });
 
-        int idAsInt = (int) id.Value;
+        var idAsInt = (int) id.Value;
         if (s_nextID <= idAsInt)
           s_nextID = idAsInt + 1;
         return new ObjectLookupResult<DataContainer>(id, container);

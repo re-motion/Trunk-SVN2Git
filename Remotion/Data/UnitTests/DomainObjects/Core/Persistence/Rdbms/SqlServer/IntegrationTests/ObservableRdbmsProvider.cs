@@ -18,7 +18,6 @@ using System;
 using System.Data;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
 
@@ -35,8 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     private readonly ICommandExecutionListener _listener;
 
-    public ObservableRdbmsProvider (RdbmsProviderDefinition definition, IStorageNameProvider storageNameProvider, ISqlDialect sqlDialect, IPersistenceExtension persistenceExtension, IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory, Func<IDbConnection> connectionFactory, ICommandExecutionListener listener)
-        : base(definition, storageNameProvider, sqlDialect, persistenceExtension, storageProviderCommandFactory, connectionFactory)
+    public ObservableRdbmsProvider (
+        RdbmsProviderDefinition definition,
+        IPersistenceExtension persistenceExtension,
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> storageProviderCommandFactory,
+        Func<IDbConnection> connectionFactory,
+        ICommandExecutionListener listener)
+        : base(definition, persistenceExtension, storageProviderCommandFactory, connectionFactory)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
       _listener = listener;
