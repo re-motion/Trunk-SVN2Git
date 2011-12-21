@@ -1790,7 +1790,7 @@
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithManySideRelationProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithDifferentPropertiesNotInMapping.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithOneSideRelationProperties.cs" />
-    <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithPropertiesHavingStorageClassAttribute.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\TestDomain\ClassWithPropertiesHavingStorageClassAttribute.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassHavingStorageSpecificIdentifierAttribute.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassWithDifferentProperties.cs" />
     <Compile Include="DomainObjects\TestDomain\ReflectionBasedMappingSample\ClassHavingClassIDAttribute.cs" />

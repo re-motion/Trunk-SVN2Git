@@ -62,28 +62,27 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     /// <summary>
     /// Creates an empty <see cref="DataContainer"/> for an existing <see cref="Remotion.Data.DomainObjects.DomainObject"/>. The <see cref="DataContainer"/>
-    /// contain all <see cref="PropertyValue"/> objects, just as if it had been created with <see cref="CreateNew"/>, but the values for persistent 
+    /// contain all <see cref="PropertyValue"/> objects, just as if it had been created with <see cref="CreateNew"/>, but the values for its 
     /// properties are set as returned by a lookup method.
-    /// The <see cref="DataContainer"/> has be to <see cref="DataManager.RegisterDataContainer">registered</see> with a 
-    /// <see cref="ClientTransaction"/> and its <see cref="DomainObject"/> must <see cref="SetDomainObject">be set</see> before it can be used.
+    /// The <see cref="DataContainer"/> has be to registered with a <see cref="ClientTransaction"/> via <see cref="DataManager.RegisterDataContainer"/> 
+    /// and <see cref="SetDomainObject"/> must be called before it can be used.
     /// </summary>
     /// <remarks>
-    /// The new <see cref="DataContainer"/> has a <see cref="State"/> of <see cref="StateType.Unchanged"/>. All <see cref="PropertyValue"/>s for the class specified by <see cref="ObjectID.ClassID"/> are created.
+    /// The new <see cref="DataContainer"/> has a <see cref="State"/> of <see cref="StateType.Unchanged"/>. All <see cref="PropertyValue"/>s for the 
+    /// class specified by <see cref="ObjectID.ClassID"/> are created.
     /// </remarks>
     /// <param name="id">The <see cref="ObjectID"/> of the new <see cref="DataContainer"/> to create. Must not be <see langword="null"/>.</param>
     /// <param name="timestamp">The timestamp value of the existing object in the data source.</param>
-    /// <param name="persistentValueLookup">A function object returning the value of a given persistent property for the existing object.</param>
+    /// <param name="valueLookup">A function object returning the value of a given property for the existing object.</param>
     /// <returns>The new <see cref="DataContainer"/>.</returns>
     /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
     /// <exception cref="Mapping.MappingException">ClassDefinition of <paramref name="id"/> does not exist in mapping.</exception>
-    public static DataContainer CreateForExisting (ObjectID id, object timestamp, Func<PropertyDefinition, object> persistentValueLookup)
+    public static DataContainer CreateForExisting (ObjectID id, object timestamp, Func<PropertyDefinition, object> valueLookup)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
       var propertyValues = from propertyDefinition in id.ClassDefinition.GetPropertyDefinitions ()
-                           select propertyDefinition.StorageClass == StorageClass.Persistent 
-                              ? new PropertyValue (propertyDefinition, persistentValueLookup (propertyDefinition)) 
-                              : new PropertyValue (propertyDefinition);
+                           select new PropertyValue (propertyDefinition, valueLookup (propertyDefinition));
 
       return new DataContainer (id, DataContainerStateType.Existing, timestamp, propertyValues);
     }

@@ -86,12 +86,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       StubPersistenceModelProviderForProperty (typeof (OrderTicket), "FileName", _fileNamePropertyStrictMock);
       StubPersistenceModelProviderForProperty (typeof (OrderTicket), "Order", _orderPropertyStrictMock);
-
+      
       ExpectPropertyCombinesForOrderTicket (DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
       ReplayAll();
       
       var dataContainer = _dataContainerReader.Read (_dataReaderStrictMock);
-      
+
+      _persistenceModelProviderStub.AssertWasNotCalled (
+          provider => provider.GetStoragePropertyDefinition (GetPropertyDefinition (typeof (OrderTicket), "Int32TransactionProperty")));
       VerifyAll();
       Assert.That (dataContainer, Is.Not.Null);
       CheckLoadedDataContainer(dataContainer, DomainObjectIDs.OrderTicket1, 17, "abc", DomainObjectIDs.Order1);
@@ -231,8 +233,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       Assert.That (dataContainer.ID, Is.EqualTo (expectedID));
       Assert.That (dataContainer.Timestamp, Is.EqualTo (expectedTimestamp));
 
-      Assert.That (dataContainer.PropertyValues[typeof (OrderTicket).FullName + ".FileName"].Value, Is.EqualTo (expectedFileName));
-      Assert.That (dataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.EqualTo (expectedOrder));
+      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "FileName")].OriginalValue, Is.EqualTo (expectedFileName));
+      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "FileName")].Value, Is.EqualTo (expectedFileName));
+      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")].OriginalValue, Is.EqualTo (expectedOrder));
+      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")].Value, Is.EqualTo (expectedOrder));
+      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Int32TransactionProperty")].OriginalValue, Is.EqualTo (0));
+      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Int32TransactionProperty")].Value, Is.EqualTo (0));
     }
 
     private void ReplayAll()

@@ -104,7 +104,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
         return null;
 
       var timestamp = _timestampProperty.CombineValue (columnValueReader);
-      return DataContainer.CreateForExisting (id, timestamp, pd => ReadPropertyValue (pd, columnValueReader, id));
+      return DataContainer.CreateForExisting (
+          id, 
+          timestamp, 
+          pd => pd.StorageClass == StorageClass.Persistent ? ReadPropertyValue (pd, columnValueReader, id) : pd.DefaultValue);
     }
 
     private object ReadPropertyValue (PropertyDefinition propertyDefinition, IColumnValueProvider columnValueProvider, ObjectID id)

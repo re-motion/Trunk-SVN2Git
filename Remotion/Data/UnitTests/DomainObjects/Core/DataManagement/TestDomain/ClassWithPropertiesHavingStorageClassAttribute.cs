@@ -14,32 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain
 {
   [DBTable]
   [TestDomain]
   [Instantiable]
   public abstract class ClassWithPropertiesHavingStorageClassAttribute : DomainObject
   {
-    protected ClassWithPropertiesHavingStorageClassAttribute ()
-    {
-    }
-
-    public abstract int NoAttribute { get; set; }
-
     [StorageClass (StorageClass.Persistent)]
     public abstract int Persistent { get; set; }
 
     [StorageClassTransaction]
     public abstract int Transaction { get; set; }
-
-    [StorageClassTransaction]
-    public abstract DateTime TransactionWithDateTimeDataType { get; set; }
 
     [StorageClassNone]
     public object None 

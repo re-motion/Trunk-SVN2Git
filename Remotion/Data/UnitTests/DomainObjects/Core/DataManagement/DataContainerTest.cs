@@ -20,12 +20,12 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -808,7 +808,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateForExisting_IncludesStorageClassPersistentProperties_WithPersistentValue ()
+    public void CreateForExisting_IncludesStorageClassPersistentProperties_WithLookupValue ()
     {
       DataContainer dc = DataContainer.CreateForExisting (
           new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
@@ -820,15 +820,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateForExisting_IncludesStorageClassTransactionProperties ()
+    public void CreateForExisting_IncludesStorageClassTransactionProperties_WithLookupValue ()
     {
       DataContainer dc = DataContainer.CreateForExisting (
           new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
           1,
           delegate { return 2; });
       Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (0));
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].OriginalValue, Is.EqualTo (0));
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (2));
+      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].OriginalValue, Is.EqualTo (2));
     }
 
     [Test]
