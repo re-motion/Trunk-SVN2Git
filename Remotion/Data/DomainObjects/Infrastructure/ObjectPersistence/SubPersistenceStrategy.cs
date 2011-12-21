@@ -192,12 +192,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ObjectDeletedException (message, parentDataContainer.ID);
       }
 
-      var thisDataContainer = DataContainer.CreateNew (parentDataContainer.ID);
+      var thisDataContainer = DataContainer.CreateForExisting (
+          parentDataContainer.ID, 
+          parentDataContainer.Timestamp, 
+          pd => parentDataContainer.PropertyValues[pd.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
 
-      thisDataContainer.SetPropertyDataFromSubTransaction (parentDataContainer);
-      thisDataContainer.SetTimestamp (parentDataContainer.Timestamp);
-      thisDataContainer.CommitState (); // for the new DataContainer, the current parent DC state becomes the Unchanged state
-
+      Assertion.IsTrue (thisDataContainer.State == StateType.Unchanged);
       return thisDataContainer;
     }
 
