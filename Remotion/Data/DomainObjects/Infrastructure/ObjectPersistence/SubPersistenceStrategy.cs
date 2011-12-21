@@ -301,6 +301,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           "deleted DataContainers cannot be discarded or deleted in the ParentTransaction");
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
+      // Use a DeleteCommand rather than manually deleting/discarding the parentDataContainer because DataManager.Discard requires all of the 
+      // DataContainer's end-points to be decoupled before the DataContainer (and its end-points) can be unregistered.
+      // DeleteCommand ensures this by decoupling the end-points as required.
       var deleteCommand = parentTransactionOperations.CreateDeleteCommand (dataContainer.DomainObject);
       // no events, no bidirectional changes
       deleteCommand.Perform ();
