@@ -210,6 +210,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CreateSetCollectionCommand ()
     {
+      var fakeCollectionData = new DomainObjectCollectionData ();
+      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
       _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
 
       var fakeCollection = new DomainObjectCollection ();
@@ -226,6 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (newCollection));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).CollectionEndPointCollectionManager, Is.SameAs (_collectionManagerStub));
+      Assert.That (((CollectionEndPointSetCollectionCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
     }
 
     [Test]

@@ -139,7 +139,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      return new CollectionEndPointSetCollectionCommand (collectionEndPoint, newCollection, collectionEndPointCollectionManager);
+      return new CollectionEndPointSetCollectionCommand (collectionEndPoint, newCollection, DataKeeper.CollectionData, collectionEndPointCollectionManager);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)

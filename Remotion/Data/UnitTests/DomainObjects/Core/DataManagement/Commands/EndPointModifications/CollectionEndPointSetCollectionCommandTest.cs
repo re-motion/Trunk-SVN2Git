@@ -53,6 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _command = new CollectionEndPointSetCollectionCommand (
           CollectionEndPoint, 
           _newCollection,
+          CollectionDataMock,
           _collectionManagerMock);
 
       _order1 = Order.GetObject (DomainObjectIDs.Order1);
@@ -82,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointSetCollectionCommand (endPoint, _newCollection, _collectionManagerMock);
+      new CollectionEndPointSetCollectionCommand (endPoint, _newCollection, CollectionDataMock, _collectionManagerMock);
     }
 
     [Test]

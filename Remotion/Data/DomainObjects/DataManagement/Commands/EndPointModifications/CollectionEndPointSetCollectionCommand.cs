@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Utilities;
@@ -30,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   {
     private readonly ICollectionEndPoint _modifiedEndPoint;
     private readonly DomainObjectCollection _newCollection;
-
+    private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly ICollectionEndPointCollectionManager _collectionEndPointCollectionManager;
 
     private DomainObject[] _removedObjects;
@@ -39,10 +40,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public CollectionEndPointSetCollectionCommand (
         ICollectionEndPoint modifiedEndPoint,
         DomainObjectCollection newCollection,
+        IDomainObjectCollectionData modifiedCollectionData,
         ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
       : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
+      ArgumentUtility.CheckNotNull ("modifiedCollectionData", modifiedCollectionData);
       ArgumentUtility.CheckNotNull ("collectionEndPointCollectionManager", collectionEndPointCollectionManager);
 
       if (modifiedEndPoint.IsNull)
@@ -50,7 +53,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
       _modifiedEndPoint = modifiedEndPoint;
       _newCollection = newCollection;
-
+      _modifiedCollectionData = modifiedCollectionData;
       _collectionEndPointCollectionManager = collectionEndPointCollectionManager;
     }
 
@@ -62,6 +65,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public DomainObjectCollection NewCollection
     {
       get { return _newCollection; }
+    }
+
+    public IDomainObjectCollectionData ModifiedCollectionData
+    {
+      get { return _modifiedCollectionData; }
     }
 
     public ICollectionEndPointCollectionManager CollectionEndPointCollectionManager
