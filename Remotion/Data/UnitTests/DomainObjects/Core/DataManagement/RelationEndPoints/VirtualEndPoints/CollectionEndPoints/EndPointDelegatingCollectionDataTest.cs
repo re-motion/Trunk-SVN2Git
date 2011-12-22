@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (_collectionEndPointMock);
 
       _endPointDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData>();
-      _endPointDataDecorator = new ReadOnlyCollectionDataDecorator (_endPointDataStub, true);
+      _endPointDataDecorator = new ReadOnlyCollectionDataDecorator (_endPointDataStub);
 
       _commandStub = MockRepository.GenerateStub<IDataManagementCommand>();
       _nestedCommandMock = MockRepository.GenerateMock<IDataManagementCommand> ();
@@ -143,19 +143,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _delegatingData.EnsureDataComplete ();
 
       _collectionEndPointMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void GetDataStore ()
-    {
-      var dataStoreStub = new DomainObjectCollectionData ();
-      _endPointDataStub.Stub (stub => stub.GetDataStore()).Return (dataStoreStub);
-      _collectionEndPointMock.Expect (mock => mock.GetData ()).Return (_endPointDataDecorator);
-      _collectionEndPointMock.Replay ();
-
-      Assert.That (_delegatingData.GetDataStore(), Is.SameAs(dataStoreStub));
-
-      _collectionEndPointMock.VerifyAllExpectations ();
     }
 
     [Test]

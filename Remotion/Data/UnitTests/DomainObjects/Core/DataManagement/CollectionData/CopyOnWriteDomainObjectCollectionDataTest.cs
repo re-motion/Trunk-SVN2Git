@@ -130,18 +130,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void GetDataStore_PerformsCopyOperation ()
-    {
-      Assert.That (_copyOnWriteData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
-
-      var underlyingData = _copyOnWriteData.GetDataStore ();
-      underlyingData.Add (_domainObject3);
-
-      Assert.That (_copyOnWriteData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
-      Assert.That (_copiedData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2 }));
-    }
-
-    [Test]
     public void Serializable ()
     {
      Assert.That (_copyOnWriteData.Count, Is.EqualTo (2));

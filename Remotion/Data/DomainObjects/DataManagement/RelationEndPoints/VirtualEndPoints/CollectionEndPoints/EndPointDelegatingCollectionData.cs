@@ -105,13 +105,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       AssociatedEndPoint.EnsureDataComplete ();
     }
 
-    public IDomainObjectCollectionData GetDataStore ()
-    {
-      // This will usually return the ChangeCachingDomainObjectCollectionData
-      var data = AssociatedEndPoint.GetData ();
-      return data.GetDataStore();
-    }
-
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

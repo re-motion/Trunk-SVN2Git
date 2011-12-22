@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
       ArgumentUtility.CheckNotNull ("content", content);
 
-      var dataStrategy = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (content), true);
+      var dataStrategy = new ReadOnlyCollectionDataDecorator (new DomainObjectCollectionData (content));
       return CreateCollection (collectionType, dataStrategy);
     }
 

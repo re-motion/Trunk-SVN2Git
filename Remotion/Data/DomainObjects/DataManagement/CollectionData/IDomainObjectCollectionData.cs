@@ -34,7 +34,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
     bool IsDataComplete { get; }
 
     void EnsureDataComplete ();
-    IDomainObjectCollectionData GetDataStore ();
 
     bool ContainsObjectID (ObjectID objectID);
 

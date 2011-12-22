@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var collection = _factory.CreateReadOnlyCollection (typeof (OrderCollection), new Order[0]);
 
-      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (collection, true);
+      DomainObjectCollectionDataTestHelper.CheckReadOnlyCollectionStrategy (collection);
     }
     
     private void CheckDataStrategy (DomainObjectCollection collection, IDomainObjectCollectionData expectedData)

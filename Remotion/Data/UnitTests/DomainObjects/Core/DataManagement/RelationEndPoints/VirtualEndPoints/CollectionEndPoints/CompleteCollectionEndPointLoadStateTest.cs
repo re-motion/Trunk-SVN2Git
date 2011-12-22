@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetCollectionData ()
     {
-      var collectionDataStub = new ReadOnlyCollectionDataDecorator (MockRepository.GenerateStub<IDomainObjectCollectionData> (), false);
+      var collectionDataStub = new ReadOnlyCollectionDataDecorator (MockRepository.GenerateStub<IDomainObjectCollectionData> ());
       _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
 
       var result = _loadState.GetOriginalData (_collectionEndPointMock);

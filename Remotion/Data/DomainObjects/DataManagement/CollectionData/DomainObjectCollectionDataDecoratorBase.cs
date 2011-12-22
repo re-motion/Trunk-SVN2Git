@@ -57,11 +57,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       _wrappedData.EnsureDataComplete();
     }
 
-    public virtual IDomainObjectCollectionData GetDataStore ()
-    {
-      return _wrappedData.GetDataStore ();
-    }
-
     public virtual bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

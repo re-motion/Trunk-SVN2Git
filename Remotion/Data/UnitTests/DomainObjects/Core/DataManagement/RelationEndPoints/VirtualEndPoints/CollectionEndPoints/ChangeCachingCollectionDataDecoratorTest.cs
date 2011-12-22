@@ -59,9 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (_decoratorWithRealData.OriginalData.IsReadOnly, Is.True);
       Assert.That (_decoratorWithRealData.OriginalData, Is.TypeOf (typeof (ReadOnlyCollectionDataDecorator)));
-
-      var originalData = _decoratorWithRealData.OriginalData;
-      Assert.That (originalData.IsGetDataStoreAllowed, Is.False);
     }
 
     [Test]
@@ -170,12 +167,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (result1, Is.True);
       Assert.That (result2, Is.False);
-    }
-
-    [Test]
-    public void GetDataStore ()
-    {
-      Assert.That (_decoratorWithRealData.GetDataStore (), Is.SameAs (_decoratorWithRealData));
     }
 
     [Test]

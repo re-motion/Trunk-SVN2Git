@@ -101,39 +101,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void SetCollection_DataStrategy_OfOldOpposites ()
     {
       var oldOpposites = _customerEndPoint.Collection;
-      var originalDataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
-      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetDataStore ();
 
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
-      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy(oldOpposites, typeof (Order));
+      // old collection got a stand-alone strategy...
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (oldOpposites, typeof (Order));
 
-      // old collection got a new data store...
-      var dataStoreOfOldOpposites = DomainObjectCollectionDataTestHelper.GetDataStrategy (oldOpposites).GetDataStore();
-      Assert.That (dataStoreOfOldOpposites, Is.Not.SameAs (originalDataStoreOfOldOpposites));
-
+      var dataStrategyOfOldOpposites = DomainObjectCollectionDataTestHelper.GetDataStrategy (oldOpposites);
       // with the data it had before!
-      Assert.That (dataStoreOfOldOpposites.ToArray (), Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
+      Assert.That (dataStrategyOfOldOpposites.ToArray (), Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
     }
 
     [Test]
     public void SetCollection_DataStrategy_OfNewOpposites ()
     {
-      var oldOpposites = _customerEndPoint.Collection;
-      var originalDataOfOldOpposites = GetDomainObjectCollectionData (oldOpposites);
-      var originalDataStoreOfOldOpposites = originalDataOfOldOpposites.GetDataStore ();
-      
       var newOpposites = new OrderCollection { _orderWithoutOrderItem };
       SetCollectionAndNotify (_customerEndPoint, newOpposites);
 
+      // New collection now has a delegating data store...
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (newOpposites, typeof (Order), _customerEndPoint.ID);
 
-      // end point still holds on to the same old data store...
-      Assert.That (GetDomainObjectCollectionData (newOpposites).GetDataStore(), Is.SameAs (originalDataStoreOfOldOpposites));
-
-      // but with the new data!
-      Assert.That (originalDataStoreOfOldOpposites.ToArray (), Is.EqualTo (new[] { _orderWithoutOrderItem }));
+      // ... and the end-point now has data newOpposites had before!
+      Assert.That (_customerEndPoint.GetData(), Is.EqualTo (new[] { _orderWithoutOrderItem }));
+      Assert.That (newOpposites, Is.EqualTo (new[] { _orderWithoutOrderItem }));
     }
 
     [Test]
@@ -305,9 +296,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Rollback_AfterReplace_RestoresDelegationChain ()
     {
       var oldCollection = _customerEndPoint.Collection;
-      var oldCollectionDataStore = DomainObjectCollectionDataTestHelper.GetDataStrategy (oldCollection).GetDataStore ();
-
       var newCollection = new OrderCollection { _order2 };
+      DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint.ID);
+      DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (newCollection, typeof (Order));
+
       SetCollectionAndNotify (_customerEndPoint, newCollection);
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newCollection));
@@ -318,8 +310,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (oldCollection, typeof (Order), _customerEndPoint.ID);
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (newCollection, typeof (Order));
-
-      Assert.That (GetDomainObjectCollectionData (oldCollection).GetDataStore (), Is.SameAs (oldCollectionDataStore));
     }
 
     [Test]

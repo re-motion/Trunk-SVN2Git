@@ -74,7 +74,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public ReadOnlyCollectionDataDecorator OriginalData
     {
-      get { return new ReadOnlyCollectionDataDecorator (_originalData, false); }
+      get { return new ReadOnlyCollectionDataDecorator (_originalData); }
     }
 
     public bool IsCacheUpToDate
@@ -92,11 +92,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
 
       return _cachedHasChangedFlag;
-    }
-
-    public override IDomainObjectCollectionData GetDataStore ()
-    {
-      return this;
     }
 
     public void Commit ()

@@ -27,8 +27,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
   /// This class by default delegates to the copied collection, until it is either instructed to make a copy (<see cref="CopyOnWrite"/>), its contents
   /// changes, or the copied collection's contents changes. In order to be able to detect changes to the copied collection, that collection must
   /// be an <see cref="ObservableCollectionDataDecorator"/>. Only changes made through the <see cref="ObservableCollectionDataDecorator"/> will lead
-  /// to a copy operation; changes made to the underlying data store of the copied collection (eg., via 
-  /// <see cref="IDomainObjectCollectionData.GetDataStore"/>, or by keeping the data store passed into the copied collection when created) may lead 
+  /// to a copy operation; changes made to the underlying data store of the copied collection (eg. by keeping the data store passed into the copied 
+  /// collection when created) may lead 
   /// to copy operations being missed and must therfore be performed very carefully.
   /// </para>
   /// <para>
@@ -71,12 +71,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
     protected override void OnDataChanged (OperationKind operation, DomainObject affectedObject, int index)
     {
       // nothing to do here
-    }
-
-    public override IDomainObjectCollectionData GetDataStore ()
-    {
-      CopyOnWrite ();
-      return base.GetDataStore ();
     }
   }
 }

@@ -112,13 +112,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       GetWrappedDataAndCheckType<DomainObjectCollectionData> (eventRaisingDecorator);
     }
 
-    public static void CheckReadOnlyCollectionStrategy (DomainObjectCollection collection, bool expectedIsGetDataStoreAllowed)
+    public static void CheckReadOnlyCollectionStrategy (DomainObjectCollection collection)
     {
       // collection => read-only decorator => actual data store
 
       var readOnlyDecorator = GetDataStrategyAndCheckType<ReadOnlyCollectionDataDecorator> (collection);
-      Assert.That (readOnlyDecorator.IsGetDataStoreAllowed, Is.EqualTo (expectedIsGetDataStoreAllowed));
-
       GetWrappedDataAndCheckType<DomainObjectCollectionData> (readOnlyDecorator);
     }
 
@@ -130,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       if (originalStrategy is EventRaisingCollectionDataDecorator)
         originalStrategy = GetWrappedData ((EventRaisingCollectionDataDecorator) originalStrategy);
 
-      var newStrategy = new ReadOnlyCollectionDataDecorator (originalStrategy, true);
+      var newStrategy = new ReadOnlyCollectionDataDecorator (originalStrategy);
       SetDataStrategy (collection, newStrategy);
     }
 

@@ -82,12 +82,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void GetDataStore ()
-    {
-      Assert.That (((IDomainObjectCollectionData) _data).GetDataStore(), Is.SameAs (_data));
-    }
-
-    [Test]
     public void AssociatedEndPoint ()
     {
       Assert.That (((IDomainObjectCollectionData) _data).AssociatedEndPoint, Is.Null);
@@ -485,6 +479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
 
       var result = Serializer.SerializeAndDeserialize (_data);
       Assert.That (result.Count, Is.EqualTo (3));
+      Assert.That (result.Version, Is.EqualTo (_data.Version));
     }
 
     private void Add (Order order)

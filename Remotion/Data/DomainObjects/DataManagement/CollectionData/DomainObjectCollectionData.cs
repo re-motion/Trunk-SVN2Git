@@ -79,11 +79,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       Assertion.IsTrue (((IDomainObjectCollectionData) this).IsDataComplete);
     }
 
-    IDomainObjectCollectionData IDomainObjectCollectionData.GetDataStore ()
-    {
-      return this;
-    }
-
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);

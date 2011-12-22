@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     public override ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      return new ReadOnlyCollectionDataDecorator(DataKeeper.CollectionData, true);
+      return new ReadOnlyCollectionDataDecorator(DataKeeper.CollectionData);
     }
 
     public override ReadOnlyCollectionDataDecorator GetOriginalData (ICollectionEndPoint collectionEndPoint)

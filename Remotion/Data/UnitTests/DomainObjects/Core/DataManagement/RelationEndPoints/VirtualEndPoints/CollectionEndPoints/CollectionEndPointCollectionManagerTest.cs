@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
@@ -57,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     
       _dataStrategyStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
       _dataStrategyStub.Stub (stub => stub.RequiredItemType).Return (typeof (Order));
-      _dataStrategyStub.Stub (stub => stub.GetDataStore()).Return (new DomainObjectCollectionData());
     }
 
     [Test]
@@ -189,6 +189,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _associatedCollectionDataStrategyFactoryMock.Stub (stub => stub.CreateDataStrategyForEndPoint (_endPointID)).Return (_dataStrategyStub);
       _dataStrategyStub.Stub (stub => stub.AssociatedEndPoint).Return (CreateEndPointStubWithID (_endPointID));
+      StubEmptyDataStrategy(_dataStrategyStub);
 
       var collectionBefore = _manager.GetCurrentCollectionReference (_endPointID);
       Assert.That (_manager.GetCurrentCollectionReference (_endPointID), Is.SameAs (collectionBefore));
@@ -247,6 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _associatedCollectionDataStrategyFactoryMock.Stub (stub => stub.CreateDataStrategyForEndPoint (_endPointID)).Return (_dataStrategyStub);
       _dataStrategyStub.Stub (stub => stub.AssociatedEndPoint).Return (CreateEndPointStubWithID (_endPointID));
+      StubEmptyDataStrategy (_dataStrategyStub);
       _manager.AssociateCollectionWithEndPoint (_endPointID, new OrderCollection ());
 
       Assert.That (_manager.GetOriginalCollectionReference (_endPointID), Is.Not.SameAs (_manager.GetCurrentCollectionReference (_endPointID)));
@@ -297,6 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _associatedCollectionDataStrategyFactoryMock.Stub (stub => stub.CreateDataStrategyForEndPoint (_endPointID)).Return (_dataStrategyStub);
       _dataStrategyStub.Stub (stub => stub.AssociatedEndPoint).Return (CreateEndPointStubWithID (_endPointID));
+      StubEmptyDataStrategy (_dataStrategyStub);
 
       var newCollection = new OrderCollection();
       _manager.AssociateCollectionWithEndPoint (_endPointID, newCollection);
@@ -348,6 +351,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _associatedCollectionDataStrategyFactoryMock.Stub (stub => stub.CreateDataStrategyForEndPoint (_endPointID)).Return (_dataStrategyStub);
       _dataStrategyStub.Stub (stub => stub.AssociatedEndPoint).Return (CreateEndPointStubWithID (_endPointID));
+      StubEmptyDataStrategy (_dataStrategyStub);
 
       var originalCollection = _manager.GetOriginalCollectionReference (_endPointID);
 
@@ -380,6 +384,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _associatedCollectionDataStrategyFactoryMock.Stub (stub => stub.CreateDataStrategyForEndPoint (_endPointID)).Return (_dataStrategyStub);
       _dataStrategyStub.Stub (stub => stub.AssociatedEndPoint).Return (CreateEndPointStubWithID (_endPointID));
+      StubEmptyDataStrategy (_dataStrategyStub);
       var originalCollection = _manager.GetOriginalCollectionReference (_endPointID);
 
       var newCollection = new OrderCollection ();
@@ -432,6 +437,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var dataStore =
           (SimpleDataStore<RelationEndPointID, DomainObjectCollection>) PrivateInvoke.GetNonPublicField (_manager, "_originalCollectionReferences");
       dataStore.Add (endPointID, domainObjectCollection);
+    }
+
+    private void StubEmptyDataStrategy (IDomainObjectCollectionData dataStrategyStub)
+    {
+      dataStrategyStub.Stub (stub => stub.GetEnumerator ()).Return (Enumerable.Empty<DomainObject> ().GetEnumerator ());
     }
   }
 }

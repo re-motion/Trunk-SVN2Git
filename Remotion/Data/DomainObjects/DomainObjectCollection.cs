@@ -766,7 +766,7 @@ namespace Remotion.Data.DomainObjects
     {
       var originalDataStrategy = _dataStrategy;
       // copy data so that new stand-alone collection contains the same data as before
-      var standAloneDataStore = new DomainObjectCollectionData (_dataStrategy.GetDataStore ());
+      var standAloneDataStore = new DomainObjectCollectionData (_dataStrategy);
       _dataStrategy = CreateDataStrategyForStandAloneCollection (standAloneDataStore, RequiredItemType, this);
       return originalDataStrategy;
     }
