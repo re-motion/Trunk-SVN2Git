@@ -34,8 +34,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly ICollectionEndPointCollectionManager _collectionEndPointCollectionManager;
 
-    private DomainObject[] _removedObjects;
-    private DomainObject[] _addedObjects;
+    private readonly DomainObject[] _removedObjects;
+    private readonly DomainObject[] _addedObjects;
 
     public CollectionEndPointSetCollectionCommand (
         ICollectionEndPoint modifiedEndPoint,
@@ -55,6 +55,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       _newCollection = newCollection;
       _modifiedCollectionData = modifiedCollectionData;
       _collectionEndPointCollectionManager = collectionEndPointCollectionManager;
+
+      var oldOppositeObjects = ModifiedCollectionData;
+      _removedObjects = oldOppositeObjects.Where (oldObject => !NewCollection.Contains (oldObject.ID)).ToArray ();
+
+      var newOppositeObjects = NewCollection.Cast<DomainObject> ();
+      _addedObjects = newOppositeObjects.Where (newObject => !ModifiedCollectionData.ContainsObjectID (newObject.ID)).ToArray ();
     }
 
     public new ICollectionEndPoint ModifiedEndPoint
@@ -79,28 +85,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public DomainObject[] RemovedObjects
     {
-      get
-      {
-        if (_removedObjects == null)
-        {
-          var oldOppositeObjects = ModifiedEndPoint.Collection.Cast<DomainObject> ();
-          _removedObjects = oldOppositeObjects.Where (oldObject => !NewCollection.ContainsObject (oldObject)).ToArray();
-        }
-        return _removedObjects;
-      }
+      get { return _removedObjects; }
     }
 
     public DomainObject[] AddedObjects
     {
-      get
-      {
-        if (_addedObjects == null)
-        {
-          var newOppositeObjects = NewCollection.Cast<DomainObject> ();
-          _addedObjects = newOppositeObjects.Where (newObject => !ModifiedEndPoint.Collection.ContainsObject (newObject)).ToArray();
-        }
-        return _addedObjects;
-      }
+      get { return _addedObjects; }
     }
 
     protected override void ScopedNotifyClientTransactionOfBegin ()

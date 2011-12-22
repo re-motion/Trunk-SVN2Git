@@ -34,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private Order _order1;
     private Order _orderWithoutOrderItem;
     private Order _order2;
+    private IDomainObjectCollectionData _modifiedCollectionData;
     private DomainObjectCollection _newCollection;
 
     private MockRepository _mockRepository;
@@ -49,7 +50,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      // CollectionEndPoint currently contains _order1, _orderWithoutOrderItem
+      // Collection currently contains _order1, _orderWithoutOrderItem
+      _modifiedCollectionData = new DomainObjectCollectionData (new[] { _order1, _orderWithoutOrderItem });
+
       // _order1 will stay, _orderWithoutOrderItem will be removed, _order2 will be added
       _newCollection = new OrderCollection { _order1, _order2 };
 
@@ -59,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _command = new CollectionEndPointSetCollectionCommand (
           CollectionEndPoint, 
           _newCollection,
-          CollectionDataMock,
+          _modifiedCollectionData,
           _collectionManagerMock);
     }
 
@@ -196,23 +199,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      using (_mockRepository.Ordered ())
-      {
-        _collectionManagerMock
-            .Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint.ID, _newCollection))
-            .Return (new DomainObjectCollectionData (new[] { _order1, _order2 }));
-        CollectionDataMock.Expect (mock => mock.Clear ());
-        CollectionDataMock.Stub (mock => mock.Count).Return (0).Repeat.Once();
-        CollectionDataMock.Expect (mock => mock.Insert (0, _order1));
-        CollectionDataMock.Stub (mock => mock.Count).Return (1).Repeat.Once ();
-        CollectionDataMock.Expect (mock => mock.Insert (1, _order2));
-      }
+      _collectionManagerMock
+          .Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint.ID, _newCollection))
+          .Return (new DomainObjectCollectionData (new[] { _order1, _order2 }))
+          .WhenCalled (mi => Assert.That (_modifiedCollectionData, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem })));
       _mockRepository.ReplayAll ();
       
       _command.Perform ();
 
       _mockRepository.VerifyAll ();
 
+      Assert.That (_modifiedCollectionData, Is.EqualTo (new[] { _order1, _order2 }));
       Assert.That (relationChangingCalled, Is.False); // operation was not started
       Assert.That (relationChangedCalled, Is.False); // operation was not finished
 
