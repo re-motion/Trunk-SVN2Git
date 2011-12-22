@@ -752,21 +752,23 @@ namespace Remotion.Data.DomainObjects
       Deleted += source.Deleted;
     }
 
-    void IAssociatableDomainObjectCollection.TransformToAssociated (
+    IDomainObjectCollectionData IAssociatableDomainObjectCollection.TransformToAssociated (
         RelationEndPointID endPointID, IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var endPointDelegatingCollectionData = associatedCollectionDataStrategyFactory.CreateDataStrategyForEndPoint (endPointID);
-      endPointDelegatingCollectionData.GetDataStore ().ReplaceContents (_dataStrategy.GetDataStore ()); // copy data
-
-      _dataStrategy = endPointDelegatingCollectionData;
+      var originalDataStrategy = _dataStrategy;
+      _dataStrategy = associatedCollectionDataStrategyFactory.CreateDataStrategyForEndPoint (endPointID);
+      return originalDataStrategy;
     }
 
-    void IAssociatableDomainObjectCollection.TransformToStandAlone ()
+    IDomainObjectCollectionData IAssociatableDomainObjectCollection.TransformToStandAlone ()
     {
-      var standAloneDataStore = new DomainObjectCollectionData (_dataStrategy.GetDataStore ()); // copy data
+      var originalDataStrategy = _dataStrategy;
+      // copy data so that new stand-alone collection contains the same data as before
+      var standAloneDataStore = new DomainObjectCollectionData (_dataStrategy.GetDataStore ());
       _dataStrategy = CreateDataStrategyForStandAloneCollection (standAloneDataStore, RequiredItemType, this);
+      return originalDataStrategy;
     }
   }
 }

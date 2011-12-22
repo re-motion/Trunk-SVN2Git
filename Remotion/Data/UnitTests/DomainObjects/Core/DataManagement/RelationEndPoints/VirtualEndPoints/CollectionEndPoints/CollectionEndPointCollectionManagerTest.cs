@@ -42,8 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointID _endPointID;
 
     private IDomainObjectCollectionData _dataStrategyStub;
-
-
+    
     public override void SetUp ()
     {
       base.SetUp ();
@@ -162,24 +161,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void AssociateCollectionWithEndPoint ()
     {
-      var oldCollectionMock = MockRepository.GenerateStrictMock<DomainObjectCollection, IAssociatableDomainObjectCollection>();
+      var oldDataStrategyOfOldCollection = new DomainObjectCollectionData ();
+      var oldCollectionMock = MockRepository.GenerateStrictMock<DomainObjectCollection, IAssociatableDomainObjectCollection> ();
       oldCollectionMock.Stub (mock => ((IAssociatableDomainObjectCollection) mock).AssociatedEndPointID).Return (_endPointID);
-      oldCollectionMock.Expect (mock => ((IAssociatableDomainObjectCollection) mock).TransformToStandAlone ());
+      oldCollectionMock.Expect (mock => ((IAssociatableDomainObjectCollection) mock).TransformToStandAlone ()).Return (oldDataStrategyOfOldCollection);
       oldCollectionMock.Replay();
 
+      var oldDataStrategyOfNewCollection = new DomainObjectCollectionData ();
       var newCollectionMock = MockRepository.GenerateStrictMock<DomainObjectCollection, IAssociatableDomainObjectCollection> ();
       newCollectionMock
-          .Expect (
-              mock => ((IAssociatableDomainObjectCollection) mock).TransformToAssociated (_endPointID, _associatedCollectionDataStrategyFactoryMock));
+          .Expect (mock => ((IAssociatableDomainObjectCollection) mock).TransformToAssociated (_endPointID, _associatedCollectionDataStrategyFactoryMock))
+          .Return (oldDataStrategyOfNewCollection);
       newCollectionMock.Replay();
 
       RegisterOriginalCollection (_endPointID, oldCollectionMock);
 
-      _manager.AssociateCollectionWithEndPoint (_endPointID, newCollectionMock);
+      var result = _manager.AssociateCollectionWithEndPoint (_endPointID, newCollectionMock);
 
       oldCollectionMock.VerifyAllExpectations ();
       newCollectionMock.VerifyAllExpectations ();
       _transactionEventSinkDynamicMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
+      Assert.That (result, Is.SameAs (oldDataStrategyOfNewCollection));
     }
 
     [Test]
@@ -194,8 +196,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var newCollectionMock = MockRepository.GenerateStrictMock<DomainObjectCollection, IAssociatableDomainObjectCollection> ();
       newCollectionMock
-          .Stub (
-              mock => ((IAssociatableDomainObjectCollection) mock).TransformToAssociated (_endPointID, _associatedCollectionDataStrategyFactoryMock));
+          .Stub (mock => ((IAssociatableDomainObjectCollection) mock).TransformToAssociated (_endPointID, _associatedCollectionDataStrategyFactoryMock))
+          .Return (new DomainObjectCollectionData());
 
       _manager.AssociateCollectionWithEndPoint (_endPointID, newCollectionMock);
 

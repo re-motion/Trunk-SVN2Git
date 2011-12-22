@@ -88,18 +88,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return CreateCollection (endPointID, originalData);
     }
 
-    public void AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection)
+    public IDomainObjectCollectionData AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
 
       var oldCollection = (IAssociatableDomainObjectCollection) GetCurrentCollectionReference (endPointID);
       Assertion.IsTrue (oldCollection.AssociatedEndPointID == endPointID);
-      oldCollection.TransformToStandAlone();
+      oldCollection.TransformToStandAlone ();
 
-      ((IAssociatableDomainObjectCollection) newCollection).TransformToAssociated (endPointID, _dataStrategyFactory);
+      var oldDataStrategyOfNewCollection = ((IAssociatableDomainObjectCollection) newCollection).TransformToAssociated (endPointID, _dataStrategyFactory);
+
       _currentCollectionReferences[endPointID] = newCollection;
       _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, null);
+      return oldDataStrategyOfNewCollection;
     }
 
     public bool HasCollectionReferenceChanged (RelationEndPointID endPointID)

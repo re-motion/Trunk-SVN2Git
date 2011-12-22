@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     DomainObjectCollection GetCollectionWithOriginalData (RelationEndPointID endPointID, IDomainObjectCollectionData originalData);
     
-    void AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection);
+    IDomainObjectCollectionData AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection);
     bool HasCollectionReferenceChanged (RelationEndPointID endPointID);
     void CommitCollectionReference (RelationEndPointID endPointID);
     void RollbackCollectionReference (RelationEndPointID endPointID);

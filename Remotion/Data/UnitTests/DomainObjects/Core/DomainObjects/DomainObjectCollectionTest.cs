@@ -580,13 +580,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void TransformToAssociated ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
-      var contents = _collection.Cast<DomainObject> ().ToArray ();
+      var originalCollectionDataStrategy = DomainObjectCollectionDataTestHelper.GetDataStrategy (_collection);
+      var originalCollectionContents = _collection.Cast<DomainObject> ().ToArray ();
+      var originalEndPointContents =
+          ((CollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID)).GetData().ToArray();
       var associatedCollectionDataStrategyFactory = new AssociatedCollectionDataStrategyFactory (TestableClientTransaction.DataManager);
 
-      ((IAssociatableDomainObjectCollection) _collection).TransformToAssociated (endPointID, associatedCollectionDataStrategyFactory);
+      var result = ((IAssociatableDomainObjectCollection) _collection).TransformToAssociated (endPointID, associatedCollectionDataStrategyFactory);
 
       DomainObjectCollectionDataTestHelper.CheckAssociatedCollectionStrategy (_collection, typeof (Order), endPointID);
-      Assert.That (_collection, Is.EqualTo (contents));
+      Assert.That (result, Is.SameAs (originalCollectionDataStrategy));
+      Assert.That (result, Is.EqualTo (originalCollectionContents));
+      Assert.That (_collection, Is.EqualTo (originalEndPointContents));
     }
 
     [Test]
@@ -594,12 +599,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint_Customer1_Orders ();
       var collection = endPoint.Collection;
-      var contents = collection.Cast<DomainObject>().ToArray();
+      var originalCollectionDataStrategy = DomainObjectCollectionDataTestHelper.GetDataStrategy (collection);
+      var originalCollectionContents = collection.Cast<DomainObject> ().ToArray ();
 
-      ((IAssociatableDomainObjectCollection) collection).TransformToStandAlone ();
+      var result = ((IAssociatableDomainObjectCollection) collection).TransformToStandAlone ();
 
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (collection, typeof (Order));
-      Assert.That (collection, Is.EqualTo (contents));
+      Assert.That (collection, Is.EqualTo (originalCollectionContents));
+      Assert.That (result, Is.SameAs (originalCollectionDataStrategy));
     }
 
     [Test]

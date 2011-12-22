@@ -24,12 +24,16 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
   public class CollectionEndPointSetCollectionCommandTest : CollectionEndPointModificationCommandTestBase
   {
+    private Order _order1;
+    private Order _orderWithoutOrderItem;
+    private Order _order2;
     private DomainObjectCollection _newCollection;
 
     private MockRepository _mockRepository;
@@ -37,15 +41,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     private CollectionEndPointSetCollectionCommand _command;
 
-    private Order _order1;
-    private Order _orderWithoutOrderItem;
-    private Order _order2;
-
     public override void SetUp ()
     {
       base.SetUp();
 
-      _newCollection = new OrderCollection();
+      _order1 = Order.GetObject (DomainObjectIDs.Order1);
+      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
+      _order2 = Order.GetObject (DomainObjectIDs.Order2);
+
+      // CollectionEndPoint currently contains _order1, _orderWithoutOrderItem
+      // _order1 will stay, _orderWithoutOrderItem will be removed, _order2 will be added
+      _newCollection = new OrderCollection { _order1, _order2 };
 
       _mockRepository = new MockRepository ();
       _collectionManagerMock = _mockRepository.StrictMock<ICollectionEndPointCollectionManager> ();
@@ -55,10 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           _newCollection,
           CollectionDataMock,
           _collectionManagerMock);
-
-      _order1 = Order.GetObject (DomainObjectIDs.Order1);
-      _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
-      _order2 = Order.GetObject (DomainObjectIDs.Order2);
     }
 
     public override void TearDown ()
@@ -89,11 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin ()
     {
-      // _order1 will stay, _orderWithoutOrderItem will be removed
-
-      _newCollection.Add (_order1); // same as existing
-      _newCollection.Add (_order2); // new
-
       var relationChangingEventArgs = new List<RelationChangingEventArgs> ();
       bool relationChangedCalled = false;
 
@@ -122,11 +119,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End ()
     {
-      // _order1 will stay, _orderWithoutOrderItem will be removed
-
-      _newCollection.Add (_order1); // same as existing
-      _newCollection.Add (_order2); // new
-
       var relationChangedEventArgs = new List<RelationChangedEventArgs> ();
       bool relationChangingCalled = false;
 
@@ -151,11 +143,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      // _order1 will stay, _orderWithoutOrderItem will be removed
-      
-      _newCollection.Add (_order1); // same as existing
-      _newCollection.Add (_order2); // new
-      
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
       listenerMock.Expect (mock => mock.RelationChanging (
           TestableClientTransaction, 
@@ -181,11 +168,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      // _order1 will stay, _orderWithoutOrderItem will be removed
-
-      _newCollection.Add (_order1); // same as existing
-      _newCollection.Add (_order2); // new
-
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
       listenerMock.Expect (mock => mock.RelationChanged (
           TestableClientTransaction, 
@@ -208,15 +190,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform ()
     {
-      _newCollection.Add (_order1);
-
       bool relationChangingCalled = false;
       bool relationChangedCalled = false;
 
       DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
-      _collectionManagerMock.Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint.ID, _newCollection));
+      using (_mockRepository.Ordered ())
+      {
+        _collectionManagerMock
+            .Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint.ID, _newCollection))
+            .Return (new DomainObjectCollectionData (new[] { _order1, _order2 }));
+        CollectionDataMock.Expect (mock => mock.Clear ());
+        CollectionDataMock.Stub (mock => mock.Count).Return (0).Repeat.Once();
+        CollectionDataMock.Expect (mock => mock.Insert (0, _order1));
+        CollectionDataMock.Stub (mock => mock.Count).Return (1).Repeat.Once ();
+        CollectionDataMock.Expect (mock => mock.Insert (1, _order2));
+      }
       _mockRepository.ReplayAll ();
       
       _command.Perform ();
@@ -232,17 +222,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void ExpandToAllRelatedObjects ()
     {
-      // _order1 will stay, _orderWithoutOrderItem will be removed
-
       Assert.That (_order1.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
       Assert.That (_orderWithoutOrderItem.Customer, Is.SameAs (CollectionEndPoint.GetDomainObject ()));
 
       var customer3 = Customer.GetObject (DomainObjectIDs.Customer3);
       Assert.That (_order2.Customer, Is.SameAs (customer3));
 
-      _newCollection.Add (_order1);
-      _newCollection.Add (_order2);
-      
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();
 
       // DomainObject.Orders = _newCollection
