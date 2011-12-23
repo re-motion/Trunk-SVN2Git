@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -689,7 +690,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Serializable ()
     {
       var wrappedData = new DomainObjectCollectionData (new[] { _domainObject });
-      var stateUpdateListenerStub = new FakeVirtualEndPointStateUpdateListener();
+      var stateUpdateListenerStub = new SerializableVirtualEndPointStateUpdateListenerFake();
       var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, stateUpdateListenerStub);
 
       WarmUpCache (decorator, false);

@@ -15,13 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
-  public class FakeVirtualEndPointStateUpdateListener : IVirtualEndPointStateUpdateListener
+  public class SerializableVirtualEndPointStateUpdateListenerFake : IVirtualEndPointStateUpdateListener
   {
     public void StateUpdated (bool? newChangedState)
     {

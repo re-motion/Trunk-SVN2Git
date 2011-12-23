@@ -26,6 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFake
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
@@ -129,6 +130,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (((CollectionEndPoint) endPoint).LazyLoader, Is.SameAs (_lazyLoaderStub));
       Assert.That (((CollectionEndPoint) endPoint).EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (((CollectionEndPoint) endPoint).DataKeeperFactory, Is.SameAs (_collectionEndPointDataKeeperFactoryStub));
+      Assert.That (
+          ((CollectionEndPoint) endPoint).StateUpdateListener, 
+          Is.TypeOf<VirtualEndPointStateUpdateListener>()
+              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_clientTransaction)
+              .And.Property<VirtualEndPointStateUpdateListener> (l => l.EndPointID).EqualTo (endPointID));
       Assert.That (endPoint.IsDataComplete, Is.False);
     }
 

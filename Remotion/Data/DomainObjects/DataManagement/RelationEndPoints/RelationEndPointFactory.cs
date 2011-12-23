@@ -122,7 +122,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           _collectionEndPointCollectionManager,
           _lazyLoader,
           _endPointProvider,
-          _collectionEndPointDataKeeperFactory);
+          _collectionEndPointDataKeeperFactory,
+          new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID));
       if (markDataComplete)
         collectionEndPoint.MarkDataComplete (new DomainObject[0]);
       return collectionEndPoint;

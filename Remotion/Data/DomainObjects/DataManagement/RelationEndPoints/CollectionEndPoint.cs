@@ -36,7 +36,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactory;
-    
+    private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
+
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
 
     private bool _hasBeenTouched;
@@ -47,19 +48,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ICollectionEndPointCollectionManager collectionManager,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
+        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory,
+        IVirtualEndPointStateUpdateListener stateUpdateListener)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("collectionManager", collectionManager);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       _hasBeenTouched = false;
       _collectionManager = collectionManager;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
       _dataKeeperFactory = dataKeeperFactory;
+      _stateUpdateListener = stateUpdateListener;
 
       SetIncompleteLoadState ();
     }
@@ -82,6 +86,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> DataKeeperFactory
     {
       get { return _dataKeeperFactory; }
+    }
+
+    public IVirtualEndPointStateUpdateListener StateUpdateListener
+    {
+      get { return _stateUpdateListener; }
     }
 
     public DomainObjectCollection Collection
@@ -338,6 +347,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
+      _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener>();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -348,6 +358,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_endPointProvider);
       info.AddHandle (_dataKeeperFactory);
       info.AddValue (_loadState);
+      info.AddHandle (_stateUpdateListener);
     }
 
     #endregion

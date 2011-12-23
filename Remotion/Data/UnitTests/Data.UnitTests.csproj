@@ -480,7 +480,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ObservableCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\TestableObservableCollectionDataDecorator.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ChangeCachingCollectionDataDecoratorTest.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\FakeVirtualEndPointStateUpdateListener.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointStateUpdateListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\CopyOnWriteDomainObjectCollectionDataTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\SortedPropertyComparerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\DeleteCommandTest.cs" />
