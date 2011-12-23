@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Used by <see cref="ChangeCachingCollectionDataDecorator"/> to signal when the cached state value is updated.
+  /// Used to signal when the change state of an <see cref="IVirtualEndPoint"/> is updated.
   /// </summary>
   public interface IVirtualEndPointStateUpdateListener
   {
