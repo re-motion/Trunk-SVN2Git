@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -215,6 +216,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         _collectionManager.CommitCollectionReference (ID);
         _loadState.Commit (this);
+        _stateUpdateListener.StateUpdated (false);
       }
 
       _hasBeenTouched = false;
@@ -226,6 +228,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         _collectionManager.RollbackCollectionReference (ID);
         _loadState.Rollback (this);
+        _stateUpdateListener.StateUpdated (false);
       }
 
       _hasBeenTouched = false;
@@ -250,8 +253,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public void SortCurrentData (Comparison<DomainObject> comparison)
     {
       ArgumentUtility.CheckNotNull ("comparison", comparison);
+
       _loadState.SortCurrentData (this, comparison);
       Touch();
+      _stateUpdateListener.StateUpdated (null);
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -302,36 +307,44 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
-      return _loadState.CreateSetCollectionCommand (this, newCollection, _collectionManager);
+
+      var command = _loadState.CreateSetCollectionCommand (this, newCollection, _collectionManager);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
-      return _loadState.CreateRemoveCommand (this, removedRelatedObject);
+
+      var command = _loadState.CreateRemoveCommand (this, removedRelatedObject);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return _loadState.CreateDeleteCommand(this);
+      var command = _loadState.CreateDeleteCommand (this);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      return _loadState.CreateInsertCommand (this, insertedRelatedObject, index);
+      var command = _loadState.CreateInsertCommand (this, insertedRelatedObject, index);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
-      return _loadState.CreateAddCommand (this, addedRelatedObject);
+      var command = _loadState.CreateAddCommand (this, addedRelatedObject);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
-      return _loadState.CreateReplaceCommand (this, index, replacementObject);
+      var command = _loadState.CreateReplaceCommand (this, index, replacementObject);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
@@ -359,6 +372,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch ();
+
+      _stateUpdateListener.StateUpdated (null);
     }
 
     private void SetCompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
@@ -375,6 +390,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private DomainObjectCollection CreateCollection (IDomainObjectCollectionData dataStrategy)
     {
       return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyInfo.PropertyType, dataStrategy);
+    }
+
+    private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
+    {
+      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, _stateUpdateListener, () => null);
     }
 
     #region Serialization

@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -35,8 +34,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class CollectionEndPointCollectionManagerTest : StandardMappingTest
   {
     private IAssociatedCollectionDataStrategyFactory _associatedCollectionDataStrategyFactoryMock;
-    private ClientTransaction _clientTransaction;
-    private IClientTransactionListener _transactionEventSinkDynamicMock;
       
       private CollectionEndPointCollectionManager _manager;
 
@@ -49,10 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp ();
 
       _associatedCollectionDataStrategyFactoryMock = MockRepository.GenerateStrictMock<IAssociatedCollectionDataStrategyFactory>();
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _transactionEventSinkDynamicMock = MockRepository.GenerateMock<IClientTransactionListener>();
       
-      _manager = new CollectionEndPointCollectionManager (_associatedCollectionDataStrategyFactoryMock, _clientTransaction, _transactionEventSinkDynamicMock);
+      _manager = new CollectionEndPointCollectionManager (_associatedCollectionDataStrategyFactoryMock);
 
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
     
@@ -180,7 +175,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       oldCollectionMock.VerifyAllExpectations ();
       newCollectionMock.VerifyAllExpectations ();
-      _transactionEventSinkDynamicMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
       Assert.That (result, Is.SameAs (oldDataStrategyOfNewCollection));
     }
 
@@ -361,10 +355,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (DomainObjectCollectionDataTestHelper.GetDataStrategy (newCollection), Is.SameAs (_dataStrategyStub));
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (originalCollection, typeof (Order));
 
-      _transactionEventSinkDynamicMock.BackToRecord ();
-      _transactionEventSinkDynamicMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
-      _transactionEventSinkDynamicMock.Replay ();
-
       // The Rollback operation must now transform the new collection to a standalone collection and reassociate the original collection with the end-
       // point being rolled back. (In addition to making the original collection the current collection again.)
       
@@ -375,8 +365,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (DomainObjectCollectionDataTestHelper.GetDataStrategy (originalCollection), Is.SameAs (_dataStrategyStub));
       DomainObjectCollectionDataTestHelper.CheckStandAloneCollectionStrategy (newCollection, typeof (Order));
-
-      _transactionEventSinkDynamicMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -398,31 +386,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var otherStrategy = new DomainObjectCollectionData();
       DomainObjectCollectionDataTestHelper.SetDataStrategy (newCollection, otherStrategy);
 
-      _transactionEventSinkDynamicMock.BackToRecord();
-      _transactionEventSinkDynamicMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
-      _transactionEventSinkDynamicMock.Replay();
-
       _manager.RollbackCollectionReference (_endPointID);
 
       Assert.That (DomainObjectCollectionDataTestHelper.GetDataStrategy (originalCollection), Is.SameAs (_dataStrategyStub));
       Assert.That (DomainObjectCollectionDataTestHelper.GetDataStrategy (newCollection), Is.SameAs (otherStrategy));
-
-      _transactionEventSinkDynamicMock.VerifyAllExpectations();
     }
 
     [Test]
     public void Serialization ()
     {
-      var instance = new CollectionEndPointCollectionManager (
-          new SerializableAssociatedCollectionDataStrategyFactoryFake(), 
-          _clientTransaction, 
-          ClientTransactionTestHelper.GetTransactionEventSink (_clientTransaction));
+      var instance = new CollectionEndPointCollectionManager (new SerializableAssociatedCollectionDataStrategyFactoryFake());
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
 
       Assert.That (deserializedInstance.DataStrategyFactory, Is.Not.Null);
-      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedInstance.TransactionEventSink, Is.Not.Null);
     }
 
     private ICollectionEndPoint CreateEndPointStubWithID (RelationEndPointID relationEndPointID)

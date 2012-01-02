@@ -246,8 +246,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (setOrderWithoutOrderItemCustomerCommand.NewRelatedObject, Is.Null);
 
       // order2.Customer.Orders.Remove (order2);
-      Assert.That (steps[1], Is.InstanceOf (typeof (CollectionEndPointRemoveCommand)));
-      var order2CustomerOrdersRemoveCommand = (CollectionEndPointRemoveCommand) steps[1];
+      Assert.That (steps[1], Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ());
+      var order2CustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) ((VirtualEndPointStateUpdatedRaisingCommandDecorator) steps[1]).DecoratedCommand);
       Assert.That (order2CustomerOrdersRemoveCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
       Assert.That (order2CustomerOrdersRemoveCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (customer3.ID));
       Assert.That (order2CustomerOrdersRemoveCommand.OldRelatedObject, Is.SameAs (_order2));

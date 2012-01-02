@@ -38,20 +38,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
     private Dictionary<ObjectID, IRealObjectEndPoint> _currentOppositeEndPoints;
 
-    public CollectionEndPointDataKeeper (
-        RelationEndPointID endPointID,
-        ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy,
-        IVirtualEndPointStateUpdateListener updateListener)
+    public CollectionEndPointDataKeeper (RelationEndPointID endPointID, ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
-      ArgumentUtility.CheckNotNull ("updateListener", updateListener);
 
       _endPointID = endPointID;
       _changeDetectionStrategy = changeDetectionStrategy;
 
       var wrappedData = new DomainObjectCollectionData();
-      _changeCachingCollectionData = new ChangeCachingCollectionDataDecorator (wrappedData, updateListener);
+      _changeCachingCollectionData = new ChangeCachingCollectionDataDecorator (wrappedData);
 
       _originalOppositeEndPoints = new HashSet<IRealObjectEndPoint>();
       _originalItemsWithoutEndPoint = new HashSet<DomainObject>();

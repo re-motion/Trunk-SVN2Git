@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
@@ -165,8 +164,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (steps[1], Is.SameAs (_command));
 
       // oldCustomer.Orders.Remove (_insertedRelatedObject)
-      Assert.That (steps[2], Is.InstanceOf (typeof (CollectionEndPointRemoveCommand)));
-      var oldCustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) steps[2]);
+      Assert.That (steps[2], Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ());
+      var oldCustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) ((VirtualEndPointStateUpdatedRaisingCommandDecorator) steps[2]).DecoratedCommand);
       Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint, Is.SameAs (oldRelatedEndPointOfInsertedObject));
       Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
       Assert.That (oldCustomerOrdersRemoveCommand.OldRelatedObject, Is.SameAs (_insertedRelatedObject));

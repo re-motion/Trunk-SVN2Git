@@ -172,8 +172,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (steps[2], Is.SameAs (_command));
 
       // oldCustomer.Orders.Remove (_replacementRelatedObject)
-      Assert.That (steps[3], Is.InstanceOf (typeof (CollectionEndPointRemoveCommand)));
-      var oldCustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) steps[3]);
+      Assert.That (steps[3], Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ());
+      var oldCustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) ((VirtualEndPointStateUpdatedRaisingCommandDecorator) steps[3]).DecoratedCommand);
       Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint.ID.Definition.PropertyName, Is.EqualTo (typeof (Customer).FullName + ".Orders"));
       Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
       Assert.That (oldCustomerOrdersRemoveCommand.OldRelatedObject, Is.SameAs (_replacementRelatedObject));

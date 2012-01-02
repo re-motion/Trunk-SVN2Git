@@ -47,29 +47,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     private readonly CopyOnWriteDomainObjectCollectionData _originalData;
     
-    private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
-
     private bool _isCacheUpToDate;
     private bool _cachedHasChangedFlag;
 
-    public ChangeCachingCollectionDataDecorator (
-        IDomainObjectCollectionData wrappedData, 
-        IVirtualEndPointStateUpdateListener stateUpdateListener)
+    public ChangeCachingCollectionDataDecorator (IDomainObjectCollectionData wrappedData)
       : base (new ObservableCollectionDataDecorator (ArgumentUtility.CheckNotNull ("wrappedData", wrappedData)))
     {
-      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
-
       _observedWrappedData = (ObservableCollectionDataDecorator) WrappedData;
       _unobservedWrappedData = wrappedData;
 
       _originalData = new CopyOnWriteDomainObjectCollectionData (_observedWrappedData);
       _observedWrappedData.CollectionChanged += WrappedData_CollectionChanged();
-      _stateUpdateListener = stateUpdateListener;
-    }
-
-    public IVirtualEndPointStateUpdateListener StateUpdateListener
-    {
-      get { return _stateUpdateListener; }
     }
 
     public ReadOnlyCollectionDataDecorator OriginalData
@@ -230,19 +218,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     private void OnChangeStateUnclear ()
     {
       _isCacheUpToDate = false;
-      RaiseStateUpdatedNotification (null);
     }
 
     private void SetCachedHasChangedFlag (bool hasChanged)
     {
       _cachedHasChangedFlag = hasChanged;
       _isCacheUpToDate = true;
-      RaiseStateUpdatedNotification (hasChanged);
-    }
-
-    private void RaiseStateUpdatedNotification (bool? newChangedState)
-    {
-      _stateUpdateListener.StateUpdated (newChangedState);
     }
   }
 }

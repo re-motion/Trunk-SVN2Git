@@ -46,7 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private CollectionEndPointDataKeeper _dataKeeper;
 
     private Comparison<DomainObject> _comparison123;
-    private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
 
     public override void SetUp ()
     {
@@ -72,8 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _domainObjectEndPoint3.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject3);
       _domainObjectEndPoint3.Stub (stub => stub.ObjectID).Return (_domainObject3.ID);
 
-      _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener>();
-      _dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock, _stateUpdateListenerMock);
+      _dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock);
 
       _comparison123 = Compare123;
     }
@@ -81,10 +79,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Initialization ()
     {
-      var dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock, _stateUpdateListenerMock);
+      var dataKeeper = new CollectionEndPointDataKeeper (_endPointID, _changeDetectionStrategyMock);
 
       Assert.That (dataKeeper.CollectionData, Is.TypeOf (typeof (ChangeCachingCollectionDataDecorator)));
-      Assert.That (((ChangeCachingCollectionDataDecorator) dataKeeper.CollectionData).StateUpdateListener, Is.SameAs (_stateUpdateListenerMock));
       Assert.That (dataKeeper.CollectionData.ToArray (), Is.Empty);
       Assert.That (dataKeeper.OriginalOppositeEndPoints, Is.Empty);
    }
@@ -427,9 +424,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SortCurrentData ()
     {
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject3));
       _dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject1));
       _dataKeeper.RegisterOriginalOppositeEndPoint (CollectionEndPointTestHelper.GetFakeOppositeEndPoint (_domainObject2));
@@ -438,7 +432,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (_dataKeeper.CollectionData.ToArray (), Is.EqualTo (new[] { _domainObject1, _domainObject2, _domainObject3 }));
       Assert.That (_dataKeeper.OriginalCollectionData.ToArray (), Is.EqualTo (new[] { _domainObject3, _domainObject1, _domainObject2 }));
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -569,10 +562,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.CollectionData.Add (_domainObject1);
       _dataKeeper.RegisterCurrentOppositeEndPoint (_domainObjectEndPoint1);
 
-      var sourceDataKeeper = new CollectionEndPointDataKeeper (
-          _endPointID, 
-          MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>(), 
-          MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener> ());
+      var sourceDataKeeper = new CollectionEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>());
       sourceDataKeeper.CollectionData.Add (_domainObject2);
       sourceDataKeeper.RegisterCurrentOppositeEndPoint (sourceOppositeEndPointStub);
 
@@ -581,24 +571,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Stub (stub => stub.GetRelationEndPointWithoutLoading (sourceOppositeEndPointStub.ID))
           .Return (_domainObjectEndPoint2);
 
-      _stateUpdateListenerMock.BackToRecord ();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
-      _stateUpdateListenerMock.Replay ();
-
       _dataKeeper.SetDataFromSubTransaction (sourceDataKeeper, endPointProviderStub);
 
       Assert.That (_dataKeeper.CollectionData.ToArray(), Is.EqualTo (new[] { _domainObject2 }));
       Assert.That (_dataKeeper.CurrentOppositeEndPoints, Is.EquivalentTo (new[] { _domainObjectEndPoint2 }));
-
-      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void FlattenedSerializable ()
     {
       var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
-      var updateListener = new VirtualEndPointStateUpdateListener (ClientTransaction.CreateRootTransaction(), _endPointID);
-      var data = new CollectionEndPointDataKeeper (_endPointID, changeDetectionStrategy, updateListener);
+      var data = new CollectionEndPointDataKeeper (_endPointID, changeDetectionStrategy);
 
       var endPointFake = new SerializableRealObjectEndPointFake (null, _domainObject1);
       data.RegisterOriginalOppositeEndPoint (endPointFake);

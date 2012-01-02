@@ -176,7 +176,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       
       Assert.That (endPointFactory.CollectionEndPointDataKeeperFactory, Is.TypeOf (typeof (CollectionEndPointDataKeeperFactory)));
       var collectionEndPointDataKeeperFactory = ((CollectionEndPointDataKeeperFactory) endPointFactory.CollectionEndPointDataKeeperFactory);
-      Assert.That (collectionEndPointDataKeeperFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (collectionEndPointDataKeeperFactory.ChangeDetectionStrategy, Is.TypeOf<SubCollectionEndPointChangeDetectionStrategy> ());
       
       Assert.That (endPointFactory.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf<VirtualObjectEndPointDataKeeperFactory> ());
@@ -189,10 +188,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           collectionEndPointCollectionManager.DataStrategyFactory,
           Is.TypeOf<AssociatedCollectionDataStrategyFactory>()
               .With.Property ((AssociatedCollectionDataStrategyFactory f) => f.VirtualEndPointProvider).SameAs (endPointProvider));
-      Assert.That (collectionEndPointCollectionManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (
-          collectionEndPointCollectionManager.TransactionEventSink,
-          Is.SameAs (ClientTransactionTestHelper.GetTransactionEventSink (_fakeConstructedTransaction)));
     }
 
     [Test]

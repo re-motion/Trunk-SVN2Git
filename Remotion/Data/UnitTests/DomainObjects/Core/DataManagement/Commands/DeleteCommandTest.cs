@@ -293,9 +293,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     private RelationEndPointModificationCommand GetEndPointModificationCommand (IEnumerable<IDataManagementCommand> commands, ObjectID objectID)
     {
       return commands
-          .Select (c => c is RealObjectEndPointRegistrationCommandDecorator ? ((RealObjectEndPointRegistrationCommandDecorator) c).DecoratedCommand : c)
+          .Select (UnwrapCommand)
           .OfType<RelationEndPointModificationCommand>()
           .SingleOrDefault (cmd => cmd.DomainObject.ID == objectID);
+    }
+
+    private IDataManagementCommand UnwrapCommand (IDataManagementCommand c)
+    {
+      if (c is RealObjectEndPointRegistrationCommandDecorator)
+        return ((RealObjectEndPointRegistrationCommandDecorator) c).DecoratedCommand;
+      else if (c is VirtualEndPointStateUpdatedRaisingCommandDecorator)
+        return ((VirtualEndPointStateUpdatedRaisingCommandDecorator) c).DecoratedCommand;
+      else
+        return c;
     }
   }
 }

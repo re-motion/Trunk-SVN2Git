@@ -25,23 +25,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   [Serializable]
   public class CollectionEndPointDataKeeperFactory : IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>
   {
-    private readonly ClientTransaction _clientTransaction;
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     public CollectionEndPointDataKeeperFactory (
-        ClientTransaction clientTransaction, 
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
 
-      _clientTransaction = clientTransaction;
       _changeDetectionStrategy = changeDetectionStrategy;
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
     }
 
     public ICollectionEndPointChangeDetectionStrategy ChangeDetectionStrategy
@@ -53,8 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      var updateListener = new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID);
-      return new CollectionEndPointDataKeeper (endPointID, _changeDetectionStrategy, updateListener);
+      return new CollectionEndPointDataKeeper (endPointID, _changeDetectionStrategy);
     }
   }
 }

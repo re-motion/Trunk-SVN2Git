@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
@@ -36,33 +35,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         new SimpleDataStore<RelationEndPointID, DomainObjectCollection> ();
     private readonly IAssociatedCollectionDataStrategyFactory _dataStrategyFactory;
 
-    private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
-
-    public CollectionEndPointCollectionManager (
-        IAssociatedCollectionDataStrategyFactory dataStrategyFactory, 
-        ClientTransaction clientTransaction, 
-        IClientTransactionListener transactionEventSink)
+    public CollectionEndPointCollectionManager (IAssociatedCollectionDataStrategyFactory dataStrategyFactory)
     {
       ArgumentUtility.CheckNotNull ("dataStrategyFactory", dataStrategyFactory);
       _dataStrategyFactory = dataStrategyFactory;
-      _clientTransaction = clientTransaction;
-      _transactionEventSink = transactionEventSink;
     }
 
     public IAssociatedCollectionDataStrategyFactory DataStrategyFactory
     {
       get { return _dataStrategyFactory; }
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
-    }
-
-    public IClientTransactionListener TransactionEventSink
-    {
-      get { return _transactionEventSink; }
     }
 
     public DomainObjectCollection GetOriginalCollectionReference (RelationEndPointID endPointID)
@@ -100,7 +81,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       var oldDataStrategyOfNewCollection = ((IAssociatableDomainObjectCollection) newCollection).TransformToAssociated (endPointID, _dataStrategyFactory);
 
       _currentCollectionReferences[endPointID] = newCollection;
-      _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, null);
       return oldDataStrategyOfNewCollection;
     }
 
@@ -170,11 +150,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         // We must always associate the new collection with the end point, however - even during rollback phase,
         ((IAssociatableDomainObjectCollection) originalCollection).TransformToAssociated (endPointID, _dataStrategyFactory);
         _currentCollectionReferences[endPointID] = originalCollection;
-
-        // TODO 4529: Consider whether this method should raise the VirtualRelationEndPointStateUpdated. If so, Commit should probably raise it as well.
-        // TODO 4529: Also note that ChangeCachingCollectionDataDecorator raises StateUpdated (false) events that are translated into
-        // VirtualRelationEndPointStateUpdated (false) events without taking the reference change state into account.
-        _transactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, null);
       }
       finally
       {

@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
@@ -28,7 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   [TestFixture]
   public class CollectionEndPointDataKeeperFactoryTest : StandardMappingTest
   {
-    private ClientTransaction _clientTransaction;
     private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
     private CollectionEndPointDataKeeperFactory _factory;
@@ -37,10 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
 
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
       _changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
 
-      _factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, _changeDetectionStrategy);
+      _factory = new CollectionEndPointDataKeeperFactory (_changeDetectionStrategy);
     }
 
     [Test]
@@ -55,22 +51,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
       Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs (relationEndPointID));
       Assert.That (((CollectionEndPointDataKeeper) result).ChangeDetectionStrategy, Is.SameAs (_changeDetectionStrategy));
-
-      var updateListener = ((ChangeCachingCollectionDataDecorator) ((CollectionEndPointDataKeeper) result).CollectionData).StateUpdateListener;
-      Assert.That (updateListener, Is.TypeOf (typeof (VirtualEndPointStateUpdateListener)));
-      Assert.That (((VirtualEndPointStateUpdateListener) updateListener).ClientTransaction, Is.SameAs (_clientTransaction));
-      Assert.That (((VirtualEndPointStateUpdateListener) updateListener).EndPointID, Is.SameAs (relationEndPointID));
     }
 
     [Test]
     public void Serializable ()
     {
       var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
-      var factory = new CollectionEndPointDataKeeperFactory (_clientTransaction, changeDetectionStrategy);
+      var factory = new CollectionEndPointDataKeeperFactory (changeDetectionStrategy);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (factory);
 
-      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.ChangeDetectionStrategy, Is.Not.Null);
     }
   }

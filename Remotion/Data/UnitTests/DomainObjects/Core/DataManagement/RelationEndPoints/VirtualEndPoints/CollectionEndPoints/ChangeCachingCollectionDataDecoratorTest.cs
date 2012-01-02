@@ -21,7 +21,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -34,8 +33,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private Order _domainObject;
 
-    private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
-
     private IDomainObjectCollectionData _wrappedData;
     private ChangeCachingCollectionDataDecorator _decoratorWithRealData;
     
@@ -47,10 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _domainObject = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener> ();
-
       _wrappedData = new DomainObjectCollectionData (new[] { _domainObject });
-      _decoratorWithRealData = new ChangeCachingCollectionDataDecorator (_wrappedData, _stateUpdateListenerMock);
+      _decoratorWithRealData = new ChangeCachingCollectionDataDecorator (_wrappedData);
 
       _strategyStrictMock = new MockRepository().StrictMock<ICollectionEndPointChangeDetectionStrategy> ();
     }
@@ -98,13 +93,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasChanged_RaisesStateChangedNotification ()
-    {
-      _decoratorWithRealData.HasChanged (_strategyStrictMock);
-      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
-    }
-
-    [Test]
     public void HasChanged_CachesData ()
     {
       _strategyStrictMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decoratorWithRealData), Arg<IDomainObjectCollectionData>.Is.Anything))
@@ -137,14 +125,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       CallOnDataChangedOnWrappedData (_decoratorWithRealData);
 
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
-    }
-
-    [Test]
-    public void OnWrappedDataChanged_RaisesStateNotification ()
-    {
-      CallOnDataChangedOnWrappedData (_decoratorWithRealData);
-
-      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (null));
     }
 
     [Test]
@@ -305,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Commit_RevertsOriginalObjects_ToCurrentObjects ()
     {
       var wrappedData = new DomainObjectCollectionData ();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData);
       decorator.Add (_domainObject);
       Assert.That (decorator.OriginalData.ToArray (), Is.Empty);
 
@@ -319,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Commit_SetsFlagUnchanged ()
     {
       var wrappedData = new DomainObjectCollectionData ();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData);
       decorator.Add (_domainObject);
       _strategyStrictMock.Replay ();
 
@@ -331,18 +311,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void Commit_RaisesNotification ()
-    {
-      _decoratorWithRealData.Commit ();
-
-      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
-    }
-
-    [Test]
     public void Rollback_RevertsCurrentObjects_ToOriginalObjects ()
     {
       var wrappedData = new DomainObjectCollectionData ();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData);
       decorator.Add (_domainObject);
 
       Assert.That (decorator.ToArray (), Is.Not.Empty);
@@ -359,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Rollback_SetsFlagUnchanged ()
     {
       var wrappedData = new DomainObjectCollectionData ();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData);
       decorator.Add (_domainObject);
       _strategyStrictMock.Replay ();
 
@@ -368,14 +340,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (decorator.HasChanged (_strategyStrictMock), Is.False);
       _strategyStrictMock.AssertWasNotCalled (
           mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
-    }
-
-    [Test]
-    public void Rollback_RaisesNotification ()
-    {
-      _decoratorWithRealData.Rollback ();
-
-      _stateUpdateListenerMock.AssertWasCalled (mock => mock.StateUpdated (false));
     }
 
     [Test]
@@ -609,7 +573,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject3 = DomainObjectMother.CreateFakeObject<Customer> ();
 
       var decorator = new ChangeCachingCollectionDataDecorator (
-          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }), _stateUpdateListenerMock);
+          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }));
 
       decorator.SortOriginalAndCurrent (CompareTypeNames);
 
@@ -625,7 +589,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject3 = DomainObjectMother.CreateFakeObject<Customer> ();
 
       var decorator = new ChangeCachingCollectionDataDecorator (
-          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }), _stateUpdateListenerMock);
+          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }));
 
       decorator.SortOriginalAndCurrent (CompareTypeNames);
 
@@ -640,7 +604,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject3 = DomainObjectMother.CreateFakeObject<Customer> ();
 
       var decorator = new ChangeCachingCollectionDataDecorator (
-          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }), _stateUpdateListenerMock);
+          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }));
 
       PrepareCheckChangeFlagRetained (decorator, false);
 
@@ -657,7 +621,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject3 = DomainObjectMother.CreateFakeObject<Customer> ();
 
       var decorator = new ChangeCachingCollectionDataDecorator (
-          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }), _stateUpdateListenerMock);
+          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }));
 
       decorator.Remove (domainObject2);
 
@@ -675,7 +639,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject3 = DomainObjectMother.CreateFakeObject<Customer> ();
 
       var decorator = new ChangeCachingCollectionDataDecorator (
-          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }), _stateUpdateListenerMock);
+          new DomainObjectCollectionData (new DomainObject[] { domainObject1, domainObject2, domainObject3 }));
 
       decorator.Remove (domainObject2);
 
@@ -690,8 +654,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Serializable ()
     {
       var wrappedData = new DomainObjectCollectionData (new[] { _domainObject });
-      var stateUpdateListenerStub = new SerializableVirtualEndPointStateUpdateListenerFake();
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, stateUpdateListenerStub);
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData);
 
       WarmUpCache (decorator, false);
 
@@ -727,7 +690,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
 
       var wrappedData = new DomainObjectCollectionData (new[] { domainObject1, domainObject2 });
-      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData, _stateUpdateListenerMock);
+      var decorator = new ChangeCachingCollectionDataDecorator (wrappedData);
 
       action (decorator, domainObject1);
 
@@ -748,16 +711,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       WarmUpCache (decorator, hasChanged);
       Assert.That (decorator.IsCacheUpToDate, Is.True);
       Assert.That (decorator.HasChanged (_strategyStrictMock), Is.EqualTo (hasChanged));
-
-      _stateUpdateListenerMock.BackToRecord ();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (Arg<bool?>.Is.Anything)).Repeat.Never ();
-      _stateUpdateListenerMock.Replay ();
     }
 
     private void CheckChangeFlagRetained (ChangeCachingCollectionDataDecorator decorator)
     {
       Assert.That (decorator.IsCacheUpToDate, Is.True);
-      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     private void CheckOriginalDataNotCopied (ChangeCachingCollectionDataDecorator decorator)
@@ -774,15 +732,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       WarmUpCache (decorator, hasChanged);
       Assert.That (decorator.HasChanged (_strategyStrictMock), Is.EqualTo (hasChanged));
-
-      _stateUpdateListenerMock.BackToRecord ();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
-      _stateUpdateListenerMock.Replay ();
     }
 
     private void CheckChangeFlagInvalidated (ChangeCachingCollectionDataDecorator decorator)
     {
-      _stateUpdateListenerMock.VerifyAllExpectations ();
       Assert.That (decorator.IsCacheUpToDate, Is.False);
     }
 

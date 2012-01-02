@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _collectionManagerMock,
           _lazyLoaderMock,
           _endPointProviderStub,
-          new CollectionEndPointDataKeeperFactory (TestableClientTransaction, changeDetectionStrategy),
+          new CollectionEndPointDataKeeperFactory (changeDetectionStrategy),
           _stateUpdateListenerMock);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
       _endPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_customerEndPointID)).Return (_endPoint);
@@ -349,7 +349,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void Commit_ChangedCollectionReference ()
     {
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (true);
@@ -377,7 +376,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void Commit_ChangedLoadState ()
     {
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
@@ -405,7 +403,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void Rollback_ChangedCollectionReference ()
     {
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (true);
@@ -431,7 +428,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void Rollback_ChangedLoadState ()
     {
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
@@ -504,7 +500,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void SortCurrentData ()
     {
       Comparison<DomainObject> comparison = (one, two) => 0;
@@ -601,7 +596,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void CreateSetCollectionCommand ()
     {
       var oppositeDomainObjects = new OrderCollection ();
@@ -628,7 +622,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void CreateRemoveCommand ()
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
@@ -648,7 +641,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void CreateDeleteCommand ()
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
@@ -668,7 +660,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void CreateInsertCommand ()
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
@@ -688,7 +679,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void CreateAddCommand ()
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
@@ -708,7 +698,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4560")]
     public void CreateReplaceCommand ()
     {
       var fakeResult = MockRepository.GenerateStub<IDataManagementCommand> ();
@@ -753,11 +742,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Replay();
+
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       _endPoint.SetDataFromSubTransaction (source);
 
       _loadStateMock.VerifyAllExpectations ();
+      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
