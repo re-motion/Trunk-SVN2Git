@@ -449,10 +449,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Ignore ("TODO 4560")]
     public void RelationEndPointMapUnregisteringDataManagerMarkingObjectDiscardedDataContainerMapUnregistering ()
     {
       Order order = Order.NewObject ();
       var orderTicketEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderTicket");
+      var orderItemEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (order.ID, "OrderItems");
 
       TestableClientTransaction.AddListener (_strictListenerMock);
 
@@ -460,7 +462,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _strictListenerMock.Expect (mock => mock.ObjectDeleting (TestableClientTransaction, order));
         _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (TestableClientTransaction, orderTicketEndPointID, false));
-        // There is no state update for the OrderItems end point because the items are empty
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (TestableClientTransaction, orderItemEndPointID, null));
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (
