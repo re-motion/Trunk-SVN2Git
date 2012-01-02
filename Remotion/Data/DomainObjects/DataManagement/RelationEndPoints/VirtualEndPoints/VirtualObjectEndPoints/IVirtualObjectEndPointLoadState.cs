@@ -23,6 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// </summary>
   public interface IVirtualObjectEndPointLoadState : IVirtualEndPointLoadState<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper>
   {
+    void EnsureDataComplete (IVirtualObjectEndPoint endPoint);
     void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter);
 
     IDataManagementCommand CreateSetCommand (IVirtualObjectEndPoint virtualObjectEndPoint, DomainObject newRelatedObject);

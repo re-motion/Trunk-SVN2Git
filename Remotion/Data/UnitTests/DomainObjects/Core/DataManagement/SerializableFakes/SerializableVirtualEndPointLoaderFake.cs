@@ -19,25 +19,30 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  public class TestableIncompleteVirtualEndPointLoadState
-      : IncompleteVirtualEndPointLoadStateBase<
-          IVirtualEndPoint<object>, 
-          object, 
-          IVirtualEndPointDataKeeper, 
-          IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>>
+  public class SerializableVirtualEndPointLoaderFake<TEndPoint, TData, TDataKeeper, TLoadStateInterface> : IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper, TLoadStateInterface>.IEndPointLoader
+    where TEndPoint : IVirtualEndPoint<TData>
+    where TDataKeeper : IVirtualEndPointDataKeeper
+    where TLoadStateInterface : IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>
   {
-    public TestableIncompleteVirtualEndPointLoadState (
-        IEndPointLoader endPointLoader,
-        IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper> dataKeeperFactory)
-        : base (endPointLoader, dataKeeperFactory)
+    public SerializableVirtualEndPointLoaderFake ()
     {
     }
 
-    public TestableIncompleteVirtualEndPointLoadState (FlattenedDeserializationInfo info)
-        : base (info)
+    public TLoadStateInterface LoadEndPointAndGetNewState (TEndPoint endPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    #region Serialization
+    public SerializableVirtualEndPointLoaderFake (FlattenedDeserializationInfo info)
     {
     }
+
+    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+    {
+    }
+    #endregion
   }
 }

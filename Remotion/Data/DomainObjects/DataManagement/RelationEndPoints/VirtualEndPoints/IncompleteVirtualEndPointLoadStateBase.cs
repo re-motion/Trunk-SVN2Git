@@ -13,35 +13,40 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// <typeparam name="TEndPoint">The type of the end point whose state is managed by this class.</typeparam>
   /// <typeparam name="TData">The type of data held by the <typeparamref name="TDataKeeper"/>.</typeparam>
   /// <typeparam name="TDataKeeper">The type of data keeper holding the data for the end-point.</typeparam>
-  public abstract class IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper> 
+  /// <typeparam name="TLoadStateInterface">The type of the load state interface used by <typeparamref name="TEndPoint"/>.</typeparam>
+  public abstract class IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper, TLoadStateInterface> 
       : IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>
       where TEndPoint : IVirtualEndPoint<TData>
       where TDataKeeper : IVirtualEndPointDataKeeper
+      where TLoadStateInterface : IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
+    public interface IEndPointLoader : IFlattenedSerializable
+    {
+      TLoadStateInterface LoadEndPointAndGetNewState (TEndPoint endPoint);
+    }
 
-    public static ILog Log
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper, TLoadStateInterface>));
+
+    protected static ILog Log
     {
       get { return s_log; }
     }
 
-    private readonly ILazyLoader _lazyLoader;
+    private readonly IEndPointLoader _endPointLoader;
     private readonly IVirtualEndPointDataKeeperFactory<TDataKeeper> _dataKeeperFactory;
     private readonly Dictionary<ObjectID, IRealObjectEndPoint> _originalOppositeEndPoints;
 
     protected IncompleteVirtualEndPointLoadStateBase (
-        ILazyLoader lazyLoader,
+        IEndPointLoader endPointLoader,
         IVirtualEndPointDataKeeperFactory<TDataKeeper> dataKeeperFactory)
     {
-      ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("endPointLoader", endPointLoader);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
 
-      _lazyLoader = lazyLoader;
+      _endPointLoader = endPointLoader;
       _dataKeeperFactory = dataKeeperFactory;
       _originalOppositeEndPoints = new Dictionary<ObjectID, IRealObjectEndPoint>();
     }
-
-    public abstract void EnsureDataComplete (TEndPoint endPoint);
 
     public bool CanEndPointBeCollected (TEndPoint endPoint)
     {
@@ -53,9 +58,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _originalOppositeEndPoints.Values; }
     }
 
-    public ILazyLoader LazyLoader
+    public IEndPointLoader EndPointLoader
     {
-      get { return _lazyLoader; }
+      get { return _endPointLoader; }
     }
 
     public IVirtualEndPointDataKeeperFactory<TDataKeeper> DataKeeperFactory
@@ -85,16 +90,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      endPoint.EnsureDataComplete ();
-      return endPoint.GetData();
+      var completeState = _endPointLoader.LoadEndPointAndGetNewState (endPoint);
+      return completeState.GetData (endPoint);
     }
 
     public virtual TData GetOriginalData (TEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      endPoint.EnsureDataComplete ();
-      return endPoint.GetOriginalData();
+      var completeState = _endPointLoader.LoadEndPointAndGetNewState (endPoint);
+      return completeState.GetOriginalData (endPoint);
     }
  
     public virtual void RegisterOriginalOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
@@ -120,8 +125,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      endPoint.EnsureDataComplete ();
-      endPoint.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
+      var completeState = _endPointLoader.LoadEndPointAndGetNewState (endPoint);
+      completeState.RegisterCurrentOppositeEndPoint (endPoint, oppositeEndPoint);
     }
 
     public void UnregisterCurrentOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
@@ -129,8 +134,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      endPoint.EnsureDataComplete ();
-      endPoint.UnregisterCurrentOppositeEndPoint (oppositeEndPoint);
+      var completeState = _endPointLoader.LoadEndPointAndGetNewState (endPoint);
+      completeState.UnregisterCurrentOppositeEndPoint (endPoint, oppositeEndPoint);
     }
 
     public bool? IsSynchronized (TEndPoint endPoint)
@@ -144,8 +149,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      endPoint.EnsureDataComplete ();
-      endPoint.Synchronize ();
+      var completeState = _endPointLoader.LoadEndPointAndGetNewState (endPoint);
+      completeState.Synchronize (endPoint);
     }
 
     public void SynchronizeOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
@@ -222,7 +227,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     protected IncompleteVirtualEndPointLoadStateBase (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
+      _endPointLoader = info.GetValue<IEndPointLoader> ();
 
       var realObjectEndPoints = new List<IRealObjectEndPoint>();
       info.FillCollection (realObjectEndPoints);
@@ -234,7 +239,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      info.AddHandle (_lazyLoader);
+      info.AddValue (_endPointLoader);
       info.AddCollection(_originalOppositeEndPoints.Values);
       info.AddHandle (_dataKeeperFactory);
     }

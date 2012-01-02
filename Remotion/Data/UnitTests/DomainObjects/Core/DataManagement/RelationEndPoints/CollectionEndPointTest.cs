@@ -24,6 +24,8 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Validation;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -70,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           TestableClientTransaction,
           _customerEndPointID,
           _collectionManagerMock,
-          MockRepository.GenerateStub<ILazyLoader> (),
+          _lazyLoaderMock,
           _endPointProviderStub,
           new CollectionEndPointDataKeeperFactory (TestableClientTransaction, changeDetectionStrategy),
           _stateUpdateListenerMock);
@@ -106,6 +108,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var loadState = CollectionEndPointTestHelper.GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
       Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeperFactory, Is.SameAs (dataKeeperFactoryStub));
+      Assert.That (
+          ((IncompleteCollectionEndPointLoadState) loadState).EndPointLoader, 
+          Is.TypeOf<CollectionEndPoint.EndPointLoader>().With.Property<CollectionEndPoint.EndPointLoader> (l => l.LazyLoader).SameAs (_lazyLoaderMock));
     }
 
     [Test]
@@ -308,8 +313,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       
       var newLoadState = CollectionEndPointTestHelper.GetLoadState (_endPoint);
       Assert.That (newLoadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-
-      Assert.That (((IncompleteCollectionEndPointLoadState) newLoadState).LazyLoader, Is.SameAs (GetEndPointLazyLoader (_endPoint)));
+      Assert.That (
+          ((IncompleteCollectionEndPointLoadState) newLoadState).EndPointLoader,
+          Is.TypeOf<CollectionEndPoint.EndPointLoader> ().With.Property<CollectionEndPoint.EndPointLoader> (l => l.LazyLoader).SameAs (_lazyLoaderMock));
     }
 
     [Test]
@@ -840,9 +846,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.SetDataFromSubTransaction (source);
     }
 
-    private ILazyLoader GetEndPointLazyLoader (CollectionEndPoint endPoint)
+    [Test]
+    public void EndPointLoader_LoadEndPointAndGetNewState ()
     {
-      return (ILazyLoader) PrivateInvoke.GetNonPublicField (endPoint, "_lazyLoader");
+      var endPointLoader = new CollectionEndPoint.EndPointLoader (_lazyLoaderMock);
+      var loadStateFake = MockRepository.GenerateStub<ICollectionEndPointLoadState> ();
+      _lazyLoaderMock
+          .Expect (mock => mock.LoadLazyCollectionEndPoint (_endPoint))
+          .WhenCalled (mi => CollectionEndPointTestHelper.SetLoadState (_endPoint, loadStateFake));
+
+      _lazyLoaderMock.Replay ();
+
+      var result = endPointLoader.LoadEndPointAndGetNewState (_endPoint);
+
+      _lazyLoaderMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (loadStateFake));
+    }
+
+    [Test]
+    public void EndPointLoader_Serializable ()
+    {
+      var endPointLoader = new CollectionEndPoint.EndPointLoader (new SerializableLazyLoaderFake());
+
+      var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (endPointLoader);
+
+      Assert.That (deserializedInstance.LazyLoader, Is.Not.Null);
     }
   }
 }

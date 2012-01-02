@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Data.DomainObjects.DataManagement;
+using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Development.UnitTesting;
@@ -26,6 +26,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public static IVirtualObjectEndPointLoadState GetLoadState (VirtualObjectEndPoint endPoint)
     {
       return (IVirtualObjectEndPointLoadState) PrivateInvoke.GetNonPublicField (endPoint, "_loadState");
+    }
+
+    public static void SetLoadState (VirtualObjectEndPoint endPoint, IVirtualObjectEndPointLoadState loadState)
+    {
+      PrivateInvoke.SetNonPublicField (endPoint, "_loadState", loadState);
     }
   }
 }

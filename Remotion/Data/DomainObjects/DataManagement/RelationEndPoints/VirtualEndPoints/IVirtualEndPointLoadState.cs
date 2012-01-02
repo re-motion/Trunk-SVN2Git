@@ -14,7 +14,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       where TDataKeeper : IVirtualEndPointDataKeeper
   {
     bool IsDataComplete ();
-    void EnsureDataComplete (TEndPoint endPoint);
 
     bool CanEndPointBeCollected (TEndPoint endPoint);
 

@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointID _endPointID;
     private IVirtualObjectEndPoint _virtualObjectEndPointMock;
 
-    private ILazyLoader _lazyLoaderMock;
+    private IncompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper, IVirtualObjectEndPointLoadState>.IEndPointLoader _endPointLoaderMock;
     private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactoryStub;
 
     private IncompleteVirtualObjectEndPointLoadState _loadState;
@@ -55,12 +55,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
       _virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
     
-      _lazyLoaderMock = MockRepository.GenerateStrictMock<ILazyLoader> ();
+      _endPointLoaderMock = MockRepository.GenerateStrictMock<IncompleteVirtualObjectEndPointLoadState.IEndPointLoader> ();
       _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
 
       var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
       dataKeeperStub.Stub (stub => stub.HasDataChanged()).Return (false);
-      _loadState = new IncompleteVirtualObjectEndPointLoadState (_lazyLoaderMock, _dataKeeperFactoryStub);
+      _loadState = new IncompleteVirtualObjectEndPointLoadState (_endPointLoaderMock, _dataKeeperFactoryStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -74,14 +74,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void EnsureDataComplete ()
     {
-      _lazyLoaderMock.Expect (mock => mock.LoadLazyVirtualObjectEndPoint (_virtualObjectEndPointMock));
-      _lazyLoaderMock.Replay ();
+      var newStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
+
+      _endPointLoaderMock
+          .Expect (mock => mock.LoadEndPointAndGetNewState (_virtualObjectEndPointMock))
+          .Return (newStateMock);
+      _endPointLoaderMock.Replay ();
       _virtualObjectEndPointMock.Replay ();
+      newStateMock.Replay ();
 
       _loadState.EnsureDataComplete (_virtualObjectEndPointMock);
 
-      _lazyLoaderMock.VerifyAllExpectations ();
+      _endPointLoaderMock.VerifyAllExpectations ();
       _virtualObjectEndPointMock.VerifyAllExpectations ();
+      newStateMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -196,7 +202,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       CheckOperationDelegatesToCompleteState (
           s => s.CreateSetCommand (_virtualObjectEndPointMock, _relatedObject),
-          s => s.CreateSetCommand (_relatedObject),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
 
@@ -205,7 +210,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       CheckOperationDelegatesToCompleteState (
           s => s.CreateSetCommand (_virtualObjectEndPointMock, null),
-          s => s.CreateSetCommand (null),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
 
@@ -214,14 +218,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       CheckOperationDelegatesToCompleteState (
           s => s.CreateDeleteCommand (_virtualObjectEndPointMock),
-          s => s.CreateDeleteCommand (),
           MockRepository.GenerateStub<IDataManagementCommand> ());
     }
 
     [Test]
     public void FlattenedSerializable ()
     {
-      var lazyLoader = new SerializableLazyLoaderFake ();
+      var lazyLoader = new SerializableVirtualEndPointLoaderFake<
+          IVirtualObjectEndPoint, 
+          DomainObject, 
+          IVirtualObjectEndPointDataKeeper, 
+          IVirtualObjectEndPointLoadState>();
       var dataKeeperFactory = new SerializableVirtualObjectEndPointDataKeeperFactoryFake ();
 
       var state = new IncompleteVirtualObjectEndPointLoadState (lazyLoader, dataKeeperFactory);
@@ -232,25 +239,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (result, Is.Not.Null);
       Assert.That (result.OriginalOppositeEndPoints, Is.Not.Null);
       Assert.That (result.OriginalOppositeEndPoints, Is.Not.Empty);
-      Assert.That (result.LazyLoader, Is.Not.Null);
+      Assert.That (result.EndPointLoader, Is.Not.Null);
       Assert.That (result.DataKeeperFactory, Is.Not.Null);
     }
 
-    private void CheckOperationDelegatesToCompleteState<T> (
-        Func<IVirtualObjectEndPointLoadState, T> operation,
-        Func<IVirtualObjectEndPoint, T> operationOnEndPoint,
-        T fakeResult)
+    private void CheckOperationDelegatesToCompleteState<T> (Func<IVirtualObjectEndPointLoadState, T> operation, T fakeResult)
     {
-      using (_virtualObjectEndPointMock.GetMockRepository ().Ordered ())
-      {
-        _virtualObjectEndPointMock.Expect (mock => mock.EnsureDataComplete ());
-        _virtualObjectEndPointMock.Expect (mock => operationOnEndPoint (mock)).Return (fakeResult);
-      }
-      _virtualObjectEndPointMock.Replay ();
+      var newStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
+      _endPointLoaderMock
+          .Expect (mock => mock.LoadEndPointAndGetNewState (_virtualObjectEndPointMock))
+          .Return (newStateMock);
+      newStateMock
+          .Expect (mock => operation (mock))
+          .Return (fakeResult);
+
+      _endPointLoaderMock.Replay ();
+      newStateMock.Replay ();
 
       var result = operation (_loadState);
 
-      _virtualObjectEndPointMock.VerifyAllExpectations ();
+      _endPointLoaderMock.VerifyAllExpectations ();
+      newStateMock.Replay ();
       Assert.That (result, Is.EqualTo (fakeResult));
     }
 

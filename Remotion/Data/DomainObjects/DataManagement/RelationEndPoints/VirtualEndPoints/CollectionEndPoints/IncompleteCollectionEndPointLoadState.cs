@@ -27,21 +27,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// loaded, or it has been unloaded).
   /// </summary>
   public class IncompleteCollectionEndPointLoadState 
-      : IncompleteVirtualEndPointLoadStateBase<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper>,
+      : IncompleteVirtualEndPointLoadStateBase<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper, ICollectionEndPointLoadState>,
         ICollectionEndPointLoadState
   {
     public IncompleteCollectionEndPointLoadState (
-        ILazyLoader lazyLoader, 
+        IEndPointLoader endPointLoader, 
         IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory)
-      : base (lazyLoader, dataKeeperFactory)
+      : base (endPointLoader, dataKeeperFactory)
     {
     }
 
-    public override void EnsureDataComplete (ICollectionEndPoint endPoint)
+    public void EnsureDataComplete (ICollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      LazyLoader.LoadLazyCollectionEndPoint (endPoint);
+      EndPointLoader.LoadEndPointAndGetNewState (endPoint);
     }
 
     public new void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
@@ -61,17 +61,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("comparison", comparison);
 
-      collectionEndPoint.EnsureDataComplete();
-      collectionEndPoint.SortCurrentData (comparison);
+      var completeState = EndPointLoader.LoadEndPointAndGetNewState (collectionEndPoint);
+      completeState.SortCurrentData (collectionEndPoint, comparison);
     }
 
-    public IDataManagementCommand CreateSetCollectionCommand (ICollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection, ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
+    public IDataManagementCommand CreateSetCollectionCommand (
+        ICollectionEndPoint collectionEndPoint, 
+        DomainObjectCollection newCollection, 
+        ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
 
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.CreateSetCollectionCommand (newCollection);
+      var completeState = EndPointLoader.LoadEndPointAndGetNewState (collectionEndPoint);
+      return completeState.CreateSetCollectionCommand (collectionEndPoint, newCollection, collectionEndPointCollectionManager);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
@@ -79,25 +82,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.CreateRemoveCommand (removedRelatedObject);
+      var completeState = EndPointLoader.LoadEndPointAndGetNewState (collectionEndPoint);
+      return completeState.CreateRemoveCommand (collectionEndPoint, removedRelatedObject);
     }
 
     public IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.CreateDeleteCommand ();
+      var completeState = EndPointLoader.LoadEndPointAndGetNewState (collectionEndPoint);
+      return completeState.CreateDeleteCommand (collectionEndPoint);
     }
 
     public IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
-      
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.CreateInsertCommand (insertedRelatedObject, index);
+
+      var completeState = EndPointLoader.LoadEndPointAndGetNewState (collectionEndPoint);
+      return completeState.CreateInsertCommand (collectionEndPoint, insertedRelatedObject, index);
     }
 
     public IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject)
@@ -105,8 +108,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
       
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.CreateAddCommand (addedRelatedObject);
+      var completeState = EndPointLoader.LoadEndPointAndGetNewState (collectionEndPoint);
+      return completeState.CreateAddCommand (collectionEndPoint, addedRelatedObject);
     }
 
     public IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject)
@@ -114,10 +117,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
 
-      collectionEndPoint.EnsureDataComplete ();
-      return collectionEndPoint.CreateReplaceCommand (index, replacementObject);
+      var completeState = EndPointLoader.LoadEndPointAndGetNewState (collectionEndPoint);
+      return completeState.CreateReplaceCommand (collectionEndPoint, index, replacementObject);
     }
-    
+
     #region Serialization
 
     public IncompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)

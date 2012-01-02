@@ -26,6 +26,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   public interface ICollectionEndPointLoadState : 
       IVirtualEndPointLoadState<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper>
   {
+    void EnsureDataComplete (ICollectionEndPoint endPoint);
     void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter);
     void SortCurrentData (ICollectionEndPoint collectionEndPoint, Comparison<DomainObject> comparison);
 

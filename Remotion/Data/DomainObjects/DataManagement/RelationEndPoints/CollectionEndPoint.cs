@@ -32,6 +32,46 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class CollectionEndPoint : RelationEndPoint, ICollectionEndPoint
   {
+    [Serializable]
+    public class EndPointLoader : IncompleteCollectionEndPointLoadState.IEndPointLoader
+    {
+      private readonly ILazyLoader _lazyLoader;
+
+      public EndPointLoader (ILazyLoader lazyLoader)
+      {
+        ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+        _lazyLoader = lazyLoader;
+      }
+
+      public ILazyLoader LazyLoader
+      {
+        get { return _lazyLoader; }
+      }
+
+      public ICollectionEndPointLoadState LoadEndPointAndGetNewState (ICollectionEndPoint endPoint)
+      {
+        var collectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("endPoint", endPoint);
+        _lazyLoader.LoadLazyCollectionEndPoint (endPoint);
+        return collectionEndPoint._loadState;
+      }
+
+      #region Serialization
+      public EndPointLoader (FlattenedDeserializationInfo info)
+      {
+        ArgumentUtility.CheckNotNull ("info", info);
+
+        _lazyLoader = info.GetValueForHandle<ILazyLoader>();
+      }
+
+      void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+      {
+        ArgumentUtility.CheckNotNull ("info", info);
+
+        info.AddHandle (_lazyLoader);
+      }
+      #endregion
+    }
+
     private readonly ICollectionEndPointCollectionManager _collectionManager;
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
@@ -328,7 +368,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private void SetIncompleteLoadState ()
     {
-      _loadState = new IncompleteCollectionEndPointLoadState (_lazyLoader, _dataKeeperFactory);
+      var loader = new EndPointLoader (_lazyLoader);
+      _loadState = new IncompleteCollectionEndPointLoadState (loader, _dataKeeperFactory);
     }
 
     private DomainObjectCollection CreateCollection (IDomainObjectCollectionData dataStrategy)

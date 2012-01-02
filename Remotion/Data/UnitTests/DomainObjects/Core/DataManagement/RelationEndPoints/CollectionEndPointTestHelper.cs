@@ -54,5 +54,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       return (ICollectionEndPointLoadState) PrivateInvoke.GetNonPublicField (collectionEndPoint, "_loadState");
     }
+
+    public static void SetLoadState (CollectionEndPoint collectionEndPoint, ICollectionEndPointLoadState loadState)
+    {
+      PrivateInvoke.SetNonPublicField (collectionEndPoint, "_loadState", loadState);
+    }
   }
 }

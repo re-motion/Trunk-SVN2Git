@@ -29,6 +29,46 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class VirtualObjectEndPoint : ObjectEndPoint, IVirtualObjectEndPoint
   {
+    [Serializable]
+    public class EndPointLoader : IncompleteVirtualObjectEndPointLoadState.IEndPointLoader
+    {
+      private readonly ILazyLoader _lazyLoader;
+
+      public EndPointLoader (ILazyLoader lazyLoader)
+      {
+        ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+        _lazyLoader = lazyLoader;
+      }
+
+      public ILazyLoader LazyLoader
+      {
+        get { return _lazyLoader; }
+      }
+
+      public IVirtualObjectEndPointLoadState LoadEndPointAndGetNewState (IVirtualObjectEndPoint endPoint)
+      {
+        var virtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<VirtualObjectEndPoint> ("endPoint", endPoint);
+        _lazyLoader.LoadLazyVirtualObjectEndPoint (virtualObjectEndPoint);
+        return virtualObjectEndPoint._loadState;
+      }
+
+      #region Serialization
+      public EndPointLoader (FlattenedDeserializationInfo info)
+      {
+        ArgumentUtility.CheckNotNull ("info", info);
+
+        _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
+      }
+
+      void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
+      {
+        ArgumentUtility.CheckNotNull ("info", info);
+
+        info.AddHandle (_lazyLoader);
+      }
+      #endregion
+    }
+
     private readonly ILazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
 
@@ -218,7 +258,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private void SetIncompleteState ()
     {
-      _loadState = new IncompleteVirtualObjectEndPointLoadState (LazyLoader, _dataKeeperFactory);
+      var loader = new EndPointLoader (_lazyLoader);
+      _loadState = new IncompleteVirtualObjectEndPointLoadState (loader, _dataKeeperFactory);
     }
 
     private void SetCompleteState (IVirtualObjectEndPointDataKeeper dataKeeper)
