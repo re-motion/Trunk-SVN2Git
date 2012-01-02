@@ -74,7 +74,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
       var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
       var dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (clientTransaction);
-      return new VirtualObjectEndPoint (clientTransaction, endPointID, lazyLoader, endPointProvider, dataKeeperFactory);
+      return new VirtualObjectEndPoint (
+          clientTransaction,
+          endPointID,
+          lazyLoader,
+          endPointProvider,
+          dataKeeperFactory,
+          new VirtualEndPointStateUpdateListener (clientTransaction, endPointID));
     }
 
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)

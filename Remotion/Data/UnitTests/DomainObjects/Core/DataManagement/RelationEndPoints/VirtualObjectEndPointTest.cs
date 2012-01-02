@@ -38,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
     private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
+    private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
     private IVirtualObjectEndPointLoadState _loadStateMock;
     
     private VirtualObjectEndPoint _endPoint;
@@ -54,6 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _lazyLoaderMock = MockRepository.GenerateStrictMock<ILazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (TestableClientTransaction);
+      _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener> ();
       _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
 
       _endPoint = new VirtualObjectEndPoint (
@@ -61,7 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID, 
           _lazyLoaderMock, 
           _endPointProviderStub,
-          _dataKeeperFactory);
+          _dataKeeperFactory,
+          _stateUpdateListenerMock);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
 
       _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
@@ -76,13 +79,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID,
           _lazyLoaderMock,
           _endPointProviderStub,
-          _dataKeeperFactory);
+          _dataKeeperFactory,
+          _stateUpdateListenerMock);
 
       Assert.That (endPoint.ID, Is.EqualTo (_endPointID));
       Assert.That (endPoint.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderMock));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_dataKeeperFactory));
+      Assert.That (endPoint.StateUpdateListener, Is.SameAs (_stateUpdateListenerMock));
       Assert.That (endPoint.HasBeenTouched, Is.False);
       Assert.That (endPoint.IsDataComplete, Is.False);
 
@@ -100,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Initialization_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _dataKeeperFactory);
+      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _dataKeeperFactory, _stateUpdateListenerMock);
     }
 
     [Test]

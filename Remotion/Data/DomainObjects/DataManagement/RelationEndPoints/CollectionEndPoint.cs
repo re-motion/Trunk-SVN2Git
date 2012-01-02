@@ -402,24 +402,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _hasBeenTouched = info.GetBoolValue();
       _collectionManager = info.GetValueForHandle<ICollectionEndPointCollectionManager>();
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
+      _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener> ();
+
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
-      _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener>();
+      _hasBeenTouched = info.GetBoolValue ();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddBoolValue (_hasBeenTouched);
       info.AddHandle (_collectionManager);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
       info.AddHandle (_dataKeeperFactory);
-      info.AddValue (_loadState);
       info.AddHandle (_stateUpdateListener);
+
+      info.AddValue (_loadState);
+      info.AddBoolValue (_hasBeenTouched);
     }
 
     #endregion

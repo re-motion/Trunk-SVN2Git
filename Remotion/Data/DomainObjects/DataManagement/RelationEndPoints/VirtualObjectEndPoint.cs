@@ -71,6 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private readonly ILazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
+    private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
 
     private IVirtualObjectEndPointLoadState _loadState;
 
@@ -81,7 +82,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         RelationEndPointID id,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory)
+        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory,
+        IVirtualEndPointStateUpdateListener stateUpdateListener)
         : base (
             ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
             ArgumentUtility.CheckNotNull ("id", id),
@@ -89,12 +91,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
 
       _lazyLoader = lazyLoader;
       _dataKeeperFactory = dataKeeperFactory;
+      _stateUpdateListener = stateUpdateListener;
 
       SetIncompleteState();
 
@@ -109,6 +113,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> DataKeeperFactory
     {
       get { return _dataKeeperFactory; }
+    }
+
+    public IVirtualEndPointStateUpdateListener StateUpdateListener
+    {
+      get { return _stateUpdateListener; }
     }
 
     public override ObjectID OppositeObjectID
@@ -274,8 +283,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
       _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
+      _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener>();
+      
       _loadState = info.GetValue<IVirtualObjectEndPointLoadState> ();
-
       _hasBeenTouched = info.GetBoolValue ();
     }
 
@@ -285,8 +295,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       info.AddHandle (_lazyLoader);
       info.AddHandle (_dataKeeperFactory);
-      info.AddValue (_loadState);
+      info.AddHandle (_stateUpdateListener);
 
+      info.AddValue (_loadState);
       info.AddBoolValue (_hasBeenTouched);
     }
 
