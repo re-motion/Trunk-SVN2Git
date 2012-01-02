@@ -58,6 +58,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public void SortCurrentData (ICollectionEndPoint collectionEndPoint, Comparison<DomainObject> comparison)
     {
+      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("comparison", comparison);
+
       collectionEndPoint.EnsureDataComplete();
       collectionEndPoint.SortCurrentData (comparison);
     }
