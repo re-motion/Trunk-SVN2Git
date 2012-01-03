@@ -25,25 +25,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   [Serializable]
   public class VirtualObjectEndPointDataKeeperFactory : IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>
   {
-    private readonly ClientTransaction _clientTransaction;
-
-    public VirtualObjectEndPointDataKeeperFactory (ClientTransaction clientTransaction)
-    {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      _clientTransaction = clientTransaction;
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
-    }
-
     public IVirtualObjectEndPointDataKeeper Create (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-
-      var updateListener = new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID);
-      return new VirtualObjectEndPointDataKeeper (endPointID, updateListener);
+      return new VirtualObjectEndPointDataKeeper (endPointID);
     }
   }
 }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -178,12 +179,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Synchronize ()
     {
       _loadState.Synchronize (this);
+      _stateUpdateListener.StateUpdated (HasChanged);
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
+
       _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
+      _stateUpdateListener.StateUpdated (HasChanged);
     }
 
     public void MarkDataComplete (DomainObject item)
@@ -232,12 +236,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return _loadState.CreateSetCommand (this, newRelatedObject);
+      var command = _loadState.CreateSetCommand (this, newRelatedObject);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
-      return _loadState.CreateDeleteCommand (this);
+      var command = _loadState.CreateDeleteCommand (this);
+      return CreateStateUpdateRaisingCommandDecorator (command);
     }
 
     public override void Touch ()
@@ -248,14 +254,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Commit ()
     {
       if (HasChanged)
-        _loadState.Commit(this);
+      {
+        _loadState.Commit (this);
+        _stateUpdateListener.StateUpdated (false);
+      }
 
       _hasBeenTouched = false;
     }
 
     public override void Rollback ()
     {
-      _loadState.Rollback(this);
+      if (HasChanged)
+      {
+        _loadState.Rollback (this);
+        _stateUpdateListener.StateUpdated (false);
+      }
+
       _hasBeenTouched = false;
     }
 
@@ -263,6 +277,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       var sourceVirtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<VirtualObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
       _loadState.SetDataFromSubTransaction (this, sourceVirtualObjectEndPoint._loadState);
+      _stateUpdateListener.StateUpdated (HasChanged);
     }
 
     private void SetIncompleteState ()
@@ -274,6 +289,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private void SetCompleteState (IVirtualObjectEndPointDataKeeper dataKeeper)
     {
       _loadState = new CompleteVirtualObjectEndPointLoadState (dataKeeper, EndPointProvider, ClientTransaction);
+    }
+
+    private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
+    {
+      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, _stateUpdateListener, () => HasChanged);
     }
 
     #region Serialization

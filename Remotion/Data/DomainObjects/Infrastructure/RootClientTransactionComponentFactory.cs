@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var endPointChangeDetectionStrategy = new RootCollectionEndPointChangeDetectionStrategy();
       var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (endPointChangeDetectionStrategy);
-      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory (constructedTransaction);
+      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory();
 
       var relationEndPointFactory = CreateRelationEndPointFactory (
           constructedTransaction,

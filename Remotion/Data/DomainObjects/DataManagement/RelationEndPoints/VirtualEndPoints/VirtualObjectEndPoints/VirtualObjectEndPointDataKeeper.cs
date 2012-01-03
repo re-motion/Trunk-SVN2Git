@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   public class VirtualObjectEndPointDataKeeper : IVirtualObjectEndPointDataKeeper
   {
     private readonly RelationEndPointID _endPointID;
-    private readonly IVirtualEndPointStateUpdateListener _updateListener;
 
     private DomainObject _currentOppositeObject;
     private DomainObject _originalOppositeObject;
@@ -34,13 +33,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     private IRealObjectEndPoint _currentOppositeEndPoint;
     private IRealObjectEndPoint _originalOppositeEndPoint;
 
-    public VirtualObjectEndPointDataKeeper (RelationEndPointID endPointID, IVirtualEndPointStateUpdateListener updateListener)
+    public VirtualObjectEndPointDataKeeper (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      ArgumentUtility.CheckNotNull ("updateListener", updateListener);
 
       _endPointID = endPointID;
-      _updateListener = updateListener;
     }
 
     public RelationEndPointID EndPointID
@@ -48,19 +45,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _endPointID; }
     }
 
-    public IVirtualEndPointStateUpdateListener UpdateListener
-    {
-      get { return _updateListener; }
-    }
-
     public DomainObject CurrentOppositeObject
     {
       get { return _currentOppositeObject; }
-      set
-      {
-        _currentOppositeObject = value;
-        _updateListener.StateUpdated (HasDataChanged());
-      }
+      set { _currentOppositeObject = value; }
     }
 
     public DomainObject OriginalOppositeObject
@@ -110,7 +98,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       _originalOppositeEndPoint = oppositeEndPoint;
       _originalOppositeObject = oppositeObject;
-      _updateListener.StateUpdated (HasDataChanged ());
     }
 
     public void UnregisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -125,8 +112,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       _currentOppositeEndPoint = null;
       _currentOppositeObject = null;
-
-      _updateListener.StateUpdated (false);
     }
 
     public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
@@ -143,7 +128,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         _currentOppositeObject = domainObject;
 
       _originalOppositeObject = domainObject;
-      _updateListener.StateUpdated (HasDataChanged());
     }
 
     public void UnregisterOriginalItemWithoutEndPoint (DomainObject domainObject)
@@ -161,7 +145,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         _currentOppositeObject = null;
 
       _originalOppositeObject = null;
-      _updateListener.StateUpdated (HasDataChanged ());
     }
     
     public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -193,16 +176,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       _originalOppositeObject = _currentOppositeObject;
       _originalOppositeEndPoint = _currentOppositeEndPoint;
-
-      _updateListener.StateUpdated (false);
     }
 
     public void Rollback ()
     {
       _currentOppositeObject = _originalOppositeObject;
       _currentOppositeEndPoint = _originalOppositeEndPoint;
-
-      _updateListener.StateUpdated (false);
     }
 
     public void SetDataFromSubTransaction (IVirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
@@ -223,8 +202,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             _currentOppositeEndPoint,
             "When committing a current virtual relation value from a sub-transaction, the opposite end-point is guaranteed to exist.");
       }
-
-      _updateListener.StateUpdated (HasDataChanged ());
     }
 
     #region Serialization
@@ -234,7 +211,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("info", info);
 
       _endPointID = info.GetValueForHandle<RelationEndPointID>();
-      _updateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener>();
       _originalOppositeEndPoint = info.GetValue<IRealObjectEndPoint>();
       _originalOppositeObject = info.GetValueForHandle<DomainObject>();
       _currentOppositeEndPoint = info.GetValue<IRealObjectEndPoint>();
@@ -246,7 +222,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("info", info);
 
       info.AddHandle (_endPointID);
-      info.AddHandle (_updateListener);
       info.AddValue (_originalOppositeEndPoint);
       info.AddHandle (_originalOppositeObject);
       info.AddValue (_currentOppositeEndPoint);

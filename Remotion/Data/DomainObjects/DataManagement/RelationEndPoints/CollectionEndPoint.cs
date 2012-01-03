@@ -295,6 +295,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Synchronize ()
     {
       _loadState.Synchronize (this);
+      _stateUpdateListener.StateUpdated (null);
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -302,6 +303,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
+      _stateUpdateListener.StateUpdated (null);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)

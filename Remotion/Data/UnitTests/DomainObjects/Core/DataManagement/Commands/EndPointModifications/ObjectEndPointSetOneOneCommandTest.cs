@@ -227,8 +227,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var orderTicketOfOldOrderOfNewOrderTicketEndPoint =
           TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (orderTicketOfOldOrderOfNewOrderTicketEndPointID);
 
-      Assert.That (steps[3], Is.InstanceOf (typeof (ObjectEndPointSetCommand)));
-      var setOrderTicketOfOldOrderOfNewOrderTicketCommand = ((ObjectEndPointSetCommand) steps[3]);
+      Assert.That (steps[3], Is.InstanceOf (typeof (VirtualEndPointStateUpdatedRaisingCommandDecorator)));
+      var setOrderTicketOfOldOrderOfNewOrderTicketCommand = ((ObjectEndPointSetCommand) ((VirtualEndPointStateUpdatedRaisingCommandDecorator) steps[3]).DecoratedCommand);
       Assert.That (setOrderTicketOfOldOrderOfNewOrderTicketCommand.ModifiedEndPoint, Is.SameAs (orderTicketOfOldOrderOfNewOrderTicketEndPoint));
       Assert.That (setOrderTicketOfOldOrderOfNewOrderTicketCommand.OldRelatedObject, Is.SameAs (_newRelatedObject));
       Assert.That (setOrderTicketOfOldOrderOfNewOrderTicketCommand.NewRelatedObject, Is.SameAs (null));

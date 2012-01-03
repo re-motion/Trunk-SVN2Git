@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
@@ -32,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private RelationEndPointID _endPointID;
     
-    private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
     private VirtualObjectEndPointDataKeeper _dataKeeper;
 
     private OrderTicket _oppositeObject;
@@ -47,8 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
 
-      _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener>();
-      _dataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, _stateUpdateListenerMock);
+      _dataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID);
 
       _oppositeObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
       _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -67,27 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.CurrentOppositeObject = _oppositeObject;
 
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
-    }
-
-    [Test]
-    public void CurrentOppositeObject_Set_RaisesNotification ()
-    {
-      Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
-
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
-      _stateUpdateListenerMock.Replay();
-
-      _dataKeeper.CurrentOppositeObject = _oppositeObject;
-
-      _stateUpdateListenerMock.VerifyAllExpectations();
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
-      _stateUpdateListenerMock.Replay();
-
-      _dataKeeper.CurrentOppositeObject = null;
-
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -121,10 +97,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.CurrentOppositeObject = _oppositeObject2;
       _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub2);
 
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
@@ -132,8 +104,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject2));
-
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -175,18 +145,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.RegisterOriginalOppositeEndPoint (_oppositeEndPointStub);
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Not.Null);
 
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.UnregisterOriginalOppositeEndPoint (_oppositeEndPointStub);
 
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
       Assert.That (_dataKeeper.OriginalOppositeObject, Is.Null);
-
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -228,12 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.CurrentOppositeObject = _oppositeObject2;
       _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub2);
 
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
-      _stateUpdateListenerMock.VerifyAllExpectations ();
 
       Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
@@ -281,13 +240,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.RegisterOriginalItemWithoutEndPoint (_oppositeObject);
       _dataKeeper.CurrentOppositeObject = _oppositeObject2;
 
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.UnregisterOriginalItemWithoutEndPoint (_oppositeObject);
 
-      _stateUpdateListenerMock.VerifyAllExpectations();
       Assert.That (_dataKeeper.OriginalOppositeObject, Is.Null);
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject2));
@@ -385,18 +339,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Not.SameAs (_oppositeEndPointStub2));
       Assert.That (_dataKeeper.OriginalOppositeObject, Is.Not.SameAs (_oppositeObject2));
 
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.Commit();
 
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.EqualTo (_oppositeObject2));
       Assert.That (_dataKeeper.OriginalOppositeObject, Is.EqualTo (_oppositeObject2));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub2));
-
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -413,8 +361,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.Null);
-
-      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -430,8 +376,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.Null);
       Assert.That (_dataKeeper.OriginalItemWithoutEndPoint, Is.SameAs (_oppositeObject));
-
-      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -449,18 +393,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Not.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.Not.SameAs (_oppositeObject));
 
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.Rollback();
 
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.OriginalOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
       Assert.That (_dataKeeper.OriginalOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
-
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -469,7 +407,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var sourceOppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
       sourceOppositeEndPointStub.Stub (stub => stub.ID).Return (_oppositeEndPointStub.ID);
 
-      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener>());
+      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID);
       sourceDataKeeper.CurrentOppositeObject = _oppositeObject;
       sourceDataKeeper.RegisterCurrentOppositeEndPoint (sourceOppositeEndPointStub);
 
@@ -478,16 +416,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Stub (stub => stub.GetRelationEndPointWithoutLoading (sourceOppositeEndPointStub.ID))
           .Return (_oppositeEndPointStub);
 
-      _stateUpdateListenerMock.BackToRecord();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
-      _stateUpdateListenerMock.Replay();
-
       _dataKeeper.SetDataFromSubTransaction (sourceDataKeeper, endPointProviderStub);
 
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.SameAs (_oppositeObject));
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.SameAs (_oppositeEndPointStub));
-
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -496,28 +428,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataKeeper.CurrentOppositeObject = _oppositeObject;
       _dataKeeper.RegisterCurrentOppositeEndPoint (_oppositeEndPointStub);
 
-      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID, MockRepository.GenerateStub<IVirtualEndPointStateUpdateListener> ());
+      var sourceDataKeeper = new VirtualObjectEndPointDataKeeper (_endPointID);
       Assert.That (sourceDataKeeper.CurrentOppositeObject, Is.Null);
       Assert.That (sourceDataKeeper.CurrentOppositeEndPoint, Is.Null);
       var endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-
-      _stateUpdateListenerMock.BackToRecord ();
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
-      _stateUpdateListenerMock.Replay ();
 
       _dataKeeper.SetDataFromSubTransaction (sourceDataKeeper, endPointProviderStub);
 
       Assert.That (_dataKeeper.CurrentOppositeObject, Is.Null);
       Assert.That (_dataKeeper.CurrentOppositeEndPoint, Is.Null);
-
-      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void FlattenedSerializable ()
     {
-      var updateListener = new VirtualEndPointStateUpdateListener (ClientTransaction.CreateRootTransaction(), _endPointID);
-      var data = new VirtualObjectEndPointDataKeeper (_endPointID, updateListener);
+      var data = new VirtualObjectEndPointDataKeeper (_endPointID);
 
       var endPointFake = new SerializableRealObjectEndPointFake (null, DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1));
       data.RegisterOriginalOppositeEndPoint (endPointFake);
@@ -525,7 +450,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var deserializedInstance = FlattenedSerializer.SerializeAndDeserialize (data);
 
       Assert.That (deserializedInstance.EndPointID, Is.Not.Null);
-      Assert.That (deserializedInstance.UpdateListener, Is.Not.Null);
       Assert.That (deserializedInstance.OriginalOppositeEndPoint, Is.Not.Null);
       Assert.That (deserializedInstance.OriginalOppositeObject, Is.Not.Null);
       Assert.That (deserializedInstance.CurrentOppositeEndPoint, Is.Not.Null);

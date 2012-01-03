@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointCollectionManager> ();
       _lazyLoaderMock = MockRepository.GenerateMock<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _stateUpdateListenerMock = MockRepository.GenerateMock<IVirtualEndPointStateUpdateListener>();
+      _stateUpdateListenerMock = MockRepository.GenerateStrictMock<IVirtualEndPointStateUpdateListener>();
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
 
       var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
@@ -578,9 +578,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.Synchronize (_endPoint));
       _loadStateMock.Replay ();
 
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Replay ();
+
       _endPoint.Synchronize();
 
       _loadStateMock.VerifyAllExpectations ();
+      _stateUpdateListenerMock.VerifyAllExpectations();
     }
     
     [Test]
@@ -590,9 +594,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint (_endPoint, fakeEndPoint));
       _loadStateMock.Replay ();
 
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Replay();
+
       _endPoint.SynchronizeOppositeEndPoint (fakeEndPoint);
 
       _loadStateMock.VerifyAllExpectations ();
+      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -763,6 +771,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
+      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
+
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
@@ -781,6 +791,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
+      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
+      
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
@@ -799,6 +811,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
+      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
+
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (true);
 
       Assert.That (_endPoint.HasBeenTouched, Is.False);
@@ -816,6 +830,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.HasChanged ()).Return (false);
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
+
+      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
 
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged (_endPoint.ID)).Return (false);
 
