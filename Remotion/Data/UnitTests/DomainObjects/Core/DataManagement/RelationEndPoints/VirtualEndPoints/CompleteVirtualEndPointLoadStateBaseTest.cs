@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class CompleteVirtualEndPointLoadStateBaseTest : StandardMappingTest
   {
     private IVirtualEndPoint<object> _virtualEndPointMock;
-    private IVirtualEndPointDataKeeper _dataKeeperMock;
+    private IVirtualEndPointDataManager _dataManagerMock;
     private IRelationEndPointProvider _endPointProviderStub;
     private ClientTransaction _clientTransaction;
 
@@ -51,12 +51,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _definition = Configuration.GetTypeDefinition (typeof (Customer)).GetRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
 
       _virtualEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint<object>> ();
-      _dataKeeperMock = MockRepository.GenerateStrictMock<IVirtualEndPointDataKeeper>();
-      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
+      _dataManagerMock = MockRepository.GenerateStrictMock<IVirtualEndPointDataManager>();
+      _dataManagerMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       _clientTransaction = ClientTransaction.CreateRootTransaction();
 
-      _loadState = new TestableCompleteVirtualEndPointLoadState (_dataKeeperMock, _endPointProviderStub, _clientTransaction);
+      _loadState = new TestableCompleteVirtualEndPointLoadState (_dataManagerMock, _endPointProviderStub, _clientTransaction);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
@@ -74,20 +74,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void EnsureDataComplete_DoesNothing ()
     {
       _virtualEndPointMock.Replay();
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Replay();
 
       _loadState.EnsureDataComplete (_virtualEndPointMock);
 
       _virtualEndPointMock.VerifyAllExpectations();
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
     }
 
     [Test]
     public void CanDataBeMarkedIncomplete_True ()
     {
       _virtualEndPointMock.Replay();
-      _dataKeeperMock.Stub (stub => stub.HasDataChanged()).Return (false);
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Stub (stub => stub.HasDataChanged()).Return (false);
+      _dataManagerMock.Replay();
 
       Assert.That (_loadState.CanDataBeMarkedIncomplete (_virtualEndPointMock), Is.True);
     }
@@ -96,8 +96,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CanDataBeMarkedIncomplete_False ()
     {
       _virtualEndPointMock.Replay ();
-      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (true);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (true);
+      _dataManagerMock.Replay ();
 
       Assert.That (_loadState.CanDataBeMarkedIncomplete (_virtualEndPointMock), Is.False);
     }
@@ -110,8 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
       _virtualEndPointMock.Replay();
 
-      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataManagerMock.Replay ();
 
       _loadState.StubOriginalOppositeEndPoints (new IRealObjectEndPoint[0]);
 
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => { });
 
       _virtualEndPointMock.VerifyAllExpectations();
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
 
       listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, _virtualEndPointMock));
     }
@@ -150,14 +150,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .WhenCalled (mi => Assert.That (stateSetterCalled, Is.True));
       _virtualEndPointMock.Replay();
 
-      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (false);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (false);
+      _dataManagerMock.Replay ();
 
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => stateSetterCalled = true);
 
       _virtualEndPointMock.VerifyAllExpectations();
       unsynchronizedOppositeEndPointMock.VerifyAllExpectations ();
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
 
       Assert.That (stateSetterCalled, Is.True);
       // ReSharper restore AccessToModifiedClosure
@@ -171,8 +171,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
       _virtualEndPointMock.Replay ();
 
-      _dataKeeperMock.Stub (stub => stub.HasDataChanged ()).Return (true);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (true);
+      _dataManagerMock.Replay ();
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_clientTransaction);
 
@@ -199,14 +199,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Expect (mock => mock.MarkUnsynchronized());
       endPointMock.Replay();
 
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
+      _dataManagerMock.Replay();
 
       _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, endPointMock);
 
-      _dataKeeperMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
+      _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
       endPointMock.VerifyAllExpectations();
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
 
       Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.Member(endPointMock));
     }
@@ -219,14 +219,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Expect (mock => mock.MarkSynchronized());
       endPointMock.Replay();
 
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (true);
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (true);
+      _dataManagerMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
+      _dataManagerMock.Replay();
 
       _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, endPointMock);
 
       endPointMock.VerifyAllExpectations();
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
       Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.No.Member(endPointMock));
     }
 
@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadState.UnregisterOriginalOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
       _virtualEndPointMock.VerifyAllExpectations();
     }
 
@@ -252,11 +252,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
 
       _virtualEndPointMock.Replay();
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Replay();
 
       _loadState.UnregisterOriginalOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
       _virtualEndPointMock.AssertWasNotCalled (mock => mock.MarkDataIncomplete());
       _virtualEndPointMock.AssertWasNotCalled (mock => mock.UnregisterOriginalOppositeEndPoint (_relatedEndPointStub));
       Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.No.Member(_relatedEndPointStub));
@@ -267,23 +267,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _relatedEndPointStub.Stub (stub => stub.IsSynchronized).Return (true);
 
-      _dataKeeperMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_relatedEndPointStub));
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Expect (mock => mock.RegisterCurrentOppositeEndPoint (_relatedEndPointStub));
+      _dataManagerMock.Replay();
 
       _loadState.RegisterCurrentOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
     }
 
     [Test]
     public void UnregisterCurrentOppositeEndPoint ()
     {
-      _dataKeeperMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub));
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Expect (mock => mock.UnregisterCurrentOppositeEndPoint (_relatedEndPointStub));
+      _dataManagerMock.Replay();
 
       _loadState.UnregisterCurrentOppositeEndPoint (_virtualEndPointMock, _relatedEndPointStub);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -311,12 +311,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _loadState.StubOriginalItemsWithoutEndPoints (new[] { _relatedObject });
 
-      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalItemWithoutEndPoint (_relatedObject));
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Expect (mock => mock.UnregisterOriginalItemWithoutEndPoint (_relatedObject));
+      _dataManagerMock.Replay ();
 
       _loadState.Synchronize (_virtualEndPointMock);
 
-      _dataKeeperMock.VerifyAllExpectations ();
+      _dataManagerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -336,16 +336,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       endPointMock.Expect (mock => mock.MarkSynchronized());
       endPointMock.Replay();
 
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalObjectID (DomainObjectIDs.Order1)).Return (false);
+      _dataManagerMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (endPointMock));
+      _dataManagerMock.Replay();
 
       _loadState.RegisterOriginalOppositeEndPoint (_virtualEndPointMock, endPointMock);
       Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.Member(endPointMock));
 
       _loadState.SynchronizeOppositeEndPoint (_virtualEndPointMock, endPointMock);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
       endPointMock.VerifyAllExpectations();
       Assert.That (_loadState.UnsynchronizedOppositeEndPoints, Has.No.Member(endPointMock));
     }
@@ -371,43 +371,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void HasChanged ()
     {
-      _dataKeeperMock.Expect (mock => mock.HasDataChanged()).Return (true);
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Expect (mock => mock.HasDataChanged()).Return (true);
+      _dataManagerMock.Replay();
 
       var result = _loadState.HasChanged();
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
     }
 
     [Test]
     public void Commit ()
     {
-      _dataKeeperMock.Expect (mock => mock.Commit());
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Expect (mock => mock.Commit());
+      _dataManagerMock.Replay();
 
       _loadState.Commit (_virtualEndPointMock);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
     }
 
     [Test]
     public void Rollback ()
     {
-      _dataKeeperMock.Expect (mock => mock.Rollback());
-      _dataKeeperMock.Replay();
+      _dataManagerMock.Expect (mock => mock.Rollback());
+      _dataManagerMock.Replay();
 
       _loadState.Rollback (_virtualEndPointMock);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
     }
 
     [Test]
     public void FlattenedSerializable ()
     {
-      var dataKeeper = new SerializableVirtualEndPointDataKeeperFake();
+      var dataManager = new SerializableVirtualEndPointDataManagerFake();
       var endPointProvider = new SerializableRelationEndPointProviderFake();
-      var state = new TestableCompleteVirtualEndPointLoadState (dataKeeper, endPointProvider, _clientTransaction);
+      var state = new TestableCompleteVirtualEndPointLoadState (dataManager, endPointProvider, _clientTransaction);
 
       var oppositeEndPoint = new SerializableRealObjectEndPointFake (null, _relatedObject);
       AddUnsynchronizedOppositeEndPoint (state, oppositeEndPoint);
@@ -415,14 +415,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.DataKeeper, Is.Not.Null);
+      Assert.That (result.DataManager, Is.Not.Null);
       Assert.That (result.ClientTransaction, Is.Not.Null);
       Assert.That (result.EndPointProvider, Is.Not.Null);
       Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
     }
 
     private void AddUnsynchronizedOppositeEndPoint (
-        CompleteVirtualEndPointLoadStateBase<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper> loadState, IRealObjectEndPoint oppositeEndPoint)
+        CompleteVirtualEndPointLoadStateBase<IVirtualEndPoint<object>, object, IVirtualEndPointDataManager> loadState, IRealObjectEndPoint oppositeEndPoint)
     {
       var dictionary = (Dictionary<ObjectID, IRealObjectEndPoint>) PrivateInvoke.GetNonPublicField (loadState, "_unsynchronizedOppositeEndPoints");
       dictionary.Add (oppositeEndPoint.ObjectID, oppositeEndPoint);

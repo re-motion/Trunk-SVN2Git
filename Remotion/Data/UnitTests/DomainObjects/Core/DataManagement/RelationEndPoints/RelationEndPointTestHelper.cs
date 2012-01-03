@@ -17,18 +17,11 @@
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
   public class RelationEndPointTestHelper
   {
-    public static ICollectionEndPointDataKeeper GetCollectionEndPointDataKeeper (CollectionEndPoint collectionEndPoint)
-    {
-      return (ICollectionEndPointDataKeeper) PrivateInvoke.GetNonPublicField (collectionEndPoint, "_dataKeeper");
-    }
-
     public static DataContainer CreateNewDataContainer (RelationEndPointID id)
     {
       var foreignKeyDataContainer = DataContainer.CreateNew (id.ObjectID);

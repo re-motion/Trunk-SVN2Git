@@ -11,31 +11,31 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// Defines common logic for <see cref="IVirtualEndPoint"/> implementations in complete state, ie., when lazy loading has completed.
   /// </summary>
   /// <typeparam name="TEndPoint">The type of the end point whose state is managed by this class.</typeparam>
-  /// <typeparam name="TData">The type of data held by the <typeparamref name="TDataKeeper"/>.</typeparam>
-  /// <typeparam name="TDataKeeper">The type of data keeper holding the data for the end-point.</typeparam>
-  public abstract class CompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper> 
-      : IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>
+  /// <typeparam name="TData">The type of data held by the <typeparamref name="TDataManager"/>.</typeparam>
+  /// <typeparam name="TDataManager">The type of <see cref="IVirtualEndPointDataManager"/> holding the data for the end-point.</typeparam>
+  public abstract class CompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataManager> 
+      : IVirtualEndPointLoadState<TEndPoint, TData, TDataManager>
       where TEndPoint : IVirtualEndPoint<TData>
-      where TDataKeeper : IVirtualEndPointDataKeeper
+      where TDataManager : IVirtualEndPointDataManager
   {
-    private static readonly ILog s_log = LogManager.GetLogger (typeof (CompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper>));
+    private static readonly ILog s_log = LogManager.GetLogger (typeof (CompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataManager>));
 
-    private readonly TDataKeeper _dataKeeper;
+    private readonly TDataManager _dataManager;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ClientTransaction _clientTransaction;
 
     private readonly Dictionary<ObjectID, IRealObjectEndPoint> _unsynchronizedOppositeEndPoints;
 
     protected CompleteVirtualEndPointLoadStateBase (
-        TDataKeeper dataKeeper,
+        TDataManager dataManager,
         IRelationEndPointProvider endPointProvider,
         ClientTransaction clientTransaction)
     {
-      ArgumentUtility.CheckNotNull ("dataKeeper", dataKeeper);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      _dataKeeper = dataKeeper;
+      _dataManager = dataManager;
       _endPointProvider = endPointProvider;
       _clientTransaction = clientTransaction;
 
@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public abstract TData GetData (TEndPoint endPoint);
     public abstract TData GetOriginalData (TEndPoint endPoint);
-    public abstract void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> sourceLoadState);
+    public abstract void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataManager> sourceLoadState);
 
     protected abstract IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ();
     protected abstract IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ();
@@ -54,9 +54,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return s_log; }
     }
 
-    public TDataKeeper DataKeeper
+    public TDataManager DataManager
     {
-      get { return _dataKeeper; }
+      get { return _dataManager; }
     }
 
     public IRelationEndPointProvider EndPointProvider
@@ -121,7 +121,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (_dataKeeper.ContainsOriginalObjectID (oppositeEndPoint.ObjectID))
+      if (_dataManager.ContainsOriginalObjectID (oppositeEndPoint.ObjectID))
       {
         if (s_log.IsInfoEnabled)
         {
@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
               endPoint.ID);
         }
 
-        _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+        _dataManager.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
         oppositeEndPoint.MarkSynchronized ();
       }
       else
@@ -188,7 +188,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _dataKeeper.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
+      _dataManager.RegisterCurrentOppositeEndPoint (oppositeEndPoint);
     }
 
     public void UnregisterCurrentOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
@@ -196,7 +196,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      _dataKeeper.UnregisterCurrentOppositeEndPoint (oppositeEndPoint);
+      _dataManager.UnregisterCurrentOppositeEndPoint (oppositeEndPoint);
     }
 
     public bool IsSynchronized (TEndPoint endPoint)
@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return !GetOriginalItemsWithoutEndPoints ().Any();
     }
 
-    bool? IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>.IsSynchronized (TEndPoint endPoint)
+    bool? IVirtualEndPointLoadState<TEndPoint, TData, TDataManager>.IsSynchronized (TEndPoint endPoint)
     {
       return IsSynchronized (endPoint);
     }
@@ -219,7 +219,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         Log.DebugFormat ("End-point '{0}' is being synchronized.", endPoint.ID);
 
       foreach (var item in GetOriginalItemsWithoutEndPoints ())
-        DataKeeper.UnregisterOriginalItemWithoutEndPoint (item);
+        DataManager.UnregisterOriginalItemWithoutEndPoint (item);
     }
 
     public virtual void SynchronizeOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint)
@@ -237,26 +237,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      _dataKeeper.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
+      _dataManager.RegisterOriginalOppositeEndPoint (oppositeEndPoint);
       oppositeEndPoint.MarkSynchronized ();
     }
 
     public bool HasChanged ()
     {
-      return _dataKeeper.HasDataChanged ();
+      return _dataManager.HasDataChanged ();
     }
 
     public virtual void Commit (TEndPoint endPoint)
     {
-      _dataKeeper.Commit ();
+      _dataManager.Commit ();
     }
 
     public virtual void Rollback (TEndPoint endPoint)
     {
-      _dataKeeper.Rollback ();
+      _dataManager.Rollback ();
     }
 
-    protected void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> data, Action<TDataKeeper> stateSetter)
+    protected void MarkDataComplete (TEndPoint endPoint, IEnumerable<DomainObject> data, Action<TDataManager> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("data", data);
@@ -276,7 +276,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      _dataKeeper = info.GetValueForHandle<TDataKeeper> ();
+      _dataManager = info.GetValueForHandle<TDataManager> ();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
       var unsynchronizedOppositeEndPoints = new List<IRealObjectEndPoint> ();
@@ -293,7 +293,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      info.AddHandle (_dataKeeper);
+      info.AddHandle (_dataManager);
       info.AddHandle (_endPointProvider);
       info.AddHandle (_clientTransaction);
       info.AddCollection (_unsynchronizedOppositeEndPoints.Values);

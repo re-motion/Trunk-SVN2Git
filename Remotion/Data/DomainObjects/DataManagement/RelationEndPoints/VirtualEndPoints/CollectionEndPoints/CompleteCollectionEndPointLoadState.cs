@@ -29,40 +29,40 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// Represents the state of a <see cref="CollectionEndPoint"/> where all of its data is available (ie., the end-point has been (lazily) loaded).
   /// </summary>
   public class CompleteCollectionEndPointLoadState
-      : CompleteVirtualEndPointLoadStateBase<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper>,
+      : CompleteVirtualEndPointLoadStateBase<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataManager>,
         ICollectionEndPointLoadState
   {
     public CompleteCollectionEndPointLoadState (
-        ICollectionEndPointDataKeeper dataKeeper,
+        ICollectionEndPointDataManager dataManager,
         IRelationEndPointProvider endPointProvider,
         ClientTransaction clientTransaction)
-        : base (dataKeeper, endPointProvider, clientTransaction)
+        : base (dataManager, endPointProvider, clientTransaction)
     {
     }
 
     public override ReadOnlyCollectionDataDecorator GetData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      return new ReadOnlyCollectionDataDecorator(DataKeeper.CollectionData);
+      return new ReadOnlyCollectionDataDecorator(DataManager.CollectionData);
     }
 
     public override ReadOnlyCollectionDataDecorator GetOriginalData (ICollectionEndPoint collectionEndPoint)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      return DataKeeper.OriginalCollectionData;
+      return DataManager.OriginalCollectionData;
     }
 
-    public override void SetDataFromSubTransaction (ICollectionEndPoint collectionEndPoint, IVirtualEndPointLoadState<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper> sourceLoadState)
+    public override void SetDataFromSubTransaction (ICollectionEndPoint collectionEndPoint, IVirtualEndPointLoadState<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataManager> sourceLoadState)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       var sourceCompleteLoadState = ArgumentUtility.CheckNotNullAndType<CompleteCollectionEndPointLoadState> ("sourceLoadState", sourceLoadState);
 
-      DataKeeper.SetDataFromSubTransaction (sourceCompleteLoadState.DataKeeper, EndPointProvider);
+      DataManager.SetDataFromSubTransaction (sourceCompleteLoadState.DataManager, EndPointProvider);
 
       RaiseReplaceDataEvent (collectionEndPoint);
     }
 
-    public new void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter)
+    public new void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataManager> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("items", items);
@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
       ArgumentUtility.CheckNotNull ("comparison", comparison);
 
-      DataKeeper.SortCurrentData (comparison);
+      DataManager.SortCurrentData (comparison);
 
       RaiseReplaceDataEvent (collectionEndPoint);
     }
@@ -119,9 +119,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             "The collection of relation property '{0}' of domain object '{1}' cannot be replaced because the opposite object property '{2}' of domain "
             + "object '{3}' is out of sync. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
             UnsynchronizedOppositeEndPoints.First().ObjectID);
         throw new InvalidOperationException (message);
       }
@@ -132,14 +132,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             "The collection of relation property '{0}' of domain object '{1}' cannot be replaced because the relation property is out of sync with "
             + "the opposite object property '{2}' of domain object '{3}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{0}' property.",
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
-            DataKeeper.OriginalItemsWithoutEndPoints.First().ID);
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.OriginalItemsWithoutEndPoints.First().ID);
         throw new InvalidOperationException (message);
       }
 
-      return new CollectionEndPointSetCollectionCommand (collectionEndPoint, newCollection, DataKeeper.CollectionData, collectionEndPointCollectionManager);
+      return new CollectionEndPointSetCollectionCommand (collectionEndPoint, newCollection, DataManager.CollectionData, collectionEndPointCollectionManager);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
       CheckRemovedObject (removedRelatedObject);
-      return new CollectionEndPointRemoveCommand (collectionEndPoint, removedRelatedObject, DataKeeper.CollectionData, EndPointProvider);
+      return new CollectionEndPointRemoveCommand (collectionEndPoint, removedRelatedObject, DataManager.CollectionData, EndPointProvider);
     }
 
     public IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint)
@@ -161,9 +161,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             "The domain object '{0}' cannot be deleted because the opposite object property '{2}' of domain object '{3}' is out of sync with the "
             + "collection property '{1}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
             UnsynchronizedOppositeEndPoints.First().ObjectID);
         throw new InvalidOperationException (message);
       }
@@ -174,14 +174,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             "The domain object '{0}' cannot be deleted because its collection property '{1}' is out of sync with "
             + "the opposite object property '{2}' of domain object '{3}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{1}' property.",
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
-            DataKeeper.OriginalItemsWithoutEndPoints.First().ID);
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.OriginalItemsWithoutEndPoints.First().ID);
         throw new InvalidOperationException (message);
       }
 
-      return new CollectionEndPointDeleteCommand (collectionEndPoint, DataKeeper.CollectionData);
+      return new CollectionEndPointDeleteCommand (collectionEndPoint, DataManager.CollectionData);
     }
 
     public IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index)
@@ -190,13 +190,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
 
       CheckAddedObject (insertedRelatedObject);
-      return new CollectionEndPointInsertCommand (collectionEndPoint, index, insertedRelatedObject, DataKeeper.CollectionData, EndPointProvider);
+      return new CollectionEndPointInsertCommand (collectionEndPoint, index, insertedRelatedObject, DataManager.CollectionData, EndPointProvider);
     }
 
     public IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
-      return CreateInsertCommand (collectionEndPoint, addedRelatedObject, DataKeeper.CollectionData.Count);
+      return CreateInsertCommand (collectionEndPoint, addedRelatedObject, DataManager.CollectionData.Count);
     }
 
     public IDataManagementCommand CreateReplaceCommand (ICollectionEndPoint collectionEndPoint, int index, DomainObject replacementObject)
@@ -205,23 +205,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
 
       CheckAddedObject (replacementObject);
-      CheckRemovedObject (DataKeeper.CollectionData.GetObject (index));
+      CheckRemovedObject (DataManager.CollectionData.GetObject (index));
 
-      var replacedObject = DataKeeper.CollectionData.GetObject (index);
+      var replacedObject = DataManager.CollectionData.GetObject (index);
       if (replacedObject == replacementObject)
         return new CollectionEndPointReplaceSameCommand (collectionEndPoint, replacedObject);
       else
-        return new CollectionEndPointReplaceCommand (collectionEndPoint, replacedObject, index, replacementObject, DataKeeper.CollectionData);
+        return new CollectionEndPointReplaceCommand (collectionEndPoint, replacedObject, index, replacementObject, DataManager.CollectionData);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
-      return DataKeeper.OriginalOppositeEndPoints;
+      return DataManager.OriginalOppositeEndPoints;
     }
 
     protected override IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ()
     {
-      return DataKeeper.OriginalItemsWithoutEndPoints;
+      return DataManager.OriginalItemsWithoutEndPoints;
     }
 
     private void CheckAddedObject (DomainObject domainObject)
@@ -233,22 +233,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             + "'{3}' is out of sync with the collection property. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{3}' property.",
             domainObject.ID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
 
-      if (DataKeeper.ContainsOriginalItemWithoutEndPoint (domainObject))
+      if (DataManager.ContainsOriginalItemWithoutEndPoint (domainObject))
       {
         var message = string.Format (
             "The domain object with ID '{0}' cannot be added to collection property '{1}' of object '{2}' because the property is "
             + "out of sync with the opposite object property '{3}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{1}' property.",
             domainObject.ID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
     }
@@ -262,22 +262,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             + "'{3}' is out of sync with the collection property. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{3}' property.",
             domainObject.ID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
 
-      if (DataKeeper.ContainsOriginalItemWithoutEndPoint (domainObject))
+      if (DataManager.ContainsOriginalItemWithoutEndPoint (domainObject))
       {
         var message = string.Format (
             "The domain object with ID '{0}' cannot be replaced or removed from collection property '{1}' of object '{2}' because the property is "
             + "out of sync with the opposite object property '{3}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{1}' property.",
             domainObject.ID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName);
         throw new InvalidOperationException (message);
       }
     }

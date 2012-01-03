@@ -5,7 +5,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// <summary>
   /// Defines an interface for classes keeping the data for an <see cref="IVirtualEndPoint"/>.
   /// </summary>
-  public interface IVirtualEndPointDataKeeper : IFlattenedSerializable
+  public interface IVirtualEndPointDataManager : IFlattenedSerializable
   {
     RelationEndPointID EndPointID { get; }
     

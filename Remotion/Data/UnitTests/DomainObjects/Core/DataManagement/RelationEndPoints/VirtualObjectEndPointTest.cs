@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
-    private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
+    private IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactory;
     private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
     private IVirtualObjectEndPointLoadState _loadStateMock;
     
@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     
       _lazyLoaderMock = MockRepository.GenerateStrictMock<ILazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory();
+      _dataManagerFactory = new VirtualObjectEndPointDataManagerFactory();
       _stateUpdateListenerMock = MockRepository.GenerateStrictMock<IVirtualEndPointStateUpdateListener> ();
       _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
 
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID, 
           _lazyLoaderMock, 
           _endPointProviderStub,
-          _dataKeeperFactory,
+          _dataManagerFactory,
           _stateUpdateListenerMock);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
 
@@ -80,21 +80,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID,
           _lazyLoaderMock,
           _endPointProviderStub,
-          _dataKeeperFactory,
+          _dataManagerFactory,
           _stateUpdateListenerMock);
 
       Assert.That (endPoint.ID, Is.EqualTo (_endPointID));
       Assert.That (endPoint.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderMock));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
-      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (_dataKeeperFactory));
+      Assert.That (endPoint.DataManagerFactory, Is.SameAs (_dataManagerFactory));
       Assert.That (endPoint.StateUpdateListener, Is.SameAs (_stateUpdateListenerMock));
       Assert.That (endPoint.HasBeenTouched, Is.False);
       Assert.That (endPoint.IsDataComplete, Is.False);
 
       var loadState = VirtualObjectEndPointTestHelper.GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteVirtualObjectEndPointLoadState)));
-      Assert.That (((IncompleteVirtualObjectEndPointLoadState) loadState).DataKeeperFactory, Is.SameAs (_dataKeeperFactory));
+      Assert.That (((IncompleteVirtualObjectEndPointLoadState) loadState).DataManagerFactory, Is.SameAs (_dataManagerFactory));
       Assert.That (
           ((IncompleteVirtualObjectEndPointLoadState) loadState).EndPointLoader,
           Is.TypeOf<VirtualObjectEndPoint.EndPointLoader> ().With.Property<VirtualObjectEndPoint.EndPointLoader> (l => l.LazyLoader).SameAs (_lazyLoaderMock));
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Initialization_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _dataKeeperFactory, _stateUpdateListenerMock);
+      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _dataManagerFactory, _stateUpdateListenerMock);
     }
 
     [Test]
@@ -289,11 +289,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void MarkDataComplete ()
     {
-      Action<IVirtualObjectEndPointDataKeeper> stateSetter = null;
+      Action<IVirtualObjectEndPointDataManager> stateSetter = null;
 
       _loadStateMock
-          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPoint), Arg.Is (_oppositeObject), Arg<Action<IVirtualObjectEndPointDataKeeper>>.Is.Anything))
-          .WhenCalled (mi => { stateSetter = (Action<IVirtualObjectEndPointDataKeeper>) mi.Arguments[2]; });
+          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPoint), Arg.Is (_oppositeObject), Arg<Action<IVirtualObjectEndPointDataManager>>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action<IVirtualObjectEndPointDataManager>) mi.Arguments[2]; });
       _loadStateMock.Replay ();
 
       _endPoint.MarkDataComplete (_oppositeObject);
@@ -302,14 +302,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (VirtualObjectEndPointTestHelper.GetLoadState (_endPoint), Is.SameAs (_loadStateMock));
 
-      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper>();
-      stateSetter (dataKeeperStub);
+      var dataManagerStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager>();
+      stateSetter (dataManagerStub);
       
       var newLoadState = VirtualObjectEndPointTestHelper.GetLoadState (_endPoint);
       Assert.That (newLoadState, Is.Not.SameAs (_loadStateMock));
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteVirtualObjectEndPointLoadState)));
 
-      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
+      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).DataManager, Is.SameAs (dataManagerStub));
       Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
@@ -322,7 +322,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
               mock => mock.MarkDataComplete (
                   Arg.Is (_endPoint),
                   Arg.Is ((DomainObject) null),
-                  Arg<Action<IVirtualObjectEndPointDataKeeper>>.Is.Anything));
+                  Arg<Action<IVirtualObjectEndPointDataManager>>.Is.Anything));
       _loadStateMock.Replay ();
 
       _endPoint.MarkDataComplete (null);
@@ -352,7 +352,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (newLoadState, Is.Not.SameAs (_loadStateMock));
       Assert.That (newLoadState, Is.TypeOf (typeof (IncompleteVirtualObjectEndPointLoadState)));
 
-      Assert.That (((IncompleteVirtualObjectEndPointLoadState) newLoadState).DataKeeperFactory, Is.SameAs (_dataKeeperFactory));
+      Assert.That (((IncompleteVirtualObjectEndPointLoadState) newLoadState).DataManagerFactory, Is.SameAs (_dataManagerFactory));
       Assert.That (
         ((IncompleteVirtualObjectEndPointLoadState) newLoadState).EndPointLoader,
         Is.TypeOf<VirtualObjectEndPoint.EndPointLoader> ()

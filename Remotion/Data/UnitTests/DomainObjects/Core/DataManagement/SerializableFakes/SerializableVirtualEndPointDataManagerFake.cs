@@ -16,42 +16,24 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  public class SerializableCollectionEndPointDataKeeperFake : ICollectionEndPointDataKeeper
+  public class SerializableVirtualEndPointDataManagerFake : IVirtualEndPointDataManager
   {
-    public SerializableCollectionEndPointDataKeeperFake ()
+    public SerializableVirtualEndPointDataManagerFake ()
     {
     }
 
-    public IDomainObjectCollectionData CollectionData
+    public SerializableVirtualEndPointDataManagerFake (FlattenedDeserializationInfo info)
     {
-      get { throw new NotImplementedException(); }
     }
 
-    public ReadOnlyCollectionDataDecorator OriginalCollectionData
+    public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      get { throw new NotImplementedException(); }
-    }
-
-    public IRealObjectEndPoint[] OriginalOppositeEndPoints
-    {
-      get { return new IRealObjectEndPoint[0]; }
-    }
-
-    public DomainObject[] OriginalItemsWithoutEndPoints
-    {
-      get { throw new NotImplementedException(); }
-    }
-
-    public IRealObjectEndPoint[] CurrentOppositeEndPoints
-    {
-      get { throw new NotImplementedException(); }
     }
 
     public RelationEndPointID EndPointID
@@ -60,6 +42,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     }
 
     public bool ContainsOriginalObjectID (ObjectID objectID)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool ContainsOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
@@ -74,21 +61,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
-    {
-      throw new NotImplementedException();
-    }
-
-    public bool ContainsOriginalItemWithoutEndPoint (DomainObject domainObject)
-    {
-      throw new NotImplementedException();
-    }
-
     public void RegisterOriginalItemWithoutEndPoint (DomainObject domainObject)
     {
       throw new NotImplementedException();
@@ -99,22 +71,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public bool HasDataChanged ()
-    {
-      return false;
-    }
-
-    public void SortCurrentData (Comparison<DomainObject> comparison)
-    {
-      throw new NotImplementedException ();
-    }
-
-    public void SortCurrentAndOriginalData (Comparison<DomainObject> comparison)
+    public void RegisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();
     }
 
-    public void SetDataFromSubTransaction (ICollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    public void UnregisterCurrentOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
+    {
+      throw new NotImplementedException();
+    }
+
+    public bool HasDataChanged ()
     {
       throw new NotImplementedException();
     }
@@ -127,16 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     public void Rollback ()
     {
       throw new NotImplementedException();
-    }
-
-    public SerializableCollectionEndPointDataKeeperFake (FlattenedDeserializationInfo info)
-    {
-
-    }
-
-    void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
-    {
-     
     }
   }
 }

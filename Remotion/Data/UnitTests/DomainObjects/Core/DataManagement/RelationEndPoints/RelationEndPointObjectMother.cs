@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           new CollectionEndPointCollectionManager (endPointID, new CollectionEndPointCollectionProvider (dataStrategyFactory), dataStrategyFactory),
           dataManager,
           dataManager,
-          new CollectionEndPointDataKeeperFactory (changeDetectionStrategy),
+          new CollectionEndPointDataManagerFactory (changeDetectionStrategy),
           new VirtualEndPointStateUpdateListener (clientTransaction, endPointID));
       
       if (initialContents != null)
@@ -74,13 +74,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
       var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      var dataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory();
+      var dataManagerFactory = new VirtualObjectEndPointDataManagerFactory();
       return new VirtualObjectEndPoint (
           clientTransaction,
           endPointID,
           lazyLoader,
           endPointProvider,
-          dataKeeperFactory,
+          dataManagerFactory,
           new VirtualEndPointStateUpdateListener (clientTransaction, endPointID));
     }
 

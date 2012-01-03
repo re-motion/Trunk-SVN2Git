@@ -6,7 +6,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// <summary>
   /// Defines an interface for classes storing the data for a <see cref="CollectionEndPoint"/>.
   /// </summary>
-  public interface ICollectionEndPointDataKeeper : IVirtualEndPointDataKeeper
+  public interface ICollectionEndPointDataManager : IVirtualEndPointDataManager
   {
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
@@ -19,6 +19,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     void SortCurrentData (Comparison<DomainObject> comparison);
     void SortCurrentAndOriginalData (Comparison<DomainObject> comparison);
-    void SetDataFromSubTransaction (ICollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider);
+    void SetDataFromSubTransaction (ICollectionEndPointDataManager sourceDataManager, IRelationEndPointProvider endPointProvider);
   }
 }

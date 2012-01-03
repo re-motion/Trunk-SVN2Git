@@ -76,7 +76,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ICollectionEndPointCollectionManager _collectionManager;
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _dataKeeperFactory;
+    private readonly IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _dataManagerFactory;
     private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
 
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
@@ -89,21 +89,21 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ICollectionEndPointCollectionManager collectionManager,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> dataKeeperFactory,
+        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> dataManagerFactory,
         IVirtualEndPointStateUpdateListener stateUpdateListener)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("collectionManager", collectionManager);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-      ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
       ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       _hasBeenTouched = false;
       _collectionManager = collectionManager;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
-      _dataKeeperFactory = dataKeeperFactory;
+      _dataManagerFactory = dataManagerFactory;
       _stateUpdateListener = stateUpdateListener;
 
       SetIncompleteLoadState ();
@@ -124,9 +124,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _endPointProvider; }
     }
 
-    public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> DataKeeperFactory
+    public IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> DataManagerFactory
     {
-      get { return _dataKeeperFactory; }
+      get { return _dataManagerFactory; }
     }
 
     public IVirtualEndPointStateUpdateListener StateUpdateListener
@@ -378,15 +378,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _stateUpdateListener.StateUpdated (null);
     }
 
-    private void SetCompleteLoadState (ICollectionEndPointDataKeeper dataKeeper)
+    private void SetCompleteLoadState (ICollectionEndPointDataManager dataManager)
     {
-      _loadState = new CompleteCollectionEndPointLoadState (dataKeeper, _endPointProvider, ClientTransaction);
+      _loadState = new CompleteCollectionEndPointLoadState (dataManager, _endPointProvider, ClientTransaction);
     }
 
     private void SetIncompleteLoadState ()
     {
       var loader = new EndPointLoader (_lazyLoader);
-      _loadState = new IncompleteCollectionEndPointLoadState (loader, _dataKeeperFactory);
+      _loadState = new IncompleteCollectionEndPointLoadState (loader, _dataManagerFactory);
     }
 
     private DomainObjectCollection CreateCollection (IDomainObjectCollectionData dataStrategy)
@@ -407,7 +407,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collectionManager = info.GetValueForHandle<ICollectionEndPointCollectionManager>();
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
-      _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
+      _dataManagerFactory = info.GetValueForHandle<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
       _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener> ();
 
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
@@ -419,7 +419,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_collectionManager);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
-      info.AddHandle (_dataKeeperFactory);
+      info.AddHandle (_dataManagerFactory);
       info.AddHandle (_stateUpdateListener);
 
       info.AddValue (_loadState);

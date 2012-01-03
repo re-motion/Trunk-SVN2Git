@@ -32,8 +32,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ClientTransaction _clientTransaction;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ILazyLoader _lazyLoader;
-    private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactory;
-    private readonly IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactory;
+    private readonly IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _virtualObjectEndPointDataManagerFactory;
+    private readonly IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _collectionEndPointDataManagerFactory;
     private readonly ICollectionEndPointCollectionProvider _collectionEndPointCollectionProvider;
     private readonly IAssociatedCollectionDataStrategyFactory _associatedCollectionDataStrategyFactory;
 
@@ -41,24 +41,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ClientTransaction clientTransaction,
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader,
-        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> virtualObjectEndPointDataKeeperFactory,
-        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory, 
+        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> virtualObjectEndPointDataManagerFactory,
+        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> collectionEndPointDataManagerFactory, 
         ICollectionEndPointCollectionProvider collectionEndPointCollectionProvider, 
         IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
-      ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataKeeperFactory", virtualObjectEndPointDataKeeperFactory);
-      ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataManagerFactory", virtualObjectEndPointDataManagerFactory);
+      ArgumentUtility.CheckNotNull ("collectionEndPointDataManagerFactory", collectionEndPointDataManagerFactory);
       ArgumentUtility.CheckNotNull ("collectionEndPointCollectionProvider", collectionEndPointCollectionProvider);
       ArgumentUtility.CheckNotNull ("associatedCollectionDataStrategyFactory", associatedCollectionDataStrategyFactory);
 
       _clientTransaction = clientTransaction;
       _endPointProvider = endPointProvider;
       _lazyLoader = lazyLoader;
-      _virtualObjectEndPointDataKeeperFactory = virtualObjectEndPointDataKeeperFactory;
-      _collectionEndPointDataKeeperFactory = collectionEndPointDataKeeperFactory;
+      _virtualObjectEndPointDataManagerFactory = virtualObjectEndPointDataManagerFactory;
+      _collectionEndPointDataManagerFactory = collectionEndPointDataManagerFactory;
       _collectionEndPointCollectionProvider = collectionEndPointCollectionProvider;
       _associatedCollectionDataStrategyFactory = associatedCollectionDataStrategyFactory;
     }
@@ -78,14 +78,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _lazyLoader; }
     }
 
-    public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> VirtualObjectEndPointDataKeeperFactory
+    public IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> VirtualObjectEndPointDataManagerFactory
     {
-      get { return _virtualObjectEndPointDataKeeperFactory; }
+      get { return _virtualObjectEndPointDataManagerFactory; }
     }
 
-    public IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> CollectionEndPointDataKeeperFactory
+    public IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> CollectionEndPointDataManagerFactory
     {
-      get { return _collectionEndPointDataKeeperFactory; }
+      get { return _collectionEndPointDataManagerFactory; }
     }
 
     public ICollectionEndPointCollectionProvider CollectionEndPointCollectionProvider
@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           endPointID,
           _lazyLoader,
           _endPointProvider,
-          _virtualObjectEndPointDataKeeperFactory,
+          _virtualObjectEndPointDataManagerFactory,
           new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID));
       if (markDataComplete)
         virtualObjectEndPoint.MarkDataComplete (null);
@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           new CollectionEndPointCollectionManager (endPointID, _collectionEndPointCollectionProvider, _associatedCollectionDataStrategyFactory),
           _lazyLoader,
           _endPointProvider,
-          _collectionEndPointDataKeeperFactory,
+          _collectionEndPointDataManagerFactory,
           new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID));
       if (markDataComplete)
         collectionEndPoint.MarkDataComplete (new DomainObject[0]);

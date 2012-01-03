@@ -7,11 +7,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// Represents the lazy-loading state of an <see cref="IVirtualEndPoint"/> and implements accessor methods for that end-point.
   /// </summary>
   /// <typeparam name="TEndPoint">The type of the end point whose state is managed by this instance.</typeparam>
-  /// <typeparam name="TData">The type of data held by the <typeparamref name="TDataKeeper"/>.</typeparam>
-  /// <typeparam name="TDataKeeper">The type of data keeper holding the data for the end-point.</typeparam>
-  public interface IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> : IFlattenedSerializable
+  /// <typeparam name="TData">The type of data held by the <typeparamref name="TDataManager"/>.</typeparam>
+  /// <typeparam name="TDataManager">The type of <see cref="IVirtualEndPointDataManager"/> holding the data for the end-point.</typeparam>
+  public interface IVirtualEndPointLoadState<TEndPoint, TData, TDataManager> : IFlattenedSerializable
       where TEndPoint : IVirtualEndPoint<TData>
-      where TDataKeeper : IVirtualEndPointDataKeeper
+      where TDataManager : IVirtualEndPointDataManager
   {
     bool IsDataComplete ();
 
@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     void SynchronizeOppositeEndPoint (TEndPoint endPoint, IRealObjectEndPoint oppositeEndPoint);
 
-    void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper> sourceLoadState);
+    void SetDataFromSubTransaction (TEndPoint endPoint, IVirtualEndPointLoadState<TEndPoint, TData, TDataManager> sourceLoadState);
 
     bool HasChanged ();
 

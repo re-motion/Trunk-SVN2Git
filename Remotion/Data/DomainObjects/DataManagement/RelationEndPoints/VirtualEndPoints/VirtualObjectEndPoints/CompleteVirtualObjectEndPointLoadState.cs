@@ -28,13 +28,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// Represents the state of a <see cref="VirtualObjectEndPoint"/> where all of its data is available (ie., the end-point has been (lazily) loaded).
   /// </summary>
   public class CompleteVirtualObjectEndPointLoadState
-      : CompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper>, IVirtualObjectEndPointLoadState
+      : CompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataManager>, IVirtualObjectEndPointLoadState
   {
     public CompleteVirtualObjectEndPointLoadState (
-        IVirtualObjectEndPointDataKeeper dataKeeper, 
+        IVirtualObjectEndPointDataManager dataManager, 
         IRelationEndPointProvider endPointProvider, 
         ClientTransaction clientTransaction)
-        : base (dataKeeper, endPointProvider, clientTransaction)
+        : base (dataManager, endPointProvider, clientTransaction)
     {
     }
 
@@ -42,25 +42,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      return DataKeeper.CurrentOppositeObject;
+      return DataManager.CurrentOppositeObject;
     }
 
     public override DomainObject GetOriginalData (IVirtualObjectEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      return DataKeeper.OriginalOppositeObject;
+      return DataManager.OriginalOppositeObject;
     }
 
-    public override void SetDataFromSubTransaction (IVirtualObjectEndPoint endPoint, IVirtualEndPointLoadState<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper> sourceLoadState)
+    public override void SetDataFromSubTransaction (IVirtualObjectEndPoint endPoint, IVirtualEndPointLoadState<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataManager> sourceLoadState)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       var sourceCompleteLoadState = ArgumentUtility.CheckNotNullAndType<CompleteVirtualObjectEndPointLoadState> ("sourceLoadState", sourceLoadState);
 
-      DataKeeper.SetDataFromSubTransaction (sourceCompleteLoadState.DataKeeper, EndPointProvider);
+      DataManager.SetDataFromSubTransaction (sourceCompleteLoadState.DataManager, EndPointProvider);
     }
 
-    public void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataKeeper> stateSetter)
+    public void MarkDataComplete (IVirtualObjectEndPoint endPoint, DomainObject item, Action<IVirtualObjectEndPointDataManager> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       ArgumentUtility.CheckNotNull ("stateSetter", stateSetter);
@@ -72,15 +72,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
-      if (DataKeeper.OriginalOppositeEndPoint != null)
+      if (DataManager.OriginalOppositeEndPoint != null)
       {
         var message = string.Format (
             "The object end-point '{0}' cannot be synchronized with the virtual object end-point '{1}' because the virtual relation property already "
             + "refers to another object ('{2}'). To synchronize '{0}', use UnloadService to unload either object '{2}' or the virtual object "
             + "end-point '{1}'.",
             oppositeEndPoint.ID,
-            DataKeeper.EndPointID,
-            DataKeeper.OriginalOppositeEndPoint.ObjectID);
+            DataManager.EndPointID,
+            DataManager.OriginalOppositeEndPoint.ObjectID);
         throw new InvalidOperationException (message);
       }
 
@@ -91,16 +91,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
 
-      var oldRelatedObject = DataKeeper.CurrentOppositeObject;
-      if (DataKeeper.OriginalItemWithoutEndPoint != null)
+      var oldRelatedObject = DataManager.CurrentOppositeObject;
+      if (DataManager.OriginalItemWithoutEndPoint != null)
       {
         var message = string.Format (
             "The virtual property '{0}' of object '{1}' cannot be set because the property is "
             + "out of sync with the opposite object property '{2}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{0}' property.",
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
         throw new InvalidOperationException (message);
       }
 
@@ -113,7 +113,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         if (newRelatedObject != null)
           CheckAddedObject (newRelatedObject);
 
-        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, domainObject => DataKeeper.CurrentOppositeObject = domainObject);
+        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, domainObject => DataManager.CurrentOppositeObject = domainObject);
       }
     }
 
@@ -127,9 +127,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             "The domain object '{0}' cannot be deleted because the opposite object property '{2}' of domain object '{3}' is out of sync with the "
             + "virtual property '{1}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
             UnsynchronizedOppositeEndPoints.First ().ObjectID);
         throw new InvalidOperationException (message);
       }
@@ -140,24 +140,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             "The domain object '{0}' cannot be deleted because its virtual property '{1}' is out of sync with "
             + "the opposite object property '{2}' of domain object '{3}'. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{1}' property.",
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
-            DataKeeper.OriginalItemWithoutEndPoint.ID);
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition ().PropertyName,
+            DataManager.OriginalItemWithoutEndPoint.ID);
         throw new InvalidOperationException (message);
       }
 
-      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, () => DataKeeper.CurrentOppositeObject = null);
+      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, () => DataManager.CurrentOppositeObject = null);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()
     {
-      return DataKeeper.OriginalOppositeEndPoint == null ? new IRealObjectEndPoint[0] : new[] { DataKeeper.OriginalOppositeEndPoint };
+      return DataManager.OriginalOppositeEndPoint == null ? new IRealObjectEndPoint[0] : new[] { DataManager.OriginalOppositeEndPoint };
     }
 
     protected override IEnumerable<DomainObject> GetOriginalItemsWithoutEndPoints ()
     {
-      return DataKeeper.OriginalItemWithoutEndPoint == null ? new DomainObject[0] : new[] { DataKeeper.OriginalItemWithoutEndPoint };
+      return DataManager.OriginalItemWithoutEndPoint == null ? new DomainObject[0] : new[] { DataManager.OriginalItemWithoutEndPoint };
     }
 
     private void CheckAddedObject (DomainObject domainObject)
@@ -169,9 +169,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             + "'{3}' is out of sync with the virtual property. To make this change, synchronize the two properties by calling the "
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{3}' property.",
             domainObject.ID,
-            DataKeeper.EndPointID.Definition.PropertyName,
-            DataKeeper.EndPointID.ObjectID,
-            DataKeeper.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
+            DataManager.EndPointID.Definition.PropertyName,
+            DataManager.EndPointID.ObjectID,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition ().PropertyName);
         throw new InvalidOperationException (message);
       }
     }

@@ -15,18 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
-  public class SerializableCollectionEndPointDataKeeperFactoryFake : IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>
+  public class SerializableVirtualEndPointDataManagerFactoryFake : IVirtualEndPointDataManagerFactory<IVirtualEndPointDataManager>
   {
-    public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID)
+    public IVirtualEndPointDataManager Create (RelationEndPointID endPointID)
     {
-      return new SerializableCollectionEndPointDataKeeperFake();
+      return new SerializableVirtualEndPointDataManagerFake ();
     }
   }
 }

@@ -249,15 +249,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     private void CheckOriginalOppositeEndPoint (RealObjectEndPoint expected)
     {
       var loadState = (CompleteVirtualObjectEndPointLoadState) VirtualObjectEndPointTestHelper.GetLoadState (_virtualObjectEndPoint);
-      var dataKeeper = (VirtualObjectEndPointDataKeeper) loadState.DataKeeper;
-      Assert.That (dataKeeper.OriginalOppositeEndPoint, Is.SameAs (expected));
+      var dataManager = (VirtualObjectEndPointDataManager) loadState.DataManager;
+      Assert.That (dataManager.OriginalOppositeEndPoint, Is.SameAs (expected));
     }
 
     private void CheckCurrentOppositeEndPoint (RealObjectEndPoint expected)
     {
       var loadState = (CompleteVirtualObjectEndPointLoadState) VirtualObjectEndPointTestHelper.GetLoadState (_virtualObjectEndPoint);
-      var dataKeeper = (VirtualObjectEndPointDataKeeper) loadState.DataKeeper;
-      Assert.That (dataKeeper.CurrentOppositeEndPoint, Is.SameAs (expected));
+      var dataManager = (VirtualObjectEndPointDataManager) loadState.DataManager;
+      Assert.That (dataManager.CurrentOppositeEndPoint, Is.SameAs (expected));
     }
 
   }

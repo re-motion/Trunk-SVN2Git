@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _collectionManagerMock,
           _lazyLoaderMock,
           _endPointProviderStub,
-          new CollectionEndPointDataKeeperFactory (changeDetectionStrategy),
+          new CollectionEndPointDataManagerFactory (changeDetectionStrategy),
           _stateUpdateListenerMock);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
       _endPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_customerEndPointID)).Return (_endPoint);
@@ -85,9 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Initialize ()
     {
-      var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
-      dataKeeperStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-      var dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
+      var dataManagerStub = MockRepository.GenerateStub<ICollectionEndPointDataManager>();
+      dataManagerStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
+      var dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
 
       var endPoint = new CollectionEndPoint (
           TestableClientTransaction, 
@@ -95,19 +95,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _collectionManagerMock,
           _lazyLoaderMock, 
           _endPointProviderStub,
-          dataKeeperFactoryStub,
+          dataManagerFactoryStub,
           _stateUpdateListenerMock);
 
       Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
       Assert.That (endPoint.CollectionManager, Is.SameAs (_collectionManagerMock));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderMock));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
-      Assert.That (endPoint.DataKeeperFactory, Is.SameAs (dataKeeperFactoryStub));
+      Assert.That (endPoint.DataManagerFactory, Is.SameAs (dataManagerFactoryStub));
       Assert.That (endPoint.StateUpdateListener, Is.SameAs (_stateUpdateListenerMock));
 
       var loadState = CollectionEndPointTestHelper.GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataKeeperFactory, Is.SameAs (dataKeeperFactoryStub));
+      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataManagerFactory, Is.SameAs (dataManagerFactoryStub));
       Assert.That (
           ((IncompleteCollectionEndPointLoadState) loadState).EndPointLoader, 
           Is.TypeOf<CollectionEndPoint.EndPointLoader>().With.Property<CollectionEndPoint.EndPointLoader> (l => l.LazyLoader).SameAs (_lazyLoaderMock));
@@ -267,13 +267,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void MarkDataComplete ()
     {
-      Action<ICollectionEndPointDataKeeper> stateSetter = null;
+      Action<ICollectionEndPointDataManager> stateSetter = null;
 
       var items = new DomainObject[0];
 
       _loadStateMock
-          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPoint), Arg.Is (items), Arg<Action<ICollectionEndPointDataKeeper>>.Is.Anything))
-          .WhenCalled (mi => { stateSetter = (Action<ICollectionEndPointDataKeeper>) mi.Arguments[2]; });
+          .Expect (mock => mock.MarkDataComplete (Arg.Is (_endPoint), Arg.Is (items), Arg<Action<ICollectionEndPointDataManager>>.Is.Anything))
+          .WhenCalled (mi => { stateSetter = (Action<ICollectionEndPointDataManager>) mi.Arguments[2]; });
       _loadStateMock.Replay ();
 
       _endPoint.MarkDataComplete (items);
@@ -282,13 +282,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (CollectionEndPointTestHelper.GetLoadState (_endPoint), Is.SameAs (_loadStateMock));
 
-      var dataKeeperStub = MockRepository.GenerateStub<ICollectionEndPointDataKeeper>();
-      stateSetter (dataKeeperStub);
+      var dataManagerStub = MockRepository.GenerateStub<ICollectionEndPointDataManager>();
+      stateSetter (dataManagerStub);
       
       var newLoadState = CollectionEndPointTestHelper.GetLoadState (_endPoint);
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
 
-      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataKeeper, Is.SameAs (dataKeeperStub));
+      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataManager, Is.SameAs (dataManagerStub));
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }

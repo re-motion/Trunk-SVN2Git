@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointID _endPointID;
     private IVirtualObjectEndPoint _virtualObjectEndPointMock;
 
-    private IncompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataKeeper, IVirtualObjectEndPointLoadState>.IEndPointLoader _endPointLoaderMock;
-    private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactoryStub;
+    private IncompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataManager, IVirtualObjectEndPointLoadState>.IEndPointLoader _endPointLoaderMock;
+    private IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactoryStub;
 
     private IncompleteVirtualObjectEndPointLoadState _loadState;
 
@@ -56,11 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
     
       _endPointLoaderMock = MockRepository.GenerateStrictMock<IncompleteVirtualObjectEndPointLoadState.IEndPointLoader> ();
-      _dataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
+      _dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>> ();
 
-      var dataKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      dataKeeperStub.Stub (stub => stub.HasDataChanged()).Return (false);
-      _loadState = new IncompleteVirtualObjectEndPointLoadState (_endPointLoaderMock, _dataKeeperFactoryStub);
+      var dataManagerStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager> ();
+      dataManagerStub.Stub (stub => stub.HasDataChanged()).Return (false);
+      _loadState = new IncompleteVirtualObjectEndPointLoadState (_endPointLoaderMock, _dataManagerFactoryStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> ();
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -91,28 +91,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void MarkDataComplete_CreatesNewDataKeeper ()
+    public void MarkDataComplete_CreatesNewDataManager ()
     {
       bool stateSetterCalled = false;
 
       _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       _virtualObjectEndPointMock.Replay ();
 
-      var newKeeperMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointDataKeeper> ();
-      newKeeperMock.Replay ();
-      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
+      var newManagerMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointDataManager> ();
+      newManagerMock.Replay ();
+      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
 
       _loadState.MarkDataComplete (
           _virtualObjectEndPointMock,
           null,
-          keeper =>
+          dataManager =>
           {
             stateSetterCalled = true;
-            Assert.That (keeper, Is.SameAs (newKeeperMock));
+            Assert.That (dataManager, Is.SameAs (newManagerMock));
           });
 
       Assert.That (stateSetterCalled, Is.True);
-      newKeeperMock.VerifyAllExpectations ();
+      newManagerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -134,10 +134,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       // ReSharper restore AccessToModifiedClosure
       _virtualObjectEndPointMock.Replay ();
 
-      var newKeeperStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperStub);
+      var newManagerStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager> ();
+      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerStub);
 
-      _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, keeper => stateSetterCalled = true);
+      _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, dataManager => stateSetterCalled = true);
 
       _virtualObjectEndPointMock.VerifyAllExpectations ();
     }
@@ -150,18 +150,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       _virtualObjectEndPointMock.Replay ();
 
-      var newKeeperMock = MockRepository.GenerateMock<IVirtualObjectEndPointDataKeeper> ();
-      using (newKeeperMock.GetMockRepository ().Ordered ())
+      var newManagerMock = MockRepository.GenerateMock<IVirtualObjectEndPointDataManager> ();
+      using (newManagerMock.GetMockRepository ().Ordered ())
       {
-        newKeeperMock.Expect (mock => mock.RegisterOriginalItemWithoutEndPoint (item));
+        newManagerMock.Expect (mock => mock.RegisterOriginalItemWithoutEndPoint (item));
       }
-      newKeeperMock.Replay ();
+      newManagerMock.Replay ();
 
-      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
+      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
 
-      _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, keeper => { });
+      _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, dataManager => { });
 
-      newKeeperMock.VerifyAllExpectations ();
+      newManagerMock.VerifyAllExpectations ();
       _virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
     }
     
@@ -181,18 +181,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _virtualObjectEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       _virtualObjectEndPointMock.Replay ();
 
-      var newKeeperMock = MockRepository.GenerateMock<IVirtualObjectEndPointDataKeeper> ();
-      using (newKeeperMock.GetMockRepository ().Ordered ())
+      var newManagerMock = MockRepository.GenerateMock<IVirtualObjectEndPointDataManager> ();
+      using (newManagerMock.GetMockRepository ().Ordered ())
       {
-        newKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (oppositeEndPointMock));
+        newManagerMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (oppositeEndPointMock));
       }
-      newKeeperMock.Replay ();
+      newManagerMock.Replay ();
 
-      _dataKeeperFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newKeeperMock);
+      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
 
-      _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, keeper => { });
+      _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, dataManager => { });
 
-      newKeeperMock.VerifyAllExpectations ();
+      newManagerMock.VerifyAllExpectations ();
       oppositeEndPointMock.VerifyAllExpectations ();
       _virtualObjectEndPointMock.AssertWasNotCalled (mock => mock.RegisterOriginalOppositeEndPoint (Arg<IRealObjectEndPoint>.Is.Anything));
     }
@@ -227,11 +227,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var lazyLoader = new SerializableVirtualEndPointLoaderFake<
           IVirtualObjectEndPoint, 
           DomainObject, 
-          IVirtualObjectEndPointDataKeeper, 
+          IVirtualObjectEndPointDataManager, 
           IVirtualObjectEndPointLoadState>();
-      var dataKeeperFactory = new SerializableVirtualObjectEndPointDataKeeperFactoryFake ();
+      var dataManagerFactory = new SerializableVirtualObjectEndPointDataManagerFactoryFake ();
 
-      var state = new IncompleteVirtualObjectEndPointLoadState (lazyLoader, dataKeeperFactory);
+      var state = new IncompleteVirtualObjectEndPointLoadState (lazyLoader, dataManagerFactory);
       AddOriginalOppositeEndPoint (state, new SerializableRealObjectEndPointFake (null, _relatedObject));
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (result.OriginalOppositeEndPoints, Is.Not.Null);
       Assert.That (result.OriginalOppositeEndPoints, Is.Not.Empty);
       Assert.That (result.EndPointLoader, Is.Not.Null);
-      Assert.That (result.DataKeeperFactory, Is.Not.Null);
+      Assert.That (result.DataManagerFactory, Is.Not.Null);
     }
 
     private void CheckOperationDelegatesToCompleteState<T> (Func<IVirtualObjectEndPointLoadState, T> operation, T fakeResult)

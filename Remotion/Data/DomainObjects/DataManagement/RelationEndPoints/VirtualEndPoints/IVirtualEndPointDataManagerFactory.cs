@@ -14,19 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
-
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
+namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints
 {
-  [Serializable]
-  public class SerializableVirtualEndPointDataKeeperFactoryFake : IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper>
+  /// <summary>
+  /// 	<see cref="IVirtualEndPointDataManagerFactory{TDataManager}"/> defines the API for factories for implementations of 
+  ///   <see cref="IVirtualEndPointDataManager"/>.
+  /// </summary>
+  /// <typeparam name="TDataManager">The type of <see cref="IVirtualEndPointDataManager"/> to create.</typeparam>
+  public interface IVirtualEndPointDataManagerFactory<TDataManager>
+      where TDataManager : IVirtualEndPointDataManager
   {
-    public IVirtualEndPointDataKeeper Create (RelationEndPointID endPointID)
-    {
-      return new SerializableVirtualEndPointDataKeeperFake ();
-    }
+    TDataManager Create (RelationEndPointID endPointID);
   }
 }

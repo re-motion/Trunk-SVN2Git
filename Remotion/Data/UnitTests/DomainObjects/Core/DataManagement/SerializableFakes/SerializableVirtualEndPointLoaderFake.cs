@@ -21,10 +21,10 @@ using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  public class SerializableVirtualEndPointLoaderFake<TEndPoint, TData, TDataKeeper, TLoadStateInterface> : IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataKeeper, TLoadStateInterface>.IEndPointLoader
+  public class SerializableVirtualEndPointLoaderFake<TEndPoint, TData, TDataManager, TLoadStateInterface> : IncompleteVirtualEndPointLoadStateBase<TEndPoint, TData, TDataManager, TLoadStateInterface>.IEndPointLoader
     where TEndPoint : IVirtualEndPoint<TData>
-    where TDataKeeper : IVirtualEndPointDataKeeper
-    where TLoadStateInterface : IVirtualEndPointLoadState<TEndPoint, TData, TDataKeeper>
+    where TDataManager : IVirtualEndPointDataManager
+    where TLoadStateInterface : IVirtualEndPointLoadState<TEndPoint, TData, TDataManager>
   {
     public SerializableVirtualEndPointLoaderFake ()
     {

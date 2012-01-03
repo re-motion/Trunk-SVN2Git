@@ -24,10 +24,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// Represents the lazy-loading state of a <see cref="CollectionEndPoint"/> and implements accessor methods for that end-point.
   /// </summary>
   public interface ICollectionEndPointLoadState : 
-      IVirtualEndPointLoadState<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataKeeper>
+      IVirtualEndPointLoadState<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataManager>
   {
     void EnsureDataComplete (ICollectionEndPoint endPoint);
-    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataKeeper> stateSetter);
+    void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataManager> stateSetter);
     void SortCurrentData (ICollectionEndPoint collectionEndPoint, Comparison<DomainObject> comparison);
 
     IDataManagementCommand CreateSetCollectionCommand (

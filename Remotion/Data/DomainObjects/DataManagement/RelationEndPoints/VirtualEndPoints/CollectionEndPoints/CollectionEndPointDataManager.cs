@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// <summary>
   /// Keeps the data of a <see cref="ICollectionEndPoint"/>.
   /// </summary>
-  public class CollectionEndPointDataKeeper : ICollectionEndPointDataKeeper
+  public class CollectionEndPointDataManager : ICollectionEndPointDataManager
   {
     private readonly RelationEndPointID _endPointID;
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     private readonly HashSet<DomainObject> _originalItemsWithoutEndPoint;
     private Dictionary<ObjectID, IRealObjectEndPoint> _currentOppositeEndPoints;
 
-    public CollectionEndPointDataKeeper (RelationEndPointID endPointID, ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
+    public CollectionEndPointDataManager (RelationEndPointID endPointID, ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
@@ -238,13 +238,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       _currentOppositeEndPoints = _originalOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
     }
 
-    public void SetDataFromSubTransaction (ICollectionEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    public void SetDataFromSubTransaction (ICollectionEndPointDataManager sourceDataManager, IRelationEndPointProvider endPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("sourceDataKeeper", sourceDataKeeper);
+      ArgumentUtility.CheckNotNull ("sourceDataManager", sourceDataManager);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
-      _changeCachingCollectionData.ReplaceContents (sourceDataKeeper.CollectionData);
-      _currentOppositeEndPoints = sourceDataKeeper.CurrentOppositeEndPoints
+      _changeCachingCollectionData.ReplaceContents (sourceDataManager.CollectionData);
+      _currentOppositeEndPoints = sourceDataManager.CurrentOppositeEndPoints
           .Select (ep => Assertion.IsNotNull (
               (IRealObjectEndPoint) endPointProvider.GetRelationEndPointWithoutLoading (ep.ID), 
               "When committing a current virtual relation value from a sub-transaction, the opposite end-point is guaranteed to exist."))
@@ -254,7 +254,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     #region Serialization
 
     // ReSharper disable UnusedMember.Local
-    private CollectionEndPointDataKeeper (FlattenedDeserializationInfo info)
+    private CollectionEndPointDataManager (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
 

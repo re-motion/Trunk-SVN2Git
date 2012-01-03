@@ -20,14 +20,14 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
-  /// The <see cref="CollectionEndPointDataKeeperFactory"/> is responsible to create a new <see cref="ICollectionEndPointDataKeeper"/> instance.
+  /// The <see cref="CollectionEndPointDataManagerFactory"/> is responsible to create a new <see cref="ICollectionEndPointDataManager"/> instance.
   /// </summary>
   [Serializable]
-  public class CollectionEndPointDataKeeperFactory : IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>
+  public class CollectionEndPointDataManagerFactory : IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
-    public CollectionEndPointDataKeeperFactory (
+    public CollectionEndPointDataManagerFactory (
         ICollectionEndPointChangeDetectionStrategy changeDetectionStrategy)
     {
       ArgumentUtility.CheckNotNull ("changeDetectionStrategy", changeDetectionStrategy);
@@ -40,11 +40,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _changeDetectionStrategy; }
     }
 
-    public ICollectionEndPointDataKeeper Create (RelationEndPointID endPointID)
+    public ICollectionEndPointDataManager Create (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      return new CollectionEndPointDataKeeper (endPointID, _changeDetectionStrategy);
+      return new CollectionEndPointDataManager (endPointID, _changeDetectionStrategy);
     }
   }
 }

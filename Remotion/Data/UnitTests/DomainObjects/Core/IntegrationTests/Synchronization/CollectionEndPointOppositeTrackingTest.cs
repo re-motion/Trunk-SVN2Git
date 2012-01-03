@@ -343,15 +343,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     private void CheckOriginalOppositeEndPoints (params RealObjectEndPoint[] expected)
     {
       var loadState = (CompleteCollectionEndPointLoadState) CollectionEndPointTestHelper.GetLoadState (_collectionEndPoint);
-      var dataKeeper = (CollectionEndPointDataKeeper) loadState.DataKeeper;
-      Assert.That (dataKeeper.OriginalOppositeEndPoints, Is.EquivalentTo (expected));
+      var dataManager = (CollectionEndPointDataManager) loadState.DataManager;
+      Assert.That (dataManager.OriginalOppositeEndPoints, Is.EquivalentTo (expected));
     }
 
     private void CheckCurrentOppositeEndPoints (params RealObjectEndPoint[] expected)
     {
       var loadState = (CompleteCollectionEndPointLoadState) CollectionEndPointTestHelper.GetLoadState (_collectionEndPoint);
-      var dataKeeper = (CollectionEndPointDataKeeper) loadState.DataKeeper;
-      Assert.That (dataKeeper.CurrentOppositeEndPoints, Is.EquivalentTo (expected));
+      var dataManager = (CollectionEndPointDataManager) loadState.DataManager;
+      Assert.That (dataManager.CurrentOppositeEndPoints, Is.EquivalentTo (expected));
     }
 
   }

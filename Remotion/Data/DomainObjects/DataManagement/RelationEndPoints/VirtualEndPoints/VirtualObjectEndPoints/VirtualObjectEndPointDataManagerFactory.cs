@@ -14,19 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using Remotion.Utilities;
+
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints
 {
   /// <summary>
-  /// Defines an interface for classes storing the data for a <see cref="VirtualObjectEndPoint"/>.
+  /// The <see cref="VirtualObjectEndPointDataManagerFactory"/> is responsible to create a new <see cref="IVirtualObjectEndPointDataManager"/> instance.
   /// </summary>
-  public interface IVirtualObjectEndPointDataKeeper : IVirtualEndPointDataKeeper
+  [Serializable]
+  public class VirtualObjectEndPointDataManagerFactory : IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>
   {
-    DomainObject CurrentOppositeObject { get; set; }
-    DomainObject OriginalOppositeObject { get; }
-
-    IRealObjectEndPoint CurrentOppositeEndPoint { get; }
-    IRealObjectEndPoint OriginalOppositeEndPoint { get; }
-    DomainObject OriginalItemWithoutEndPoint { get; }
-    void SetDataFromSubTransaction (IVirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider);
+    public IVirtualObjectEndPointDataManager Create (RelationEndPointID endPointID)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      return new VirtualObjectEndPointDataManager (endPointID);
+    }
   }
 }

@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ClientTransaction _clientTransaction;
     private IRelationEndPointProvider _endPointProviderStub;
     private ILazyLoader _lazyLoaderStub;
-    private IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _virtualObjectEndPointDataKeeperFactoryStub;
-    private IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> _collectionEndPointDataKeeperFactoryStub;
+    private IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _virtualObjectEndPointDataManagerFactoryStub;
+    private IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _collectionEndPointDataManagerFactoryStub;
     private ICollectionEndPointCollectionProvider _collectionEndPointCollectionProviderStub;
     private IAssociatedCollectionDataStrategyFactory _associatedCollectionStrategyFactoryStub;
 
@@ -51,19 +51,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       _lazyLoaderStub = MockRepository.GenerateStub<ILazyLoader> ();
 
-      var virtualObjectEndPointDataKeeper = MockRepository.GenerateStub<IVirtualObjectEndPointDataKeeper> ();
-      virtualObjectEndPointDataKeeper.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
-      _virtualObjectEndPointDataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
-      _virtualObjectEndPointDataKeeperFactoryStub
+      var virtualObjectEndPointDataManager = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager> ();
+      virtualObjectEndPointDataManager.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
+      _virtualObjectEndPointDataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>> ();
+      _virtualObjectEndPointDataManagerFactoryStub
           .Stub (stub => stub.Create (Arg<RelationEndPointID>.Is.Anything))
-          .Return (virtualObjectEndPointDataKeeper);
+          .Return (virtualObjectEndPointDataManager);
 
-      var collectionEndPointDataKeeper = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
-      collectionEndPointDataKeeper.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-      _collectionEndPointDataKeeperFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper>> ();
-      _collectionEndPointDataKeeperFactoryStub
+      var collectionEndPointDataManager = MockRepository.GenerateStub<ICollectionEndPointDataManager> ();
+      collectionEndPointDataManager.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
+      _collectionEndPointDataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
+      _collectionEndPointDataManagerFactoryStub
           .Stub (stub => stub.Create (Arg<RelationEndPointID>.Is.Anything))
-          .Return (collectionEndPointDataKeeper);
+          .Return (collectionEndPointDataManager);
 
       _collectionEndPointCollectionProviderStub = MockRepository.GenerateStub<ICollectionEndPointCollectionProvider>();
       _associatedCollectionStrategyFactoryStub = MockRepository.GenerateStub<IAssociatedCollectionDataStrategyFactory>();
@@ -72,8 +72,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _clientTransaction,
           _endPointProviderStub,
           _lazyLoaderStub,
-          _virtualObjectEndPointDataKeeperFactoryStub,
-          _collectionEndPointDataKeeperFactoryStub, 
+          _virtualObjectEndPointDataManagerFactoryStub,
+          _collectionEndPointDataManagerFactoryStub, 
           _collectionEndPointCollectionProviderStub,
           _associatedCollectionStrategyFactoryStub);
     }
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (endPoint.ID, Is.EqualTo (endPointID));
       Assert.That (((VirtualObjectEndPoint) endPoint).LazyLoader, Is.SameAs (_lazyLoaderStub));
       Assert.That (((VirtualObjectEndPoint) endPoint).EndPointProvider, Is.SameAs (_endPointProviderStub));
-      Assert.That (((VirtualObjectEndPoint) endPoint).DataKeeperFactory, Is.SameAs (_virtualObjectEndPointDataKeeperFactoryStub));
+      Assert.That (((VirtualObjectEndPoint) endPoint).DataManagerFactory, Is.SameAs (_virtualObjectEndPointDataManagerFactoryStub));
       Assert.That (
           ((VirtualObjectEndPoint) endPoint).StateUpdateListener,
           Is.TypeOf<VirtualEndPointStateUpdateListener> ()
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
             .And.Property<CollectionEndPointCollectionManager> (p => p.DataStrategyFactory).SameAs (_associatedCollectionStrategyFactoryStub));
       Assert.That (((CollectionEndPoint) endPoint).LazyLoader, Is.SameAs (_lazyLoaderStub));
       Assert.That (((CollectionEndPoint) endPoint).EndPointProvider, Is.SameAs (_endPointProviderStub));
-      Assert.That (((CollectionEndPoint) endPoint).DataKeeperFactory, Is.SameAs (_collectionEndPointDataKeeperFactoryStub));
+      Assert.That (((CollectionEndPoint) endPoint).DataManagerFactory, Is.SameAs (_collectionEndPointDataManagerFactoryStub));
       Assert.That (
           ((CollectionEndPoint) endPoint).StateUpdateListener, 
           Is.TypeOf<VirtualEndPointStateUpdateListener>()
@@ -216,8 +216,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _clientTransaction,
           endPointProvider,
           new SerializableLazyLoaderFake(),
-          new SerializableVirtualObjectEndPointDataKeeperFactoryFake(),
-          new SerializableCollectionEndPointDataKeeperFactoryFake(), 
+          new SerializableVirtualObjectEndPointDataManagerFactoryFake(),
+          new SerializableCollectionEndPointDataManagerFactoryFake(), 
           new SerializableCollectionEndPointCollectionProviderFake(),
           new SerializableAssociatedCollectionDataStrategyFactoryFake());
 
@@ -226,8 +226,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
       Assert.That (deserializedInstance.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedInstance.LazyLoader, Is.Not.Null);
-      Assert.That (deserializedInstance.VirtualObjectEndPointDataKeeperFactory, Is.Not.Null);
-      Assert.That (deserializedInstance.CollectionEndPointDataKeeperFactory, Is.Not.Null);
+      Assert.That (deserializedInstance.VirtualObjectEndPointDataManagerFactory, Is.Not.Null);
+      Assert.That (deserializedInstance.CollectionEndPointDataManagerFactory, Is.Not.Null);
       Assert.That (deserializedInstance.CollectionEndPointCollectionProvider, Is.Not.Null);
       Assert.That (deserializedInstance.AssociatedCollectionDataStrategyFactory, Is.Not.Null);
     }

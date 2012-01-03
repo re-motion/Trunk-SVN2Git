@@ -24,11 +24,11 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   [TestFixture]
-  public class CollectionEndPointDataKeeperFactoryTest : StandardMappingTest
+  public class CollectionEndPointDataManagerFactoryTest : StandardMappingTest
   {
     private ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
-    private CollectionEndPointDataKeeperFactory _factory;
+    private CollectionEndPointDataManagerFactory _factory;
 
     public override void SetUp ()
     {
@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy>();
 
-      _factory = new CollectionEndPointDataKeeperFactory (_changeDetectionStrategy);
+      _factory = new CollectionEndPointDataManagerFactory (_changeDetectionStrategy);
     }
 
     [Test]
@@ -48,16 +48,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var result = _factory.Create (relationEndPointID);
 
-      Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataKeeper)));
-      Assert.That (((CollectionEndPointDataKeeper) result).EndPointID, Is.SameAs (relationEndPointID));
-      Assert.That (((CollectionEndPointDataKeeper) result).ChangeDetectionStrategy, Is.SameAs (_changeDetectionStrategy));
+      Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataManager)));
+      Assert.That (((CollectionEndPointDataManager) result).EndPointID, Is.SameAs (relationEndPointID));
+      Assert.That (((CollectionEndPointDataManager) result).ChangeDetectionStrategy, Is.SameAs (_changeDetectionStrategy));
     }
 
     [Test]
     public void Serializable ()
     {
       var changeDetectionStrategy = new SerializableCollectionEndPointChangeDetectionStrategyFake();
-      var factory = new CollectionEndPointDataKeeperFactory (changeDetectionStrategy);
+      var factory = new CollectionEndPointDataManagerFactory (changeDetectionStrategy);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (factory);
 

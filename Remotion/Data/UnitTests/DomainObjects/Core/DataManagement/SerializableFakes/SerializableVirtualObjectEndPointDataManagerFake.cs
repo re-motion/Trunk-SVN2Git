@@ -16,19 +16,20 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  public class SerializableVirtualEndPointDataKeeperFake : IVirtualEndPointDataKeeper
+  public class SerializableVirtualObjectEndPointDataManagerFake : IVirtualObjectEndPointDataManager
   {
-    public SerializableVirtualEndPointDataKeeperFake ()
+    public SerializableVirtualObjectEndPointDataManagerFake ()
     {
     }
 
-    public SerializableVirtualEndPointDataKeeperFake (FlattenedDeserializationInfo info)
+    public SerializableVirtualObjectEndPointDataManagerFake (FlattenedDeserializationInfo info)
     {
     }
 
@@ -83,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
 
     public bool HasDataChanged ()
     {
-      throw new NotImplementedException();
+      return false;
     }
 
     public void Commit ()
@@ -92,6 +93,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     }
 
     public void Rollback ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public DomainObject CurrentOppositeObject
+    {
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
+    }
+
+    public DomainObject OriginalOppositeObject
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public IRealObjectEndPoint CurrentOppositeEndPoint
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public IRealObjectEndPoint OriginalOppositeEndPoint
+    {
+      get { return null; }
+    }
+
+    public DomainObject OriginalItemWithoutEndPoint
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public void SetDataFromSubTransaction (IVirtualObjectEndPointDataManager sourceDataManager, IRelationEndPointProvider endPointProvider)
     {
       throw new NotImplementedException();
     }

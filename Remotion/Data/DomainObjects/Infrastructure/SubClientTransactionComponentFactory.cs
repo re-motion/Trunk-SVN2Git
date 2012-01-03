@@ -129,15 +129,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
 
       var endPointChangeDetectionStrategy = new SubCollectionEndPointChangeDetectionStrategy ();
-      var collectionEndPointDataKeeperFactory = new CollectionEndPointDataKeeperFactory (endPointChangeDetectionStrategy);
-      var virtualObjectEndPointDataKeeperFactory = new VirtualObjectEndPointDataKeeperFactory();
+      var collectionEndPointDataManagerFactory = new CollectionEndPointDataManagerFactory (endPointChangeDetectionStrategy);
+      var virtualObjectEndPointDataManagerFactory = new VirtualObjectEndPointDataManagerFactory();
 
       var relationEndPointFactory = CreateRelationEndPointFactory(
           clientTransaction,
           endPointProvider,
           lazyLoader,
-          virtualObjectEndPointDataKeeperFactory,
-          collectionEndPointDataKeeperFactory);
+          virtualObjectEndPointDataManagerFactory,
+          collectionEndPointDataManagerFactory);
       var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (endPointProvider);
       return new RelationEndPointManager (clientTransaction, lazyLoader, relationEndPointFactory, relationEndPointRegistrationAgent);
     }
@@ -146,14 +146,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction clientTransaction,
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader,
-        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> virtualObjectEndPointDataKeeperFactory,
-        IVirtualEndPointDataKeeperFactory<ICollectionEndPointDataKeeper> collectionEndPointDataKeeperFactory)
+        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> virtualObjectEndPointDataManagerFactory,
+        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> collectionEndPointDataManagerFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
-      ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataKeeperFactory", virtualObjectEndPointDataKeeperFactory);
-      ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataManagerFactory", virtualObjectEndPointDataManagerFactory);
+      ArgumentUtility.CheckNotNull ("collectionEndPointDataManagerFactory", collectionEndPointDataManagerFactory);
 
       var associatedCollectionDataStrategyFactory = new AssociatedCollectionDataStrategyFactory (endPointProvider);
       var collectionEndPointCollectionProvider = new CollectionEndPointCollectionProvider (associatedCollectionDataStrategyFactory);
@@ -161,8 +161,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           clientTransaction,
           endPointProvider,
           lazyLoader,
-          virtualObjectEndPointDataKeeperFactory,
-          collectionEndPointDataKeeperFactory, 
+          virtualObjectEndPointDataManagerFactory,
+          collectionEndPointDataManagerFactory, 
           collectionEndPointCollectionProvider,
           associatedCollectionDataStrategyFactory);
     }

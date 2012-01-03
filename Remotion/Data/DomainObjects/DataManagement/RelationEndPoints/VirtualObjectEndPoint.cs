@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     }
 
     private readonly ILazyLoader _lazyLoader;
-    private readonly IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> _dataKeeperFactory;
+    private readonly IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactory;
     private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
 
     private IVirtualObjectEndPointLoadState _loadState;
@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         RelationEndPointID id,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> dataKeeperFactory,
+        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> dataManagerFactory,
         IVirtualEndPointStateUpdateListener stateUpdateListener)
         : base (
             ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
@@ -91,14 +91,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
             ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
     {
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
-      ArgumentUtility.CheckNotNull ("dataKeeperFactory", dataKeeperFactory);
+      ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
       ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
 
       _lazyLoader = lazyLoader;
-      _dataKeeperFactory = dataKeeperFactory;
+      _dataManagerFactory = dataManagerFactory;
       _stateUpdateListener = stateUpdateListener;
 
       SetIncompleteState();
@@ -111,9 +111,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _lazyLoader; }
     }
     
-    public IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper> DataKeeperFactory
+    public IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> DataManagerFactory
     {
-      get { return _dataKeeperFactory; }
+      get { return _dataManagerFactory; }
     }
 
     public IVirtualEndPointStateUpdateListener StateUpdateListener
@@ -283,12 +283,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private void SetIncompleteState ()
     {
       var loader = new EndPointLoader (_lazyLoader);
-      _loadState = new IncompleteVirtualObjectEndPointLoadState (loader, _dataKeeperFactory);
+      _loadState = new IncompleteVirtualObjectEndPointLoadState (loader, _dataManagerFactory);
     }
 
-    private void SetCompleteState (IVirtualObjectEndPointDataKeeper dataKeeper)
+    private void SetCompleteState (IVirtualObjectEndPointDataManager dataManager)
     {
-      _loadState = new CompleteVirtualObjectEndPointLoadState (dataKeeper, EndPointProvider, ClientTransaction);
+      _loadState = new CompleteVirtualObjectEndPointLoadState (dataManager, EndPointProvider, ClientTransaction);
     }
 
     private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
@@ -302,7 +302,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         : base (info)
     {
       _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
-      _dataKeeperFactory = info.GetValueForHandle<IVirtualEndPointDataKeeperFactory<IVirtualObjectEndPointDataKeeper>> ();
+      _dataManagerFactory = info.GetValueForHandle<IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>> ();
       _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener>();
       
       _loadState = info.GetValue<IVirtualObjectEndPointLoadState> ();
@@ -314,7 +314,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       base.SerializeIntoFlatStructure (info);
 
       info.AddHandle (_lazyLoader);
-      info.AddHandle (_dataKeeperFactory);
+      info.AddHandle (_dataManagerFactory);
       info.AddHandle (_stateUpdateListener);
 
       info.AddValue (_loadState);

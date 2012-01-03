@@ -25,13 +25,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       : IncompleteVirtualEndPointLoadStateBase<
           IVirtualEndPoint<object>, 
           object, 
-          IVirtualEndPointDataKeeper, 
-          IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataKeeper>>
+          IVirtualEndPointDataManager, 
+          IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataManager>>
   {
     public TestableIncompleteVirtualEndPointLoadState (
         IEndPointLoader endPointLoader,
-        IVirtualEndPointDataKeeperFactory<IVirtualEndPointDataKeeper> dataKeeperFactory)
-        : base (endPointLoader, dataKeeperFactory)
+        IVirtualEndPointDataManagerFactory<IVirtualEndPointDataManager> dataManagerFactory)
+        : base (endPointLoader, dataManagerFactory)
     {
     }
 

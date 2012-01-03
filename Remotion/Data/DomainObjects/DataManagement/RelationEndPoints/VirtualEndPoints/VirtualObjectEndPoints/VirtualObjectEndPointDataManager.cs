@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// <summary>
   /// Keeps the data of a <see cref="VirtualObjectEndPoint"/>, managing current and original values as well as opposite end-points.
   /// </summary>
-  public class VirtualObjectEndPointDataKeeper : IVirtualObjectEndPointDataKeeper
+  public class VirtualObjectEndPointDataManager : IVirtualObjectEndPointDataManager
   {
     private readonly RelationEndPointID _endPointID;
 
@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     private IRealObjectEndPoint _currentOppositeEndPoint;
     private IRealObjectEndPoint _originalOppositeEndPoint;
 
-    public VirtualObjectEndPointDataKeeper (RelationEndPointID endPointID)
+    public VirtualObjectEndPointDataManager (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
@@ -184,20 +184,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       _currentOppositeEndPoint = _originalOppositeEndPoint;
     }
 
-    public void SetDataFromSubTransaction (IVirtualObjectEndPointDataKeeper sourceDataKeeper, IRelationEndPointProvider endPointProvider)
+    public void SetDataFromSubTransaction (IVirtualObjectEndPointDataManager sourceDataManager, IRelationEndPointProvider endPointProvider)
     {
-      ArgumentUtility.CheckNotNull ("sourceDataKeeper", sourceDataKeeper);
+      ArgumentUtility.CheckNotNull ("sourceDataManager", sourceDataManager);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
-      _currentOppositeObject = sourceDataKeeper.CurrentOppositeObject;
-      if (sourceDataKeeper.CurrentOppositeEndPoint == null)
+      _currentOppositeObject = sourceDataManager.CurrentOppositeObject;
+      if (sourceDataManager.CurrentOppositeEndPoint == null)
       {
         _currentOppositeEndPoint = null;
       }
       else
       {
         _currentOppositeEndPoint =
-            (IRealObjectEndPoint) endPointProvider.GetRelationEndPointWithoutLoading (sourceDataKeeper.CurrentOppositeEndPoint.ID);
+            (IRealObjectEndPoint) endPointProvider.GetRelationEndPointWithoutLoading (sourceDataManager.CurrentOppositeEndPoint.ID);
         Assertion.IsNotNull (
             _currentOppositeEndPoint,
             "When committing a current virtual relation value from a sub-transaction, the opposite end-point is guaranteed to exist.");
@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     #region Serialization
 
-    public VirtualObjectEndPointDataKeeper (FlattenedDeserializationInfo info)
+    public VirtualObjectEndPointDataManager (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
 

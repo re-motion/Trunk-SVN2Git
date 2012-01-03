@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class CompleteCollectionEndPointLoadStateTest : StandardMappingTest
   {
     private ICollectionEndPoint _collectionEndPointMock;
-    private ICollectionEndPointDataKeeper _dataKeeperMock;
+    private ICollectionEndPointDataManager _dataManagerMock;
     private IRelationEndPointProvider _endPointProviderStub;
     private ClientTransaction _clientTransaction;
     private IDomainObjectCollectionEventRaiser _eventRaiserMock;
@@ -57,13 +57,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _definition = Configuration.GetTypeDefinition (typeof (Customer)).GetRelationEndPointDefinition (typeof (Customer).FullName + ".Orders");
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
-      _dataKeeperMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataKeeper>();
-      _dataKeeperMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
+      _dataManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataManager>();
+      _dataManagerMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
       _clientTransaction = ClientTransaction.CreateRootTransaction ();
       _eventRaiserMock = MockRepository.GenerateStrictMock<IDomainObjectCollectionEventRaiser>();
 
-      _loadState = new CompleteCollectionEndPointLoadState (_dataKeeperMock, _endPointProviderStub, _clientTransaction);
+      _loadState = new CompleteCollectionEndPointLoadState (_dataManagerMock, _endPointProviderStub, _clientTransaction);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void GetData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (collectionDataStub);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (collectionDataStub);
 
       var result = _loadState.GetData (_collectionEndPointMock);
 
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void GetCollectionData ()
     {
       var collectionDataStub = new ReadOnlyCollectionDataDecorator (MockRepository.GenerateStub<IDomainObjectCollectionData> ());
-      _dataKeeperMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
+      _dataManagerMock.Stub (stub => stub.OriginalCollectionData).Return (collectionDataStub);
 
       var result = _loadState.GetOriginalData (_collectionEndPointMock);
 
@@ -104,17 +104,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
 
-      var sourceDataKeeper = MockRepository.GenerateStub<ICollectionEndPointDataKeeper> ();
-      var sourceLoadState = new CompleteCollectionEndPointLoadState (sourceDataKeeper, _endPointProviderStub, _clientTransaction);
-      _dataKeeperMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataKeeper, _endPointProviderStub)).Ordered (counter);
-      _dataKeeperMock.Replay ();
+      var sourceDataManager = MockRepository.GenerateStub<ICollectionEndPointDataManager> ();
+      var sourceLoadState = new CompleteCollectionEndPointLoadState (sourceDataManager, _endPointProviderStub, _clientTransaction);
+      _dataManagerMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataManager, _endPointProviderStub)).Ordered (counter);
+      _dataManagerMock.Replay ();
 
       _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
       _eventRaiserMock.Replay ();
 
       _loadState.SetDataFromSubTransaction (_collectionEndPointMock, sourceLoadState);
 
-      _dataKeeperMock.VerifyAllExpectations();
+      _dataManagerMock.VerifyAllExpectations();
       _eventRaiserMock.VerifyAllExpectations ();
     }
 
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void MarkDataComplete_ThrowsException ()
     {
       var items = new DomainObject[] { _relatedObject };
-      _loadState.MarkDataComplete (_collectionEndPointMock, items, keeper => Assert.Fail ("Must not be called"));
+      _loadState.MarkDataComplete (_collectionEndPointMock, items, dataManager => Assert.Fail ("Must not be called"));
     }
 
     [Test]
@@ -134,15 +134,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
 
       Comparison<DomainObject> comparison = (one, two) => 0;
-      _dataKeeperMock.Expect (mock => mock.SortCurrentData (comparison)).Ordered (counter);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Expect (mock => mock.SortCurrentData (comparison)).Ordered (counter);
+      _dataManagerMock.Replay ();
 
       _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
       _eventRaiserMock.Replay ();
 
       _loadState.SortCurrentData (_collectionEndPointMock, comparison);
 
-      _dataKeeperMock.VerifyAllExpectations ();
+      _dataManagerMock.VerifyAllExpectations ();
       _eventRaiserMock.VerifyAllExpectations ();
     }
 
@@ -153,15 +153,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
 
-      _dataKeeperMock.Expect (mock => mock.Rollback ()).Ordered (counter);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Expect (mock => mock.Rollback ()).Ordered (counter);
+      _dataManagerMock.Replay ();
 
       _eventRaiserMock.Expect (mock => mock.WithinReplaceData()).Ordered (counter);
       _eventRaiserMock.Replay ();
 
       _loadState.Rollback (_collectionEndPointMock);
 
-      _dataKeeperMock.VerifyAllExpectations ();
+      _dataManagerMock.VerifyAllExpectations ();
       _eventRaiserMock.VerifyAllExpectations ();
     }
 
@@ -172,17 +172,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
 
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
+      _dataManagerMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
 
-      _dataKeeperMock.Expect (mock => mock.UnregisterOriginalItemWithoutEndPoint (_relatedObject)).Ordered (counter);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Expect (mock => mock.UnregisterOriginalItemWithoutEndPoint (_relatedObject)).Ordered (counter);
+      _dataManagerMock.Replay ();
 
       _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
       _eventRaiserMock.Replay();
 
       _loadState.Synchronize (_collectionEndPointMock);
 
-      _dataKeeperMock.VerifyAllExpectations ();
+      _dataManagerMock.VerifyAllExpectations ();
       _eventRaiserMock.VerifyAllExpectations();
     }
 
@@ -193,8 +193,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
 
-      _dataKeeperMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub)).Ordered (counter);
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Expect (mock => mock.RegisterOriginalOppositeEndPoint (_relatedEndPointStub)).Ordered (counter);
+      _dataManagerMock.Replay ();
 
       _eventRaiserMock.Expect (mock => mock.WithinReplaceData ()).Ordered (counter);
       _eventRaiserMock.Replay ();
@@ -203,7 +203,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadState.SynchronizeOppositeEndPoint (_collectionEndPointMock, _relatedEndPointStub);
 
-      _dataKeeperMock.VerifyAllExpectations ();
+      _dataManagerMock.VerifyAllExpectations ();
       _eventRaiserMock.VerifyAllExpectations ();
     }
 
@@ -211,8 +211,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateSetCollectionCommand ()
     {
       var fakeCollectionData = new DomainObjectCollectionData ();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+      _dataManagerMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         + "'BidirectionalRelationSyncService.Synchronize' method on the 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' property.")]
     public void CreateSetCollectionCommand_WithItemsWithoutEndPoints ()
     {
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
+      _dataManagerMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
 
       var newCollection = new OrderCollection ();
 
@@ -267,8 +267,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateRemoveCommand ()
     {
       var fakeCollectionData = new DomainObjectCollectionData ();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -309,7 +309,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' property.")]
     public void CreateRemoveCommand_RemoveItemWithoutEndPoint ()
     {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
 
       _loadState.CreateRemoveCommand (_collectionEndPointMock, _relatedObject);
     }
@@ -318,8 +318,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateDeleteCommand ()
     {
       var fakeCollectionData = new DomainObjectCollectionData ();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+      _dataManagerMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new DomainObject[0]);
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -357,7 +357,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         + "'BidirectionalRelationSyncService.Synchronize' method on the 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' property.")]
     public void CreateDeleteCommand_WithItemsWithoutEndPoints ()
     {
-      _dataKeeperMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
+      _dataManagerMock.Stub (stub => stub.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
 
       _loadState.CreateDeleteCommand (_collectionEndPointMock);
     }
@@ -366,8 +366,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateInsertCommand ()
     {
       var fakeCollectionData = new DomainObjectCollectionData ();
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -409,7 +409,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' property.")]
     public void CreateInsertCommand_ItemWithoutEndPoint ()
     {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
 
       _loadState.CreateInsertCommand (_collectionEndPointMock, _relatedObject, 0);
     }
@@ -419,8 +419,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var fakeCollectionData =
           new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> (), DomainObjectMother.CreateFakeObject<Order> () });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -448,7 +448,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateAddCommand_ItemWithUnsyncedOpposite ()
     {
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (new DomainObjectCollectionData ());
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (new DomainObjectCollectionData ());
       _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
     }
 
@@ -461,9 +461,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' property.")]
     public void CreateAddCommand_ItemWithoutEndPoint ()
     {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
 
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (new DomainObjectCollectionData ());
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (new DomainObjectCollectionData ());
       _loadState.CreateAddCommand (_collectionEndPointMock, _relatedObject);
     }
 
@@ -472,9 +472,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var oldRelatedObject = DomainObjectMother.CreateFakeObject<Order> ();
       var fakeCollectionData = new DomainObjectCollectionData (new[] { oldRelatedObject });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (oldRelatedObject)).Return (false);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (oldRelatedObject)).Return (false);
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -495,8 +495,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateReplaceCommand_SelfReplace ()
     {
       var fakeCollectionData = new DomainObjectCollectionData (new[] { _relatedObject });
-      _dataKeeperMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
+      _dataManagerMock.Stub (stub => stub.CollectionData).Return (fakeCollectionData);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (false);
 
       var fakeCollection = new DomainObjectCollection ();
       _collectionEndPointMock.Stub (mock => mock.IsNull).Return (false);
@@ -522,8 +522,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
 
       var newRelatedObject = DomainObjectMother.CreateFakeObject<Order> ();
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (newRelatedObject)).Return (false);
-      _dataKeeperMock
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (newRelatedObject)).Return (false);
+      _dataManagerMock
         .Stub (stub => stub.CollectionData)
         .Return (new DomainObjectCollectionData (new[] { _relatedObject }));
 
@@ -540,9 +540,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateReplaceCommand_ItemWithoutEndPoint ()
     {
       var newRelatedObject = DomainObjectMother.CreateFakeObject<Order> ();
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (newRelatedObject)).Return (false);
-      _dataKeeperMock
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (newRelatedObject)).Return (false);
+      _dataManagerMock
         .Stub (stub => stub.CollectionData)
         .Return (new DomainObjectCollectionData (new[] { _relatedObject }));
 
@@ -560,7 +560,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       AddUnsynchronizedOppositeEndPoint (_loadState, _relatedEndPointStub);
 
-      _dataKeeperMock
+      _dataManagerMock
         .Stub (stub => stub.CollectionData)
         .Return (new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () }));
       _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
@@ -575,9 +575,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' property.")]
     public void CreateReplaceCommand_WithItemWithoutEndPoint ()
     {
-      _dataKeeperMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
+      _dataManagerMock.Stub (stub => stub.ContainsOriginalItemWithoutEndPoint (_relatedObject)).Return (true);
 
-      _dataKeeperMock
+      _dataManagerMock
         .Stub (stub => stub.CollectionData)
         .Return (new DomainObjectCollectionData (new[] { DomainObjectMother.CreateFakeObject<Order> () }));
       _loadState.CreateReplaceCommand (_collectionEndPointMock, 0, _relatedObject);
@@ -586,8 +586,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetOriginalOppositeEndPoints ()
     {
-      _dataKeeperMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { _relatedEndPointStub });
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Stub (mock => mock.OriginalOppositeEndPoints).Return (new[] { _relatedEndPointStub });
+      _dataManagerMock.Replay ();
 
       var result = (IEnumerable<IRealObjectEndPoint>) PrivateInvoke.InvokeNonPublicMethod (_loadState, "GetOriginalOppositeEndPoints");
 
@@ -597,8 +597,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetOriginalItemsWithoutEndPoints ()
     {
-      _dataKeeperMock.Stub (mock => mock.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
-      _dataKeeperMock.Replay ();
+      _dataManagerMock.Stub (mock => mock.OriginalItemsWithoutEndPoints).Return (new[] { _relatedObject });
+      _dataManagerMock.Replay ();
 
       var result = (IEnumerable<DomainObject>) PrivateInvoke.InvokeNonPublicMethod (_loadState, "GetOriginalItemsWithoutEndPoints");
 
@@ -608,9 +608,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      var dataKeeper = new SerializableCollectionEndPointDataKeeperFake ();
+      var dataManager = new SerializableCollectionEndPointDataManagerFake ();
       var endPointProvider = new SerializableRelationEndPointProviderFake();
-      var state = new CompleteCollectionEndPointLoadState (dataKeeper, endPointProvider, _clientTransaction);
+      var state = new CompleteCollectionEndPointLoadState (dataManager, endPointProvider, _clientTransaction);
 
       var oppositeEndPoint = new SerializableRealObjectEndPointFake (null, _relatedObject);
       AddUnsynchronizedOppositeEndPoint (state, oppositeEndPoint);
@@ -618,7 +618,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
-      Assert.That (result.DataKeeper, Is.Not.Null);
+      Assert.That (result.DataManager, Is.Not.Null);
       Assert.That (result.ClientTransaction, Is.Not.Null);
       Assert.That (result.EndPointProvider, Is.Not.Null);
       Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));

@@ -21,14 +21,14 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints
 {
   [TestFixture]
-  public class VirtualObjectEndPointDataKeeperFactoryTest : StandardMappingTest
+  public class VirtualObjectEndPointDataManagerFactoryTest : StandardMappingTest
   {
-    private VirtualObjectEndPointDataKeeperFactory _factory;
+    private VirtualObjectEndPointDataManagerFactory _factory;
     private RelationEndPointID _endPointID;
 
     public override void SetUp ()
     {
-      _factory = new VirtualObjectEndPointDataKeeperFactory ();
+      _factory = new VirtualObjectEndPointDataManagerFactory ();
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
     }
 
@@ -37,8 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var result = _factory.Create (_endPointID);
 
-      Assert.That (result, Is.TypeOf (typeof (VirtualObjectEndPointDataKeeper)));
-      Assert.That (((VirtualObjectEndPointDataKeeper) result).EndPointID, Is.SameAs (_endPointID));
+      Assert.That (result, Is.TypeOf (typeof (VirtualObjectEndPointDataManager)));
+      Assert.That (((VirtualObjectEndPointDataManager) result).EndPointID, Is.SameAs (_endPointID));
     }
   }
 }
