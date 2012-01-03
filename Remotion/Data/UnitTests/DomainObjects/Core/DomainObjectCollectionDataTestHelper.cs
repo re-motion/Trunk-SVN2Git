@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
@@ -72,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (checkingDecorator.RequiredItemType, Is.SameAs (expectedRequiredItemType));
 
       var delegator = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
-      Assert.That (delegator.EndPointID, Is.EqualTo (expectedEndPointID));
+      Assert.That (delegator.AssociatedEndPointID, Is.EqualTo (expectedEndPointID));
     }
 
     public static void CheckStandAloneCollectionStrategy (DomainObjectCollection collection, Type expectedRequiredItemType, IDomainObjectCollectionData expectedDataStore)
@@ -134,8 +135,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ICollectionEndPoint GetAssociatedEndPoint (DomainObjectCollection collection)
     {
-      var strategy = GetDataStrategyAndCheckType<IDomainObjectCollectionData> (collection);
-      return strategy.AssociatedEndPoint;
+      if (collection.AssociatedEndPointID == null)
+        return null;
+
+      var checkingDecorator = GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
+      var delegatingStrategy = GetWrappedDataAndCheckType<EndPointDelegatingCollectionData> (checkingDecorator);
+      return delegatingStrategy.GetAssociatedEndPoint();
     }
   }
 }

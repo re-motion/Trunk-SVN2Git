@@ -103,17 +103,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void AssociatedEndPoint ()
+    public void AssociatedEndPointID ()
     {
-      var fakeEndPoint = _mockRepository.Stub<ICollectionEndPoint> ();
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
 
-      _wrappedDataMock.Expect (mock => mock.AssociatedEndPoint).Return (fakeEndPoint);
+      _wrappedDataMock.Expect (mock => mock.AssociatedEndPointID).Return (endPointID);
       _wrappedDataMock.Replay ();
 
-      var result = _decorator.AssociatedEndPoint;
+      var result = _decorator.AssociatedEndPointID;
 
       _wrappedDataMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (fakeEndPoint));
+      Assert.That (result, Is.SameAs (endPointID));
     }
 
     [Test]

@@ -160,10 +160,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (collectionEndPointDataKeeperFactory.ChangeDetectionStrategy, Is.TypeOf<RootCollectionEndPointChangeDetectionStrategy> ());
       Assert.That (endPointFactory.VirtualObjectEndPointDataKeeperFactory, Is.TypeOf<VirtualObjectEndPointDataKeeperFactory> ());
 
-      Assert.That (endPointFactory.CollectionEndPointCollectionManager, Is.TypeOf<CollectionEndPointCollectionManager> ());
-      var collectionEndPointCollectionManager = (CollectionEndPointCollectionManager) endPointFactory.CollectionEndPointCollectionManager;
+      Assert.That (endPointFactory.CollectionEndPointCollectionProvider, Is.TypeOf<CollectionEndPointCollectionProvider> ());
+      var collectionEndPointCollectionProvider = (CollectionEndPointCollectionProvider) endPointFactory.CollectionEndPointCollectionProvider;
       Assert.That (
-          collectionEndPointCollectionManager.DataStrategyFactory,
+          collectionEndPointCollectionProvider.DataStrategyFactory,
           Is.TypeOf<AssociatedCollectionDataStrategyFactory> ()
               .With.Property ((AssociatedCollectionDataStrategyFactory f) => f.VirtualEndPointProvider).SameAs (endPointProvider));
     }

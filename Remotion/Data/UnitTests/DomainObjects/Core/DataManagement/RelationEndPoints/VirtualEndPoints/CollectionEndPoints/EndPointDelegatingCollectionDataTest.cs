@@ -119,9 +119,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void AssociatedEndPoint ()
+    public void GetAssociatedEndPoint ()
     {
-      Assert.That (_delegatingData.AssociatedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (_delegatingData.GetAssociatedEndPoint(), Is.SameAs (_collectionEndPointMock));
     }
 
     [Test]
@@ -413,7 +413,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (data);
 
-      Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
+      Assert.That (deserializedInstance.AssociatedEndPointID, Is.EqualTo (_endPointID));
       Assert.That (deserializedInstance.VirtualEndPointProvider, Is.Not.Null);
     }
 
@@ -451,7 +451,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private void CheckObjectDeletedException (Action<EndPointDelegatingCollectionData, DomainObject> action)
     {
       OrderItem deletedObject;
-      using (_delegatingData.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
+      using (_delegatingData.GetAssociatedEndPoint().ClientTransaction.EnterNonDiscardingScope())
       {
         deletedObject = OrderItem.GetObject (DomainObjectIDs.OrderItem5);
         deletedObject.Delete();
@@ -471,7 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private void CheckOwningObjectDeletedException (Action<EndPointDelegatingCollectionData, DomainObject> action)
     {
       Order deletedOwningObject;
-      using (_delegatingData.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
+      using (_delegatingData.GetAssociatedEndPoint().ClientTransaction.EnterNonDiscardingScope())
       {
         deletedOwningObject = Order.GetObject (DomainObjectIDs.Order4);
       }
@@ -481,7 +481,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       virtualEndPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_endPointID)).Return (endPointStub);
       var data = new EndPointDelegatingCollectionData (_endPointID, virtualEndPointProviderStub);
 
-      using (_delegatingData.AssociatedEndPoint.ClientTransaction.EnterNonDiscardingScope())
+      using (_delegatingData.GetAssociatedEndPoint().ClientTransaction.EnterNonDiscardingScope())
       {
         deletedOwningObject.Delete();
       }

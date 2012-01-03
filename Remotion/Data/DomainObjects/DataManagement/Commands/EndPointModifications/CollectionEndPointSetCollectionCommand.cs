@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
       // After this operation, NewCollection will be associated with the end-point and ModifiedEndPoint.Collection will return NewCollection.
       // The previous ModifiedEndPoint.Collection will be a standalone copy of the end-point data.
-      var oldDataStrategyOfNewCollection = CollectionEndPointCollectionManager.AssociateCollectionWithEndPoint (ModifiedEndPoint.ID, NewCollection);
+      var oldDataStrategyOfNewCollection = CollectionEndPointCollectionManager.AssociateCollectionWithEndPoint (NewCollection);
 
       // Now, replace end-point's data with the data that was held by NewCollection before it was associated.
       ModifiedCollectionData.ReplaceContents (oldDataStrategyOfNewCollection);

@@ -49,11 +49,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       _virtualEndPointProvider = virtualEndPointProvider;
     }
 
-    public RelationEndPointID EndPointID
-    {
-      get { return _endPointID; }
-    }
-
     public IVirtualEndPointProvider VirtualEndPointProvider
     {
       get { return _virtualEndPointProvider; }
@@ -63,7 +58,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       get
       {
-        var data = AssociatedEndPoint.GetData();
+        var data = GetAssociatedEndPoint().GetData();
         return data.Count;
       }
     }
@@ -90,32 +85,38 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
     }
 
-    public ICollectionEndPoint AssociatedEndPoint
+    public RelationEndPointID AssociatedEndPointID
     {
-      get { return (ICollectionEndPoint) _virtualEndPointProvider.GetOrCreateVirtualEndPoint (_endPointID); }
+      get { return _endPointID; }
+    }
+
+    public ICollectionEndPoint GetAssociatedEndPoint ()
+    {
+      return (ICollectionEndPoint) _virtualEndPointProvider.GetOrCreateVirtualEndPoint (_endPointID);
     }
 
     public bool IsDataComplete
     {
-      get { return AssociatedEndPoint.IsDataComplete; }
+      get { return GetAssociatedEndPoint().IsDataComplete; }
     }
+
 
     public void EnsureDataComplete ()
     {
-      AssociatedEndPoint.EnsureDataComplete ();
+      GetAssociatedEndPoint().EnsureDataComplete ();
     }
 
     public bool ContainsObjectID (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = AssociatedEndPoint.GetData ();
+      var data = GetAssociatedEndPoint().GetData ();
       return data.ContainsObjectID (objectID);
     }
 
     public DomainObject GetObject (int index)
     {
-      var data = AssociatedEndPoint.GetData ();
+      var data = GetAssociatedEndPoint().GetData ();
       return data.GetObject (index);
     }
 
@@ -123,7 +124,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = AssociatedEndPoint.GetData ();
+      var data = GetAssociatedEndPoint().GetData ();
       return data.GetObject (objectID);
     }
 
@@ -131,13 +132,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var data = AssociatedEndPoint.GetData ();
+      var data = GetAssociatedEndPoint().GetData ();
       return data.IndexOf(objectID);
     }
 
     public IEnumerator<DomainObject> GetEnumerator ()
     {
-      var data = AssociatedEndPoint.GetData ();
+      var data = GetAssociatedEndPoint().GetData ();
       return data.GetEnumerator ();
     }
 
@@ -148,7 +149,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     public void Clear ()
     {
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference (), GetAssociatedEndPoint().ClientTransaction);
 
       var combinedCommand = GetClearCommand ();
       combinedCommand.NotifyAndPerform ();
@@ -158,30 +159,30 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
-      DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference(), AssociatedEndPoint.ClientTransaction);
+      RelationEndPointValueChecker.CheckClientTransaction (GetAssociatedEndPoint(), domainObject, "Cannot insert DomainObject '{0}' into collection of property '{1}' of DomainObject '{2}'.");
+      DomainObjectCheckUtility.EnsureNotDeleted (domainObject, GetAssociatedEndPoint().ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference(), GetAssociatedEndPoint().ClientTransaction);
 
-      var insertCommand = AssociatedEndPoint.CreateInsertCommand (domainObject, index);
+      var insertCommand = GetAssociatedEndPoint().CreateInsertCommand (domainObject, index);
       var bidirectionalModification = insertCommand.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
 
-      AssociatedEndPoint.Touch ();
+      GetAssociatedEndPoint().Touch ();
     }
 
     public bool Remove (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
-      DomainObjectCheckUtility.EnsureNotDeleted (domainObject, AssociatedEndPoint.ClientTransaction);
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
+      RelationEndPointValueChecker.CheckClientTransaction (GetAssociatedEndPoint(), domainObject, "Cannot remove DomainObject '{0}' from collection of property '{1}' of DomainObject '{2}'.");
+      DomainObjectCheckUtility.EnsureNotDeleted (domainObject, GetAssociatedEndPoint().ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference (), GetAssociatedEndPoint().ClientTransaction);
 
       var containsObjectID = ContainsObjectID (domainObject.ID);
       if (containsObjectID)
         CreateAndExecuteRemoveCommand (domainObject);
 
-      AssociatedEndPoint.Touch ();
+      GetAssociatedEndPoint().Touch ();
       return containsObjectID;
     }
 
@@ -189,18 +190,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference(), AssociatedEndPoint.ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference(), GetAssociatedEndPoint().ClientTransaction);
 
       var domainObject = GetObject (objectID);
       if (domainObject != null)
       {
         // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
-        Assertion.IsTrue (domainObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
+        Assertion.IsTrue (domainObject.TransactionContext[GetAssociatedEndPoint().ClientTransaction].State != StateType.Deleted);
 
         CreateAndExecuteRemoveCommand (domainObject);
       }
 
-      AssociatedEndPoint.Touch ();
+      GetAssociatedEndPoint().Touch ();
       return domainObject != null;
     }
 
@@ -208,27 +209,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       ArgumentUtility.CheckNotNull ("value", value);
 
-      RelationEndPointValueChecker.CheckClientTransaction (AssociatedEndPoint, value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
-      DomainObjectCheckUtility.EnsureNotDeleted (value, AssociatedEndPoint.ClientTransaction);
-      DomainObjectCheckUtility.EnsureNotDeleted (AssociatedEndPoint.GetDomainObjectReference (), AssociatedEndPoint.ClientTransaction);
+      RelationEndPointValueChecker.CheckClientTransaction (GetAssociatedEndPoint(), value, "Cannot put DomainObject '{0}' into the collection of property '{1}' of DomainObject '{2}'.");
+      DomainObjectCheckUtility.EnsureNotDeleted (value, GetAssociatedEndPoint().ClientTransaction);
+      DomainObjectCheckUtility.EnsureNotDeleted (GetAssociatedEndPoint().GetDomainObjectReference (), GetAssociatedEndPoint().ClientTransaction);
 
-      var replaceCommand = AssociatedEndPoint.CreateReplaceCommand (index, value);
+      var replaceCommand = GetAssociatedEndPoint().CreateReplaceCommand (index, value);
       var bidirectionalModification = replaceCommand.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
 
-      AssociatedEndPoint.Touch ();
+      GetAssociatedEndPoint().Touch ();
     }
 
     public void Sort (Comparison<DomainObject> comparison)
     {
       ArgumentUtility.CheckNotNull ("comparison", comparison);
 
-      AssociatedEndPoint.SortCurrentData (comparison);
+      GetAssociatedEndPoint().SortCurrentData (comparison);
     }
 
     private void CreateAndExecuteRemoveCommand (DomainObject domainObject)
     {
-      var command = AssociatedEndPoint.CreateRemoveCommand (domainObject);
+      var command = GetAssociatedEndPoint().CreateRemoveCommand (domainObject);
       var bidirectionalModification = command.ExpandToAllRelatedObjects ();
       bidirectionalModification.NotifyAndPerform ();
     }
@@ -242,11 +243,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         var removedObject = GetObject (i);
 
         // we can rely on the fact that this object is not deleted, otherwise we wouldn't have got it
-        Assertion.IsTrue (removedObject.TransactionContext[AssociatedEndPoint.ClientTransaction].State != StateType.Deleted);
-        removeCommands.Add (AssociatedEndPoint.CreateRemoveCommand (removedObject).ExpandToAllRelatedObjects ());
+        Assertion.IsTrue (removedObject.TransactionContext[GetAssociatedEndPoint().ClientTransaction].State != StateType.Deleted);
+        removeCommands.Add (GetAssociatedEndPoint().CreateRemoveCommand (removedObject).ExpandToAllRelatedObjects ());
       }
 
-      return new CompositeCommand (removeCommands.Cast<IDataManagementCommand> ()).CombineWith (new RelationEndPointTouchCommand (AssociatedEndPoint));
+      return new CompositeCommand (removeCommands.Cast<IDataManagementCommand> ()).CombineWith (new RelationEndPointTouchCommand (GetAssociatedEndPoint()));
     }
   }
 }

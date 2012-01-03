@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       RelationEndPointID id = CreateRelationEndPointID (propertyAccessor);
       var endPoint = (ICollectionEndPoint) transaction.DataManager.GetRelationEndPointWithLazyLoad (id);
 
-      if (!newCollection.IsAssociatedWith (null) && !newCollection.IsAssociatedWith (endPoint))
+      if (newCollection.AssociatedEndPointID != null && newCollection.AssociatedEndPointID != endPoint.ID)
         throw new ArgumentException ("The given collection is already associated with an end point.", "value");
 
       if (newCollection.RequiredItemType != endPoint.Collection.RequiredItemType

@@ -156,14 +156,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("collectionEndPointDataKeeperFactory", collectionEndPointDataKeeperFactory);
 
       var associatedCollectionDataStrategyFactory = new AssociatedCollectionDataStrategyFactory (endPointProvider);
-      var collectionEndPointCollectionManager = new CollectionEndPointCollectionManager (associatedCollectionDataStrategyFactory);
+      var collectionEndPointCollectionProvider = new CollectionEndPointCollectionProvider (associatedCollectionDataStrategyFactory);
       return new RelationEndPointFactory (
           clientTransaction,
           endPointProvider,
           lazyLoader,
           virtualObjectEndPointDataKeeperFactory,
           collectionEndPointDataKeeperFactory, 
-          collectionEndPointCollectionManager);
+          collectionEndPointCollectionProvider,
+          associatedCollectionDataStrategyFactory);
     }
 
     protected override IObjectLoader CreateObjectLoader (

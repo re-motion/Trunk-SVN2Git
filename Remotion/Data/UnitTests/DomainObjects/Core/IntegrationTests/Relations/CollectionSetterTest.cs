@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
         customer1.Orders = newCollection;
         customer3.Orders = oldCollectionReferenceOfCustomer1;
-        Assert.That (oldCollectionReferenceOfCustomer3.IsAssociatedWith (null), Is.True);
+        Assert.That (oldCollectionReferenceOfCustomer3.AssociatedEndPointID, Is.Null);
 
         ClientTransaction.Current.Rollback ();
 

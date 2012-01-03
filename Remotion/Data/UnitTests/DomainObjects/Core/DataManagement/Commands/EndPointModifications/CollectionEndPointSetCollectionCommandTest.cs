@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
 
       _collectionManagerMock
-          .Expect (mock => mock.AssociateCollectionWithEndPoint (CollectionEndPoint.ID, _newCollection))
+          .Expect (mock => mock.AssociateCollectionWithEndPoint (_newCollection))
           .Return (new DomainObjectCollectionData (new[] { _order1, _order2 }))
           .WhenCalled (mi => Assert.That (_modifiedCollectionData, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem })));
       _mockRepository.ReplayAll ();

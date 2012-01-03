@@ -15,22 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 
-namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Defines an interface for classes providing and keeping track of the <see cref="DomainObjectCollection"/> instances used by 
-  /// a <see cref="CollectionEndPoint"/>.
-  /// </summary>
-  public interface ICollectionEndPointCollectionManager
+  [Serializable]
+  public class SerializableCollectionEndPointCollectionProviderFake : ICollectionEndPointCollectionProvider
   {
-    DomainObjectCollection GetOriginalCollectionReference ();
-    DomainObjectCollection GetCurrentCollectionReference ();
+    public DomainObjectCollection GetCollection (RelationEndPointID endPointID)
+    {
+      throw new NotImplementedException();
+    }
 
-    IDomainObjectCollectionData AssociateCollectionWithEndPoint (DomainObjectCollection newCollection);
-    bool HasCollectionReferenceChanged ();
-    void CommitCollectionReference ();
-    void RollbackCollectionReference ();
+    public void RegisterCollection (RelationEndPointID endPointID, DomainObjectCollection collection)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

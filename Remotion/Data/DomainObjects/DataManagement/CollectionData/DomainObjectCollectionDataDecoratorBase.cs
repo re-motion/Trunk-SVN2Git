@@ -42,9 +42,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       get { return _wrappedData.IsReadOnly; }
     }
 
-    public virtual ICollectionEndPoint AssociatedEndPoint
+    public virtual RelationEndPointID AssociatedEndPointID
     {
-      get { return _wrappedData.AssociatedEndPoint; }
+      get { return _wrappedData.AssociatedEndPointID; }
     }
 
     public virtual bool IsDataComplete

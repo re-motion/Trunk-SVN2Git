@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     [Test]
     public void AssociatedEndPoint ()
     {
-      Assert.That (((IDomainObjectCollectionData) _data).AssociatedEndPoint, Is.Null);
+      Assert.That (((IDomainObjectCollectionData) _data).AssociatedEndPointID, Is.Null);
     }
 
     [Test]

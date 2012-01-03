@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,23 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
-  /// Defines an interface for classes providing and keeping track of the <see cref="DomainObjectCollection"/> instances used by 
-  /// a <see cref="CollectionEndPoint"/>.
+  /// Provides an interface for classes keeping track of <see cref="DomainObjectCollection"/> references to be used by <see cref="CollectionEndPoint"/> 
+  /// instances. That way, a <see cref="DomainObjectCollection"/> can be reused even when the <see cref="CollectionEndPoint"/> is removed.
   /// </summary>
-  public interface ICollectionEndPointCollectionManager
+  public interface ICollectionEndPointCollectionProvider
   {
-    DomainObjectCollection GetOriginalCollectionReference ();
-    DomainObjectCollection GetCurrentCollectionReference ();
-
-    IDomainObjectCollectionData AssociateCollectionWithEndPoint (DomainObjectCollection newCollection);
-    bool HasCollectionReferenceChanged ();
-    void CommitCollectionReference ();
-    void RollbackCollectionReference ();
+    DomainObjectCollection GetCollection (RelationEndPointID endPointID);
+    void RegisterCollection (RelationEndPointID endPointID, DomainObjectCollection collection);
   }
 }

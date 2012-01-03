@@ -17,7 +17,6 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
@@ -25,37 +24,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableCollectionEndPointCollectionManagerFake : ICollectionEndPointCollectionManager
   {
-    public DomainObjectCollection GetOriginalCollectionReference (RelationEndPointID endPointID)
+    public DomainObjectCollection GetOriginalCollectionReference ()
     {
       throw new NotImplementedException();
     }
 
-    public DomainObjectCollection GetCurrentCollectionReference (RelationEndPointID endPointID)
+    public DomainObjectCollection GetCurrentCollectionReference ()
     {
       return new DomainObjectCollection();
     }
 
-    public DomainObjectCollection GetCollectionWithOriginalData (RelationEndPointID endPointID, IDomainObjectCollectionData originalData)
+    public IDomainObjectCollectionData AssociateCollectionWithEndPoint (DomainObjectCollection newCollection)
     {
       throw new NotImplementedException();
     }
 
-    public IDomainObjectCollectionData AssociateCollectionWithEndPoint (RelationEndPointID endPointID, DomainObjectCollection newCollection)
+    public bool HasCollectionReferenceChanged ()
     {
       throw new NotImplementedException();
     }
 
-    public bool HasCollectionReferenceChanged (RelationEndPointID endPointID)
+    public void CommitCollectionReference ()
     {
       throw new NotImplementedException();
     }
 
-    public void CommitCollectionReference (RelationEndPointID endPointID)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void RollbackCollectionReference (RelationEndPointID endPointID)
+    public void RollbackCollectionReference ()
     {
       throw new NotImplementedException();
     }

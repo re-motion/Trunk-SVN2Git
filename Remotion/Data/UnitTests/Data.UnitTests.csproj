@@ -210,6 +210,8 @@
     <Compile Include="DomainObjects\Core\DataManagement\DelegatingDataManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\AssociatedCollectionDataStrategyFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionManagerTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionProviderTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableAssociatedCollectionDataStrategyFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionManagerFake.cs" />

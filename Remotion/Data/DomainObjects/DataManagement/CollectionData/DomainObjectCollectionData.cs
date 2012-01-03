@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
       get { return false; }
     }
 
-    ICollectionEndPoint IDomainObjectCollectionData.AssociatedEndPoint
+    RelationEndPointID IDomainObjectCollectionData.AssociatedEndPointID
     {
       get { return null; }
     }

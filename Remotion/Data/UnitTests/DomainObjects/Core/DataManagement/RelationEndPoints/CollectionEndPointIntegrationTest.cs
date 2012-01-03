@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -93,8 +92,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_customerEndPoint.Collection, Is.EqualTo (new[] { _orderWithoutOrderItem }));
       Assert.That (oldOpposites, Is.EqualTo (new[] { _order1, _orderWithoutOrderItem }));
 
-      Assert.That (newOpposites.IsAssociatedWith (_customerEndPoint), Is.True);
-      Assert.That (oldOpposites.IsAssociatedWith (null), Is.True);
+      Assert.That (newOpposites.AssociatedEndPointID, Is.EqualTo (_customerEndPoint.ID));
+      Assert.That (oldOpposites.AssociatedEndPointID, Is.Null);
     }
 
     [Test]
@@ -257,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
       Assert.That (_customerEndPoint.Collection, Is.SameAs (originalOpposites));
-      Assert.That (_customerEndPoint.Collection.IsAssociatedWith (_customerEndPoint), Is.True);
+      Assert.That (_customerEndPoint.Collection.AssociatedEndPointID, Is.EqualTo (_customerEndPoint.ID));
     }
 
     [Test]
@@ -303,8 +302,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       SetCollectionAndNotify (_customerEndPoint, newCollection);
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newCollection));
-      Assert.That (newCollection.IsAssociatedWith (_customerEndPoint), Is.True);
-      Assert.That (oldCollection.IsAssociatedWith (null), Is.True);
+      Assert.That (newCollection.AssociatedEndPointID, Is.EqualTo (_customerEndPoint.ID));
+      Assert.That (oldCollection.AssociatedEndPointID, Is.Null);
 
       _customerEndPoint.Rollback ();
 
@@ -387,8 +386,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       SetCollectionAndNotify (_customerEndPoint, newCollection);
 
       Assert.That (_customerEndPoint.Collection, Is.SameAs (newCollection));
-      Assert.That (newCollection.IsAssociatedWith (_customerEndPoint), Is.True);
-      Assert.That (oldCollection.IsAssociatedWith (null));
+      Assert.That (newCollection.AssociatedEndPointID, Is.EqualTo (_customerEndPoint.ID));
+      Assert.That (oldCollection.AssociatedEndPointID, Is.Null);
 
       _customerEndPoint.Commit ();
 
@@ -510,12 +509,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (_customerEndPoint.IsDataComplete, Is.False);
       Assert.That (_customerEndPoint.HasBeenTouched, Is.True);
-    }
-    
-    private IDomainObjectCollectionData GetDomainObjectCollectionData (DomainObjectCollection collection)
-    {
-      var decorator = DomainObjectCollectionDataTestHelper.GetDataStrategyAndCheckType<ModificationCheckingCollectionDataDecorator> (collection);
-      return DomainObjectCollectionDataTestHelper.GetWrappedData (decorator);
     }
 
     private void SetCollectionAndNotify (CollectionEndPoint collectionEndPoint, DomainObjectCollection newCollection)

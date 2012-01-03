@@ -278,28 +278,12 @@ namespace Remotion.Data.DomainObjects
     /// <value>The associated end point.</value>
     public RelationEndPointID AssociatedEndPointID
     {
-      get 
-      {
-        var associatedEndPoint = _dataStrategy.AssociatedEndPoint;
-        return associatedEndPoint != null ? associatedEndPoint.ID : null; 
-      }
+      get { return _dataStrategy.AssociatedEndPointID; }
     }
 
     public bool IsDataComplete
     {
       get { return _dataStrategy.IsDataComplete; }
-    }
-
-    /// <summary>
-    /// Determines whether this <see cref="DomainObjectCollection"/> instance is associated to the specified <see cref="ICollectionEndPoint"/>.
-    /// </summary>
-    /// <param name="endPoint">The end point to check for. Pass <see langword="null" /> to check whether this collection is stand-alone.</param>
-    /// <returns>
-    /// 	<see langword="true"/> if this collection is associated to the specified end point; otherwise, <see langword="false"/>.
-    /// </returns>
-    public bool IsAssociatedWith (ICollectionEndPoint endPoint)
-    {
-      return _dataStrategy.AssociatedEndPoint == endPoint;
     }
 
     /// <summary>

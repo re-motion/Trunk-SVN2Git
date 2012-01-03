@@ -71,12 +71,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.CollectionDa
     }
 
     [Test]
-    public void AssociatedEndPoint ()
+    public void AssociatedEndPointID ()
     {
-      var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
-      _wrappedDataStub.Stub (stub => stub.AssociatedEndPoint).Return (endPointStub);
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders");
+      _wrappedDataStub.Stub (stub => stub.AssociatedEndPointID).Return (endPointID);
 
-      Assert.That (_readOnlyDecorator.AssociatedEndPoint, Is.SameAs (endPointStub));
+      Assert.That (_readOnlyDecorator.AssociatedEndPointID, Is.SameAs (endPointID));
     }
 
     [Test]

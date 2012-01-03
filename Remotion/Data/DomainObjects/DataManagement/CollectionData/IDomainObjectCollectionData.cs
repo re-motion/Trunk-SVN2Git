@@ -30,7 +30,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
     Type RequiredItemType { get; }
     bool IsReadOnly { get; }
 
-    ICollectionEndPoint AssociatedEndPoint { get; }
+    RelationEndPointID AssociatedEndPointID { get; }
     bool IsDataComplete { get; }
 
     void EnsureDataComplete ();

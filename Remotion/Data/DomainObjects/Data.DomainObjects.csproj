@@ -194,8 +194,10 @@
     <Compile Include="DataManagement\RelationEndPoints\IVirtualEndPointProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\AssociatedCollectionDataStrategyFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionManager.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\IAssociatedCollectionDataStrategyFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointCollectionManager.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointCollectionProvider.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />

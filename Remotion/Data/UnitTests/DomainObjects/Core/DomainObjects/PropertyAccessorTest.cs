@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.That (sector.Companies, Is.SameAs (newCompanies));
       Assert.That (sector.Companies.AssociatedEndPointID, Is.Not.Null);
-      Assert.That (oldCompanies.IsAssociatedWith (null), Is.True);
+      Assert.That (oldCompanies.AssociatedEndPointID, Is.Null);
     }
 
     [Test]
