@@ -73,8 +73,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public void Perform ()
     {
-      _decoratedCommand.Perform();
-      _listener.StateUpdated (_changeStateProvider());
+      try
+      {
+        _decoratedCommand.Perform();
+      }
+      finally
+      {
+        _listener.StateUpdated (_changeStateProvider ());
+      }
     }
 
     public void End ()

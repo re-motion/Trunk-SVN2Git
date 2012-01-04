@@ -74,6 +74,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
+    public void Perform_WithException ()
+    {
+      var exception = new Exception();
+      _decoratedCommandMock.Expect (mock => mock.Perform ()).Throw (exception);
+      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+
+      _mockRepository.ReplayAll ();
+
+      Assert.That (() => _commandDecorator.Perform(), Throws.Exception.SameAs (exception));
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void Perform_WithDifferentStates ()
     {
       using (_mockRepository.Ordered ())
