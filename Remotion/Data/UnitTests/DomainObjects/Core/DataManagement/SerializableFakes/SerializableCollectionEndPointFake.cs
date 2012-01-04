@@ -25,17 +25,23 @@ using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  [Serializable]
   public class SerializableCollectionEndPointFake : ICollectionEndPoint
   {
-    public bool IsNull
+    public SerializableCollectionEndPointFake ()
     {
-      get { throw new NotImplementedException(); }
+    }
+
+    public SerializableCollectionEndPointFake (FlattenedDeserializationInfo info)
+    {
     }
 
     public void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      throw new NotImplementedException();
+    }
+
+    public bool IsNull
+    {
+      get { throw new NotImplementedException(); }
     }
 
     public RelationEndPointID ID
@@ -136,6 +142,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     public void SetDataFromSubTransaction (IRelationEndPoint source)
     {
       throw new NotImplementedException();
+    }
+
+    public bool? HasChangedFast
+    {
+      get { throw new NotImplementedException(); }
     }
 
     public DomainObjectCollection Collection

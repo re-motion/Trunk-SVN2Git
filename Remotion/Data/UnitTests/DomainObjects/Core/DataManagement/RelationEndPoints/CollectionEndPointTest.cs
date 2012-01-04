@@ -252,6 +252,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (result, Is.False);
     }
+
+    [Test]
+    public void HasChangedFast_True_CollectionChanged ()
+    {
+      _loadStateMock.Replay ();
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (true);
+
+      var result = _endPoint.HasChangedFast;
+
+      _loadStateMock.AssertWasNotCalled (mock => mock.HasChangedFast ());
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void HasChangedFast_True_LoadState ()
+    {
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
+      _loadStateMock.Stub (stub => stub.HasChangedFast ()).Return (true);
+
+      var result = _endPoint.HasChangedFast;
+
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
+    public void HasChangedFast_False ()
+    {
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
+      _loadStateMock.Stub (stub => stub.HasChangedFast ()).Return (false);
+
+      var result = _endPoint.HasChangedFast;
+
+      Assert.That (result, Is.False);
+    }
     
     [Test]
     public void EnsureDataComplete ()

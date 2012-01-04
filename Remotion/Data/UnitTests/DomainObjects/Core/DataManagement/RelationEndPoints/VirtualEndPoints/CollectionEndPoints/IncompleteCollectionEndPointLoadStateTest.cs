@@ -73,6 +73,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void HasChangedFast ()
+    {
+      Assert.That (_loadState.HasChangedFast(), Is.False);
+    }
+
+    [Test]
     public void EnsureDataComplete ()
     {
       var newStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();

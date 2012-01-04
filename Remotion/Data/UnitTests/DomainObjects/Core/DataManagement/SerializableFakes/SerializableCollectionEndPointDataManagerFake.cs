@@ -104,6 +104,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       return false;
     }
 
+    public bool? HasDataChangedFast ()
+    {
+      return false;
+    }
+
     public void SortCurrentData (Comparison<DomainObject> comparison)
     {
       throw new NotImplementedException ();

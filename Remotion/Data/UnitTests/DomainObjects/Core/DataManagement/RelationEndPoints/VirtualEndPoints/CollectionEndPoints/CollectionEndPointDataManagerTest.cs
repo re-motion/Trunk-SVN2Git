@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
@@ -419,6 +420,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _changeDetectionStrategyMock.VerifyAllExpectations ();
       Assert.That (result1, Is.EqualTo (true));
       Assert.That (result2, Is.EqualTo (false));
+    }
+
+    [Test]
+    public void HasDataChangedFast_CacheNotUpToDate ()
+    {
+      _changeDetectionStrategyMock.Replay ();
+
+      var result = _dataManager.HasDataChangedFast ();
+
+      _changeDetectionStrategyMock.AssertWasNotCalled (
+          mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void HasDataChangedFast_CacheUpToDate ()
+    {
+      _changeDetectionStrategyMock
+            .Stub (mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything))
+            .Return (true);
+      _changeDetectionStrategyMock.Replay ();
+
+      Dev.Null = _dataManager.HasDataChanged();
+      _changeDetectionStrategyMock.BackToRecord();
+      _changeDetectionStrategyMock.Replay();
+
+      var result = _dataManager.HasDataChangedFast ();
+
+      _changeDetectionStrategyMock.AssertWasNotCalled (
+          mock => mock.HasDataChanged (Arg<IDomainObjectCollectionData>.Is.Anything, Arg<IDomainObjectCollectionData>.Is.Anything));
+      Assert.That (result, Is.False);
     }
 
     [Test]

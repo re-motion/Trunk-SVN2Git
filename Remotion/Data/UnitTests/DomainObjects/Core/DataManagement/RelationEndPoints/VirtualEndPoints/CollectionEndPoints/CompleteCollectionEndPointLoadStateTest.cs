@@ -74,6 +74,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void HasChangedFast ()
+    {
+      _dataManagerMock.Stub (stub => stub.HasDataChangedFast ()).Return (true).Repeat.Once ();
+      _dataManagerMock.Stub (stub => stub.HasDataChangedFast ()).Return (false).Repeat.Once ();
+      _dataManagerMock.Stub (stub => stub.HasDataChangedFast ()).Return (null).Repeat.Once ();
+
+      Assert.That (_loadState.HasChangedFast (), Is.True);
+      Assert.That (_loadState.HasChangedFast (), Is.False);
+      Assert.That (_loadState.HasChangedFast (), Is.Null);
+    }
+
+    [Test]
     public void GetData ()
     {
       var collectionDataStub = MockRepository.GenerateStub<IDomainObjectCollectionData> ();

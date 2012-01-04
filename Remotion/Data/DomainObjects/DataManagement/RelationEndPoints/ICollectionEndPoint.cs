@@ -24,6 +24,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public interface ICollectionEndPoint : IVirtualEndPoint<ReadOnlyCollectionDataDecorator>
   {
+    bool? HasChangedFast { get; }
+
     DomainObjectCollection Collection { get; }
     DomainObjectCollection OriginalCollection { get; }
 

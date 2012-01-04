@@ -29,36 +29,62 @@ namespace Remotion.Data.UnitTests.UnitTesting
       where TInterface : class
   {
     private readonly TInterface _decorator;
-    private readonly TInterface _decorated;
+    private readonly TInterface _decoratedMock;
 
-    public DecoratorTestHelper (TInterface decorator, TInterface decorated)
+    public DecoratorTestHelper (TInterface decorator, TInterface decoratedMock)
     {
       ArgumentUtility.CheckNotNull ("decorator", decorator);
-      ArgumentUtility.CheckNotNull ("decorated", decorated);
+      ArgumentUtility.CheckNotNull ("decoratedMock", decoratedMock);
 
       _decorator = decorator;
-      _decorated = decorated;
+      _decoratedMock = decoratedMock;
     }
 
     public void CheckDelegation<TR> (Func<TInterface, TR> action, TR fakeResult)
     {
-      _decorated.Expect (mock => action (mock)).Return (fakeResult);
-      _decorated.Replay ();
+      CheckDelegation (action, fakeResult, result => Assert.That (result, Is.EqualTo (fakeResult)));
+    }
+
+    public void CheckDelegation<TR> (Func<TInterface, TR> action, TR fakeResult, Action<TR> decoratorResultChecker)
+    {
+      _decoratedMock.Expect (mock => action (mock)).Return (fakeResult);
+      _decoratedMock.Replay ();
 
       var result = action (_decorator);
 
-      _decorated.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (fakeResult));
+      _decoratedMock.VerifyAllExpectations ();
+      decoratorResultChecker (result);
     }
 
     public void CheckDelegation (Action<TInterface> action)
     {
-      _decorated.Expect (action);
-      _decorated.Replay ();
+      _decoratedMock.Expect (action);
+      _decoratedMock.Replay ();
 
       action (_decorator);
 
-      _decorated.VerifyAllExpectations ();
+      _decoratedMock.VerifyAllExpectations ();
+    }
+
+    public void CheckDelegationWithContinuation<TR> (Func<TInterface, TR> action, TR fakeResult, Action<MethodInvocation> whenCalled)
+    {
+      _decoratedMock.Expect (mock => action (mock)).Return (fakeResult).WhenCalled (whenCalled);
+      _decoratedMock.Replay ();
+
+      var result = action (_decorator);
+
+      _decoratedMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (fakeResult));
+    }
+
+    public void CheckDelegationWithContinuation (Action<TInterface> action, Action<MethodInvocation> whenCalled)
+    {
+      _decoratedMock.Expect (action).WhenCalled (whenCalled);
+      _decoratedMock.Replay ();
+
+      action (_decorator);
+
+      _decoratedMock.VerifyAllExpectations ();
     }
   }
 }

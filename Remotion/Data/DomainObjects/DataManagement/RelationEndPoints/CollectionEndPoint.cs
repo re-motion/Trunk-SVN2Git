@@ -134,6 +134,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _stateUpdateListener; }
     }
 
+
     public DomainObjectCollection Collection
     {
       get { return _collectionManager.GetCurrentCollectionReference (); }
@@ -182,6 +183,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override bool HasChanged
     {
       get { return _collectionManager.HasCollectionReferenceChanged () || _loadState.HasChanged (); }
+    }
+
+    public bool? HasChangedFast
+    {
+      get
+      {
+        if (_collectionManager.HasCollectionReferenceChanged ())
+          return true;
+        return _loadState.HasChangedFast ();
+      }
     }
 
     public override bool HasBeenTouched

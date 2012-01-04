@@ -114,6 +114,12 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return endPointDefinition;
     }
 
+    protected RelationDefinition GetRelationDefinition (Type declaringType, string shortPropertyName)
+    {
+      var endPointDefinition = GetEndPointDefinition (declaringType, shortPropertyName);
+      return endPointDefinition.RelationDefinition;
+    }
+
     protected object GetPropertyValue (DataContainer dataContainer, Type declaringType, string shortPropertyName)
     {
       return dataContainer[GetPropertyIdentifier (declaringType, shortPropertyName)];

@@ -90,6 +90,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return false; }
     }
 
+    public bool? HasChangedFast
+    {
+      get { return false; }
+    }
+
     public bool HasBeenTouched
     {
       get { return false; }

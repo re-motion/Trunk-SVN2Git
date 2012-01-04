@@ -37,6 +37,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
     }
 
+    public bool? HasChangedFast ()
+    {
+      return false;
+    }
+
     public void EnsureDataComplete (ICollectionEndPoint endPoint)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);

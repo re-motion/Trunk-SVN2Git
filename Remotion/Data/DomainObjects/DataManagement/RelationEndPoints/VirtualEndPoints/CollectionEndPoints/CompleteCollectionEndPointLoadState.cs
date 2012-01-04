@@ -62,6 +62,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       RaiseReplaceDataEvent (collectionEndPoint);
     }
 
+    public bool? HasChangedFast ()
+    {
+      return DataManager.HasDataChangedFast();
+    }
+
     public new void MarkDataComplete (ICollectionEndPoint collectionEndPoint, IEnumerable<DomainObject> items, Action<ICollectionEndPointDataManager> stateSetter)
     {
       ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);

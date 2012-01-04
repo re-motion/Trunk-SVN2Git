@@ -63,7 +63,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       get { return _changeDetectionStrategy; }
     }
-    
+
+    public bool? HasDataChangedFast ()
+    {
+      return _changeCachingCollectionData.IsCacheUpToDate ? _changeCachingCollectionData.HasChanged (_changeDetectionStrategy) : (bool?) null;
+    }
+
     public IDomainObjectCollectionData CollectionData
     {
       get { return _changeCachingCollectionData; }

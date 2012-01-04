@@ -8,6 +8,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// </summary>
   public interface ICollectionEndPointDataManager : IVirtualEndPointDataManager
   {
+    bool? HasDataChangedFast ();
+
     IDomainObjectCollectionData CollectionData { get; }
     ReadOnlyCollectionDataDecorator OriginalCollectionData { get; }
 
