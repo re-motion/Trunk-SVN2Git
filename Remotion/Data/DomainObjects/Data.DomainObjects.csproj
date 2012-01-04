@@ -198,6 +198,7 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\IAssociatedCollectionDataStrategyFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointCollectionManager.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointCollectionProvider.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />
