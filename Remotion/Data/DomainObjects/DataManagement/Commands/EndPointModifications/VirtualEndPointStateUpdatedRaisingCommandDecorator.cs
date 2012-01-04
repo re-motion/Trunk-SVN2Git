@@ -17,10 +17,17 @@
 using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
+  /// <summary>
+  /// Decorates a <see cref="IDataManagementCommand"/>, calling the <see cref="IVirtualEndPointStateUpdateListener.StateUpdated"/> notification method 
+  /// immediately after the decorated <see cref="IDataManagementCommand"/>'s <see cref="IDataManagementCommand.Perform"/> method is called. This is
+  /// used by <see cref="StateUpdateRaisingCollectionEndPointDecorator"/> to ensure <see cref="IVirtualEndPointStateUpdateListener"/> implementations
+  /// are informed when a command changes the state of a <see cref="ICollectionEndPoint"/>.
+  /// </summary>
   public class VirtualEndPointStateUpdatedRaisingCommandDecorator : IDataManagementCommand
   {
     private readonly IDataManagementCommand _decoratedCommand;
