@@ -233,21 +233,24 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return objectIDsAsCollection.Select (GetDataContainerWithoutLoading);
     }
 
-    public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
+    public void LoadLazyCollectionEndPoint (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("collectionEndPoint", collectionEndPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (collectionEndPoint != GetRelationEndPointWithoutLoading (collectionEndPoint.ID))
-        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "collectionEndPoint");
+      var collectionEndPoint = GetRelationEndPointWithoutLoading (endPointID) as ICollectionEndPoint;
+
+      if (collectionEndPoint == null)
+        throw new ArgumentException ("The given ID does not identify an ICollectionEndPoint managed by this DataManager.", "endPointID");
 
       if (collectionEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var loadedData = _objectLoader.GetOrLoadRelatedObjects (collectionEndPoint.ID);
+      var loadedData = _objectLoader.GetOrLoadRelatedObjects (endPointID);
       var domainObjects = loadedData.Select (data => data.GetDomainObjectReference()).ToArray();
       collectionEndPoint.MarkDataComplete (domainObjects);
     }
 
+    // TODO 4065: Adapt to take RelationEndPointID
     public void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint)
     {
       ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);

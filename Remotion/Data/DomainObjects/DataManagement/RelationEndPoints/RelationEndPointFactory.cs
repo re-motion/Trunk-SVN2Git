@@ -116,6 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           _endPointProvider,
           _virtualObjectEndPointDataManagerFactory,
           new VirtualEndPointStateUpdateListener (_clientTransaction));
+      // TODO 4560: Move to caller
       if (markDataComplete)
         virtualObjectEndPoint.MarkDataComplete (null);
       return virtualObjectEndPoint;
@@ -131,8 +132,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           new CollectionEndPointCollectionManager (endPointID, _collectionEndPointCollectionProvider, _associatedCollectionDataStrategyFactory),
           _lazyLoader,
           _endPointProvider,
-          _collectionEndPointDataManagerFactory,
-          new VirtualEndPointStateUpdateListener (_clientTransaction));
+          _collectionEndPointDataManagerFactory);
+      // TODO 4560: Move to caller
       if (markDataComplete)
         collectionEndPoint.MarkDataComplete (new DomainObject[0]);
       return collectionEndPoint;

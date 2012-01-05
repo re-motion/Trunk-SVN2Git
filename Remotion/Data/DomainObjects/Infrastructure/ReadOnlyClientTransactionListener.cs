@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "RelationEndPointMapUnregistering");
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       EnsureWriteable (clientTransaction, "RelationEndPointUnloading");
     }

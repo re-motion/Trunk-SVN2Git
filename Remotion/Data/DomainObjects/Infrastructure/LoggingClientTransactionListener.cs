@@ -326,10 +326,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} RelationEndPointMapUnregistering: {1}", clientTransaction.ID, endPointID);
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} RelationEndPointUnloading: {1}", clientTransaction.ID, endPoint.ID);
+        s_log.DebugFormat ("{0} RelationEndPointUnloading: {1}", clientTransaction.ID, endPointID);
     }
 
     public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)

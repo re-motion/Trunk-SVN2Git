@@ -193,7 +193,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       // not handled by this listener
     }

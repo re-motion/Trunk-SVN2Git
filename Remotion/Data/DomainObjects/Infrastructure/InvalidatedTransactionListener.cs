@@ -177,7 +177,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
+    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       throw CreateException();
     }

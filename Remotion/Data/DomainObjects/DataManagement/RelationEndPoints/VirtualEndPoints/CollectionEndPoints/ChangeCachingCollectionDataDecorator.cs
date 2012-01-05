@@ -58,6 +58,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       _originalData = new CopyOnWriteDomainObjectCollectionData (_observedWrappedData);
       _observedWrappedData.CollectionChanged += WrappedData_CollectionChanged();
+
+      _isCacheUpToDate = true;
+      _cachedHasChangedFlag = false;
     }
 
     public ReadOnlyCollectionDataDecorator OriginalData

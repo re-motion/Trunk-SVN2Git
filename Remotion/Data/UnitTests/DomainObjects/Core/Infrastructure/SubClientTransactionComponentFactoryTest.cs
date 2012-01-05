@@ -166,10 +166,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
               lazyLoader);
 
       Assert.That (relationEndPointManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (relationEndPointManager.EndPointFactory, Is.TypeOf<RelationEndPointFactory> ());
       Assert.That (relationEndPointManager.RegistrationAgent, Is.TypeOf<RelationEndPointRegistrationAgent> ());
 
-      var endPointFactory = ((RelationEndPointFactory) relationEndPointManager.EndPointFactory);
+      Assert.That (relationEndPointManager.EndPointFactory, Is.TypeOf<StateUpdateRaisingRelationEndPointFactoryDecorator> ());
+      var stateUpdateRaisingFactory = (StateUpdateRaisingRelationEndPointFactoryDecorator) relationEndPointManager.EndPointFactory;
+      Assert.That (
+          stateUpdateRaisingFactory.Listener,
+          Is.TypeOf<VirtualEndPointStateUpdateListener> ()
+              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_fakeConstructedTransaction));
+      Assert.That (stateUpdateRaisingFactory.InnerFactory, Is.TypeOf<RelationEndPointFactory> ());
+      var endPointFactory = ((RelationEndPointFactory) stateUpdateRaisingFactory.InnerFactory);
       Assert.That (endPointFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (endPointFactory.LazyLoader, Is.SameAs (lazyLoader));
       Assert.That (endPointFactory.EndPointProvider, Is.SameAs (endPointProvider));

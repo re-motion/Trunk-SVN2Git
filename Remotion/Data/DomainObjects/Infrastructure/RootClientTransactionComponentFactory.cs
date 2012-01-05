@@ -114,9 +114,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           lazyLoader,
           virtualObjectEndPointDataManagerFactory,
           collectionEndPointDataManagerFactory);
+      var virtualEndPointStateUpdateListener = new VirtualEndPointStateUpdateListener (constructedTransaction);
+      var stateUpdateRaisingRelationEndPointFactory = new StateUpdateRaisingRelationEndPointFactoryDecorator (
+          relationEndPointFactory, 
+          virtualEndPointStateUpdateListener);
 
       var relationEndPointRegistrationAgent = new RootRelationEndPointRegistrationAgent (endPointProvider);
-      return new RelationEndPointManager (constructedTransaction, lazyLoader, relationEndPointFactory, relationEndPointRegistrationAgent);
+      return new RelationEndPointManager (constructedTransaction, lazyLoader, stateUpdateRaisingRelationEndPointFactory, relationEndPointRegistrationAgent);
     }
 
     protected virtual RelationEndPointFactory CreateRelationEndPointFactory (

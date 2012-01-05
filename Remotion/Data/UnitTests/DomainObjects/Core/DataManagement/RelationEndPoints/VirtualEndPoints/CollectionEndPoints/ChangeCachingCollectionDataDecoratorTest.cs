@@ -51,6 +51,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void Initialization ()
+    {
+      _strategyStrictMock.Replay();
+
+      Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.True);
+      Assert.That (_decoratorWithRealData.HasChanged (_strategyStrictMock), Is.False);
+    }
+
+    [Test]
     public void OriginalData_IsReadOnly ()
     {
       Assert.That (_decoratorWithRealData.OriginalData.IsReadOnly, Is.True);

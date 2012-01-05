@@ -47,8 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           new CollectionEndPointCollectionManager (endPointID, new CollectionEndPointCollectionProvider (dataStrategyFactory), dataStrategyFactory),
           dataManager,
           dataManager,
-          new CollectionEndPointDataManagerFactory (changeDetectionStrategy),
-          new VirtualEndPointStateUpdateListener (clientTransaction));
+          new CollectionEndPointDataManagerFactory (changeDetectionStrategy));
       
       if (initialContents != null)
         CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (collectionEndPoint, initialContents);

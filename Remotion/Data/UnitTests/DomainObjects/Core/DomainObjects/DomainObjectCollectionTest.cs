@@ -560,7 +560,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var originalCollectionDataStrategy = DomainObjectCollectionDataTestHelper.GetDataStrategy (_collection);
       var originalCollectionContents = _collection.Cast<DomainObject> ().ToArray ();
       var originalEndPointContents =
-          ((CollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID)).GetData().ToArray();
+          ((ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID)).GetData().ToArray();
       var associatedCollectionDataStrategyFactory = new AssociatedCollectionDataStrategyFactory (TestableClientTransaction.DataManager);
 
       var result = ((IAssociatableDomainObjectCollection) _collection).TransformToAssociated (endPointID, associatedCollectionDataStrategyFactory);

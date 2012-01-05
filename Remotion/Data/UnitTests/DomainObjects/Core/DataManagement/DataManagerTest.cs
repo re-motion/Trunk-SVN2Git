@@ -898,13 +898,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       endPointMock.Replay();
 
       _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointMock);
-
+      
       _objectLoaderMock
           .Expect (mock => mock.GetOrLoadRelatedObjects (Arg.Is (endPointID)))
           .Return (new[] { loadedObjectDataStub });
       _objectLoaderMock.Replay ();
 
-      _dataManagerWithMocks.LoadLazyCollectionEndPoint (endPointMock);
+      _dataManagerWithMocks.LoadLazyCollectionEndPoint (endPointID);
 
       _objectLoaderMock.VerifyAllExpectations();
       endPointMock.VerifyAllExpectations();
@@ -912,13 +912,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
-        "The given end-point is not managed by this DataManager.\r\nParameter name: collectionEndPoint")]
+        "The given ID does not identify an ICollectionEndPoint managed by this DataManager.\r\nParameter name: endPointID")]
     public void LoadLazyCollectionEndPoint_NotRegistered ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
-      var endPoint = RelationEndPointObjectMother.CreateCollectionEndPoint (endPointID, null);
-      
-      _dataManager.LoadLazyCollectionEndPoint (endPoint);
+      _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (null);
+
+      _dataManagerWithMocks.LoadLazyCollectionEndPoint (endPointID);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The given ID does not identify an ICollectionEndPoint managed by this DataManager.\r\nParameter name: endPointID")]
+    public void LoadLazyCollectionEndPoint_NotICollectionEndPoint ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
+      var endPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
+      _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointStub);
+
+      _dataManagerWithMocks.LoadLazyCollectionEndPoint (endPointID);
     }
 
     [Test]
@@ -929,9 +941,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint>();
       endPointStub.Stub (stub => stub.ID).Return (endPointID);
       endPointStub.Stub (stub => stub.IsDataComplete).Return (true);
-      DataManagerTestHelper.AddEndPoint (_dataManager, endPointStub);
 
-      _dataManager.LoadLazyCollectionEndPoint (endPointStub);
+      _endPointManagerMock.Stub (stub => stub.GetRelationEndPointWithoutLoading (endPointID)).Return (endPointStub);
+      
+
+      _dataManagerWithMocks.LoadLazyCollectionEndPoint (endPointID);
     }
 
     [Test]

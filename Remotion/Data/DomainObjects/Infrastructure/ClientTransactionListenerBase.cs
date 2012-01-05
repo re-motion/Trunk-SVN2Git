@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
+    public virtual void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
     }
 

@@ -172,10 +172,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (((CollectionEndPoint) endPoint).LazyLoader, Is.SameAs (_lazyLoaderStub));
       Assert.That (((CollectionEndPoint) endPoint).EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (((CollectionEndPoint) endPoint).DataManagerFactory, Is.SameAs (_collectionEndPointDataManagerFactoryStub));
-      Assert.That (
-          ((CollectionEndPoint) endPoint).StateUpdateListener, 
-          Is.TypeOf<VirtualEndPointStateUpdateListener>()
-              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_clientTransaction));
       Assert.That (endPoint.IsDataComplete, Is.False);
     }
 

@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint);
     void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID);
-    void RelationEndPointUnloading (ClientTransaction clientTransaction, IRelationEndPoint endPoint);
+    void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID);
 
     void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id);
 

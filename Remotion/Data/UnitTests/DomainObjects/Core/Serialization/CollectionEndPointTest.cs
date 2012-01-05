@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
@@ -41,7 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Dev.Null = Order.GetObject (DomainObjectIDs.Order1).OrderItems;
       var endPointID = RelationEndPointID.Create(DomainObjectIDs.Order1, ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderItems"));
-      _endPoint = (CollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      _endPoint = (CollectionEndPoint) 
+          ((StateUpdateRaisingCollectionEndPointDecorator) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID)).InnerEndPoint;
     }
 
     [Test]
@@ -158,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void Serialization_IntegrationWithRelationEndPointMap ()
     {
       var deserializedTransactionMock = Serializer.SerializeAndDeserialize (TestableClientTransaction);
-      var deserializedCollectionEndPoint = (CollectionEndPoint) deserializedTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (_endPoint.ID);
+      var deserializedCollectionEndPoint = deserializedTransactionMock.DataManager.GetRelationEndPointWithLazyLoad (_endPoint.ID);
       Assert.That (deserializedCollectionEndPoint, Is.Not.Null);
     }
 
@@ -172,8 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           new SerializableCollectionEndPointCollectionManagerFake(),
           new SerializableLazyLoaderFake(),
           new SerializableRelationEndPointProviderFake(),
-          new SerializableCollectionEndPointDataManagerFactoryFake(),
-          new SerializableVirtualEndPointStateUpdateListenerFake());
+          new SerializableCollectionEndPointDataManagerFactoryFake());
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (originalEndPoint);
 
@@ -184,7 +185,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedEndPoint.LazyLoader, Is.Not.Null);
       Assert.That (deserializedEndPoint.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedEndPoint.DataManagerFactory, Is.Not.Null);
-      Assert.That (deserializedEndPoint.StateUpdateListener, Is.Not.Null);
     }
   }
 }

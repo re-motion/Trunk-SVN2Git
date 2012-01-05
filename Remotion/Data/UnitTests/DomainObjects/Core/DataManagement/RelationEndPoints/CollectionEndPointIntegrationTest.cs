@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using System.Linq;
@@ -44,9 +45,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _orderWithoutOrderItem = Order.GetObject (DomainObjectIDs.OrderWithoutOrderItem);
       _order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      _customerEndPoint = (CollectionEndPoint) 
+      var stateUpdateRaisingEndPointDecorator = (StateUpdateRaisingCollectionEndPointDecorator) 
           TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (
-            RelationEndPointID.Create (DomainObjectIDs.Customer1, typeof (Customer), "Orders"));
+            RelationEndPointID.Create (DomainObjectIDs.Customer1, 
+            typeof (Customer), 
+            "Orders"));
+      _customerEndPoint = (CollectionEndPoint) stateUpdateRaisingEndPointDecorator.InnerEndPoint;
     }
 
     [Test]

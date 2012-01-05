@@ -16,10 +16,8 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -55,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope();
 
       _folder1.FileSystemItems.EnsureDataComplete();
-      _collectionEndPoint = GetEndPoint<CollectionEndPoint> (RelationEndPointID.Create (_folder1, o => o.FileSystemItems));
+      _collectionEndPoint = (CollectionEndPoint) GetEndPoint<StateUpdateRaisingCollectionEndPointDecorator> (RelationEndPointID.Create (_folder1, o => o.FileSystemItems)).InnerEndPoint;
 
       _fileSystemItem1EndPoint = GetEndPoint<RealObjectEndPoint> (RelationEndPointID.Create (_fileSystemItem1, oi => oi.ParentFolder));
       _fileSystemItem2EndPoint = GetEndPoint<RealObjectEndPoint> (RelationEndPointID.Create (_fileSystemItem2, oi => oi.ParentFolder));

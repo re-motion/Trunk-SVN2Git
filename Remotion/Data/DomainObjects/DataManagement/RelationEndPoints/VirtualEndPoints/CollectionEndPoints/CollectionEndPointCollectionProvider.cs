@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       _collections[endPointID] = collection;
     }
 
-    // TODO 4065: Duplicated in CollectionEndPoint
+    // TODO 4560: Move to caller
     private DomainObjectCollection CreateCollection (RelationEndPointID endPointID, IDomainObjectCollectionData dataStrategy)
     {
       return DomainObjectCollectionFactory.Instance.CreateCollection (endPointID.Definition.PropertyInfo.PropertyType, dataStrategy);

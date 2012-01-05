@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -52,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       public ICollectionEndPointLoadState LoadEndPointAndGetNewState (ICollectionEndPoint endPoint)
       {
         var collectionEndPoint = ArgumentUtility.CheckNotNullAndType<CollectionEndPoint> ("endPoint", endPoint);
-        _lazyLoader.LoadLazyCollectionEndPoint (endPoint);
+        _lazyLoader.LoadLazyCollectionEndPoint (endPoint.ID);
         return collectionEndPoint._loadState;
       }
 
@@ -77,7 +76,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _dataManagerFactory;
-    private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
 
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
 
@@ -89,15 +87,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ICollectionEndPointCollectionManager collectionManager,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> dataManagerFactory,
-        IVirtualEndPointStateUpdateListener stateUpdateListener)
+        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> dataManagerFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("collectionManager", collectionManager);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
-      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       if (id.Definition.Cardinality != CardinalityType.Many)
         throw new ArgumentException ("End point ID must refer to an end point with cardinality 'Many'.", "id");
@@ -112,7 +108,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
       _dataManagerFactory = dataManagerFactory;
-      _stateUpdateListener = stateUpdateListener;
 
       SetIncompleteLoadState ();
     }
@@ -136,12 +131,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       get { return _dataManagerFactory; }
     }
-
-    public IVirtualEndPointStateUpdateListener StateUpdateListener
-    {
-      get { return _stateUpdateListener; }
-    }
-
 
     public DomainObjectCollection Collection
     {
@@ -235,7 +224,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         _collectionManager.CommitCollectionReference ();
         _loadState.Commit (this);
-        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -247,7 +235,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         _collectionManager.RollbackCollectionReference ();
         _loadState.Rollback (this);
-        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -275,7 +262,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       _loadState.SortCurrentData (this, comparison);
       Touch();
-      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -314,7 +300,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Synchronize ()
     {
       _loadState.Synchronize (this);
-      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -322,7 +307,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
-      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
@@ -330,7 +314,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
 
       var command = _loadState.CreateSetCollectionCommand (this, newCollection, _collectionManager);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public override IDataManagementCommand CreateRemoveCommand (DomainObject removedRelatedObject)
@@ -338,34 +322,34 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
       var command = _loadState.CreateRemoveCommand (this, removedRelatedObject);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
       var command = _loadState.CreateDeleteCommand (this);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public virtual IDataManagementCommand CreateInsertCommand (DomainObject insertedRelatedObject, int index)
     {
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
       var command = _loadState.CreateInsertCommand (this, insertedRelatedObject, index);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public virtual IDataManagementCommand CreateAddCommand (DomainObject addedRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("addedRelatedObject", addedRelatedObject);
       var command = _loadState.CreateAddCommand (this, addedRelatedObject);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public virtual IDataManagementCommand CreateReplaceCommand (int index, DomainObject replacementObject)
     {
       ArgumentUtility.CheckNotNull ("replacementObject", replacementObject);
       var command = _loadState.CreateReplaceCommand (this, index, replacementObject);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public override IEnumerable<RelationEndPointID> GetOppositeRelationEndPointIDs ()
@@ -393,8 +377,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch ();
-
-      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     private void SetCompleteLoadState (ICollectionEndPointDataManager dataManager)
@@ -413,11 +395,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return DomainObjectCollectionFactory.Instance.CreateCollection (Definition.PropertyInfo.PropertyType, dataStrategy);
     }
 
-    private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
-    {
-      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, ID, _stateUpdateListener, () => null);
-    }
-
     #region Serialization
 
     protected CollectionEndPoint (FlattenedDeserializationInfo info)
@@ -427,7 +404,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _dataManagerFactory = info.GetValueForHandle<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
-      _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener> ();
 
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
       _hasBeenTouched = info.GetBoolValue ();
@@ -439,7 +415,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
       info.AddHandle (_dataManagerFactory);
-      info.AddHandle (_stateUpdateListener);
 
       info.AddValue (_loadState);
       info.AddBoolValue (_hasBeenTouched);

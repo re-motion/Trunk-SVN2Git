@@ -24,7 +24,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableLazyLoaderFake : ILazyLoader
   {
-    public void LoadLazyCollectionEndPoint (ICollectionEndPoint collectionEndPoint)
+    public void LoadLazyCollectionEndPoint (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }

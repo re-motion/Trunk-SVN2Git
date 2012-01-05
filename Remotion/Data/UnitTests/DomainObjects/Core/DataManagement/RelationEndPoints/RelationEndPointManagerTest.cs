@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
 
-      var collectionEndPoint = (CollectionEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
+      var collectionEndPoint = (ICollectionEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
       Assert.That (collectionEndPoint, Is.Not.Null);
       Assert.That (collectionEndPoint.IsDataComplete, Is.True);
       Assert.That (collectionEndPoint.Collection, Is.Empty);
@@ -688,7 +688,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var result = _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
 
-      Assert.That (result, Is.Not.Null.And.TypeOf<CollectionEndPoint> ());
+      Assert.That (result, Is.Not.Null.And.AssignableTo<ICollectionEndPoint>());
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (result));
       Assert.That (result.IsDataComplete, Is.False);
     }

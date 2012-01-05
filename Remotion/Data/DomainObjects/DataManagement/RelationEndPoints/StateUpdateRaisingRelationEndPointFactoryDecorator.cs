@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Utilities;
 
@@ -23,6 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// Decorates <see cref="IRelationEndPointFactory"/> instances by wrapping the created <see cref="IVirtualEndPoint"/> instances into decorators
   /// that cause <see cref="IVirtualEndPointStateUpdateListener"/> events to be raised.
   /// </summary>
+  [Serializable]
   public class StateUpdateRaisingRelationEndPointFactoryDecorator : IRelationEndPointFactory
   {
     private readonly IRelationEndPointFactory _innerFactory;
@@ -35,6 +37,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       _innerFactory = innerFactory;
       _listener = listener;
+    }
+
+    public IRelationEndPointFactory InnerFactory
+    {
+      get { return _innerFactory; }
+    }
+
+    public IVirtualEndPointStateUpdateListener Listener
+    {
+      get { return _listener; }
     }
 
     public IRealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer)

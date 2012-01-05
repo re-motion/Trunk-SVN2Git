@@ -19,8 +19,10 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
@@ -77,6 +79,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
               Is.TypeOf<StateUpdateRaisingCollectionEndPointDecorator>()
                 .With.Property<StateUpdateRaisingCollectionEndPointDecorator> (d => d.Listener).SameAs (_listenerStub)
                 .And.Property<StateUpdateRaisingCollectionEndPointDecorator> (d => d.InnerEndPoint).SameAs (fakeResult)));
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var innerFactory = new SerializableRelationEndPointFactoryFake();
+      var listener = new SerializableVirtualEndPointStateUpdateListenerFake();
+      var decorator = new StateUpdateRaisingRelationEndPointFactoryDecorator (innerFactory, listener);
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (decorator);
+
+      Assert.That (deserializedInstance.InnerFactory, Is.Not.Null);
+      Assert.That (deserializedInstance.Listener, Is.Not.Null);
     }
   }
 }

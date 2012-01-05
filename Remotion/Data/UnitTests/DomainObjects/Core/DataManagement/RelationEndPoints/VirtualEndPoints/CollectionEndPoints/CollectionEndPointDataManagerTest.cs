@@ -427,6 +427,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _changeDetectionStrategyMock.Replay ();
 
+      _dataManager.CollectionData.Add (_domainObject2); // invalidate cache
+
       var result = _dataManager.HasDataChangedFast ();
 
       _changeDetectionStrategyMock.AssertWasNotCalled (

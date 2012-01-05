@@ -105,9 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void MarkDataIncomplete_RaisesEvent ()
     {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       _virtualEndPointMock
           .Stub (stub => stub.ID)
-          .Return (RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems"));
+          .Return (endPointID);
       _virtualEndPointMock.Replay();
 
       _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (false);
@@ -122,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _virtualEndPointMock.VerifyAllExpectations();
       _dataManagerMock.VerifyAllExpectations();
 
-      listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, _virtualEndPointMock));
+      listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, endPointID));
     }
 
     [Test]

@@ -461,7 +461,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _strictListenerMock.Expect (mock => mock.ObjectDeleting (TestableClientTransaction, order));
         _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (TestableClientTransaction, orderTicketEndPointID, false));
-        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (TestableClientTransaction, orderItemEndPointID, null));
+        _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (TestableClientTransaction, orderItemEndPointID, false));
 
         _strictListenerMock
             .Expect (mock => mock.RelationEndPointMapUnregistering (
@@ -594,7 +594,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           _strictListenerMock
               .Expect (mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, orderTicketEndPointID));
           _strictListenerMock
-              .Expect (mock => mock.RelationEndPointUnloading (TestableClientTransaction, TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (orderTicketEndPointID)));
+              .Expect (mock => mock.RelationEndPointUnloading (TestableClientTransaction, orderTicketEndPointID));
           _strictListenerMock
               .Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, orderTicket1.InternalDataContainer));
         }
@@ -624,7 +624,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered ())
       {
-        _strictListenerMock.Expect (mock => mock.RelationEndPointUnloading (TestableClientTransaction, orderItemsEndPoint));
+        _strictListenerMock.Expect (mock => mock.RelationEndPointUnloading (TestableClientTransaction, orderItemsEndPoint.ID));
       }
 
       _mockRepository.ReplayAll ();

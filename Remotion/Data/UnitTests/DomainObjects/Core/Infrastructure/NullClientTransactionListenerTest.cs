@@ -228,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RelationEndPointUnloading ()
     {
-      _listener.RelationEndPointUnloading (TestableClientTransaction, _relationEndPoint);
+      _listener.RelationEndPointUnloading (TestableClientTransaction, _relationEndPoint.ID);
     }
 
     [Test]

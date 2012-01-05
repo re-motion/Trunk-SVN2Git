@@ -472,15 +472,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RelationEndPointUnloading ()
     {
-      RelationEndPointID relationEndPointID;
-      IObjectEndPoint relationEndPoint;
-      using (_clientTransaction.EnterNonDiscardingScope())
-      {
-        relationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_domainObject.ID, "ParentClient");
-        relationEndPoint = RelationEndPointObjectMother.CreateRealObjectEndPoint (relationEndPointID);
-      }
+      var relationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_domainObject.ID, "ParentClient");
 
-      _listener.RelationEndPointUnloading (_clientTransaction, relationEndPoint);
+      _listener.RelationEndPointUnloading (_clientTransaction, relationEndPointID);
       var loggingEvents = GetLoggingEvents();
 
       Assert.That (

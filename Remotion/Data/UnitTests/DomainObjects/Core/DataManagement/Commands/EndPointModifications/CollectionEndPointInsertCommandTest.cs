@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -166,7 +167,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       // oldCustomer.Orders.Remove (_insertedRelatedObject)
       Assert.That (steps[2], Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ());
       var oldCustomerOrdersRemoveCommand = ((CollectionEndPointRemoveCommand) ((VirtualEndPointStateUpdatedRaisingCommandDecorator) steps[2]).DecoratedCommand);
-      Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint, Is.SameAs (oldRelatedEndPointOfInsertedObject));
+      Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint, Is.SameAs (((StateUpdateRaisingCollectionEndPointDecorator) oldRelatedEndPointOfInsertedObject).InnerEndPoint));
       Assert.That (oldCustomerOrdersRemoveCommand.ModifiedEndPoint.ID.ObjectID, Is.EqualTo (oldCustomer.ID));
       Assert.That (oldCustomerOrdersRemoveCommand.OldRelatedObject, Is.SameAs (_insertedRelatedObject));
     }
