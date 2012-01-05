@@ -29,7 +29,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class CollectionEndPointSetCollectionCommand : RelationEndPointModificationCommand
   {
-    private readonly ICollectionEndPoint _modifiedEndPoint;
     private readonly DomainObjectCollection _newCollection;
     private readonly IDomainObjectCollectionData _modifiedCollectionData;
     private readonly ICollectionEndPointCollectionManager _collectionEndPointCollectionManager;
@@ -51,7 +50,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
 
-      _modifiedEndPoint = modifiedEndPoint;
       _newCollection = newCollection;
       _modifiedCollectionData = modifiedCollectionData;
       _collectionEndPointCollectionManager = collectionEndPointCollectionManager;
@@ -65,7 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public new ICollectionEndPoint ModifiedEndPoint
     {
-      get { return _modifiedEndPoint; }
+      get { return (ICollectionEndPoint) base.ModifiedEndPoint; }
     }
 
     public DomainObjectCollection NewCollection
@@ -103,12 +101,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected override void ScopedBegin ()
     {
-      DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
+      DomainObject domainObject = ModifiedEndPoint.GetDomainObject ();
 
       for (int i = 0; i < RemovedObjects.Length; i++)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, RemovedObjects[i], null));
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (ModifiedEndPoint.Definition, RemovedObjects[i], null));
       for (int i = 0; i < AddedObjects.Length; i++)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (_modifiedEndPoint.Definition, null, AddedObjects[i]));
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (ModifiedEndPoint.Definition, null, AddedObjects[i]));
     }
 
     public override void Perform ()
@@ -125,12 +123,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected override void ScopedEnd ()
     {
-      DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
+      DomainObject domainObject = ModifiedEndPoint.GetDomainObject ();
 
       for (int i = AddedObjects.Length - 1; i >= 0; i--)
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition));
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition));
       for (int i = RemovedObjects.Length - 1; i >= 0; i--)
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition));
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition));
     }
 
     protected override void ScopedNotifyClientTransactionOfEnd ()
