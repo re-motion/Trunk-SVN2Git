@@ -193,6 +193,9 @@
     <Compile Include="DataManagement\ILoadedDataContainerProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualEndPointProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointFactoryExtensions.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\StateUpdateRaisingRelationEndPointFactoryDecorator.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\AssociatedCollectionDataStrategyFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionManager.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionProvider.cs" />
