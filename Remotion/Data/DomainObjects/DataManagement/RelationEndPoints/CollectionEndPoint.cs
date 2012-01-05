@@ -81,6 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private bool _hasBeenTouched;
 
+    // TODO: The next time this signature is changed, first refactor to take a CollectionEndPointContext parameter object instead.
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
