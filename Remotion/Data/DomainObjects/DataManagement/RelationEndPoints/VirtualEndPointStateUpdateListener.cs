@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
@@ -26,12 +27,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   public class VirtualEndPointStateUpdateListener : IVirtualEndPointStateUpdateListener
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly RelationEndPointID _endPointID;
 
-    public VirtualEndPointStateUpdateListener (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public VirtualEndPointStateUpdateListener (ClientTransaction clientTransaction)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       _clientTransaction = clientTransaction;
-      _endPointID = endPointID;
     }
 
     public ClientTransaction ClientTransaction
@@ -39,14 +39,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _clientTransaction; }
     }
 
-    public RelationEndPointID EndPointID
+    public void VirtualEndPointStateUpdated (RelationEndPointID endPointID, bool? newChangedState)
     {
-      get { return _endPointID; }
-    }
-
-    public void StateUpdated (bool? newChangedState)
-    {
-      _clientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, newChangedState);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      _clientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, newChangedState);
     }
   }
 }

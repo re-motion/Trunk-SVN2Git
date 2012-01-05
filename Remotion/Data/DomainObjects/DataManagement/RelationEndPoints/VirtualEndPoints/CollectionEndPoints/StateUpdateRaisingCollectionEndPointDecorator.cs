@@ -569,12 +569,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     private void RaiseStateUpdated ()
     {
-      _listener.StateUpdated (_innerEndPoint.HasChangedFast);
+      _listener.VirtualEndPointStateUpdated (_innerEndPoint.ID, _innerEndPoint.HasChangedFast);
     }
 
     private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
     {
-      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, _listener, () => _innerEndPoint.HasChangedFast);
+      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, _innerEndPoint.ID, _listener, () => _innerEndPoint.HasChangedFast);
     }
 
     #region Serialization

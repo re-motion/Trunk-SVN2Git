@@ -21,6 +21,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public interface IVirtualEndPointStateUpdateListener
   {
-    void StateUpdated (bool? newChangedState);
+    void VirtualEndPointStateUpdated (RelationEndPointID endPointID, bool? newChangedState);
   }
 }

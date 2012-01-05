@@ -16,7 +16,6 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Development.UnitTesting;
@@ -42,13 +41,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _transactionListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
-      _stateUpdateListener = new VirtualEndPointStateUpdateListener (_clientTransaction, _endPointID);
+      _stateUpdateListener = new VirtualEndPointStateUpdateListener (_clientTransaction);
     }
 
     [Test]
     public void StateUpdates_RoutedToTransactionEventSink_Null ()
     {
-      _stateUpdateListener.StateUpdated (null);
+      _stateUpdateListener.VirtualEndPointStateUpdated (_endPointID, null);
 
       _transactionListenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, null));
     }
@@ -56,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void StateUpdates_RoutedToTransactionEventSink_True ()
     {
-      _stateUpdateListener.StateUpdated (true);
+      _stateUpdateListener.VirtualEndPointStateUpdated (_endPointID, true);
 
       _transactionListenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, true));
     }
@@ -64,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void StateUpdates_RoutedToTransactionEventSink_False ()
     {
-      _stateUpdateListener.StateUpdated (false);
+      _stateUpdateListener.VirtualEndPointStateUpdated (_endPointID, false);
 
       _transactionListenerMock.AssertWasCalled (mock => mock.VirtualRelationEndPointStateUpdated (_clientTransaction, _endPointID, false));
     }
@@ -73,12 +72,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Serializable ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction ();
-      var stateUpdateListener = new VirtualEndPointStateUpdateListener (clientTransaction, _endPointID);
+      var stateUpdateListener = new VirtualEndPointStateUpdateListener (clientTransaction);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (stateUpdateListener);
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedInstance.EndPointID, Is.EqualTo (_endPointID));
     }
   }
 }

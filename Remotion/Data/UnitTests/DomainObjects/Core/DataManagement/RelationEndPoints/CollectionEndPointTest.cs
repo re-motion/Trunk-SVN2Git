@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -24,8 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -400,7 +397,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _collectionManagerMock.AssertWasNotCalled (mock => mock.CommitCollectionReference ());
       _loadStateMock.AssertWasNotCalled (mock => mock.Commit (_endPoint));
-      _stateUpdateListenerMock.AssertWasNotCalled (mock => mock.StateUpdated (Arg<bool?>.Is.Anything));
+      _stateUpdateListenerMock.AssertWasNotCalled (mock => mock.VirtualEndPointStateUpdated (Arg<RelationEndPointID>.Is.Anything, Arg<bool?>.Is.Anything));
       _stateUpdateListenerMock.VerifyAllExpectations ();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
@@ -421,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_endPoint.HasBeenTouched, Is.True);
       Assert.That (_endPoint.HasChanged, Is.True);
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, false));
       _stateUpdateListenerMock.Replay ();
 
       _endPoint.Commit ();
@@ -448,7 +445,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (_endPoint.HasBeenTouched, Is.True);
       Assert.That (_endPoint.HasChanged, Is.True);
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, false));
       _stateUpdateListenerMock.Replay();
 
       _endPoint.Commit ();
@@ -473,7 +470,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.Touch();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, false));
       _stateUpdateListenerMock.Replay ();
 
       _endPoint.Rollback ();
@@ -498,7 +495,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.Touch ();
       Assert.That (_endPoint.HasBeenTouched, Is.True);
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, false));
       _stateUpdateListenerMock.Replay ();
 
       _endPoint.Rollback ();
@@ -522,7 +519,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPoint.Rollback ();
 
-      _stateUpdateListenerMock.AssertWasNotCalled (mock => mock.StateUpdated (Arg<bool?>.Is.Anything));
+      _stateUpdateListenerMock.AssertWasNotCalled (mock => mock.VirtualEndPointStateUpdated (Arg<RelationEndPointID>.Is.Anything, Arg<bool?>.Is.Anything));
       _collectionManagerMock.AssertWasNotCalled (mock => mock.RollbackCollectionReference ());
       _loadStateMock.AssertWasNotCalled (mock => mock.Rollback (_endPoint));
       Assert.That (_endPoint.HasChanged, Is.False);
@@ -563,7 +560,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.SortCurrentData (_endPoint, comparison));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
       _stateUpdateListenerMock.Replay();
 
       _endPoint.SortCurrentData (comparison);
@@ -635,7 +632,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.Synchronize (_endPoint));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
       _stateUpdateListenerMock.Replay ();
 
       _endPoint.Synchronize();
@@ -651,7 +648,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.SynchronizeOppositeEndPoint (_endPoint, fakeEndPoint));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
       _stateUpdateListenerMock.Replay();
 
       _endPoint.SynchronizeOppositeEndPoint (fakeEndPoint);
@@ -682,6 +679,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           result,
           Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
               .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeResult)
+              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_customerEndPointID)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ChangeStateProvider).Matches<Func<bool?>> (p => p () == null)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
     }
@@ -701,6 +699,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           result,
           Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
               .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeResult)
+              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_customerEndPointID)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ChangeStateProvider).Matches<Func<bool?>> (p => p () == null)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
     }
@@ -720,6 +719,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           result,
           Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
               .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeResult)
+              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_customerEndPointID)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ChangeStateProvider).Matches<Func<bool?>> (p => p () == null)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
     }
@@ -739,6 +739,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           result,
           Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
               .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeResult)
+              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_customerEndPointID)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ChangeStateProvider).Matches<Func<bool?>> (p => p () == null)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
     }
@@ -758,7 +759,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           result, 
           Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator>()
               .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeResult)
-              .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ChangeStateProvider).Matches<Func<bool?>> (p => p() == null)
+              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_customerEndPointID)
+              .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ChangeStateProvider).Matches<Func<bool?>> (p => p () == null)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
     }
 
@@ -777,6 +779,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           result,
           Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
               .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeResult)
+              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_customerEndPointID)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ChangeStateProvider).Matches<Func<bool?>> (p => p () == null)
               .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
     }
@@ -807,7 +810,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
       _stateUpdateListenerMock.Replay();
 
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
@@ -828,7 +831,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Stub (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
 
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
 
@@ -848,7 +851,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Stub (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
       
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
 
@@ -868,7 +871,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Stub (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
 
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (true);
 
@@ -888,7 +891,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (stub => stub.SetDataFromSubTransaction (_endPoint, CollectionEndPointTestHelper.GetLoadState (source)));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Stub (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Stub (mock => mock.VirtualEndPointStateUpdated (_customerEndPointID, null));
 
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
 

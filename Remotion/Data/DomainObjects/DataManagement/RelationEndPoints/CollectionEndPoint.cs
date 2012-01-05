@@ -235,7 +235,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         _collectionManager.CommitCollectionReference ();
         _loadState.Commit (this);
-        _stateUpdateListener.StateUpdated (false);
+        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -247,7 +247,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       {
         _collectionManager.RollbackCollectionReference ();
         _loadState.Rollback (this);
-        _stateUpdateListener.StateUpdated (false);
+        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -275,7 +275,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       _loadState.SortCurrentData (this, comparison);
       Touch();
-      _stateUpdateListener.StateUpdated (null);
+      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     public void RegisterOriginalOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -314,7 +314,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Synchronize ()
     {
       _loadState.Synchronize (this);
-      _stateUpdateListener.StateUpdated (null);
+      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -322,7 +322,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
-      _stateUpdateListener.StateUpdated (null);
+      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     public IDataManagementCommand CreateSetCollectionCommand (DomainObjectCollection newCollection)
@@ -394,7 +394,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (sourceCollectionEndPoint.HasBeenTouched || HasChanged)
         Touch ();
 
-      _stateUpdateListener.StateUpdated (null);
+      _stateUpdateListener.VirtualEndPointStateUpdated (ID, null);
     }
 
     private void SetCompleteLoadState (ICollectionEndPointDataManager dataManager)
@@ -415,7 +415,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
     {
-      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, _stateUpdateListener, () => null);
+      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, ID, _stateUpdateListener, () => null);
     }
 
     #region Serialization

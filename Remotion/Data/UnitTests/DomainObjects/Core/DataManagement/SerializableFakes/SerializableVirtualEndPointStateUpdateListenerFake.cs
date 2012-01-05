@@ -22,7 +22,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableVirtualEndPointStateUpdateListenerFake : IVirtualEndPointStateUpdateListener
   {
-    public void StateUpdated (bool? newChangedState)
+    public void VirtualEndPointStateUpdated (RelationEndPointID endPointID, bool? newChangedState)
     {
     }
   }

@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           _lazyLoader,
           _endPointProvider,
           _virtualObjectEndPointDataManagerFactory,
-          new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID));
+          new VirtualEndPointStateUpdateListener (_clientTransaction));
       if (markDataComplete)
         virtualObjectEndPoint.MarkDataComplete (null);
       return virtualObjectEndPoint;
@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           _lazyLoader,
           _endPointProvider,
           _collectionEndPointDataManagerFactory,
-          new VirtualEndPointStateUpdateListener (_clientTransaction, endPointID));
+          new VirtualEndPointStateUpdateListener (_clientTransaction));
       if (markDataComplete)
         collectionEndPoint.MarkDataComplete (new DomainObject[0]);
       return collectionEndPoint;

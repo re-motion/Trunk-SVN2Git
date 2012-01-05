@@ -23,27 +23,31 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
   /// <summary>
-  /// Decorates a <see cref="IDataManagementCommand"/>, calling the <see cref="IVirtualEndPointStateUpdateListener.StateUpdated"/> notification method 
+  /// Decorates a <see cref="IDataManagementCommand"/>, calling the <see cref="IVirtualEndPointStateUpdateListener.VirtualEndPointStateUpdated"/> notification method 
   /// immediately after the decorated <see cref="IDataManagementCommand"/>'s <see cref="IDataManagementCommand.Perform"/> method is called. This is
   /// used by <see cref="StateUpdateRaisingCollectionEndPointDecorator"/> to ensure <see cref="IVirtualEndPointStateUpdateListener"/> implementations
   /// are informed when a command changes the state of a <see cref="ICollectionEndPoint"/>.
   /// </summary>
   public class VirtualEndPointStateUpdatedRaisingCommandDecorator : IDataManagementCommand
   {
+    private readonly RelationEndPointID _modifiedEndPointID;
     private readonly IDataManagementCommand _decoratedCommand;
     private readonly IVirtualEndPointStateUpdateListener _listener;
     private readonly Func<bool?> _changeStateProvider;
 
     public VirtualEndPointStateUpdatedRaisingCommandDecorator (
         IDataManagementCommand decoratedCommand,
+        RelationEndPointID modifiedEndPointID,
         IVirtualEndPointStateUpdateListener listener,
         Func<bool?> changeStateProvider)
     {
       ArgumentUtility.CheckNotNull ("decoratedCommand", decoratedCommand);
+      ArgumentUtility.CheckNotNull ("modifiedEndPointID", modifiedEndPointID);
       ArgumentUtility.CheckNotNull ("listener", listener);
       ArgumentUtility.CheckNotNull ("changeStateProvider", changeStateProvider);
 
       _decoratedCommand = decoratedCommand;
+      _modifiedEndPointID = modifiedEndPointID;
       _listener = listener;
       _changeStateProvider = changeStateProvider;
     }
@@ -51,6 +55,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public IDataManagementCommand DecoratedCommand
     {
       get { return _decoratedCommand; }
+    }
+
+    public RelationEndPointID ModifiedEndPointID
+    {
+      get { return _modifiedEndPointID; }
     }
 
     public IVirtualEndPointStateUpdateListener Listener
@@ -86,7 +95,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       }
       finally
       {
-        _listener.StateUpdated (_changeStateProvider ());
+        _listener.VirtualEndPointStateUpdated (_modifiedEndPointID, _changeStateProvider ());
       }
     }
 
@@ -103,7 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public ExpandedCommand ExpandToAllRelatedObjects ()
     {
       var expandedCommand = _decoratedCommand.ExpandToAllRelatedObjects();
-      return new ExpandedCommand (new VirtualEndPointStateUpdatedRaisingCommandDecorator (expandedCommand, _listener, _changeStateProvider));
+      return new ExpandedCommand (new VirtualEndPointStateUpdatedRaisingCommandDecorator (expandedCommand, _modifiedEndPointID, _listener, _changeStateProvider));
     }
   }
 }

@@ -120,8 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (
           ((VirtualObjectEndPoint) endPoint).StateUpdateListener,
           Is.TypeOf<VirtualEndPointStateUpdateListener> ()
-              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_clientTransaction)
-              .And.Property<VirtualEndPointStateUpdateListener> (l => l.EndPointID).EqualTo (endPointID));
+              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_clientTransaction));
       Assert.That (endPoint.IsDataComplete, Is.False);
     }
 
@@ -176,8 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (
           ((CollectionEndPoint) endPoint).StateUpdateListener, 
           Is.TypeOf<VirtualEndPointStateUpdateListener>()
-              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_clientTransaction)
-              .And.Property<VirtualEndPointStateUpdateListener> (l => l.EndPointID).EqualTo (endPointID));
+              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_clientTransaction));
       Assert.That (endPoint.IsDataComplete, Is.False);
     }
 

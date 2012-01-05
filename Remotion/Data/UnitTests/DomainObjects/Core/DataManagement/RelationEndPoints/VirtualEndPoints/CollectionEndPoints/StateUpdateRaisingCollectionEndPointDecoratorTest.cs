@@ -33,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   [TestFixture]
   public class StateUpdateRaisingCollectionEndPointDecoratorTest : StandardMappingTest
   {
+    private RelationEndPointID _endPointID;
     private IVirtualEndPointStateUpdateListener _listenerMock;
     private ICollectionEndPoint _innerEndPointMock;
 
@@ -43,9 +44,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp ();
 
+      _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       _listenerMock = MockRepository.GenerateStrictMock<IVirtualEndPointStateUpdateListener> ();
       _innerEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       _innerEndPointMock.Stub (stub => stub.HasChangedFast).Return (false);
+      _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
 
       _decorator = new StateUpdateRaisingCollectionEndPointDecorator (_innerEndPointMock, _listenerMock);
       _decoratorTestHelper = new DecoratorTestHelper<ICollectionEndPoint> (_decorator, _innerEndPointMock);
@@ -131,6 +134,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void ID ()
+    {
+      Assert.That (_decorator.ID, Is.EqualTo (_endPointID));
+    }
+
+    [Test]
     public void DelegatedMembers ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
@@ -144,7 +153,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _decoratorTestHelper.CheckDelegation (ep => ep.IsNull, false);
       _decoratorTestHelper.CheckDelegation (ep => ep.IsNull, true);
-      _decoratorTestHelper.CheckDelegation (ep => ep.ID, endPointID);
       _decoratorTestHelper.CheckDelegation (ep => ep.ClientTransaction, ClientTransaction.CreateRootTransaction());
       _decoratorTestHelper.CheckDelegation (ep => ep.ObjectID, DomainObjectIDs.Order1);
       _decoratorTestHelper.CheckDelegation (ep => ep.Definition, GetEndPointDefinition (typeof (Order), "OrderItems"));
@@ -205,26 +213,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       // Check with HasChangedFast returning null, also check that listener is called _after_ delegation
       _innerEndPointMock.BackToRecord();
+      _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       _innerEndPointMock.Stub (stub => stub.HasChangedFast).Return (null);
       _innerEndPointMock.Replay ();
 
-      _listenerMock.Expect (mock => mock.StateUpdated (null));
+      _listenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, null));
       _listenerMock.Replay();
 
       _decoratorTestHelper.CheckDelegationWithContinuation (
-          action, 
-          mi => _listenerMock.AssertWasNotCalled (mock => mock.StateUpdated (Arg<bool?>.Is.Anything)));
+          action,
+          mi => _listenerMock.AssertWasNotCalled (mock => mock.VirtualEndPointStateUpdated (Arg<RelationEndPointID>.Is.Anything, Arg<bool?>.Is.Anything)));
 
-      _listenerMock.AssertWasCalled (mock => mock.StateUpdated (null));
+      _listenerMock.AssertWasCalled (mock => mock.VirtualEndPointStateUpdated (_endPointID, null));
 
       // Check with HasChangedFast returning true
 
       _innerEndPointMock.BackToRecord ();
+      _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
       _innerEndPointMock.Stub (stub => stub.HasChangedFast).Return (true);
       _innerEndPointMock.Replay();
 
       _listenerMock.BackToRecord();
-      _listenerMock.Expect (mock => mock.StateUpdated (true));
+      _listenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, true));
       _listenerMock.Replay();
 
       _decoratorTestHelper.CheckDelegation (action);
@@ -234,7 +244,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       // Check with exception
 
       _listenerMock.BackToRecord();
-      _listenerMock.Expect (mock => mock.StateUpdated (true));
+      _listenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, true));
       _listenerMock.Replay ();
 
       var exception = new Exception ();
@@ -257,15 +267,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
                 result,
                 Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
                     .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeCommand)
+                    .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_endPointID)
                     .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_listenerMock));
             var changeStateProvider = ((VirtualEndPointStateUpdatedRaisingCommandDecorator) result).ChangeStateProvider;
 
             _innerEndPointMock.BackToRecord ();
+            _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
             _innerEndPointMock.Stub (stub => stub.HasChangedFast).Return (true);
             _innerEndPointMock.Replay ();
             Assert.That (changeStateProvider (), Is.True);
 
             _innerEndPointMock.BackToRecord ();
+            _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
             _innerEndPointMock.Stub (stub => stub.HasChangedFast).Return (null);
             _innerEndPointMock.Replay ();
             Assert.That (changeStateProvider (), Is.Null);

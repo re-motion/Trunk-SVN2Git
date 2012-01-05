@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Synchronize ()
     {
       _loadState.Synchronize (this);
-      _stateUpdateListener.StateUpdated (HasChanged);
+      _stateUpdateListener.VirtualEndPointStateUpdated (ID, HasChanged);
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
-      _stateUpdateListener.StateUpdated (HasChanged);
+      _stateUpdateListener.VirtualEndPointStateUpdated (ID, HasChanged);
     }
 
     public void MarkDataComplete (DomainObject item)
@@ -256,7 +256,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (HasChanged)
       {
         _loadState.Commit (this);
-        _stateUpdateListener.StateUpdated (false);
+        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -267,7 +267,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (HasChanged)
       {
         _loadState.Rollback (this);
-        _stateUpdateListener.StateUpdated (false);
+        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -277,7 +277,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       var sourceVirtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<VirtualObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
       _loadState.SetDataFromSubTransaction (this, sourceVirtualObjectEndPoint._loadState);
-      _stateUpdateListener.StateUpdated (HasChanged);
+      _stateUpdateListener.VirtualEndPointStateUpdated (ID, HasChanged);
     }
 
     private void SetIncompleteState ()
@@ -293,7 +293,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
     {
-      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, _stateUpdateListener, () => HasChanged);
+      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, ID, _stateUpdateListener, () => HasChanged);
     }
 
     #region Serialization

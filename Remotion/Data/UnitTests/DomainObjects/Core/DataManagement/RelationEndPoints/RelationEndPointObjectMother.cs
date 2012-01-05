@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           dataManager,
           dataManager,
           new CollectionEndPointDataManagerFactory (changeDetectionStrategy),
-          new VirtualEndPointStateUpdateListener (clientTransaction, endPointID));
+          new VirtualEndPointStateUpdateListener (clientTransaction));
       
       if (initialContents != null)
         CollectionEndPointTestHelper.FillCollectionEndPointWithInitialContents (collectionEndPoint, initialContents);
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           lazyLoader,
           endPointProvider,
           dataManagerFactory,
-          new VirtualEndPointStateUpdateListener (clientTransaction, endPointID));
+          new VirtualEndPointStateUpdateListener (clientTransaction));
     }
 
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)

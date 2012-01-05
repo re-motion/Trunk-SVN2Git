@@ -20,31 +20,39 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   [TestFixture]
-  public class VirtualEndPointStateUpdatedRaisingCommandDecoratorTest
+  public class VirtualEndPointStateUpdatedRaisingCommandDecoratorTest : StandardMappingTest
   {
     private MockRepository _mockRepository;
     private IDataManagementCommand _decoratedCommandMock;
+    private RelationEndPointID _modifiedEndPointID;
     private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
     private bool? _fakeChangeState;
 
     private VirtualEndPointStateUpdatedRaisingCommandDecorator _commandDecorator;
     private DecoratorTestHelper<IDataManagementCommand> _decoratorTestHelper;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _mockRepository = new MockRepository();
       _decoratedCommandMock = _mockRepository.StrictMock<IDataManagementCommand> ();
+      _modifiedEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       _stateUpdateListenerMock = _mockRepository.StrictMock<IVirtualEndPointStateUpdateListener> ();
       _fakeChangeState = null;
 
-      _commandDecorator = new VirtualEndPointStateUpdatedRaisingCommandDecorator (_decoratedCommandMock, _stateUpdateListenerMock, () => _fakeChangeState);
+      _commandDecorator = new VirtualEndPointStateUpdatedRaisingCommandDecorator (
+          _decoratedCommandMock,
+          _modifiedEndPointID,
+          _stateUpdateListenerMock,
+          () => _fakeChangeState);
       _decoratorTestHelper = new DecoratorTestHelper<IDataManagementCommand> (_commandDecorator, _decoratedCommandMock);
     }
 
@@ -64,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       using (_mockRepository.Ordered ())
       {
         _decoratedCommandMock.Expect (mock => mock.Perform());
-        _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+        _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_modifiedEndPointID, null));
       }
       _mockRepository.ReplayAll();
 
@@ -78,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       var exception = new Exception();
       _decoratedCommandMock.Expect (mock => mock.Perform ()).Throw (exception);
-      _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_modifiedEndPointID, null));
 
       _mockRepository.ReplayAll ();
 
@@ -93,11 +101,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       using (_mockRepository.Ordered ())
       {
         _decoratedCommandMock.Expect (mock => mock.Perform ());
-        _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (true));
+        _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_modifiedEndPointID, true));
         _decoratedCommandMock.Expect (mock => mock.Perform ());
-        _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (false));
+        _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_modifiedEndPointID, false));
         _decoratedCommandMock.Expect (mock => mock.Perform ());
-        _stateUpdateListenerMock.Expect (mock => mock.StateUpdated (null));
+        _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_modifiedEndPointID, null));
       }
       _mockRepository.ReplayAll ();
 
@@ -127,6 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       var innerExpandedCommand = (VirtualEndPointStateUpdatedRaisingCommandDecorator) nestedCommands[0];
       Assert.That (innerExpandedCommand.DecoratedCommand, Is.SameAs (fakeExpandedCommand));
+      Assert.That (innerExpandedCommand.ModifiedEndPointID, Is.EqualTo (_modifiedEndPointID));
       Assert.That (innerExpandedCommand.Listener, Is.SameAs (_stateUpdateListenerMock));
       Assert.That (innerExpandedCommand.ChangeStateProvider, Is.SameAs (_commandDecorator.ChangeStateProvider));
     }
