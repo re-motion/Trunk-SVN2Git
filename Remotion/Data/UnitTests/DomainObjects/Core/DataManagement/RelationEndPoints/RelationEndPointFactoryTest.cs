@@ -94,6 +94,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void CreateRealObjectEndPoint_NonRealEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+
+      Assert.That (
+          () => _factory.CreateRealObjectEndPoint (endPointID, dataContainer), 
+          Throws.ArgumentException.With.Message.EqualTo ("End point ID must refer to a non-virtual end point.\r\nParameter name: id"));
+    }
+
+    [Test]
     public void CreateVirtualObjectEndPoint_MarkDataCompleteFalse ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
@@ -122,6 +133,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPoint = _factory.CreateVirtualObjectEndPoint (endPointID, true);
 
       Assert.That (endPoint.IsDataComplete, Is.True);
+    }
+
+    [Test]
+    public void CreateVirtualObjectEndPoint_NonVirtualEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
+
+      Assert.That (
+          () => _factory.CreateVirtualObjectEndPoint (endPointID, false), 
+          Throws.ArgumentException.With.Message.EqualTo ("End point ID must refer to a virtual end point.\r\nParameter name: id"));
+    }
+
+    [Test]
+    public void CreateVirtualObjectEndPoint_NonObjectEndPoint ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+
+      Assert.That (
+          () => _factory.CreateVirtualObjectEndPoint (endPointID, false),
+          Throws.ArgumentException.With.Message.EqualTo ("End point ID must refer to an end point with cardinality 'One'.\r\nParameter name: id"));
     }
 
     [Test]
@@ -162,50 +193,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void CreateVirtualEndPoint_One_MarkDataCompleteFalse ()
+    public void CreateCollectionEndPoint_NonCollectionEndPoint ()
     {
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
 
-      var endPoint = _factory.CreateVirtualEndPoint (endPointID, false);
-
-      Assert.That (endPoint, Is.TypeOf<VirtualObjectEndPoint> ());
-      Assert.That (endPoint.ID, Is.EqualTo (endPointID));
-      Assert.That (endPoint.IsDataComplete, Is.False);
+      Assert.That (
+          () => _factory.CreateCollectionEndPoint (endPointID, false),
+          Throws.ArgumentException.With.Message.EqualTo ("End point ID must refer to an end point with cardinality 'Many'.\r\nParameter name: id"));
     }
 
     [Test]
-    public void CreateVirtualEndPoint_One_MarkDataCompleteTrue ()
+    public void CreateCollectionEndPoint_AnonymousEndPoint ()
     {
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
+      var endPointID = RelationEndPointObjectMother.CreateAnonymousEndPointID();
 
-      var endPoint = _factory.CreateVirtualEndPoint (endPointID, true);
-
-      Assert.That (endPoint, Is.TypeOf<VirtualObjectEndPoint> ());
-      Assert.That (endPoint.IsDataComplete, Is.True);
-    }
-
-    [Test]
-    public void CreateVirtualEndPoint_Many_MarkDataCompleteFalse ()
-    {
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-
-      var endPoint = _factory.CreateVirtualEndPoint (endPointID, false);
-
-      Assert.That (endPoint, Is.TypeOf<CollectionEndPoint> ());
-      Assert.That (endPoint.ID, Is.EqualTo (endPointID));
-      Assert.That (endPoint.IsDataComplete, Is.False);
-    }
-
-    [Test]
-    public void CreateVirtualEndPoint_Many_MarkDataCompleteTrue ()
-    {
-      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      _collectionEndPointCollectionProviderStub.Stub (stub => stub.GetCollection (endPointID)).Return (new DomainObjectCollection ());
-
-      var endPoint = _factory.CreateVirtualEndPoint (endPointID, true);
-
-      Assert.That (endPoint, Is.TypeOf<CollectionEndPoint> ());
-      Assert.That (endPoint.IsDataComplete, Is.True);
+      Assert.That (
+          () => _factory.CreateCollectionEndPoint (endPointID, false),
+          Throws.ArgumentException.With.Message.EqualTo ("End point ID must not refer to an anonymous end point.\r\nParameter name: id"));
     }
 
     [Test]

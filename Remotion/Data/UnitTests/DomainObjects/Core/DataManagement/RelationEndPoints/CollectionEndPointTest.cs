@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -23,6 +24,8 @@ using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -45,6 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ICollectionEndPointCollectionManager _collectionManagerMock;
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
+    private IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _dataManagerFactoryStub;
     private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
     private ICollectionEndPointLoadState _loadStateMock;
 
@@ -64,17 +68,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointCollectionManager> ();
       _lazyLoaderMock = MockRepository.GenerateMock<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _stateUpdateListenerMock = MockRepository.GenerateStrictMock<IVirtualEndPointStateUpdateListener>();
+      _dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
+      _stateUpdateListenerMock = MockRepository.GenerateStrictMock<IVirtualEndPointStateUpdateListener> ();
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
 
-      var changeDetectionStrategy = MockRepository.GenerateStub<ICollectionEndPointChangeDetectionStrategy> ();
       _endPoint = new CollectionEndPoint (
           TestableClientTransaction,
           _customerEndPointID,
           _collectionManagerMock,
           _lazyLoaderMock,
           _endPointProviderStub,
-          new CollectionEndPointDataManagerFactory (changeDetectionStrategy),
+          _dataManagerFactoryStub,
           _stateUpdateListenerMock);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
       _endPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_customerEndPointID)).Return (_endPoint);
@@ -85,39 +89,58 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Initialize ()
     {
-      var dataManagerStub = MockRepository.GenerateStub<ICollectionEndPointDataManager>();
-      dataManagerStub.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-      var dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
-
       var endPoint = new CollectionEndPoint (
           TestableClientTransaction, 
           _customerEndPointID, 
           _collectionManagerMock,
           _lazyLoaderMock, 
           _endPointProviderStub,
-          dataManagerFactoryStub,
+          _dataManagerFactoryStub,
           _stateUpdateListenerMock);
 
       Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
       Assert.That (endPoint.CollectionManager, Is.SameAs (_collectionManagerMock));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderMock));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
-      Assert.That (endPoint.DataManagerFactory, Is.SameAs (dataManagerFactoryStub));
+      Assert.That (endPoint.DataManagerFactory, Is.SameAs (_dataManagerFactoryStub));
       Assert.That (endPoint.StateUpdateListener, Is.SameAs (_stateUpdateListenerMock));
 
       var loadState = CollectionEndPointTestHelper.GetLoadState (endPoint);
       Assert.That (loadState, Is.TypeOf (typeof (IncompleteCollectionEndPointLoadState)));
-      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataManagerFactory, Is.SameAs (dataManagerFactoryStub));
+      Assert.That (((IncompleteCollectionEndPointLoadState) loadState).DataManagerFactory, Is.SameAs (_dataManagerFactoryStub));
       Assert.That (
           ((IncompleteCollectionEndPointLoadState) loadState).EndPointLoader, 
           Is.TypeOf<CollectionEndPoint.EndPointLoader>().With.Property<CollectionEndPoint.EndPointLoader> (l => l.LazyLoader).SameAs (_lazyLoaderMock));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentNullException))]
-    public void Initialize_WithInvalidRelationEndPointID_Throws ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "End point ID must refer to an end point with cardinality 'Many'.\r\nParameter name: id")]
+    public void Initialize_WithNonManyEndPointID_Throws ()
     {
-      RelationEndPointObjectMother.CreateCollectionEndPoint (null, new DomainObject[0]);
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
+      new CollectionEndPoint (
+          TestableClientTransaction,
+          endPointID,
+          _collectionManagerMock,
+          _lazyLoaderMock,
+          _endPointProviderStub,
+          _dataManagerFactoryStub,
+          _stateUpdateListenerMock);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "End point ID must not refer to an anonymous end point.\r\nParameter name: id")]
+    public void Initialize_WithAnonymousEndPointID_Throws ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateAnonymousEndPointID ();
+      new CollectionEndPoint (
+          TestableClientTransaction,
+          endPointID,
+          _collectionManagerMock,
+          _lazyLoaderMock,
+          _endPointProviderStub,
+          _dataManagerFactoryStub,
+          _stateUpdateListenerMock);
     }
 
     [Test]

@@ -18,7 +18,6 @@ using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
@@ -138,16 +137,5 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         collectionEndPoint.MarkDataComplete (new DomainObject[0]);
       return collectionEndPoint;
     }
-
-    public IVirtualEndPoint CreateVirtualEndPoint (RelationEndPointID endPointID, bool markDataComplete)
-    {
-      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-
-      if (endPointID.Definition.Cardinality == CardinalityType.One)
-        return CreateVirtualObjectEndPoint (endPointID, markDataComplete);
-      else
-        return CreateCollectionEndPoint (endPointID, markDataComplete);
-    }
-
   }
 }

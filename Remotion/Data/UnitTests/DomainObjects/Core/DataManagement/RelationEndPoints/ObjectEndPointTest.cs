@@ -43,6 +43,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "End point ID must refer to an end point with cardinality 'One'.\r\nParameter name: id")]
+    public void Initialize_WithNonOneEndPointID_Throws ()
+    {
+      var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      new TestableObjectEndPoint (
+          TestableClientTransaction,
+          endPointID,
+          _endPointProviderStub,
+          OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+    }
+
+    [Test]
     public void SetDataFromSubTransaction_SetsOppositeObjectID_IfIDsDiffer ()
     {
       var sourceID = RelationEndPointID.Create(DomainObjectIDs.OrderItem2, _endPointID.Definition);

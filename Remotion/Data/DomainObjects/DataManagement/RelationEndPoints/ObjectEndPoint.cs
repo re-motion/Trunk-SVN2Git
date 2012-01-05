@@ -34,6 +34,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 
+      if (id.Definition.Cardinality != CardinalityType.One)
+        throw new ArgumentException ("End point ID must refer to an end point with cardinality 'One'.", "id");
+
+      Assertion.IsFalse (id.Definition.IsAnonymous);
+
       _endPointProvider = endPointProvider;
     }
 

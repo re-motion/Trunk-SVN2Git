@@ -14,15 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Utilities;
+
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
-  /// Provides an API for classes creating <see cref="IRelationEndPoint"/> instances.
+  /// Implements extension methods for the <see cref="IRelationEndPointFactory"/> interface.
   /// </summary>
-  public interface IRelationEndPointFactory
+  public static class RelationEndPointFactoryExtensions
   {
-    IRealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer);
-    IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, bool markDataComplete);
-    ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID, bool markDataComplete);
+    public static IVirtualEndPoint CreateVirtualEndPoint (this IRelationEndPointFactory endPointFactory, RelationEndPointID endPointID, bool markDataComplete)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      if (!endPointID.Definition.IsVirtual)
+        throw new ArgumentException ("The RelationEndPointID must identify a virtual end-point.", "endPointID");
+
+      if (endPointID.Definition.Cardinality == CardinalityType.One)
+        return endPointFactory.CreateVirtualObjectEndPoint (endPointID, markDataComplete);
+      else
+        return endPointFactory.CreateCollectionEndPoint (endPointID, markDataComplete);
+    }
   }
 }

@@ -99,6 +99,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
       ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
+      if (id.Definition.Cardinality != CardinalityType.Many)
+        throw new ArgumentException ("End point ID must refer to an end point with cardinality 'Many'.", "id");
+
+      if (id.Definition.IsAnonymous)
+        throw new ArgumentException ("End point ID must not refer to an anonymous end point.", "id");
+
+      Assertion.IsTrue (ID.Definition.IsVirtual);
+
       _hasBeenTouched = false;
       _collectionManager = collectionManager;
       _lazyLoader = lazyLoader;
