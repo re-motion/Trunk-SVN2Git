@@ -31,7 +31,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// <remarks>
   /// Because the <see cref="HasChanged"/> property of <see cref="ICollectionEndPoint"/> implementations can be expensive to determine, the 
   /// <see cref="StateUpdateRaisingCollectionEndPointDecorator"/> doesn't actually check the property.
-  /// Events may also be raised even the the <see cref="HasChanged"/> property still returns the same value as before.
+  /// Therefore, events may also be raised even the the <see cref="HasChanged"/> property still returns the same value as before. If the end-point's
+  /// new state is available via the <see cref="ICollectionEndPoint.HasChangedFast"/> property, the new state is passed to the 
+  /// <see cref="IVirtualEndPointStateUpdateListener.VirtualEndPointStateUpdated"/> method as a parameter.
   /// </remarks>
   public class StateUpdateRaisingCollectionEndPointDecorator : ICollectionEndPoint
   {
