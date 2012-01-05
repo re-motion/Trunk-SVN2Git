@@ -251,6 +251,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private void CheckDelegationWithStateUpdate (Action<ICollectionEndPoint> action)
     {
+      // Check with HasChangedFast returning the same value before and after the operation - no state update should be raised then
+
+      _innerEndPointMock.BackToRecord ();
+      _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
+      _innerEndPointMock.Stub (stub => stub.HasChangedFast).Return (true).Repeat.Any ();
+      _innerEndPointMock.Replay ();
+
+      _listenerMock.BackToRecord ();
+      _listenerMock.Replay ();
+
+      _decoratorTestHelper.CheckDelegation (action);
+
+      _listenerMock.AssertWasNotCalled (mock => mock.VirtualEndPointStateUpdated (Arg<RelationEndPointID>.Is.Anything, Arg<bool?>.Is.Anything));
+
       // Check with HasChangedFast returning null, also check that listener is called _after_ delegation
       _innerEndPointMock.BackToRecord();
       _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
@@ -298,20 +312,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (
           () => _decoratorTestHelper.CheckDelegationWithContinuation (action, mi => { throw exception; }), 
           Throws.Exception.SameAs (exception));
-
-      _listenerMock.VerifyAllExpectations();
-
-      // Check with HasChangedFast returning the same value before and after the operation - no state update should be raised then
-
-      _innerEndPointMock.BackToRecord ();
-      _innerEndPointMock.Stub (stub => stub.ID).Return (_endPointID);
-      _innerEndPointMock.Stub (stub => stub.HasChangedFast).Return (true).Repeat.Any();
-      _innerEndPointMock.Replay ();
-
-      _listenerMock.BackToRecord ();
-      _listenerMock.Replay ();
-
-      _decoratorTestHelper.CheckDelegation (action);
 
       _listenerMock.VerifyAllExpectations();
     }
