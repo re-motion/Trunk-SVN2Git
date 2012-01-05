@@ -142,9 +142,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       SafeInnerDataManager.LoadLazyCollectionEndPoint (endPointID);
     }
 
-    public void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint)
+    public void LoadLazyVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
-      SafeInnerDataManager.LoadLazyVirtualObjectEndPoint (virtualObjectEndPoint);
+      SafeInnerDataManager.LoadLazyVirtualObjectEndPoint (endPointID);
     }
 
     public DataContainer LoadLazyDataContainer (ObjectID objectID)

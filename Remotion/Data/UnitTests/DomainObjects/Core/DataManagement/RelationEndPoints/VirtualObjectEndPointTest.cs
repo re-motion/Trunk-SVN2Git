@@ -39,7 +39,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
     private IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactory;
-    private IVirtualEndPointStateUpdateListener _stateUpdateListenerMock;
     private IVirtualObjectEndPointLoadState _loadStateMock;
     
     private VirtualObjectEndPoint _endPoint;
@@ -56,7 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _lazyLoaderMock = MockRepository.GenerateStrictMock<ILazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       _dataManagerFactory = new VirtualObjectEndPointDataManagerFactory();
-      _stateUpdateListenerMock = MockRepository.GenerateStrictMock<IVirtualEndPointStateUpdateListener> ();
       _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
 
       _endPoint = new VirtualObjectEndPoint (
@@ -64,8 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID, 
           _lazyLoaderMock, 
           _endPointProviderStub,
-          _dataManagerFactory,
-          _stateUpdateListenerMock);
+          _dataManagerFactory);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
 
       _oppositeEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
@@ -80,15 +77,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID,
           _lazyLoaderMock,
           _endPointProviderStub,
-          _dataManagerFactory,
-          _stateUpdateListenerMock);
+          _dataManagerFactory);
 
       Assert.That (endPoint.ID, Is.EqualTo (_endPointID));
       Assert.That (endPoint.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderMock));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
       Assert.That (endPoint.DataManagerFactory, Is.SameAs (_dataManagerFactory));
-      Assert.That (endPoint.StateUpdateListener, Is.SameAs (_stateUpdateListenerMock));
       Assert.That (endPoint.HasBeenTouched, Is.False);
       Assert.That (endPoint.IsDataComplete, Is.False);
 
@@ -106,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Initialization_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _dataManagerFactory, _stateUpdateListenerMock);
+      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _dataManagerFactory);
     }
 
     [Test]
@@ -261,13 +256,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (mock => mock.HasChanged ()).Return (true);
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, true));
-      _stateUpdateListenerMock.Replay ();
-
       _endPoint.Synchronize();
 
       _loadStateMock.VerifyAllExpectations ();
-      _stateUpdateListenerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -277,13 +268,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (mock => mock.HasChanged ()).Return (true);
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, true));
-      _stateUpdateListenerMock.Replay ();
-
       _endPoint.SynchronizeOppositeEndPoint (_oppositeEndPointStub);
 
       _loadStateMock.VerifyAllExpectations ();
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -414,19 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadStateMock.VerifyAllExpectations ();
 
-      Assert.That (
-          result,
-          Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator>()
-              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeCommand)
-              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_endPointID)
-              .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
-
-      _loadStateMock.BackToRecord();
-      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
-      _loadStateMock.Replay();
-
-      var changeStateProvider = ((VirtualEndPointStateUpdatedRaisingCommandDecorator) result).ChangeStateProvider;
-      Assert.That (changeStateProvider(), Is.True);
+      Assert.That (result, Is.SameAs (fakeCommand));
     }
 
     [Test]
@@ -439,19 +414,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = _endPoint.CreateSetCommand (null);
 
       _loadStateMock.VerifyAllExpectations ();
-      Assert.That (
-          result,
-          Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
-              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeCommand)
-              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_endPointID)
-              .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
-
-      _loadStateMock.BackToRecord ();
-      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
-      _loadStateMock.Replay ();
-
-      var changeStateProvider = ((VirtualEndPointStateUpdatedRaisingCommandDecorator) result).ChangeStateProvider;
-      Assert.That (changeStateProvider (), Is.True);
+      Assert.That (result, Is.SameAs (fakeCommand));
     }
 
     [Test]
@@ -464,19 +427,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var result = _endPoint.CreateDeleteCommand ();
 
       _loadStateMock.VerifyAllExpectations ();
-      Assert.That (
-          result,
-          Is.TypeOf<VirtualEndPointStateUpdatedRaisingCommandDecorator> ()
-              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.DecoratedCommand).SameAs (fakeCommand)
-              .With.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.ModifiedEndPointID).EqualTo (_endPointID)
-              .And.Property<VirtualEndPointStateUpdatedRaisingCommandDecorator> (d => d.Listener).SameAs (_stateUpdateListenerMock));
-
-      _loadStateMock.BackToRecord ();
-      _loadStateMock.Stub (stub => stub.HasChanged ()).Return (true);
-      _loadStateMock.Replay ();
-
-      var changeStateProvider = ((VirtualEndPointStateUpdatedRaisingCommandDecorator) result).ChangeStateProvider;
-      Assert.That (changeStateProvider (), Is.True);
+      Assert.That (result, Is.SameAs (fakeCommand));
     }
 
     [Test]
@@ -499,13 +450,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.Commit (_endPoint));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, false));
-      _stateUpdateListenerMock.Replay ();
-      
       _endPoint.Commit ();
 
       _loadStateMock.VerifyAllExpectations ();
-      _stateUpdateListenerMock.VerifyAllExpectations ();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 
@@ -521,7 +468,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.Commit ();
 
       _loadStateMock.AssertWasNotCalled (mock => mock.Commit (_endPoint));
-      _stateUpdateListenerMock.AssertWasNotCalled (mock => mock.VirtualEndPointStateUpdated (Arg<RelationEndPointID>.Is.Anything, Arg<bool?>.Is.Anything));
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 
@@ -535,13 +481,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.Rollback (_endPoint));
       _loadStateMock.Replay ();
 
-      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, false));
-      _stateUpdateListenerMock.Replay ();
-
       _endPoint.Rollback ();
 
       _loadStateMock.VerifyAllExpectations ();
-      _stateUpdateListenerMock.VerifyAllExpectations ();
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 
@@ -557,7 +499,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPoint.Rollback ();
 
       _loadStateMock.AssertWasNotCalled (mock => mock.Rollback (_endPoint));
-      _stateUpdateListenerMock.AssertWasNotCalled (mock => mock.VirtualEndPointStateUpdated (Arg<RelationEndPointID>.Is.Anything, Arg<bool?>.Is.Anything));
       Assert.That (_endPoint.HasBeenTouched, Is.False);
     }
 
@@ -570,13 +511,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Stub (mock => mock.HasChanged()).Return (true);
       _loadStateMock.Replay();
 
-      _stateUpdateListenerMock.Expect (mock => mock.VirtualEndPointStateUpdated (_endPointID, true));
-      _stateUpdateListenerMock.Replay ();
-
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
       _loadStateMock.VerifyAllExpectations ();
-      _stateUpdateListenerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -585,7 +522,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointLoader = new VirtualObjectEndPoint.EndPointLoader (_lazyLoaderMock);
       var loadStateFake = MockRepository.GenerateStub<IVirtualObjectEndPointLoadState>();
       _lazyLoaderMock
-          .Expect (mock => mock.LoadLazyVirtualObjectEndPoint (_endPoint))
+          .Expect (mock => mock.LoadLazyVirtualObjectEndPoint (_endPointID))
           .WhenCalled (mi => VirtualObjectEndPointTestHelper.SetLoadState (_endPoint, loadStateFake));
 
       _lazyLoaderMock.Replay();

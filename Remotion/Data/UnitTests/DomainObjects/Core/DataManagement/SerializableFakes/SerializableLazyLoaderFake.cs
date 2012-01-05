@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint)
+    public void LoadLazyVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }

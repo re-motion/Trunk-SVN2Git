@@ -18,6 +18,7 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -36,7 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       base.SetUp();
 
       var endPointID = RelationEndPointID.Create(DomainObjectIDs.Employee3, ReflectionMappingHelper.GetPropertyName (typeof (Employee), "Computer"));
-      _endPoint = (VirtualObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID);
+      _endPoint = (VirtualObjectEndPoint) 
+          ((StateUpdateRaisingVirtualObjectEndPointDecorator) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID))
+          .InnerEndPoint;
     }
 
     [Test]
@@ -85,7 +88,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedEndPoint.LazyLoader, Is.Not.Null);
       Assert.That (deserializedEndPoint.EndPointProvider, Is.Not.Null);
       Assert.That (deserializedEndPoint.DataManagerFactory, Is.Not.Null);
-      Assert.That (deserializedEndPoint.StateUpdateListener, Is.Not.Null);
 
       var loadState = VirtualObjectEndPointTestHelper.GetLoadState(deserializedEndPoint);
       Assert.That (loadState, Is.Not.Null);

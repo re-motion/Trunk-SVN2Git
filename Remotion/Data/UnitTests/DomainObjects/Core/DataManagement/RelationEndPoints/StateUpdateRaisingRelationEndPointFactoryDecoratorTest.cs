@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
@@ -61,8 +62,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void CreateVirtualObjectEndPoint ()
     {
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
+      var fakeResult = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
       _decoratorTestHelper.CheckDelegation (
-          f => f.CreateVirtualObjectEndPoint (endPointID, false), MockRepository.GenerateStub<IVirtualObjectEndPoint> ());
+          f => f.CreateVirtualObjectEndPoint (endPointID, false),
+          fakeResult,
+          result => Assert.That (
+              result,
+              Is.TypeOf<StateUpdateRaisingVirtualObjectEndPointDecorator> ()
+                .With.Property<StateUpdateRaisingVirtualObjectEndPointDecorator> (d => d.Listener).SameAs (_listenerStub)
+                .And.Property<StateUpdateRaisingVirtualObjectEndPointDecorator> (d => d.InnerEndPoint).SameAs (fakeResult)));
     }
 
     [Test]

@@ -114,8 +114,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           endPointID,
           _lazyLoader,
           _endPointProvider,
-          _virtualObjectEndPointDataManagerFactory,
-          new VirtualEndPointStateUpdateListener (_clientTransaction));
+          _virtualObjectEndPointDataManagerFactory);
       // TODO 4560: Move to caller
       if (markDataComplete)
         virtualObjectEndPoint.MarkDataComplete (null);

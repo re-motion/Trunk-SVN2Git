@@ -16,10 +16,8 @@
 // 
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
@@ -51,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       TestableClientTransaction.CreateSubTransaction().EnterDiscardingScope();
 
       _employee1.Computer.EnsureDataAvailable();
-      _virtualObjectEndPoint = GetEndPoint<VirtualObjectEndPoint> (RelationEndPointID.Create (_employee1, o => o.Computer));
+      _virtualObjectEndPoint = (VirtualObjectEndPoint) GetEndPoint<StateUpdateRaisingVirtualObjectEndPointDecorator> (RelationEndPointID.Create (_employee1, o => o.Computer)).InnerEndPoint;
 
       _computer1EndPoint = GetEndPoint<RealObjectEndPoint> (RelationEndPointID.Create (_computer1, oi => oi.Employee));
       _computer2EndPoint = GetEndPoint<RealObjectEndPoint> (RelationEndPointID.Create (_computer2, oi => oi.Employee));

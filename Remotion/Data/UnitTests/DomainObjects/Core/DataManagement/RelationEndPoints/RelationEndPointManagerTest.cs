@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
 
       var oppositeID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order2, "OrderTicket");
-      var oppositeEndPoint = (VirtualObjectEndPoint) _relationEndPointManager.RelationEndPoints[oppositeID];
+      var oppositeEndPoint = (IVirtualObjectEndPoint) _relationEndPointManager.RelationEndPoints[oppositeID];
 
       Assert.That (oppositeEndPoint, Is.Not.Null);
       Assert.That (oppositeEndPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
 
-      var objectEndPoint = (VirtualObjectEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
+      var objectEndPoint = (IVirtualObjectEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
       Assert.That (objectEndPoint, Is.Not.Null);
       Assert.That (objectEndPoint.IsDataComplete, Is.True);
       Assert.That (objectEndPoint.OppositeObjectID, Is.Null);
@@ -619,7 +619,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (endPoint, Is.Not.Null);
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (endPoint));
-      Assert.That (((ObjectEndPoint) endPoint).OppositeObjectID, Is.Null);
+      Assert.That (((IVirtualObjectEndPoint) endPoint).OppositeObjectID, Is.Null);
     }
 
     [Test]
@@ -675,7 +675,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var result = _relationEndPointManager.GetOrCreateVirtualEndPoint (endPointID);
 
-      Assert.That (result, Is.Not.Null.And.TypeOf<VirtualObjectEndPoint>());
+      Assert.That (result, Is.Not.Null.And.AssignableTo<IVirtualObjectEndPoint>());
       Assert.That (_relationEndPointManager.RelationEndPoints[endPointID], Is.SameAs (result));
       Assert.That (result.IsDataComplete, Is.False);
     }

@@ -250,18 +250,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       collectionEndPoint.MarkDataComplete (domainObjects);
     }
 
-    // TODO 4065: Adapt to take RelationEndPointID
-    public void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint)
+    public void LoadLazyVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
-      ArgumentUtility.CheckNotNull ("virtualObjectEndPoint", virtualObjectEndPoint);
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      if (virtualObjectEndPoint != GetRelationEndPointWithoutLoading (virtualObjectEndPoint.ID))
-        throw new ArgumentException ("The given end-point is not managed by this DataManager.", "virtualObjectEndPoint");
+      var virtualObjectEndPoint = GetRelationEndPointWithoutLoading (endPointID) as IVirtualObjectEndPoint;
+
+      if (virtualObjectEndPoint == null)
+        throw new ArgumentException ("The given ID does not identify an IVirtualObjectEndPoint managed by this DataManager.", "endPointID");
 
       if (virtualObjectEndPoint.IsDataComplete)
         throw new InvalidOperationException ("The given end-point cannot be loaded, its data is already complete.");
 
-      var loadedObjectData = _objectLoader.GetOrLoadRelatedObject (virtualObjectEndPoint.ID);
+      var loadedObjectData = _objectLoader.GetOrLoadRelatedObject (endPointID);
       var domainObject = loadedObjectData.GetDomainObjectReference();
 
       // Since RelationEndPointManager.RegisterEndPoint contains a query optimization for 1:1 relations, it is possible that

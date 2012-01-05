@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var newRelatedObject = ArgumentUtility.CheckType<DomainObject> ("value", value);
 
       var endPointID = CreateRelationEndPointID (propertyAccessor);
-      var endPoint = (ObjectEndPoint) transaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID);
+      var endPoint = (IObjectEndPoint) transaction.DataManager.GetRelationEndPointWithLazyLoad (endPointID);
 
       RelationEndPointValueChecker.CheckClientTransaction (
           endPoint,
@@ -123,14 +123,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return transaction.GetOriginalRelatedObject (CreateRelationEndPointID (propertyAccessor));
     }
 
-    private void CheckNewRelatedObjectType (ObjectEndPoint objectEndPoint, DomainObject newRelatedObject)
+    private void CheckNewRelatedObjectType (IObjectEndPoint objectEndPoint, DomainObject newRelatedObject)
     {
       if (!objectEndPoint.Definition.GetOppositeEndPointDefinition ().ClassDefinition.IsSameOrBaseClassOf (newRelatedObject.ID.ClassDefinition))
       {
         var message = string.Format (
             "DomainObject '{0}' cannot be assigned to property '{1}' of DomainObject '{2}', because it is not compatible "
             + "with the type of the property.",
-            newRelatedObject.ID, objectEndPoint.PropertyName, objectEndPoint.ObjectID);
+            newRelatedObject.ID, objectEndPoint.Definition.PropertyName, objectEndPoint.ObjectID);
         throw new ArgumentTypeException (
             message,
             "newRelatedObject", objectEndPoint.Definition.GetOppositeEndPointDefinition ().ClassDefinition.ClassType,

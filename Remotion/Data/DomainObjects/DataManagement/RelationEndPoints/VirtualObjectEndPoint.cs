@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
@@ -49,7 +48,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       public IVirtualObjectEndPointLoadState LoadEndPointAndGetNewState (IVirtualObjectEndPoint endPoint)
       {
         var virtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<VirtualObjectEndPoint> ("endPoint", endPoint);
-        _lazyLoader.LoadLazyVirtualObjectEndPoint (virtualObjectEndPoint);
+        _lazyLoader.LoadLazyVirtualObjectEndPoint (virtualObjectEndPoint.ID);
         return virtualObjectEndPoint._loadState;
       }
 
@@ -72,7 +71,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private readonly ILazyLoader _lazyLoader;
     private readonly IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactory;
-    private readonly IVirtualEndPointStateUpdateListener _stateUpdateListener;
 
     private IVirtualObjectEndPointLoadState _loadState;
 
@@ -83,8 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         RelationEndPointID id,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> dataManagerFactory,
-        IVirtualEndPointStateUpdateListener stateUpdateListener)
+        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> dataManagerFactory)
         : base (
             ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
             ArgumentUtility.CheckNotNull ("id", id),
@@ -92,14 +89,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
-      ArgumentUtility.CheckNotNull ("stateUpdateListener", stateUpdateListener);
 
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
 
       _lazyLoader = lazyLoader;
       _dataManagerFactory = dataManagerFactory;
-      _stateUpdateListener = stateUpdateListener;
 
       SetIncompleteState();
 
@@ -114,11 +109,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> DataManagerFactory
     {
       get { return _dataManagerFactory; }
-    }
-
-    public IVirtualEndPointStateUpdateListener StateUpdateListener
-    {
-      get { return _stateUpdateListener; }
     }
 
     public override ObjectID OppositeObjectID
@@ -179,7 +169,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Synchronize ()
     {
       _loadState.Synchronize (this);
-      _stateUpdateListener.VirtualEndPointStateUpdated (ID, HasChanged);
     }
 
     public void SynchronizeOppositeEndPoint (IRealObjectEndPoint oppositeEndPoint)
@@ -187,7 +176,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("oppositeEndPoint", oppositeEndPoint);
 
       _loadState.SynchronizeOppositeEndPoint (this, oppositeEndPoint);
-      _stateUpdateListener.VirtualEndPointStateUpdated (ID, HasChanged);
     }
 
     public void MarkDataComplete (DomainObject item)
@@ -237,13 +225,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
       var command = _loadState.CreateSetCommand (this, newRelatedObject);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
     {
       var command = _loadState.CreateDeleteCommand (this);
-      return CreateStateUpdateRaisingCommandDecorator (command);
+      return command;
     }
 
     public override void Touch ()
@@ -256,7 +244,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (HasChanged)
       {
         _loadState.Commit (this);
-        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -267,7 +254,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (HasChanged)
       {
         _loadState.Rollback (this);
-        _stateUpdateListener.VirtualEndPointStateUpdated (ID, false);
       }
 
       _hasBeenTouched = false;
@@ -277,7 +263,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       var sourceVirtualObjectEndPoint = ArgumentUtility.CheckNotNullAndType<VirtualObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
       _loadState.SetDataFromSubTransaction (this, sourceVirtualObjectEndPoint._loadState);
-      _stateUpdateListener.VirtualEndPointStateUpdated (ID, HasChanged);
     }
 
     private void SetIncompleteState ()
@@ -291,11 +276,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _loadState = new CompleteVirtualObjectEndPointLoadState (dataManager, EndPointProvider, ClientTransaction);
     }
 
-    private IDataManagementCommand CreateStateUpdateRaisingCommandDecorator (IDataManagementCommand command)
-    {
-      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (command, ID, _stateUpdateListener, () => HasChanged);
-    }
-
     #region Serialization
 
     protected VirtualObjectEndPoint (FlattenedDeserializationInfo info)
@@ -303,7 +283,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
       _dataManagerFactory = info.GetValueForHandle<IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>> ();
-      _stateUpdateListener = info.GetValueForHandle<IVirtualEndPointStateUpdateListener>();
       
       _loadState = info.GetValue<IVirtualObjectEndPointLoadState> ();
       _hasBeenTouched = info.GetBoolValue ();
@@ -315,7 +294,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
       info.AddHandle (_lazyLoader);
       info.AddHandle (_dataManagerFactory);
-      info.AddHandle (_stateUpdateListener);
 
       info.AddValue (_loadState);
       info.AddBoolValue (_hasBeenTouched);

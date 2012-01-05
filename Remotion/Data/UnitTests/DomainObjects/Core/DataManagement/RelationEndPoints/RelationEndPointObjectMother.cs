@@ -79,8 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           endPointID,
           lazyLoader,
           endPointProvider,
-          dataManagerFactory,
-          new VirtualEndPointStateUpdateListener (clientTransaction));
+          dataManagerFactory);
     }
 
     public static ObjectEndPoint CreateObjectEndPoint (RelationEndPointID endPointID, ObjectID oppositeObjectID)

@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public interface ILazyLoader
   {
     void LoadLazyCollectionEndPoint (RelationEndPointID endPointID);
-    void LoadLazyVirtualObjectEndPoint (IVirtualObjectEndPoint virtualObjectEndPoint);
+    void LoadLazyVirtualObjectEndPoint (RelationEndPointID endPointID);
     DataContainer LoadLazyDataContainer (ObjectID objectID);
   }
 }
