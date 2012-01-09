@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Collections;
-using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
@@ -45,7 +44,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     public DomainObjectCollection GetCollection (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      var collection = _collections.GetOrCreateValue (endPointID, id => CreateCollection (id, _dataStrategyFactory.CreateDataStrategyForEndPoint (id)));
+      var collection = _collections.GetOrCreateValue (endPointID, id =>
+      {
+        var dataStrategy = _dataStrategyFactory.CreateDataStrategyForEndPoint (id);
+        return DomainObjectCollectionFactory.Instance.CreateCollection (id.Definition.PropertyInfo.PropertyType, dataStrategy);
+      });
       Assertion.IsTrue (collection.AssociatedEndPointID == endPointID);
       return collection;
     }
@@ -59,12 +62,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new ArgumentException ("The collection must be associated with the given endPointID.", "collection");
 
       _collections[endPointID] = collection;
-    }
-
-    // TODO 4560: Move to caller
-    private DomainObjectCollection CreateCollection (RelationEndPointID endPointID, IDomainObjectCollectionData dataStrategy)
-    {
-      return DomainObjectCollectionFactory.Instance.CreateCollection (endPointID.Definition.PropertyInfo.PropertyType, dataStrategy);
     }
   }
 }
