@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Utilities;
@@ -105,7 +104,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return new RealObjectEndPoint (_clientTransaction, endPointID, dataContainer, _endPointProvider);
     }
 
-    public IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, bool markDataComplete)
+    public IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
@@ -115,13 +114,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           _lazyLoader,
           _endPointProvider,
           _virtualObjectEndPointDataManagerFactory);
-      // TODO 4560: Move to caller
-      if (markDataComplete)
-        virtualObjectEndPoint.MarkDataComplete (null);
       return virtualObjectEndPoint;
     }
 
-    public ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID, bool markDataComplete)
+    public ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
@@ -132,9 +128,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           _lazyLoader,
           _endPointProvider,
           _collectionEndPointDataManagerFactory);
-      // TODO 4560: Move to caller
-      if (markDataComplete)
-        collectionEndPoint.MarkDataComplete (new DomainObject[0]);
       return collectionEndPoint;
     }
   }

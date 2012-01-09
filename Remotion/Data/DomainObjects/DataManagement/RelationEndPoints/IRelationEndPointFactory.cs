@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   public interface IRelationEndPointFactory
   {
     IRealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID, DataContainer dataContainer);
-    IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, bool markDataComplete);
-    ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID, bool markDataComplete);
+    IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID);
+    ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID);
   }
 }

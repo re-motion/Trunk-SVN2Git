@@ -28,17 +28,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, bool markDataComplete)
+    public IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }
 
-    public ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID, bool markDataComplete)
-    {
-      throw new NotImplementedException();
-    }
-
-    public IVirtualEndPoint CreateVirtualEndPoint (RelationEndPointID endPointID, bool markDataComplete)
+    public ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID)
     {
       throw new NotImplementedException();
     }

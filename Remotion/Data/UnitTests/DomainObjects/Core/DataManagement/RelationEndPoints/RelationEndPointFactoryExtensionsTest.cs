@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -42,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint>();
 
       _endPointFactoryMock
-          .Expect (mock => mock.CreateVirtualObjectEndPoint (endPointID, false))
+          .Expect (mock => mock.CreateVirtualObjectEndPoint (endPointID))
           .Return (endPointStub);
       _endPointFactoryMock.Replay();
 
@@ -51,6 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointFactoryMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (endPointStub));
+      endPointStub.AssertWasNotCalled (stub => stub.MarkDataComplete (Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
@@ -60,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointStub = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
 
       _endPointFactoryMock
-          .Expect (mock => mock.CreateVirtualObjectEndPoint (endPointID, true))
+          .Expect (mock => mock.CreateVirtualObjectEndPoint (endPointID))
           .Return (endPointStub);
       _endPointFactoryMock.Replay ();
 
@@ -69,6 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointFactoryMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.SameAs (endPointStub));
+      endPointStub.AssertWasCalled (stub => stub.MarkDataComplete (null));
     }
 
     [Test]
@@ -78,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
 
       _endPointFactoryMock
-          .Expect (mock => mock.CreateCollectionEndPoint (endPointID, false))
+          .Expect (mock => mock.CreateCollectionEndPoint (endPointID))
           .Return (endPointStub);
       _endPointFactoryMock.Replay ();
 
@@ -87,6 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointFactoryMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.SameAs (endPointStub));
+      endPointStub.AssertWasNotCalled (stub => stub.MarkDataComplete (Arg<DomainObject[]>.Is.Anything));
     }
 
     [Test]
@@ -96,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointStub = MockRepository.GenerateStub<ICollectionEndPoint> ();
 
       _endPointFactoryMock
-          .Expect (mock => mock.CreateCollectionEndPoint (endPointID, true))
+          .Expect (mock => mock.CreateCollectionEndPoint (endPointID))
           .Return (endPointStub);
       _endPointFactoryMock.Replay ();
 
@@ -105,6 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointFactoryMock.VerifyAllExpectations ();
 
       Assert.That (result, Is.SameAs (endPointStub));
+      endPointStub.AssertWasCalled (stub => stub.MarkDataComplete (Arg<DomainObject[]>.List.Equal (new DomainObject[0])));
     }
 
     [Test]

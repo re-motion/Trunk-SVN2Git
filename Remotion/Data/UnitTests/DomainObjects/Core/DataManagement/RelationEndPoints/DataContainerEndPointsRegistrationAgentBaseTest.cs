@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private RelationEndPointID _orderTicketEndPointID;
     private RelationEndPointID _customerEndPointID;
 
-    private IVirtualObjectEndPoint _orderTicketEndPointStub;
+    private IVirtualObjectEndPoint _orderTicketEndPointMock;
     private IRealObjectEndPoint _customerEndPointStub;
     private DataContainer _orderDataContainer;
 
@@ -59,8 +59,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _orderTicketEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
       _customerEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
 
-      _orderTicketEndPointStub = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint>();
-      _orderTicketEndPointStub.Stub (stub => stub.ID).Return (_orderTicketEndPointID);
+      _orderTicketEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint>();
+      _orderTicketEndPointMock.Stub (stub => stub.ID).Return (_orderTicketEndPointID);
 
       _customerEndPointStub = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();
       _customerEndPointStub.Stub (stub => stub.ID).Return (_customerEndPointID);
@@ -76,11 +76,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (new[] { _orderTicketEndPointID, _customerEndPointID });
       _agentPartialMock.Replay();
 
-      _endPointFactoryMock.Expect (mock => mock.CreateVirtualEndPoint (_orderTicketEndPointID, true)).Return (_orderTicketEndPointStub);
+      _endPointFactoryMock.Expect (mock => mock.CreateVirtualObjectEndPoint (_orderTicketEndPointID)).Return (_orderTicketEndPointMock);
       _endPointFactoryMock.Expect (mock => mock.CreateRealObjectEndPoint (_customerEndPointID, _orderDataContainer)).Return (_customerEndPointStub);
       _endPointFactoryMock.Replay();
 
-      _registrationAgentMock.Expect (mock => mock.RegisterEndPoint (_orderTicketEndPointStub, _map));
+      _orderTicketEndPointMock.Expect (mock => mock.MarkDataComplete (null));
+      _orderTicketEndPointMock.Replay();
+
+      _registrationAgentMock.Expect (mock => mock.RegisterEndPoint (_orderTicketEndPointMock, _map));
       _registrationAgentMock.Expect (mock => mock.RegisterEndPoint (_customerEndPointStub, _map));
       _registrationAgentMock.Replay();
 
@@ -88,6 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointFactoryMock.VerifyAllExpectations();
       _registrationAgentMock.VerifyAllExpectations();
+      _orderTicketEndPointMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -106,12 +110,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CreateUnregisterEndPointsCommand_Loaded_NoProblems ()
     {
-      _map.AddEndPoint (_orderTicketEndPointStub);
+      _map.AddEndPoint (_orderTicketEndPointMock);
       _map.AddEndPoint (_customerEndPointStub);
 
       _agentPartialMock.Stub (stub => stub.MockableGetOwnedEndPointIDs (_orderDataContainer)).Return (
           new[] { _orderTicketEndPointID, _customerEndPointID });
-      _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_orderTicketEndPointStub, _map)).Return (null);
+      _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_orderTicketEndPointMock, _map)).Return (null);
       _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_customerEndPointStub, _map)).Return (null);
       _agentPartialMock.Replay();
 
@@ -120,18 +124,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _agentPartialMock.VerifyAllExpectations();
       Assert.That (result, Is.TypeOf<UnregisterEndPointsCommand>());
       Assert.That (
-          ((UnregisterEndPointsCommand) result).EndPoints, Is.EqualTo (new IRelationEndPoint[] { _orderTicketEndPointStub, _customerEndPointStub }));
+          ((UnregisterEndPointsCommand) result).EndPoints, Is.EqualTo (new IRelationEndPoint[] { _orderTicketEndPointMock, _customerEndPointStub }));
     }
 
     [Test]
     public void CreateUnregisterEndPointsCommand_Loaded_Problems ()
     {
-      _map.AddEndPoint (_orderTicketEndPointStub);
+      _map.AddEndPoint (_orderTicketEndPointMock);
       _map.AddEndPoint (_customerEndPointStub);
 
       _agentPartialMock.Stub (stub => stub.MockableGetOwnedEndPointIDs (_orderDataContainer)).Return (
           new[] { _orderTicketEndPointID, _customerEndPointID });
-      _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_orderTicketEndPointStub, _map)).Return ("Oh no!");
+      _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_orderTicketEndPointMock, _map)).Return ("Oh no!");
       _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_customerEndPointStub, _map)).Return ("Oh no 2!");
       _agentPartialMock.Replay();
 
@@ -148,12 +152,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CreateUnregisterEndPointsCommand_Loaded_SomeProblems ()
     {
-      _map.AddEndPoint (_orderTicketEndPointStub);
+      _map.AddEndPoint (_orderTicketEndPointMock);
       _map.AddEndPoint (_customerEndPointStub);
 
       _agentPartialMock.Stub (stub => stub.MockableGetOwnedEndPointIDs (_orderDataContainer)).Return (
           new[] { _orderTicketEndPointID, _customerEndPointID });
-      _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_orderTicketEndPointStub, _map)).Return ("Oh no!");
+      _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_orderTicketEndPointMock, _map)).Return ("Oh no!");
       _agentPartialMock.Expect (mock => mock.MockableGetUnregisterProblem (_customerEndPointStub, _map)).Return (null);
       _agentPartialMock.Replay();
 

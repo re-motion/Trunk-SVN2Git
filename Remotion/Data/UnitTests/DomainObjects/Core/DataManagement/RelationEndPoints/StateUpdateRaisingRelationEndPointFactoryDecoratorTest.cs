@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
       var fakeResult = MockRepository.GenerateStub<IVirtualObjectEndPoint> ();
       _decoratorTestHelper.CheckDelegation (
-          f => f.CreateVirtualObjectEndPoint (endPointID, false),
+          f => f.CreateVirtualObjectEndPoint (endPointID),
           fakeResult,
           result => Assert.That (
               result,
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var fakeResult = MockRepository.GenerateStub<ICollectionEndPoint> ();
       _decoratorTestHelper.CheckDelegation (
-          f => f.CreateCollectionEndPoint (endPointID, false), 
+          f => f.CreateCollectionEndPoint (endPointID), 
           fakeResult,
           result => Assert.That (
               result, 

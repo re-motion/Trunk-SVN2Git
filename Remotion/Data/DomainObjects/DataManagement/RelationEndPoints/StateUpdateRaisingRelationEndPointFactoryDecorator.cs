@@ -55,15 +55,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return _innerFactory.CreateRealObjectEndPoint (endPointID, dataContainer);
     }
 
-    public IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID, bool markDataComplete)
+    public IVirtualObjectEndPoint CreateVirtualObjectEndPoint (RelationEndPointID endPointID)
     {
-      var endPoint = _innerFactory.CreateVirtualObjectEndPoint (endPointID, markDataComplete);
+      var endPoint = _innerFactory.CreateVirtualObjectEndPoint (endPointID);
       return new StateUpdateRaisingVirtualObjectEndPointDecorator (endPoint, _listener);
     }
 
-    public ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID, bool markDataComplete)
+    public ICollectionEndPoint CreateCollectionEndPoint (RelationEndPointID endPointID)
     {
-      var endPoint = _innerFactory.CreateCollectionEndPoint (endPointID, markDataComplete);
+      var endPoint = _innerFactory.CreateCollectionEndPoint (endPointID);
       return new StateUpdateRaisingCollectionEndPointDecorator (endPoint, _listener);
     }
   }

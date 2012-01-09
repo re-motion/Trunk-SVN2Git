@@ -33,9 +33,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         throw new ArgumentException ("The RelationEndPointID must identify a virtual end-point.", "endPointID");
 
       if (endPointID.Definition.Cardinality == CardinalityType.One)
-        return endPointFactory.CreateVirtualObjectEndPoint (endPointID, markDataComplete);
+      {
+        var virtualObjectEndPoint = endPointFactory.CreateVirtualObjectEndPoint (endPointID);
+        if (markDataComplete)
+          virtualObjectEndPoint.MarkDataComplete (null);
+        return virtualObjectEndPoint;
+      }
       else
-        return endPointFactory.CreateCollectionEndPoint (endPointID, markDataComplete);
+      {
+        var collectionEndPoint = endPointFactory.CreateCollectionEndPoint (endPointID);
+        if (markDataComplete)
+          collectionEndPoint.MarkDataComplete (new DomainObject[0]);
+        return collectionEndPoint;
+      }
     }
   }
 }
