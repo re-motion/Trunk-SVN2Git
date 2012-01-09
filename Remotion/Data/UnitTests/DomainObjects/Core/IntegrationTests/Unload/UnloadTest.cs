@@ -1243,6 +1243,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (customerOrders.IsDataComplete, Is.False);
     }
 
+    [Test]
+    [Ignore ("TODO 4577")]
+    public void UnloadVirtualEndPoint_EndPointsOfNewObject_CannotBeUnloaded ()
+    {
+      var order = Order.NewObject ();
+      var endPointID1 = RelationEndPointID.Create (order, o => o.OrderTicket);
+      var endPointID2 = RelationEndPointID.Create (order, o => o.OrderItems);
+
+      CheckEndPointExists (endPointID1, true);
+      CheckEndPointExists (endPointID2, true);
+
+      Assert.That (
+          () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID1),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID1)));
+      Assert.That (
+          () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID2),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID2)));
+
+      Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID1), Is.False);
+      Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID2), Is.False);
+
+      CheckEndPointExists (endPointID1, true);
+      CheckEndPointExists (endPointID2, true);
+    }
+
+    [Test]
+    [Ignore ("TODO 4577")]
+    public void UnloadVirtualEndPoint_EndPointsOfDeletedObject_CannotBeUnloaded ()
+    {
+      var customerWithoutOrders = Customer.GetObject (DomainObjectIDs.Customer2);
+      var customerWithoutIndustrialSector = Customer.GetObject (DomainObjectIDs.Customer4);
+      var endPointID1 = RelationEndPointID.Create (customerWithoutOrders, o => o.Orders);
+      var endPointID2 = RelationEndPointID.Create (customerWithoutIndustrialSector, o => o.IndustrialSector);
+
+      Dev.Null = customerWithoutOrders.Orders;
+      Dev.Null = customerWithoutIndustrialSector.IndustrialSector;
+
+      CheckEndPointExists (endPointID1, true);
+      CheckEndPointExists (endPointID2, true);
+
+      Assert.That (
+          () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID1),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID1)));
+      Assert.That (
+          () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID2),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID2)));
+
+      Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID1), Is.False);
+      Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID2), Is.False);
+
+      CheckEndPointExists (endPointID1, true);
+      CheckEndPointExists (endPointID2, true);
+    }
+
     private void CheckDataContainerExists (DomainObject domainObject, bool dataContainerShouldExist)
     {
       var dataContainer = TestableClientTransaction.DataManager.DataContainers[domainObject.ID];
@@ -1255,6 +1313,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     private void CheckEndPointExists (DomainObject owningObject, string shortPropertyName, bool endPointShouldExist)
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
+      CheckEndPointExists (endPointID, endPointShouldExist);
+    }
+
+    private void CheckEndPointExists (RelationEndPointID endPointID, bool endPointShouldExist)
+    {
       var endPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       if (endPointShouldExist)
         Assert.That (endPoint, Is.Not.Null, "End point '{0}' does not exist.", endPointID);
