@@ -374,6 +374,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       ArgumentUtility.CheckNotNull ("endPointIDs", endPointIDs);
 
+      var endPointsOfNewOrDeletedObjects = (from endPointID in endPointIDs
+                                            let owningDataContainer = GetDataContainerWithoutLoading (endPointID.ObjectID)
+                                            where owningDataContainer != null && (owningDataContainer.State == StateType.Deleted || owningDataContainer.State == StateType.New)
+                                            select endPointID).ConvertToCollection();
+      if (endPointsOfNewOrDeletedObjects.Count > 0)
+      {
+        var message = "Cannot unload the following relation end-points because they belong to new or deleted objects: "
+            + SeparatedStringBuilder.Build (", ", endPointsOfNewOrDeletedObjects) + ".";
+        var exception = new InvalidOperationException (message);
+        return new ExceptionCommand (exception);
+      }
+
       return _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (endPointIDs);
     }
 

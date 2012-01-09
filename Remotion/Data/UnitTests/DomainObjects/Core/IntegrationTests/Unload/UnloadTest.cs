@@ -1244,7 +1244,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4577")]
     public void UnloadVirtualEndPoint_EndPointsOfNewObject_CannotBeUnloaded ()
     {
       var order = Order.NewObject ();
@@ -1257,11 +1256,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (
           () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID1),
           Throws.InvalidOperationException.With.Message.EqualTo (
-              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID1)));
+              "Cannot unload the following relation end-points because they belong to new or deleted objects: " + endPointID1 + "."));
       Assert.That (
           () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID2),
           Throws.InvalidOperationException.With.Message.EqualTo (
-              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID2)));
+              "Cannot unload the following relation end-points because they belong to new or deleted objects: " + endPointID2 + "."));
 
       Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID1), Is.False);
       Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID2), Is.False);
@@ -1271,16 +1270,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4577")]
     public void UnloadVirtualEndPoint_EndPointsOfDeletedObject_CannotBeUnloaded ()
     {
       var customerWithoutOrders = Customer.GetObject (DomainObjectIDs.Customer2);
-      var customerWithoutIndustrialSector = Customer.GetObject (DomainObjectIDs.Customer4);
+      var employeeWithoutComputer = Employee.GetObject (DomainObjectIDs.Employee1);
       var endPointID1 = RelationEndPointID.Create (customerWithoutOrders, o => o.Orders);
-      var endPointID2 = RelationEndPointID.Create (customerWithoutIndustrialSector, o => o.IndustrialSector);
+      var endPointID2 = RelationEndPointID.Create (employeeWithoutComputer, o => o.Computer);
 
-      Dev.Null = customerWithoutOrders.Orders;
-      Dev.Null = customerWithoutIndustrialSector.IndustrialSector;
+      customerWithoutOrders.Delete ();
+      employeeWithoutComputer.Delete ();
 
       CheckEndPointExists (endPointID1, true);
       CheckEndPointExists (endPointID2, true);
@@ -1288,11 +1286,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (
           () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID1),
           Throws.InvalidOperationException.With.Message.EqualTo (
-              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID1)));
+              "Cannot unload the following relation end-points because they belong to new or deleted objects: " + endPointID1 + "."));
       Assert.That (
           () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPointID2),
           Throws.InvalidOperationException.With.Message.EqualTo (
-              string.Format ("Cannot unload end-point '{0}' because the owning object is new or deleted.", endPointID2)));
+              "Cannot unload the following relation end-points because they belong to new or deleted objects: " + endPointID2 + "."));
 
       Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID1), Is.False);
       Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPointID2), Is.False);

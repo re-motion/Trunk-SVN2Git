@@ -663,17 +663,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CreateUnloadVirtualEndPointCommand ()
     {
-      var endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
-      var endPointID2 = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
-      var endPointID3 = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+      var endPointIDOfUnloadedObject = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointIDOfUnchangedObject = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+      var endPointIDOfChangedObject = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
 
-      var endPoint1 = _dataManager.GetOrCreateVirtualEndPoint (endPointID1);
-      var endPoint2 = _dataManager.GetOrCreateVirtualEndPoint (endPointID2);
-      
-      var command = _dataManager.CreateUnloadVirtualEndPointsCommand (endPointID1, endPointID2, endPointID3);
+      PrepareLoadedDataContainer (_dataManagerWithMocks, endPointIDOfUnchangedObject.ObjectID);
 
-      Assert.That (
-          command, Is.TypeOf<UnloadVirtualEndPointsCommand>().With.Property ("VirtualEndPoints").EqualTo (new[] { endPoint1, endPoint2 }));
+      var dataContainerOfChangedObject = PrepareLoadedDataContainer (_dataManagerWithMocks, endPointIDOfChangedObject.ObjectID);
+      dataContainerOfChangedObject.MarkAsChanged();
+
+      var fakeCommand = MockRepository.GenerateStub<IDataManagementCommand> ();
+      _endPointManagerMock
+          .Expect (mock => mock.CreateUnloadVirtualEndPointsCommand (
+              new[] { endPointIDOfUnloadedObject, endPointIDOfUnchangedObject, endPointIDOfChangedObject }))
+          .Return (fakeCommand);
+      _endPointManagerMock.Replay();
+
+      var result = _dataManagerWithMocks.CreateUnloadVirtualEndPointsCommand (endPointIDOfUnloadedObject, endPointIDOfUnchangedObject, endPointIDOfChangedObject);
+
+      _endPointManagerMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeCommand));
+    }
+
+    [Test]
+    public void CreateUnloadVirtualEndPointCommand_NewAndDeletedObjects ()
+    {
+      var endPointIDOfUnloadedObject = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
+      var endPointIDOfNewObject = RelationEndPointID.Create (DomainObjectIDs.Order2, typeof (Order), "OrderItems");
+      var endPointIDOfDeletedObject = RelationEndPointID.Create (DomainObjectIDs.Order3, typeof (Order), "OrderItems");
+
+      PrepareNewDataContainer (_dataManagerWithMocks, endPointIDOfNewObject.ObjectID);
+      var dataContainerOfDeletedObject = PrepareLoadedDataContainer (_dataManagerWithMocks, endPointIDOfDeletedObject.ObjectID);
+      dataContainerOfDeletedObject.Delete();
+
+      _endPointManagerMock.Replay ();
+
+      var result = _dataManagerWithMocks.CreateUnloadVirtualEndPointsCommand (endPointIDOfUnloadedObject, endPointIDOfNewObject, endPointIDOfDeletedObject);
+
+      Assert.That (result, Is.TypeOf<ExceptionCommand>());
+      var exception = ((ExceptionCommand) result).Exception;
+      var expectedMessage = string.Format (
+          "Cannot unload the following relation end-points because they belong to new or deleted objects: {0}, {1}.", 
+          endPointIDOfNewObject, 
+          endPointIDOfDeletedObject);
+      Assert.That (exception.Message, Is.EqualTo (expectedMessage));
     }
 
     [Test]
@@ -763,7 +796,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerWithoutLoading_Loaded ()
     {
-      var dataContainer = PrepareLoadedDataContainer ();
+      var dataContainer = PrepareLoadedDataContainer (_dataManagerWithMocks);
       
       var result = _dataManagerWithMocks.GetDataContainerWithoutLoading (dataContainer.ID);
 
@@ -782,7 +815,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainerWithLazyLoad_Loaded ()
     {
-      var dataContainer = PrepareLoadedDataContainer ();
+      var dataContainer = PrepareLoadedDataContainer (_dataManagerWithMocks);
 
       _objectLoaderMock.Replay ();
 
@@ -821,7 +854,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetDataContainersWithLazyLoad ()
     {
-      var loadedDataContainer = PrepareLoadedDataContainer();
+      var loadedDataContainer = PrepareLoadedDataContainer(_dataManagerWithMocks);
 
       var nonLoadedDataContainer1 = PrepareNonLoadedDataContainer ();
       var nonLoadedDataContainer2 = PrepareNonLoadedDataContainer ();
@@ -1158,12 +1191,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       return nonLoadedDataContainer;
     }
 
-    private DataContainer PrepareLoadedDataContainer ()
+    private DataContainer PrepareLoadedDataContainer (DataManager dataManager)
     {
-      var loadedDomainObject = DomainObjectMother.CreateFakeObject<Order> ();
-      var loadedDataContainer = DataContainer.CreateNew (loadedDomainObject.ID);
+      return PrepareLoadedDataContainer (dataManager, new ObjectID (typeof (Order), Guid.NewGuid()));
+    }
+
+    private DataContainer PrepareLoadedDataContainer (DataManager dataManager, ObjectID objectID)
+    {
+      var loadedDomainObject = DomainObjectMother.CreateFakeObject (objectID);
+      var loadedDataContainer = DataContainer.CreateForExisting (objectID, null, pd => pd.DefaultValue);
       loadedDataContainer.SetDomainObject (loadedDomainObject);
-      DataManagerTestHelper.AddDataContainer (_dataManagerWithMocks, loadedDataContainer);
+      DataManagerTestHelper.AddDataContainer (dataManager, loadedDataContainer);
+      return loadedDataContainer;
+    }
+
+    private DataContainer PrepareNewDataContainer (DataManager dataManager, ObjectID objectID)
+    {
+      var loadedDomainObject = DomainObjectMother.CreateFakeObject (objectID);
+      var loadedDataContainer = DataContainer.CreateNew (objectID);
+      loadedDataContainer.SetDomainObject (loadedDomainObject);
+      DataManagerTestHelper.AddDataContainer (dataManager, loadedDataContainer);
       return loadedDataContainer;
     }
 
