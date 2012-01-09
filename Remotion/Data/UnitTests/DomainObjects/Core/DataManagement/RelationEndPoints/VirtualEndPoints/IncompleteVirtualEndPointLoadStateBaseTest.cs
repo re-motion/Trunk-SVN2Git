@@ -31,7 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private IVirtualEndPoint<object> _virtualEndPointMock;
     private TestableIncompleteVirtualEndPointLoadState.IEndPointLoader _endPointLoaderMock;
-    private IVirtualEndPointDataManagerFactory<IVirtualEndPointDataManager> _dataManagerFactoryStub;
 
     private TestableIncompleteVirtualEndPointLoadState _loadState;
 
@@ -45,11 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _virtualEndPointMock = MockRepository.GenerateStrictMock<IVirtualEndPoint<object>>();
       _endPointLoaderMock = MockRepository.GenerateStrictMock<TestableIncompleteVirtualEndPointLoadState.IEndPointLoader> ();
-      _dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<IVirtualEndPointDataManager>>();
 
-      _loadState = new TestableIncompleteVirtualEndPointLoadState (
-          _endPointLoaderMock, 
-          _dataManagerFactoryStub);
+      _loadState = new TestableIncompleteVirtualEndPointLoadState (_endPointLoaderMock);
 
       _relatedEndPointStub1 = MockRepository.GenerateStub<IRealObjectEndPoint>();
       _relatedEndPointStub1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
@@ -227,9 +223,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
               object, 
               IVirtualEndPointDataManager,
               IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataManager>>();
-      var dataManagerFactory = new SerializableVirtualEndPointDataManagerFactoryFake();
 
-      var state = new TestableIncompleteVirtualEndPointLoadState (endPointLoader, dataManagerFactory);
+      var state = new TestableIncompleteVirtualEndPointLoadState (endPointLoader);
 
       var oppositeEndPoint = new SerializableRealObjectEndPointFake (
           null,
@@ -242,7 +237,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (result.OriginalOppositeEndPoints, Is.Not.Null);
       Assert.That (result.OriginalOppositeEndPoints, Is.Not.Empty);
       Assert.That (result.EndPointLoader, Is.Not.Null);
-      Assert.That (result.DataManagerFactory, Is.Not.Null);
     }
 
     private void CheckOperationDelegatesToCompleteState (

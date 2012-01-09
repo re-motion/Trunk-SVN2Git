@@ -311,7 +311,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\TestableDataContainerEndPointsRegistrationAgentBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRelationEndPointFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRelationEndPointRegistrationAgentFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataManagerFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointDataManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualObjectEndPointDataManagerFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualObjectEndPointDataManagerFake.cs" />

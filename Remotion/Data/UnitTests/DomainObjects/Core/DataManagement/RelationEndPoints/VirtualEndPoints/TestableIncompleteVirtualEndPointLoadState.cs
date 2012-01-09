@@ -28,16 +28,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           IVirtualEndPointDataManager, 
           IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataManager>>
   {
-    public TestableIncompleteVirtualEndPointLoadState (
-        IEndPointLoader endPointLoader,
-        IVirtualEndPointDataManagerFactory<IVirtualEndPointDataManager> dataManagerFactory)
-        : base (endPointLoader, dataManagerFactory)
+    public TestableIncompleteVirtualEndPointLoadState (IEndPointLoader endPointLoader)
+        : base (endPointLoader)
     {
     }
 
     public TestableIncompleteVirtualEndPointLoadState (FlattenedDeserializationInfo info)
         : base (info)
     {
+    }
+
+    protected override IVirtualEndPointDataManager CreateEndPointDataManager (IVirtualEndPoint<object> endPoint)
+    {
+      throw new NotImplementedException();
     }
   }
 }

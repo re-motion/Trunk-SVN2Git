@@ -23,9 +23,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// The <see cref="VirtualObjectEndPointDataManagerFactory"/> is responsible to create a new <see cref="IVirtualObjectEndPointDataManager"/> instance.
   /// </summary>
   [Serializable]
-  public class VirtualObjectEndPointDataManagerFactory : IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>
+  public class VirtualObjectEndPointDataManagerFactory : IVirtualObjectEndPointDataManagerFactory
   {
-    public IVirtualObjectEndPointDataManager Create (RelationEndPointID endPointID)
+    public IVirtualObjectEndPointDataManager CreateEndPointDataManager (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
       return new VirtualObjectEndPointDataManager (endPointID);

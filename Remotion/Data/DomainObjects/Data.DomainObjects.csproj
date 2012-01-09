@@ -202,7 +202,9 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\IAssociatedCollectionDataStrategyFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointCollectionManager.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointCollectionProvider.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
+    <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
@@ -256,7 +258,6 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPointStateUpdateListener.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CompleteCollectionEndPointLoadState.cs" />
-    <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\IVirtualEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\IncompleteCollectionEndPointLoadState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\ICollectionEndPointLoadState.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\SortedPropertyComparer.cs" />

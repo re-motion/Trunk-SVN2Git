@@ -31,8 +31,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ClientTransaction _clientTransaction;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly ILazyLoader _lazyLoader;
-    private readonly IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _virtualObjectEndPointDataManagerFactory;
-    private readonly IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _collectionEndPointDataManagerFactory;
+    private readonly IVirtualObjectEndPointDataManagerFactory _virtualObjectEndPointDataManagerFactory;
+    private readonly ICollectionEndPointDataManagerFactory _collectionEndPointDataManagerFactory;
     private readonly ICollectionEndPointCollectionProvider _collectionEndPointCollectionProvider;
     private readonly IAssociatedCollectionDataStrategyFactory _associatedCollectionDataStrategyFactory;
 
@@ -40,8 +40,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ClientTransaction clientTransaction,
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader,
-        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> virtualObjectEndPointDataManagerFactory,
-        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> collectionEndPointDataManagerFactory, 
+        IVirtualObjectEndPointDataManagerFactory virtualObjectEndPointDataManagerFactory,
+        ICollectionEndPointDataManagerFactory collectionEndPointDataManagerFactory, 
         ICollectionEndPointCollectionProvider collectionEndPointCollectionProvider, 
         IAssociatedCollectionDataStrategyFactory associatedCollectionDataStrategyFactory)
     {
@@ -77,12 +77,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _lazyLoader; }
     }
 
-    public IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> VirtualObjectEndPointDataManagerFactory
+    public IVirtualObjectEndPointDataManagerFactory VirtualObjectEndPointDataManagerFactory
     {
       get { return _virtualObjectEndPointDataManagerFactory; }
     }
 
-    public IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> CollectionEndPointDataManagerFactory
+    public ICollectionEndPointDataManagerFactory CollectionEndPointDataManagerFactory
     {
       get { return _collectionEndPointDataManagerFactory; }
     }

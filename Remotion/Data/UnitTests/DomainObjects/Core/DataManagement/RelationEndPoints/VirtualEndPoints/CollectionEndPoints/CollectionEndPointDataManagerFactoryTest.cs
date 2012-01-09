@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           DomainObjectIDs.Customer1, 
           "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders");
 
-      var result = _factory.Create (relationEndPointID);
+      var result = _factory.CreateEndPointDataManager (relationEndPointID);
 
       Assert.That (result, Is.TypeOf (typeof (CollectionEndPointDataManager)));
       Assert.That (((CollectionEndPointDataManager) result).EndPointID, Is.SameAs (relationEndPointID));

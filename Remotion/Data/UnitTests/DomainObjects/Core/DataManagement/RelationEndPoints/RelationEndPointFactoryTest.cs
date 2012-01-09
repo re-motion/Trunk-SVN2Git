@@ -36,8 +36,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ClientTransaction _clientTransaction;
     private IRelationEndPointProvider _endPointProviderStub;
     private ILazyLoader _lazyLoaderStub;
-    private IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _virtualObjectEndPointDataManagerFactoryStub;
-    private IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _collectionEndPointDataManagerFactoryStub;
+    private IVirtualObjectEndPointDataManagerFactory _virtualObjectEndPointDataManagerFactoryStub;
+    private ICollectionEndPointDataManagerFactory _collectionEndPointDataManagerFactoryStub;
     private ICollectionEndPointCollectionProvider _collectionEndPointCollectionProviderStub;
     private IAssociatedCollectionDataStrategyFactory _associatedCollectionStrategyFactoryStub;
 
@@ -53,16 +53,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var virtualObjectEndPointDataManager = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager> ();
       virtualObjectEndPointDataManager.Stub (stub => stub.OriginalOppositeEndPoint).Return (null);
-      _virtualObjectEndPointDataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>> ();
+      _virtualObjectEndPointDataManagerFactoryStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataManagerFactory> ();
       _virtualObjectEndPointDataManagerFactoryStub
-          .Stub (stub => stub.Create (Arg<RelationEndPointID>.Is.Anything))
+          .Stub (stub => stub.CreateEndPointDataManager (Arg<RelationEndPointID>.Is.Anything))
           .Return (virtualObjectEndPointDataManager);
 
       var collectionEndPointDataManager = MockRepository.GenerateStub<ICollectionEndPointDataManager> ();
       collectionEndPointDataManager.Stub (stub => stub.OriginalOppositeEndPoints).Return (new IRealObjectEndPoint[0]);
-      _collectionEndPointDataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
+      _collectionEndPointDataManagerFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataManagerFactory> ();
       _collectionEndPointDataManagerFactoryStub
-          .Stub (stub => stub.Create (Arg<RelationEndPointID>.Is.Anything))
+          .Stub (stub => stub.CreateEndPointDataManager (Arg<RelationEndPointID>.Is.Anything))
           .Return (collectionEndPointDataManager);
 
       _collectionEndPointCollectionProviderStub = MockRepository.GenerateStub<ICollectionEndPointCollectionProvider>();

@@ -14,16 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints
+using System;
+
+namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints
 {
   /// <summary>
-  /// 	<see cref="IVirtualEndPointDataManagerFactory{TDataManager}"/> defines the API for factories for implementations of 
-  ///   <see cref="IVirtualEndPointDataManager"/>.
+  /// 	Defines the API for factories creating instances implementing <see cref="ICollectionEndPointDataManager"/>.
   /// </summary>
-  /// <typeparam name="TDataManager">The type of <see cref="IVirtualEndPointDataManager"/> to create.</typeparam>
-  public interface IVirtualEndPointDataManagerFactory<TDataManager>
-      where TDataManager : IVirtualEndPointDataManager
+  public interface ICollectionEndPointDataManagerFactory
   {
-    TDataManager Create (RelationEndPointID endPointID);
+    ICollectionEndPointDataManager CreateEndPointDataManager (RelationEndPointID endPointID);
   }
 }

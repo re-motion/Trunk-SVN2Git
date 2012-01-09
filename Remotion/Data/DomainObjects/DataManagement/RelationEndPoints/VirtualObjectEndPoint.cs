@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     }
 
     private readonly ILazyLoader _lazyLoader;
-    private readonly IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactory;
+    private readonly IVirtualObjectEndPointDataManagerFactory _dataManagerFactory;
 
     private IVirtualObjectEndPointLoadState _loadState;
 
@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         RelationEndPointID id,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> dataManagerFactory)
+        IVirtualObjectEndPointDataManagerFactory dataManagerFactory)
         : base (
             ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
             ArgumentUtility.CheckNotNull ("id", id),
@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _lazyLoader; }
     }
     
-    public IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> DataManagerFactory
+    public IVirtualObjectEndPointDataManagerFactory DataManagerFactory
     {
       get { return _dataManagerFactory; }
     }
@@ -282,7 +282,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         : base (info)
     {
       _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
-      _dataManagerFactory = info.GetValueForHandle<IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>> ();
+      _dataManagerFactory = info.GetValueForHandle<IVirtualObjectEndPointDataManagerFactory> ();
       
       _loadState = info.GetValue<IVirtualObjectEndPointLoadState> ();
       _hasBeenTouched = info.GetBoolValue ();

@@ -24,10 +24,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
 {
   [Serializable]
   public class SerializableVirtualObjectEndPointDataManagerFactoryFake
-      : IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>
+      : IVirtualObjectEndPointDataManagerFactory
 
   {
-    public IVirtualObjectEndPointDataManager Create (RelationEndPointID endPointID)
+    public IVirtualObjectEndPointDataManager CreateEndPointDataManager (RelationEndPointID endPointID)
     {
       return new SerializableVirtualObjectEndPointDataManagerFake();
     }

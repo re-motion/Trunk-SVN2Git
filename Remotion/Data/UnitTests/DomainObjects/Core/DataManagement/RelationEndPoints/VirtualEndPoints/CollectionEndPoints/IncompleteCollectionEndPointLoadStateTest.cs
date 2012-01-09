@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ICollectionEndPoint _collectionEndPointMock;
 
     private IncompleteCollectionEndPointLoadState.IEndPointLoader _endPointLoaderMock;
-    private IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _dataManagerFactoryStub;
+    private ICollectionEndPointDataManagerFactory _dataManagerFactoryStub;
 
     private IncompleteCollectionEndPointLoadState _loadState;
 
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint> ();
     
       _endPointLoaderMock = MockRepository.GenerateStrictMock<IncompleteCollectionEndPointLoadState.IEndPointLoader> ();
-      _dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
+      _dataManagerFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataManagerFactory> ();
       
       var dataManagerStub = MockRepository.GenerateStub<ICollectionEndPointDataManager> ();
       dataManagerStub.Stub (stub => stub.HasDataChanged()).Return (false);
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var newManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataManager> ();
       newManagerMock.Replay ();
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerMock);
 
       _loadState.MarkDataComplete (
           _collectionEndPointMock,
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionEndPointMock.Replay ();
 
       var newManagerStub = MockRepository.GenerateStub<ICollectionEndPointDataManager> ();
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerStub);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerStub);
 
       _loadState.MarkDataComplete (_collectionEndPointMock, new DomainObject[0], dataManager => stateSetterCalled = true);
 
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       newManagerMock.Replay ();
 
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerMock);
 
       _loadState.MarkDataComplete (_collectionEndPointMock, new DomainObject[] { _relatedObject, _relatedObject2 }, dataManager => { });
 
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       newManagerMock.Expect (mock => mock.RegisterOriginalItemWithoutEndPoint (_relatedObject2)).Ordered (counter);
       newManagerMock.Replay ();
 
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerMock);
 
       var expectedManagerPosition = counter.GetNextExpectedPosition ();
       Action<ICollectionEndPointDataManager> stateSetter = dataManager => counter.CheckPosition ("stateSetter", expectedManagerPosition);

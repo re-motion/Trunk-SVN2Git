@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IVirtualObjectEndPoint _virtualObjectEndPointMock;
 
     private IncompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataManager, IVirtualObjectEndPointLoadState>.IEndPointLoader _endPointLoaderMock;
-    private IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactoryStub;
+    private IVirtualObjectEndPointDataManagerFactory _dataManagerFactoryStub;
 
     private IncompleteVirtualObjectEndPointLoadState _loadState;
 
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _virtualObjectEndPointMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPoint> ();
     
       _endPointLoaderMock = MockRepository.GenerateStrictMock<IncompleteVirtualObjectEndPointLoadState.IEndPointLoader> ();
-      _dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager>> ();
+      _dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataManagerFactory> ();
 
       var dataManagerStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager> ();
       dataManagerStub.Stub (stub => stub.HasDataChanged()).Return (false);
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       var newManagerMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointDataManager> ();
       newManagerMock.Replay ();
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerMock);
 
       _loadState.MarkDataComplete (
           _virtualObjectEndPointMock,
@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _virtualObjectEndPointMock.Replay ();
 
       var newManagerStub = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager> ();
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerStub);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerStub);
 
       _loadState.MarkDataComplete (_virtualObjectEndPointMock, null, dataManager => stateSetterCalled = true);
 
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       newManagerMock.Replay ();
 
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerMock);
 
       _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, dataManager => { });
 
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       newManagerMock.Replay ();
 
-      _dataManagerFactoryStub.Stub (stub => stub.Create (_endPointID)).Return (newManagerMock);
+      _dataManagerFactoryStub.Stub (stub => stub.CreateEndPointDataManager (_endPointID)).Return (newManagerMock);
 
       _loadState.MarkDataComplete (_virtualObjectEndPointMock, item, dataManager => { });
 

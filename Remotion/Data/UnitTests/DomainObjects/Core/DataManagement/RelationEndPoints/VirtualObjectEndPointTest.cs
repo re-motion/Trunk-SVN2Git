@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
-    private IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> _dataManagerFactory;
+    private IVirtualObjectEndPointDataManagerFactory _dataManagerFactory;
     private IVirtualObjectEndPointLoadState _loadStateMock;
     
     private VirtualObjectEndPoint _endPoint;

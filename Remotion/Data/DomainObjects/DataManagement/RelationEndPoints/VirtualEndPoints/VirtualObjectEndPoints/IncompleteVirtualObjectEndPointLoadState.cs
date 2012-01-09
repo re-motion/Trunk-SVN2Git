@@ -28,11 +28,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       : IncompleteVirtualEndPointLoadStateBase<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataManager, IVirtualObjectEndPointLoadState>,
         IVirtualObjectEndPointLoadState
   {
+    private readonly IVirtualObjectEndPointDataManagerFactory _dataManagerFactory;
+
     public IncompleteVirtualObjectEndPointLoadState (
         IEndPointLoader endPointLoader,
-        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> dataManagerFactory)
-        : base (endPointLoader, dataManagerFactory)
+        IVirtualObjectEndPointDataManagerFactory dataManagerFactory)
+        : base (endPointLoader)
     {
+      ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
+      _dataManagerFactory = dataManagerFactory;
+    }
+
+    public IVirtualObjectEndPointDataManagerFactory DataManagerFactory
+    {
+      get { return _dataManagerFactory; }
     }
 
     public void EnsureDataComplete (IVirtualObjectEndPoint endPoint)
@@ -68,13 +77,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return completeState.CreateDeleteCommand (virtualObjectEndPoint);
     }
 
+    protected override IVirtualObjectEndPointDataManager CreateEndPointDataManager (IVirtualObjectEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      return _dataManagerFactory.CreateEndPointDataManager (endPoint.ID);
+    }
+
     #region Serialization
 
     public IncompleteVirtualObjectEndPointLoadState (FlattenedDeserializationInfo info)
         : base (info)
     {
+      _dataManagerFactory = info.GetValueForHandle<IVirtualObjectEndPointDataManagerFactory> ();
+    }
+
+    protected override void SerializeSubclassData (FlattenedSerializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+      info.AddHandle (_dataManagerFactory);
     }
 
     #endregion Serialization
+
   }
 }

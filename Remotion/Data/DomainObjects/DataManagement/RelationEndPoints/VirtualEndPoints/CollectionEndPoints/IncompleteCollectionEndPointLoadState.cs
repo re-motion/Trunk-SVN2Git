@@ -30,11 +30,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       : IncompleteVirtualEndPointLoadStateBase<ICollectionEndPoint, ReadOnlyCollectionDataDecorator, ICollectionEndPointDataManager, ICollectionEndPointLoadState>,
         ICollectionEndPointLoadState
   {
+    private readonly ICollectionEndPointDataManagerFactory _dataManagerFactory;
+
     public IncompleteCollectionEndPointLoadState (
         IEndPointLoader endPointLoader, 
-        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> dataManagerFactory)
-      : base (endPointLoader, dataManagerFactory)
+        ICollectionEndPointDataManagerFactory dataManagerFactory)
+      : base (endPointLoader)
     {
+      ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
+      _dataManagerFactory = dataManagerFactory;
+    }
+
+    public ICollectionEndPointDataManagerFactory DataManagerFactory
+    {
+      get { return _dataManagerFactory; }
     }
 
     public bool? HasChangedFast ()
@@ -126,11 +135,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return completeState.CreateReplaceCommand (collectionEndPoint, index, replacementObject);
     }
 
+    protected override ICollectionEndPointDataManager CreateEndPointDataManager (ICollectionEndPoint endPoint)
+    {
+      ArgumentUtility.CheckNotNull ("endPoint", endPoint);
+      return _dataManagerFactory.CreateEndPointDataManager (endPoint.ID);
+    }
+
     #region Serialization
 
     public IncompleteCollectionEndPointLoadState (FlattenedDeserializationInfo info)
         : base (info)
     {
+      _dataManagerFactory = info.GetValueForHandle<ICollectionEndPointDataManagerFactory>();
+    }
+
+    protected override void SerializeSubclassData (FlattenedSerializationInfo info)
+    {
+      ArgumentUtility.CheckNotNull ("info", info);
+      info.AddHandle (_dataManagerFactory);
     }
 
     #endregion

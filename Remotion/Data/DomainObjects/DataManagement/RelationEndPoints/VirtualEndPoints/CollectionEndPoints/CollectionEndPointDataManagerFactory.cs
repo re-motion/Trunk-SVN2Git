@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
   /// The <see cref="CollectionEndPointDataManagerFactory"/> is responsible to create a new <see cref="ICollectionEndPointDataManager"/> instance.
   /// </summary>
   [Serializable]
-  public class CollectionEndPointDataManagerFactory : IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>
+  public class CollectionEndPointDataManagerFactory : ICollectionEndPointDataManagerFactory
   {
     private readonly ICollectionEndPointChangeDetectionStrategy _changeDetectionStrategy;
 
@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _changeDetectionStrategy; }
     }
 
-    public ICollectionEndPointDataManager Create (RelationEndPointID endPointID)
+    public ICollectionEndPointDataManager CreateEndPointDataManager (RelationEndPointID endPointID)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 

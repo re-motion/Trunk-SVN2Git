@@ -127,8 +127,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction constructedTransaction,
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader,
-        IVirtualEndPointDataManagerFactory<IVirtualObjectEndPointDataManager> virtualObjectEndPointDataManagerFactory,
-        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> collectionEndPointDataManagerFactory)
+        IVirtualObjectEndPointDataManagerFactory virtualObjectEndPointDataManagerFactory,
+        ICollectionEndPointDataManagerFactory collectionEndPointDataManagerFactory)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);

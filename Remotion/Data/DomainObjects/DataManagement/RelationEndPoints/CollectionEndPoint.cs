@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
@@ -75,7 +74,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ICollectionEndPointCollectionManager _collectionManager;
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _dataManagerFactory;
+    private readonly ICollectionEndPointDataManagerFactory _dataManagerFactory;
 
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
 
@@ -88,7 +87,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ICollectionEndPointCollectionManager collectionManager,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
-        IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> dataManagerFactory)
+        ICollectionEndPointDataManagerFactory dataManagerFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("collectionManager", collectionManager);
@@ -128,7 +127,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _endPointProvider; }
     }
 
-    public IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> DataManagerFactory
+    public ICollectionEndPointDataManagerFactory DataManagerFactory
     {
       get { return _dataManagerFactory; }
     }
@@ -404,7 +403,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collectionManager = info.GetValueForHandle<ICollectionEndPointCollectionManager>();
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
-      _dataManagerFactory = info.GetValueForHandle<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
+      _dataManagerFactory = info.GetValueForHandle<ICollectionEndPointDataManagerFactory> ();
 
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
       _hasBeenTouched = info.GetBoolValue ();

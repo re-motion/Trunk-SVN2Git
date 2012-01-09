@@ -22,9 +22,9 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
-  public class SerializableCollectionEndPointDataManagerFactoryFake : IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>
+  public class SerializableCollectionEndPointDataManagerFactoryFake : ICollectionEndPointDataManagerFactory
   {
-    public ICollectionEndPointDataManager Create (RelationEndPointID endPointID)
+    public ICollectionEndPointDataManager CreateEndPointDataManager (RelationEndPointID endPointID)
     {
       return new SerializableCollectionEndPointDataManagerFake();
     }

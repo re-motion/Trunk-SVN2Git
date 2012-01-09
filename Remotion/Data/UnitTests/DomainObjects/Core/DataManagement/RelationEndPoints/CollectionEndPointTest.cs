@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ICollectionEndPointCollectionManager _collectionManagerMock;
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
-    private IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager> _dataManagerFactoryStub;
+    private ICollectionEndPointDataManagerFactory _dataManagerFactoryStub;
     private ICollectionEndPointLoadState _loadStateMock;
 
     private CollectionEndPoint _endPoint;
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointCollectionManager> ();
       _lazyLoaderMock = MockRepository.GenerateMock<ILazyLoader> ();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _dataManagerFactoryStub = MockRepository.GenerateStub<IVirtualEndPointDataManagerFactory<ICollectionEndPointDataManager>> ();
+      _dataManagerFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataManagerFactory> ();
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
 
       _endPoint = new CollectionEndPoint (
