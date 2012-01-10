@@ -65,6 +65,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Collection was modified during enumeration.")]
+    public void GetEnumerator_Generic_ChecksVersion ()
+    {
+      _collection.Add (_dataContainer);
+
+      foreach (var dataContainer in _collection)
+        _collection.Remove (dataContainer.ID);
+    }
+
+    [Test]
     public void Item_Get_ObjectID ()
     {
       _collection.Add (_dataContainer);

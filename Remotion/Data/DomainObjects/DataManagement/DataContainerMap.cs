@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections;
-using System.Linq;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
@@ -95,7 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
   public IEnumerator<DataContainer> GetEnumerator ()
   {
-    return _dataContainers.Cast<DataContainer>().GetEnumerator ();
+    return _dataContainers.GetEnumerator ();
   }
 
   IEnumerator IEnumerable.GetEnumerator ()

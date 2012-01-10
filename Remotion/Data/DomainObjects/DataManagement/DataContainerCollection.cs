@@ -114,8 +114,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public new IEnumerator<DataContainer> GetEnumerator ()
     {
-      for (int i = 0; i < Count; ++i)
-        yield return this[i];
+      // Use non-generic base implementation
+// ReSharper disable LoopCanBeConvertedToQuery
+      foreach (DataContainer dataContainer in (IEnumerable) this)
+// ReSharper restore LoopCanBeConvertedToQuery
+        yield return dataContainer;
     }
 
     #region Standard implementation for collections
