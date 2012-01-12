@@ -57,6 +57,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    [Ignore ("TODO 4579")]
+    public void UnloadVirtualEndPointAndItemData_Object ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicket = order.OrderTicket;
+
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+
+      CheckDataContainerExists (order, true);
+      CheckDataContainerExists (orderTicket, false);
+
+      CheckEndPointExists (order, "OrderTicket", false);
+
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderTicket.State, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
     public void UnloadVirtualEndPointAndItemData_Collection_EnsureDataAvailable_AndComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
@@ -121,7 +139,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void Events ()
+    [Ignore ("TODO 4579")]
+    public void UnloadVirtualEndPointAndItemData_Object_Reload ()
+    {
+      SetDatabaseModifyable ();
+
+      var employee = Employee.GetObject (DomainObjectIDs.Employee3);
+      var computer = employee.Computer;
+
+      ObjectID newComputerID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var employeeInOtherTx = Employee.GetObject (employee.ID);
+        var newComputer = Computer.NewObject ();
+        newComputerID = newComputer.ID;
+        employeeInOtherTx.Computer = newComputer;
+
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (employee.Computer, Is.SameAs (computer));
+
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (employee, e => e.Computer));
+
+      Assert.That (employee.Computer, Is.Not.SameAs (computer));
+      Assert.That (employee.Computer.ID, Is.EqualTo (newComputerID));
+      Assert.That (computer.Employee, Is.Null);
+    }
+
+    [Test]
+    public void UnloadVirtualEndPointAndItemData_Collection_Events ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemA = order1.OrderItems[0];
@@ -164,10 +211,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       listenerMock.Replay ();
 
-      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, order1.OrderItems.AssociatedEndPointID);
-
-      listenerMock.VerifyAllExpectations ();
-      listenerMock.BackToRecord(); // For Discarding
+      try
+      {
+        UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, order1.OrderItems.AssociatedEndPointID);
+        listenerMock.VerifyAllExpectations ();
+      }
+      finally
+      {
+        listenerMock.BackToRecord (); // For Discarding
+      }
 
       Assert.That (orderItemA.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
       Assert.That (orderItemB.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
@@ -179,7 +231,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadVirtualEndPointAndItemData_Collection_IsAtomicWithinTransaction_WhenSingleCollectionItemIsChanged ()
+    [Ignore ("TODO 4579")]
+    public void UnloadVirtualEndPointAndItemData_Object_Events ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var orderTicket = order1.OrderTicket;
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      using (listenerMock.GetMockRepository ().Ordered ())
+      {
+        listenerMock
+            .Expect (mock => mock.ObjectsUnloading (
+                Arg.Is (TestableClientTransaction),
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderTicket })))
+            .WhenCalled (
+            mi =>
+            {
+              Assert.That (orderTicket.OnUnloadingCalled, Is.False, "items unloaded after this method is called");
+              Assert.That (orderTicket.OnUnloadedCalled, Is.False, "items unloaded after this method is called");
+
+              Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
+            });
+        listenerMock
+            .Expect (mock => mock.ObjectsUnloaded (
+                Arg.Is (TestableClientTransaction),
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderTicket })))
+            .WhenCalled (
+            mi =>
+            {
+              Assert.That (orderTicket.OnUnloadingCalled, Is.True, "items unloaded before this method is called");
+              Assert.That (orderTicket.OnUnloadedCalled, Is.True, "items unloaded before this method is called");
+
+              Assert.That (orderTicket.State, Is.EqualTo (StateType.NotLoadedYet));
+            });
+      }
+
+      listenerMock.Replay ();
+      try
+      {
+        UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.OrderTicket));
+
+        listenerMock.VerifyAllExpectations ();
+      }
+      finally
+      {
+        listenerMock.BackToRecord (); // For Discarding
+      }
+
+      Assert.That (orderTicket.UnloadingState, Is.EqualTo (StateType.Unchanged), "OnUnloading before state change");
+      Assert.That (orderTicket.UnloadedState, Is.EqualTo (StateType.NotLoadedYet), "OnUnloaded after state change");
+    }
+
+    [Test]
+    public void UnloadVirtualEndPointAndItemData_IsAtomicWithinTransaction_WhenSingleCollectionItemIsChanged ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
@@ -216,7 +320,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadVirtualEndPointAndItemData_Collection_IsAtomicWithinTransaction_WhenCollectionIsChanged ()
+    public void UnloadVirtualEndPointAndItemData_IsAtomicWithinTransaction_WhenCollectionIsChanged ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
