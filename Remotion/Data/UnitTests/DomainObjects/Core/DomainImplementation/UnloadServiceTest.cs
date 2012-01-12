@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_CollectionEndPoint ()
+    public void UnloadVirtualEndPoint_CollectionEndPoint ()
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_VirtualObjectEndPoint ()
+    public void UnloadVirtualEndPoint_VirtualObjectEndPoint ()
     {
       EnsureEndPointLoadedAndComplete (_virtualObjectEndPointID);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID), Is.Not.Null);
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_NotLoadedYet ()
+    public void UnloadVirtualEndPoint_NotLoadedYet ()
     {
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Null);
 
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_NotComplete ()
+    public void UnloadVirtualEndPoint_NotComplete ()
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, _collectionEndPointID);
@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
         "The given end point ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/"
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' does not denote a virtual end-point.\r\nParameter name: endPointID")]
-    public void UnloadCollectionEndPoint_RealObjectEndPoint ()
+    public void UnloadVirtualEndPoint_RealObjectEndPoint ()
     {
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       EnsureEndPointLoadedAndComplete (objectEndPointID);
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
         "The end point with ID 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/"
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' has been changed. Changed end points cannot be unloaded.")]
-    public void UnloadCollectionEndPoint_Changed ()
+    public void UnloadVirtualEndPoint_Changed ()
     {
       var orders = Customer.GetObject (_collectionEndPointID.ObjectID).Orders;
       orders.Clear ();
@@ -118,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_AppliedToSubTransaction_UnloadsFromWholeHierarchy ()
+    public void UnloadVirtualEndPoint_AppliedToSubTransaction_UnloadsFromWholeHierarchy ()
     {
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
 
@@ -137,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPoint_AppliedToParentTransaction_UnloadsFromWholeHierarchy ()
+    public void UnloadVirtualEndPoint_AppliedToParentTransaction_UnloadsFromWholeHierarchy ()
     {
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
 
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPoint_CollectionEndPoint ()
+    public void TryUnloadVirtualEndPoint_CollectionEndPoint ()
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
@@ -170,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPoint_VirtualObject ()
+    public void TryUnloadVirtualEndPoint_VirtualObject ()
     {
       EnsureEndPointLoadedAndComplete (_virtualObjectEndPointID);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_virtualObjectEndPointID), Is.Not.Null);
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPoint_NotComplete ()
+    public void TryUnloadVirtualEndPoint_NotComplete ()
     {
       EnsureEndPointLoadedAndComplete (_collectionEndPointID);
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, _collectionEndPointID);
@@ -199,7 +199,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPoint_Failure ()
+    public void TryUnloadVirtualEndPoint_Failure ()
     {
       var orders = Customer.GetObject (_collectionEndPointID.ObjectID).Orders;
       orders.Clear ();
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPoint_AppliedToParentTransaction_UnloadsFromWholeHierarchy ()
+    public void TryUnloadVirtualEndPoint_AppliedToParentTransaction_UnloadsFromWholeHierarchy ()
     {
       var subTransaction = TestableClientTransaction.CreateSubTransaction ();
 
@@ -236,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPoint_Failure_InHigherTransaction ()
+    public void TryUnloadVirtualEndPoint_Failure_InHigherTransaction ()
     {
       var orders = Customer.GetObject (_collectionEndPointID.ObjectID).Orders;
       orders.Clear ();
@@ -381,7 +381,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_UnloadsEndPointAndItems ()
+    public void UnloadVirtualEndPointAndItemData_UnloadsEndPointAndItems ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
@@ -390,7 +390,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var orderItem1 = orderItemsEndPoint.Collection[0];
       var orderItem2 = orderItemsEndPoint.Collection[1];
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, orderItemsEndPoint.ID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, orderItemsEndPoint.ID);
 
       Assert.That (orderItemsEndPoint.IsDataComplete, Is.False);
       Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -399,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_UnloadsEndPoint_EmptyCollection ()
+    public void UnloadVirtualEndPointAndItemData_UnloadsEndPoint_EmptyCollection ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -407,7 +407,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       Assert.That (ordersEndPoint.Collection, Is.Empty);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, ordersEndPoint.ID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 
       Assert.That (ordersEndPoint.IsDataComplete, Is.False);
       Assert.That (customer.State, Is.EqualTo (StateType.Unchanged));
@@ -417,41 +417,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The given end point ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/"
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket' does not denote a collection-valued end-point.\r\nParameter name: endPointID")]
-    public void UnloadCollectionEndPointAndData_ObjectEndPoint ()
+    public void UnloadVirtualEndPointAndItemData_ObjectEndPoint ()
     {
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       EnsureEndPointLoadedAndComplete (objectEndPointID);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, objectEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, objectEndPointID);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The given end point ID 'Client|1627ade8-125f-4819-8e33-ce567c42b00c|System.Guid/' does not denote a collection-valued end-point.\r\n"
         + "Parameter name: endPointID")]
-    public void UnloadCollectionEndPointAndData_AnonymousEndPoint ()
+    public void UnloadVirtualEndPointAndItemData_AnonymousEndPoint ()
     {
       var anonymousEndPointDefinition = GetEndPointDefinition (typeof (Location), "Client").GetOppositeEndPointDefinition();
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Client1, anonymousEndPointDefinition);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, endPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, endPointID);
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_DoesNothing_IfEndPointNotLoaded ()
+    public void UnloadVirtualEndPointAndItemData_DoesNothing_IfEndPointNotLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, endPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, endPointID);
 
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_DoesNothing_IfDataNotComplete ()
+    public void UnloadVirtualEndPointAndItemData_DoesNothing_IfDataNotComplete ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -462,13 +462,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, ordersEndPoint.ID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 
       Assert.That (ordersEndPoint.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_ThrowsAndDoesNothing_IfItemCannotBeUnloaded ()
+    public void UnloadVirtualEndPointAndItemData_ThrowsAndDoesNothing_IfItemCannotBeUnloaded ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -484,7 +484,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       try
       {
-        UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, ordersEndPoint.ID);
+        UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
         Assert.Fail ("Expected InvalidOperationException");
       }
       catch (InvalidOperationException)
@@ -498,7 +498,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_AppliedToSubTransaction_UnloadsFromWholeHierarchy ()
+    public void UnloadVirtualEndPointAndItemData_AppliedToSubTransaction_UnloadsFromWholeHierarchy ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
@@ -511,7 +511,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
           parentOrderItemsEndPoint.ID);
       EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrderItemsEndPoint.ID);
 
-      UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrderItemsEndPoint.ID);
+      UnloadService.UnloadVirtualEndPointAndItemData (subTransaction, parentOrderItemsEndPoint.ID);
 
       Assert.That (subOrderItemsEndPoint.IsDataComplete, Is.False);
       Assert.That (parentOrderItemsEndPoint.IsDataComplete, Is.False);
@@ -521,7 +521,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_AppliedToParentTransaction_UnloadsFromWholeHierarchy()
+    public void UnloadVirtualEndPointAndItemData_AppliedToParentTransaction_UnloadsFromWholeHierarchy()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
@@ -534,7 +534,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
           parentOrderItemsEndPoint.ID);
       EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrderItemsEndPoint.ID);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, parentOrderItemsEndPoint.ID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, parentOrderItemsEndPoint.ID);
 
       Assert.That (subOrderItemsEndPoint.IsDataComplete, Is.False);
       Assert.That (parentOrderItemsEndPoint.IsDataComplete, Is.False);
@@ -544,7 +544,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_EmptyCollection ()
+    public void UnloadVirtualEndPointAndItemData_EmptyCollection ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -557,14 +557,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
           parentOrdersEndPoint.ID);
       EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrdersEndPoint.ID);
 
-      UnloadService.UnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID);
+      UnloadService.UnloadVirtualEndPointAndItemData (subTransaction, parentOrdersEndPoint.ID);
 
       Assert.That (subOrdersEndPoint.IsDataComplete, Is.False);
       Assert.That (parentOrdersEndPoint.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void TryUnloadCollectionEndPointAndData_Success ()
+    public void TryUnloadVirtualEndPointAndItemData_Success ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
@@ -573,7 +573,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var orderItem1 = orderItemsEndPoint.Collection[0];
       var orderItem2 = orderItemsEndPoint.Collection[1];
 
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, orderItemsEndPoint.ID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, orderItemsEndPoint.ID);
 
       Assert.That (result, Is.True);
 
@@ -584,7 +584,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPointAndData_Success_UnloadsEndPoint_EmptyCollection ()
+    public void TryUnloadVirtualEndPointAndItemData_Success_UnloadsEndPoint_EmptyCollection ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer2);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -592,7 +592,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       Assert.That (ordersEndPoint.Collection, Is.Empty);
 
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, ordersEndPoint.ID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 
       Assert.That (result, Is.True);
       Assert.That (ordersEndPoint.IsDataComplete, Is.False);
@@ -603,30 +603,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The given end point ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/"
         + "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' does not denote a collection-valued end-point.\r\nParameter name: endPointID")]
-    public void TryUnloadCollectionEndPointAndData_ObjectEndPoint ()
+    public void TryUnloadVirtualEndPointAndItemData_ObjectEndPoint ()
     {
       var objectEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
       EnsureEndPointLoadedAndComplete (objectEndPointID);
 
-      UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, objectEndPointID);
+      UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, objectEndPointID);
     }
 
     [Test]
-    public void TryUnloadCollectionEndPointAndData_Success_IfEndPointNotLoaded ()
+    public void TryUnloadVirtualEndPointAndItemData_Success_IfEndPointNotLoaded ()
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, endPointID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, endPointID);
 
       Assert.That (result, Is.True);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_Success_IfDataNotComplete ()
+    public void UnloadVirtualEndPointAndItemData_Success_IfDataNotComplete ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -635,14 +635,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, ordersEndPoint.ID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 
       Assert.That (result, Is.True);
       Assert.That (ordersEndPoint.IsDataComplete, Is.False);
     }
 
     [Test]
-    public void TryUnloadCollectionEndPointAndData_Failure_EndPointChanged_EndPointAndItemsStillLoaded ()
+    public void TryUnloadVirtualEndPointAndItemData_Failure_EndPointChanged_EndPointAndItemsStillLoaded ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
 
@@ -654,7 +654,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Assert.That (ordersEndPoint.HasChanged, Is.True);
       Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
       
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, ordersEndPoint.ID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 
       Assert.That (result, Is.False);
       Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
@@ -662,7 +662,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPointAndData_Failure_ItemCannotBeUnloaded_EndPointAndItemStillLoaded ()
+    public void TryUnloadVirtualEndPointAndItemData_Failure_ItemCannotBeUnloaded_EndPointAndItemStillLoaded ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var ordersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -676,7 +676,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderB.State, Is.EqualTo (StateType.Changed));
 
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, ordersEndPoint.ID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, ordersEndPoint.ID);
 
       Assert.That (result, Is.False);
       Assert.That (orderA.State, Is.EqualTo (StateType.Unchanged));
@@ -685,7 +685,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPointAndData_AppliedToParentTransaction_UnloadsFromWholeHierarchy ()
+    public void TryUnloadVirtualEndPointAndItemData_AppliedToParentTransaction_UnloadsFromWholeHierarchy ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var parentOrderItemsEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
@@ -698,7 +698,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
           parentOrderItemsEndPoint.ID);
       EnsureEndPointLoadedAndComplete (ClientTransactionTestHelper.GetDataManager (subTransaction), subOrderItemsEndPoint.ID);
 
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, parentOrderItemsEndPoint.ID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, parentOrderItemsEndPoint.ID);
 
       Assert.That (result, Is.True);
       Assert.That (subOrderItemsEndPoint.IsDataComplete, Is.False);
@@ -709,7 +709,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
-    public void TryUnloadCollectionEndPointAndData_Failure_InHigherTransaction ()
+    public void TryUnloadVirtualEndPointAndItemData_Failure_InHigherTransaction ()
     {
       var customer = Customer.GetObject (DomainObjectIDs.Customer1);
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
@@ -726,7 +726,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
 
       Assert.That (subOrdersEndPoint.Collection[0].TransactionContext[subTransaction].State, Is.EqualTo (StateType.Unchanged));
 
-      var result = UnloadService.TryUnloadCollectionEndPointAndData (subTransaction, parentOrdersEndPoint.ID);
+      var result = UnloadService.TryUnloadVirtualEndPointAndItemData (subTransaction, parentOrdersEndPoint.ID);
 
       Assert.That (result, Is.False);
       Assert.That (subOrdersEndPoint.IsDataComplete, Is.False);

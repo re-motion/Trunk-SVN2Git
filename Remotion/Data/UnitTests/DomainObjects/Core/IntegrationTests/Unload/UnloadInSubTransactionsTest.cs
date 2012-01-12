@@ -425,7 +425,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (_subTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (_subTransaction, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (_subTransaction, order, true);
       CheckDataContainerExists (_subTransaction, orderItem1, false);
@@ -479,7 +479,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
 
-      UnloadService.UnloadCollectionEndPointAndData (_subTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (_subTransaction, orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem2, OrderItem.GetObject (newOrderItemID) }));
       Assert.That (orderItem1.Order, Is.SameAs (Order.GetObject (DomainObjectIDs.Order2)));
@@ -541,7 +541,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       subListenerMock.Replay ();
 
-      UnloadService.UnloadCollectionEndPointAndData (_subTransaction, order1.OrderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (_subTransaction, order1.OrderItems.AssociatedEndPointID);
 
       subListenerMock.VerifyAllExpectations ();
       subListenerMock.BackToRecord (); // For Discarding

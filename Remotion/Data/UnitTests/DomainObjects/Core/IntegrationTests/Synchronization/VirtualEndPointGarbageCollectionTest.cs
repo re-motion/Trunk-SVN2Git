@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, virtualEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, virtualEndPointID);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.False);
 

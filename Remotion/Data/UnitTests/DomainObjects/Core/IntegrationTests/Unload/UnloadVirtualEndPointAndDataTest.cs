@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, orderItems.AssociatedEndPointID);
 
       CheckDataContainerExists (order, true);
       CheckDataContainerExists (orderItem1, false);
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (orderItems.IsDataComplete, Is.True);
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, orderItems.AssociatedEndPointID);
 
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItem1.State, Is.EqualTo (StateType.NotLoadedYet));
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem1, orderItem2 }));
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, orderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, orderItems.AssociatedEndPointID);
 
       Assert.That (orderItems, Is.EquivalentTo (new[] { orderItem2, OrderItem.GetObject (newOrderItemID) }));
       Assert.That (orderItem1.Order, Is.SameAs (Order.GetObject (DomainObjectIDs.Order2)));
@@ -164,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       listenerMock.Replay ();
 
-      UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, order1.OrderItems.AssociatedEndPointID);
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, order1.OrderItems.AssociatedEndPointID);
 
       listenerMock.VerifyAllExpectations ();
       listenerMock.BackToRecord(); // For Discarding
@@ -198,13 +198,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataContainerExists (orderItemB, true);
       CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
       
-      Assert.That (() => UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, endPointID), Throws.InvalidOperationException);
+      Assert.That (() => UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, endPointID), Throws.InvalidOperationException);
 
       CheckDataContainerExists (orderItemA, true);
       CheckDataContainerExists (orderItemB, true);
       CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
 
-      Assert.That (UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, endPointID), Is.False);
+      Assert.That (UnloadService.TryUnloadVirtualEndPointAndItemData (TestableClientTransaction, endPointID), Is.False);
 
       CheckDataContainerExists (orderItemA, true);
       CheckDataContainerExists (orderItemB, true);
@@ -240,13 +240,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
         CheckDataContainerExists (orderItemB, true);
         CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
 
-        Assert.That (() => UnloadService.UnloadCollectionEndPointAndData (ClientTransaction.Current, endPointID), Throws.InvalidOperationException);
+        Assert.That (() => UnloadService.UnloadVirtualEndPointAndItemData (ClientTransaction.Current, endPointID), Throws.InvalidOperationException);
 
         CheckDataContainerExists (orderItemA, true);
         CheckDataContainerExists (orderItemB, true);
         CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
 
-        Assert.That (UnloadService.TryUnloadCollectionEndPointAndData (ClientTransaction.Current, endPointID), Is.False);
+        Assert.That (UnloadService.TryUnloadVirtualEndPointAndItemData (ClientTransaction.Current, endPointID), Is.False);
 
         CheckDataContainerExists (orderItemA, true);
         CheckDataContainerExists (orderItemB, true);
