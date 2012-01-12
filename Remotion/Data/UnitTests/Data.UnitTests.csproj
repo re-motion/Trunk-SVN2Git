@@ -250,6 +250,9 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionNewObjectGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionPropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadTestBase.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointAndDataTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\MappingReflectionIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Base.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Derived.cs" />
@@ -1055,7 +1058,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\ClientTransactionDiffersTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\ConcurrencyViolationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PropertyTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadDataTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\DomainObjectConstructorLookupInfoTest.cs" />
     <Compile Include="DomainObjects\Core\Interception\SetUpFixture.cs" />
     <Compile Include="DomainObjects\Core\Interception\TestDomain\SerializableClass.cs" />
