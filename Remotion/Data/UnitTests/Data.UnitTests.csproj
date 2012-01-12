@@ -252,7 +252,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointAndDataTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointAndItemDataCollectionTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\MappingReflectionIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Base.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Derived.cs" />

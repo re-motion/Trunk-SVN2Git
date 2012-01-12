@@ -27,10 +27,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 {
   [TestFixture]
-  public class UnloadVirtualEndPointAndData_CollectionTest : UnloadTestBase
+  public class UnloadVirtualEndPointAndItemDataCollectionTest : UnloadTestBase
   {
     [Test]
-    public void UnloadVirtualEndPointAndData_Collection ()
+    public void UnloadVirtualEndPointAndItemData_Collection ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadVirtualEndPointAndData_Collection_EnsureDataAvailable_AndComplete ()
+    public void UnloadVirtualEndPointAndItemData_Collection_EnsureDataAvailable_AndComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadVirtualEndPointAndData_Collection_Reload ()
+    public void UnloadVirtualEndPointAndItemData_Collection_Reload ()
     {
       SetDatabaseModifyable ();
 
@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadVirtualEndPointAndData_Collection_IsAtomicWithinTransaction_WhenSingleCollectionItemIsChanged ()
+    public void UnloadVirtualEndPointAndItemData_Collection_IsAtomicWithinTransaction_WhenSingleCollectionItemIsChanged ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadVirtualEndPointAndData_Collection_IsAtomicWithinTransaction_WhenCollectionIsChanged ()
+    public void UnloadVirtualEndPointAndItemData_Collection_IsAtomicWithinTransaction_WhenCollectionIsChanged ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
