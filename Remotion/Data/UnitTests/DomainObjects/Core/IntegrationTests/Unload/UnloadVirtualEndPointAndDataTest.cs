@@ -18,6 +18,8 @@ using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -25,10 +27,10 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 {
   [TestFixture]
-  public class UnloadVirtualEndPointAndDataTest : UnloadTestBase
+  public class UnloadVirtualEndPointAndData_CollectionTest : UnloadTestBase
   {
     [Test]
-    public void UnloadCollectionEndPointAndData ()
+    public void UnloadVirtualEndPointAndData_Collection ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
@@ -55,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_EnsureDataAvailable_AndComplete ()
+    public void UnloadVirtualEndPointAndData_Collection_EnsureDataAvailable_AndComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderItems = order.OrderItems;
@@ -86,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void UnloadCollectionEndPointAndData_Reload ()
+    public void UnloadVirtualEndPointAndData_Collection_Reload ()
     {
       SetDatabaseModifyable ();
 
@@ -174,6 +176,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (orderItemA.UnloadedState, Is.EqualTo (StateType.NotLoadedYet), "OnUnloaded after state change");
       Assert.That (orderItemB.UnloadedState, Is.EqualTo (StateType.NotLoadedYet), "OnUnloaded after state change");
       Assert.That (orderItemA.OnUnloadedDateTime, Is.GreaterThan (orderItemB.OnUnloadedDateTime), "orderItemA.OnUnloaded after orderItemB.OnUnloaded");
+    }
+
+    [Test]
+    public void UnloadVirtualEndPointAndData_Collection_IsAtomicWithinTransaction_WhenSingleCollectionItemIsChanged ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+      
+      // Change a single OrderItem - this must cause nothing to be unloaded
+      orderItemB.Product = "Changed";
+
+      Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
+      Assert.That (orderItemB.State, Is.EqualTo (StateType.Changed));
+      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID).HasChanged, Is.False);
+      Assert.That (order1.OrderItems.IsDataComplete, Is.True);
+
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+      CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
+      
+      Assert.That (() => UnloadService.UnloadCollectionEndPointAndData (TestableClientTransaction, endPointID), Throws.InvalidOperationException);
+
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+      CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
+
+      Assert.That (UnloadService.TryUnloadCollectionEndPointAndData (TestableClientTransaction, endPointID), Is.False);
+
+      CheckDataContainerExists (orderItemA, true);
+      CheckDataContainerExists (orderItemB, true);
+      CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
+
+      Assert.That (orderItemA.State, Is.Not.EqualTo (StateType.NotLoadedYet));
+      Assert.That (orderItemB.State, Is.Not.EqualTo (StateType.NotLoadedYet));
+      Assert.That (order1.OrderItems.IsDataComplete, Is.True);
+    }
+
+    [Test]
+    public void UnloadVirtualEndPointAndData_Collection_IsAtomicWithinTransaction_WhenCollectionIsChanged ()
+    {
+      var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
+      var orderItemA = order1.OrderItems[0];
+      var orderItemB = order1.OrderItems[1];
+
+      // Change the collection, but not the items; we need to test this within a subtransaction because this is the only way to get the collection to
+      // change without changing items (or the collection reference, which doesn't influence unloadability).
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope())
+      {
+        order1.OrderItems.Clear();
+        order1.OrderItems.Add (orderItemB);
+        order1.OrderItems.Add (orderItemA);
+
+        Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
+        Assert.That (DataManagementService.GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (endPointID).HasChanged, Is.True);
+        Assert.That (order1.OrderItems.IsDataComplete, Is.True);
+
+        CheckDataContainerExists (orderItemA, true);
+        CheckDataContainerExists (orderItemB, true);
+        CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
+
+        Assert.That (() => UnloadService.UnloadCollectionEndPointAndData (ClientTransaction.Current, endPointID), Throws.InvalidOperationException);
+
+        CheckDataContainerExists (orderItemA, true);
+        CheckDataContainerExists (orderItemB, true);
+        CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
+
+        Assert.That (UnloadService.TryUnloadCollectionEndPointAndData (ClientTransaction.Current, endPointID), Is.False);
+
+        CheckDataContainerExists (orderItemA, true);
+        CheckDataContainerExists (orderItemB, true);
+        CheckVirtualEndPointExistsAndComplete (endPointID, true, true);
+
+        Assert.That (orderItemA.State, Is.Not.EqualTo (StateType.NotLoadedYet));
+        Assert.That (orderItemB.State, Is.Not.EqualTo (StateType.NotLoadedYet));
+        Assert.That (order1.OrderItems.IsDataComplete, Is.True);
+      }
     }
   }
 }

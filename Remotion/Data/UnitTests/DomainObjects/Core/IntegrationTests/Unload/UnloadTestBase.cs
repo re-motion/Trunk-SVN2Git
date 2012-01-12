@@ -18,9 +18,11 @@ using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
@@ -29,7 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
   {
     protected void CheckDataContainerExists (DomainObject domainObject, bool dataContainerShouldExist)
     {
-      var dataContainer = TestableClientTransaction.DataManager.DataContainers[domainObject.ID];
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      var dataContainer = DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[domainObject.ID];
       if (dataContainerShouldExist)
         Assert.That (dataContainer, Is.Not.Null, "Data container '{0}' does not exist.", domainObject.ID);
       else
@@ -38,49 +42,73 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
     protected void CheckEndPointExists (DomainObject owningObject, string shortPropertyName, bool endPointShouldExist)
     {
+      ArgumentUtility.CheckNotNull ("owningObject", owningObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
+
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
       CheckEndPointExists (endPointID, endPointShouldExist);
     }
 
-    protected void CheckEndPointExists (RelationEndPointID endPointID, bool endPointShouldExist)
+    protected void CheckEndPointExists (RelationEndPointID endPointID, bool shouldEndPointExist)
     {
-      var endPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
-      if (endPointShouldExist)
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+
+      var endPoint = DataManagementService.GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (endPointID);
+      if (shouldEndPointExist)
         Assert.That (endPoint, Is.Not.Null, "End point '{0}' does not exist.", endPointID);
       else
         Assert.That (endPoint, Is.Null, "End point '{0}' should not exist.", endPointID);
     }
 
-    protected void CheckVirtualEndPoint (DomainObject owningObject, string shortPropertyName, bool shouldDataBeComplete)
+    protected void CheckVirtualEndPointExistsAndComplete (DomainObject owningObject, string shortPropertyName, bool shouldEndPointExist, bool shouldDataBeComplete)
     {
-      CheckEndPointExists (owningObject, shortPropertyName, true);
+      ArgumentUtility.CheckNotNull ("owningObject", owningObject);
+      ArgumentUtility.CheckNotNullOrEmpty ("shortPropertyName", shortPropertyName);
 
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (owningObject.ID, shortPropertyName);
-      var endPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
-      if (shouldDataBeComplete)
-        Assert.That (endPoint.IsDataComplete, Is.True, "End point '{0}' should have complete data.", endPoint.ID);
-      else
-        Assert.That (endPoint.IsDataComplete, Is.False, "End point '{0}' should not have complete data.", endPoint.ID);
+
+      CheckVirtualEndPointExistsAndComplete(endPointID, shouldEndPointExist, shouldDataBeComplete);
+    }
+
+    protected void CheckVirtualEndPointExistsAndComplete (RelationEndPointID endPointID, bool shouldEndPointExist, bool shouldDataBeComplete)
+    {
+      ArgumentUtility.CheckNotNull ("endPointID", endPointID);
+      CheckEndPointExists (endPointID, shouldEndPointExist);
+
+      if (shouldEndPointExist)
+      {
+        var endPoint = DataManagementService.GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (endPointID);
+        if (shouldDataBeComplete)
+          Assert.That (endPoint.IsDataComplete, Is.True, "End point '{0}' should have complete data.", endPoint.ID);
+        else
+          Assert.That (endPoint.IsDataComplete, Is.False, "End point '{0}' should not have complete data.", endPoint.ID);
+      }
     }
 
     protected void EnsureTransactionThrowsOnLoad ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
-          TestableClientTransaction,
+          ClientTransaction.Current,
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
     }
 
     protected void AssertObjectWasLoaded (IClientTransactionListener listenerMock, DomainObject loadedObject)
     {
+      ArgumentUtility.CheckNotNull ("listenerMock", listenerMock);
+      ArgumentUtility.CheckNotNull ("loadedObject", loadedObject);
+
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
-          Arg.Is (TestableClientTransaction), 
+          Arg.Is (ClientTransaction.Current), 
           Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { loadedObject })));
     }
 
     protected void AssertObjectWasLoadedAmongOthers (IClientTransactionListener listenerMock, DomainObject loadedObject)
     {
+      ArgumentUtility.CheckNotNull ("listenerMock", listenerMock);
+      ArgumentUtility.CheckNotNull ("loadedObject", loadedObject);
+
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
-          Arg.Is (TestableClientTransaction), 
+          Arg.Is (ClientTransaction.Current), 
           Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { loadedObject })));
     }
   }

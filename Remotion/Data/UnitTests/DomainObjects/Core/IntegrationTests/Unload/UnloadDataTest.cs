@@ -94,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (orderTicket1.Order, Is.SameAs (order));
 
       CheckEndPointExists (orderTicket1, "Order", true);
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
     }
 
     [Test]
@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       Assert.That (order.OrderTicket, Is.SameAs (orderTicket1));
 
       CheckEndPointExists (orderTicket1, "Order", true);
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
     }
 
     [Test]
@@ -139,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (computer1, "Employee", true);
       CheckEndPointExists (unsynchronizedComputer, "Employee", true);
-      CheckVirtualEndPoint (employee, "Computer", true);
+      CheckVirtualEndPointExistsAndComplete (employee, "Computer", true, true);
 
       UnloadService.UnloadData (TestableClientTransaction, computer1.ID);
 
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (computer1, "Employee", false);
       CheckEndPointExists (unsynchronizedComputer, "Employee", true);
-      CheckVirtualEndPoint (employee, "Computer", false);
+      CheckVirtualEndPointExistsAndComplete (employee, "Computer", true, false);
 
       Assert.That (computer1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (unsynchronizedComputer.State, Is.EqualTo (StateType.Unchanged));
@@ -190,9 +190,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckEndPointExists (order1, "OrderTicket", true);
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, true);
       CheckEndPointExists (order1, "Customer", false);
-      CheckVirtualEndPoint (customer, "Orders", false);
+      CheckVirtualEndPointExistsAndComplete (customer, "Orders", true, false);
 
       Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
       Assert.That (orderItems.IsDataComplete, Is.True);
@@ -218,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, true);
 
       Assert.That (orderItemA.Order, Is.SameAs (order1));
       Assert.That (orderItemB.Order, Is.SameAs (order1));
@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, true);
     }
 
     [Test]
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, true);
 
       Assert.That (order1.OrderItems, Is.EqualTo (new[] { orderItemA, orderItemB }));
 
@@ -257,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, true);
     }
 
     [Test]
@@ -281,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", false);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, false);
 
       Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItems.IsDataComplete, Is.False);
@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", false);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, false);
 
       Assert.That (orderItemA.Order, Is.SameAs (order1));
 
@@ -335,7 +335,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, false);
     }
 
     [Test]
@@ -353,7 +353,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", false);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", false);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, false);
 
       Assert.That (order1.OrderItems, Is.EquivalentTo (new[] { orderItemA, orderItemB }));
 
@@ -363,7 +363,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItemA, "Order", true);
       CheckEndPointExists (orderItemB, "Order", true);
-      CheckVirtualEndPoint (order1, "OrderItems", true);
+      CheckVirtualEndPointExistsAndComplete (order1, "OrderItems", true, true);
     }
 
     [Test]

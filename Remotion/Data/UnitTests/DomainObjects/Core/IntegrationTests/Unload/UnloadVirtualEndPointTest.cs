@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckEndPointExists (orderItem1, "Order", true);
       CheckEndPointExists (orderItem2, "Order", true);
-      CheckVirtualEndPoint (order, "OrderItems", false);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderItems", true, false);
 
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderItem1.State, Is.EqualTo (StateType.Unchanged));
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicket = order.OrderTicket;
 
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
 
@@ -156,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataContainerExists (orderTicket, true);
 
       CheckEndPointExists (orderTicket, "Order", true);
-      CheckVirtualEndPoint (order, "OrderTicket", false);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
 
       Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (orderTicket.State, Is.EqualTo (StateType.Unchanged));
@@ -168,15 +168,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var order = Order.GetObject (DomainObjectIDs.Order1);
       TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
 
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
 
-      CheckVirtualEndPoint (order, "OrderTicket", false);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
 
       Dev.Null = order.OrderTicket;
 
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
     }
 
     [Test]
@@ -185,15 +185,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicket = order.OrderTicket;
 
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
 
-      CheckVirtualEndPoint (order, "OrderTicket", false);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
 
       TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
 
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
       Assert.That (order.OrderTicket, Is.SameAs (orderTicket));
     }
 
@@ -229,11 +229,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var order = Order.GetObject (DomainObjectIDs.Order1);
       TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
 
-      CheckVirtualEndPoint (order, "OrderTicket", true);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
 
-      CheckVirtualEndPoint (order, "OrderTicket", false);
+      CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
       UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
