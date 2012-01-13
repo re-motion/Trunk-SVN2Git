@@ -91,7 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void OverwritingDeletedNewUnidirectionalInSubTransactionWorks ()
     {
       Location location = Location.NewObject ();
@@ -107,7 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void OverwritingDeletedLoadedUnidirectionalInSubTransactionWorks ()
     {
       Location location = Location.NewObject ();

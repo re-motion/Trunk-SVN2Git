@@ -181,7 +181,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void RelationAccessToDeletedLoaded_ReturnsDeletedObject_AndThrowsOnChanges ()
     {
       _location.Client.Delete ();
@@ -193,7 +192,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void DeletedObject_CanBeOverwritten ()
     {
       Location location = Location.NewObject ();
@@ -215,7 +213,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
     }
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void InvalidObject_CanBeOverwritten ()
     {
       Location location = Location.NewObject ();
@@ -226,7 +223,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void DeleteClientAndCommit_CausesRelatedObjectToBecomeInvalid ()
     {
       // Need to perform this test within a subtransaction, otherwise, the database will yield a foreign key violation

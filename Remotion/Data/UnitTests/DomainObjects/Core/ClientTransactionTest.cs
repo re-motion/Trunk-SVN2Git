@@ -1084,19 +1084,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
     public void GetRelatedObject_Deleted ()
     {
       Location location = _transaction.Execute (() => Location.GetObject (DomainObjectIDs.Location1));
 
+      var client = _transaction.Execute (() => location.Client);
       _transaction.Execute (() => location.Client.Delete());
 
       var endPointID = RelationEndPointID.Create (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
-      ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+      var result = ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+
+      Assert.That (result, Is.SameAs (client));
+      Assert.That (_transaction.Execute (() => result.State), Is.EqualTo (StateType.Deleted));
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
     public void GetRelatedObject_Invalid ()
     {
       Location location = _transaction.Execute (() => Location.GetObject (DomainObjectIDs.Location1));
@@ -1105,7 +1107,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.Execute (() => location.Client.Delete ());
 
       var endPointID = RelationEndPointID.Create (location.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client");
-      ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+      var result = ClientTransactionTestHelper.CallGetRelatedObject (_transaction, endPointID);
+      Assert.That (result, Is.SameAs (newClient));
+      Assert.That (_transaction.Execute (() => result.State), Is.EqualTo (StateType.Invalid));
     }
 
     [Test]

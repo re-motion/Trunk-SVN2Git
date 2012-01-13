@@ -159,7 +159,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void RootToSubUnidirectional_WithDeleted_ReturnsInvalidObject ()
     {
       Location obj = GetUnidirectionalWithDeleted ();
@@ -183,7 +182,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4584")]
     public void RootToSubUnidirectional_WithDeletedNew_ReturnsInvalidObject ()
     {
       Location obj = GetUnidirectionalWithDeletedNew ();
