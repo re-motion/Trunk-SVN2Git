@@ -14,12 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver
 {
-  [DBTable]
-  public class TargetClassForMixinAddingInterfaceWithProperties : DomainObject
+  public class MixinWithPersistentPropertyExplicitImplementation : DomainObjectMixin<DomainObject>, IInterfaceWithProperty
   {
+    [StorageClass (StorageClass.Persistent)]
+    int IInterfaceWithProperty.Property
+    {
+      get { throw new NotImplementedException(); }
+      set { throw new NotImplementedException(); }
+    }
   }
 }

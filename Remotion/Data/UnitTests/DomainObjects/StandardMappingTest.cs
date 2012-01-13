@@ -104,6 +104,16 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return propertyDefinition;
     }
 
+    protected PropertyDefinition GetPropertyDefinition (Type classType, Type declaringType, string shortPropertyName)
+    {
+      var propertyDefinition = GetTypeDefinition (classType)
+          .PropertyAccessorDataCache
+          .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
+          .PropertyDefinition;
+      Assertion.IsNotNull (propertyDefinition, "Property '{0}.{1}' is not a mapped property.", declaringType, shortPropertyName);
+      return propertyDefinition;
+    }
+
     protected IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
     {
       var endPointDefinition = GetTypeDefinition (declaringType)

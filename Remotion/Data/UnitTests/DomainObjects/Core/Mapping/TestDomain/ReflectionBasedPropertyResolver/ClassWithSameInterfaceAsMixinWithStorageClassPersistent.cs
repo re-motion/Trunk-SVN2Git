@@ -20,10 +20,11 @@ using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver
 {
-  [Uses (typeof (MixinImplementingInterfaceWithProperty_StorageClassPersistent))]
-  public class ClassImplementingInterfaceWithProperty_StorageClassNone : IInterfaceWithProperty
+  [Uses (typeof (MixinWithPersistentProperty))]
+  [DBTable]
+  public class ClassWithSameInterfaceAsMixinWithStorageClassPersistent : DomainObject, IInterfaceWithProperty
   {
-    [StorageClassNone]
+    [DBColumn("Property2")]
     public int Property
     {
       get { throw new NotImplementedException(); }

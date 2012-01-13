@@ -45,7 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Factories
 
       return FilteringTypeDiscoveryService.CreateFromNamespaceBlacklist (
           typeDiscoveryService,
-          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Errors",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.RelationReflector",
+          "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation",
           "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIntegrationTests",
           "Remotion.Data.UnitTests.DomainObjects.Security.TestDomain",
           "Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGenerationTestDomain"

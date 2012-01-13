@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.MixedMapping
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver
 {
-  public interface IInterfaceWithPropertiesAddedByMixin
+  public interface IInterfaceWithPropertiesWithSingleAccessors
   {
-    string ImplicitProperty { get; set; }
-    string ExplicitManagedProperty { get; set; }
+    int PropertyWithGetAccessorOnly { get; }
+    int PropertyWithSetAccessorOnly { set; }
   }
 }

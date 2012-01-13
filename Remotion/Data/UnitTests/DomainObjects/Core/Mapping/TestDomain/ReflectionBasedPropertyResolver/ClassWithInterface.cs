@@ -16,13 +16,11 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver
 {
-  [Instantiable]
-  public abstract class ClassDerivedFromClassWithInterface : ClassWithInterface
+  [DBTable]
+  public class ClassWithInterface : DomainObject, IInterfaceWithProperty
   {
-    protected ClassDerivedFromClassWithInterface()
-    {
-    }
+    public virtual int Property { get; set; }
   }
 }

@@ -19,7 +19,7 @@ using Remotion.Data.DomainObjects;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver
 {
-  public class MixinImplementingInterfaceWithProperty_StorageClassPersistent : DomainObjectMixin<DomainObject>, IInterfaceWithProperty
+  public class MixinWithPersistentProperty : DomainObjectMixin<DomainObject>, IInterfaceWithProperty
   {
     public int Property
     {

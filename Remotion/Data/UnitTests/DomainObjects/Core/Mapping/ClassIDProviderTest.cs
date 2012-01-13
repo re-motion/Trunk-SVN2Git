@@ -17,7 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -35,9 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetClassID_ForClassWithoutClassIDAttribute ()
     {
-      var result = _classIDProvider.GetClassID (typeof (ClassWithInterface));
+      var result = _classIDProvider.GetClassID (typeof (ClassWithoutClassIDAttribute));
 
-      Assert.That (result, Is.EqualTo ("ClassWithInterface"));
+      Assert.That (result, Is.EqualTo ("ClassWithoutClassIDAttribute"));
     }
 
     [Test]

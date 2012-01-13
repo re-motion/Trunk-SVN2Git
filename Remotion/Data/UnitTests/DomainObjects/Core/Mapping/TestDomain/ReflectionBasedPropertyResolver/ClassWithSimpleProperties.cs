@@ -16,15 +16,14 @@
 // 
 using Remotion.Data.DomainObjects;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.ReflectionBasedMappingSample
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.ReflectionBasedPropertyResolver
 {
   [DBTable]
-  [TestDomain]
-  [Instantiable]
-  public abstract class ClassWithInterfaceWithMissingAccessors : DomainObject, IInterfaceWithPropertiesWithMissingAccessors
+  public class ClassWithSimpleProperties : DomainObject
   {
-    public abstract string PropertyWithGetAccessor { get; }
+    public virtual int StorageClassPersistentProperty { get; set; }
 
-    public abstract string PropertyWithSetAccessor { set; }
+    [StorageClassNone]
+    public virtual int StorageClassNoneProperty { get; set; }
   }
 }
