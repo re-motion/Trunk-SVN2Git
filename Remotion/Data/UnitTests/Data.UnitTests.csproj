@@ -1468,7 +1468,7 @@
     <Compile Include="DomainObjects\Core\DomainObjects\RollbackDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\UnidirectionalRelationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Relations\UnidirectionalRelationTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\EventReceiver\ChangeState.cs">

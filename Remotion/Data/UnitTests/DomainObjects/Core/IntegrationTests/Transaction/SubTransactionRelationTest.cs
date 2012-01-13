@@ -19,7 +19,6 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -82,36 +81,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void IndirectAccess_ToDeletedObject_InSubTransactionThrows ()
-    {
-      Client client = Client.GetObject (DomainObjectIDs.Client1);
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Assert.That (location.Client, Is.SameAs (client));
-
-      client.Delete ();
-
-      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        Dev.Null = location.Client;
-      }
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void IndirectAccess_ToDeletedNewObject_InSubTransactionThrows ()
-    {
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
-      location.Client = Client.NewObject ();
-      location.Client.Delete ();
-
-      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        Dev.Null = location.Client;
-      }
-    }
-
-    [Test]
     public void OverwritingUnidirectionalInSubTransactionWorks ()
     {
       Location location = Location.NewObject ();
@@ -122,6 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Ignore ("TODO 4584")]
     public void OverwritingDeletedNewUnidirectionalInSubTransactionWorks ()
     {
       Location location = Location.NewObject ();
@@ -130,11 +100,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.That (location.Client.State, Is.EqualTo (StateType.Invalid));
         location.Client = Client.NewObject ();
+        Assert.That (location.Client.State, Is.EqualTo (StateType.New));
       }
     }
 
     [Test]
+    [Ignore ("TODO 4584")]
     public void OverwritingDeletedLoadedUnidirectionalInSubTransactionWorks ()
     {
       Location location = Location.NewObject ();
@@ -143,7 +116,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        Assert.That (location.Client.State, Is.EqualTo (StateType.Invalid));
         location.Client = Client.NewObject ();
+        Assert.That (location.Client.State, Is.EqualTo (StateType.New));
       }
     }
 

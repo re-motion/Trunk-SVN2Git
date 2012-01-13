@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 {
@@ -49,46 +47,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       Assert.AreSame (
           null, orderTicketEventReceiver.GetChangedRelatedDomainObject ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
     }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void Unidirectional_InvalidObject_CausesThrowOnAccess ()
-    {
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
-      location.Client = Client.NewObject ();
-      location.Client.Delete ();
-
-      Dev.Null = location.Client;
-    }
-
-    [Test]
-    public void Unidirectional_InvalidObject_CanBeOverwritten ()
-    {
-      Location location = Location.NewObject ();
-      location.Client = Client.NewObject ();
-      location.Client.Delete ();
-      location.Client = Client.NewObject ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void Unidirectional_DeletedObject_CausesThrowOnAccess ()
-    {
-      Location location = Location.NewObject ();
-      location.Client = Client.GetObject (DomainObjectIDs.Client1);
-      location.Client.Delete ();
-
-      Dev.Null = location.Client;
-    }
-
-    [Test]
-    public void Unidirectional_DeletedObject_CanBeOverwritten ()
-    {
-      Location location = Location.NewObject ();
-      location.Client = Client.GetObject (DomainObjectIDs.Client1);
-      location.Client.Delete ();
-      location.Client = Client.NewObject ();
-    }
-
   }
 }

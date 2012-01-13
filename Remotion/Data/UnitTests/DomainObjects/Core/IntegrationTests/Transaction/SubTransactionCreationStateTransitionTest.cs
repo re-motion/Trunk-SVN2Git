@@ -159,14 +159,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException),
-        ExpectedMessage = "Object 'Client|1627ade8-125f-4819-8e33-ce567c42b00c|System.Guid' is invalid in this transaction.")]
-    public void RootToSubUnidirectionalWithDeletedThrowsWhenAccessingTheObject ()
+    [Ignore ("TODO 4584")]
+    public void RootToSubUnidirectional_WithDeleted_ReturnsInvalidObject ()
     {
       Location obj = GetUnidirectionalWithDeleted ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Dev.Null = obj.Client;
+        Assert.That (obj.Client.State, Is.EqualTo (StateType.Invalid));
       }
     }
 
@@ -184,14 +183,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException),
-        ExpectedMessage = @"Object 'Client\|.*\|System.Guid' is invalid in this transaction.", MatchType = MessageMatch.Regex)]
-    public void RootToSubUnidirectionalWithDeletedNewThrowsWhenAccessingTheObject ()
+    [Ignore ("TODO 4584")]
+    public void RootToSubUnidirectional_WithDeletedNew_ReturnsInvalidObject ()
     {
       Location obj = GetUnidirectionalWithDeletedNew ();
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        Dev.Null = obj.Client;
+        Assert.That (obj.Client.State, Is.EqualTo (StateType.Invalid));
       }
     }
 

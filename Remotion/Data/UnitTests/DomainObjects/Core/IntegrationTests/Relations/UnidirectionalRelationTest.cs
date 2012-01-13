@@ -14,16 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
 {
   [TestFixture]
   public class UnidirectionalRelationTest : RelationChangeBaseTest
@@ -31,12 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     private Client _oldClient;
     private Client _newClient;
     private Location _location;
-
-    public override void TestFixtureSetUp ()
-    {
-      base.TestFixtureSetUp ();
-      SetDatabaseModifyable ();
-    }
 
     public override void SetUp ()
     {
@@ -105,6 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateObjectsAndCommit ()
     {
+      SetDatabaseModifyable ();
+
       Client client1 = Client.NewObject ();
       Client client2 = Client.NewObject ();
       Location location = Location.NewObject();
@@ -148,6 +143,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DeleteLocationAndCommit ()
     {
+      SetDatabaseModifyable ();
+
       SequenceEventReceiver eventReceiver = new SequenceEventReceiver (new DomainObject[] { _location, _oldClient, _newClient }, new DomainObjectCollection[0]);
 
       _location.Delete ();
@@ -165,6 +162,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void DeleteMultipleObjectsAndCommit ()
     {
+      SetDatabaseModifyable ();
+
       _location.Delete ();
       _oldClient.Delete ();
       _newClient.Delete ();
@@ -182,31 +181,62 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException),
-        ExpectedMessage = "Object 'Client|1627ade8-125f-4819-8e33-ce567c42b00c|System.Guid' is already deleted.")]
-    public void IndirectAccessToDeletedLoadedThrows ()
+    [Ignore ("TODO 4584")]
+    public void RelationAccessToDeletedLoaded_ReturnsDeletedObject_AndThrowsOnChanges ()
     {
       _location.Client.Delete ();
       Client client = _location.Client;
+
+      Assert.That (client.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (() => client.ParentClient, Is.Null);
+      Assert.That (() => client.ParentClient = null, Throws.TypeOf<ObjectDeletedException> ());
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException),
-        ExpectedMessage = @"Object 'Client\|.*\|System.Guid' is invalid in this transaction.", MatchType = MessageMatch.Regex)]
-    public void IndirectAccessToDeletedNewThrows ()
+    [Ignore ("TODO 4584")]
+    public void DeletedObject_CanBeOverwritten ()
+    {
+      Location location = Location.NewObject ();
+      location.Client = Client.GetObject (DomainObjectIDs.Client1);
+      location.Client.Delete ();
+      location.Client = Client.NewObject ();
+    }
+
+    [Test]
+    public void RelationAccessToDeletedNew_ReturnsInvalidObject_AndThrowsOnAccess ()
     {
       _location.Client = Client.NewObject ();
       _location.Client.Delete ();
       Client client = _location.Client;
+
+      Assert.That (client.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (() => client.ParentClient, Throws.TypeOf<ObjectInvalidException> ());
+      Assert.That (() => client.ParentClient = null, Throws.TypeOf<ObjectInvalidException> ());
     }
 
     [Test]
-    [Ignore ("TODO: Discuss whether to implement consistency checks in OPF.")]
-    public void DeleteClientAndCommit ()
+    [Ignore ("TODO 4584")]
+    public void InvalidObject_CanBeOverwritten ()
     {
-      _location.Client.Delete ();
-      TestableClientTransaction.Commit ();
-      Assert.IsNull (_location.Client);
+      Location location = Location.NewObject ();
+      location.Client = Client.NewObject ();
+      location.Client.Delete ();
+      location.Client = Client.NewObject ();
+    }
+
+
+    [Test]
+    [Ignore ("TODO 4584")]
+    public void DeleteClientAndCommit_CausesRelatedObjectToBecomeInvalid ()
+    {
+      // Need to perform this test within a subtransaction, otherwise, the database will yield a foreign key violation
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        _location.Client.Delete();
+        ClientTransaction.Current.Commit();
+        Assert.That (_location.Client, Is.Not.Null);
+        Assert.That (_location.Client.State, Is.EqualTo (StateType.Invalid));
+      }
     }
 
     [Test]
@@ -251,6 +281,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void CreateHierarchy ()
     {
+      SetDatabaseModifyable ();
+
       Client newClient1 = Client.NewObject ();
       Client newClient2 = Client.NewObject ();
       newClient2.ParentClient = newClient1;

@@ -188,17 +188,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void AccessDeleteObjectBeforeCommit ()
-    {
-      Client client = Client.GetObject (DomainObjectIDs.Client1);
-      Location location = Location.GetObject (DomainObjectIDs.Location1);
-      Assert.That (location.Client, Is.SameAs (client));
-      client.Delete ();
-      Dev.Null = location.Client;
-    }
-
-    [Test]
     public void CommitIndependentTransactions ()
     {
       ClientTransaction clientTransaction1 = ClientTransaction.CreateRootTransaction();
