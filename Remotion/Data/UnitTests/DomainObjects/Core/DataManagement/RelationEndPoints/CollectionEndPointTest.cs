@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
@@ -204,31 +203,52 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void CanBeCollected ()
     {
-      _loadStateMock.Expect (mock => mock.CanEndPointBeCollected (_endPoint)).Return (true).Repeat.Once ();
-      _loadStateMock.Expect (mock => mock.CanEndPointBeCollected (_endPoint)).Return (false).Repeat.Once ();
-      _loadStateMock.Replay ();
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
+      _loadStateMock.Stub (stub => stub.CanEndPointBeCollected (_endPoint)).Return (true).Repeat.Once ();
+      _loadStateMock.Stub (stub => stub.CanEndPointBeCollected (_endPoint)).Return (false).Repeat.Once ();
 
       var result1 = _endPoint.CanBeCollected;
       var result2 = _endPoint.CanBeCollected;
 
-      _loadStateMock.VerifyAllExpectations ();
       Assert.That (result1, Is.True);
       Assert.That (result2, Is.False);
     }
 
     [Test]
+    [Ignore ("TODO 4585")]
+    public void CanBeCollected_WithChangedCollectionReference ()
+    {
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (true);
+      _loadStateMock.Stub (stub => stub.CanEndPointBeCollected (_endPoint)).Return (true);
+
+      var result = _endPoint.CanBeCollected;
+
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
     public void CanBeMarkedIncomplete ()
     {
-      _loadStateMock.Expect (mock => mock.CanDataBeMarkedIncomplete (_endPoint)).Return (true).Repeat.Once ();
-      _loadStateMock.Expect (mock => mock.CanDataBeMarkedIncomplete (_endPoint)).Return (false).Repeat.Once ();
-      _loadStateMock.Replay ();
+      _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (false);
+      _loadStateMock.Stub (stub => stub.CanDataBeMarkedIncomplete (_endPoint)).Return (true).Repeat.Once ();
+      _loadStateMock.Stub (stub => stub.CanDataBeMarkedIncomplete (_endPoint)).Return (false).Repeat.Once ();
 
       var result1 = _endPoint.CanBeMarkedIncomplete;
       var result2 = _endPoint.CanBeMarkedIncomplete;
 
-      _loadStateMock.VerifyAllExpectations ();
       Assert.That (result1, Is.True);
       Assert.That (result2, Is.False);
+    }
+
+    [Test]
+    public void CanBeMarkedIncomplete_WithChangedCollectionReference ()
+    {
+      _collectionManagerMock.Stub (mock => mock.HasCollectionReferenceChanged ()).Return (true);
+      _loadStateMock.Stub (mock => mock.CanDataBeMarkedIncomplete (_endPoint)).Return (true);
+
+      var result = _endPoint.CanBeMarkedIncomplete;
+
+      Assert.That (result, Is.False);
     }
 
     [Test]

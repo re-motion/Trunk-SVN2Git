@@ -174,7 +174,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public bool CanBeMarkedIncomplete
     {
-      get { return _loadState.CanDataBeMarkedIncomplete (this); }
+      get { return !_collectionManager.HasCollectionReferenceChanged() && _loadState.CanDataBeMarkedIncomplete (this); }
     }
 
     public override bool HasChanged

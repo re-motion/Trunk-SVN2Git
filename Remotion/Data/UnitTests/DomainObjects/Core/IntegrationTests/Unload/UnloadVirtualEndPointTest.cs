@@ -143,6 +143,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    public void UnloadVirtualEndPoint_Collection_ChangedCollectionReference_Throws ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      order.OrderItems = new ObjectList<OrderItem> (order.OrderItems); // new collection reference, same contents
+      var endPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (order.OrderItems);
+
+      Assert.That (endPoint.HasChanged, Is.True);
+
+      Assert.That (
+          () => UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, endPoint.ID), 
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The end point with ID "
+              + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' has been "
+              + "changed. Changed end points cannot be unloaded."));
+
+      CheckVirtualEndPointExistsAndComplete (order, "OrderItems", true, true);
+    }
+
+    [Test]
     public void UnloadVirtualEndPoint_Object ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
