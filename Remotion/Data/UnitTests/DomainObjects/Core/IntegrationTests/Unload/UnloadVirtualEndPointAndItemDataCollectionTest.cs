@@ -74,6 +74,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    public void UnloadVirtualEndPointAndItemData_Object_Null ()
+    {
+      var employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Assert.That (employee.Computer, Is.Null);
+
+      CheckDataContainerExists (employee, true);
+      CheckEndPointExists (employee, "Computer", true);
+
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (employee, e => e.Computer));
+
+      CheckDataContainerExists (employee, true);
+      CheckEndPointExists (employee, "Computer", false);
+
+      Assert.That (employee.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
     public void UnloadVirtualEndPointAndItemData_Collection_EnsureDataAvailable_AndComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);

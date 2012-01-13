@@ -224,6 +224,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    public void UnloadVirtualEndPoint_Object_Null_Reload ()
+    {
+      SetDatabaseModifyable ();
+
+      var employee = Employee.GetObject (DomainObjectIDs.Employee1);
+      Dev.Null = employee.Computer;
+
+      ObjectID newComputerID;
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var employeeInOtherTx = Employee.GetObject (employee.ID);
+        employeeInOtherTx.Computer = Computer.NewObject();
+        newComputerID = employeeInOtherTx.Computer.ID;
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (employee.Computer, Is.Null);
+
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (employee, e => e.Computer));
+
+      Assert.That (employee.Computer.ID, Is.EqualTo (newComputerID));
+      Assert.That (employee.Computer, Is.SameAs (Computer.GetObject (newComputerID)));
+    }
+
+    [Test]
     public void UnloadVirtualEndPoint_Object_AlreadyUnloaded ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
