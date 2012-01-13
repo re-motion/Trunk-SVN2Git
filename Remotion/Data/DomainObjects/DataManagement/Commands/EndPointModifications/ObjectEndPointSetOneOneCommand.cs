@@ -42,7 +42,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         throw new ArgumentException (message, "modifiedEndPoint");
       }
 
-      if (newRelatedObject == modifiedEndPoint.GetOppositeObject (true))
+      if (newRelatedObject == modifiedEndPoint.GetOppositeObject ())
       {
         var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameCommand instead.",
             modifiedEndPoint.Definition.PropertyName);
@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       var newRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (NewRelatedObject);
       var oldRelatedEndPoint = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (OldRelatedObject);
 
-      var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : newRelatedEndPoint.GetOppositeObject (true);
+      var oldRelatedObjectOfNewRelatedObject = NewRelatedObject == null ? null : newRelatedEndPoint.GetOppositeObject ();
       var oldRelatedEndPointOfNewRelatedEndPoint = newRelatedEndPoint.GetEndPointWithOppositeDefinition<IObjectEndPoint> (oldRelatedObjectOfNewRelatedObject);
 
       var bidirectionalModification = new ExpandedCommand (

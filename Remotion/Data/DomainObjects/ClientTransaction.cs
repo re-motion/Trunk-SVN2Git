@@ -1041,7 +1041,7 @@ public class ClientTransaction
       TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
 
       var objectEndPoint = (IObjectEndPoint) DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      DomainObject relatedObject = objectEndPoint.GetOppositeObject (true);
+      DomainObject relatedObject = objectEndPoint.GetOppositeObject ();
       TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current);
 
       return relatedObject;

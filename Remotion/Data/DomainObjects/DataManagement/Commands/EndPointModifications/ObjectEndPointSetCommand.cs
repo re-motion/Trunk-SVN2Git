@@ -31,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         IObjectEndPoint modifiedEndPoint, 
         DomainObject newRelatedObject, 
         Action<DomainObject> oppositeObjectSetter)
-      : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(true), newRelatedObject)
+      : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(), newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
 

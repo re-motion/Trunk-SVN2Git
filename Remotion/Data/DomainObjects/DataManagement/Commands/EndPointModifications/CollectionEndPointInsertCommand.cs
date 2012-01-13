@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // the end point that will be linked to the collection end point after the operation
       var insertedObjectEndPoint = (IRealObjectEndPoint) GetOppositeEndPoint (ModifiedEndPoint, NewRelatedObject, _endPointProvider);
       // the object that was linked to the new related object before the operation
-      var oldRelatedObjectOfInsertedObject = insertedObjectEndPoint.GetOppositeObject (false);
+      var oldRelatedObjectOfInsertedObject = insertedObjectEndPoint.GetOppositeObject ();
       // the end point that was linked to the new related object before the operation
       var oldRelatedEndPointOfInsertedObject = GetOppositeEndPoint (insertedObjectEndPoint, oldRelatedObjectOfInsertedObject, _endPointProvider);
 

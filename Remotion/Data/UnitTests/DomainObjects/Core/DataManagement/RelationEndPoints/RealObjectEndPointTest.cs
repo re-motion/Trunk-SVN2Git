@@ -176,7 +176,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order1);
 
-      var oppositeObject = _endPoint.GetOppositeObject (true);
+      var oppositeObject = _endPoint.GetOppositeObject ();
       Assert.That (oppositeObject, Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
     }
 
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, null);
 
-      var oppositeObject = _endPoint.GetOppositeObject (false);
+      var oppositeObject = _endPoint.GetOppositeObject ();
       Assert.That (oppositeObject, Is.Null);
     }
 
@@ -198,24 +198,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
 
-      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (order1));
+      Assert.That (_endPoint.GetOppositeObject (), Is.SameAs (order1));
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void GetOppositeObject_Deleted_NoDeleted ()
-    {
-      var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      order1.Delete ();
-      Assert.That (order1.State, Is.EqualTo (StateType.Deleted));
-
-      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, order1.ID);
-
-      _endPoint.GetOppositeObject (false);
-    }
-
-    [Test]
-    public void GetOppositeObject_Invalid_IncludeDeleted ()
+    public void GetOppositeObject_Invalid ()
     {
       var oppositeObject = Order.NewObject ();
 
@@ -224,21 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
 
-      Assert.That (_endPoint.GetOppositeObject (true), Is.SameAs (oppositeObject));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void GetOppositeObject_Invalid_ExcludeDeleted ()
-    {
-      var oppositeObject = Order.NewObject ();
-
-      oppositeObject.Delete ();
-      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid));
-
-      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
-
-      _endPoint.GetOppositeObject (false);
+      Assert.That (_endPoint.GetOppositeObject (), Is.SameAs (oppositeObject));
     }
 
     [Test]
@@ -263,7 +236,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order1);
       _foreignKeyDataContainer.CommitState();
-      var originalOppositeObject = (Order) _endPoint.GetOppositeObject (true);
+      var originalOppositeObject = (Order) _endPoint.GetOppositeObject ();
       originalOppositeObject.Delete ();
 
       Assert.That (originalOppositeObject.State, Is.EqualTo (StateType.Deleted));

@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   public class ObjectEndPointSetSameCommand : RelationEndPointModificationCommand
   {
     public ObjectEndPointSetSameCommand (IObjectEndPoint modifiedEndPoint)
-        : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (true), modifiedEndPoint.GetOppositeObject (true))
+        : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject (), modifiedEndPoint.GetOppositeObject ())
     {
     }
 

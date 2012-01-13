@@ -98,7 +98,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // the end point that was linked to the collection end point before the operation
       var endPointOfOldObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IRealObjectEndPoint> (OldRelatedObject);
       // the object that was linked to the new related object before the operation
-      var oldRelatedObjectOfNewObject = endPointOfNewObject.GetOppositeObject (false);
+      var oldRelatedObjectOfNewObject = endPointOfNewObject.GetOppositeObject ();
       // the end point that was linked to the new related object before the operation
       var oldRelatedEndPointOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedObjectOfNewObject);
 

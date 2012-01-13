@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _loadStateMock.Expect (mock => mock.GetData (_endPoint)).Return (_oppositeObject);
       _loadStateMock.Replay();
 
-      var result = _endPoint.GetOppositeObject (true);
+      var result = _endPoint.GetOppositeObject ();
 
       _loadStateMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_oppositeObject));

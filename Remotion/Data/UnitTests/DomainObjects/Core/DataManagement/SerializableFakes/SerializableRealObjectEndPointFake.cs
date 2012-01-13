@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
-    public DomainObject GetOppositeObject (bool includeDeleted)
+    public DomainObject GetOppositeObject ()
     {
       throw new NotImplementedException();
     }

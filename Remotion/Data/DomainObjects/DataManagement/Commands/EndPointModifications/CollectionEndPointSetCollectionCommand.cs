@@ -161,7 +161,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       
       var commandsForAdded = from newObject in AddedObjects
                              let endPointOfNewObject = ModifiedEndPoint.GetEndPointWithOppositeDefinition<IRealObjectEndPoint> (newObject) // newOrder.Customer
-                             let oldRelatedOfNewObject = endPointOfNewObject.GetOppositeObject (false) // newOrder.Customer
+                             let oldRelatedOfNewObject = endPointOfNewObject.GetOppositeObject () // newOrder.Customer
                              let endPointOfOldRelatedOfNewObject = endPointOfNewObject.GetEndPointWithOppositeDefinition<ICollectionEndPoint> (oldRelatedOfNewObject) // newOrder.Customer.Orders
                              let removeCommand = endPointOfOldRelatedOfNewObject.CreateRemoveCommand (newObject) // newOrder.Customer.Orders.Remove (newOrder)
                              let setCommand = endPointOfNewObject.CreateSetCommand (domainObjectOfCollectionEndPoint) // newOrder.Customer = customer

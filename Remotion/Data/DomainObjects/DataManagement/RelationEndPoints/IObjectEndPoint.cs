@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     ObjectID OppositeObjectID { get; }
     ObjectID OriginalOppositeObjectID { get; }
 
-    DomainObject GetOppositeObject (bool includeDeleted);
+    DomainObject GetOppositeObject ();
     DomainObject GetOriginalOppositeObject ();
 
     IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject);

@@ -486,13 +486,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       }
     }
 
-    public DomainObject GetOppositeObject (bool includeDeleted)
+    public DomainObject GetOppositeObject ()
     {
 #if DEBUG
       using (new ConstantChangeStateAsserter (_innerEndPoint))
 #endif
       {
-        return _innerEndPoint.GetOppositeObject (includeDeleted);
+        return _innerEndPoint.GetOppositeObject ();
       }
     }
 

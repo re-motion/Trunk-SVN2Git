@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       // do nothing
     }
 
-    public DomainObject GetOppositeObject (bool includeDeleted)
+    public DomainObject GetOppositeObject ()
     {
       return null;
     }

@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void GetOppositeObject ()
     {
-      Assert.That (_nullEndPoint.GetOppositeObject (true), Is.Null);
+      Assert.That (_nullEndPoint.GetOppositeObject (), Is.Null);
     }
 
     [Test]

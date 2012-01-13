@@ -50,7 +50,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public abstract ObjectID OppositeObjectID { get; }
     public abstract ObjectID OriginalOppositeObjectID { get; }
 
-    public abstract DomainObject GetOppositeObject (bool includeDeleted);
+    public abstract DomainObject GetOppositeObject ();
     public abstract DomainObject GetOriginalOppositeObject ();
 
     protected abstract void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint);

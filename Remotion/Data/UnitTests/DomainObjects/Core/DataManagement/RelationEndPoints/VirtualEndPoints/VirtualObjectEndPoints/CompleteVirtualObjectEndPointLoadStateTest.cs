@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Replay();
       
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject (true)).Return (_relatedObject);
+      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject ()).Return (_relatedObject);
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Replay ();
 
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Replay ();
 
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject (true)).Return (_relatedObject);
+      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject ()).Return (_relatedObject);
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Replay ();
 
@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Replay ();
 
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject (true)).Return (null);
+      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject ()).Return (null);
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Replay ();
 
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Replay ();
 
       _virtualObjectEndPointMock.Stub (mock => mock.GetDomainObject ()).Return (_owningObject);
-      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject (true)).Return (_relatedObject);
+      _virtualObjectEndPointMock.Stub (mock => mock.GetOppositeObject ()).Return (_relatedObject);
       _virtualObjectEndPointMock.Stub (mock => mock.IsNull).Return (false);
       _virtualObjectEndPointMock.Stub (mock => mock.Definition).Return (_definition);
       _virtualObjectEndPointMock.Replay ();

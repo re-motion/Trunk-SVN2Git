@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
 
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (relatedObject.ID);
-      _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (relatedObject);
+      _endPointMock.Stub (stub => stub.GetOppositeObject ()).Return (relatedObject);
 
       var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, relatedObject, _fakeSetter);
 
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
 
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (null);
-      _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (null);
+      _endPointMock.Stub (stub => stub.GetOppositeObject ()).Return (null);
 
       var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, null, _fakeSetter);
 
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
 
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
-      _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
+      _endPointMock.Stub (stub => stub.GetOppositeObject ()).Return (oldRelatedObject);
 
       var command = (RelationEndPointModificationCommand) _state.CreateSetCommand (_endPointMock, newRelatedObject, _fakeSetter);
 
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
 
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
-      _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
+      _endPointMock.Stub (stub => stub.GetOppositeObject ()).Return (oldRelatedObject);
 
       var oldOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
       var newOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
@@ -256,7 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointMock.Stub (stub => stub.IsNull).Return (false);
 
       _endPointMock.Stub (stub => stub.OppositeObjectID).Return (oldRelatedObject.ID);
-      _endPointMock.Stub (stub => stub.GetOppositeObject (Arg<bool>.Is.Anything)).Return (oldRelatedObject);
+      _endPointMock.Stub (stub => stub.GetOppositeObject ()).Return (oldRelatedObject);
 
       var oldOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();
       var newOppositeEndPointStub = MockRepository.GenerateStub<IVirtualEndPoint> ();

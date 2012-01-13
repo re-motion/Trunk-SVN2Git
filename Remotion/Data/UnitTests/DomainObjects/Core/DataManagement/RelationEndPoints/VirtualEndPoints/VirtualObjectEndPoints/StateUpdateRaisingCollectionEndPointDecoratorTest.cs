@@ -194,8 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _decoratorTestHelper.CheckDelegation (ep => ep.GetOriginalData (), orderTicket);
       _decoratorTestHelper.CheckDelegation (ep => ep.OppositeObjectID, DomainObjectIDs.Order1);
       _decoratorTestHelper.CheckDelegation (ep => ep.OriginalOppositeObjectID, DomainObjectIDs.Order1);
-      _decoratorTestHelper.CheckDelegation (ep => ep.GetOppositeObject (true), orderTicket);
-      _decoratorTestHelper.CheckDelegation (ep => ep.GetOppositeObject (false), orderTicket);
+      _decoratorTestHelper.CheckDelegation (ep => ep.GetOppositeObject (), orderTicket);
+      _decoratorTestHelper.CheckDelegation (ep => ep.GetOppositeObject (), orderTicket);
       _decoratorTestHelper.CheckDelegation (ep => ep.GetOriginalOppositeObject(), orderTicket);
       _decoratorTestHelper.CheckDelegation (ep => ep.GetOppositeRelationEndPointID(), endPointID);
       _decoratorTestHelper.CheckDelegation (ep => ep.MarkDataComplete (orderTicket));

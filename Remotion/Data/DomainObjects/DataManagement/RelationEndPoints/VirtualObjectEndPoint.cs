@@ -113,12 +113,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override ObjectID OppositeObjectID
     {
-      get { return GetOppositeObject (true).GetSafeID(); }
+      get { return GetOppositeObject ().GetSafeID(); }
     }
 
     DomainObject IVirtualEndPoint<DomainObject>.GetData ()
     {
-      return GetOppositeObject (true);
+      return GetOppositeObject ();
     }
 
     public override ObjectID OriginalOppositeObjectID
@@ -151,7 +151,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _loadState.IsSynchronized (this); }
     }
 
-    public override DomainObject GetOppositeObject (bool includeDeleted)
+    public override DomainObject GetOppositeObject ()
     {
       return _loadState.GetData (this);
     }

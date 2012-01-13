@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         throw new ArgumentException (message, "modifiedEndPoint");
       }
 
-      if (newRelatedObject == modifiedEndPoint.GetOppositeObject (true))
+      if (newRelatedObject == modifiedEndPoint.GetOppositeObject ())
       {
         var message = string.Format ("New related object for EndPoint '{0}' is the same as its old value - use a ObjectEndPointSetSameCommand instead.",
             modifiedEndPoint.Definition.PropertyName);

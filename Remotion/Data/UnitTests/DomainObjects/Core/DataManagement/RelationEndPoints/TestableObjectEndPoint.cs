@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       get { return _originalOppositeObject.GetSafeID(); }
     }
 
-    public override DomainObject GetOppositeObject (bool includeDeleted)
+    public override DomainObject GetOppositeObject ()
     {
       return _oppositeObject;
     }
@@ -138,7 +138,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
       Assert.That (_isSetOppositeObjectFromExpected, Is.True);
-      _oppositeObject = sourceObjectEndPoint.GetOppositeObject (true);
+      _oppositeObject = sourceObjectEndPoint.GetOppositeObject ();
     }
 
     public class TestSetCommand : ObjectEndPointSetCommand
