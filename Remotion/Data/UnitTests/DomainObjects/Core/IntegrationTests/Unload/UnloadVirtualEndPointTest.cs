@@ -158,6 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
               + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems' has been "
               + "changed. Changed end points cannot be unloaded."));
 
+      Assert.That (UnloadService.TryUnloadVirtualEndPoint (TestableClientTransaction, endPoint.ID), Is.False);
+
       CheckVirtualEndPointExistsAndComplete (order, "OrderItems", true, true);
     }
 
