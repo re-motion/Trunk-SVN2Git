@@ -196,7 +196,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      CheckCollectionEndPointID (endPointID);
+      CheckVirtualEndPointID (endPointID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointAndItemDataCommand(tx, endPointID);
       var executor = new TransactionHierarchyCommandExecutor (commandFactory);
@@ -236,20 +236,11 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
 
-      CheckCollectionEndPointID (endPointID);
+      CheckVirtualEndPointID (endPointID);
 
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointAndItemDataCommand (tx, endPointID);
       var executor = new TransactionHierarchyCommandExecutor (commandFactory);
       return executor.TryExecuteCommandForTransactionHierarchy (clientTransaction);
-    }
-
-    private static void CheckCollectionEndPointID (RelationEndPointID endPointID)
-    {
-      if (endPointID.Definition.Cardinality != CardinalityType.Many || endPointID.Definition.IsAnonymous)
-      {
-        var message = string.Format ("The given end point ID '{0}' does not denote a collection-valued end-point.", endPointID);
-        throw new ArgumentException (message, "endPointID");
-      }
     }
 
     private static void CheckVirtualEndPointID (RelationEndPointID endPointID)
@@ -259,19 +250,32 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
         var message = string.Format ("The given end point ID '{0}' does not denote a virtual end-point.", endPointID);
         throw new ArgumentException (message, "endPointID");
       }
+
+      if (endPointID.Definition.IsAnonymous)
+      {
+        var message = string.Format ("The given end point ID '{0}' denotes an anonymous end-point, which cannot be unloaded.", endPointID);
+        throw new ArgumentException (message, "endPointID");
+      }
     }
 
     private static IDataManagementCommand CreateUnloadVirtualEndPointAndItemDataCommand (ClientTransaction tx, RelationEndPointID endPointID)
     {
-      CheckCollectionEndPointID (endPointID);
-      var endPoint = (ICollectionEndPoint) tx.DataManager.GetRelationEndPointWithoutLoading (endPointID);
+      CheckVirtualEndPointID (endPointID);
+      var endPoint = (IVirtualEndPoint) tx.DataManager.GetRelationEndPointWithoutLoading (endPointID);
 
       if (endPoint == null || !endPoint.IsDataComplete)
         return new NopCommand ();
 
       var unloadEndPointCommand = tx.DataManager.CreateUnloadVirtualEndPointsCommand (endPointID);
 
-      var unloadedObjectIDs = endPoint.Collection.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
+      ObjectID[] unloadedObjectIDs;
+      if (endPoint.Definition.Cardinality == CardinalityType.Many)
+        unloadedObjectIDs = ((ICollectionEndPoint) endPoint).Collection.Cast<DomainObject> ().Select (obj => obj.ID).ToArray ();
+      else
+      {
+        var oppositeObjectID = ((IVirtualObjectEndPoint) endPoint).OppositeObjectID;
+        unloadedObjectIDs = oppositeObjectID != null ? new[] { oppositeObjectID } : new ObjectID[0];
+      }
       var unloadDataCommand = tx.DataManager.CreateUnloadCommand (unloadedObjectIDs);
 
       return new CompositeCommand (unloadEndPointCommand, unloadDataCommand);

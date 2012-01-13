@@ -57,7 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4579")]
     public void UnloadVirtualEndPointAndItemData_Object ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
@@ -139,7 +138,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4579")]
     public void UnloadVirtualEndPointAndItemData_Object_Reload ()
     {
       SetDatabaseModifyable ();
@@ -231,7 +229,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4579")]
     public void UnloadVirtualEndPointAndItemData_Object_Events ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
