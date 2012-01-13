@@ -169,7 +169,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public bool CanBeCollected
     {
-      get { return _loadState.CanEndPointBeCollected (this); }
+      get { return !_collectionManager.HasCollectionReferenceChanged() && _loadState.CanEndPointBeCollected (this); }
     }
 
     public bool CanBeMarkedIncomplete

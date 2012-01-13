@@ -215,7 +215,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO 4585")]
     public void CanBeCollected_WithChangedCollectionReference ()
     {
       _collectionManagerMock.Stub (stub => stub.HasCollectionReferenceChanged ()).Return (true);
