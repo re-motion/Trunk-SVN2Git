@@ -68,11 +68,7 @@ namespace Remotion.ServiceLocation
       return (from type in types
               let customImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (type, false)
               where customImplementationAttribute != null
-              select
-                  new ServiceConfigurationEntry (
-                  type,
-                  TypeNameTemplateResolver.ResolveToType (customImplementationAttribute.TypeNameTemplate),
-                  customImplementationAttribute.Lifetime));
+              select ServiceConfigurationEntry.CreateFromAttribute (type, customImplementationAttribute));
     }
 
     /// <summary>
