@@ -482,13 +482,44 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
       {
         var order = Order.GetObject (DomainObjectIDs.Order1);
-        Assert.That (order.OrderNumber, Is.EqualTo (1));
         f.Variables.Add ("Order", order);
 
         f.Transaction.Reset ();
 
         var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction> ();
         Assert.That (transactionAfter.IsEnlisted (order), Is.True);
+      });
+    }
+
+    [Test]
+    [Ignore ("TODO 4591")]
+    public void Reset_DoesNotLoadEnlistedVariables_NewTransaction ()
+    {
+      SetDatabaseModifyable();
+
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      {
+        var existingObject = Order.GetObject (DomainObjectIDs.Order1);
+        var nonExistingObject = Employee.GetObject (DomainObjectIDs.Employee1);
+
+        ClientTransaction.CreateRootTransaction ().Execute (() =>
+        {
+          Employee.GetObject (nonExistingObject.ID).Delete();
+          ClientTransaction.Current.Commit();
+        });
+
+        ClientTransaction.Current.Rollback();
+
+        f.Variables.Add ("ExistingObject", existingObject);
+        f.Variables.Add ("NonExistingObject", nonExistingObject);
+
+        f.Transaction.Reset ();
+
+        Assert.That (existingObject.State, Is.EqualTo (StateType.NotLoadedYet));
+        Assert.That (nonExistingObject.State, Is.EqualTo (StateType.NotLoadedYet));
+
+        Assert.That (() => existingObject.EnsureDataAvailable (), Throws.Nothing);
+        Assert.That (() => nonExistingObject.EnsureDataAvailable (), Throws.TypeOf<ObjectsNotFoundException> ());
       });
     }
 
