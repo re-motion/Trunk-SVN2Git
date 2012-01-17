@@ -1877,7 +1877,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Web\WxeFunctionBaseTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\ResetTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeFunctions\DelegateExecutingTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\ThreadAbortTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\SerializationTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\DomainObjectParameterInvalidOutTestTransactedFunction.cs" />

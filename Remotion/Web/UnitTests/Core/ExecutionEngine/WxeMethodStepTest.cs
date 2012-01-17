@@ -111,11 +111,25 @@ public class WxeMethodStepTest: WxeTest
   }
 
   [Test]
-  [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The delegate's target must be a non-null WxeStepList.",
-      MatchType = MessageMatch.Contains)]
+  [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+      "The delegate's target must be a non-null WxeStepList, but it was 'Remotion.Web.UnitTests.Core.ExecutionEngine.WxeMethodStepTest'. When used " 
+      + "within a WxeFunction, the delegate should be a method of the surrounding WxeFunction, and it must not be a closure.\r\nParameter name: method")]
   public void MethodStepWithDelegateThrowsOnInvalidTarget ()
   {
-    new WxeMethodStep (MethodStepWithDelegate);
+    Action action = InstanceMethodNotDeclaredOnWxeFunction;
+    Assert.That (action.Target, Is.Not.Null.And.Not.AssignableTo<WxeStepList>());
+    new WxeMethodStep (action);
+  }
+
+  [Test]
+  [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+      "The delegate's target must be a non-null WxeStepList, but it was 'null'. When used "
+      + "within a WxeFunction, the delegate should be a method of the surrounding WxeFunction, and it must not be a closure.\r\nParameter name: method")]
+  public void MethodStepWithDelegateThrowsOnNullTarget ()
+  {
+    Action action = StaticMethodNotDeclaredOnWxeFunction;
+    Assert.That (action.Target, Is.Null);
+    new WxeMethodStep (action);
   }
 
   [Test]
@@ -152,6 +166,14 @@ public class WxeMethodStepTest: WxeTest
     
     Assert.AreEqual ("2", _function.LastExecutedStepID);
     Assert.AreSame (CurrentWxeContext, _function.WxeContextStep2);
+  }
+
+  private void InstanceMethodNotDeclaredOnWxeFunction ()
+  {
+  }
+
+  private static void StaticMethodNotDeclaredOnWxeFunction ()
+  {
   }
 }
 

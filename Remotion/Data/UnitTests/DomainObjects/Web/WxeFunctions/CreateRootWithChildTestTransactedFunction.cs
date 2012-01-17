@@ -35,9 +35,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
     public CreateRootWithChildTestTransactedFunction (ClientTransaction previousClientTransaction, WxeFunction childFunction)
         : base (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit, childFunction, previousClientTransaction)
     {
+      Insert (
+          0,
+          new WxeMethodStep (
+              () =>
+              {
+                Assert.AreNotSame (PreviousClientTransaction, ClientTransactionScope.CurrentTransaction);
+                TransactionBeforeChild = ClientTransactionScope.CurrentTransaction;
+              }));
       Add (
           new WxeMethodStep (
-              delegate ()
+              () =>
               {
                 TransactionAfterChild = ClientTransactionScope.CurrentTransaction;
                 Assert.AreSame (TransactionBeforeChild, TransactionAfterChild);
@@ -49,17 +57,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     // methods and properties
 
-    [WxeParameter (1, true, WxeParameterDirection.In)]
+    [WxeParameter (1, false, WxeParameterDirection.In)]
     public ClientTransaction PreviousClientTransaction
     {
       get { return (ClientTransaction) Variables["PreviousClientTransaction"]; }
       set { Variables["PreviousClientTransaction"] = value; }
     }
 
-    private void Step1 ()
-    {
-      Assert.AreNotSame (PreviousClientTransaction, ClientTransactionScope.CurrentTransaction);
-      TransactionBeforeChild = ClientTransactionScope.CurrentTransaction;
-    }
   }
 }

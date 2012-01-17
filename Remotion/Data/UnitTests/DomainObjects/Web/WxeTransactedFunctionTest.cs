@@ -31,12 +31,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
   [CLSCompliant (false)]
   public class WxeTransactedFunctionTest : WxeFunctionBaseTest
   {
-    //public override void SetUp ()
-    //{
-    //  base.SetUp ();
-    //  ClientTransactionScope.ResetActiveScope ();
-    //}
-
     [Test]
     public void WxeTransactedFunctionCreateRoot ()
     {
@@ -44,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
         new CreateRootTestTransactedFunction (originalScope).Execute (Context);
-        Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
       }
     }
 
@@ -56,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
         new CreateRootWithChildTestTransactedFunction (originalScope.ScopedTransaction, new CreateChildIfParentTestTransactedFunction()).Execute (
             Context);
-        Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
       }
     }
 
@@ -67,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       {
         ClientTransactionScope originalScope = ClientTransactionScope.ActiveScope;
         new CreateNoneTestTransactedFunction (originalScope).Execute (Context);
-        Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
       }
     }
 
@@ -82,9 +76,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
 
         new AutoCommitTestTransactedFunction (
             WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit, DomainObjectIDs.ClassWithAllDataTypes1).Execute (Context);
-        Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
 
-        Assert.AreEqual (10, GetInt32Property (ClientTransaction.CreateRootTransaction()));
+        Assert.That (GetInt32Property (ClientTransaction.CreateRootTransaction()), Is.EqualTo (10));
       }
     }
 
@@ -100,9 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         new NoAutoCommitTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, DomainObjectIDs.ClassWithAllDataTypes1).
             Execute (Context);
 
-        Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
 
-        Assert.AreEqual (5, GetInt32Property (ClientTransaction.CreateRootTransaction()));
+        Assert.That (GetInt32Property (ClientTransaction.CreateRootTransaction()), Is.EqualTo (5));
       }
     }
 
@@ -118,12 +112,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         new NoAutoCommitTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.None, DomainObjectIDs.ClassWithAllDataTypes1).Execute (
             Context);
 
-        Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+        Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
 
-        Assert.AreEqual (10, GetInt32Property (ClientTransactionScope.CurrentTransaction));
+        Assert.That (GetInt32Property (ClientTransactionScope.CurrentTransaction), Is.EqualTo (10));
       }
 
-      Assert.AreEqual (5, GetInt32Property (ClientTransaction.CreateRootTransaction()));
+      Assert.That (GetInt32Property (ClientTransaction.CreateRootTransaction()), Is.EqualTo (5));
     }
 
     [Test]
@@ -136,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       catch (WxeFatalExecutionException ex)
       {
         Assert.IsInstanceOf (typeof (InvalidOperationException), ex.InnerException);
-        Assert.AreEqual ("The ClientTransactionScope has already been left.", ex.InnerException.Message);
+        Assert.That (ex.InnerException.Message, Is.EqualTo ("The ClientTransactionScope has already been left."));
       }
     }
 
@@ -151,7 +145,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
       catch (WxeFatalExecutionException ex)
       {
         Assert.IsInstanceOf (typeof (InvalidOperationException), ex.InnerException);
-        Assert.AreEqual ("The ClientTransactionScope has already been left.", ex.InnerException.Message);
+        Assert.That (ex.InnerException.Message, Is.EqualTo ("The ClientTransactionScope has already been left."));
       }
     }
 
@@ -194,11 +188,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         ClassWithAllDataTypes outParameter = function.OutParameter;
         ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
 
-        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (outParameter));
-        Assert.AreEqual (12, outParameter.Int32Property);
+        Assert.That (ClientTransaction.Current.IsEnlisted (outParameter), Is.True);
+        Assert.That (outParameter.Int32Property, Is.EqualTo (12));
 
-        Assert.IsTrue (ClientTransaction.Current.IsEnlisted (outParameterArray[0]));
-        Assert.AreEqual (13, outParameterArray[0].Int32Property);
+        Assert.That (ClientTransaction.Current.IsEnlisted (outParameterArray[0]), Is.True);
+        Assert.That (outParameterArray[0].Int32Property, Is.EqualTo (13));
       }
     }
 
@@ -231,8 +225,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         ClassWithAllDataTypes outParameter = function.OutParameter;
         ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
 
-        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (outParameter));
-        Assert.IsFalse (ClientTransaction.Current.IsEnlisted (outParameterArray[0]));
+        Assert.That (ClientTransaction.Current.IsEnlisted (outParameter), Is.False);
+        Assert.That (ClientTransaction.Current.IsEnlisted (outParameterArray[0]), Is.False);
       }
     }
 
@@ -305,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         }
         catch (ArgumentException aex)
         {
-          Assert.AreEqual ("InParameter", aex.ParamName);
+          Assert.That (aex.ParamName, Is.EqualTo ("InParameter"));
           throw;
         }
       }
@@ -331,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         }
         catch (ArgumentException aex)
         {
-          Assert.AreEqual ("OutParameter", aex.ParamName);
+          Assert.That (aex.ParamName, Is.EqualTo ("OutParameter"));
           throw;
         }
       }
@@ -342,18 +336,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     {
       SerializationTestTransactedFunction function = new SerializationTestTransactedFunction();
       function.Execute (Context);
-      Assert.IsTrue (function.FirstStepExecuted);
-      Assert.IsTrue (function.SecondStepExecuted);
+      Assert.That (function.FirstStepExecuted, Is.True);
+      Assert.That (function.SecondStepExecuted, Is.True);
 
       SerializationTestTransactedFunction deserializedFunction =
           (SerializationTestTransactedFunction) Serializer.Deserialize (function.SerializedSelf);
-      Assert.IsTrue (deserializedFunction.FirstStepExecuted);
-      Assert.IsFalse (deserializedFunction.SecondStepExecuted);
+      Assert.That (deserializedFunction.FirstStepExecuted, Is.True);
+      Assert.That (deserializedFunction.SecondStepExecuted, Is.False);
 
       deserializedFunction.Execute (Context);
 
-      Assert.IsTrue (deserializedFunction.FirstStepExecuted);
-      Assert.IsTrue (deserializedFunction.SecondStepExecuted);
+      Assert.That (deserializedFunction.FirstStepExecuted, Is.True);
+      Assert.That (deserializedFunction.SecondStepExecuted, Is.True);
     }
 
     [Test]
@@ -370,14 +364,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         Thread.ResetAbort();
       }
 
-      Assert.IsTrue (function.FirstStepExecuted);
-      Assert.IsFalse (function.SecondStepExecuted);
-      Assert.IsTrue (function.ThreadAborted);
+      Assert.That (function.FirstStepExecuted, Is.True);
+      Assert.That (function.SecondStepExecuted, Is.False);
+      Assert.That (function.ThreadAborted, Is.True);
 
       function.Execute (Context);
 
-      Assert.IsTrue (function.FirstStepExecuted);
-      Assert.IsTrue (function.SecondStepExecuted);
+      Assert.That (function.FirstStepExecuted, Is.True);
+      Assert.That (function.SecondStepExecuted, Is.True);
     }
 
     [Test]
@@ -398,18 +392,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         Thread.ResetAbort();
       }
 
-      Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
 
-      Assert.IsTrue (nestedFunction.FirstStepExecuted);
-      Assert.IsFalse (nestedFunction.SecondStepExecuted);
-      Assert.IsTrue (nestedFunction.ThreadAborted);
+      Assert.That (nestedFunction.FirstStepExecuted, Is.True);
+      Assert.That (nestedFunction.SecondStepExecuted, Is.False);
+      Assert.That (nestedFunction.ThreadAborted, Is.True);
 
       parentFunction.Execute (Context);
 
-      Assert.IsTrue (nestedFunction.FirstStepExecuted);
-      Assert.IsTrue (nestedFunction.SecondStepExecuted);
+      Assert.That (nestedFunction.FirstStepExecuted, Is.True);
+      Assert.That (nestedFunction.SecondStepExecuted, Is.True);
 
-      Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
       originalScope.Leave();
     }
 
@@ -431,53 +425,133 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
         Thread.ResetAbort();
       }
 
-      Assert.AreSame (originalScope, ClientTransactionScope.ActiveScope);
+      Assert.That (ClientTransactionScope.ActiveScope, Is.SameAs (originalScope));
 
       ThreadRunner.Run (
           delegate
           {
-            Assert.IsNull (ClientTransactionScope.ActiveScope, "ActiveScope is not null before execute.");
-            Assert.IsTrue (nestedFunction.FirstStepExecuted);
-            Assert.IsFalse (nestedFunction.SecondStepExecuted);
-            Assert.IsTrue (nestedFunction.ThreadAborted);
+            Assert.That (ClientTransactionScope.ActiveScope, Is.Null, "ActiveScope is not null before execute.");
+            Assert.That (nestedFunction.FirstStepExecuted, Is.True);
+            Assert.That (nestedFunction.SecondStepExecuted, Is.False);
+            Assert.That (nestedFunction.ThreadAborted, Is.True);
 
             parentFunction.Execute (Context);
 
-            Assert.IsTrue (nestedFunction.FirstStepExecuted);
-            Assert.IsTrue (nestedFunction.SecondStepExecuted);
-            Assert.IsNull (ClientTransactionScope.ActiveScope, "ActiveScope is not null after execute.");
+            Assert.That (nestedFunction.FirstStepExecuted, Is.True);
+            Assert.That (nestedFunction.SecondStepExecuted, Is.True);
+            Assert.That (ClientTransactionScope.ActiveScope, Is.Null, "ActiveScope is not null after execute.");
             //TODO: Before there was a transaction, now there isn't                           
-            //Assert.AreSame (originalScope.ScopedTransaction, ClientTransactionScope.CurrentTransaction); // but same transaction as on old thread
+            //Assert.That ( ClientTransactionScope.CurrentTransaction, Is.SameAs (originalScope.ScopedTransaction)); // but same transaction as on old thread
           });
 
       originalScope.Leave();
     }
 
     [Test]
-    public void ResetAutoEnlistsObjects ()
+    public void Execute_CreatesTransaction_ThenRestoresOriginal ()
     {
-      Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
-      ResetTestTransactedFunction function = new ResetTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot);
-      function.Execute (Context);
-      Assert.IsFalse (ClientTransactionScope.HasCurrentTransaction);
-    }
-
-    [Test]
-    public void ResetWithChildTransaction ()
-    {
-      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
+      Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
+      
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
       {
-        ResetTestTransactedFunction function = new ResetTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent);
-        CreateRootWithChildTestTransactedFunction rootFunction = new CreateRootWithChildTestTransactedFunction (ClientTransaction.Current, function);
-        rootFunction.Execute (Context);
-      }
+        Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.True);
+        Assert.That (f.Transaction.GetNativeTransaction<ClientTransaction>(), Is.Not.Null.And.SameAs (ClientTransaction.Current));
+      });
+
+      Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
     }
 
     [Test]
-    public void ResetDoesNotCopyEventHandlers ()
+    public void Reset_ReplacesCurrentTransaction ()
     {
-      ResetTestTransactedFunction function = new ResetTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot);
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      {
+        var transactionBefore = ClientTransaction.Current;
+        Assert.That (transactionBefore, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
+
+        f.Transaction.Reset ();
+
+        Assert.That (transactionBefore, Is.Not.SameAs (ClientTransaction.Current));
+        Assert.That (ClientTransaction.Current, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
+      });
+    }
+
+    [Test]
+    public void Reset_Variables_AreEnlistedInNewTransaction ()
+    {
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      {
+        var order = Order.GetObject (DomainObjectIDs.Order1);
+        Assert.That (order.OrderNumber, Is.EqualTo (1));
+        f.Variables.Add ("Order", order);
+
+        f.Transaction.Reset ();
+
+        var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction> ();
+        Assert.That (transactionAfter.IsEnlisted (order), Is.True);
+      });
+    }
+
+    [Test]
+    public void Reset_NonVariables_AreNotEnlistedInNewTransaction ()
+    {
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      {
+        var order = Order.GetObject (DomainObjectIDs.Order1);
+
+        f.Transaction.Reset ();
+
+        var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction> ();
+        Assert.That (transactionAfter.IsEnlisted (order), Is.False);
+      });
+    }
+
+    [Test]
+    public void Reset_WithChildTransaction ()
+    {
+        ExecuteDelegateInSubWxeFunctionWithParentTransaction (
+            WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
+            f =>
+            {
+              var transactionBefore = f.Transaction.GetNativeTransaction<ClientTransaction>();
+              Assert.That (transactionBefore, Is.Not.Null.And.SameAs (ClientTransaction.Current));
+              Assert.That (transactionBefore.ParentTransaction, Is.Not.Null);
+              var parentBefore = transactionBefore.ParentTransaction;
+
+              var order = Order.GetObject (DomainObjectIDs.Order1);
+
+              f.Transaction.Reset();
+
+              var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction>();
+              Assert.That (transactionAfter, Is.Not.SameAs (transactionBefore));
+              Assert.That (transactionAfter, Is.Not.Null.And.SameAs (ClientTransaction.Current));
+              Assert.That (transactionAfter.ParentTransaction, Is.Not.Null.And.SameAs (parentBefore));
+
+              // This is because it was automatically enlisted in the outer transaction before the reset
+              Assert.That (transactionAfter.IsEnlisted (order), Is.True);
+            });
+    }
+
+    private void ExecuteDelegateInWxeFunction (ITransactionMode transactionMode, Action<DelegateExecutingTransactedFunction> testDelegate)
+    {
+      var function = new DelegateExecutingTransactedFunction (
+          transactionMode,
+          testDelegate);
+
       function.Execute (Context);
+      Assert.That (function.DelegateExecuted, Is.True);
+    }
+
+    private void ExecuteDelegateInSubWxeFunctionWithParentTransaction (ITransactionMode transactionMode, Action<DelegateExecutingTransactedFunction> testDelegate)
+    {
+      var subFunction = new DelegateExecutingTransactedFunction (
+          transactionMode,
+          testDelegate);
+
+      var rootFunction = new CreateRootWithChildTestTransactedFunction (ClientTransaction.Current, subFunction);
+      rootFunction.Execute (Context);
+
+      Assert.That (subFunction.DelegateExecuted, Is.True);
     }
   }
 }

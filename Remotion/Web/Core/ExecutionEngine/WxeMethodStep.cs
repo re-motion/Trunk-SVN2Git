@@ -36,9 +36,15 @@ public class WxeMethodStep: WxeStep
 {
   private static WxeStepList GetTargetFromDelegate (Delegate method)
   {
-    WxeStepList target = method.Target as WxeStepList;
+    var target = method.Target as WxeStepList;
     if (target == null)
-      throw new ArgumentException ("The delegate's target must be a non-null WxeStepList.", "method");
+    {
+      var message = string.Format (
+          "The delegate's target must be a non-null WxeStepList, but it was '{0}'. When used within a WxeFunction, the delegate should be a method "
+          + "of the surrounding WxeFunction, and it must not be a closure.", 
+          method.Target != null ? method.Target.GetType().ToString() : "null");
+      throw new ArgumentException (message, "method");
+    }
     else
       return target;
   }
