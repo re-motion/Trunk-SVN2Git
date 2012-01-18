@@ -1880,12 +1880,8 @@
     <Compile Include="DomainObjects\Web\WxeFunctions\DelegateExecutingTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\ThreadAbortTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\SerializationTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\DomainObjectParameterInvalidOutTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\DomainObjectParameterWithChildInvalidOutTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\DomainObjectParameterWithChildInvalidInTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\CreateRootWithChildTestTransactedFunctionBase.cs" />
+    <Compile Include="DomainObjects\Web\WxeFunctions\TransactedFunctionWithChildFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\DomainObjectParameterTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\DomainObjectParameterWithChildTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionTest.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\AutoCommitTestTransactedFunction.cs" />
     <Compile Include="DomainObjects\Web\WxeFunctions\CreateChildIfParentTestTransactedFunction.cs" />

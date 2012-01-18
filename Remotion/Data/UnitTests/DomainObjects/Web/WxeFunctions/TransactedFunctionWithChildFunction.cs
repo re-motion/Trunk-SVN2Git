@@ -15,17 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
-  public class CreateRootWithChildTestTransactedFunctionBase : WxeFunction
+  public class TransactedFunctionWithChildFunction : WxeFunction
   {
     public WxeFunction ChildFunction;
 
-    public CreateRootWithChildTestTransactedFunctionBase (ITransactionMode mode, WxeFunction childFunction, params object[] actualParameters)
+    public TransactedFunctionWithChildFunction (ITransactionMode mode, WxeFunction childFunction, params object[] actualParameters)
         : base(mode, actualParameters)
     {
       Add (childFunction);

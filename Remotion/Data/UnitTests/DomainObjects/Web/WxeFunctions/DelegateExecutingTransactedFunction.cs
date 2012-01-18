@@ -15,39 +15,51 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Web.ExecutionEngine;
-using Assertion=Remotion.Utilities.Assertion;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
   public class DelegateExecutingTransactedFunction : WxeFunction
   {
-    public DelegateExecutingTransactedFunction (ITransactionMode transactionMode, Action<DelegateExecutingTransactedFunction> testDelegate, params object[] actualParameters)
+    public DelegateExecutingTransactedFunction (
+        ITransactionMode transactionMode, Action<WxeContext, DelegateExecutingTransactedFunction> testDelegate, params object[] actualParameters)
         : base (transactionMode, actualParameters)
     {
       Assertion.IsFalse (TransactionMode.AutoCommit);
 
-      Delegate = testDelegate;
-      DelegateExecuted = false;
-
-      Add (new WxeMethodStep (() => DelegateExecuted = false));
+      CurrentDelegateIndex = 0;
+      DelegateBatch = new List<Action<WxeContext, DelegateExecutingTransactedFunction>> ();
       Add (new WxeMethodStep (() =>
       {
-        Delegate (this);
-        DelegateExecuted = true;
+        CurrentDelegateIndex = 0;
       }));
+
+      AddDelegate (testDelegate);
     }
 
-    public Action<DelegateExecutingTransactedFunction> Delegate
+    public bool DelegatesExecuted
     {
-      get { return (Action<DelegateExecutingTransactedFunction>) Variables["Delegate"]; }
-      set { Variables["Delegate"] = value; }
+      get { return CurrentDelegateIndex >= DelegateBatch.Count; }
     }
 
-    public bool DelegateExecuted
+    private List<Action<WxeContext, DelegateExecutingTransactedFunction>> DelegateBatch
     {
-      get { return (bool) Variables["DelegateExecuted"]; }
-      set { Variables["DelegateExecuted"] = value; }
+      get { return (List<Action<WxeContext, DelegateExecutingTransactedFunction>>) Variables["DelegateBatch"]; }
+      set { Variables["DelegateBatch"] = value; }
+    }
+
+    private int CurrentDelegateIndex
+    {
+      get { return (int) Variables["CurrentDelegateIndex"]; }
+      set { Variables["CurrentDelegateIndex"] = value; }
+    }
+
+    public void AddDelegate (Action<WxeContext, DelegateExecutingTransactedFunction> action)
+    {
+      DelegateBatch.Add (action);
+      Add (new WxeMethodStep (ctx => DelegateBatch[CurrentDelegateIndex++] (ctx, this)));
     }
   }
 }

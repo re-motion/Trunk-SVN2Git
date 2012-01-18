@@ -22,7 +22,7 @@ using Remotion.Web.ExecutionEngine;
 namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 {
   [Serializable]
-  public class CreateRootWithChildTestTransactedFunction : CreateRootWithChildTestTransactedFunctionBase
+  public class CreateRootWithChildTestTransactedFunction : TransactedFunctionWithChildFunction
   {
     // types
 

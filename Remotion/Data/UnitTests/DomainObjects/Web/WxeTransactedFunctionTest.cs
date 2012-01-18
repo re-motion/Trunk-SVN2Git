@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions;
 using Remotion.Development.UnitTesting;
@@ -172,22 +173,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    public void AutoEnlistingCreateNone ()
+    public void AutomaticParameterEnlisting_CreateNone_FunctionCanUseObjectsFromOuterTransaction ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.NewObject();
-        ClassWithAllDataTypes[] inParameterArray = new[] { ClassWithAllDataTypes.NewObject() };
+        var outerTransaction = ClientTransaction.Current;
+
+        var inParameter = ClassWithAllDataTypes.NewObject();
+        var inParameterArray = new[] { ClassWithAllDataTypes.NewObject() };
         inParameter.Int32Property = 7;
         inParameterArray[0].Int32Property = 8;
 
-        DomainObjectParameterTestTransactedFunction function =
-            new DomainObjectParameterTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.None, inParameter, inParameterArray);
-        function.Execute (Context);
+        ClassWithAllDataTypes outParameter;
+        ClassWithAllDataTypes[] outParameterArray;
+        ExecuteDelegateInWxeFunctionWithParameters (WxeTransactionMode<ClientTransactionFactory>.None, (ctx, f) =>
+        {
+          var clientTransaction1 = f.Transaction.GetNativeTransaction<ClientTransaction> ();
+          Assert.That (clientTransaction1, Is.Null);
+          Assert.That (ClientTransaction.Current, Is.SameAs (outerTransaction));
 
-        ClassWithAllDataTypes outParameter = function.OutParameter;
-        ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
+          Assert.That (outerTransaction.IsEnlisted (f.InParameter), Is.True);
+          Assert.That (outerTransaction.IsEnlisted (f.InParameterArray[0]));
 
+          Assert.That (f.InParameter.Int32Property, Is.EqualTo (7));
+          Assert.That (f.InParameterArray[0].Int32Property, Is.EqualTo (8));
+              
+          f.OutParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+          f.OutParameter.Int32Property = 12;
+
+          f.OutParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
+          f.OutParameterArray[0].Int32Property = 13;
+        }, inParameter, inParameterArray, out outParameter, out outParameterArray);
+
+        // Since everything within the function occurred in the same transaction that called the function, all enlisted objects are the same
+        // and all changes are visible after the function call.
         Assert.That (ClientTransaction.Current.IsEnlisted (outParameter), Is.True);
         Assert.That (outParameter.Int32Property, Is.EqualTo (12));
 
@@ -197,55 +216,137 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    public void AutoEnlistingCreateRoot ()
+    public void AutomaticParameterEnlisting_CreateNone_FunctionCannotUseParametersNotFromOuterTransaction ()
     {
-      SetDatabaseModifyable();
-
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      var objectFromOtherTransaction = DomainObjectMother.GetObjectInOtherTransaction<ClassWithAllDataTypes> (DomainObjectIDs.ClassWithAllDataTypes1);
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.NewObject();
-        inParameter.DateTimeProperty = DateTime.Now;
-        inParameter.DateProperty = DateTime.Now.Date;
-        inParameter.Int32Property = 4;
+        var inParameter = objectFromOtherTransaction;
+        var inParameterArray = new[] { objectFromOtherTransaction };
 
-        ClassWithAllDataTypes[] inParameterArray = new[] { ClassWithAllDataTypes.NewObject() };
-        inParameterArray[0].Int32Property = 5;
-        inParameterArray[0].DateTimeProperty = DateTime.Now;
-        inParameterArray[0].DateProperty = DateTime.Now.Date;
+        Assert.That (ClientTransaction.Current.IsEnlisted (objectFromOtherTransaction), Is.False);
 
-        ClientTransactionScope.CurrentTransaction.Commit();
-
-        inParameter.Int32Property = 7;
-        inParameterArray[0].Int32Property = 8;
-
-        DomainObjectParameterTestTransactedFunction function = new DomainObjectParameterTestTransactedFunction (
-            WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit, inParameter, inParameterArray);
-        function.Execute (Context);
-
-        ClassWithAllDataTypes outParameter = function.OutParameter;
-        ClassWithAllDataTypes[] outParameterArray = function.OutParameterArray;
-
+        ClassWithAllDataTypes outParameter;
+        ClassWithAllDataTypes[] outParameterArray;
+        ExecuteDelegateInWxeFunctionWithParameters (WxeTransactionMode<ClientTransactionFactory>.None, (ctx, f) =>
+            {
+              Assert.That (ClientTransaction.Current.IsEnlisted (f.InParameter), Is.False);
+              Assert.That (ClientTransaction.Current.IsEnlisted (f.InParameterArray[0]), Is.False);
+              f.OutParameter = f.InParameter;
+              f.OutParameterArray = new[] { f.InParameterArray[0] };
+            },
+            inParameter,
+            inParameterArray,
+            out outParameter,
+            out outParameterArray);
+        
         Assert.That (ClientTransaction.Current.IsEnlisted (outParameter), Is.False);
         Assert.That (ClientTransaction.Current.IsEnlisted (outParameterArray[0]), Is.False);
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage =
-        @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid', 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
-        MatchType = MessageMatch.Regex)]
-    public void AutoEnlistingCreateRootThrowsWhenInvalidInParameter ()
+    public void AutomaticParameterEnlisting_CreateRoot_InParametersAreEnlisted ()
     {
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
-        ClassWithAllDataTypes inParameter = ClassWithAllDataTypes.NewObject();
-        ClassWithAllDataTypes[] inParameterArray = new[] { ClassWithAllDataTypes.NewObject() };
+        var outerTransaction = ClientTransaction.Current;
+        
+        var inParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+        var inParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
 
-        var function = new DomainObjectParameterTestTransactedFunction (
-            WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit, inParameter, inParameterArray);
+        inParameter.Int32Property = 7;
+        inParameterArray[0].Int32Property = 8;
+
+        ClassWithAllDataTypes outParameter;
+        ClassWithAllDataTypes[] outParameterArray;
+        ExecuteDelegateInWxeFunctionWithParameters (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
+        {
+          var clientTransaction = f.Transaction.GetNativeTransaction<ClientTransaction> ();
+          Assert.That (clientTransaction, Is.Not.Null);
+          Assert.That (ClientTransaction.Current, Is.Not.SameAs (outerTransaction));
+          Assert.That (clientTransaction.ParentTransaction, Is.Null);
+
+          Assert.That (outerTransaction.IsEnlisted (f.InParameter), Is.True);
+          Assert.That (outerTransaction.IsEnlisted (f.InParameterArray[0]));
+
+          // Since this function is running in a parallel root transaction, the properties set in the outside transaction are not visible from here.
+          Assert.That (f.InParameter.Int32Property, Is.Not.EqualTo (7));
+          Assert.That (f.InParameterArray[0].Int32Property, Is.Not.EqualTo (8));
+        }, inParameter, inParameterArray, out outParameter, out outParameterArray);
+      }
+    }
+
+    [Test]
+    public void AutomaticParameterEnlisting_CreateRoot_OutParameters_NotEnlisted_WithoutSurroundingFunction ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        ClassWithAllDataTypes outParameter;
+        ClassWithAllDataTypes[] outParameterArray;
+        ExecuteDelegateInWxeFunctionWithParameters (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
+        {
+          f.OutParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+          f.OutParameter.Int32Property = 12;
+
+          f.OutParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
+          f.OutParameterArray[0].Int32Property = 13;
+        }, null, null, out outParameter, out outParameterArray);
+
+        // Wxe does not enlist parameters in the calling transaction if there is no calling function.
+        Assert.That (ClientTransaction.Current.IsEnlisted (outParameter), Is.False);
+        Assert.That (ClientTransaction.Current.IsEnlisted (outParameterArray[0]), Is.False);
+      }
+    }
+
+    [Test]
+    public void AutomaticParameterEnlisting_CreateRoot_OutParameters_Enlisted_WithSurroundingFunction ()
+    {
+      ClientTransaction transactionOfParentFunction = null;
+      ClassWithAllDataTypes outParameter;
+      ClassWithAllDataTypes[] outParameterArray;
+      ExecuteDelegateInSubWxeFunctionWithParameters (
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          (ctx, f) =>
+          {
+            f.OutParameter = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+            f.OutParameter.Int32Property = 12;
+
+            f.OutParameterArray = new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) };
+            f.OutParameterArray[0].Int32Property = 13;
+
+            transactionOfParentFunction = f.ParentFunction.Transaction.GetNativeTransaction<ClientTransaction>();
+          },
+          null,
+          null,
+          out outParameter,
+          out outParameterArray);
+
+      // Wxe does enlist parameters in the transaction of the calling function.
+      Assert.That (transactionOfParentFunction.IsEnlisted (outParameter), Is.True);
+      Assert.That (transactionOfParentFunction.IsEnlisted (outParameterArray[0]), Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage =
+        @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid', 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
+        MatchType = MessageMatch.Regex)]
+    public void AutomaticParameterEnlisting_CreateRoot_WithInvalidInParameter ()
+    {
+      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
+      {
+        var inParameter = ClassWithAllDataTypes.NewObject ();
+        var inParameterArray = new[] { ClassWithAllDataTypes.NewObject () };
+
+        // We're passing in new objects which, of course, don't exist in the database.
+
         try
         {
-          function.Execute (Context);
+          ClassWithAllDataTypes outParameter;
+          ClassWithAllDataTypes[] outParameterArray;
+          ExecuteDelegateInWxeFunctionWithParameters (
+              WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) => { }, inParameter, inParameterArray, out outParameter, out outParameterArray);
         }
         catch (WxeUnhandledException ex)
         {
@@ -258,13 +359,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage =
         @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
         MatchType = MessageMatch.Regex)]
-    public void AutoEnlistingCreateRootThrowsWhenInvalidOutParameter ()
+    public void AutomaticParameterEnlisting_CreateRoot_ThrowsWhenInvalidOutParameter ()
     {
-      var function = new CreateRootWithChildTestTransactedFunctionBase  (WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-          new DomainObjectParameterInvalidOutTestTransactedFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit));
       try
       {
-        function.Execute (Context);
+        ClassWithAllDataTypes outParameter;
+        ClassWithAllDataTypes[] outParameterArray;
+        ExecuteDelegateInSubWxeFunctionWithParameters (
+            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+            (ctx, f) =>
+            {
+              // These out parameters is of course not valid in the outer transaction
+              f.OutParameter = ClassWithAllDataTypes.NewObject();
+              f.OutParameterArray = new[] { ClassWithAllDataTypes.NewObject() };
+            },
+            null,
+            null,
+            out outParameter,
+            out outParameterArray);
       }
       catch (WxeUnhandledException ex)
       {
@@ -273,73 +386,135 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     }
 
     [Test]
-    public void AutoEnlistingCreateChild ()
+    public void AutomaticParameterEnlisting_CreateChild_InAndOutParametersAreEnlisted ()
     {
-      SetDatabaseModifyable();
-      DomainObjectParameterWithChildTestTransactedFunction function = new DomainObjectParameterWithChildTestTransactedFunction();
-      function.Execute (Context);
+      ExecuteDelegateInWxeFunction (
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          (parentCtx, parentF) =>
+          {
+            var inParameter = ClassWithAllDataTypes.NewObject();
+            var inParameterArray = new[] { ClassWithAllDataTypes.NewObject() };
+            inParameter.Int32Property = 7;
+            inParameterArray[0].Int32Property = 8;
+
+            var parentTransaction = parentF.Transaction.GetNativeTransaction<ClientTransaction>();
+
+            var subFunction = new DomainObjectParameterTestTransactedFunction (
+            WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
+            (ctx, f) =>
+            {
+              var clientTransaction = f.Transaction.GetNativeTransaction<ClientTransaction> ();
+              Assert.That (clientTransaction, Is.Not.Null.And.SameAs (ClientTransaction.Current));
+              Assert.That (clientTransaction, Is.Not.SameAs (parentTransaction));
+              Assert.That (clientTransaction.ParentTransaction, Is.SameAs (parentTransaction));
+
+              Assert.That (clientTransaction.IsEnlisted (f.InParameter), Is.True);
+              Assert.That (clientTransaction.IsEnlisted (f.InParameterArray[0]));
+
+              // Since this function is running in a subtransaction, the properties set in the parent transaction are visible from here.
+              Assert.That (f.InParameter.Int32Property, Is.EqualTo (7));
+              Assert.That (f.InParameterArray[0].Int32Property, Is.EqualTo (8));
+
+              // Since this function is running in a subtransaction, out parameters are visible within the parent function if the transaction is 
+              // committed.
+              f.OutParameter = ClassWithAllDataTypes.NewObject();
+              f.OutParameter.Int32Property = 17;
+              f.OutParameterArray = new[] { ClassWithAllDataTypes.NewObject(), ClassWithAllDataTypes.NewObject() };
+              f.OutParameterArray[0].Int32Property = 4;
+
+              ClientTransaction.Current.Commit();
+
+              f.OutParameterArray[1].Int32Property = 5;
+            },
+            inParameter,
+            inParameterArray);
+
+            subFunction.SetParentStep (parentF);
+            subFunction.Execute (parentCtx);
+
+            var outParameter = subFunction.OutParameter;
+            var outParameterArray = subFunction.OutParameterArray;
+
+            Assert.That (parentTransaction.IsEnlisted (outParameter), Is.True);
+            Assert.That (outParameter.Int32Property, Is.EqualTo (17));
+            Assert.That (parentTransaction.IsEnlisted (outParameterArray[0]), Is.True);
+            Assert.That (outParameterArray[0].Int32Property, Is.EqualTo (4));
+            Assert.That (parentTransaction.IsEnlisted (outParameterArray[1]), Is.True);
+            Assert.That (outParameterArray[1].Int32Property, Is.Not.EqualTo (4));
+          });
     }
 
     [Test]
     [ExpectedException (typeof (ObjectInvalidException), ExpectedMessage =
         @"Object 'ClassWithAllDataTypes\|.*\|System.Guid' is invalid in this transaction\.",
         MatchType = MessageMatch.Regex)]
-    public void AutoEnlistingCreateChildWithInvalidInParameter ()
+    public void AutomaticParameterEnlisting_CreateChild_WithInvalidInParameter ()
     {
-      var function = new DomainObjectParameterWithChildInvalidInTestTransactedFunction();
       try
       {
-        function.Execute (Context);
+        ExecuteDelegateInWxeFunction (
+            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+            (parentCtx, parentF) =>
+            {
+              var inParameter = ClassWithAllDataTypes.NewObject ();
+              inParameter.Delete ();
+
+              var subFunction = new DomainObjectParameterTestTransactedFunction (
+                  WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
+                  (ctx, f) => { },
+                  inParameter,
+                  null);
+
+              subFunction.SetParentStep (parentF);
+              subFunction.Execute (parentCtx);
+            });
       }
-      catch (WxeUnhandledException ex)
+      catch (WxeUnhandledException e)
       {
-        try
-        {
-          throw ex.InnerException;
-        }
-        catch (ArgumentException aex)
-        {
-          Assert.That (aex.ParamName, Is.EqualTo ("InParameter"));
-          throw;
-        }
+        throw e.InnerException;
       }
     }
 
     [Test]
-    [ExpectedException (
-        typeof (ObjectInvalidException), 
-        ExpectedMessage = @"Object 'ClassWithAllDataTypes\|.*\|System.Guid' is invalid in this transaction\.",
+    [ExpectedException (typeof (ObjectInvalidException), ExpectedMessage =
+        @"Object 'ClassWithAllDataTypes\|.*\|System.Guid' is invalid in this transaction\.",
         MatchType = MessageMatch.Regex)]
-    public void AutoEnlistingCreateChildWithInvalidOutParameter ()
+    public void AutomaticParameterEnlisting_CreateChild_WithInvalidOutParameter ()
     {
-      var function = new DomainObjectParameterWithChildInvalidOutTestTransactedFunction();
-      try
+      try 
       {
-        function.Execute (Context);
+        ExecuteDelegateInWxeFunction (
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          (parentCtx, parentF) =>
+          {
+            var subFunction = new DomainObjectParameterTestTransactedFunction (
+            WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
+            (ctx, f) =>
+            {
+              f.OutParameter = ClassWithAllDataTypes.NewObject ();
+            },
+            null,
+            null);
+
+            subFunction.SetParentStep (parentF);
+            subFunction.Execute (parentCtx);
+          });
       }
-      catch (WxeUnhandledException ex)
+      catch (WxeUnhandledException e)
       {
-        try
-        {
-          throw ex.InnerException;
-        }
-        catch (ArgumentException aex)
-        {
-          Assert.That (aex.ParamName, Is.EqualTo ("OutParameter"));
-          throw;
-        }
+        throw e.InnerException;
       }
     }
 
-    [Test]
+   [Test]
     public void Serialization ()
     {
-      SerializationTestTransactedFunction function = new SerializationTestTransactedFunction();
+      var function = new SerializationTestTransactedFunction();
       function.Execute (Context);
       Assert.That (function.FirstStepExecuted, Is.True);
       Assert.That (function.SecondStepExecuted, Is.True);
 
-      SerializationTestTransactedFunction deserializedFunction =
+      var deserializedFunction =
           (SerializationTestTransactedFunction) Serializer.Deserialize (function.SerializedSelf);
       Assert.That (deserializedFunction.FirstStepExecuted, Is.True);
       Assert.That (deserializedFunction.SecondStepExecuted, Is.False);
@@ -353,7 +528,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void ThreadAbortException ()
     {
-      ThreadAbortTestTransactedFunction function = new ThreadAbortTestTransactedFunction();
+      var function = new ThreadAbortTestTransactedFunction();
       try
       {
         function.Execute (Context);
@@ -377,9 +552,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void ThreadAbortExceptionInNestedFunction ()
     {
-      ThreadAbortTestTransactedFunction nestedFunction = new ThreadAbortTestTransactedFunction();
+      var nestedFunction = new ThreadAbortTestTransactedFunction();
       ClientTransactionScope originalScope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
-      CreateRootWithChildTestTransactedFunction parentFunction =
+      var parentFunction =
           new CreateRootWithChildTestTransactedFunction (ClientTransactionScope.CurrentTransaction, nestedFunction);
 
       try
@@ -410,9 +585,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void ThreadAbortExceptionInNestedFunctionWithThreadMigration ()
     {
-      ThreadAbortTestTransactedFunction nestedFunction = new ThreadAbortTestTransactedFunction();
-      ClientTransactionScope originalScope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
-      CreateRootWithChildTestTransactedFunction parentFunction =
+      var nestedFunction = new ThreadAbortTestTransactedFunction();
+      var originalScope = ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
+      var parentFunction =
           new CreateRootWithChildTestTransactedFunction (ClientTransactionScope.CurrentTransaction, nestedFunction);
 
       try
@@ -452,7 +627,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     {
       Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.False);
       
-      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
         Assert.That (ClientTransactionScope.HasCurrentTransaction, Is.True);
         Assert.That (f.Transaction.GetNativeTransaction<ClientTransaction>(), Is.Not.Null.And.SameAs (ClientTransaction.Current));
@@ -464,7 +639,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void Reset_ReplacesCurrentTransaction ()
     {
-      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
         var transactionBefore = ClientTransaction.Current;
         Assert.That (transactionBefore, Is.SameAs (f.Transaction.GetNativeTransaction<ClientTransaction> ()));
@@ -479,7 +654,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void Reset_Variables_AreEnlistedInNewTransaction ()
     {
-      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
         var order = Order.GetObject (DomainObjectIDs.Order1);
         f.Variables.Add ("Order", order);
@@ -497,7 +672,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     {
       SetDatabaseModifyable();
 
-      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
         var existingObject = Order.GetObject (DomainObjectIDs.Order1);
         var nonExistingObject = Employee.GetObject (DomainObjectIDs.Employee1);
@@ -526,7 +701,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void Reset_NonVariables_AreNotEnlistedInNewTransaction ()
     {
-      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, f =>
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
       {
         var order = Order.GetObject (DomainObjectIDs.Order1);
 
@@ -540,49 +715,91 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web
     [Test]
     public void Reset_WithChildTransaction ()
     {
-        ExecuteDelegateInSubWxeFunctionWithParentTransaction (
-            WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
-            f =>
-            {
-              var transactionBefore = f.Transaction.GetNativeTransaction<ClientTransaction>();
-              Assert.That (transactionBefore, Is.Not.Null.And.SameAs (ClientTransaction.Current));
-              Assert.That (transactionBefore.ParentTransaction, Is.Not.Null);
-              var parentBefore = transactionBefore.ParentTransaction;
+      ExecuteDelegateInSubWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent, (ctx, f) =>
+        {
+          var transactionBefore = f.Transaction.GetNativeTransaction<ClientTransaction>();
+          Assert.That (transactionBefore, Is.Not.Null.And.SameAs (ClientTransaction.Current));
+          Assert.That (transactionBefore.ParentTransaction, Is.Not.Null);
+          var parentBefore = transactionBefore.ParentTransaction;
 
-              var order = Order.GetObject (DomainObjectIDs.Order1);
+          var order = Order.GetObject (DomainObjectIDs.Order1);
 
-              f.Transaction.Reset();
+          f.Transaction.Reset();
 
-              var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction>();
-              Assert.That (transactionAfter, Is.Not.SameAs (transactionBefore));
-              Assert.That (transactionAfter, Is.Not.Null.And.SameAs (ClientTransaction.Current));
-              Assert.That (transactionAfter.ParentTransaction, Is.Not.Null.And.SameAs (parentBefore));
+          var transactionAfter = f.Transaction.GetNativeTransaction<ClientTransaction>();
+          Assert.That (transactionAfter, Is.Not.SameAs (transactionBefore));
+          Assert.That (transactionAfter, Is.Not.Null.And.SameAs (ClientTransaction.Current));
+          Assert.That (transactionAfter.ParentTransaction, Is.Not.Null.And.SameAs (parentBefore));
 
-              // This is because it was automatically enlisted in the outer transaction before the reset
-              Assert.That (transactionAfter.IsEnlisted (order), Is.True);
-            });
+          // This is because it was automatically enlisted in the outer transaction before the reset
+          Assert.That (transactionAfter.IsEnlisted (order), Is.True);
+        });
     }
 
-    private void ExecuteDelegateInWxeFunction (ITransactionMode transactionMode, Action<DelegateExecutingTransactedFunction> testDelegate)
+    private void ExecuteDelegateInWxeFunction (ITransactionMode transactionMode, Action<WxeContext, DelegateExecutingTransactedFunction> testDelegate)
     {
-      var function = new DelegateExecutingTransactedFunction (
-          transactionMode,
-          testDelegate);
+      var function = new DelegateExecutingTransactedFunction (transactionMode, testDelegate);
 
       function.Execute (Context);
-      Assert.That (function.DelegateExecuted, Is.True);
+      Assert.That (function.DelegatesExecuted, Is.True);
     }
 
-    private void ExecuteDelegateInSubWxeFunctionWithParentTransaction (ITransactionMode transactionMode, Action<DelegateExecutingTransactedFunction> testDelegate)
+    private void ExecuteDelegateInSubWxeFunction (
+        ITransactionMode parentFunctionTransactionMode, 
+        ITransactionMode subFunctionTransactionMode, 
+        Action<WxeContext, DelegateExecutingTransactedFunction> testDelegate)
     {
-      var subFunction = new DelegateExecutingTransactedFunction (
-          transactionMode,
-          testDelegate);
+      var subFunction = new DelegateExecutingTransactedFunction (subFunctionTransactionMode, testDelegate);
 
-      var rootFunction = new CreateRootWithChildTestTransactedFunction (ClientTransaction.Current, subFunction);
+      var rootFunction = new TransactedFunctionWithChildFunction (parentFunctionTransactionMode, subFunction);
       rootFunction.Execute (Context);
 
-      Assert.That (subFunction.DelegateExecuted, Is.True);
+      Assert.That (subFunction.DelegatesExecuted, Is.True);
+    }
+
+    private void ExecuteDelegateInWxeFunctionWithParameters (
+        ITransactionMode transactionMode, 
+        Action<WxeContext, DomainObjectParameterTestTransactedFunction> testDelegate, 
+        ClassWithAllDataTypes inParameter, 
+        ClassWithAllDataTypes[] inParameterArray, 
+        out ClassWithAllDataTypes outParameter, 
+        out ClassWithAllDataTypes[] outParameterArray)
+    {
+      var function = new DomainObjectParameterTestTransactedFunction (
+          transactionMode,
+          testDelegate,
+          inParameter,
+          inParameterArray);
+      function.Execute (Context);
+
+      Assert.That (function.DelegatesExecuted, Is.True);
+
+      outParameter = function.OutParameter;
+      outParameterArray = function.OutParameterArray;
+    }
+
+    private void ExecuteDelegateInSubWxeFunctionWithParameters (
+        ITransactionMode parentFunctionTransactionMode,
+        ITransactionMode subFunctionTransactionMode,
+        Action<WxeContext, DomainObjectParameterTestTransactedFunction> testDelegate,
+        ClassWithAllDataTypes inParameter,
+        ClassWithAllDataTypes[] inParameterArray,
+        out ClassWithAllDataTypes outParameter,
+        out ClassWithAllDataTypes[] outParameterArray)
+    {
+      var subFunction = new DomainObjectParameterTestTransactedFunction (
+          subFunctionTransactionMode,
+          testDelegate,
+          inParameter,
+          inParameterArray);
+      
+      var rootFunction = new TransactedFunctionWithChildFunction (parentFunctionTransactionMode, subFunction);
+      rootFunction.Execute (Context);
+
+      Assert.That (subFunction.DelegatesExecuted, Is.True);
+
+      outParameter = subFunction.OutParameter;
+      outParameterArray = subFunction.OutParameterArray;
     }
   }
 }
