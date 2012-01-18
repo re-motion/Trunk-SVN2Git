@@ -1,4 +1,20 @@
-﻿using NUnit.Framework;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
@@ -169,10 +185,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage =
-        @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid', 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
-        MatchType = MessageMatch.Regex)]
-    public void AutomaticParameterEnlisting_CreateRoot_WithInvalidInParameter ()
+    [Ignore ("TODO 4591")]
+    public void AutomaticParameterEnlisting_CreateRoot_WithNonLoadableInParameter ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
@@ -181,48 +195,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
         // We're passing in new objects which, of course, don't exist in the database.
 
-        try
-        {
-          ClassWithAllDataTypes outParameter;
-          ClassWithAllDataTypes[] outParameterArray;
-          ExecuteDelegateInWxeFunctionWithParameters (
-              WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) => { }, inParameter, inParameterArray, out outParameter, out outParameterArray);
-        }
-        catch (WxeUnhandledException ex)
-        {
-          throw ex.InnerException;
-        }
+        ClassWithAllDataTypes outParameter;
+        ClassWithAllDataTypes[] outParameterArray;
+        ExecuteDelegateInWxeFunctionWithParameters (
+            WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
+            {
+              Assert.That (f.Transaction.GetNativeTransaction<ClientTransaction> ().IsEnlisted (f.InParameter), Is.True);
+              Assert.That (f.InParameter.State, Is.EqualTo (StateType.NotLoadedYet));
+              Assert.That (() => f.InParameter.EnsureDataAvailable(), Throws.TypeOf<ObjectsNotFoundException>());
+
+              Assert.That (f.Transaction.GetNativeTransaction<ClientTransaction> ().IsEnlisted (f.InParameterArray[0]), Is.True);
+              Assert.That (f.InParameterArray[0].State, Is.EqualTo (StateType.NotLoadedYet));
+              Assert.That (() => f.InParameterArray[0].EnsureDataAvailable (), Throws.TypeOf<ObjectsNotFoundException> ());
+            }, inParameter, inParameterArray, out outParameter, out outParameterArray);
       }
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException), ExpectedMessage =
-        @"Object\(s\) could not be found: 'ClassWithAllDataTypes\|.*\|System.Guid'\.",
-        MatchType = MessageMatch.Regex)]
-    public void AutomaticParameterEnlisting_CreateRoot_ThrowsWhenInvalidOutParameter ()
+    [Ignore ("TODO 4591")]
+    public void AutomaticParameterEnlisting_CreateRoot_WithNonLoadableOutParameter ()
     {
-      try
-      {
-        ClassWithAllDataTypes outParameter;
-        ClassWithAllDataTypes[] outParameterArray;
-        ExecuteDelegateInSubWxeFunctionWithParameters (
-            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-            (ctx, f) =>
-            {
-              // These out parameters is of course not valid in the outer transaction
-              f.OutParameter = ClassWithAllDataTypes.NewObject ();
-              f.OutParameterArray = new[] { ClassWithAllDataTypes.NewObject () };
-            },
-            null,
-            null,
-            out outParameter,
-            out outParameterArray);
-      }
-      catch (WxeUnhandledException ex)
-      {
-        throw ex.InnerException;
-      }
+      ClassWithAllDataTypes outParameter;
+      ClassWithAllDataTypes[] outParameterArray;
+      ClientTransaction transactionOfParentFunction = null;
+
+      ExecuteDelegateInSubWxeFunctionWithParameters (
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          (ctx, f) =>
+          {
+            // These out parameters is of course not valid in the outer transaction
+            f.OutParameter = ClassWithAllDataTypes.NewObject ();
+            f.OutParameterArray = new[] { ClassWithAllDataTypes.NewObject () };
+
+            transactionOfParentFunction = f.ParentFunction.Transaction.GetNativeTransaction<ClientTransaction>();
+          },
+          null,
+          null,
+          out outParameter,
+          out outParameterArray);
+
+      Assert.That (transactionOfParentFunction.IsEnlisted (outParameter), Is.True);
+      Assert.That (() => transactionOfParentFunction.Execute (() => outParameter.State), Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (() => transactionOfParentFunction.Execute (() => outParameter.EnsureDataAvailable ()), Throws.TypeOf<ObjectsNotFoundException> ());
+
+      Assert.That (transactionOfParentFunction.IsEnlisted (outParameterArray[0]), Is.True);
+      Assert.That (() => transactionOfParentFunction.Execute (() => outParameterArray[0].State), Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (() => transactionOfParentFunction.Execute (() => outParameterArray[0].EnsureDataAvailable ()), Throws.TypeOf<ObjectsNotFoundException> ());
     }
 
     [Test]
@@ -285,65 +304,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException), ExpectedMessage =
-        @"Object 'ClassWithAllDataTypes\|.*\|System.Guid' is invalid in this transaction\.",
-        MatchType = MessageMatch.Regex)]
-    public void AutomaticParameterEnlisting_CreateChild_WithInvalidInParameter ()
+    [Ignore ("TODO 4591")]
+    public void AutomaticParameterEnlisting_CreateChild_WithNonLoadableInParameter ()
     {
-      try
-      {
-        ExecuteDelegateInWxeFunction (
-            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-            (parentCtx, parentF) =>
-            {
-              var inParameter = ClassWithAllDataTypes.NewObject ();
-              inParameter.Delete ();
+      ExecuteDelegateInWxeFunction (
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          (parentCtx, parentF) =>
+          {
+            var inParameter = ClassWithAllDataTypes.NewObject ();
+            inParameter.Delete ();
 
-              var subFunction = new DomainObjectParameterTestTransactedFunction (
-                  WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
-                  (ctx, f) => { },
-                  inParameter,
-                  null);
+            var inParameterArray = new[] { ClassWithAllDataTypes.NewObject () };
+            inParameterArray[0].Delete ();
 
-              subFunction.SetParentStep (parentF);
-              subFunction.Execute (parentCtx);
-            });
-      }
-      catch (WxeUnhandledException e)
-      {
-        throw e.InnerException;
-      }
+            var subFunction = new DomainObjectParameterTestTransactedFunction (
+                WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
+                (ctx, f) =>
+                {
+                  Assert.That (f.InParameter.State, Is.EqualTo (StateType.Invalid));
+                  Assert.That (() => f.InParameter.EnsureDataAvailable (), Throws.TypeOf<ObjectInvalidException> ());
+
+                  Assert.That (f.InParameterArray[0].State, Is.EqualTo (StateType.Invalid));
+                  Assert.That (() => f.InParameterArray[0].EnsureDataAvailable (), Throws.TypeOf<ObjectInvalidException> ());
+                },
+                inParameter,
+                inParameterArray);
+
+            subFunction.SetParentStep (parentF);
+            subFunction.Execute (parentCtx);
+          });
+
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException), ExpectedMessage =
-        @"Object 'ClassWithAllDataTypes\|.*\|System.Guid' is invalid in this transaction\.",
-        MatchType = MessageMatch.Regex)]
-    public void AutomaticParameterEnlisting_CreateChild_WithInvalidOutParameter ()
+    [Ignore ("TODO 4591")]
+    public void AutomaticParameterEnlisting_CreateChild_WithNonLoadableOutParameter ()
     {
-      try
-      {
-        ExecuteDelegateInWxeFunction (
-            WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
-            (parentCtx, parentF) =>
-            {
-              var subFunction = new DomainObjectParameterTestTransactedFunction (
-                  WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
-                  (ctx, f) =>
-                  {
-                    f.OutParameter = ClassWithAllDataTypes.NewObject ();
-                  },
-                  null,
-                  null);
+      ExecuteDelegateInWxeFunction (
+          WxeTransactionMode<ClientTransactionFactory>.CreateRoot,
+          (parentCtx, parentF) =>
+          {
+            var subFunction = new DomainObjectParameterTestTransactedFunction (
+                WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParent,
+                (ctx, f) =>
+                {
+                  f.OutParameter = ClassWithAllDataTypes.NewObject();
+                  f.OutParameterArray = new[] { ClassWithAllDataTypes.NewObject() };
+                },
+                null,
+                null);
 
-              subFunction.SetParentStep (parentF);
-              subFunction.Execute (parentCtx);
-            });
-      }
-      catch (WxeUnhandledException e)
-      {
-        throw e.InnerException;
-      }
+            subFunction.SetParentStep (parentF);
+            subFunction.Execute (parentCtx);
+
+            var parentTransaction = parentF.Transaction.GetNativeTransaction<ClientTransaction>();
+            Assert.That (parentTransaction.IsEnlisted (subFunction.OutParameter), Is.True);
+            Assert.That (subFunction.OutParameter.State, Is.EqualTo (StateType.Invalid));
+            Assert.That (() => subFunction.OutParameter.EnsureDataAvailable(), Throws.TypeOf<ObjectInvalidException>());
+
+            Assert.That (parentTransaction.IsEnlisted (subFunction.OutParameterArray[0]), Is.True);
+            Assert.That (subFunction.OutParameterArray[0].State, Is.EqualTo (StateType.Invalid));
+            Assert.That (() => subFunction.OutParameterArray[0].EnsureDataAvailable(), Throws.TypeOf<ObjectInvalidException>());
+          });
     }
   }
 }
