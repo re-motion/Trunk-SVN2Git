@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Utilities;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   public class DelegateExecutingTransactedFunction : WxeFunction
   {

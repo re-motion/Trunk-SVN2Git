@@ -20,7 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   [Serializable]
   public class ThreadAbortTestTransactedFunction : WxeFunction

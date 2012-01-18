@@ -15,16 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Utilities;
+using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
-using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   [Serializable]
-  public class AutoCommitTestTransactedFunction : WxeFunction
+  public class SerializationTestTransactedFunction: WxeFunction
   {
     // types
 
@@ -34,26 +33,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     // construction and disposing
 
-    public AutoCommitTestTransactedFunction (ITransactionMode transactionMode, ObjectID objectWithAllDataTypes)
-        : base (transactionMode, objectWithAllDataTypes)
+    public SerializationTestTransactedFunction ()
+        : base (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit)
     {
-      Assertion.IsTrue (TransactionMode.AutoCommit);
     }
+
+    public bool FirstStepExecuted;
+    public bool SecondStepExecuted;
+    public ClientTransaction TransactionBeforeSerialization;
+
+    public byte[] SerializedSelf;
 
     // methods and properties
 
-    [WxeParameter (1, true, WxeParameterDirection.In)]
-    public ObjectID ObjectWithAllDataTypes
+    private void Step1()
     {
-      get { return (ObjectID) Variables["ObjectWithAllDataTypes"]; }
-      set { Variables["ObjectWithAllDataTypes"] = value; }
+      Assert.IsFalse (FirstStepExecuted);
+      FirstStepExecuted = true;
+
+      TransactionBeforeSerialization = ClientTransactionScope.CurrentTransaction;
     }
 
-    private void Step1 ()
+    private void Step2 ()
     {
-      ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (ObjectWithAllDataTypes);
+      Assert.IsTrue (FirstStepExecuted);
+      Assert.IsFalse (SecondStepExecuted);
 
-      objectWithAllDataTypes.Int32Property = 10;
+      SerializedSelf = Serializer.Serialize (this); // freeze at this point of time
+
+      SecondStepExecuted = true;
+      Assert.AreSame (TransactionBeforeSerialization, ClientTransactionScope.CurrentTransaction);
     }
   }
 }

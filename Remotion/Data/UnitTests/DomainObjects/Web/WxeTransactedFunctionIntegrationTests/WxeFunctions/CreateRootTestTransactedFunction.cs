@@ -17,13 +17,12 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Development.UnitTesting;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   [Serializable]
-  public class SerializationTestTransactedFunction: WxeFunction
+  public class CreateRootTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -33,36 +32,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     // construction and disposing
 
-    public SerializationTestTransactedFunction ()
-        : base (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit)
+    public CreateRootTestTransactedFunction (ClientTransactionScope previousClientTransactionScope)
+        : base (WxeTransactionMode<ClientTransactionFactory>.CreateRootWithAutoCommit, previousClientTransactionScope)
     {
     }
-
-    public bool FirstStepExecuted;
-    public bool SecondStepExecuted;
-    public ClientTransaction TransactionBeforeSerialization;
-
-    public byte[] SerializedSelf;
 
     // methods and properties
 
-    private void Step1()
+    [WxeParameter (1, true, WxeParameterDirection.In)]
+    public ClientTransactionScope PreviousClientTransactionScope
     {
-      Assert.IsFalse (FirstStepExecuted);
-      FirstStepExecuted = true;
-
-      TransactionBeforeSerialization = ClientTransactionScope.CurrentTransaction;
+      get { return (ClientTransactionScope) Variables["PreviousClientTransactionScope"]; }
+      set { Variables["PreviousClientTransactionScope"] = value; }
     }
 
-    private void Step2 ()
+    private void Step1 ()
     {
-      Assert.IsTrue (FirstStepExecuted);
-      Assert.IsFalse (SecondStepExecuted);
-
-      SerializedSelf = Serializer.Serialize (this); // freeze at this point of time
-
-      SecondStepExecuted = true;
-      Assert.AreSame (TransactionBeforeSerialization, ClientTransactionScope.CurrentTransaction);
+      Assert.AreNotSame (PreviousClientTransactionScope, ClientTransactionScope.ActiveScope);
     }
   }
 }

@@ -15,13 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   [Serializable]
-  public class RemoveCurrentTransactionScopeFunction : WxeFunction
+  public class CreateChildIfParentTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -31,8 +32,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     // construction and disposing
 
-    public RemoveCurrentTransactionScopeFunction ()
-        : base (WxeTransactionMode<ClientTransactionFactory>.CreateRoot)
+    public CreateChildIfParentTestTransactedFunction ()
+        : base (WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParentWithAutoCommit)
     {
     }
 
@@ -40,7 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     private void Step1 ()
     {
-      ClientTransactionScope.ActiveScope.Leave();
+      ClientTransaction parentTransaction = ParentFunction.Transaction.GetNativeTransaction<ClientTransaction>();
+      Assert.AreNotSame (parentTransaction, ClientTransactionScope.CurrentTransaction);
+      Assert.AreSame (parentTransaction, ClientTransactionScope.CurrentTransaction.ParentTransaction);
     }
   }
 }

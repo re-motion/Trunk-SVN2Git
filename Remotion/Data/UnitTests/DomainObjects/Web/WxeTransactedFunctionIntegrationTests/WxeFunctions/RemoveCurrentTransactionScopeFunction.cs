@@ -15,19 +15,32 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
-  public class TransactedFunctionWithChildFunction : WxeFunction
+  [Serializable]
+  public class RemoveCurrentTransactionScopeFunction : WxeFunction
   {
-    public WxeFunction ChildFunction;
+    // types
 
-    public TransactedFunctionWithChildFunction (ITransactionMode mode, WxeFunction childFunction, params object[] actualParameters)
-        : base(mode, actualParameters)
+    // static members and constants
+
+    // member fields
+
+    // construction and disposing
+
+    public RemoveCurrentTransactionScopeFunction ()
+        : base (WxeTransactionMode<ClientTransactionFactory>.CreateRoot)
     {
-      Add (childFunction);
-      ChildFunction = childFunction;
+    }
+
+    // methods and properties
+
+    private void Step1 ()
+    {
+      ClientTransactionScope.ActiveScope.Leave();
     }
   }
 }

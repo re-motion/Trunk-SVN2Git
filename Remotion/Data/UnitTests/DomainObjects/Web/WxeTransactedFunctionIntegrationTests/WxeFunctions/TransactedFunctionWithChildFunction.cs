@@ -14,27 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Data.DomainObjects;
-using Remotion.Development.Web.UnitTesting.ExecutionEngine;
+using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
-  [CLSCompliant (false)]
-  public class WxeFunctionBaseTest : StandardMappingTest
+  public class TransactedFunctionWithChildFunction : WxeFunction
   {
-    private WxeContextMock _context;
+    public WxeFunction ChildFunction;
 
-    public override void SetUp ()
+    public TransactedFunctionWithChildFunction (ITransactionMode mode, WxeFunction childFunction, params object[] actualParameters)
+        : base(mode, actualParameters)
     {
-      _context = new WxeContextMock (WxeContextMock.CreateHttpContext());
-
-      base.SetUp ();
-    }
-
-    public WxeContextMock Context
-    {
-      get { return _context; }
+      Add (childFunction);
+      ChildFunction = childFunction;
     }
   }
 }

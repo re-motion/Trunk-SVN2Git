@@ -19,10 +19,10 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   [Serializable]
-  public class CreateChildIfParentTestTransactedFunction : WxeFunction
+  public class CreateNoneTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -32,18 +32,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     // construction and disposing
 
-    public CreateChildIfParentTestTransactedFunction ()
-        : base (WxeTransactionMode<ClientTransactionFactory>.CreateChildIfParentWithAutoCommit)
+    public CreateNoneTestTransactedFunction (ClientTransactionScope previousClientTransactionScope)
+        : base (WxeTransactionMode<ClientTransactionFactory>.None, previousClientTransactionScope)
     {
     }
 
     // methods and properties
 
+    [WxeParameter (1, true, WxeParameterDirection.In)]
+    public ClientTransactionScope PreviousClientTransactionScope
+    {
+      get { return (ClientTransactionScope) Variables["PreviousClientTransactionScope"]; }
+      set { Variables["PreviousClientTransactionScope"] = value; }
+    }
+
     private void Step1 ()
     {
-      ClientTransaction parentTransaction = ParentFunction.Transaction.GetNativeTransaction<ClientTransaction>();
-      Assert.AreNotSame (parentTransaction, ClientTransactionScope.CurrentTransaction);
-      Assert.AreSame (parentTransaction, ClientTransactionScope.CurrentTransaction.ParentTransaction);
+      Assert.AreSame (PreviousClientTransactionScope, ClientTransactionScope.ActiveScope);
     }
   }
 }

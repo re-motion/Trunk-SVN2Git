@@ -15,14 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
+namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegrationTests.WxeFunctions
 {
   [Serializable]
-  public class CreateNoneTestTransactedFunction : WxeFunction
+  public class NoAutoCommitTestTransactedFunction : WxeFunction
   {
     // types
 
@@ -32,23 +33,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeFunctions
 
     // construction and disposing
 
-    public CreateNoneTestTransactedFunction (ClientTransactionScope previousClientTransactionScope)
-        : base (WxeTransactionMode<ClientTransactionFactory>.None, previousClientTransactionScope)
+    public NoAutoCommitTestTransactedFunction (ITransactionMode transactionMode, ObjectID objectWithAllDataTypes)
+        : base (transactionMode, objectWithAllDataTypes)
     {
+      Assertion.IsFalse (TransactionMode.AutoCommit);
     }
 
     // methods and properties
 
     [WxeParameter (1, true, WxeParameterDirection.In)]
-    public ClientTransactionScope PreviousClientTransactionScope
+    public ObjectID ObjectWithAllDataTypes
     {
-      get { return (ClientTransactionScope) Variables["PreviousClientTransactionScope"]; }
-      set { Variables["PreviousClientTransactionScope"] = value; }
+      get { return (ObjectID) Variables["ObjectWithAllDataTypes"]; }
+      set { Variables["ObjectWithAllDataTypes"] = value; }
     }
 
     private void Step1 ()
     {
-      Assert.AreSame (PreviousClientTransactionScope, ClientTransactionScope.ActiveScope);
+      ClassWithAllDataTypes objectWithAllDataTypes = ClassWithAllDataTypes.GetObject (ObjectWithAllDataTypes);
+
+      objectWithAllDataTypes.Int32Property = 10;
     }
   }
 }

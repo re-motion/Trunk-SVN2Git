@@ -296,6 +296,11 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithSameInterfaceAsPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\ObjectsNotFoundExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ParameterEnlistingTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ResetTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SerializationTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ThreadAbortExceptionTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\TransactionScopeTest.cs" />
     <Compile Include="UnitTesting\ConstraintExpressionExtensions.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionBaseTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionExtensionsTest.cs" />
@@ -1876,20 +1881,20 @@
     <Compile Include="DomainObjects\Core\UnitTestStorageProviderStubDefinition.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Web\WxeFunctionBaseTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\DelegateExecutingTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\ThreadAbortTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\SerializationTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\TransactedFunctionWithChildFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\DomainObjectParameterTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeTransactedFunctionTest.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\AutoCommitTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\CreateChildIfParentTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\CreateNoneTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\CreateRootTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\CreateRootWithChildTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
-    <Compile Include="DomainObjects\Web\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeTransactedFunctionIntegrationTestBase.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\DelegateExecutingTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\ThreadAbortTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\SerializationTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\TransactedFunctionWithChildFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\DomainObjectParameterTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\TransactionModeTest.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\AutoCommitTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateChildIfParentTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateNoneTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateRootTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\CreateRootWithChildTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\NoAutoCommitTestTransactedFunction.cs" />
+    <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\WxeFunctions\RemoveCurrentTransactionScopeFunction.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\DomainObjectCollection.IListTest.cs" />
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
