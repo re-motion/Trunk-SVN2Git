@@ -207,16 +207,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       var dataAsCollection = data.ConvertToCollection();
 
-      // filter out those items whose state is only Changed due to relation changes
-      var dataContainers = dataAsCollection.Select (item => item.DataContainer).Where (dc => dc.State != StateType.Unchanged);
+      var dataContainersByState = dataAsCollection.Select (item => item.DataContainer).ToLookup (dc => dc.State);
 
       // only handle changed end-points; end-points of new and deleted objects will implicitly be handled by PersistDataContainers
       var endPoints = dataAsCollection.SelectMany (item => item.GetAssociatedEndPoints ()).Where (ep => ep.HasChanged);
 
       using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
       {
-        PersistDataContainers (dataContainers, parentTransactionOperations);
+        // Handle new DataContainers _before_ end-point changes - that way we can be sure that all new end-points have already been registered
+        PersistDataContainers (dataContainersByState[StateType.New], parentTransactionOperations);
+        PersistDataContainers (dataContainersByState[StateType.Changed], parentTransactionOperations);
+
         PersistRelationEndPoints (endPoints, parentTransactionOperations);
+
+        // Handle deleted DataContainers _after_ end-point changes - that way we can be sure that all end-points have already been decoupled 
+        // (i.e., been set to empty)
+        PersistDataContainers (dataContainersByState[StateType.Deleted], parentTransactionOperations);
       }
     }
 
@@ -301,12 +307,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           "deleted DataContainers cannot be discarded or deleted in the ParentTransaction");
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
-      // Use a DeleteCommand rather than manually deleting/discarding the parentDataContainer because DataManager.Discard requires all of the 
-      // DataContainer's end-points to be decoupled before the DataContainer (and its end-points) can be unregistered.
-      // DeleteCommand ensures this by decoupling the end-points as required.
-      var deleteCommand = parentTransactionOperations.CreateDeleteCommand (dataContainer.DomainObject);
-      // no events, no bidirectional changes
-      deleteCommand.Perform ();
+      if (parentDataContainer.State == StateType.New)
+        parentTransactionOperations.Discard (parentDataContainer);
+      else
+        parentDataContainer.Delete();
     }
 
     private void PersistRelationEndPoints (IEnumerable<IRelationEndPoint> endPoints, IParentTransactionOperations parentTransactionOperations)

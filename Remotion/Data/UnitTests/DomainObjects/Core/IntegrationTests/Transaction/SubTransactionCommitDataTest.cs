@@ -751,6 +751,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.IsFalse (((ICollectionEndPoint) GetDataManager (ClientTransaction.Current).GetRelationEndPointWithoutLoading (propertyID)).GetCollectionWithOriginalData().ContainsObject (firstItem));
     }
 
+    [Test]
+    public void Committing_TwoDeletedNewObjects_RelatedInParentTransaction ()
+    {
+      var order = Order.NewObject ();
+      var orderTicket = OrderTicket.NewObject ();
+
+      orderTicket.Order = order;
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        order.Delete ();
+        orderTicket.Delete ();
+
+        ClientTransaction.Current.Commit ();
+      }
+
+      Assert.That (order.IsInvalid, Is.True);
+      Assert.That (orderTicket.IsInvalid, Is.True);
+
+      Assert.That (TestableClientTransaction.DataManager.DataContainers, Is.Empty);
+      Assert.That (TestableClientTransaction.DataManager.RelationEndPoints, Is.Empty);
+    }
+
+
     private DataManager GetDataManager (ClientTransaction transaction)
     {
       return (DataManager) PrivateInvoke.GetNonPublicProperty (transaction, "DataManager");

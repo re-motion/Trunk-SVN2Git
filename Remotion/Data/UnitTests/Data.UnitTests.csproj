@@ -238,6 +238,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataWithDataSourceDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TestableClientTransactionComponentFactoryBase.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\CascadedDeleteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistableDataObjectMother.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionSortTest.cs" />
