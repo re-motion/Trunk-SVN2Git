@@ -29,6 +29,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
     }
 
+    public DataContainer ForeignKeyDataContainer
+    {
+      get { throw new NotSupportedException (); }
+    }
+
+    public PropertyValue ForeignKeyProperty
+    {
+      get { throw new NotSupportedException (); }
+    }
+
     public void MarkSynchronized ()
     {
       // Do nothing

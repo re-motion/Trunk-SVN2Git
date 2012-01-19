@@ -391,15 +391,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void SetOppositeObjectDataFromSubTransaction ()
     {
-      var source = MockRepository.GenerateStub<IObjectEndPoint>();
-      source.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.Order2);
-
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      var sourceForeignKeyProperty = new PropertyValue (_endPoint.ForeignKeyProperty.Definition, DomainObjectIDs.Order2);
+      var source = MockRepository.GenerateStub<IRealObjectEndPoint>();
+      source.Stub (stub => stub.ForeignKeyProperty).Return (sourceForeignKeyProperty);
 
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
       Assert.That (_endPoint.HasChanged, Is.True);
+    }
+
+    [Test]
+    public void SetOppositeObjectDataFromSubTransaction_NoEvents ()
+    {
+      var accessObserver = new PropertyValueCollection();
+      accessObserver.Add (_endPoint.ForeignKeyProperty);
+      accessObserver.PropertyChanging += delegate { Assert.Fail ("Must not be called."); };
+      accessObserver.PropertyChanged += delegate { Assert.Fail ("Must not be called."); };
+
+      var sourceForeignKeyProperty = new PropertyValue (_endPoint.ForeignKeyProperty.Definition, DomainObjectIDs.Order2);
+      var source = MockRepository.GenerateStub<IRealObjectEndPoint> ();
+      source.Stub (stub => stub.ForeignKeyProperty).Return (sourceForeignKeyProperty);
+
+      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
     }
   }
 }

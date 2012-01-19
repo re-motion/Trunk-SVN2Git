@@ -186,6 +186,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     {
    }
 
+    public DataContainer ForeignKeyDataContainer
+    {
+      get { throw new NotImplementedException(); }
+    }
+
+    public PropertyValue ForeignKeyProperty
+    {
+      get { throw new NotImplementedException(); }
+    }
+
     public void Synchronize (IRelationEndPoint oppositeEndPoint)
     {
       throw new NotImplementedException();

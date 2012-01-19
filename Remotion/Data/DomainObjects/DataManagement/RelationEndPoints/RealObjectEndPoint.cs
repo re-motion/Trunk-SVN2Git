@@ -185,14 +185,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
-      ArgumentUtility.CheckNotNull ("sourceObjectEndPoint", sourceObjectEndPoint);
-
-      SetOppositeObjectID (sourceObjectEndPoint.OppositeObjectID);
+      var sourceAsRealObjectEndPoint = ArgumentUtility.CheckNotNullAndType<IRealObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
+      _foreignKeyProperty.SetDataFromSubTransaction (sourceAsRealObjectEndPoint.ForeignKeyProperty);
     }
 
     private void SetOppositeObjectID (ObjectID value)
     {
-      _foreignKeyProperty.Value = value; // TODO 1925: This is with events, which is a little inconsistent to OppositeObjectID
+      _foreignKeyProperty.Value = value; // TODO 4608: This is with events, which is a little inconsistent to OppositeObjectID
     }
 
 

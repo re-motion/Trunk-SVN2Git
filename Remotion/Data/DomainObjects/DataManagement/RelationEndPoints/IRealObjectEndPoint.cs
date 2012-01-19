@@ -24,5 +24,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     void MarkSynchronized ();
     void MarkUnsynchronized ();
     void ResetSyncState ();
+    DataContainer ForeignKeyDataContainer { get; }
+    PropertyValue ForeignKeyProperty { get; }
   }
 }
