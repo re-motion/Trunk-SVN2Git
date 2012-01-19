@@ -130,9 +130,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsNull (_orderItem.Order);
       Assert.AreEqual (numberOfOrderItemsBeforeDelete - 1, _order.OrderItems.Count);
       Assert.IsFalse (_order.OrderItems.Contains (_orderItem.ID));
-			Assert.IsNull (_orderItem.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]);
+      Assert.IsNull (_orderItem.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]);
       Assert.AreEqual (StateType.Changed, _order.State);
-			Assert.AreEqual (StateType.Unchanged, _order.InternalDataContainer.State);
+      Assert.AreEqual (StateType.Unchanged, _order.InternalDataContainer.State);
     }
 
     [Test]
