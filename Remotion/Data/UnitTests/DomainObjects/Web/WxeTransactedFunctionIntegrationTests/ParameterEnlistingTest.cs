@@ -185,7 +185,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    [Ignore ("TODO 4591")]
     public void AutomaticParameterEnlisting_CreateRoot_WithNonLoadableInParameter ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
@@ -212,7 +211,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    [Ignore ("TODO 4591")]
     public void AutomaticParameterEnlisting_CreateRoot_WithNonLoadableOutParameter ()
     {
       ClassWithAllDataTypes outParameter;
@@ -304,7 +302,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    [Ignore ("TODO 4591")]
     public void AutomaticParameterEnlisting_CreateChild_WithNonLoadableInParameter ()
     {
       ExecuteDelegateInWxeFunction (
@@ -333,11 +330,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
             subFunction.SetParentStep (parentF);
             subFunction.Execute (parentCtx);
           });
-
     }
 
     [Test]
-    [Ignore ("TODO 4591")]
     public void AutomaticParameterEnlisting_CreateChild_WithNonLoadableOutParameter ()
     {
       ExecuteDelegateInWxeFunction (

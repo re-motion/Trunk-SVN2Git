@@ -16,10 +16,7 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -143,7 +140,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       var domainObjects = objects.OfType<DomainObject>().Distinct();
       _wrappedInstance.EnlistDomainObjects (domainObjects);
-      _wrappedInstance.GetObjects<DomainObject> (domainObjects.Select (domainObject => domainObject.ID).ToArray());
     }
 
     public virtual void Reset ()

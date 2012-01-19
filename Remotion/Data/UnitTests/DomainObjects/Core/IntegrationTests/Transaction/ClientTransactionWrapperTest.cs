@@ -135,27 +135,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2, domainObject2 });
 
       Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.True);
-      Assert.That (secondClientTransaction.DataManager.DataContainers[domainObject1.ID], Is.Not.Null);
+      Assert.That (secondClientTransaction.Execute (() => domainObject1.State), Is.EqualTo (StateType.NotLoadedYet));
 
       Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.True);
-      Assert.That (secondClientTransaction.DataManager.DataContainers[domainObject2.ID], Is.Not.Null);
+      Assert.That (secondClientTransaction.Execute (() => domainObject2.State), Is.EqualTo (StateType.NotLoadedYet));
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException),
-        ExpectedMessage = "'Partner|",
-        MatchType = MessageMatch.Contains)]
     public void RegisterObjects_WithNewObject ()
     {
       ClientTransaction firstClientTransaction = ClientTransaction.CreateRootTransaction();
 
-      var domainObject1 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.ClassWithAllDataTypes2, false);
-      var domainObject2 = LifetimeService.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
+      var domainObject = LifetimeService.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
 
       var secondClientTransaction = TestableClientTransaction;
       ITransaction secondTransaction = secondClientTransaction.ToITransation();
 
-      secondTransaction.RegisterObjects (new object[] { null, domainObject1, 1, domainObject2 });
+      secondTransaction.RegisterObjects (new object[] { domainObject });
+
+      Assert.That (secondClientTransaction.Execute (() => domainObject.State), Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (() => secondClientTransaction.Execute (domainObject.EnsureDataAvailable), Throws.TypeOf<ObjectsNotFoundException>());
     }
 
     [Test]

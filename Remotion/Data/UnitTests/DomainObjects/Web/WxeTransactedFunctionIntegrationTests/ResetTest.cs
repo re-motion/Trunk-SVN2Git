@@ -56,8 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    [Ignore ("TODO 4591")]
-    public void Reset_DoesNotLoadEnlistedVariables_NewTransaction ()
+    public void Reset_NonLoadableVariables ()
     {
       SetDatabaseModifyable();
 
