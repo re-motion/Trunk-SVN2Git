@@ -392,9 +392,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void SetOppositeObjectDataFromSubTransaction ()
     {
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      var sourceForeignKeyProperty = new PropertyValue (_endPoint.ForeignKeyProperty.Definition, DomainObjectIDs.Order2);
-      var source = MockRepository.GenerateStub<IRealObjectEndPoint>();
-      source.Stub (stub => stub.ForeignKeyProperty).Return (sourceForeignKeyProperty);
+      var sourceDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
+      var sourceForeignKeyProperty = sourceDataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")];
+      sourceForeignKeyProperty.Value = DomainObjectIDs.Order2;
+      var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub);
 
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
@@ -410,9 +411,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       accessObserver.PropertyChanging += delegate { Assert.Fail ("Must not be called."); };
       accessObserver.PropertyChanged += delegate { Assert.Fail ("Must not be called."); };
 
-      var sourceForeignKeyProperty = new PropertyValue (_endPoint.ForeignKeyProperty.Definition, DomainObjectIDs.Order2);
-      var source = MockRepository.GenerateStub<IRealObjectEndPoint> ();
-      source.Stub (stub => stub.ForeignKeyProperty).Return (sourceForeignKeyProperty);
+      var sourceDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
+      var sourceForeignKeyProperty = sourceDataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")];
+      sourceForeignKeyProperty.Value = DomainObjectIDs.Order2;
+      var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub);
 
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
     }
