@@ -70,13 +70,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    [Ignore ("TODO Cleanup")]
     public void SetDataFromSubTransaction_CallsSubclass_WhenIDsEqual ()
     {
       var sourceID = RelationEndPointID.Create (DomainObjectIDs.OrderItem2, _endPointID.Definition);
-      ObjectEndPoint source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket1);
-      Assert.That (_endPointPartialMock.OppositeObjectID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-
+      var source = RelationEndPointObjectMother.CreateObjectEndPoint (sourceID, DomainObjectIDs.OrderTicket1);
       _endPointPartialMock.Stub (stub => stub.OppositeObjectID).Return (DomainObjectIDs.OrderTicket1);
       _endPointPartialMock.Expect (mock => mock.CallSetOppositeObjectDataFromSubTransaction (source));
       _endPointPartialMock.Stub (stub => stub.Touch ());

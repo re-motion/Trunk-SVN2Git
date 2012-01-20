@@ -100,8 +100,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         throw new ArgumentException (message, "source");
       }
 
-      if (OppositeObjectID != sourceObjectEndPoint.OppositeObjectID)
-        SetOppositeObjectDataFromSubTransaction (sourceObjectEndPoint);
+      SetOppositeObjectDataFromSubTransaction (sourceObjectEndPoint);
 
       if (sourceObjectEndPoint.HasBeenTouched || HasChanged)
         Touch();
