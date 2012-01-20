@@ -15,11 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
@@ -27,17 +24,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 {
   public class TestableObjectEndPoint : ObjectEndPoint
   {
-    private readonly DomainObject _originalOppositeObject;
-    private DomainObject _oppositeObject;
-    private bool _hasBeenTouched;
-    private bool _isSetOppositeObjectFromExpected;
-
-    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointProvider endPointProvider, DomainObject oppositeObject)
+    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointProvider endPointProvider)
         : base (clientTransaction, id, endPointProvider)
     {
-      _originalOppositeObject = oppositeObject;
-      _oppositeObject = oppositeObject;
-      _hasBeenTouched = false;
     }
 
     public TestableObjectEndPoint (FlattenedDeserializationInfo info)
@@ -47,12 +36,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public override bool HasChanged
     {
-      get { return _oppositeObject != _originalOppositeObject; }
+      get { throw new NotImplementedException (); }
     }
 
     public override bool HasBeenTouched
     {
-      get { return _hasBeenTouched; }
+      get { throw new NotImplementedException (); }
     }
 
     public override bool IsDataComplete
@@ -77,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public override void Touch ()
     {
-      _hasBeenTouched = true;
+      throw new NotImplementedException();
     }
 
     public override void Commit ()
@@ -97,61 +86,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public override ObjectID OppositeObjectID
     {
-      get { return _oppositeObject.GetSafeID(); }
-    }
-
-    public void SetOppositeObject (DomainObject domainObject)
-    {
-      _oppositeObject = domainObject;
+      get { throw new NotImplementedException (); }
     }
 
     public override ObjectID OriginalOppositeObjectID
     {
-      get { return _originalOppositeObject.GetSafeID(); }
+      get { throw new NotImplementedException (); }
     }
 
     public override DomainObject GetOppositeObject ()
     {
-      return _oppositeObject;
+      throw new NotImplementedException ();
     }
 
     public override DomainObject GetOriginalOppositeObject ()
     {
-      return _originalOppositeObject;
-    }
-
-    public void ExpectSetOppositeObjectFrom()
-    {
-      _isSetOppositeObjectFromExpected = true;
-    }
-
-    public void ExpectNotSetOppositeObjectFrom ()
-    {
-      _isSetOppositeObjectFromExpected = false;
+      throw new NotImplementedException ();
     }
 
     public override IDataManagementCommand CreateSetCommand (DomainObject newRelatedObject)
     {
-      return new TestSetCommand (this, newRelatedObject, id => { throw new NotImplementedException (); });
+      throw new NotImplementedException ();
+    }
+
+    public void CallSetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
+    {
+      SetOppositeObjectDataFromSubTransaction (sourceObjectEndPoint);
     }
 
     protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
-      Assert.That (_isSetOppositeObjectFromExpected, Is.True);
-      _oppositeObject = sourceObjectEndPoint.GetOppositeObject ();
-    }
-
-    public class TestSetCommand : ObjectEndPointSetCommand
-    {
-      public TestSetCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<DomainObject> oppositeObjectSetter)
-        : base (modifiedEndPoint, newRelatedObject, oppositeObjectSetter)
-      {
-      }
-
-      public override ExpandedCommand ExpandToAllRelatedObjects ()
-      {
-        throw new NotImplementedException ();
-      }
+      throw new NotImplementedException ();
     }
   }
 }
