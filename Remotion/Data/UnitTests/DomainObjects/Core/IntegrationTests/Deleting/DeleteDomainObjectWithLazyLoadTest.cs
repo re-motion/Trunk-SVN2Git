@@ -14,12 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 {
   [TestFixture]
   public class DeleteDomainObjectWithLazyLoadTest : ClientTransactionBaseTest
@@ -34,9 +33,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsNull (orderTicket.Order);
       Assert.IsNull (order.OrderTicket);
-			Assert.IsNull (orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.IsNull (orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
       Assert.AreEqual (StateType.Changed, order.State);
-			Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
+      Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
     }
 
     [Test]
@@ -46,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       computerWithoutEmployee.Delete ();
 
       Assert.IsNull (computerWithoutEmployee.Employee);
-			Assert.IsNull (computerWithoutEmployee.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"]);
+      Assert.IsNull (computerWithoutEmployee.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"]);
     }
 
     [Test]
@@ -59,8 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsNull (orderTicket.Order);
       Assert.IsNull (order.OrderTicket);
-			Assert.IsNull (orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
-			Assert.AreEqual (StateType.Changed, orderTicket.InternalDataContainer.State);
+      Assert.IsNull (orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.AreEqual (StateType.Changed, orderTicket.InternalDataContainer.State);
     }
 
     [Test]
@@ -84,10 +83,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (0, supervisor.Subordinates.Count);
       Assert.IsNull (subordinate1.Supervisor);
       Assert.IsNull (subordinate2.Supervisor);
-			Assert.IsNull (subordinate1.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
-			Assert.IsNull (subordinate2.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
-			Assert.AreEqual (StateType.Changed, subordinate1.InternalDataContainer.State);
-			Assert.AreEqual (StateType.Changed, subordinate2.InternalDataContainer.State);
+      Assert.IsNull (subordinate1.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
+      Assert.IsNull (subordinate2.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
+      Assert.AreEqual (StateType.Changed, subordinate1.InternalDataContainer.State);
+      Assert.AreEqual (StateType.Changed, subordinate2.InternalDataContainer.State);
     }
 
     [Test]
@@ -110,9 +109,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.IsNull (orderItem.Order);
       Assert.AreEqual (1, order.OrderItems.Count);
       Assert.IsFalse (order.OrderItems.Contains (orderItem.ID));
-			Assert.IsNull (orderItem.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]);
+      Assert.IsNull (orderItem.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]);
       Assert.AreEqual (StateType.Changed, order.State);
-			Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
+      Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
     }
   }
 }

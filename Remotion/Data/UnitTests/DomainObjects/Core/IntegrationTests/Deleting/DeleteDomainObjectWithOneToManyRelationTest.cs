@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 {
   [TestFixture]
   public class DeleteDomainObjectWithOneToManyRelationTest : ClientTransactionBaseTest
@@ -113,10 +112,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (0, _supervisor.Subordinates.Count);
       Assert.IsNull (_subordinate1.Supervisor);
       Assert.IsNull (_subordinate2.Supervisor);
-			Assert.IsNull (_subordinate1.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
-			Assert.IsNull (_subordinate2.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
-			Assert.AreEqual (StateType.Changed, _subordinate1.InternalDataContainer.State);
-			Assert.AreEqual (StateType.Changed, _subordinate2.InternalDataContainer.State);
+      Assert.IsNull (_subordinate1.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
+      Assert.IsNull (_subordinate2.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
+      Assert.AreEqual (StateType.Changed, _subordinate1.InternalDataContainer.State);
+      Assert.AreEqual (StateType.Changed, _subordinate2.InternalDataContainer.State);
     }
 
     [Test]

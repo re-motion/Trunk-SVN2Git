@@ -1430,22 +1430,22 @@
     <Compile Include="DomainObjects\Core\DomainObjects\CommitDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\DeleteDomainObjectTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\DeleteDomainObjectWithLazyLoadTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithLazyLoadTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\DeleteDomainObjectWithManyToOneRelationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithManyToOneRelationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\DeleteDomainObjectWithOneToManyRelationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithOneToManyRelationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\DeleteDomainObjectWithOneToOneRelationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithOneToOneRelationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DomainObjects\DeleteNewDomainObjectTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteNewDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionsWithDifferentClientTransactionsTest.cs">

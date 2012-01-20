@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 {
   [TestFixture]
   public class DeleteDomainObjectWithOneToOneRelationTest : ClientTransactionBaseTest
@@ -122,9 +121,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsNull (_orderTicket.Order);
       Assert.IsNull (_order.OrderTicket);
-			Assert.IsNull (_orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.IsNull (_orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
       Assert.AreEqual (StateType.Changed, _order.State);
-			Assert.AreEqual (StateType.Unchanged, _order.InternalDataContainer.State);
+      Assert.AreEqual (StateType.Unchanged, _order.InternalDataContainer.State);
     }
 
     [Test]
@@ -134,8 +133,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsNull (_orderTicket.Order);
       Assert.IsNull (_order.OrderTicket);
-			Assert.IsNull (_orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
-			Assert.AreEqual (StateType.Changed, _orderTicket.InternalDataContainer.State);
+      Assert.IsNull (_orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.AreEqual (StateType.Changed, _orderTicket.InternalDataContainer.State);
     }
 
     [Test]
