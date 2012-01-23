@@ -312,7 +312,7 @@ public class ClientTransaction
 
   /// <summary>Initializes a new instance of this transaction.</summary>
   [Obsolete (
-      "This member will be removed in the near future. Use ClientTransaction.CreateRootTransaction and CreateSubTransaction instead. (1.13.137)",
+      "This member will be removed in the near future. Use ClientTransaction.CreateRootTransaction and CreateSubTransaction instead. (1.13.138)",
       false)]
   public ClientTransaction CreateEmptyTransactionOfSameType (bool copyInvalidObjectInformation)
   {

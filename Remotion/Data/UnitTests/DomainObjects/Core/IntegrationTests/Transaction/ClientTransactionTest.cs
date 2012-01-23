@@ -617,7 +617,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.137)", false)]
+    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
     public void CreateEmptyTransactionOfSameType ()
     {
       var newTransaction = TestableClientTransaction.CreateEmptyTransactionOfSameType (false);
@@ -630,7 +630,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.137)", false)]
+    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
     public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_False ()
     {
       var order = Order.NewObject();
@@ -642,7 +642,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.137)", false)]
+    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.138)", false)]
     public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_True ()
     {
       var order = Order.NewObject ();
