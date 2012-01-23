@@ -178,6 +178,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Ignore ("TODO 4592")]
+    public void Reset_InvalidObjectsStayInvalid ()
+    {
+      var clientTransactionBefore = ClientTransaction.CreateRootTransaction ();
+      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransation ();
+
+      var invalidObject = clientTransactionBefore.Execute (() => Order.NewObject ());
+      clientTransactionBefore.Execute (invalidObject.Delete);
+
+      clientTransactionWrapper.Reset ();
+
+      var clientTransactionAfter = clientTransactionWrapper.WrappedInstance;
+      Assert.That (clientTransactionAfter.IsInvalid (invalidObject.ID), Is.True);
+      Assert.That (clientTransactionAfter.IsEnlisted (invalidObject), Is.True);
+    }
+
+    [Test]
     public void Reset_SubTransaction ()
     {
       var rootTransaction = ClientTransaction.CreateRootTransaction ();

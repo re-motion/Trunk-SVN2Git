@@ -123,5 +123,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
         Assert.That (transactionAfter.IsEnlisted (order), Is.True);
       });
     }
+
+    [Test]
+    [Ignore ("TODO 4592")]
+    public void Reset_InvalidVariables_AndOtherObjects_AreKeptInvalid ()
+    {
+      ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
+      {
+        var invalidVariable = Order.NewObject();
+        invalidVariable.Delete();
+        f.Variables.Add ("InvalidOrderVariable", invalidVariable);
+        Assert.That (invalidVariable.IsInvalid, Is.True);
+
+        var invalidNonVariable = Order.NewObject();
+        invalidNonVariable.Delete ();
+        Assert.That (invalidNonVariable.IsInvalid, Is.True);
+
+        f.Transaction.Reset ();
+
+        Assert.That (ClientTransaction.Current.IsEnlisted (invalidVariable), Is.True);
+        Assert.That (invalidVariable.IsInvalid, Is.True);
+
+        Assert.That (ClientTransaction.Current.IsEnlisted (invalidNonVariable), Is.True);
+        Assert.That (invalidNonVariable.IsInvalid, Is.True);
+      });
+    }
   }
 }
