@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     public virtual ITransaction CreateChild ()
     {
-      return new ClientTransactionWrapper (_wrappedInstance.CreateSubTransaction());
+      return _wrappedInstance.CreateSubTransaction().ToITransation();
     }
 
     /// <summary> Allows the transaction to implement clean up logic. </summary>
@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </value>
     public virtual ITransaction Parent
     {
-      get { return new ClientTransactionWrapper (_wrappedInstance.ParentTransaction); }
+      get { return _wrappedInstance.ParentTransaction.ToITransation(); }
     }
 
     /// <summary>Gets a flag describing whether the transaction is a child transaction.</summary>
@@ -157,8 +157,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
 
       _wrappedInstance.Discard ();
-
-      _wrappedInstance = _wrappedInstance.CreateEmptyTransactionOfSameType ();
+#pragma warning disable 618 // Disable obsolete warning.
+      _wrappedInstance = _wrappedInstance.CreateEmptyTransactionOfSameType (false);
+#pragma warning restore 618
     }
   }
 }

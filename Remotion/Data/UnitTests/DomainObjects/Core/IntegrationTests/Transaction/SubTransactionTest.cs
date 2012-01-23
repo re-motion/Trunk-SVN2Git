@@ -118,31 +118,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void CreateEmptyTransactionOfSameType_ForSubTransaction ()
+    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.137)", false)]
+    public void CreateEmptyTransactionOfSameType ()
     {
-      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
+      var subTransaction = TestableClientTransaction.CreateSubTransaction();
       subTransaction.Discard();
-      ClientTransaction newSubTransaction = subTransaction.CreateEmptyTransactionOfSameType();
-      Assert.That (subTransaction.ParentTransaction, Is.SameAs (TestableClientTransaction));
-      Assert.That (subTransaction.RootTransaction, Is.SameAs (TestableClientTransaction));
+
+      var newSubTransaction = subTransaction.CreateEmptyTransactionOfSameType (false);
+
       Assert.That (newSubTransaction, Is.Not.SameAs (subTransaction));
-      Assert.That (newSubTransaction.GetType(), Is.EqualTo (subTransaction.GetType()));
+      Assert.That (newSubTransaction.GetType (), Is.EqualTo (subTransaction.GetType ()));
+
+      Assert.That (newSubTransaction.ParentTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (TestableClientTransaction.SubTransaction, Is.SameAs (newSubTransaction));
     }
 
     [Test]
-    public void CreateEmptyTransactionOfSameType_ForRootTransaction ()
+    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.137)", false)]
+    public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_False ()
     {
-      var rootTransaction = ClientTransaction.CreateRootTransaction ();
-      ClientTransaction newRootTransaction = rootTransaction.CreateEmptyTransactionOfSameType ();
-      ClientTransaction subTransaction = rootTransaction.CreateSubTransaction ();
-      Assert.That (subTransaction.ParentTransaction, Is.SameAs (rootTransaction));
-      Assert.That (subTransaction.RootTransaction, Is.SameAs (rootTransaction));
-      Assert.That (newRootTransaction, Is.Not.SameAs (rootTransaction));
-      Assert.That (newRootTransaction.GetType(), Is.EqualTo (rootTransaction.GetType()));
-      Assert.That (
-          ClientTransactionTestHelper.GetPersistenceStrategy (newRootTransaction).GetType(),
-          Is.EqualTo (
-              ClientTransactionTestHelper.GetPersistenceStrategy (rootTransaction).GetType()));
+      var objectInvalidInParent = Order.NewObject();
+      objectInvalidInParent.Delete();
+      Assert.That (objectInvalidInParent.State, Is.EqualTo (StateType.Invalid));
+
+      var objectDeletedInParent = Order.GetObject (DomainObjectIDs.Order1);
+      objectDeletedInParent.Delete ();
+      Assert.That (objectDeletedInParent.State, Is.EqualTo (StateType.Deleted));
+      
+      var subTransaction = TestableClientTransaction.CreateSubTransaction ();
+      var objectInvalidInSub = subTransaction.Execute (() => Order.NewObject());
+      subTransaction.Execute (objectInvalidInSub.Delete);
+
+      Assert.That (subTransaction.IsInvalid (objectInvalidInParent.ID), Is.True);
+      Assert.That (subTransaction.IsInvalid (objectDeletedInParent.ID), Is.True);
+      Assert.That (subTransaction.IsInvalid (objectInvalidInSub.ID), Is.True);
+      
+      subTransaction.Discard ();
+
+      var newSubTransaction = subTransaction.CreateEmptyTransactionOfSameType (false);
+
+      // The Invalid state is copied from the parent transaction to the new subtransaction, so all invalid objects stay invalid.
+      Assert.That (newSubTransaction.IsEnlisted (objectInvalidInParent), Is.True);
+      Assert.That (newSubTransaction.IsInvalid (objectInvalidInParent.ID), Is.True);
+
+      Assert.That (newSubTransaction.IsEnlisted (objectDeletedInParent), Is.True);
+      Assert.That (newSubTransaction.IsInvalid (objectDeletedInParent.ID), Is.True);
+
+      Assert.That (newSubTransaction.IsEnlisted (objectInvalidInSub), Is.True);
+      Assert.That (newSubTransaction.IsInvalid (objectInvalidInSub.ID), Is.True);
+    }
+
+    [Test]
+    [Obsolete ("CreateEmptyTransactionOfSameType will be removed in the near future. (1.13.137)", false)]
+    public void CreateEmptyTransactionOfSameType_CopyInvalidObjectInformation_True ()
+    {
+      var objectInvalidInParent = Order.NewObject ();
+      objectInvalidInParent.Delete ();
+      Assert.That (objectInvalidInParent.State, Is.EqualTo (StateType.Invalid));
+
+      var objectDeletedInParent = Order.GetObject (DomainObjectIDs.Order1);
+      objectDeletedInParent.Delete ();
+      Assert.That (objectDeletedInParent.State, Is.EqualTo (StateType.Deleted));
+
+      var subTransaction = TestableClientTransaction.CreateSubTransaction ();
+      var objectInvalidInSub = subTransaction.Execute (() => Order.NewObject ());
+      subTransaction.Execute (objectInvalidInSub.Delete);
+
+      Assert.That (subTransaction.IsInvalid (objectInvalidInParent.ID), Is.True);
+      Assert.That (subTransaction.IsInvalid (objectDeletedInParent.ID), Is.True);
+      Assert.That (subTransaction.IsInvalid (objectInvalidInSub.ID), Is.True);
+
+      subTransaction.Discard ();
+
+      var newSubTransaction = subTransaction.CreateEmptyTransactionOfSameType (true);
+
+      Assert.That (newSubTransaction.IsEnlisted (objectInvalidInParent), Is.True);
+      Assert.That (newSubTransaction.IsInvalid (objectInvalidInParent.ID), Is.True);
+
+      Assert.That (newSubTransaction.IsEnlisted (objectDeletedInParent), Is.True);
+      Assert.That (newSubTransaction.IsInvalid (objectDeletedInParent.ID), Is.True);
+
+      Assert.That (newSubTransaction.IsEnlisted (objectInvalidInSub), Is.True);
+      Assert.That (newSubTransaction.IsInvalid (objectInvalidInSub.ID), Is.True);
     }
 
     [Test]

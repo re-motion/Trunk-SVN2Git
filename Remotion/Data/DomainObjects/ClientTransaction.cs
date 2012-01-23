@@ -32,6 +32,7 @@ using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 using Remotion.Data.DomainObjects.Linq;
+using Castle.Core;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -310,10 +311,24 @@ public class ClientTransaction
   }
 
   /// <summary>Initializes a new instance of this transaction.</summary>
-  public ClientTransaction CreateEmptyTransactionOfSameType ()
+  [Obsolete (
+      "This member will be removed in the near future. Use ClientTransaction.CreateRootTransaction and CreateSubTransaction instead. (1.13.137)",
+      false)]
+  public ClientTransaction CreateEmptyTransactionOfSameType (bool copyInvalidObjectInformation)
   {
     var transactionFactory = _componentFactory.CreateCloneFactory ();
-    return transactionFactory (this);
+    var emptyTransactionOfSameType = transactionFactory (this);
+    if (copyInvalidObjectInformation)
+    {
+      _invalidDomainObjectManager.InvalidObjectIDs
+          .Select (id => _invalidDomainObjectManager.GetInvalidObjectReference (id))
+          .ForEach (obj =>
+          {
+            emptyTransactionOfSameType.EnlistDomainObject (obj);
+            emptyTransactionOfSameType._invalidDomainObjectManager.MarkInvalid (obj);
+          });
+    }
+    return emptyTransactionOfSameType;
   }
 
   /// <summary>
