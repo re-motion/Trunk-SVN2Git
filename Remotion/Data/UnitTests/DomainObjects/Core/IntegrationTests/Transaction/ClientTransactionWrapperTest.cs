@@ -180,49 +180,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void Reset_SubTransaction ()
     {
-      ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
-      ClientTransaction clientTransactionBefore = rootTransaction.CreateSubTransaction();
-      ITransaction transaction = clientTransactionBefore.ToITransation();
-      Order order;
-      bool addedCalled;
-      bool loadedCalled;
+      var rootTransaction = ClientTransaction.CreateRootTransaction ();
+      var clientTransactionBefore = rootTransaction.CreateSubTransaction();
+      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransation ();
 
-      using (clientTransactionBefore.EnterNonDiscardingScope())
-      {
-        order = Order.GetObject (DomainObjectIDs.Order1);
-        order.OrderNumber = 7;
-        clientTransactionBefore.Rollback();
+      Order order = clientTransactionBefore.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      clientTransactionBefore.Execute (() => order.OrderNumber = 7);
+      clientTransactionBefore.Rollback ();
 
-        addedCalled = false;
-        order.OrderItems.Added += delegate { addedCalled = true; };
+      bool addedCalled = false;
+      bool loadedCalled = false;
 
-        loadedCalled = false;
-        clientTransactionBefore.Loaded += delegate { loadedCalled = true; };
+      clientTransactionBefore.Execute (() => order.OrderItems.Added += delegate { addedCalled = true; });
+      clientTransactionBefore.Loaded += delegate { loadedCalled = true; };
+      
+      clientTransactionWrapper.Reset ();
 
-        transaction.Reset();
-        Assert.That (clientTransactionBefore.IsDiscarded, Is.True);
-      }
-
-      ClientTransaction clientTransactionAfter = ((ClientTransactionWrapper) transaction).WrappedInstance;
-
+      var clientTransactionAfter = clientTransactionWrapper.WrappedInstance;
       Assert.That (clientTransactionAfter, Is.Not.SameAs (clientTransactionBefore));
-      Assert.That (clientTransactionAfter.RootTransaction, Is.SameAs (rootTransaction));
+      Assert.That (clientTransactionBefore.IsDiscarded, Is.True);
+      Assert.That (clientTransactionAfter.ParentTransaction, Is.SameAs (rootTransaction));
 
-      using (clientTransactionAfter.EnterNonDiscardingScope())
-      {
-        Assert.That (clientTransactionAfter.IsEnlisted (order), Is.True);
-        Assert.That (order.OrderNumber, Is.EqualTo (1));
+      Assert.That (clientTransactionAfter.IsEnlisted (order), Is.True);
+      Assert.That (clientTransactionAfter.Execute (() => order.OrderNumber), Is.EqualTo (1));
 
-        Assert.That (addedCalled, Is.False);
-        order.OrderItems.Add (OrderItem.NewObject());
-        Assert.That (addedCalled, Is.False);
+      Assert.That (addedCalled, Is.False);
+      clientTransactionAfter.Execute (() => order.OrderItems.Add (OrderItem.NewObject ()));
+      Assert.That (addedCalled, Is.False, "Collection event handlers registered in old transaction are no longer valid.");
 
-        loadedCalled = false;
+      loadedCalled = false;
+      clientTransactionAfter.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
 
-        Order.GetObject (DomainObjectIDs.Order2);
-
-        Assert.That (loadedCalled, Is.False);
-      }
+      Assert.That (loadedCalled, Is.False, "Transaction event handlers registered in old transaction are no longer valid.");
     }
 
     [Test]
