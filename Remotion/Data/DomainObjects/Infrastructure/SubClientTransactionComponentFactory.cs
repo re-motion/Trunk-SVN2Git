@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new DelegatingEnlistedDomainObjectManager (_parentEnlistedDomainObjectManager);
+      return _parentEnlistedDomainObjectManager;
     }
 
     public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)

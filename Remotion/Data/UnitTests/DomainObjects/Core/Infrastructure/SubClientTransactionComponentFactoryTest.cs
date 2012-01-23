@@ -88,10 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateEnlistedObjectManager ()
     {
       var manager = _factory.CreateEnlistedObjectManager (_fakeConstructedTransaction);
-      Assert.That (manager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
-      Assert.That (
-          ((DelegatingEnlistedDomainObjectManager) manager).TargetManager,
-          Is.SameAs (_parentEnlistedDomainObjectManagerStub));
+      Assert.That (manager, Is.SameAs (_parentEnlistedDomainObjectManagerStub));
     }
 
     [Test]

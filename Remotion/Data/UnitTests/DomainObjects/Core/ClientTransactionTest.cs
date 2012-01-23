@@ -841,10 +841,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (subTransaction.ApplicationData, Is.SameAs (_transaction.ApplicationData));
       
       var enlistedObjectManager = ClientTransactionTestHelper.GetEnlistedDomainObjectManager (subTransaction);
-      Assert.That (enlistedObjectManager, Is.TypeOf (typeof (DelegatingEnlistedDomainObjectManager)));
-      Assert.That (
-          ((DelegatingEnlistedDomainObjectManager) enlistedObjectManager).TargetManager,
-          Is.SameAs (ClientTransactionTestHelper.GetEnlistedDomainObjectManager (_transaction)));
+      Assert.That (enlistedObjectManager, Is.SameAs (ClientTransactionTestHelper.GetEnlistedDomainObjectManager (_transaction)));
 
       var invalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (subTransaction);
       Assert.That (invalidDomainObjectManager, Is.TypeOf (typeof (SubInvalidDomainObjectManager)));
