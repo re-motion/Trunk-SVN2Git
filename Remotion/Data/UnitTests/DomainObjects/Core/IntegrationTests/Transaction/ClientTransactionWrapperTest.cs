@@ -158,40 +158,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void Reset_RootTransaction ()
+    public void Reset ()
     {
-      ClientTransaction clientTransactionBefore = ClientTransaction.CreateRootTransaction();
-      ITransaction transaction = clientTransactionBefore.ToITransation();
-      Order order;
-      bool loadedCalled;
+      var clientTransactionBefore = ClientTransaction.CreateRootTransaction();
+      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransation();
 
-      using (clientTransactionBefore.EnterNonDiscardingScope())
-      {
-        order = Order.GetObject (DomainObjectIDs.Order1);
-        order.OrderNumber = 7;
-        clientTransactionBefore.Rollback();
+      Order order = clientTransactionBefore.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      clientTransactionBefore.Execute (() => order.OrderNumber = 7);
+      clientTransactionBefore.Rollback ();
 
-        loadedCalled = false;
-        clientTransactionBefore.Loaded += delegate { loadedCalled = true; };
+      clientTransactionWrapper.Reset ();
 
-        transaction.Reset();
-        Assert.That (clientTransactionBefore.IsDiscarded, Is.True);
-      }
-
-      ClientTransaction clientTransactionAfter = ((ClientTransactionWrapper) transaction).WrappedInstance;
+      var clientTransactionAfter = clientTransactionWrapper.WrappedInstance;
 
       Assert.That (clientTransactionAfter, Is.Not.SameAs (clientTransactionBefore));
+      Assert.That (clientTransactionBefore.IsDiscarded, Is.True);
 
-      using (clientTransactionAfter.EnterNonDiscardingScope())
-      {
-        Assert.That (clientTransactionAfter.IsEnlisted (order), Is.False);
-
-        loadedCalled = false;
-
-        Order.GetObject (DomainObjectIDs.Order2);
-
-        Assert.That (loadedCalled, Is.False);
-      }
+      Assert.That (clientTransactionAfter.IsEnlisted (order), Is.False);
     }
 
     [Test]
@@ -245,7 +228,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "The transaction cannot be reset as it is read-only. The reason might be an open child transaction.")]
-    public void Reset_RootTransaction_WithSubTransaction_Throws ()
+    public void Reset_WithSubTransaction_Throws ()
     {
       ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
       rootTransaction.CreateSubTransaction();
@@ -256,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
         ExpectedMessage = "The transaction cannot be reset as it is in a dirty state and needs to be committed or rolled back.")]
-    public void Reset_RootTransaction_HasChanged_Throws ()
+    public void Reset_HasChanged_Throws ()
     {
       ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
       ITransaction transaction = rootTransaction.ToITransation();
