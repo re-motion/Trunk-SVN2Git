@@ -15,11 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 {
@@ -253,7 +258,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
           var middleBottomTransaction = ClientTransaction.Current;
-
           newObject.EnsureDataAvailable();
 
           using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
@@ -277,7 +281,183 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     [Test]
     public void Events ()
     {
-      Assert.Fail ("TODO 4597");
+      var order1 = LoadOrderWithRelations (DomainObjectIDs.Order1);
+      var order2 = LoadOrderWithRelations (DomainObjectIDs.Order2);
+      
+      var mockRepository = new MockRepository();
+      var clientTransactionListener = mockRepository.StrictMock<IClientTransactionListener>();
+      var unloadEventReceiver = mockRepository.StrictMock<IUnloadEventReceiver>();
+
+      TestableClientTransaction.AddListener (clientTransactionListener);
+      order1.SetUnloadEventReceiver (unloadEventReceiver);
+      order2.SetUnloadEventReceiver (unloadEventReceiver);
+      
+      using (mockRepository.Ordered ())
+      {
+        clientTransactionListener
+            .Expect (
+                mock =>
+                mock.ObjectsUnloading (
+                    Arg.Is (TestableClientTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order1));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order2));
+
+        using (mockRepository.Unordered ())
+        {
+          clientTransactionListener.Expect (
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.Customer)));
+          clientTransactionListener.Expect (
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.Official)));
+          clientTransactionListener.Expect (
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.OrderTicket)));
+          clientTransactionListener.Expect (
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order2, o => o.Customer)));
+          clientTransactionListener.Expect (
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order2, o => o.Official)));
+          clientTransactionListener.Expect (
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order2, o => o.OrderTicket)));
+
+          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order1.InternalDataContainer));
+          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order2.InternalDataContainer));
+        }
+
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order2));
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order1));
+        clientTransactionListener
+            .Expect (
+                mock =>
+                mock.ObjectsUnloaded (
+                    Arg.Is (TestableClientTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2 })));
+      }
+      mockRepository.ReplayAll();
+
+      UnloadService.UnloadAll (TestableClientTransaction);
+
+      mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Events_New ()
+    {
+      var order = Order.NewObject();
+
+      var mockRepository = new MockRepository ();
+      var clientTransactionListener = mockRepository.StrictMock<IClientTransactionListener> ();
+      var unloadEventReceiver = mockRepository.StrictMock<IUnloadEventReceiver> ();
+
+      TestableClientTransaction.AddListener (clientTransactionListener);
+      order.SetUnloadEventReceiver (unloadEventReceiver);
+
+      using (mockRepository.Ordered ())
+      {
+        clientTransactionListener
+            .Expect (
+                mock =>
+                mock.ObjectsUnloading (
+                    Arg.Is (TestableClientTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order })));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order));
+
+        using (mockRepository.Unordered ())
+        {
+          clientTransactionListener.Expect (
+              mock => mock.RelationEndPointMapUnregistering (Arg.Is (TestableClientTransaction), Arg<RelationEndPointID>.Is.Anything)).Repeat.AtLeastOnce();
+
+          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order.InternalDataContainer));
+          clientTransactionListener.Expect (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, order.ID));
+        }
+
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order));
+        clientTransactionListener
+            .Expect (
+                mock =>
+                mock.ObjectsUnloaded (
+                    Arg.Is (TestableClientTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order })));
+      }
+      mockRepository.ReplayAll ();
+
+      UnloadService.UnloadAll (TestableClientTransaction);
+
+      mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Events_New_WithHierarchy ()
+    {
+      Order newObject;
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var middleTopTransaction = ClientTransaction.Current;
+        newObject = Order.NewObject ();
+
+        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          var middleBottomTransaction = ClientTransaction.Current;
+          newObject.EnsureDataAvailable ();
+
+          using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+          {
+            var subSubTransaction = ClientTransaction.Current;
+
+            Assert.That (newObject.TransactionContext[TestableClientTransaction].State, Is.EqualTo (StateType.Invalid));
+            Assert.That (newObject.TransactionContext[middleTopTransaction].State, Is.EqualTo (StateType.New));
+            Assert.That (newObject.TransactionContext[middleBottomTransaction].State, Is.EqualTo (StateType.Unchanged));
+            Assert.That (newObject.TransactionContext[subSubTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
+
+            var clientTransactionListener = MockRepository.GenerateMock<IClientTransactionListener> ();
+            TestableClientTransaction.AddListener (clientTransactionListener);
+            ClientTransactionTestHelper.AddListener (middleTopTransaction, clientTransactionListener);
+            ClientTransactionTestHelper.AddListener (middleBottomTransaction, clientTransactionListener);
+            ClientTransactionTestHelper.AddListener (subSubTransaction, clientTransactionListener);
+
+            UnloadService.UnloadAll (ClientTransaction.Current);
+
+            clientTransactionListener.AssertWasCalled (mock => mock.DataManagerDiscardingObject (middleTopTransaction, newObject.ID));
+            clientTransactionListener.AssertWasCalled (
+                mock => mock.DataContainerMapUnregistering (Arg.Is (middleTopTransaction), Arg<DataContainer>.Matches (dc => dc.ID == newObject.ID)));
+            
+            clientTransactionListener.AssertWasCalled (
+                mock => mock.DataContainerMapUnregistering (Arg.Is (middleBottomTransaction), Arg<DataContainer>.Matches (dc => dc.ID == newObject.ID)));
+
+            // TODO 4600: Should really be ObjectMarkedInvalid
+            clientTransactionListener.AssertWasCalled (
+                mock => mock.DataContainerStateUpdated (
+                    Arg.Is (subSubTransaction), 
+                    Arg<DataContainer>.Matches (dc => dc.ID == newObject.ID), 
+                    Arg.Is (StateType.Invalid)));
+          }
+        }
+      }
+    }
+
+    [Test]
+    public void Events_Cancellation ()
+    {
+      var order = LoadOrderWithRelations (DomainObjectIDs.Order1);
+
+      var mockRepository = new MockRepository ();
+      var clientTransactionListener = mockRepository.StrictMock<IClientTransactionListener> ();
+      var unloadEventReceiver = mockRepository.StrictMock<IUnloadEventReceiver> ();
+
+      var exception = new Exception ("Test");
+
+      order.SetUnloadEventReceiver (unloadEventReceiver);
+
+      using (mockRepository.Ordered ())
+      {
+        clientTransactionListener
+            .Expect (
+                mock =>
+                mock.ObjectsUnloading (
+                    Arg.Is (TestableClientTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order })));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order)).Throw (exception);
+      }
+      mockRepository.ReplayAll ();
+
+      Assert.That (() => UnloadService.UnloadAll (TestableClientTransaction), Throws.Exception.SameAs (exception));
+
+      mockRepository.VerifyAll ();
+
+      CheckDataAndEndPoints (order, true);
     }
 
     private void CheckDataAndEndPoints (Order order, bool shouldBePresent)
