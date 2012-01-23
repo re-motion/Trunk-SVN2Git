@@ -158,7 +158,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       _wrappedInstance.Discard ();
 #pragma warning disable 618 // Disable obsolete warning.
-      _wrappedInstance = _wrappedInstance.CreateEmptyTransactionOfSameType (false);
+      _wrappedInstance = _wrappedInstance.CreateEmptyTransactionOfSameType (true);
 #pragma warning restore 618
     }
   }

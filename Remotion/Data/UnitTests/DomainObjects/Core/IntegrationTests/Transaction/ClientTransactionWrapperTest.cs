@@ -178,7 +178,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4592")]
     public void Reset_InvalidObjectsStayInvalid ()
     {
       var clientTransactionBefore = ClientTransaction.CreateRootTransaction ();

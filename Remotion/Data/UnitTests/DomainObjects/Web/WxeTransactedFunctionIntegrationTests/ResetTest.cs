@@ -125,7 +125,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
     }
 
     [Test]
-    [Ignore ("TODO 4592")]
     public void Reset_InvalidVariables_AndOtherObjects_AreKeptInvalid ()
     {
       ExecuteDelegateInWxeFunction (WxeTransactionMode<ClientTransactionFactory>.CreateRoot, (ctx, f) =>
