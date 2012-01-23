@@ -19,6 +19,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -36,7 +37,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <see cref="ClientTransaction"/>. If the end point has not been loaded or has already been unloaded, this method does nothing.
     /// The relation must be unchanged in order to be unloaded, and it must not belong to an object that is new or deleted.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
     /// <param name="endPointID">The ID of the relation property to unload. This must denote a virtual relation end-point, ie., the relation side not 
     /// holding the foreign key property.</param>
@@ -68,7 +69,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// The relation must be unchanged in order to be unloaded, and it must not belong to an object that is new or deleted, otherwise this method 
     /// returns <see langword="false" />.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
     /// <param name="endPointID">The ID of the relation property to unload. This must denote a virtual relation end-point, ie., the relation side not 
     /// holding the foreign key property.</param>
@@ -100,7 +101,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// and <see cref="DomainObjectCollection"/> instances held by the object are not removed, only the data is. The object can only be unloaded if 
     /// it is in unchanged state and no relation end-points would remain inconsistent.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
     /// <param name="objectID">The object ID.</param>
     /// <exception cref="InvalidOperationException">The object to be unloaded is not in unchanged state - or - the operation would affect an 
@@ -136,7 +137,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// and <see cref="DomainObjectCollection"/> instances held by the object are not removed, only the data is. The object can only be unloaded if
     /// it is in unchanged state and no relation end-points would remain inconsistent.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
     /// <param name="objectID">The object ID.</param>
     /// <returns><see langword="true" /> if the unload operation succeeded (in all transactions), or <see langword="false" /> if it did not succeed
@@ -172,7 +173,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// unloaded, this method does nothing.
     /// The relation end-point must be unchanged in order to be unloaded, and it must not belong to an object that is new or deleted.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
@@ -211,7 +212,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// The relation end-point must be unchanged in order to be unloaded, and it must not belong to an object that is new or deleted, otherwise this
     /// method will return <see langword="false" />.
     /// </summary>
-    /// <param name="clientTransaction">The client transaction to unload the data from. The unload operation always affects the whole transaction 
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to unload the data from. The unload operation always affects the whole transaction 
     /// hierarchy.</param>
     /// <param name="endPointID">The end point ID. In order to retrieve this ID from a <see cref="DomainObjectCollection"/> representing a relation
     /// end point, specify the <see cref="DomainObjectCollection.AssociatedEndPointID"/>.</param>
@@ -241,6 +242,44 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => CreateUnloadVirtualEndPointAndItemDataCommand (tx, endPointID);
       var executor = new TransactionHierarchyCommandExecutor (commandFactory);
       return executor.TryExecuteCommandForTransactionHierarchy (clientTransaction);
+    }
+
+    /// <summary>
+    /// Unloads all the data and relation end-points from the <see cref="ClientTransaction"/> hierarchy indicated by the given 
+    /// <paramref name="clientTransaction"/>. This operation always succeeds (unless it is canceled by an exception thrown from a
+    /// <see cref="IClientTransactionListener.ObjectsUnloading"/> or <see cref="DomainObject.OnUnloading"/> notification method).
+    /// </summary>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> to unload the data from. The unload operation always affects the whole transaction 
+    /// hierarchy.</param>
+    /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// <para>
+    /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
+    /// and try to unload here, then it will go over the parent transactions one by one. If the operation is canceled in any of the transactions, 
+    /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
+    /// succeeded, but not in the one where it failed or those above.
+    /// </para>
+    /// <para>
+    /// The effect of this operation is similar to that of a <see cref="ClientTransaction.Rollback"/> followed by calling 
+    /// <see cref="UnloadVirtualEndPoint"/> and <see cref="UnloadData"/> for every piece of data in the <see cref="ClientTransaction"/>, although
+    /// the operation won't raise any Rollback-related events. 
+    /// </para>
+    /// <para>
+    /// When the operation completes, the state of previously <see cref="StateType.Changed"/>, <see cref="StateType.Deleted"/>, and 
+    /// <see cref="StateType.Unchanged"/> objects becomes <see cref="StateType.NotLoadedYet"/>. The state of <see cref="StateType.New"/> objects
+    /// becomes <see cref="StateType.Invalid"/> (this state is propagated over within the whole transaction hierarchy).
+    /// The state of <see cref="StateType.Invalid"/> and <see cref="StateType.NotLoadedYet"/> objects stays the same.
+    /// </para>
+    /// <para>
+    /// When the operation completes, all virtual relation end-points will no longer be complete, and they will be reloaded on access. All changes,
+    /// including <see cref="DomainObjectCollection"/> references set into relation properties, will be rolled back.
+    /// </para>
+    /// </remarks>
+    public static void UnloadAll (ClientTransaction clientTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+
+      throw new NotImplementedException ();
     }
 
     private static void CheckVirtualEndPointID (RelationEndPointID endPointID)

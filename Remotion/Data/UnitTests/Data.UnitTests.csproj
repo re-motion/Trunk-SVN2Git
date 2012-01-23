@@ -251,6 +251,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionNewObjectGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionPropertyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRelationTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadAllTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointAndItemDataCollectionTest.cs" />
