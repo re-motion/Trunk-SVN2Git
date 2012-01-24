@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -116,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     protected virtual void ScopedEnd ()
     {
       DomainObject domainObject = _modifiedEndPoint.GetDomainObject ();
-      domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition));
+      domainObject.OnRelationChanged (new RelationChangedEventArgs (_modifiedEndPoint.Definition, _oldRelatedObject, _newRelatedObject));
     }
 
     protected virtual void ScopedNotifyClientTransactionOfBegin ()

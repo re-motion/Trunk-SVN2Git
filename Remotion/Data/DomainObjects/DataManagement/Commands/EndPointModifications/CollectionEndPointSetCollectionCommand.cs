@@ -126,9 +126,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       DomainObject domainObject = ModifiedEndPoint.GetDomainObject ();
 
       for (int i = AddedObjects.Length - 1; i >= 0; i--)
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition));
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition, null, AddedObjects[i]));
       for (int i = RemovedObjects.Length - 1; i >= 0; i--)
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition));
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition, RemovedObjects[i], null));
     }
 
     protected override void ScopedNotifyClientTransactionOfEnd ()

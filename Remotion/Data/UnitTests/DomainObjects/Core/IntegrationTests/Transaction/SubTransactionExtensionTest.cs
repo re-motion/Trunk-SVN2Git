@@ -556,17 +556,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           orderItem2MockEventReceiver.RelationChanging (orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           officialMockEventReceiver.RelationChanging (official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
           officialOrdersMockEventReceiver.Removing (officialOrders, _order1);
-          LastCall.IgnoreArguments().Constraints (Is.Same (officialOrders), Property.Value ("DomainObject", _order1));
         }
 
         using (_mockRepository.Unordered ())
         {
-          customerMockEventReceiver.RelationChanged (customer, GetEndPointDefinition (typeof (Customer), "Orders"));
+          customerMockEventReceiver.RelationChanged (customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
           customerOrdersMockEventReceiver.Removed (customerOrders, _order1);
-          orderTicketMockEventReceiver.RelationChanged (orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"));
-          orderItem1MockEventReceiver.RelationChanged (orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"));
-          orderItem2MockEventReceiver.RelationChanged (orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"));
-          officialMockEventReceiver.RelationChanged (official, GetEndPointDefinition (typeof (Official), "Orders"));
+          orderTicketMockEventReceiver.RelationChanged (orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+          orderItem1MockEventReceiver.RelationChanged (orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+          orderItem2MockEventReceiver.RelationChanged (orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+          officialMockEventReceiver.RelationChanged (official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
           officialOrdersMockEventReceiver.Removed (officialOrders, _order1);
         }
 

@@ -34,8 +34,10 @@ namespace Remotion.Data.DomainObjects
     /// Initializes a new instance of the <b>RelationChangingEventArgs</b> class.
     /// </summary>
     /// <param name="relationEndPointDefinition">The relation endpoint definition. Must not be <see langword="null"/>.</param>
-    /// <param name="oldRelatedObject">The old object that was related.</param>
-    /// <param name="newRelatedObject">The new object that is related.</param>
+    /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
+    /// replacing an old one.</param>
+    /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
+    /// being replaced by a new one.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="relationEndPointDefinition"/> is <see langword="null"/>.</exception>
     public RelationChangingEventArgs (
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -50,7 +52,8 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the <see cref="DomainObject"/> that was related.
+    /// Gets the related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
+    /// replacing an old one.
     /// </summary>
     public DomainObject OldRelatedObject
     {
@@ -58,7 +61,8 @@ namespace Remotion.Data.DomainObjects
     }
 
     /// <summary>
-    /// Gets the <see cref="DomainObject"/> that is related.
+    /// Gets the related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
+    /// being replaced by a new one.
     /// </summary>
     public DomainObject NewRelatedObject
     {

@@ -67,29 +67,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (true, _orderEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderEventReceiver.ChangingRelationPropertyName);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderEventReceiver.ChangedRelationPropertyName);
-      Assert.AreSame (_oldOrderTicket, _orderEventReceiver.OldRelatedObject);
-      Assert.AreSame (_newOrderTicket, _orderEventReceiver.NewRelatedObject);
+      Assert.AreSame (_oldOrderTicket, _orderEventReceiver.ChangingOldRelatedObject);
+      Assert.AreSame (_newOrderTicket, _orderEventReceiver.ChangingNewRelatedObject);
+      Assert.AreSame (_oldOrderTicket, _orderEventReceiver.ChangedOldRelatedObject);
+      Assert.AreSame (_newOrderTicket, _orderEventReceiver.ChangedNewRelatedObject);
 
       Assert.AreEqual (true, _oldOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
       Assert.AreEqual (true, _oldOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _oldOrderTicketEventReceiver.ChangingRelationPropertyName);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _oldOrderTicketEventReceiver.ChangedRelationPropertyName);
-      Assert.AreSame (_order, _oldOrderTicketEventReceiver.OldRelatedObject);
-      Assert.AreSame (null, _oldOrderTicketEventReceiver.NewRelatedObject);
+      Assert.AreSame (_order, _oldOrderTicketEventReceiver.ChangingOldRelatedObject);
+      Assert.AreSame (null, _oldOrderTicketEventReceiver.ChangingNewRelatedObject);
+      Assert.AreSame (_order, _oldOrderTicketEventReceiver.ChangedOldRelatedObject);
+      Assert.AreSame (null, _oldOrderTicketEventReceiver.ChangedNewRelatedObject);
 
       Assert.AreEqual (true, _newOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
       Assert.AreEqual (true, _newOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _newOrderTicketEventReceiver.ChangingRelationPropertyName);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _newOrderTicketEventReceiver.ChangedRelationPropertyName);
-      Assert.AreSame (_oldOrderOfNewOrderTicket, _newOrderTicketEventReceiver.OldRelatedObject);
-      Assert.AreSame (_order, _newOrderTicketEventReceiver.NewRelatedObject);
+      Assert.AreSame (_oldOrderOfNewOrderTicket, _newOrderTicketEventReceiver.ChangingOldRelatedObject);
+      Assert.AreSame (_order, _newOrderTicketEventReceiver.ChangingNewRelatedObject);
+      Assert.AreSame (_oldOrderOfNewOrderTicket, _newOrderTicketEventReceiver.ChangedOldRelatedObject);
+      Assert.AreSame (_order, _newOrderTicketEventReceiver.ChangedNewRelatedObject);
 
       Assert.AreEqual (true, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
       Assert.AreEqual (true, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _oldOrderOfNewOrderTicketEventReceiver.ChangingRelationPropertyName);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _oldOrderOfNewOrderTicketEventReceiver.ChangedRelationPropertyName);
-      Assert.AreSame (_newOrderTicket, _oldOrderOfNewOrderTicketEventReceiver.OldRelatedObject);
-      Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.NewRelatedObject);
+      Assert.AreSame (_newOrderTicket, _oldOrderOfNewOrderTicketEventReceiver.ChangingOldRelatedObject);
+      Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingNewRelatedObject);
+      Assert.AreSame (_newOrderTicket, _oldOrderOfNewOrderTicketEventReceiver.ChangedOldRelatedObject);
+      Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangedNewRelatedObject);
 
       Assert.AreEqual (StateType.Changed, _order.State);
       Assert.AreEqual (StateType.Changed, _newOrderTicket.State);
@@ -126,29 +134,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.AreEqual (false, _orderEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_orderEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.OldRelatedObject);
-        Assert.AreSame (_newOrderTicket, _orderEventReceiver.NewRelatedObject);
+        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (_newOrderTicket, _orderEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (false, _oldOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_oldOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_oldOrderTicketEventReceiver.OldRelatedObject);
-        Assert.IsNull (_oldOrderTicketEventReceiver.NewRelatedObject);
+        Assert.IsNull (_oldOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_oldOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (false, _newOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _newOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_newOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_newOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_newOrderTicketEventReceiver.OldRelatedObject);
-        Assert.IsNull (_newOrderTicketEventReceiver.NewRelatedObject);
+        Assert.IsNull (_newOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_newOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (false, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.OldRelatedObject);
-        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.NewRelatedObject);
+        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (StateType.Unchanged, _order.State);
         Assert.AreEqual (StateType.Unchanged, _newOrderTicket.State);
@@ -181,29 +189,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.AreEqual (false, _orderEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_orderEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.OldRelatedObject);
-        Assert.AreSame (_newOrderTicket, _orderEventReceiver.NewRelatedObject);
+        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (_newOrderTicket, _orderEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (true, _oldOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _oldOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_order, _oldOrderTicketEventReceiver.OldRelatedObject);
-        Assert.AreSame (null, _oldOrderTicketEventReceiver.NewRelatedObject);
+        Assert.AreSame (_order, _oldOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (null, _oldOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (false, _newOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _newOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_newOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_newOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_newOrderTicketEventReceiver.OldRelatedObject);
-        Assert.IsNull (_newOrderTicketEventReceiver.NewRelatedObject);
+        Assert.IsNull (_newOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_newOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (false, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.OldRelatedObject);
-        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.NewRelatedObject);
+        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (StateType.Unchanged, _order.State);
         Assert.AreEqual (StateType.Unchanged, _newOrderTicket.State);
@@ -236,29 +244,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.AreEqual (false, _orderEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_orderEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.OldRelatedObject);
-        Assert.AreSame (_newOrderTicket, _orderEventReceiver.NewRelatedObject);
+        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (_newOrderTicket, _orderEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (true, _oldOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _oldOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_order, _oldOrderTicketEventReceiver.OldRelatedObject);
-        Assert.AreSame (null, _oldOrderTicketEventReceiver.NewRelatedObject);
+        Assert.AreSame (_order, _oldOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (null, _oldOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (true, _newOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _newOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _newOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_newOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_oldOrderOfNewOrderTicket, _newOrderTicketEventReceiver.OldRelatedObject);
-        Assert.AreSame (_order, _newOrderTicketEventReceiver.NewRelatedObject);
+        Assert.AreSame (_oldOrderOfNewOrderTicket, _newOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (_order, _newOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (false, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.OldRelatedObject);
-        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.NewRelatedObject);
+        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (StateType.Unchanged, _order.State);
         Assert.AreEqual (StateType.Unchanged, _newOrderTicket.State);
@@ -291,29 +299,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.AreEqual (false, _orderEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _orderEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_orderEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.OldRelatedObject);
-        Assert.AreSame (_newOrderTicket, _orderEventReceiver.NewRelatedObject);
+        Assert.AreSame (_oldOrderTicket, _orderEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (_newOrderTicket, _orderEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (true, _oldOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _oldOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_order, _oldOrderTicketEventReceiver.OldRelatedObject);
-        Assert.AreSame (null, _oldOrderTicketEventReceiver.NewRelatedObject);
+        Assert.AreSame (_order, _oldOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (null, _oldOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (true, _newOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _newOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order", _newOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_newOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_oldOrderOfNewOrderTicket, _newOrderTicketEventReceiver.OldRelatedObject);
-        Assert.AreSame (_order, _newOrderTicketEventReceiver.NewRelatedObject);
+        Assert.AreSame (_oldOrderOfNewOrderTicket, _newOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.AreSame (_order, _newOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (true, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangingEventBeenCalled);
         Assert.AreEqual (false, _oldOrderOfNewOrderTicketEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket", _oldOrderOfNewOrderTicketEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_newOrderTicket, _oldOrderOfNewOrderTicketEventReceiver.OldRelatedObject);
-        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.NewRelatedObject);
+        Assert.AreSame (_newOrderTicket, _oldOrderOfNewOrderTicketEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_oldOrderOfNewOrderTicketEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (StateType.Unchanged, _order.State);
         Assert.AreEqual (StateType.Unchanged, _newOrderTicket.State);

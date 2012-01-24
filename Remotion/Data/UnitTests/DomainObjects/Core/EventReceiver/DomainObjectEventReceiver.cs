@@ -51,9 +51,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     private string _changingRelationPropertyName;
     private string _changedRelationPropertyName;
     [NonSerialized]
-    private DomainObject _oldRelatedObject;
+    private DomainObject _changingOldRelatedObject;
     [NonSerialized]
-    private DomainObject _newRelatedObject;
+    private DomainObject _changingNewRelatedObject;
+    [NonSerialized]
+    private DomainObject _changedOldRelatedObject;
+    [NonSerialized]
+    private DomainObject _changedNewRelatedObject;
 
     private bool _hasCommittingEventBeenCalled = false;
     private bool _hasCommittedEventBeenCalled = false;
@@ -159,14 +163,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       get { return _changedRelationPropertyName; }
     }
 
-    public DomainObject OldRelatedObject
+    public DomainObject ChangingOldRelatedObject
     {
-      get { return _oldRelatedObject; }
+      get { return _changingOldRelatedObject; }
     }
 
-    public DomainObject NewRelatedObject
+    public DomainObject ChangingNewRelatedObject
     {
-      get { return _newRelatedObject; }
+      get { return _changingNewRelatedObject; }
+    }
+
+    public DomainObject ChangedOldRelatedObject
+    {
+      get { return _changedOldRelatedObject; }
+    }
+
+    public DomainObject ChangedNewRelatedObject
+    {
+      get { return _changedNewRelatedObject; }
     }
 
     public bool HasDeletingEventBeenCalled
@@ -226,8 +240,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     {
       _hasRelationChangingEventBeenCalled = true;
       _changingRelationPropertyName = args.RelationEndPointDefinition.PropertyName;
-      _oldRelatedObject = args.OldRelatedObject;
-      _newRelatedObject = args.NewRelatedObject;
+      _changingOldRelatedObject = args.OldRelatedObject;
+      _changingNewRelatedObject = args.NewRelatedObject;
 
       VerifyTransaction ();
 
@@ -239,6 +253,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     {
       _hasRelationChangedEventBeenCalled = true;
       _changedRelationPropertyName = args.RelationEndPointDefinition.PropertyName;
+      _changedOldRelatedObject = args.OldRelatedObject;
+      _changedNewRelatedObject = args.NewRelatedObject;
 
       VerifyTransaction ();
     }

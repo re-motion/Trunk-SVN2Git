@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -71,13 +72,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       this.Expect (
           mock => RelationChanging (
               Arg.Is (sender),
-              Arg<RelationChangingEventArgs>.Matches (args => args.RelationEndPointDefinition == relationEndPointDefinition)
-                      ));
+              Arg<RelationChangingEventArgs>.Matches (args =>
+                  args.RelationEndPointDefinition == relationEndPointDefinition 
+                      && args.OldRelatedObject == oldRelatedObject
+                      && args.NewRelatedObject == newRelatedObject)));
     }
 
-    public void RelationChanged (object sender, IRelationEndPointDefinition relationEndPointDefinition)
+    public void RelationChanged (object sender, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      this.Expect (mock => RelationChanged (Arg.Is (sender), Arg <RelationChangedEventArgs>.Matches (args => args.RelationEndPointDefinition == relationEndPointDefinition)));
+      this.Expect (
+          mock => RelationChanged (
+              Arg.Is (sender),
+              Arg<RelationChangedEventArgs>.Matches (args =>
+                  args.RelationEndPointDefinition == relationEndPointDefinition 
+                      && args.OldRelatedObject == oldRelatedObject
+                      && args.NewRelatedObject == newRelatedObject)));
     }
   }
 }

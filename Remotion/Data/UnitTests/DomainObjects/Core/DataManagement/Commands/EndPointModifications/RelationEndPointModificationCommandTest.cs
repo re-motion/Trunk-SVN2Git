@@ -133,19 +133,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       eventReceiverMock.VerifyAllExpectations();
     }
 
-    // TODO 4611: event args must be checked in this test suite
-
     [Test]
     public void End_SetsCurrentTransaction ()
     {
       _commandPartialMock
           .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedEnd"))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)))
+          .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       _commandPartialMock.Replay ();
+
+      var eventReceiverMock = MockRepository.GenerateStrictMock<DomainObjectMockEventReceiver> (_domainObject);
+      eventReceiverMock
+          .Expect (mock => mock.RelationChanged (_domainObject, _endPointDefinition, _oldRelatedObject, _newRelatedObject))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      eventReceiverMock.Replay();
 
       _commandPartialMock.End ();
 
       _commandPartialMock.VerifyAllExpectations ();
+      eventReceiverMock.VerifyAllExpectations ();
     }
 
     private RelationEndPointModificationCommand CreateCommandPartialMock ()

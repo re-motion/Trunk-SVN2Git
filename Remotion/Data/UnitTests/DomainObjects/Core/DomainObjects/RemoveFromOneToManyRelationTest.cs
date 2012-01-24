@@ -58,8 +58,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (true, _subordinateEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _subordinateEventReceiver.ChangingRelationPropertyName);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _subordinateEventReceiver.ChangedRelationPropertyName);
-      Assert.AreSame (_supervisor, _subordinateEventReceiver.OldRelatedObject);
-      Assert.IsNull (_subordinateEventReceiver.NewRelatedObject);
+      Assert.AreSame (_supervisor, _subordinateEventReceiver.ChangingOldRelatedObject);
+      Assert.IsNull (_subordinateEventReceiver.ChangingNewRelatedObject);
+      Assert.AreSame (_supervisor, _subordinateEventReceiver.ChangedOldRelatedObject);
+      Assert.IsNull (_subordinateEventReceiver.ChangedNewRelatedObject);
 
       Assert.IsTrue (_subordinateCollectionEventReceiver.HasRemovingEventBeenCalled);
       Assert.IsTrue (_subordinateCollectionEventReceiver.HasRemovedEventBeenCalled);
@@ -70,8 +72,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (true, _supervisorEventReceiver.HasRelationChangedEventBeenCalled);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates", _supervisorEventReceiver.ChangingRelationPropertyName);
       Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates", _supervisorEventReceiver.ChangedRelationPropertyName);
-      Assert.AreSame (_subordinate, _supervisorEventReceiver.OldRelatedObject);
-      Assert.IsNull (_supervisorEventReceiver.NewRelatedObject);
+      Assert.AreSame (_subordinate, _supervisorEventReceiver.ChangingOldRelatedObject);
+      Assert.IsNull (_supervisorEventReceiver.ChangingNewRelatedObject);
+      Assert.AreSame (_subordinate, _supervisorEventReceiver.ChangedOldRelatedObject);
+      Assert.IsNull (_supervisorEventReceiver.ChangedNewRelatedObject);
 
       Assert.AreEqual (StateType.Changed, _subordinate.State);
       Assert.AreEqual (StateType.Changed, _supervisor.State);
@@ -97,8 +101,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (_subordinateEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _subordinateEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_subordinateEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_supervisor, _subordinateEventReceiver.OldRelatedObject);
-        Assert.IsNull (_subordinateEventReceiver.NewRelatedObject);
+        Assert.AreSame (_supervisor, _subordinateEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_subordinateEventReceiver.ChangingNewRelatedObject);
 
         Assert.IsFalse (_subordinateCollectionEventReceiver.HasRemovingEventBeenCalled);
         Assert.IsFalse (_subordinateCollectionEventReceiver.HasRemovedEventBeenCalled);
@@ -109,8 +113,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (_supervisorEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_supervisorEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_supervisorEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_supervisorEventReceiver.OldRelatedObject);
-        Assert.IsNull (_supervisorEventReceiver.NewRelatedObject);
+        Assert.IsNull (_supervisorEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_supervisorEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (StateType.Unchanged, _subordinate.State);
         Assert.AreEqual (StateType.Unchanged, _supervisor.State);
@@ -138,8 +142,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (_subordinateEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _subordinateEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_subordinateEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_supervisor, _subordinateEventReceiver.OldRelatedObject);
-        Assert.IsNull (_subordinateEventReceiver.NewRelatedObject);
+        Assert.AreSame (_supervisor, _subordinateEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_subordinateEventReceiver.ChangingNewRelatedObject);
 
         Assert.IsTrue (_subordinateCollectionEventReceiver.HasRemovingEventBeenCalled);
         Assert.IsFalse (_subordinateCollectionEventReceiver.HasRemovedEventBeenCalled);
@@ -150,8 +154,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (_supervisorEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.IsNull (_supervisorEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_supervisorEventReceiver.ChangedRelationPropertyName);
-        Assert.IsNull (_supervisorEventReceiver.OldRelatedObject);
-        Assert.IsNull (_supervisorEventReceiver.NewRelatedObject);
+        Assert.IsNull (_supervisorEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_supervisorEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (StateType.Unchanged, _subordinate.State);
         Assert.AreEqual (StateType.Unchanged, _supervisor.State);
@@ -178,8 +182,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (_subordinateEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor", _subordinateEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_subordinateEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_supervisor, _subordinateEventReceiver.OldRelatedObject);
-        Assert.IsNull (_subordinateEventReceiver.NewRelatedObject);
+        Assert.AreSame (_supervisor, _subordinateEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_subordinateEventReceiver.ChangingNewRelatedObject);
 
         Assert.IsTrue (_subordinateCollectionEventReceiver.HasRemovingEventBeenCalled);
         Assert.IsFalse (_subordinateCollectionEventReceiver.HasRemovedEventBeenCalled);
@@ -190,8 +194,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         Assert.IsFalse (_supervisorEventReceiver.HasRelationChangedEventBeenCalled);
         Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Subordinates", _supervisorEventReceiver.ChangingRelationPropertyName);
         Assert.IsNull (_supervisorEventReceiver.ChangedRelationPropertyName);
-        Assert.AreSame (_subordinate, _supervisorEventReceiver.OldRelatedObject);
-        Assert.IsNull (_supervisorEventReceiver.NewRelatedObject);
+        Assert.AreSame (_subordinate, _supervisorEventReceiver.ChangingOldRelatedObject);
+        Assert.IsNull (_supervisorEventReceiver.ChangingNewRelatedObject);
 
         Assert.AreEqual (StateType.Unchanged, _subordinate.State);
         Assert.AreEqual (StateType.Unchanged, _supervisor.State);
@@ -225,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _supervisor.Subordinates.Remove (_subordinate);
 
-			Assert.IsNull ((ObjectID) _subordinate.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
+      Assert.IsNull ((ObjectID) _subordinate.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
     }
 
     [Test]
