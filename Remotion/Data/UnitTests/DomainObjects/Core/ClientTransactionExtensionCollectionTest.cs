@@ -593,7 +593,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void RelationReading ()
     {
-      IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
+      IRelationEndPointDefinition endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
       using (_mockRepository.Ordered ())
       {
         _extension1.Expect (mock => mock.RelationReading (TestableClientTransaction, _order, endPointDefinition, ValueAccess.Current));
@@ -611,7 +611,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void RelationReadWithOneToOneRelation ()
     {
       OrderTicket orderTicket = _order.OrderTicket;
-      IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition;
+      IRelationEndPointDefinition endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
       using (_mockRepository.Ordered ())
       {
         _extension1.Expect (mock => mock.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderTicket, ValueAccess.Original));
@@ -629,7 +629,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void RelationReadWithOneToManyRelation ()
     {
       var orderItems = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (_order.OrderItems);
-      IRelationEndPointDefinition endPointDefinition = _order.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition;
+      IRelationEndPointDefinition endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
       using (_mockRepository.Ordered ())
       {
         _extension1.Expect (mock => mock.RelationRead (TestableClientTransaction, _order, endPointDefinition, orderItems, ValueAccess.Original));
