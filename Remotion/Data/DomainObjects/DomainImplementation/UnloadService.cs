@@ -275,6 +275,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// including <see cref="DomainObjectCollection"/> references set into relation properties, will be rolled back.
     /// </para>
     /// </remarks>
+    [Obsolete ("Not yet implemented.", false)]
     public static void UnloadAll (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);

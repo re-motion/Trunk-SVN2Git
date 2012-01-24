@@ -29,6 +29,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 {
   [Ignore ("TODO 4600")]
+  [Obsolete ("Not yet implemented.", false)]
   public class UnloadAllTest : UnloadTestBase
   {
     [Test]
