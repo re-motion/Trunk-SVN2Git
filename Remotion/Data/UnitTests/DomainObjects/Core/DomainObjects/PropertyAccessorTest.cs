@@ -135,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       propertyAccessor.SetValue (newCompanies);
 
       listenerMock.AssertWasCalled (
-        mock => mock.RelationChanged (TestableClientTransaction, sector, propertyAccessor.PropertyData.RelationEndPointDefinition));
+        mock => mock.RelationChanged (TestableClientTransaction, sector, propertyAccessor.PropertyData.RelationEndPointDefinition, null, newCompanies[0]));
     }
 
     [Test]
@@ -235,13 +235,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
 
       var order = Order.GetObject (DomainObjectIDs.Order1);
+      var oldTicket = order.OrderTicket;
       var newTicket = OrderTicket.NewObject ();
 
       var propertyAccessor = CreateAccessor (order, "OrderTicket");
       propertyAccessor.SetValue (newTicket);
 
       listenerMock.AssertWasCalled (
-          mock => mock.RelationChanged (TestableClientTransaction, order, propertyAccessor.PropertyData.RelationEndPointDefinition));
+          mock => mock.RelationChanged (TestableClientTransaction, order, propertyAccessor.PropertyData.RelationEndPointDefinition, oldTicket, newTicket));
     }
 
     [Test]

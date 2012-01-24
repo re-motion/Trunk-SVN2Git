@@ -329,13 +329,13 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition);
+        extension.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

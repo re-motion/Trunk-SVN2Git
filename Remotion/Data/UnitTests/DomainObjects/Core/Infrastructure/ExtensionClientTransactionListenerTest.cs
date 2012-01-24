@@ -15,25 +15,26 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class ExtensionClientTransactionListenerTest
+  public class ExtensionClientTransactionListenerTest : StandardMappingTest
   {
     private IClientTransactionExtension _extensionMock;
     private ExtensionClientTransactionListener _listener;
     private ClientTransaction _clientTransaction;
 
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
+      base.SetUp();
+
       _extensionMock = MockRepository.GenerateStrictMock<IClientTransactionExtension>();
       _listener = new ExtensionClientTransactionListener (_extensionMock);
     }
@@ -62,6 +63,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ExpectDelegation (l => l.SubTransactionCreating (_clientTransaction), e => e.SubTransactionCreating (_clientTransaction));
       ExpectDelegation (l => l.SubTransactionInitialize (_clientTransaction, tx2), e => e.SubTransactionInitialize (_clientTransaction, tx2));
       ExpectDelegation (l => l.SubTransactionCreated (_clientTransaction, tx2), e => e.SubTransactionCreated (_clientTransaction, tx2));
+    }
+
+    [Test]
+    public void RelationChangeEvents_Delegated ()
+    {
+      var domainObject = DomainObjectMother.CreateFakeObject<Order>();
+      var relationEndPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
+      var oldRelatedObject = DomainObjectMother.CreateFakeObject<OrderItem> ();
+      var newRelatedObject = DomainObjectMother.CreateFakeObject<OrderItem> ();
+
+      ExpectDelegation (
+          l => l.RelationChanging (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject),
+          e => e.RelationChanging (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject));
+      ExpectDelegation (
+          l => l.RelationChanged (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject),
+          e => e.RelationChanged (_clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject));
     }
 
     [Test]

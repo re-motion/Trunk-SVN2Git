@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       CheckNopEvent (e => e.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current));
       CheckNopEvent (e => e.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current));
       CheckNopEvent (e => e.RelationChanging (null, null, null, null, null));
-      CheckNopEvent (e => e.RelationChanged (null, null, null));
+      CheckNopEvent (e => e.RelationChanged (null, null, null, null, null));
 
       var fakeResult = new QueryResult<DomainObject> (MockRepository.GenerateStub<IQuery>(), new DomainObject[0]);
       CheckNopEvent (e => e.FilterQueryResult (null, fakeResult), fakeResult);

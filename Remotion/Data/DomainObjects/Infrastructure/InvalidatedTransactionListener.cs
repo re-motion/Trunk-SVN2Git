@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException ();
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       throw CreateException ();
     }

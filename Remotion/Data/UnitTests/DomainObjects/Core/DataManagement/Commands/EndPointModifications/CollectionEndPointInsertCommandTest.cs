@@ -96,6 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       {
         relationChangedCalled = true;
 
+        // TODO 4611: event args must be checked in this test suite
         Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
         Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // collection gets event later
       };

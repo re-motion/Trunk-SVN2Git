@@ -107,7 +107,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition)
+    public virtual void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
     }
 

@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void RelationChanged ()
     {
-      _listener.RelationChanged (TestableClientTransaction, _domainObject, _relationEndPoint.Definition);
+      _listener.RelationChanged (TestableClientTransaction, _domainObject, _relationEndPoint.Definition, _domainObject, _domainObject);
     }
 
     [Test]

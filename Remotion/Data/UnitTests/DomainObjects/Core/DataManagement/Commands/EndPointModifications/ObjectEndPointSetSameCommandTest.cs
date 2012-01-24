@@ -119,7 +119,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           mock => mock.RelationChanged (
               Arg<ClientTransaction>.Is.Anything,
               Arg<DomainObject>.Is.Anything,
-              Arg<IRelationEndPointDefinition>.Is.Anything));
+              Arg<IRelationEndPointDefinition>.Is.Anything, 
+              Arg<DomainObject>.Is.Anything,
+              Arg<DomainObject>.Is.Anything));
     }
 
     [Test]

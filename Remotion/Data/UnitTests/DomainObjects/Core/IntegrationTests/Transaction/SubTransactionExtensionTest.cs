@@ -574,11 +574,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         using (_mockRepository.Unordered ())
         {
-          _extensionMock.RelationChanged (_subTransaction, customer, customer.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-          _extensionMock.RelationChanged (_subTransaction, orderTicket, orderTicket.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
-          _extensionMock.RelationChanged (_subTransaction, orderItem1, orderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
-          _extensionMock.RelationChanged (_subTransaction, orderItem2, orderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
-          _extensionMock.RelationChanged (_subTransaction, official, official.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition);
+          _extensionMock.RelationChanged (_subTransaction, customer, customer.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, _order1, null);
+          _extensionMock.RelationChanged (_subTransaction, orderTicket, orderTicket.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
+          _extensionMock.RelationChanged (_subTransaction, orderItem1, orderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
+          _extensionMock.RelationChanged (_subTransaction, orderItem2, orderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, _order1, null);
+          _extensionMock.RelationChanged (_subTransaction, official, official.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition, _order1, null);
         }
 
         _extensionMock.ObjectDeleted (_subTransaction, _order1);
@@ -606,7 +606,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationChanging (_subTransaction, location, location.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition, deletedClient, newClient);
-        _extensionMock.RelationChanged (_subTransaction, location, location.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition);
+        _extensionMock.RelationChanged (_subTransaction, location, location.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition, deletedClient, newClient);
       }
 
       _mockRepository.ReplayAll();
@@ -632,7 +632,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.RelationChanging (_subTransaction, location, location.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition, deletedClient, newClient);
-        _extensionMock.RelationChanged (_subTransaction, location, location.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition);
+        _extensionMock.RelationChanged (_subTransaction, location, location.Properties[typeof (Location), "Client"].PropertyData.RelationEndPointDefinition, deletedClient, newClient);
       }
 
       _mockRepository.ReplayAll();

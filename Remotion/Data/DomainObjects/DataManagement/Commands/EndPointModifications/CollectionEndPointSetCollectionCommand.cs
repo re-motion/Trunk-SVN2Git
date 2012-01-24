@@ -133,10 +133,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected override void ScopedNotifyClientTransactionOfEnd ()
     {
-      for (int i = RemovedObjects.Length - 1; i >= 0; i--)
-        RaiseClientTransactionEndNotification (RemovedObjects[i], null);
       for (int i = AddedObjects.Length - 1; i >= 0; i--)
         RaiseClientTransactionEndNotification (null, AddedObjects[i]);
+      for (int i = RemovedObjects.Length - 1; i >= 0; i--)
+        RaiseClientTransactionEndNotification (RemovedObjects[i], null);
     }
 
     /// <summary>

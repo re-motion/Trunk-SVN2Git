@@ -330,7 +330,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition>();
       relationEndPointDefinition.Stub (n => n.PropertyName).Return ("Name");
 
-      _listener.RelationChanging (_clientTransaction, _domainObject, relationEndPointDefinition, _domainObject, _domainObject);
+      _listener.RelationChanging (_clientTransaction, _domainObject, relationEndPointDefinition, _domainObject2, _domainObject3);
       var loggingEvents = GetLoggingEvents();
 
       Assert.That (
@@ -340,8 +340,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                   "{0} RelationChanging: {1}: {2}->{3} /{4}",
                   _clientTransaction.ID,
                   relationEndPointDefinition.PropertyName,
-                  _domainObject.ID,
-                  _domainObject.ID,
+                  _domainObject2.ID,
+                  _domainObject3.ID,
                   _domainObject.ID)));
     }
 
@@ -351,17 +351,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition>();
       relationEndPointDefinition.Stub (n => n.PropertyName).Return ("Name");
 
-      _listener.RelationChanged (_clientTransaction, _domainObject, relationEndPointDefinition);
+      _listener.RelationChanged (_clientTransaction, _domainObject, relationEndPointDefinition, _domainObject2, _domainObject3);
       var loggingEvents = GetLoggingEvents();
-
       Assert.That (
-          loggingEvents.Last().RenderedMessage,
-          Is.EqualTo (
-              string.Format (
-                  "{0} RelationChanged: {1} ({2})",
-                  _clientTransaction.ID,
-                  relationEndPointDefinition.PropertyName,
-                  _domainObject.ID)));
+               loggingEvents.Last ().RenderedMessage,
+               Is.EqualTo (
+                   string.Format (
+                       "{0} RelationChanged: {1}: {2}->{3} /{4}",
+                       _clientTransaction.ID,
+                       relationEndPointDefinition.PropertyName,
+                       _domainObject2.ID,
+                       _domainObject3.ID,
+                       _domainObject.ID)));
     }
 
     [Test]

@@ -108,7 +108,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     ///   replacing an old one.</param>
     /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
     ///   being replaced by a new one.</param>
-    void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject);
+    void RelationChanging (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject);
 
     /// <summary>
     /// Indicates that a relation has been changed. 
@@ -119,7 +124,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> providing the scope to the operation.</param>
     /// <param name="domainObject">The domain object holding the relation being changed.</param>
     /// <param name="relationEndPointDefinition">The relation endpoint defintition of the relation that changes.</param>
-    void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition);
+    /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
+    ///   replacing an old one.</param>
+    /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
+    ///   being replaced by a new one.</param>
+    void RelationChanged (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject);
 
     QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject;
 

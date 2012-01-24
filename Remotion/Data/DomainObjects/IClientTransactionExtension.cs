@@ -381,7 +381,12 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject);
+    void RelationChanging (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject);
 
     /// <summary>
     /// Invoked after a relation was changed.
@@ -389,6 +394,10 @@ namespace Remotion.Data.DomainObjects
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="domainObject">The <see cref="DomainObject"/> whose relation property was changed.</param>
     /// <param name="relationEndPointDefinition">The relation endpoint defintion of the relation property.</param>
+    /// <param name="oldRelatedObject">The related object that is removed from the relation, or <see langword="null" /> if a new item is added without 
+    /// replacing an old one.</param>
+    /// <param name="newRelatedObject">The related object that is added to the relation, or <see langword="null" /> if an old item is removed without 
+    /// being replaced by a new one.</param>
     /// <remarks>
     ///   <para>
     ///     Use this method to perform actions on a successful execution, whereas <see cref="RelationChanging"/> should be used to cancel the operation.
@@ -403,7 +412,12 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="RelationChanging"/> instead.</note>
     /// </remarks>
-    void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition);
+    void RelationChanged (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject);
 
     /// <summary>
     /// Invoked after a collection query was executed by <see cref="QueryManager.GetCollection"/>.

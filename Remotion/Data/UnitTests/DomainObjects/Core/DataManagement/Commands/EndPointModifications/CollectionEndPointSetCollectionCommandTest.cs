@@ -119,6 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (relationChangingEventArgs[1].NewRelatedObject, Is.SameAs (_order2));
     }
 
+    // TODO 4611: event args must be checked in this test suite
     [Test]
     public void End ()
     {
@@ -147,18 +148,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void NotifyClientTransactionOfBegin ()
     {
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      listenerMock.Expect (mock => mock.RelationChanging (
-          TestableClientTransaction, 
-          DomainObject, 
-          CollectionEndPoint.Definition, 
-          _orderWithoutOrderItem, 
-          null));
-      listenerMock.Expect (mock => mock.RelationChanging (
-          TestableClientTransaction, 
-          DomainObject, 
-          CollectionEndPoint.Definition, 
-          null, 
-          _order2));
+      using (listenerMock.GetMockRepository ().Ordered ())
+      {
+        listenerMock.Expect (
+            mock => mock.RelationChanging (
+                TestableClientTransaction,
+                DomainObject,
+                CollectionEndPoint.Definition,
+                _orderWithoutOrderItem,
+                null));
+        listenerMock.Expect (
+            mock => mock.RelationChanging (
+                TestableClientTransaction,
+                DomainObject,
+                CollectionEndPoint.Definition,
+                null,
+                _order2));
+      }
       listenerMock.Replay ();
 
       TestableClientTransaction.AddListener (listenerMock);
@@ -172,14 +178,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void NotifyClientTransactionOfEnd ()
     {
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      listenerMock.Expect (mock => mock.RelationChanged (
-          TestableClientTransaction, 
-          DomainObject, 
-          CollectionEndPoint.Definition));
-      listenerMock.Expect (mock => mock.RelationChanged (
-          TestableClientTransaction, 
-          DomainObject, 
-          CollectionEndPoint.Definition));
+      using (listenerMock.GetMockRepository ().Ordered ())
+      {
+        listenerMock.Expect (
+            mock => mock.RelationChanged (
+                TestableClientTransaction,
+                DomainObject,
+                CollectionEndPoint.Definition,
+                null,
+                _order2));
+        listenerMock.Expect (
+            mock => mock.RelationChanged (
+                TestableClientTransaction,
+                DomainObject,
+                CollectionEndPoint.Definition,
+                _orderWithoutOrderItem,
+                null));
+      }
 
       listenerMock.Replay ();
 

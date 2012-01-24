@@ -20,9 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.MockConstraints;
@@ -48,6 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       base.TestFixtureSetUp();
       SetDatabaseModifyable();
     }
+
+    // TODO 4611: event args must be checked in this test suite
 
     [Test]
     public void RelationEventTestWithMockObject ()
@@ -122,8 +122,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         newCeo1EventReceiver.RelationChanged (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
 
-        extension.RelationChanged (TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (TestableClientTransaction, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
+        extension.RelationChanged (TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition, null, newCeo1);
+        extension.RelationChanged (TestableClientTransaction, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition, null, newCustomer1);
 
 
         //2
@@ -151,9 +151,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         newCeo2EventReceiver.RelationChanged (newCeo2, newCeo2.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
 
-        extension.RelationChanged (TestableClientTransaction, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (TestableClientTransaction, newCeo2, newCeo2.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
+        extension.RelationChanged (
+            TestableClientTransaction,
+            newCeo1,
+            newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition,
+            newCustomer1,
+            null);
+        extension.RelationChanged (
+            TestableClientTransaction,
+            newCustomer1,
+            newCustomer1.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition,
+            newCeo1,
+            newCeo2);
+        extension.RelationChanged (
+            TestableClientTransaction,
+            newCeo2,
+            newCeo2.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition,
+            null,
+            newCustomer1);
 
 
         //3
@@ -176,9 +191,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newCeo1EventReceiver.RelationChanged (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newCustomer2, newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newCustomer2,
+            newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition,
+            null,
+            newCeo1);
         extension.RelationChanged (
-            TestableClientTransaction, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newCeo1,
+            newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition,
+            null,
+            newCustomer2);
 
 
         //4
@@ -201,9 +224,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newCeo1EventReceiver.RelationChanged (newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newCustomer2, newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newCustomer2,
+            newCustomer2.Properties[typeof (Company), "Ceo"].PropertyData.RelationEndPointDefinition,
+            newCeo1,
+            null);
         extension.RelationChanged (
-            TestableClientTransaction, newCeo1, newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newCeo1,
+            newCeo1.Properties[typeof (Ceo), "Company"].PropertyData.RelationEndPointDefinition,
+            newCustomer2,
+            null);
 
 
         //5
@@ -246,8 +277,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
         newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
 
-        extension.RelationChanged (TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+        extension.RelationChanged (
+            TestableClientTransaction,
+            newCustomer1,
+            newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrder1);
+        extension.RelationChanged (
+            TestableClientTransaction,
+            newOrder1,
+            newOrder1.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
+            null,
+            newCustomer1);
 
 
         //6
@@ -291,9 +332,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newCustomer1,
+            newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrder2);
         extension.RelationChanged (
-            TestableClientTransaction, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrder2,
+            newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
+            null,
+            newCustomer1);
 
 
         //7
@@ -337,9 +386,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newCustomer1,
+            newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+            newOrder2,
+            null);
         extension.RelationChanged (
-            TestableClientTransaction, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrder2,
+            newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
+            newCustomer1,
+            null);
 
 
         //8
@@ -368,9 +425,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newOrderItem1EventReceiver.RelationChanged (newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrder1,
+            newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrderItem1);
         extension.RelationChanged (
-            TestableClientTransaction, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrderItem1,
+            newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrder1);
 
 
         //9
@@ -399,9 +464,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newOrderItem2EventReceiver.RelationChanged (newOrderItem2, newOrderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrder1,
+            newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrderItem2);
         extension.RelationChanged (
-            TestableClientTransaction, newOrderItem2, newOrderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrderItem2,
+            newOrderItem2.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrder1);
 
 
         //10
@@ -430,9 +503,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newOrderItem1EventReceiver.RelationChanged (newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrder1,
+            newOrder1.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition,
+            newOrderItem1,
+            null);
         extension.RelationChanged (
-            TestableClientTransaction, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrderItem1,
+            newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition,
+            newOrder1,
+            null);
 
 
         //11
@@ -461,9 +542,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newOrderItem1EventReceiver.RelationChanged (newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, newOrder2, newOrder2.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrder2,
+            newOrder2.Properties[typeof (Order), "OrderItems"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrderItem1);
         extension.RelationChanged (
-            TestableClientTransaction, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrderItem1,
+            newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrder2);
 
 
         //12
@@ -491,9 +580,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "Official"].PropertyData.RelationEndPointDefinition);
 
         extension.RelationChanged (
-            TestableClientTransaction, official2, official2.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            official2,
+            official2.Properties[typeof (Official), "Orders"].PropertyData.RelationEndPointDefinition,
+            null,
+            newOrder1);
         extension.RelationChanged (
-            TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "Official"].PropertyData.RelationEndPointDefinition);
+            TestableClientTransaction,
+            newOrder1,
+            newOrder1.Properties[typeof (Order), "Official"].PropertyData.RelationEndPointDefinition,
+            null,
+            official2);
 
 
         //13
@@ -504,15 +601,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         extension.RelationChanging (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg<OrderTicket>.Is.TypeOf,
-            Arg<IRelationEndPointDefinition>.Matches (
-                args => args.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"),
+            Arg.Is (GetEndPointDefinition (typeof (OrderTicket), "Order")),
             Arg.Is ((DomainObject) null),
             Arg.Is (newOrder1));
         extension.RelationChanging (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg.Is (newOrder1),
-            Arg<IRelationEndPointDefinition>.Matches (
-                args => args.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"),
+            Arg.Is (GetEndPointDefinition (typeof (Order), "OrderTicket")),
             Arg.Is ((DomainObject) null),
             Arg<OrderTicket>.Is.TypeOf);
 
@@ -520,17 +615,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             Arg.Is (newOrder1),
             Arg<RelationChangingEventArgs>.Matches (
                 args =>
-                args.RelationEndPointDefinition.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"
+                args.RelationEndPointDefinition == GetEndPointDefinition (typeof (Order), "OrderTicket")
                 && args.OldRelatedObject == null
                 && args.NewRelatedObject is OrderTicket));
-
-        newOrder1EventReceiver.RelationChanged (newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
-        extension.RelationChanged (TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+        newOrder1EventReceiver.RelationChanged (newOrder1, GetEndPointDefinition (typeof (Order), "OrderTicket"));
 
         extension.RelationChanged (
             Arg.Is (ClientTransactionScope.CurrentTransaction),
+            Arg.Is (newOrder1),
+            Arg.Is (GetEndPointDefinition (typeof (Order), "OrderTicket")),
+            Arg.Is ((DomainObject) null),
+            Arg<OrderTicket>.Is.TypeOf);
+        extension.RelationChanged (
+            Arg.Is (ClientTransactionScope.CurrentTransaction),
             Arg<OrderTicket>.Is.TypeOf,
-            Arg<IRelationEndPointDefinition>.Matches (args => args.PropertyName == "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+            Arg.Is (GetEndPointDefinition (typeof (OrderTicket), "Order")),
+            Arg.Is ((DomainObject) null),
+            Arg.Is (newOrder1));
       }
 
       extension.Stub (stub => stub.Key).Return ("Extension");
@@ -626,13 +727,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
               newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
 
           extension.RelationChanged (
-              TestableClientTransaction, newOrder2, newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction,
+              newOrder2,
+              newOrder2.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
+              null,
+              newOrderTicket1);
           extension.RelationChanged (
-              TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction,
+              newOrder1,
+              newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition,
+              newOrderTicket1,
+              null);
           extension.RelationChanged (
               TestableClientTransaction,
               newOrderTicket1,
-              newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+              newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition,
+              newOrder1,
+              newOrder2);
 
 
           //15a
@@ -662,9 +773,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
 
           extension.RelationChanged (
-              TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction,
+              newCustomer1,
+              newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition,
+              null,
+              newOrder2);
           extension.RelationChanged (
-              TestableClientTransaction, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction,
+              newOrder2,
+              newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition,
+              null,
+              newCustomer1);
 
 
           //15b
@@ -708,11 +827,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           newOrder2EventReceiver.RelationChanged (newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
 
           extension.RelationChanged (
-              TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction, newCustomer1, newCustomer1.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
           extension.RelationChanged (
-              TestableClientTransaction, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, null, newOrder2);
           extension.RelationChanged (
-              TestableClientTransaction, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction, newOrder2, newOrder2.Properties[typeof (Order), "Customer"].PropertyData.RelationEndPointDefinition, newCustomer1, newCustomer2);
 
 
           //16
@@ -772,13 +891,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           using (mockRepository.Unordered ())
           {
             extension.RelationChanged (
-                TestableClientTransaction, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition);
+                TestableClientTransaction, newCustomer2, newCustomer2.Properties[typeof (Customer), "Orders"].PropertyData.RelationEndPointDefinition, newOrder2, null);
             extension.RelationChanged (
                 TestableClientTransaction,
                 newOrderTicket1,
-                newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+                newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
             extension.RelationChanged (
-                TestableClientTransaction, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition);
+                TestableClientTransaction, newOrderItem1, newOrderItem1.Properties[typeof (OrderItem), "Order"].PropertyData.RelationEndPointDefinition, newOrder2, null);
           }
 
           extension.ObjectDeleted (TestableClientTransaction, newOrder2);
@@ -811,11 +930,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
               newOrderTicket1, newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
 
           extension.RelationChanged (
-              TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition);
+              TestableClientTransaction, newOrder1, newOrder1.Properties[typeof (Order), "OrderTicket"].PropertyData.RelationEndPointDefinition, null, newOrderTicket1);
           extension.RelationChanged (
               TestableClientTransaction,
               newOrderTicket1,
-              newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition);
+              newOrderTicket1.Properties[typeof (OrderTicket), "Order"].PropertyData.RelationEndPointDefinition, null, newOrder1);
 
 
           //cleanup for commit

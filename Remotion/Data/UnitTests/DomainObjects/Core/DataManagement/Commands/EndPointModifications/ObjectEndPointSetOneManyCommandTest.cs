@@ -181,7 +181,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           mock => mock.RelationChanged (
               TestableClientTransaction,
               _endPoint.GetDomainObject(),
-              _endPoint.Definition));
+              _endPoint.Definition, 
+              _oldRelatedObject, 
+              _newRelatedObject));
     }
 
     [Test]

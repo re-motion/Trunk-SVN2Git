@@ -346,17 +346,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void RelationChanged ()
     {
-      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      OrderTicket orderTicket = _order.OrderTicket;
+      OrderTicket newOrderTicket = OrderTicket.NewObject ();
       
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition));
-        _extension2.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition));
+        _extension1.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition, orderTicket, newOrderTicket));
+        _extension2.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition, orderTicket, newOrderTicket));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition);
+      _collectionWithExtensions.RelationChanged (TestableClientTransaction, _order, relationEndPointDefinition, orderTicket, newOrderTicket);
 
       _mockRepository.VerifyAll ();
     }

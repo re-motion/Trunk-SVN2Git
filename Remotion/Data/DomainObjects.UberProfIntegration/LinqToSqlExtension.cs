@@ -111,7 +111,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
     {
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinitiont)
+    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinitiont, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
     }
 

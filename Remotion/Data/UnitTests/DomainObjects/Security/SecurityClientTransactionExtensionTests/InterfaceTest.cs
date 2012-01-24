@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       extension.PropertyValueChanged (null, null, null, null, null);
       extension.RelationRead (null, null, null, (ReadOnlyDomainObjectCollectionAdapter<DomainObject>) null, ValueAccess.Current);
       extension.RelationRead (null, null, null, (DomainObject) null, ValueAccess.Current);
-      extension.RelationChanged (null, null, null);
+      extension.RelationChanged (null, null, null, null, null);
       extension.Committing (null, null);
       extension.Committed (null, null);
       extension.RollingBack (null, null);
