@@ -418,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
             clientTransactionListener.AssertWasCalled (
                 mock => mock.DataContainerMapUnregistering (Arg.Is (middleBottomTransaction), Arg<DataContainer>.Matches (dc => dc.ID == newObject.ID)));
 
-            // TODO 4600: Should really be ObjectMarkedInvalid
+            // TODO 4610: Should really be ObjectMarkedInvalid
             clientTransactionListener.AssertWasCalled (
                 mock => mock.DataContainerStateUpdated (
                     Arg.Is (subSubTransaction), 
