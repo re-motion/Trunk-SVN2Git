@@ -61,6 +61,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         _cache.HandleStateUpdate (container.ID);
       }
+
+      // TODO 4599: Handle DataManagerDiscardingObject to deal with NotLoadedYet => Invalid state change (if an object is New in a parent transaction).
     }
 
     public DomainObjectStateCache (ClientTransaction clientTransaction)
@@ -109,4 +111,67 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return dataContainer.State;
     }
   }
+
+  // Domain object state changes and how they are handled by this cache:
+  //
+  // TODO 3338: This table must be reevaluated with extended Unload.
+  // TODO 3339: This table must be updated when more state combinations are added.
+  //
+  // Object freshly enlisted => NotLoadedYet: at the beginning, there is no cached state
+  //
+  // NotLoadedYet currently requires all end-points to be unchanged.
+  // NotLoadedYet => NotLoadedYet: [don't care]
+  // NotLoadedYet => Unchanged: DataContainerMapRegistering
+  // NotLoadedYet => Changed (end-point): VirtualRelationEndPointStateUpdated (not practically possible at the moment)
+  // NotLoadedYet => Changed (data): DataContainerMapRegistering (Changed (data) state requires a registered DataContainer)
+  // NotLoadedYet => Deleted: DataContainerMapRegistering (Deleted state requires a registered DataContainer)
+  // NotLoadedYet => New: DataContainerMapRegistering (New state requires a registered DataContainer)
+  // NotLoadedYet => Invalid: DataManagerDiscardingObject
+  //
+  // Unchanged currently requires DataContainer to be loaded.
+  // Unchanged => NotLoadedYet: DataContainerMapUnregistering
+  // Unchanged => Unchanged: [don't care]
+  // Unchanged => Changed (end-point): VirtualRelationEndPointStateUpdated
+  // Unchanged => Changed (data): DataContainerStateUpdated
+  // Unchanged => Deleted: DataContainerStateUpdated
+  // Unchanged => New: (not possible)
+  // Unchanged => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  //
+  // Changed (end-point) currently requires DataContainer to be loaded. (Future: TODO 3338)
+  // Changed (end-point) => NotLoadedYet: DataContainerMapUnregistering
+  // Changed (end-point) => Unchanged: VirtualRelationEndPointStateUpdated
+  // Changed (end-point) => Changed (end-point): [don't care]
+  // Changed (end-point) => Changed (data): [don't care] (not possible in one step)
+  // Changed (end-point) => Deleted: DataContainerStateUpdated
+  // Changed (end-point) => New: (not possible)
+  // Changed (end-point) => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  //
+  // Changed (data) state requires DataContainer to be loaded.
+  // Changed (data) => NotLoadedYet: DataContainerMapUnregistering
+  // Changed (data) => Unchanged: DataContainerStateUpdated
+  // Changed (data) => Changed (end-point): [don't care] (not possible in one step)
+  // Changed (data) => Changed (data): [don't care]
+  // Changed (data) => Deleted: DataContainerStateUpdated
+  // Changed (data) => New: (not possible)
+  // Changed (data) => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  //
+  // Deleted requires DataContainer to be loaded.
+  // Deleted => NotLoadedYet: DataContainerMapUnregistering
+  // Deleted => Unchanged: DataContainerStateUpdated
+  // Deleted => Changed (end-point): (not possible in one step)
+  // Deleted => Changed (data): (not possible in one step)
+  // Deleted => Deleted: [don't care]
+  // Deleted => New: (not possible)
+  // Deleted => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  //
+  // New requires DataContainer to be loaded.
+  // New => NotLoadedYet: DataContainerMapUnregistering
+  // New => Unchanged: DataContainerStateUpdated
+  // New => Changed (end-point): (not possible in one step)
+  // New => Changed (data): (not possible in one step)
+  // New => Deleted: (not possible in one step)
+  // New => New: [don't care]
+  // New => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  //
+  // Invalid: It's currently not possible to resurrect an invalid object.
 }
