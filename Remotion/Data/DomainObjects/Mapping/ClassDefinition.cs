@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Reflection;
@@ -41,8 +40,6 @@ namespace Remotion.Data.DomainObjects.Mapping
     private RelationEndPointDefinitionCollection _relationEndPoints;
     private IStorageEntityDefinition _storageEntityDefinition;
     private ReadOnlyCollection<ClassDefinition> _derivedClasses;
-    private readonly LockingCacheDecorator<IPropertyInformation, PropertyDefinition> _propertyDefinitionCache;
-    private readonly LockingCacheDecorator<IPropertyInformation, IRelationEndPointDefinition> _relationDefinitionCache;
     private readonly bool _isAbstract;
     private readonly Type _classType;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
@@ -66,9 +63,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _persistentMixinFinder = persistentMixinFinder;
       _isAbstract = isAbstract;
 
-      _propertyDefinitionCache = CacheFactory.CreateWithLocking<IPropertyInformation, PropertyDefinition>();
-      _relationDefinitionCache = CacheFactory.CreateWithLocking<IPropertyInformation, IRelationEndPointDefinition>();
-      
       _propertyAccessorDataCache = new PropertyAccessorDataCache (this);
       _cachedRelationEndPointDefinitions = new DoubleCheckedLockingContainer<RelationEndPointDefinitionCollection> (
            () => RelationEndPointDefinitionCollection.CreateForAllRelationEndPoints (this, true));
@@ -351,18 +345,16 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-      return _propertyDefinitionCache.GetOrCreateValue (
-          propertyInformation,
-          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetPropertyDefinition));
+      var propertyAccessorData = PropertyAccessorDataCache.ResolvePropertyAccessorData (propertyInformation);
+      return propertyAccessorData == null ? null : propertyAccessorData.PropertyDefinition;
     }
 
     public IRelationEndPointDefinition ResolveRelationEndPoint (IPropertyInformation propertyInformation)
     {
       ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
 
-      return _relationDefinitionCache.GetOrCreateValue (
-          propertyInformation,
-          key => ReflectionBasedPropertyResolver.ResolveDefinition (key, this, GetRelationEndPointDefinition));
+      var propertyAccessorData = PropertyAccessorDataCache.ResolvePropertyAccessorData (propertyInformation);
+      return propertyAccessorData == null ? null : propertyAccessorData.RelationEndPointDefinition;
     }
 
     public ClassDefinition BaseClass
