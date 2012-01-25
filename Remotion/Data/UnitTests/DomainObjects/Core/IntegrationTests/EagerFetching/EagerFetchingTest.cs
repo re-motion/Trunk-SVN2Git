@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.EagerFetch
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       Assert.That (result.ToArray(), Is.EquivalentTo (new[] { order1 }));
 
-      var orderItemsEndPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
+      var orderItemsEndPointID = RelationEndPointID.Resolve (order1, o => o.OrderItems);
       var orderItemsEndPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (orderItemsEndPointID);
       Assert.That (orderItemsEndPoint, Is.Not.Null);
       Assert.That (orderItemsEndPoint.IsDataComplete, Is.True);

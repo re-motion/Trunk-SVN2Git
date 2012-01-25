@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
           cache => cache.GetMandatoryPropertyAccessorData (declaringType, shortPropertyName));
     }
 
-    public static RelationEndPointID Create<TDomainObject, TRelation> (
+    public static RelationEndPointID Resolve<TDomainObject, TRelation> (
         TDomainObject domainObject, 
         Expression<Func<TDomainObject, TRelation>> propertyAccessExpression)
         where TDomainObject : DomainObject
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       return CreateViaPropertyAccessorData (
           domainObject.ID,
           "propertyAccessExpression",
-          cache => cache.GetMandatoryPropertyAccessorData (propertyAccessExpression));
+          cache => cache.ResolveMandatoryPropertyAccessorData (propertyAccessExpression));
     }
 
     public static RelationEndPointID CreateOpposite (IRelationEndPointDefinition sourceEndPointDefinition, ObjectID oppositeObjectID)

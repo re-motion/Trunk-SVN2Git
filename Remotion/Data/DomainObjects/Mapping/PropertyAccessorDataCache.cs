@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       return GetPropertyAccessorData (propertyIdentifier);
     }
 
-    public PropertyAccessorData GetPropertyAccessorData<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression) 
+    public PropertyAccessorData ResolvePropertyAccessorData<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression) 
         where TDomainObject : DomainObject
     {
       ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       var propertyInfo = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression) as PropertyInfo;
       if (propertyInfo == null)
         throw new ArgumentException ("The expression must identify a property.", "propertyAccessExpression");
-      return ResolvePropertyAccessorData(propertyInfo);
+      return ResolvePropertyAccessorData (propertyInfo);
     }
 
     public PropertyAccessorData GetMandatoryPropertyAccessorData (string propertyName)
@@ -99,12 +99,12 @@ namespace Remotion.Data.DomainObjects.Mapping
       return GetMandatoryPropertyAccessorData (propertyName);
     }
 
-    public PropertyAccessorData GetMandatoryPropertyAccessorData<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression)
+    public PropertyAccessorData ResolveMandatoryPropertyAccessorData<TDomainObject, TResult> (Expression<Func<TDomainObject, TResult>> propertyAccessExpression)
         where TDomainObject : DomainObject
     {
       ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
 
-      var data = GetPropertyAccessorData (propertyAccessExpression);
+      var data = ResolvePropertyAccessorData (propertyAccessExpression);
       if (data == null)
       {
         var message = string.Format (

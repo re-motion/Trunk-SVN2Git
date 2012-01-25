@@ -417,7 +417,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadVirtualEndPointAndItemData_Object_UnloadsEndPointAndItem ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = RelationEndPointID.Create (order, o => o.OrderTicket);
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderTicket);
       EnsureEndPointLoadedAndComplete (endPointID);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
 
@@ -434,7 +434,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void UnloadVirtualEndPointAndItemData_Object_NullEndPoint_UnloadsEndPoint ()
     {
       var employee = Employee.GetObject (DomainObjectIDs.Employee1);
-      var endPointID = RelationEndPointID.Create (employee, e => e.Computer);
+      var endPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       EnsureEndPointLoadedAndComplete (endPointID);
       Assert.That (employee.Computer, Is.Null);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
@@ -607,7 +607,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void TryUnloadVirtualEndPointAndItemData_Success_Object ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = RelationEndPointID.Create (order, o => o.OrderTicket);
+      var endPointID = RelationEndPointID.Resolve (order, o => o.OrderTicket);
       EnsureEndPointLoadedAndComplete (endPointID);
       var orderTicket = order.OrderTicket;
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);
@@ -626,7 +626,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     public void TryUnloadVirtualEndPointAndItemData_Success_Object_Null ()
     {
       var employee = Employee.GetObject (DomainObjectIDs.Employee1);
-      var endPointID = RelationEndPointID.Create (employee, e => e.Computer);
+      var endPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       EnsureEndPointLoadedAndComplete (endPointID);
       Assert.That (employee.Computer, Is.Null);
       Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Not.Null);

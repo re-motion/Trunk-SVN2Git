@@ -32,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
     public void CollectionItems_Synchronized_WithUnload ()
     {
       var orderItem = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
-      var endPointID = RelationEndPointID.Create (orderItem, oi => oi.Order);
+      var endPointID = RelationEndPointID.Resolve (orderItem, oi => oi.Order);
       var endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (endPoint, Is.Not.Null);
 
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       var orderItemID = DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (order.ID, (oi, o) => oi.Order = o);
       var orderItem = OrderItem.GetObject (orderItemID);
-      var endPointID = RelationEndPointID.Create (orderItem, oi => oi.Order);
+      var endPointID = RelationEndPointID.Resolve (orderItem, oi => oi.Order);
       var endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (endPoint, Is.Not.Null);
 

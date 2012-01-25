@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var unsynchronizedCompanyID = CreateCompanyAndSetIndustrialSectorInOtherTransaction (industrialSector.ID);
       var unsynchronizedCompany = Company.GetObject (unsynchronizedCompanyID);
 
-      var virtualEndPointID = RelationEndPointID.Create (industrialSector, s => s.Companies);
+      var virtualEndPointID = RelationEndPointID.Resolve (industrialSector, s => s.Companies);
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
             (subOrdinate, e) => subOrdinate.Supervisor = e);
       var unsynchronizedSubordinate = Employee.GetObject (unsynchronizedSubordinateID);
 
-      var virtualEndPointID = RelationEndPointID.Create (employee, o => o.Subordinates);
+      var virtualEndPointID = RelationEndPointID.Resolve (employee, o => o.Subordinates);
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       SetDatabaseModifyable ();
 
       var employee = Employee.GetObject (DomainObjectIDs.Employee3);
-      var virtualEndPointID = RelationEndPointID.Create (employee, e => e.Computer);
+      var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       TestableClientTransaction.EnsureDataComplete (virtualEndPointID);
 
       var unsynchronizedComputerID =
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       SetDatabaseModifyable ();
 
       var employee = Employee.GetObject (DomainObjectIDs.Employee1);
-      var virtualEndPointID = RelationEndPointID.Create (employee, e => e.Computer);
+      var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       TestableClientTransaction.EnsureDataComplete (virtualEndPointID);
       Assert.That (employee.Computer, Is.Null);
 
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       customer.Orders.EnsureDataComplete ();
       Assert.That (customer.Orders, Is.Empty);
 
-      var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
+      var virtualEndPointID = RelationEndPointID.Resolve (customer, c => c.Orders);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
@@ -168,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       customerOrders.EnsureDataComplete ();
       Assert.That (customer.Orders, Is.Not.Empty);
 
-      var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
+      var virtualEndPointID = RelationEndPointID.Resolve (customer, c => c.Orders);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var employee = Employee.GetObject (DomainObjectIDs.Employee1);
       Assert.That (employee.Computer, Is.Null);
 
-      var virtualEndPointID = RelationEndPointID.Create (employee, e => e.Computer);
+      var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
@@ -200,7 +200,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var employee = Employee.GetObject (DomainObjectIDs.Employee3);
       Assert.That (employee.Computer, Is.Not.Null);
 
-      var virtualEndPointID = RelationEndPointID.Create (employee, e => e.Computer);
+      var virtualEndPointID = RelationEndPointID.Resolve (employee, e => e.Computer);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
@@ -223,7 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       TestableClientTransaction.Commit();
 
-      var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
+      var virtualEndPointID = RelationEndPointID.Resolve (customer, c => c.Orders);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       TestableClientTransaction.Rollback ();
 
-      var virtualEndPointID = RelationEndPointID.Create (customer, c => c.Orders);
+      var virtualEndPointID = RelationEndPointID.Resolve (customer, c => c.Orders);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID), Is.Not.Null);
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (virtualEndPointID).IsDataComplete, Is.True);
 

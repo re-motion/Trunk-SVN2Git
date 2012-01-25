@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _oldRelatedObject = Client.GetObject (DomainObjectIDs.Client1);
       _newRelatedObject = Client.GetObject (DomainObjectIDs.Client2);
 
-      _endPointID = RelationEndPointID.Create (_domainObject, c => c.ParentClient);
+      _endPointID = RelationEndPointID.Resolve (_domainObject, c => c.ParentClient);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
       _command = new ObjectEndPointSetUnidirectionalCommand (_endPoint, _newRelatedObject, OppositeObjectSetter);

@@ -121,23 +121,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void Create_WithExpression ()
+    public void Resolve_Expression ()
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
-      var endPointID = RelationEndPointID.Create (instance, o => o.OrderTicket);
+      var endPointID = RelationEndPointID.Resolve (instance, o => o.OrderTicket);
 
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
       Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
     }
 
     [Test]
-    public void Create_WithExpression_Mixin ()
+    public void Resolve_Expression_Mixin ()
     {
       var instance = DomainObjectMother.CreateFakeObject<TargetClassForPersistentMixin> ();
 // ReSharper disable SuspiciousTypeConversion.Global
-      var endPointID1 = RelationEndPointID.Create (instance, t => ((IMixinAddingPersistentProperties) t).RelationProperty);
+      var endPointID1 = RelationEndPointID.Resolve (instance, t => ((IMixinAddingPersistentProperties) t).RelationProperty);
 // ReSharper restore SuspiciousTypeConversion.Global
-      var endPointID2 = RelationEndPointID.Create (instance, t => Mixin.Get<MixinAddingPersistentProperties> (t).RelationProperty);
+      var endPointID2 = RelationEndPointID.Resolve (instance, t => Mixin.Get<MixinAddingPersistentProperties> (t).RelationProperty);
 
       Assert.That (
           endPointID1.Definition,
@@ -148,10 +148,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void Create_WithExpression_Interface ()
+    public void Resolve_Expression_Interface ()
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
-      var endPointID = RelationEndPointID.Create (instance, o => ((IOrder) o).OrderTicket);
+      var endPointID = RelationEndPointID.Resolve (instance, o => ((IOrder) o).OrderTicket);
 
       Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
       Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
@@ -161,20 +161,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property identified by expression "
         + "'o => Convert(Convert(o)).Product'.\r\nParameter name: propertyAccessExpression")]
-    public void Create_WithExpression_NonExistingProperty ()
+    public void Resolve_Expression_NonExistingProperty ()
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
-      RelationEndPointID.Create (instance, o => ((OrderItem) (object) o).Product);
+      RelationEndPointID.Resolve (instance, o => ((OrderItem) (object) o).Product);
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber' is not a relation property.\r\n"
         + "Parameter name: propertyAccessExpression")]
-    public void Create_WithExpression_NonRelationProperty ()
+    public void Resolve_Expression_NonRelationProperty ()
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
-      RelationEndPointID.Create (instance, o => o.OrderNumber);
+      RelationEndPointID.Resolve (instance, o => o.OrderNumber);
     }
 
     [Test]

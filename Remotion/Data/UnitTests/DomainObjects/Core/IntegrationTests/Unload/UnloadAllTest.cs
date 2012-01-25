@@ -306,17 +306,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
         using (mockRepository.Unordered ())
         {
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.Customer)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order1, o => o.Customer)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.Official)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order1, o => o.Official)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.OrderTicket)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order1, o => o.OrderTicket)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order2, o => o.Customer)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order2, o => o.Customer)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order2, o => o.Official)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order2, o => o.Official)));
           clientTransactionListener.Expect (
-              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Create (order2, o => o.OrderTicket)));
+              mock => mock.RelationEndPointMapUnregistering (TestableClientTransaction, RelationEndPointID.Resolve (order2, o => o.OrderTicket)));
 
           clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order1.InternalDataContainer));
           clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order2.InternalDataContainer));
@@ -473,9 +473,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var order = Order.GetObject (objectID);
       order.EnsureDataAvailable ();
-      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
-      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderItems));
-      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Create (order, o => o.Customer));
+      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
+      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderItems));
+      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.Customer));
       return order;
     }
 

@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", true);
       
-      UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckDataContainerExists (_subTransaction, order, true);
       CheckDataContainerExists (_subTransaction, orderTicket, true);
@@ -199,16 +199,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadVirtualEndPoint_ObjectEndPoint_EnsureDataComplete ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      _subTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+      _subTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", true);
 
-      UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", false);
       CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderTicket", false);
 
-      _subTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+      _subTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", true);
       CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderTicket", true);
@@ -231,7 +231,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       try
       {
-        UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+        UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
         Assert.Fail ("Expected InvalidOperationException");
       }
       catch (InvalidOperationException ex)
@@ -245,7 +245,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", false);
       CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderTicket", true);
 
-      _subTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+      _subTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", true);
       CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderTicket", true);
@@ -272,7 +272,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (order.OrderTicket, Is.SameAs (oldOrderTicket));
 
-      UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (_subTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       Assert.That (order.OrderTicket, Is.SameAs (OrderTicket.GetObject (newOrderTicketID)));
     }

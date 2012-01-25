@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _oldRelatedObject = _domainObject.Order;
       _newRelatedObject = Order.GetObject (DomainObjectIDs.Order2);
 
-      _endPointID = RelationEndPointID.Create (_domainObject, oi => oi.Order);
+      _endPointID = RelationEndPointID.Resolve (_domainObject, oi => oi.Order);
       _endPoint = (RealObjectEndPoint) RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
       _command = new ObjectEndPointSetOneManyCommand (_endPoint, _newRelatedObject, OppositeObjectSetter, EndPointProviderStub);
@@ -191,10 +191,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       // Scenario: orderItem.Order = newOrder;
 
-      var oldRelatedEndPointID = RelationEndPointID.Create (_oldRelatedObject, o => o.OrderItems);
+      var oldRelatedEndPointID = RelationEndPointID.Resolve (_oldRelatedObject, o => o.OrderItems);
       var oldRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
 
-      var newRelatedEndPointID = RelationEndPointID.Create (_newRelatedObject, o => o.OrderItems);
+      var newRelatedEndPointID = RelationEndPointID.Resolve (_newRelatedObject, o => o.OrderItems);
       var newRelatedEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
 
       EndPointProviderStub.Stub (stub => stub.GetRelationEndPointWithLazyLoad (oldRelatedEndPointID)).Return (oldRelatedEndPointMock);

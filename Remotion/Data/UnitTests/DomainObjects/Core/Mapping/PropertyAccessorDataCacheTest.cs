@@ -121,20 +121,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetPropertyAccessorData_Expression ()
+    public void ResolvePropertyAccessorData_Expression ()
     {
-      var data = _orderCache.GetPropertyAccessorData ((Order o) => o.OrderNumber);
+      var data = _orderCache.ResolvePropertyAccessorData ((Order o) => o.OrderNumber);
 
       Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
     }
 
     [Test]
-    public void GetPropertyAccessorData_Expression_Mixin_ViaInterface ()
+    public void ResolvePropertyAccessorData_Expression_Mixin_ViaInterface ()
     {
       var cacheWithMixins = new PropertyAccessorDataCache (GetTypeDefinition (typeof (TargetClassForPersistentMixin)));
 // ReSharper disable SuspiciousTypeConversion.Global
-      var data = cacheWithMixins.GetPropertyAccessorData ((TargetClassForPersistentMixin t) => ((IMixinAddingPersistentProperties) t).PersistentProperty);
+      var data = cacheWithMixins.ResolvePropertyAccessorData ((TargetClassForPersistentMixin t) => ((IMixinAddingPersistentProperties) t).PersistentProperty);
 // ReSharper restore SuspiciousTypeConversion.Global
 
       Assert.That (data, Is.Not.Null);
@@ -142,19 +142,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetPropertyAccessorData_Expression_Mixin_ViaMixin ()
+    public void ResolvePropertyAccessorData_Expression_Mixin_ViaMixin ()
     {
       var cacheWithMixins = new PropertyAccessorDataCache (GetTypeDefinition (typeof (TargetClassForPersistentMixin)));
-      var data = cacheWithMixins.GetPropertyAccessorData ((TargetClassForPersistentMixin t) => (Mixin.Get<MixinAddingPersistentProperties>(t).PersistentProperty));
+      var data = cacheWithMixins.ResolvePropertyAccessorData ((TargetClassForPersistentMixin t) => (Mixin.Get<MixinAddingPersistentProperties>(t).PersistentProperty));
 
       Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (cacheWithMixins.GetPropertyAccessorData (typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty")));
     }
 
     [Test]
-    public void GetPropertyAccessorData_Expression_Interface ()
+    public void ResolvePropertyAccessorData_Expression_Interface ()
     {
-      var data = _orderCache.GetPropertyAccessorData ((Order o) => ((IOrder) o).OrderNumber);
+      var data = _orderCache.ResolvePropertyAccessorData ((Order o) => ((IOrder) o).OrderNumber);
 
       Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
@@ -165,7 +165,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "The memberAccessExpression must be a simple member access expression.\r\nParameter name: memberAccessExpression")]
     public void GetPropertyAccessorData_InvalidExpression_NoMember ()
     {
-      _orderCache.GetPropertyAccessorData ((Order o) => o.OrderNumber + 5);
+      _orderCache.ResolvePropertyAccessorData ((Order o) => o.OrderNumber + 5);
     }
 
     [Test]
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         "The expression must identify a property.\r\nParameter name: propertyAccessExpression")]
     public void GetPropertyAccessorData_InvalidExpression_Field ()
     {
-      _orderCache.GetPropertyAccessorData ((Order o) => o.CtorCalled);
+      _orderCache.ResolvePropertyAccessorData ((Order o) => o.CtorCalled);
     }
 
     [Test]
@@ -213,20 +213,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetMandatoryPropertyAccessorData_Expression ()
+    public void ResolveMandatoryPropertyAccessorData_Expression ()
     {
-      var data = _orderCache.GetMandatoryPropertyAccessorData ((Order o) => o.OrderNumber);
+      var data = _orderCache.ResolveMandatoryPropertyAccessorData ((Order o) => o.OrderNumber);
 
       Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
     }
 
     [Test]
-    public void GetMandatoryPropertyAccessorData_Expression_Mixin_ViaInterface ()
+    public void ResolveMandatoryPropertyAccessorData_Expression_Mixin_ViaInterface ()
     {
       var cacheWithMixins = new PropertyAccessorDataCache (GetTypeDefinition (typeof (TargetClassForPersistentMixin)));
       // ReSharper disable SuspiciousTypeConversion.Global
-      var data = cacheWithMixins.GetMandatoryPropertyAccessorData ((TargetClassForPersistentMixin t) => ((IMixinAddingPersistentProperties) t).PersistentProperty);
+      var data = cacheWithMixins.ResolveMandatoryPropertyAccessorData ((TargetClassForPersistentMixin t) => ((IMixinAddingPersistentProperties) t).PersistentProperty);
       // ReSharper restore SuspiciousTypeConversion.Global
 
       Assert.That (data, Is.Not.Null);
@@ -234,19 +234,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetMandatoryPropertyAccessorData_Expression_Mixin_ViaMixin ()
+    public void ResolveMandatoryPropertyAccessorData_Expression_Mixin_ViaMixin ()
     {
       var cacheWithMixins = new PropertyAccessorDataCache (GetTypeDefinition (typeof (TargetClassForPersistentMixin)));
-      var data = cacheWithMixins.GetMandatoryPropertyAccessorData ((TargetClassForPersistentMixin t) => (Mixin.Get<MixinAddingPersistentProperties> (t).PersistentProperty));
+      var data = cacheWithMixins.ResolveMandatoryPropertyAccessorData ((TargetClassForPersistentMixin t) => (Mixin.Get<MixinAddingPersistentProperties> (t).PersistentProperty));
 
       Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (cacheWithMixins.GetPropertyAccessorData (typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty")));
     }
 
     [Test]
-    public void GetMandatoryPropertyAccessorData_Expression_Interface ()
+    public void ResolveMandatoryPropertyAccessorData_Expression_Interface ()
     {
-      var data = _orderCache.GetMandatoryPropertyAccessorData ((Order o) => ((IOrder) o).OrderNumber);
+      var data = _orderCache.ResolveMandatoryPropertyAccessorData ((Order o) => ((IOrder) o).OrderNumber);
 
       Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
@@ -256,18 +256,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property identified by expression "
         + "'o => o.NotInMapping'.")]
-    public void GetMandatoryPropertyAccessorData_Expression_Unknown ()
+    public void ResolveMandatoryPropertyAccessorData_Expression_Unknown ()
     {
-      _orderCache.GetMandatoryPropertyAccessorData ((Order o) => o.NotInMapping);
+      _orderCache.ResolveMandatoryPropertyAccessorData ((Order o) => o.NotInMapping);
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property identified by expression "
         + "'o => Convert(Convert(o)).Product'.")]
-    public void GetMandatoryPropertyAccessorData_Expression_UnknownOnThisObject ()
+    public void ResolveMandatoryPropertyAccessorData_Expression_UnknownOnThisObject ()
     {
-      _orderCache.GetMandatoryPropertyAccessorData ((Order o) => ((OrderItem) (object) o).Product);
+      _orderCache.ResolveMandatoryPropertyAccessorData ((Order o) => ((OrderItem) (object) o).Product);
     }
 
     [Test]

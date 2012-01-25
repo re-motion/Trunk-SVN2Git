@@ -171,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
-      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckDataContainerExists (order, true);
       CheckDataContainerExists (orderTicket, true);
@@ -187,11 +187,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadVirtualEndPoint_Object_AccessingEndPoint ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+      TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
-      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
 
@@ -208,11 +208,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
-      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
 
-      TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+      TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
       Assert.That (order.OrderTicket, Is.SameAs (orderTicket));
@@ -239,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (order.OrderTicket, Is.SameAs (oldOrderTicket));
 
-      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       Assert.That (order.OrderTicket, Is.SameAs (OrderTicket.GetObject (newOrderTicketID)));
     }
@@ -263,7 +263,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (employee.Computer, Is.Null);
 
-      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (employee, e => e.Computer));
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (employee, e => e.Computer));
 
       Assert.That (employee.Computer.ID, Is.EqualTo (newComputerID));
       Assert.That (employee.Computer, Is.SameAs (Computer.GetObject (newComputerID)));
@@ -273,24 +273,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadVirtualEndPoint_Object_AlreadyUnloaded ()
     {
       var order = Order.GetObject (DomainObjectIDs.Order1);
-      TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (order, o => o.OrderTicket));
+      TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, true);
 
-      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", true, false);
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
 
-      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPoint (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
     }
 
     [Test]
     public void UnloadVirtualEndPoint_EndPointsOfNewObject_CannotBeUnloaded ()
     {
       var order = Order.NewObject ();
-      var endPointID1 = RelationEndPointID.Create (order, o => o.OrderTicket);
-      var endPointID2 = RelationEndPointID.Create (order, o => o.OrderItems);
+      var endPointID1 = RelationEndPointID.Resolve (order, o => o.OrderTicket);
+      var endPointID2 = RelationEndPointID.Resolve (order, o => o.OrderItems);
 
       CheckEndPointExists (endPointID1, true);
       CheckEndPointExists (endPointID2, true);
@@ -316,8 +316,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     {
       var customerWithoutOrders = Customer.GetObject (DomainObjectIDs.Customer2);
       var employeeWithoutComputer = Employee.GetObject (DomainObjectIDs.Employee1);
-      var endPointID1 = RelationEndPointID.Create (customerWithoutOrders, o => o.Orders);
-      var endPointID2 = RelationEndPointID.Create (employeeWithoutComputer, o => o.Computer);
+      var endPointID1 = RelationEndPointID.Resolve (customerWithoutOrders, o => o.Orders);
+      var endPointID2 = RelationEndPointID.Resolve (employeeWithoutComputer, o => o.Computer);
 
       customerWithoutOrders.Delete ();
       employeeWithoutComputer.Delete ();

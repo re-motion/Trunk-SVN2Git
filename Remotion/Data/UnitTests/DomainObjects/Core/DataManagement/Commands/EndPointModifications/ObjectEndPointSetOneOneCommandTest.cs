@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _oldRelatedObject = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       _newRelatedObject = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2);
 
-      _endPointID = RelationEndPointID.Create (_domainObject, o => o.OrderTicket);
+      _endPointID = RelationEndPointID.Resolve (_domainObject, o => o.OrderTicket);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
       _command = new ObjectEndPointSetOneOneCommand (_endPoint, _newRelatedObject, OppositeObjectSetter);
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // oldOrderTicket.Order = null;
 
-      var orderOfOldOrderTicketEndPointID = RelationEndPointID.Create (_oldRelatedObject, ot => ot.Order);
+      var orderOfOldOrderTicketEndPointID = RelationEndPointID.Resolve (_oldRelatedObject, ot => ot.Order);
       var orderOfOldOrderTicketEndPoint =
           TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (orderOfOldOrderTicketEndPointID);
 
@@ -213,7 +213,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       // newOrderTicket.Order = order;
 
-      var orderOfNewOrderTicketEndPointID = RelationEndPointID.Create (_newRelatedObject, ot => ot.Order);
+      var orderOfNewOrderTicketEndPointID = RelationEndPointID.Resolve (_newRelatedObject, ot => ot.Order);
       var orderOfNewOrderTicketEndPoint =
           TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (orderOfNewOrderTicketEndPointID);
 

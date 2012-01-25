@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var order = Order.GetObject (DomainObjectIDs.Order1);
       var orderTicket = order.OrderTicket;
 
-      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (order, o => o.OrderTicket));
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Resolve (order, o => o.OrderTicket));
 
       CheckDataContainerExists (order, true);
       CheckDataContainerExists (orderTicket, false);
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataContainerExists (employee, true);
       CheckEndPointExists (employee, "Computer", true);
 
-      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (employee, e => e.Computer));
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Resolve (employee, e => e.Computer));
 
       CheckDataContainerExists (employee, true);
       CheckEndPointExists (employee, "Computer", false);
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       Assert.That (employee.Computer, Is.SameAs (computer));
 
-      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (employee, e => e.Computer));
+      UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Resolve (employee, e => e.Computer));
 
       Assert.That (employee.Computer, Is.Not.SameAs (computer));
       Assert.That (employee.Computer.ID, Is.EqualTo (newComputerID));
@@ -283,7 +283,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       listenerMock.Replay ();
       try
       {
-        UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Create (order1, o => o.OrderTicket));
+        UnloadService.UnloadVirtualEndPointAndItemData (TestableClientTransaction, RelationEndPointID.Resolve (order1, o => o.OrderTicket));
 
         listenerMock.VerifyAllExpectations ();
       }
@@ -300,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadVirtualEndPointAndItemData_IsAtomicWithinTransaction_WhenSingleCollectionItemIsChanged ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
+      var endPointID = RelationEndPointID.Resolve (order1, o => o.OrderItems);
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
       
@@ -337,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     public void UnloadVirtualEndPointAndItemData_IsAtomicWithinTransaction_WhenCollectionIsChanged ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
-      var endPointID = RelationEndPointID.Create (order1, o => o.OrderItems);
+      var endPointID = RelationEndPointID.Resolve (order1, o => o.OrderItems);
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 

@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp();
 
       _owningOrder = Order.GetObject (DomainObjectIDs.Order1);
-      _endPointID = RelationEndPointID.Create (_owningOrder, o => o.OrderItems);
+      _endPointID = RelationEndPointID.Resolve (_owningOrder, o => o.OrderItems);
 
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       StubCollectionEndPoint (_collectionEndPointMock, TestableClientTransaction, _owningOrder);
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         "Associated end-point must be a CollectionEndPoint.\r\nParameter name: endPointID")]
     public void Initialization_ChecksEndPointIDCardinality ()
     {
-      new EndPointDelegatingCollectionData (RelationEndPointID.Create (_owningOrder, o => o.Customer), _virtualEndPointProviderStub);
+      new EndPointDelegatingCollectionData (RelationEndPointID.Resolve (_owningOrder, o => o.Customer), _virtualEndPointProviderStub);
     }
 
     [Test]

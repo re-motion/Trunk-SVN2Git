@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         where TOriginating: DomainObject
     {
       Assert.That (
-          BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, RelationEndPointID.Create (originating, propertyAccessExpression)),
+          BidirectionalRelationSyncService.IsSynchronized (ClientTransaction.Current, RelationEndPointID.Resolve (originating, propertyAccessExpression)),
           Is.EqualTo (expectedState));
     }
 
@@ -201,7 +201,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (computer.Employee, Is.SameAs (employee2));
       
       // 1:1 relations automatically cause virtual end-points to be marked loaded when the foreign key object is loaded, so unload the virtual side
-      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee2, e => e.Computer));
+      UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Resolve (employee2, e => e.Computer));
 
       SetEmployeeInOtherTransaction (computer.ID, DomainObjectIDs.Employee1);
 

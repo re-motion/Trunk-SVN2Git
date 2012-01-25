@@ -51,8 +51,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
 
         // these do nothing
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (orderTicket1, oi => oi.Order));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (orderTicket1.Order, o => o.OrderTicket));
 
         CheckSyncState (orderTicket1, oi => oi.Order, true);
         CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
@@ -87,8 +87,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
 
         // these do nothing
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1, oi => oi.Order));
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (orderTicket1.Order, o => o.OrderTicket));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (orderTicket1, oi => oi.Order));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (orderTicket1.Order, o => o.OrderTicket));
 
         CheckSyncState (orderTicket1, oi => oi.Order, true);
         CheckSyncState (orderTicket1.Order, o => o.OrderTicket, true);
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, false);
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (employee, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (employee, e => e.Computer, false);
         CheckSyncState (employee2, e => e.Computer, true);
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (employee, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (employee, e => e.Computer, false);
         CheckSyncState (employee2, e => e.Computer, true);
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (computer, c => c.Employee));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, false);
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         Assert.That (employee.Computer, Is.SameAs (computer));
         Assert.That (employee2.Computer, Is.SameAs (computer));
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (employee, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (computer, c => c.Employee, false);
         CheckSyncState (employee, e => e.Computer, true);
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer, c => c.Employee));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (computer, c => c.Employee));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
@@ -270,7 +270,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
         CheckSyncState (computer2, c => c.Employee, false);
 
         CheckActionThrows<InvalidOperationException> (() =>
-            BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer2, c => c.Employee)),
+            BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (computer2, c => c.Employee)),
             "The object end-point '{0}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee' "
             + "cannot be synchronized with the virtual object end-point "
             + "'{2}/Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Computer' because "
@@ -283,9 +283,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
             employee.ID);
 
         // By unloading the employee.Computer -> computer relation, we can now synchronize computer2.Employee -> employee with employee.Computer
-        UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+        UnloadService.UnloadVirtualEndPoint (ClientTransaction.Current, RelationEndPointID.Resolve (employee, e => e.Computer));
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (computer2, c => c.Employee));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (computer2, c => c.Employee));
 
         CheckSyncState (computer, c => c.Employee, false);
         CheckSyncState (computer2, c => c.Employee, true);
@@ -733,7 +733,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (employee, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
@@ -763,7 +763,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (employee, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
@@ -793,11 +793,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (computer, c => c.Employee));
-        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee, e => e.Computer));
-        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee2, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (computer, c => c.Employee));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (employee, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (employee2, e => e.Computer));
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current.ParentTransaction, RelationEndPointID.Create (employee, e => e.Computer));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current.ParentTransaction, RelationEndPointID.Resolve (employee, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);
@@ -827,15 +827,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
-        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (computer, c => c.Employee));
-        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee, e => e.Computer));
-        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Create (employee2, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (computer, c => c.Employee));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (employee, e => e.Computer));
+        TestableClientTransaction.EnsureDataComplete (RelationEndPointID.Resolve (employee2, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, false);
         CheckSyncState (employee2, e => e.Computer, true);
 
-        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (employee, e => e.Computer));
+        BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (employee, e => e.Computer));
 
         CheckSyncState (computer, c => c.Employee, true);
         CheckSyncState (employee, e => e.Computer, true);

@@ -42,8 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
 
       // these do nothing
-      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1, oi => oi.Order));
-      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Resolve (orderItem1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Resolve (orderItem1.Order, o => o.OrderItems));
 
       CheckSyncState (orderItem1, oi => oi.Order, true);
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
@@ -63,8 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
 
       // these do nothing
-      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1, oi => oi.Order));
-      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (orderItem1.Order, o => o.OrderItems));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Resolve (orderItem1, oi => oi.Order));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Resolve (orderItem1.Order, o => o.OrderItems));
 
       CheckSyncState (orderItem1, oi => oi.Order, true);
       CheckSyncState (orderItem1.Order, o => o.OrderItems, true);
@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
       CheckActionWorks (() => company.IndustrialSector = IndustrialSector.NewObject ());
 
-      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (industrialSector, s => s.Companies));
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (industrialSector, s => s.Companies));
 
       CheckSyncState (industrialSector, s => s.Companies, true);
       Assert.That (companiesOfIndustrialSector, Has.No.Member (company));
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (company), "out of sync with the collection property");
       CheckActionThrows<InvalidOperationException> (() => company.IndustrialSector = null, "out of sync with the opposite property ");
 
-      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (company, c => c.IndustrialSector));
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (company, c => c.IndustrialSector));
 
       CheckSyncState (company, c => c.IndustrialSector, true);
       Assert.That (industrialSector.Companies, Has.Member(company));
@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckSyncState (industrialSector1, s => s.Companies, true);
       CheckSyncState (industrialSector2, s => s.Companies, false);
 
-      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Create (industrialSector2, s => s.Companies));
+      BidirectionalRelationSyncService.Synchronize (TestableClientTransaction, RelationEndPointID.Resolve (industrialSector2, s => s.Companies));
 
       Assert.That (company.IndustrialSector, Is.SameAs (industrialSector1));
       Assert.That (industrialSector1.Companies, Has.Member(company));
@@ -261,7 +261,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       CheckActionThrows<InvalidOperationException> (() => industrialSector.Companies.Add (newCompany), "out of sync with the collection property");
       CheckActionThrows<InvalidOperationException> (() => newCompany.IndustrialSector = null, "out of sync with the opposite property ");
 
-      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Create (newCompany, c => c.IndustrialSector));
+      BidirectionalRelationSyncService.Synchronize (ClientTransaction.Current, RelationEndPointID.Resolve (newCompany, c => c.IndustrialSector));
 
       CheckSyncState (newCompany, c => c.IndustrialSector, true);
       Assert.That (industrialSector.Companies, Has.Member(newCompany));

@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
             .Expect (
                 mock => mock.VirtualRelationEndPointStateUpdated (
                     TestableClientTransaction,
-                    RelationEndPointID.Create (_owningCustomer, c => c.Orders),
+                    RelationEndPointID.Resolve (_owningCustomer, c => c.Orders),
                     null));
         eventListenerMock.Replay ();
 
