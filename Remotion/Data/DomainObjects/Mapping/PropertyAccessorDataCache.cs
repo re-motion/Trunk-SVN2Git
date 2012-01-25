@@ -19,7 +19,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
@@ -32,6 +34,7 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     private readonly ClassDefinition _classDefinition;
     private readonly DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> _cachedAccessorData;
+    private readonly LockingCacheDecorator<IPropertyInformation, PropertyAccessorData> _cachedAccessorDataByMember;
 
     public PropertyAccessorDataCache (ClassDefinition classDefinition)
     {
@@ -39,6 +42,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _classDefinition = classDefinition;
       _cachedAccessorData = new DoubleCheckedLockingContainer<Dictionary<string, PropertyAccessorData>> (BuildAccessorDataDictionary);
+      _cachedAccessorDataByMember = CacheFactory.CreateWithLocking<IPropertyInformation, PropertyAccessorData>();
     }
 
     public PropertyAccessorData GetPropertyAccessorData (string propertyIdentifier)
@@ -64,8 +68,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
 
-      var member = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression);
-      return GetPropertyAccessorData (member.DeclaringType, member.Name);
+      var propertyInfo = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression) as PropertyInfo;
+      if (propertyInfo == null)
+        throw new ArgumentException ("The expression must identify a property.", "propertyAccessExpression");
+      return ResolvePropertyAccessorData(propertyInfo);
     }
 
     public PropertyAccessorData GetMandatoryPropertyAccessorData (string propertyName)
@@ -98,8 +104,17 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
 
-      var member = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression);
-      return GetMandatoryPropertyAccessorData (member.DeclaringType, member.Name);
+      var data = GetPropertyAccessorData (propertyAccessExpression);
+      if (data == null)
+      {
+        var message = string.Format (
+            "The domain object type '{0}' does not have a mapping property identified by expression '{1}'.",
+            _classDefinition.ClassType,
+            propertyAccessExpression);
+        throw new MappingException (message);
+      }
+
+      return data;
     }
 
     public PropertyAccessorData FindPropertyAccessorData (Type typeToStartSearch, string shortPropertyName)
@@ -117,6 +132,14 @@ namespace Remotion.Data.DomainObjects.Mapping
           currentType = currentType.BaseType;
       }
       return propertyAccessorData;
+    }
+
+    private PropertyAccessorData ResolvePropertyAccessorData (PropertyInfo propertyInfo)
+    {
+      IPropertyInformation propertyInformation = PropertyInfoAdapter.Create (propertyInfo);
+      return _cachedAccessorDataByMember.GetOrCreateValue (
+          propertyInformation,
+          pi => ReflectionBasedPropertyResolver.ResolveDefinition (pi, _classDefinition, GetPropertyAccessorData));
     }
 
     private string GetIdentifierFromTypeAndShortName (Type domainObjectType, string shortPropertyName)

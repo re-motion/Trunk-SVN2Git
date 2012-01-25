@@ -20,5 +20,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 {
   public interface IOrder
   {
+    int OrderNumber { get; }
+    OrderTicket OrderTicket { get; set; }
   }
 }

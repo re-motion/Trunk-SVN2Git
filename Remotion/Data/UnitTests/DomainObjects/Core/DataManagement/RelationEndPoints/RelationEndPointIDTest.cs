@@ -19,7 +19,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
@@ -129,9 +131,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void Create_WithExpression_Mixin ()
+    {
+      var instance = DomainObjectMother.CreateFakeObject<TargetClassForPersistentMixin> ();
+// ReSharper disable SuspiciousTypeConversion.Global
+      var endPointID1 = RelationEndPointID.Create (instance, t => ((IMixinAddingPersistentProperties) t).RelationProperty);
+// ReSharper restore SuspiciousTypeConversion.Global
+      var endPointID2 = RelationEndPointID.Create (instance, t => Mixin.Get<MixinAddingPersistentProperties> (t).RelationProperty);
+
+      Assert.That (
+          endPointID1.Definition,
+          Is.Not.Null.And.EqualTo (
+              instance.ID.ClassDefinition.GetRelationEndPointDefinition (
+                  GetPropertyIdentifier (typeof (MixinAddingPersistentProperties), "RelationProperty"))));
+      Assert.That (endPointID2, Is.EqualTo (endPointID1));
+    }
+
+    [Test]
+    public void Create_WithExpression_Interface ()
+    {
+      var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
+      var endPointID = RelationEndPointID.Create (instance, o => ((IOrder) o).OrderTicket);
+
+      Assert.That (endPointID.Definition, Is.EqualTo (_endPointDefinition));
+      Assert.That (endPointID.ObjectID, Is.EqualTo (_objectID));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property named "
-        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product'.\r\nParameter name: propertyAccessExpression")]
+        "The domain object type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' does not have a mapping property identified by expression "
+        + "'o => Convert(Convert(o)).Product'.\r\nParameter name: propertyAccessExpression")]
     public void Create_WithExpression_NonExistingProperty ()
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> (_objectID);
