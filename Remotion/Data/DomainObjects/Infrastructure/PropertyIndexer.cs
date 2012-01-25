@@ -87,8 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
         ArgumentUtility.CheckNotNull ("shortPropertyName", shortPropertyName);
 
-        var data = _propertyAccessorDataCache.GetMandatoryPropertyAccessorData (domainObjectType, shortPropertyName);
-        return GetPropertyAccessor (_domainObject.DefaultTransactionContext.ClientTransaction, data);
+        return this[domainObjectType, shortPropertyName, _domainObject.DefaultTransactionContext.ClientTransaction];
       }
     }
 
