@@ -28,7 +28,6 @@ using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 {
-  [Ignore ("TODO 4600")]
   [Obsolete ("Not yet implemented.", false)]
   public class UnloadAllTest : UnloadTestBase
   {
@@ -100,6 +99,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    public void ApplicationData_IsKept ()
+    {
+      TestableClientTransaction.ApplicationData.Add (DateTimeKind.Utc, "Test");
+
+      UnloadService.UnloadAll (TestableClientTransaction);
+
+      Assert.That (TestableClientTransaction.ApplicationData[DateTimeKind.Utc], Is.EqualTo ("Test"));
+    }
+
+    [Test]
     public void StatesOfUnloadedObjects_AreSetToNotLoadedYet_OrInvalid ()
     {
       var unchangedObject = LoadOrderWithRelations (DomainObjectIDs.Order1);
@@ -162,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var collection1 = object1.OrderItems;
 
       var object2 = LoadOrderWithRelations (DomainObjectIDs.Order2);
-      var collection2 = object1.OrderItems;
+      var collection2 = object2.OrderItems;
       collection2.Clear();
 
       UnloadService.UnloadAll (TestableClientTransaction);
@@ -212,15 +221,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
           UnloadService.UnloadAll (middleTransaction);
 
-          CheckTransactionIsEmpty ();
+          CheckTransactionIsEmpty (ClientTransaction.Current);
+          CheckTransactionIsEmpty (middleTransaction);
+          CheckTransactionIsEmpty (TestableClientTransaction);
           Assert.That (orderChangedInSubSub.OrderNumber, Is.EqualTo (4));
         }
 
-        CheckTransactionIsEmpty ();
         Assert.That (orderChangedInMiddle.OrderNumber, Is.EqualTo (3));
       }
-
-      CheckTransactionIsEmpty ();
+      
       Assert.That (orderChangedInRoot.OrderNumber, Is.EqualTo (1));
     }
 
@@ -232,22 +241,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
       {
+        var middleTransaction = ClientTransaction.Current;
         orderChangedInRootAndSubSub.OrderNumber = 1001;
 
         using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
         {
           UnloadService.UnloadAll (ClientTransaction.Current);
-          CheckTransactionIsEmpty ();
-        }
 
-        CheckTransactionIsEmpty ();
+          CheckTransactionIsEmpty (ClientTransaction.Current);
+          CheckTransactionIsEmpty (middleTransaction);
+          CheckTransactionIsEmpty (TestableClientTransaction);
+        }
       }
 
-      CheckTransactionIsEmpty ();
       Assert.That (orderChangedInRootAndSubSub.OrderNumber, Is.EqualTo (1));
     }
 
     [Test]
+    [Ignore ("TODO 4599")]
     public void UnloadFromHierarchy_WithNewObjects_MarksObjectsInvalidInWholeHierarchy ()
     {
       Order newObject;
@@ -280,6 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    [Ignore ("TODO 4599")]
     public void Events ()
     {
       var order1 = LoadOrderWithRelations (DomainObjectIDs.Order1);
@@ -338,6 +350,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    [Ignore ("TODO 4600")]
     public void Events_New ()
     {
       var order = Order.NewObject();
@@ -382,6 +395,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    [Ignore ("TODO 4600")]
     public void Events_New_WithHierarchy ()
     {
       Order newObject;
@@ -426,6 +440,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    [Ignore ("TODO 4600")]
     public void Events_Cancellation ()
     {
       var order = LoadOrderWithRelations (DomainObjectIDs.Order1);
@@ -476,8 +491,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
     private void CheckTransactionIsEmpty ()
     {
-      Assert.That (TestableClientTransaction.DataManager.DataContainers, Is.Empty);
-      Assert.That (TestableClientTransaction.DataManager.RelationEndPoints, Is.Empty);
+      var clientTransaction = ClientTransaction.Current;
+      CheckTransactionIsEmpty(clientTransaction);
+    }
+
+    private void CheckTransactionIsEmpty (ClientTransaction clientTransaction)
+    {
+      Assert.That (DataManagementService.GetDataManager (clientTransaction).DataContainers, Is.Empty);
+      Assert.That (DataManagementService.GetDataManager (clientTransaction).RelationEndPoints, Is.Empty);
     }
   }
 }

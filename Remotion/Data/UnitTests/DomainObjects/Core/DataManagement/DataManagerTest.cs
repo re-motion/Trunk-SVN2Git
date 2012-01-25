@@ -547,6 +547,57 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Reset_ClearsAndDiscardsDataContainers_AndResetsEndPoints ()
+    {
+      var dataContainer = PrepareLoadedDataContainer (_dataManagerWithMocks);
+      Assert.That (_dataManagerWithMocks.DataContainers, Is.Not.Empty.And.Member (dataContainer));
+
+      _endPointManagerMock
+          .Expect (mock => mock.Reset())
+          .WhenCalled (mi => Assert.That (_dataManagerWithMocks.DataContainers, Is.Not.Empty));
+      _endPointManagerMock.Replay();
+
+      _dataManagerWithMocks.Reset();
+
+      Assert.That (_dataManagerWithMocks.DataContainers, Is.Empty);
+      _endPointManagerMock.VerifyAllExpectations();
+      Assert.That (dataContainer.IsDiscarded, Is.True);
+    }
+
+    [Test]
+    public void Reset_RaisesDataContainerUnregisteringEvents ()
+    {
+      var dataContainer = PrepareLoadedDataContainer (_dataManagerWithMocks);
+      Assert.That (_dataManagerWithMocks.DataContainers, Is.Not.Empty.And.Member (dataContainer));
+      _endPointManagerMock.Stub (mock => mock.Reset ());
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_dataManagerWithMocks.ClientTransaction);
+
+      _dataManagerWithMocks.Reset ();
+
+      listenerMock.AssertWasCalled (mock => mock.DataContainerMapUnregistering (_dataManagerWithMocks.ClientTransaction, dataContainer));
+    }
+
+    [Test]
+    public void Reset_InvalidatesAndDiscardsNewDataContainers ()
+    {
+      var dataContainer = PrepareNewDataContainer (_dataManagerWithMocks, DomainObjectIDs.Order1);
+      Assert.That (_dataManagerWithMocks.DataContainers, Is.Not.Empty.And.Member (dataContainer));
+      _endPointManagerMock.Stub (mock => mock.Reset ());
+
+      _invalidDomainObjectManagerMock.Expect (mock => mock.MarkInvalid (dataContainer.DomainObject)).Return (true);
+      _invalidDomainObjectManagerMock.Replay();
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_dataManagerWithMocks.ClientTransaction);
+
+      _dataManagerWithMocks.Reset ();
+
+      _invalidDomainObjectManagerMock.VerifyAllExpectations();
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (_dataManagerWithMocks.ClientTransaction, dataContainer.ID));
+      Assert.That (dataContainer.IsDiscarded, Is.True);
+    }
+
+    [Test]
     public void CreateDeleteCommand ()
     {
       var deletedObject = Order.GetObject (DomainObjectIDs.Order1);

@@ -763,14 +763,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       RelationEndPointID endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
       var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
       endPointMock.Stub (stub => stub.ID).Return (endPointID);
-      endPointMock.Expect (mock => mock.Commit ());
+      endPointMock.Expect (mock => mock.Rollback ());
       endPointMock.Replay ();
 
       RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointMock);
 
-      _relationEndPointManager.CommitAllEndPoints ();
+      _relationEndPointManager.RollbackAllEndPoints ();
 
       endPointMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Reset_RemovesEndPoints ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPointMock = MockRepository.GenerateStrictMock<IRelationEndPoint> ();
+      endPointMock.Stub (stub => stub.ID).Return (endPointID);
+      endPointMock.Expect (mock => mock.Rollback ());
+      endPointMock.Replay ();
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointMock);
+      Assert.That (_relationEndPointManager.RelationEndPoints, Is.Not.Empty.And.Member (endPointMock));
+
+      _relationEndPointManager.Reset ();
+
+      endPointMock.VerifyAllExpectations ();
+      Assert.That (_relationEndPointManager.RelationEndPoints, Is.Empty);
+    }
+
+    [Test]
+    public void Reset_RaisesUnregisteringEvents ()
+    {
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders");
+      var endPointStub = MockRepository.GenerateStub<IRelationEndPoint> ();
+      endPointStub.Stub (stub => stub.ID).Return (endPointID);
+      RelationEndPointManagerTestHelper.AddEndPoint (_relationEndPointManager, endPointStub);
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_relationEndPointManager.ClientTransaction);
+
+      _relationEndPointManager.Reset ();
+
+      listenerMock.AssertWasCalled (mock => mock.RelationEndPointMapUnregistering (_relationEndPointManager.ClientTransaction, endPointID));
     }
   }
 }

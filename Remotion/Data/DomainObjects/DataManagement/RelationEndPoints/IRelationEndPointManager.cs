@@ -16,5 +16,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     void CommitAllEndPoints ();
     void RollbackAllEndPoints ();
+    void Reset ();
   }
 }

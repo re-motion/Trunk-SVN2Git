@@ -47,6 +47,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     void Commit ();
     void Rollback ();
+    void Reset ();
 
     IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject);
     IDataManagementCommand CreateUnloadCommand (params ObjectID[] objectIDs);

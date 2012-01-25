@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -57,6 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.HasRelationChanged (dataContainer), true);
       CheckDelegation (dm => dm.Commit());
       CheckDelegation (dm => dm.Rollback ());
+      CheckDelegation (dm => dm.Reset ());
       CheckDelegation (dm => dm.CreateDeleteCommand (domainObject), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadCommand (new[] { objectID }), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadVirtualEndPointsCommand (new[] { relationEndPointID }), dataManagementCommand);
@@ -71,13 +73,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var delegatingDataManager = new DelegatingDataManager();
       delegatingDataManager.InnerDataManager = innerMock;
 
-      innerMock.Expect (mock => func (mock)).Return (fakeResult);
-      innerMock.Replay();
-
-      var result = func (delegatingDataManager);
-
-      innerMock.VerifyAllExpectations();
-      Assert.That (result, Is.EqualTo (fakeResult));
+      var helper = new DecoratorTestHelper<IDataManager> (delegatingDataManager, innerMock);
+      helper.CheckDelegation (func, fakeResult);
 
       delegatingDataManager.InnerDataManager = null;
       Assert.That (
@@ -91,12 +88,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var delegatingDataManager = new DelegatingDataManager ();
       delegatingDataManager.InnerDataManager = innerMock;
 
-      innerMock.Expect (action);
-      innerMock.Replay ();
-
-      action (delegatingDataManager);
-
-      innerMock.VerifyAllExpectations ();
+      var helper = new DecoratorTestHelper<IDataManager> (delegatingDataManager, innerMock);
+      helper.CheckDelegation (action);
 
       delegatingDataManager.InnerDataManager = null;
       Assert.That (

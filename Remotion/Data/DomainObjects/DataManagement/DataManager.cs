@@ -174,8 +174,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       dataContainer.Discard ();
 
       var domainObject = dataContainer.DomainObject;
-      if (_invalidDomainObjectManager.MarkInvalid (domainObject))
-        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
+      MarkInvalid (domainObject);
     }
 
     public void Commit ()
@@ -202,6 +201,22 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Discard (newDataContainer);
 
       _dataContainerMap.RollbackAllDataContainers();
+    }
+
+    public void Reset ()
+    {
+      // Reset end-point manager before resetting the DataContainers so that the VirtualEndPointUnregistering events come before the
+      // DataManagerUnregistering events (although that shouldn't make any difference to users and is definitely an implementation detail)
+      _relationEndPointManager.Reset ();
+      foreach (var dataContainer in _dataContainerMap.ToList ())
+      {
+        _dataContainerMap.Remove (dataContainer.ID);
+
+        var dataContainerState = dataContainer.State;
+        dataContainer.Discard ();
+        if (dataContainerState == StateType.New)
+          MarkInvalid (dataContainer.DomainObject);
+      }
     }
 
     public DataContainer GetDataContainerWithoutLoading (ObjectID objectID)
@@ -387,6 +402,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       return _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (endPointIDs);
+    }
+
+    private void MarkInvalid (DomainObject domainObject)
+    {
+      if (_invalidDomainObjectManager.MarkInvalid (domainObject))
+        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)

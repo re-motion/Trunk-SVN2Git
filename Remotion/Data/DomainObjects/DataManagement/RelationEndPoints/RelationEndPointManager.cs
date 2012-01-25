@@ -211,6 +211,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _map.RollbackAllEndPoints();
     }
 
+    public void Reset ()
+    {
+      foreach (var endPoint in _map.Select (endPoint => endPoint).ToList())
+      {
+        endPoint.Rollback();
+        _map.RemoveEndPoint (endPoint.ID);
+      }
+    }
+
     private IVirtualEndPoint RegisterVirtualEndPoint (RelationEndPointID endPointID)
     {
       var endPoint = _endPointFactory.CreateVirtualEndPoint (endPointID, false);

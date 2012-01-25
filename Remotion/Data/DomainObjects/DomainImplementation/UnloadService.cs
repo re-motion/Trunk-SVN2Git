@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
@@ -276,11 +277,57 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// </para>
     /// </remarks>
     [Obsolete ("Not yet implemented.", false)]
+    // TODO 4600: Unit tests
     public static void UnloadAll (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      throw new NotImplementedException ();
+      Func<ClientTransaction, IDataManagementCommand> commandFactory = tx => new ResetCommand (tx.DataManager);
+      var executor = new TransactionHierarchyCommandExecutor (commandFactory);
+      executor.ExecuteCommandForTransactionHierarchy (clientTransaction);
+    }
+
+    // TODO 4600: Move to separate file, test
+    private class ResetCommand : IDataManagementCommand
+    {
+      private readonly IDataManager _dataManager;
+
+      public ResetCommand (IDataManager dataManager)
+      {
+        ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+        _dataManager = dataManager;
+      }
+
+      public IEnumerable<Exception> GetAllExceptions ()
+      {
+        return Enumerable.Empty<Exception>();
+      }
+
+      public void NotifyClientTransactionOfBegin ()
+      {
+      }
+
+      public void Begin ()
+      {
+      }
+
+      public void Perform ()
+      {
+        _dataManager.Reset();
+      }
+
+      public void End ()
+      {
+      }
+
+      public void NotifyClientTransactionOfEnd ()
+      {
+      }
+
+      public ExpandedCommand ExpandToAllRelatedObjects ()
+      {
+        return new ExpandedCommand (this);
+      }
     }
 
     private static void CheckVirtualEndPointID (RelationEndPointID endPointID)
