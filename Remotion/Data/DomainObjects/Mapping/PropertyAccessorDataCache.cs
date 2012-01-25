@@ -71,7 +71,16 @@ namespace Remotion.Data.DomainObjects.Mapping
       var propertyInfo = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression) as PropertyInfo;
       if (propertyInfo == null)
         throw new ArgumentException ("The expression must identify a property.", "propertyAccessExpression");
-      return ResolvePropertyAccessorData (propertyInfo);
+      return ResolvePropertyAccessorData (PropertyInfoAdapter.Create (propertyInfo));
+    }
+
+    public PropertyAccessorData ResolvePropertyAccessorData (IPropertyInformation propertyInformation)
+    {
+      ArgumentUtility.CheckNotNull ("propertyInformation", propertyInformation);
+
+      return _cachedAccessorDataByMember.GetOrCreateValue (
+          propertyInformation,
+          pi => ReflectionBasedPropertyResolver.ResolveDefinition (pi, _classDefinition, GetPropertyAccessorData));
     }
 
     public PropertyAccessorData GetMandatoryPropertyAccessorData (string propertyName)
@@ -132,14 +141,6 @@ namespace Remotion.Data.DomainObjects.Mapping
           currentType = currentType.BaseType;
       }
       return propertyAccessorData;
-    }
-
-    private PropertyAccessorData ResolvePropertyAccessorData (PropertyInfo propertyInfo)
-    {
-      IPropertyInformation propertyInformation = PropertyInfoAdapter.Create (propertyInfo);
-      return _cachedAccessorDataByMember.GetOrCreateValue (
-          propertyInformation,
-          pi => ReflectionBasedPropertyResolver.ResolveDefinition (pi, _classDefinition, GetPropertyAccessorData));
     }
 
     private string GetIdentifierFromTypeAndShortName (Type domainObjectType, string shortPropertyName)

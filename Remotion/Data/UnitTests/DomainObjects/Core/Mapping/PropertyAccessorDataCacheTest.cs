@@ -22,6 +22,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -121,6 +122,66 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
+    public void ResolvePropertyAccessorData_PropertyInformation ()
+    {
+      var propertyinformation = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderNumber"));
+      var data = _orderCache.ResolvePropertyAccessorData (propertyinformation);
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
+    }
+
+    [Test]
+    public void ResolvePropertyAccessorData_PropertyInformation_Mixin_ViaInterface ()
+    {
+      var cacheWithMixins = new PropertyAccessorDataCache (GetTypeDefinition (typeof (TargetClassForPersistentMixin)));
+      var propertyinformation = PropertyInfoAdapter.Create (typeof (IMixinAddingPersistentProperties).GetProperty ("PersistentProperty"));
+      var data = cacheWithMixins.ResolvePropertyAccessorData (propertyinformation);
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data, Is.EqualTo (cacheWithMixins.GetPropertyAccessorData (typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty")));
+    }
+
+    [Test]
+    public void ResolvePropertyAccessorData_PropertyInformation_Mixin_ViaMixin ()
+    {
+      var cacheWithMixins = new PropertyAccessorDataCache (GetTypeDefinition (typeof (TargetClassForPersistentMixin)));
+      var propertyinformation = PropertyInfoAdapter.Create (typeof (MixinAddingPersistentProperties).GetProperty ("PersistentProperty"));
+      var data = cacheWithMixins.ResolvePropertyAccessorData (propertyinformation);
+
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data, Is.EqualTo (cacheWithMixins.GetPropertyAccessorData (typeof (MixinAddingPersistentProperties).FullName + ".PersistentProperty")));
+    }
+
+    [Test]
+    public void ResolvePropertyAccessorData_PropertyInformation_Interface ()
+    {
+      var propertyinformation = PropertyInfoAdapter.Create (typeof (IOrder).GetProperty ("OrderNumber"));
+      var data = _orderCache.ResolvePropertyAccessorData (propertyinformation);
+      
+      Assert.That (data, Is.Not.Null);
+      Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
+    }
+
+    [Test]
+    public void ResolvePropertyAccessorData_PropertyInformation_UnknownOnThisObject ()
+    {
+      var propertyinformation = PropertyInfoAdapter.Create (typeof (OrderItem).GetProperty ("Product"));
+      var data = _orderCache.ResolvePropertyAccessorData (propertyinformation);
+      
+      Assert.That (data, Is.Null);
+    }
+
+    [Test]
+    public void ResolvePropertyAccessorData_PropertyInformation_Unknown ()
+    {
+      var propertyinformation = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("NotInMapping"));
+      var data = _orderCache.ResolvePropertyAccessorData (propertyinformation);
+      
+      Assert.That (data, Is.Null);
+    }
+
+    [Test]
     public void ResolvePropertyAccessorData_Expression ()
     {
       var data = _orderCache.ResolvePropertyAccessorData ((Order o) => o.OrderNumber);
@@ -158,6 +219,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       Assert.That (data, Is.Not.Null);
       Assert.That (data, Is.EqualTo (_orderCache.GetPropertyAccessorData (typeof (Order).FullName + ".OrderNumber")));
+    }
+
+    [Test]
+    public void ResolvePropertyAccessorData_Expression_Unknown ()
+    {
+      var data = _orderCache.ResolvePropertyAccessorData ((Order o) => o.NotInMapping);
+      Assert.That (data, Is.Null);
+    }
+
+    [Test]
+    public void ResolvePropertyAccessorData_Expression_UnknownOnThisObject ()
+    {
+      var data = _orderCache.ResolvePropertyAccessorData ((Order o) => ((OrderItem) (object) o).Product);
+      Assert.That (data, Is.Null);
     }
 
     [Test]
