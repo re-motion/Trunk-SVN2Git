@@ -25,13 +25,13 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class HiearchyInvalidationClientTransactionListenerTest : StandardMappingTest
+  public class HierarchyInvalidationClientTransactionListenerTest : StandardMappingTest
   {
     private ClientTransaction _ancestor1;
     private ClientTransaction _ancestor2;
     private ClientTransaction _subTransaction;
     
-    private HiearchyInvalidationClientTransactionListener _listener;
+    private HierarchyInvalidationClientTransactionListener _listener;
 
     public override void SetUp ()
     {
@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _ancestor2 = _ancestor1.CreateSubTransaction();
       _subTransaction = _ancestor2.CreateSubTransaction ();
 
-      _listener = new HiearchyInvalidationClientTransactionListener ();
+      _listener = new HierarchyInvalidationClientTransactionListener ();
     }
 
     [Test]

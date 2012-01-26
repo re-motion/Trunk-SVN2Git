@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       yield return new LoggingClientTransactionListener ();
-      yield return new HiearchyInvalidationClientTransactionListener();
+      yield return new HierarchyInvalidationClientTransactionListener();
     }
 
     public virtual IDataManager CreateDataManager (

@@ -493,7 +493,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\ObjectLoader.cs" />
     <Compile Include="Infrastructure\DomainObjectStateCache.cs" />
     <Compile Include="Infrastructure\RootClientTransactionComponentFactory.cs" />
-    <Compile Include="Infrastructure\HiearchyInvalidationClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\HierarchyInvalidationClientTransactionListener.cs" />
     <Compile Include="Infrastructure\SubClientTransactionComponentFactory.cs" />
     <Compile Include="LinqPropertyRedirectionAttribute.cs" />
     <Compile Include="Linq\DomainObjectQueryable.cs" />

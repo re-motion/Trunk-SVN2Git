@@ -25,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Propagates <see cref="StateType.Invalid"/> state for newly created or discarded objects over the <see cref="ClientTransaction"/> hierarchy.
   /// </summary>
   [Serializable]
-  public class HiearchyInvalidationClientTransactionListener : ClientTransactionListenerBase
+  public class HierarchyInvalidationClientTransactionListener : ClientTransactionListenerBase
   {
     public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
