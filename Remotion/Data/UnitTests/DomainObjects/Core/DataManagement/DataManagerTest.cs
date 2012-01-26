@@ -378,6 +378,107 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager.Discard (dataContainer);
     }
+    
+    [Test]
+    public void MarkObjectInvalid ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      TestableClientTransaction.AddListener (listenerMock);
+
+      var domainObject = DomainObjectMother.CreateObjectInTransaction<Order> (_dataManagerWithMocks.ClientTransaction);
+      _invalidDomainObjectManagerMock.Expect (mock => mock.MarkInvalid (domainObject)).Return (true);
+      _invalidDomainObjectManagerMock.Replay();
+
+      Assert.That (_dataManagerWithMocks.ClientTransaction.IsEnlisted (domainObject), Is.True);
+      Assert.That (_dataManagerWithMocks.GetDataContainerWithoutLoading (domainObject.ID), Is.Null);
+      _endPointManagerMock
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Is.Anything))
+          .Return (null);
+      
+      _dataManagerWithMocks.MarkInvalid (domainObject);
+
+      _invalidDomainObjectManagerMock.VerifyAllExpectations();
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, domainObject.ID));
+    }
+
+    [Test]
+    public void MarkObjectInvalid_AlreadyInvalid_NoEvent ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      TestableClientTransaction.AddListener (listenerMock);
+
+      var domainObject = DomainObjectMother.CreateObjectInTransaction<Order> (_dataManagerWithMocks.ClientTransaction);
+      _invalidDomainObjectManagerMock.Expect (mock => mock.MarkInvalid (domainObject)).Return (false);
+      _invalidDomainObjectManagerMock.Replay ();
+
+      Assert.That (_dataManagerWithMocks.ClientTransaction.IsEnlisted (domainObject), Is.True);
+      Assert.That (_dataManagerWithMocks.GetDataContainerWithoutLoading (domainObject.ID), Is.Null);
+      _endPointManagerMock
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Is.Anything))
+          .Return (null);
+
+      _dataManagerWithMocks.MarkInvalid (domainObject);
+
+      _invalidDomainObjectManagerMock.VerifyAllExpectations ();
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+    }
+
+    [Test]
+    public void MarkObjectInvalid_NotEnlisted_Throws ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      TestableClientTransaction.AddListener (listenerMock);
+
+      var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order>();
+      Assert.That (_dataManagerWithMocks.ClientTransaction.IsEnlisted (domainObject), Is.False);
+      
+      Assert.That (() => _dataManagerWithMocks.MarkInvalid (domainObject), Throws.TypeOf<ClientTransactionsDifferException>());
+
+      _invalidDomainObjectManagerMock.AssertWasNotCalled (mock => mock.MarkInvalid (Arg<DomainObject>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+    }
+
+    [Test]
+    public void MarkObjectInvalid_DataContainerRegistered_Throws ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      TestableClientTransaction.AddListener (listenerMock);
+
+      var domainObject = DomainObjectMother.CreateObjectInTransaction<Order> (_dataManagerWithMocks.ClientTransaction);
+      PrepareLoadedDataContainer (_dataManagerWithMocks, domainObject.ID);
+      Assert.That (_dataManagerWithMocks.ClientTransaction.IsEnlisted (domainObject), Is.True);
+      Assert.That (_dataManagerWithMocks.GetDataContainerWithoutLoading (domainObject.ID), Is.Not.Null);
+
+      Assert.That (() => _dataManagerWithMocks.MarkInvalid (domainObject), Throws.InvalidOperationException.With.Message.EqualTo (
+          "Cannot mark DomainObject '" + domainObject.ID + "' invalid because there is data registered for the object."));
+
+      _invalidDomainObjectManagerMock.AssertWasNotCalled (mock => mock.MarkInvalid (Arg<DomainObject>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+    }
+
+    [Test]
+    public void MarkObjectInvalid_EndPointRegistered_Throws ()
+    {
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      TestableClientTransaction.AddListener (listenerMock);
+
+      var domainObject = DomainObjectMother.CreateObjectInTransaction<Order> (_dataManagerWithMocks.ClientTransaction);
+      Assert.That (_dataManagerWithMocks.ClientTransaction.IsEnlisted (domainObject), Is.True);
+      Assert.That (_dataManagerWithMocks.GetDataContainerWithoutLoading (domainObject.ID), Is.Null);
+
+      _endPointManagerMock
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (RelationEndPointID.Create (domainObject.ID, typeof (Order), "OrderTicket")))
+          .Return (MockRepository.GenerateStub<IRelationEndPoint>());
+      _endPointManagerMock
+          .Stub (stub => stub.GetRelationEndPointWithoutLoading (Arg<RelationEndPointID>.Is.Anything))
+          .Return (null);
+
+      Assert.That (() => _dataManagerWithMocks.MarkInvalid (domainObject), Throws.InvalidOperationException.With.Message.EqualTo (
+          "Cannot mark DomainObject '" + domainObject.ID + "' invalid because there are relation end-points registered for the object."));
+
+      _invalidDomainObjectManagerMock.AssertWasNotCalled (mock => mock.MarkInvalid (Arg<DomainObject>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+    }
 
     [Test]
     public void Commit_CommitsRelationEndPoints ()

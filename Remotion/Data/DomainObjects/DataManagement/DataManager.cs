@@ -174,7 +174,34 @@ namespace Remotion.Data.DomainObjects.DataManagement
       dataContainer.Discard ();
 
       var domainObject = dataContainer.DomainObject;
-      MarkInvalid (domainObject);
+      MarkInvalidAndRaiseEvent (domainObject);
+    }
+
+    public void MarkInvalid (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      if (!_clientTransaction.IsEnlisted (domainObject))
+      {
+        throw CreateClientTransactionsDifferException (
+            "Cannot mark DomainObject '{0}' invalid, because it belongs to a different ClientTransaction.",
+            domainObject.ID);
+      }
+
+      if (DataContainers[domainObject.ID] != null)
+      {
+        var message = string.Format ("Cannot mark DomainObject '{0}' invalid because there is data registered for the object.", domainObject.ID);
+        throw new InvalidOperationException (message);
+      }
+
+      if (RelationEndPointID.GetAllRelationEndPointIDs (domainObject.ID).Any (id => _relationEndPointManager.GetRelationEndPointWithoutLoading (id) != null))
+      {
+        var message = string.Format (
+            "Cannot mark DomainObject '{0}' invalid because there are relation end-points registered for the object.", domainObject.ID);
+        throw new InvalidOperationException (message);
+      }
+
+      MarkInvalidAndRaiseEvent (domainObject);
     }
 
     public void Commit ()
@@ -215,7 +242,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         var dataContainerState = dataContainer.State;
         dataContainer.Discard ();
         if (dataContainerState == StateType.New)
-          MarkInvalid (dataContainer.DomainObject);
+          MarkInvalidAndRaiseEvent (dataContainer.DomainObject);
       }
     }
 
@@ -404,7 +431,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (endPointIDs);
     }
 
-    private void MarkInvalid (DomainObject domainObject)
+
+    private void MarkInvalidAndRaiseEvent (DomainObject domainObject)
     {
       if (_invalidDomainObjectManager.MarkInvalid (domainObject))
         _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);

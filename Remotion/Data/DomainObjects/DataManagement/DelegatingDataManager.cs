@@ -112,6 +112,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return SafeInnerDataManager.HasRelationChanged (dataContainer);
     }
 
+    public void MarkInvalid (DomainObject domainObject)
+    {
+      SafeInnerDataManager.MarkInvalid (domainObject);
+    }
+
     public void Commit ()
     {
       SafeInnerDataManager.Commit();

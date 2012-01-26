@@ -56,7 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.GetNewChangedDeletedData (), new[] { persistableData });
       CheckDelegation (dm => dm.GetOppositeRelationEndPoints (dataContainer), new[] { virtualEndPoint });
       CheckDelegation (dm => dm.HasRelationChanged (dataContainer), true);
-      CheckDelegation (dm => dm.Commit());
+      CheckDelegation (dm => dm.MarkInvalid (domainObject));
+      CheckDelegation (dm => dm.Commit ());
       CheckDelegation (dm => dm.Rollback ());
       CheckDelegation (dm => dm.Reset ());
       CheckDelegation (dm => dm.CreateDeleteCommand (domainObject), dataManagementCommand);

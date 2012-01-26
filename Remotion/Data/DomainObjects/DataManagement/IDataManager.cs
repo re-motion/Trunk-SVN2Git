@@ -45,6 +45,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // TODO 4498: Remove
     bool HasRelationChanged (DataContainer dataContainer);
 
+    void MarkInvalid (DomainObject domainObject);
+
     void Commit ();
     void Rollback ();
     void Reset ();
