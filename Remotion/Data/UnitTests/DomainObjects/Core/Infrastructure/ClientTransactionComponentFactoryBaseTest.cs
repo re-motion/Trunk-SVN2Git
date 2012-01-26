@@ -28,7 +28,6 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
-using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -49,7 +48,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateListeners ()
     {
       IEnumerable<IClientTransactionListener> listeners = _factory.CreateListeners (_fakeConstructedTransaction).ToArray ();
-      Assert.That (listeners, Has.Length.EqualTo (1).And.Some.TypeOf<LoggingClientTransactionListener> ());
+      Assert.That (
+          listeners,
+          Has
+              .Length.EqualTo (2)
+              .And.Some.TypeOf<LoggingClientTransactionListener> ()
+              .And.Some.TypeOf<HiearchyInvalidationClientTransactionListener> ());
     }
 
     [Test]

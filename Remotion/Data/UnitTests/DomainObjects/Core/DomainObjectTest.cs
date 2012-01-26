@@ -99,23 +99,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void Ctor_CreatesAndRegistersDataContainer ()
-    {
-      var instance = _transaction.Execute (() => Order.NewObject ());
-
-      var dataContainer = _transaction.DataManager.DataContainers[instance.ID];
-      Assert.That (dataContainer, Is.Not.Null);
-      Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
-      Assert.That (dataContainer.ClientTransaction, Is.SameAs (_transaction));
-    }
-
-    [Test]
     public void Ctor_EnlistsObjectInTransaction ()
     {
       var instance = _transaction.Execute (() => Order.NewObject ());
 
       Assert.That (_transaction.IsEnlisted (instance), Is.True);
     }
+
+    [Test]
+    public void Ctor_CreatesAndRegistersDataContainer_AfterEnlistingObject ()
+    {
+      var clientTransactionListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+      clientTransactionListenerMock
+          .Expect (mock => mock.DataContainerMapRegistering (Arg.Is (_transaction), Arg<DataContainer>.Is.Anything))
+          .WhenCalled (mi => Assert.That (_transaction.IsEnlisted (((DataContainer) mi.Arguments[1]).DomainObject), Is.True));
+      clientTransactionListenerMock.Replay();
+
+      var instance = _transaction.Execute (() => Order.NewObject ());
+
+      clientTransactionListenerMock.VerifyAllExpectations();
+      var dataContainer = _transaction.DataManager.DataContainers[instance.ID];
+      Assert.That (dataContainer, Is.Not.Null);
+      Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (_transaction));
+    }
+
 
     [Test]
     public void Ctor_WithVirtualPropertyCall_Allowed ()

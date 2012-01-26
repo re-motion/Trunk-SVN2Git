@@ -243,10 +243,10 @@ namespace Remotion.Data.DomainObjects
 
       Initialize (objectID, clientTransaction as BindingClientTransaction);
 
+      clientTransaction.EnlistDomainObject (this);
       var newDataContainer = DataContainer.CreateNew (objectID);
       newDataContainer.SetDomainObject (this);
       clientTransaction.DataManager.RegisterDataContainer (newDataContainer);
-      clientTransaction.EnlistDomainObject (this);
 
       RaiseReferenceInitializatingEvent ();
 

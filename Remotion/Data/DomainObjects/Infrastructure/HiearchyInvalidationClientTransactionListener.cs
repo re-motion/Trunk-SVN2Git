@@ -16,43 +16,28 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
-using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Implements events that need to be specially handled in the context of sub-transactions.
+  /// Propagates <see cref="StateType.Invalid"/> state for newly created or discarded objects over the <see cref="ClientTransaction"/> hierarchy.
   /// </summary>
   [Serializable]
   public class HiearchyInvalidationClientTransactionListener : ClientTransactionListenerBase
   {
-    private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
-
-    public HiearchyInvalidationClientTransactionListener (IInvalidDomainObjectManager parentInvalidDomainObjectManager)
-    {
-      ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
-
-      _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
-    }
-
-    public IInvalidDomainObjectManager ParentInvalidDomainObjectManager
-    {
-      get { return _parentInvalidDomainObjectManager; }
-    }
-
     public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
       ArgumentUtility.CheckNotNull ("container", container);
 
       if (container.State == StateType.New)
       {
-        Assertion.IsTrue (
-            clientTransaction.ParentTransaction.CreateSequence (tx => tx.ParentTransaction)
-                .All (ancestor => ancestor.DataManager.DataContainers[container.DomainObject.ID] == null));
-        _parentInvalidDomainObjectManager.MarkInvalidThroughHierarchy (container.DomainObject);
+        foreach (var ancestor in clientTransaction.ParentTransaction.CreateSequence (tx => tx.ParentTransaction))
+        {
+          Assertion.IsNull (ancestor.DataManager.DataContainers[container.ID]);
+          ancestor.DataManager.MarkInvalid (container.DomainObject);
+        }
       }
     }
   }

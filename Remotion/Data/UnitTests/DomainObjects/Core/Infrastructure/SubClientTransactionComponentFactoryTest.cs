@@ -15,8 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -67,21 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateApplicationData ()
     {
       Assert.That (_factory.CreateApplicationData (_fakeConstructedTransaction), Is.SameAs (_parentTransaction.ApplicationData));
-    }
-
-    [Test]
-    public void CreateListeners ()
-    {
-      IEnumerable<IClientTransactionListener> listeners = _factory.CreateListeners (_fakeConstructedTransaction).ToArray();
-      Assert.That (
-          listeners,
-          Has
-              .Length.EqualTo (2)
-              .And.Some.TypeOf<LoggingClientTransactionListener>()
-              .And.Some.TypeOf<HiearchyInvalidationClientTransactionListener>());
-
-      var listener = listeners.OfType<HiearchyInvalidationClientTransactionListener>().Single();
-      Assert.That (listener.ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
     }
 
     [Test]
