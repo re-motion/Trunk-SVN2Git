@@ -78,9 +78,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           Has
               .Length.EqualTo (2)
               .And.Some.TypeOf<LoggingClientTransactionListener>()
-              .And.Some.TypeOf<SubClientTransactionListener>());
+              .And.Some.TypeOf<HiearchyInvalidationClientTransactionListener>());
 
-      var listener = listeners.OfType<SubClientTransactionListener>().Single();
+      var listener = listeners.OfType<HiearchyInvalidationClientTransactionListener>().Single();
       Assert.That (listener.ParentInvalidDomainObjectManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
     }
 

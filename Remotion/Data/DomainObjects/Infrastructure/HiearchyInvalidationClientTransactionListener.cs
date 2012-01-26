@@ -27,11 +27,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Implements events that need to be specially handled in the context of sub-transactions.
   /// </summary>
   [Serializable]
-  public class SubClientTransactionListener : ClientTransactionListenerBase
+  public class HiearchyInvalidationClientTransactionListener : ClientTransactionListenerBase
   {
     private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
 
-    public SubClientTransactionListener (IInvalidDomainObjectManager parentInvalidDomainObjectManager)
+    public HiearchyInvalidationClientTransactionListener (IInvalidDomainObjectManager parentInvalidDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
 

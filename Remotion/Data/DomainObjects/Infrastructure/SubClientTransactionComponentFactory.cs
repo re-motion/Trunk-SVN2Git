@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return base.CreateListeners (constructedTransaction).Concat (new[] { new SubClientTransactionListener (_parentInvalidDomainObjectManager) });
+      return base.CreateListeners (constructedTransaction).Concat (new[] { new HiearchyInvalidationClientTransactionListener (_parentInvalidDomainObjectManager) });
     }
 
     public override IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction)
