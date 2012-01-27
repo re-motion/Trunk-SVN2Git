@@ -258,7 +258,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4599")]
     public void UnloadFromHierarchy_WithNewObjects_MarksObjectsInvalidInWholeHierarchy ()
     {
       Order newObject;

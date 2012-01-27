@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -27,19 +28,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   [TestFixture]
   public class HierarchyInvalidationClientTransactionListenerTest : StandardMappingTest
   {
-    private ClientTransaction _ancestor1;
-    private ClientTransaction _ancestor2;
-    private ClientTransaction _subTransaction;
-    
+    private ClientTransaction _rootTransaction;
+
     private HierarchyInvalidationClientTransactionListener _listener;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _ancestor1 = ClientTransaction.CreateRootTransaction ();
-      _ancestor2 = _ancestor1.CreateSubTransaction();
-      _subTransaction = _ancestor2.CreateSubTransaction ();
+      _rootTransaction = ClientTransaction.CreateRootTransaction ();
 
       _listener = new HierarchyInvalidationClientTransactionListener ();
     }
@@ -47,33 +44,89 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void DataContainerMapRegistering_MarksNewObjectsInvalid ()
     {
+      var middleTransaction = _rootTransaction.CreateSubTransaction ();
+      var subTransaction = middleTransaction.CreateSubTransaction ();
+
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      var domainObject = LifetimeService.GetObjectReference (_subTransaction, dataContainer.ID);
+      var domainObject = LifetimeService.GetObjectReference (subTransaction, dataContainer.ID);
       dataContainer.SetDomainObject (domainObject);
 
-      _listener.DataContainerMapRegistering (_subTransaction, dataContainer);
+      _listener.DataContainerMapRegistering (subTransaction, dataContainer);
 
-      Assert.That (_ancestor1.IsInvalid (DomainObjectIDs.Order1), Is.True);
-      Assert.That (ClientTransactionTestHelper.CallGetInvalidObjectReference (_ancestor1, DomainObjectIDs.Order1), Is.SameAs (domainObject));
+      Assert.That (_rootTransaction.IsInvalid (DomainObjectIDs.Order1), Is.True);
+      Assert.That (ClientTransactionTestHelper.CallGetInvalidObjectReference (_rootTransaction, DomainObjectIDs.Order1), Is.SameAs (domainObject));
       
-      Assert.That (_ancestor2.IsInvalid (DomainObjectIDs.Order1), Is.True);
-      Assert.That (ClientTransactionTestHelper.CallGetInvalidObjectReference (_ancestor2, DomainObjectIDs.Order1), Is.SameAs (domainObject));
+      Assert.That (middleTransaction.IsInvalid (DomainObjectIDs.Order1), Is.True);
+      Assert.That (ClientTransactionTestHelper.CallGetInvalidObjectReference (middleTransaction, DomainObjectIDs.Order1), Is.SameAs (domainObject));
 
-      Assert.That (_subTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (subTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
+    }
+
+    [Test]
+    public void DataContainerMapRegistering_NewObjects_NoParentTransaction ()
+    {
+      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var domainObject = LifetimeService.GetObjectReference (_rootTransaction, dataContainer.ID);
+      dataContainer.SetDomainObject (domainObject);
+
+      _listener.DataContainerMapRegistering (_rootTransaction, dataContainer);
+
+      Assert.That (_rootTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
     }
 
     [Test]
     public void DataContainerMapRegistering_IgnoresNonNewObjects ()
     {
+      var middleTransaction = _rootTransaction.CreateSubTransaction ();
+      var subTransaction = middleTransaction.CreateSubTransaction ();
+
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      var domainObject = LifetimeService.GetObjectReference (_subTransaction, dataContainer.ID);
+      var domainObject = LifetimeService.GetObjectReference (subTransaction, dataContainer.ID);
       dataContainer.SetDomainObject (domainObject);
 
-      _listener.DataContainerMapRegistering (_subTransaction, dataContainer);
+      _listener.DataContainerMapRegistering (subTransaction, dataContainer);
 
-      Assert.That (_ancestor1.IsInvalid (DomainObjectIDs.Order1), Is.False);
-      Assert.That (_ancestor2.IsInvalid (DomainObjectIDs.Order1), Is.False);
-      Assert.That (_subTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (_rootTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (middleTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (subTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
+    }
+
+    [Test]
+    public void DataContainerMapUnregistering_MarksNewObjectsInvalidInSubtransactions ()
+    {
+      var middleTopTransaction = _rootTransaction.CreateSubTransaction ();
+
+      var domainObject = middleTopTransaction.Execute (() => Order.NewObject());
+      var dataContainer = DataManagementService.GetDataManager (middleTopTransaction).GetDataContainerWithoutLoading (domainObject.ID);
+      Assert.That (dataContainer, Is.Not.Null);
+
+      var middleBottomTransaction = middleTopTransaction.CreateSubTransaction ();
+      var subTransaction = middleBottomTransaction.CreateSubTransaction ();
+
+      _listener.DataContainerMapUnregistering (middleTopTransaction, dataContainer);
+
+      Assert.That (middleBottomTransaction.IsInvalid (domainObject.ID), Is.True);
+      Assert.That (ClientTransactionTestHelper.CallGetInvalidObjectReference (middleBottomTransaction, domainObject.ID), Is.SameAs (domainObject));
+      Assert.That (subTransaction.IsInvalid (domainObject.ID), Is.True);
+      Assert.That (ClientTransactionTestHelper.CallGetInvalidObjectReference (subTransaction, domainObject.ID), Is.SameAs (domainObject));
+    }
+
+    [Test]
+    public void DataContainerMapUnregistering_IgnoresNonNewObjects ()
+    {
+      var middleTopTransaction = _rootTransaction.CreateSubTransaction ();
+
+      var domainObject = middleTopTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var dataContainer = DataManagementService.GetDataManager (middleTopTransaction).GetDataContainerWithoutLoading (domainObject.ID);
+      Assert.That (dataContainer, Is.Not.Null);
+
+      var middleBottomTransaction = middleTopTransaction.CreateSubTransaction ();
+      var subTransaction = middleBottomTransaction.CreateSubTransaction ();
+
+      _listener.DataContainerMapUnregistering (middleTopTransaction, dataContainer);
+
+      Assert.That (middleBottomTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
+      Assert.That (subTransaction.IsInvalid (DomainObjectIDs.Order1), Is.False);
     }
 
     [Test]

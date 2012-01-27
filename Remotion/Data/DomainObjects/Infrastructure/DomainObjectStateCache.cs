@@ -62,7 +62,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         _cache.HandleStateUpdate (container.ID);
       }
 
-      // TODO 4599: Handle DataManagerDiscardingObject to deal with NotLoadedYet => Invalid state change (if an object is New in a parent transaction).
+      public override void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+      {
+        _cache.HandleStateUpdate (id);
+      }
     }
 
     public DomainObjectStateCache (ClientTransaction clientTransaction)

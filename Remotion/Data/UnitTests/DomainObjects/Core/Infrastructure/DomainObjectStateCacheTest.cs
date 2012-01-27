@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -245,6 +246,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (stateBeforeChange, Is.EqualTo (StateType.Unchanged));
       Assert.That (stateAfterChange, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void GetState_Invalidated_AfterMarkInvalid ()
+    {
+      var stateBeforeChange = _cachingListener.GetState (_notYetLoadedOrder.ID);
+
+      _transaction.Execute (() => DataManagementService.GetDataManager (_transaction).MarkInvalid (_notYetLoadedOrder));
+      var stateAfterChange = _cachingListener.GetState (_notYetLoadedOrder.ID);
+
+      Assert.That (stateBeforeChange, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (stateAfterChange, Is.EqualTo (StateType.Invalid));
     }
 
     [Test]
