@@ -63,6 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.CreateDeleteCommand (domainObject), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadCommand (new[] { objectID }), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadVirtualEndPointsCommand (new[] { relationEndPointID }), dataManagementCommand);
+      CheckDelegation (dm => dm.CreateUnloadAllCommand(), dataManagementCommand);
       CheckDelegation (dm => dm.LoadLazyCollectionEndPoint (relationEndPointID));
       CheckDelegation (dm => dm.LoadLazyVirtualObjectEndPoint (relationEndPointID));
       CheckDelegation (dm => dm.LoadLazyDataContainer (objectID), dataContainer);

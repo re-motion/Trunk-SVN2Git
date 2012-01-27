@@ -431,6 +431,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return _relationEndPointManager.CreateUnloadVirtualEndPointsCommand (endPointIDs);
     }
 
+    public IDataManagementCommand CreateUnloadAllCommand ()
+    {
+      var domainObjects = DataContainers.Select (dc => dc.DomainObject).ConvertToCollection();
+      if (domainObjects.Count == 0)
+        return new NopCommand();
+      else
+        return new UnloadCommand (_clientTransaction, domainObjects, new ResetCommand (this));
+    }
 
     private void MarkInvalidAndRaiseEvent (DomainObject domainObject)
     {
@@ -484,5 +492,52 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     #endregion
-  }
+
+    // TODO 4600: Move to separate file, test, decide whether to move Reset implementation to command, make Reset private and have the command execute a delegate, or whatever.
+    public class ResetCommand : IDataManagementCommand
+    {
+      private readonly IDataManager _dataManager;
+
+      public ResetCommand (IDataManager dataManager)
+      {
+        ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+        _dataManager = dataManager;
+      }
+
+      public IDataManager DataManager
+      {
+        get { return _dataManager; }
+      }
+
+      public IEnumerable<Exception> GetAllExceptions ()
+      {
+        return Enumerable.Empty<Exception> ();
+      }
+
+      public void NotifyClientTransactionOfBegin ()
+      {
+      }
+
+      public void Begin ()
+      {
+      }
+
+      public void Perform ()
+      {
+        _dataManager.Reset ();
+      }
+
+      public void End ()
+      {
+      }
+
+      public void NotifyClientTransactionOfEnd ()
+      {
+      }
+
+      public ExpandedCommand ExpandToAllRelatedObjects ()
+      {
+        return new ExpandedCommand (this);
+      }
+    }}
 }

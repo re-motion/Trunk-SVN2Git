@@ -95,6 +95,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "AddListener", listener);
     }
 
+    public static void RemoveListener (ClientTransaction clientTransaction, IClientTransactionListener listener)
+    {
+      PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "RemoveListener", listener);
+    }
+
     public static void EnsureTransactionThrowsOnEvents (ClientTransaction clientTransaction)
     {
       var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();

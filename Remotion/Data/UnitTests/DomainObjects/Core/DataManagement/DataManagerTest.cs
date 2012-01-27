@@ -30,6 +30,7 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Linq;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -858,6 +859,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           endPointIDOfNewObject, 
           endPointIDOfDeletedObject);
       Assert.That (exception.Message, Is.EqualTo (expectedMessage));
+    }
+
+    [Test]
+    public void CreateUnloadAllCommand ()
+    {
+      var dataContainer1 = PrepareLoadedDataContainer (_dataManagerWithMocks);
+      var dataContainer2 = PrepareNewDataContainer (_dataManagerWithMocks, DomainObjectIDs.Order1);
+
+      var command = _dataManagerWithMocks.CreateUnloadAllCommand();
+
+      Assert.That (command, Is.TypeOf<UnloadCommand>());
+      var unloadCommand = (UnloadCommand) command;
+      Assert.That (unloadCommand.ClientTransaction, Is.SameAs (_dataManagerWithMocks.ClientTransaction));
+      Assert.That (unloadCommand.DomainObjects, Is.EquivalentTo (new[] { dataContainer1.DomainObject, dataContainer2.DomainObject }));
+      Assert.That (
+          unloadCommand.UnloadDataCommand, 
+          Is.TypeOf<DataManager.ResetCommand>().With.Property<DataManager.ResetCommand>(c => c.DataManager).SameAs (_dataManagerWithMocks));
+    }
+
+    [Test]
+    public void CreateUnloadAllCommand_EmptyDataManager ()
+    {
+      Assert.That (_dataManagerWithMocks.DataContainers, Is.Empty);
+
+      var command = _dataManagerWithMocks.CreateUnloadAllCommand ();
+      Assert.That (command, Is.TypeOf<NopCommand> ());
     }
 
     [Test]

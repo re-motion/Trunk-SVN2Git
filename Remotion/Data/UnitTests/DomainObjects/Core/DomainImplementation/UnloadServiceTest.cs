@@ -773,6 +773,49 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       Assert.That (parentOrdersEndPoint.IsDataComplete, Is.True);
     }
 
+    [Test]
+    public void UnloadAll ()
+    {
+      TestableClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1);
+      EnsureEndPointLoadedAndComplete (_collectionEndPointID);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+
+      UnloadService.UnloadAll (TestableClientTransaction);
+
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Null);
+    }
+
+    [Test]
+    public void UnloadAll_Transactions ()
+    {
+      TestableClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1);
+      EnsureEndPointLoadedAndComplete (_collectionEndPointID);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope())
+      {
+        var middleTransaction = ClientTransaction.Current;
+        middleTransaction.EnsureDataAvailable (DomainObjectIDs.Order2);
+        Assert.That (DataManagementService.GetDataManager (middleTransaction).DataContainers[DomainObjectIDs.Order2], Is.Not.Null);
+
+        using (middleTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          ClientTransaction.Current.EnsureDataAvailable (DomainObjectIDs.Order3);
+          Assert.That (DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[DomainObjectIDs.Order3], Is.Not.Null);
+
+          UnloadService.UnloadAll (middleTransaction);
+
+          Assert.That (DataManagementService.GetDataManager (ClientTransaction.Current).DataContainers[DomainObjectIDs.Order3], Is.Null);
+          Assert.That (DataManagementService.GetDataManager (middleTransaction).DataContainers[DomainObjectIDs.Order2], Is.Null);
+          Assert.That (TestableClientTransaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
+        }
+      }
+    }
+
     private void EnsureEndPointLoadedAndComplete (RelationEndPointID endPointID)
     {
       var dataManager = TestableClientTransaction.DataManager;
