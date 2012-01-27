@@ -338,10 +338,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} RelationEndPointUnloading: {1}", clientTransaction.ID, endPointID);
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} DataManagerDiscardingObject: {1}", clientTransaction.ID, id);
+        s_log.DebugFormat ("{0} DataManagerDiscardingObject: {1}", clientTransaction.ID, GetDomainObjectString (domainObject));
     }
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)

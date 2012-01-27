@@ -182,7 +182,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       throw CreateException();
     }

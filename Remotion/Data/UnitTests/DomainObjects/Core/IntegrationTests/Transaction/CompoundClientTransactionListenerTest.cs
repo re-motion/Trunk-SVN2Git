@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.RelationEndPointMapUnregistering (TestableClientTransaction, endPoint.ID));
       CheckNotification (listener => listener.RelationEndPointUnloading (TestableClientTransaction, endPoint.ID));
 
-      CheckNotification (listener => listener.DataManagerDiscardingObject (TestableClientTransaction, order.ID));
+      CheckNotification (listener => listener.DataManagerDiscardingObject (TestableClientTransaction, order));
 
       CheckNotification (listener => listener.DataContainerMapRegistering (TestableClientTransaction, order.InternalDataContainer));
       CheckNotification (listener => listener.DataContainerMapUnregistering (TestableClientTransaction, order.InternalDataContainer));

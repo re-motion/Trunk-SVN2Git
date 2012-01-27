@@ -490,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void DataManagerDiscardingObject ()
     {
-      _listener.DataManagerDiscardingObject (_clientTransaction, _domainObject.ID);
+      _listener.DataManagerDiscardingObject (_clientTransaction, _domainObject);
       var loggingEvents = GetLoggingEvents();
 
       Assert.That (

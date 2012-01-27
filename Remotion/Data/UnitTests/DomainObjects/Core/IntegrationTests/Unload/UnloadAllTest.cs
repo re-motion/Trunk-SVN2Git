@@ -376,7 +376,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
               mock => mock.RelationEndPointMapUnregistering (Arg.Is (TestableClientTransaction), Arg<RelationEndPointID>.Is.Anything)).Repeat.AtLeastOnce();
 
           clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order.InternalDataContainer));
-          clientTransactionListener.Expect (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, order.ID));
+          clientTransactionListener.Expect (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, order));
         }
 
         unloadEventReceiver.Expect (mock => mock.OnUnloaded (order));
@@ -425,14 +425,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
             UnloadService.UnloadAll (ClientTransaction.Current);
 
-            clientTransactionListener.AssertWasCalled (mock => mock.DataManagerDiscardingObject (middleTopTransaction, newObject.ID));
+            clientTransactionListener.AssertWasCalled (mock => mock.DataManagerDiscardingObject (middleTopTransaction, newObject));
             clientTransactionListener.AssertWasCalled (
                 mock => mock.DataContainerMapUnregistering (Arg.Is (middleTopTransaction), Arg<DataContainer>.Matches (dc => dc.ID == newObject.ID)));
             
             clientTransactionListener.AssertWasCalled (
                 mock => mock.DataContainerMapUnregistering (Arg.Is (middleBottomTransaction), Arg<DataContainer>.Matches (dc => dc.ID == newObject.ID)));
 
-            clientTransactionListener.AssertWasCalled (mock => mock.DataManagerDiscardingObject (subSubTransaction, newObject.ID));
+            clientTransactionListener.AssertWasCalled (mock => mock.DataManagerDiscardingObject (subSubTransaction, newObject));
           }
         }
       }

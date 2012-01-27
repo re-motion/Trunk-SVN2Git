@@ -198,7 +198,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       // not handled by this listener
     }

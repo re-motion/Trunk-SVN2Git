@@ -348,8 +348,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Discard_MarksObjectInvalid ()
     {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket1);
-      ClientTransactionTestHelper.RegisterDataContainer (_dataManager.ClientTransaction, dataContainer);
+      var dataContainer = PrepareNewDataContainer (_dataManager, DomainObjectIDs.OrderTicket1);
 
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
       TestableClientTransaction.AddListener (listenerMock);
@@ -357,7 +356,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.Discard (dataContainer);
 
       Assert.That (_dataManager.ClientTransaction.IsInvalid (dataContainer.ID), Is.True);
-      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, dataContainer.ID));
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, dataContainer.DomainObject));
     }
 
     [Test]
@@ -398,7 +397,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManagerWithMocks.MarkInvalid (domainObject);
 
       _invalidDomainObjectManagerMock.VerifyAllExpectations();
-      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, domainObject.ID));
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (TestableClientTransaction, domainObject));
     }
 
     [Test]
@@ -420,7 +419,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManagerWithMocks.MarkInvalid (domainObject);
 
       _invalidDomainObjectManagerMock.VerifyAllExpectations ();
-      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
@@ -435,7 +434,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (() => _dataManagerWithMocks.MarkInvalid (domainObject), Throws.TypeOf<ClientTransactionsDifferException>());
 
       _invalidDomainObjectManagerMock.AssertWasNotCalled (mock => mock.MarkInvalid (Arg<DomainObject>.Is.Anything));
-      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
@@ -453,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "Cannot mark DomainObject '" + domainObject.ID + "' invalid because there is data registered for the object."));
 
       _invalidDomainObjectManagerMock.AssertWasNotCalled (mock => mock.MarkInvalid (Arg<DomainObject>.Is.Anything));
-      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
@@ -477,7 +476,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           "Cannot mark DomainObject '" + domainObject.ID + "' invalid because there are relation end-points registered for the object."));
 
       _invalidDomainObjectManagerMock.AssertWasNotCalled (mock => mock.MarkInvalid (Arg<DomainObject>.Is.Anything));
-      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<ObjectID>.Is.Anything));
+      listenerMock.AssertWasNotCalled (mock => mock.DataManagerDiscardingObject (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
@@ -694,7 +693,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManagerWithMocks.Reset ();
 
       _invalidDomainObjectManagerMock.VerifyAllExpectations();
-      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (_dataManagerWithMocks.ClientTransaction, dataContainer.ID));
+      listenerMock.AssertWasCalled (mock => mock.DataManagerDiscardingObject (_dataManagerWithMocks.ClientTransaction, dataContainer.DomainObject));
       Assert.That (dataContainer.IsDiscarded, Is.True);
     }
 

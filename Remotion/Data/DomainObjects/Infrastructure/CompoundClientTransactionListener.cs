@@ -233,10 +233,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationEndPointUnloading (clientTransaction, endPointID);
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       foreach (var listener in _listeners)
-        listener.DataManagerDiscardingObject (clientTransaction, id);
+        listener.DataManagerDiscardingObject (clientTransaction, domainObject);
     }
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)

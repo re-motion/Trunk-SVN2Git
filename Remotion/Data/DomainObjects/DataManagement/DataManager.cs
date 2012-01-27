@@ -435,7 +435,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private void MarkInvalidAndRaiseEvent (DomainObject domainObject)
     {
       if (_invalidDomainObjectManager.MarkInvalid (domainObject))
-        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject.ID);
+        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject);
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)

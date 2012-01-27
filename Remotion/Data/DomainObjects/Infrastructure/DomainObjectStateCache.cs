@@ -62,9 +62,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         _cache.HandleStateUpdate (container.ID);
       }
 
-      public override void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+      public override void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
       {
-        _cache.HandleStateUpdate (id);
+        _cache.HandleStateUpdate (domainObject.ID);
       }
     }
 

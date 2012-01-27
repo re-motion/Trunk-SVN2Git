@@ -148,7 +148,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+    public virtual void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
     {
     }
 

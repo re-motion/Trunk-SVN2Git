@@ -211,7 +211,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "RelationEndPointUnloading");
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, ObjectID id)
+    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       // also allowed for read-only transactions
     }
