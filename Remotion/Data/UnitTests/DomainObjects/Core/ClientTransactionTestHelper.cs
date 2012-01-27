@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -141,6 +142,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static void SetActiveSubTransaction (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       PrivateInvoke.SetNonPublicField (clientTransaction, "_subTransaction", subTransaction);
+    }
+
+    public static void ClearAllListeners (ClientTransaction clientTransaction)
+    {
+      var compoundListener = GetTransactionEventSink (clientTransaction);
+      foreach (var listener in compoundListener.Listeners.ToArray ().Reverse ())
+        compoundListener.RemoveListener (listener);
     }
   }
 }

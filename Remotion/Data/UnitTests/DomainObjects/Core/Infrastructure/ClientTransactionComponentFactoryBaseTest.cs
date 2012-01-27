@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           Has
               .Length.EqualTo (2)
               .And.Some.TypeOf<LoggingClientTransactionListener> ()
-              .And.Some.TypeOf<HierarchyInvalidationClientTransactionListener> ());
+              .And.Some.TypeOf<NewObjectHierarchyInvalidationClientTransactionListener> ());
     }
 
     [Test]

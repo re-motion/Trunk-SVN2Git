@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </para>
   /// </remarks>
   [Serializable]
-  public class HierarchyInvalidationClientTransactionListener : ClientTransactionListenerBase
+  public class NewObjectHierarchyInvalidationClientTransactionListener : ClientTransactionListenerBase
   {
     public override void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
@@ -51,10 +51,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    // TODO 4599: Refactor to use invalidation event: When an object is marked invalid in a transaction, also mark it invalid in all descendant
-    // transactions; up to a transaction where the object is already invalid, or data exists for it (e.g., because it is new, or because it is deleted
-    // and just about to be discarded by a running Commit operation). Refactor the method above to only mark the root 
-    // invalid (unless it is the registering transaction), assert that all intermediate transactions are picked up by this method.
     public override void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);

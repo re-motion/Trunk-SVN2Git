@@ -550,7 +550,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ReadOnlyClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\HierarchyInvalidationClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\NewObjectHierarchyInvalidationClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\BigRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionRelationInconsistenciesTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />

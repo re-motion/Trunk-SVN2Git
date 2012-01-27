@@ -26,26 +26,27 @@ using Remotion.Development.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class HierarchyInvalidationClientTransactionListenerTest : StandardMappingTest
+  public class NewObjectHierarchyInvalidationClientTransactionListenerTest : StandardMappingTest
   {
     private ClientTransaction _rootTransaction;
 
-    private HierarchyInvalidationClientTransactionListener _listener;
+    private NewObjectHierarchyInvalidationClientTransactionListener _listener;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _rootTransaction = ClientTransaction.CreateRootTransaction ();
+      ClientTransactionTestHelper.ClearAllListeners (_rootTransaction);
 
-      _listener = new HierarchyInvalidationClientTransactionListener ();
+      _listener = new NewObjectHierarchyInvalidationClientTransactionListener ();
     }
 
     [Test]
     public void DataContainerMapRegistering_MarksNewObjectsInvalid ()
     {
-      var middleTransaction = _rootTransaction.CreateSubTransaction ();
-      var subTransaction = middleTransaction.CreateSubTransaction ();
+      var middleTransaction = CreateSubTransactionAndClearListeners (_rootTransaction);
+      var subTransaction = CreateSubTransactionAndClearListeners (middleTransaction);
 
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       var domainObject = LifetimeService.GetObjectReference (subTransaction, dataContainer.ID);
@@ -77,8 +78,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void DataContainerMapRegistering_IgnoresNonNewObjects ()
     {
-      var middleTransaction = _rootTransaction.CreateSubTransaction ();
-      var subTransaction = middleTransaction.CreateSubTransaction ();
+      var middleTransaction = CreateSubTransactionAndClearListeners (_rootTransaction);
+      var subTransaction = CreateSubTransactionAndClearListeners (middleTransaction);
 
       var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       var domainObject = LifetimeService.GetObjectReference (subTransaction, dataContainer.ID);
@@ -94,14 +95,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void DataContainerMapUnregistering_MarksNewObjectsInvalidInSubtransactions ()
     {
-      var middleTopTransaction = _rootTransaction.CreateSubTransaction ();
+      var middleTopTransaction = CreateSubTransactionAndClearListeners (_rootTransaction);
 
       var domainObject = middleTopTransaction.Execute (() => Order.NewObject());
       var dataContainer = DataManagementService.GetDataManager (middleTopTransaction).GetDataContainerWithoutLoading (domainObject.ID);
       Assert.That (dataContainer, Is.Not.Null);
 
-      var middleBottomTransaction = middleTopTransaction.CreateSubTransaction ();
-      var subTransaction = middleBottomTransaction.CreateSubTransaction ();
+      var middleBottomTransaction = CreateSubTransactionAndClearListeners (middleTopTransaction);
+      var subTransaction = CreateSubTransactionAndClearListeners (middleBottomTransaction);
 
       _listener.DataContainerMapUnregistering (middleTopTransaction, dataContainer);
 
@@ -114,14 +115,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void DataContainerMapUnregistering_IgnoresNonNewObjects ()
     {
-      var middleTopTransaction = _rootTransaction.CreateSubTransaction ();
+      var middleTopTransaction = CreateSubTransactionAndClearListeners (_rootTransaction);
 
       var domainObject = middleTopTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       var dataContainer = DataManagementService.GetDataManager (middleTopTransaction).GetDataContainerWithoutLoading (domainObject.ID);
       Assert.That (dataContainer, Is.Not.Null);
 
-      var middleBottomTransaction = middleTopTransaction.CreateSubTransaction ();
-      var subTransaction = middleBottomTransaction.CreateSubTransaction ();
+      var middleBottomTransaction = CreateSubTransactionAndClearListeners (middleTopTransaction);
+      var subTransaction = CreateSubTransactionAndClearListeners (middleBottomTransaction);
 
       _listener.DataContainerMapUnregistering (middleTopTransaction, dataContainer);
 
@@ -133,6 +134,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void Serialization ()
     {
       Serializer.SerializeAndDeserialize (_listener);
+    }
+
+    private ClientTransaction CreateSubTransactionAndClearListeners (ClientTransaction parentTransaction)
+    {
+      var subTransaction = parentTransaction.CreateSubTransaction ();
+      ClientTransactionTestHelper.ClearAllListeners (subTransaction);
+      return subTransaction;
     }
   }
 }
