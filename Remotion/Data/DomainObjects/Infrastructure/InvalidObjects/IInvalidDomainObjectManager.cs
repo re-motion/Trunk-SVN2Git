@@ -15,7 +15,5 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
 
     bool MarkInvalid (DomainObject domainObject);
     bool MarkNotInvalid (ObjectID objectID);
-
-    void MarkInvalidThroughHierarchy (DomainObject domainObject);
   }
 }

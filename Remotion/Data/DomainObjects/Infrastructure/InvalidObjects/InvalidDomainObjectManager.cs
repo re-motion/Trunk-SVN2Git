@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
   /// Keeps a collection of <see cref="DomainObject"/> references that were marked as invalid in a given <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
-  public abstract class InvalidDomainObjectManagerBase : IInvalidDomainObjectManager
+  public class InvalidDomainObjectManager : IInvalidDomainObjectManager
   {
     private readonly Dictionary<ObjectID, DomainObject> _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
 
@@ -80,7 +80,5 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
 
       return _invalidObjects.Remove (objectID);
     }
-
-    public abstract void MarkInvalidThroughHierarchy (DomainObject domainObject);
   }
 }

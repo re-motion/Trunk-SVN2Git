@@ -844,10 +844,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (enlistedObjectManager, Is.SameAs (ClientTransactionTestHelper.GetEnlistedDomainObjectManager (_transaction)));
 
       var invalidDomainObjectManager = ClientTransactionTestHelper.GetInvalidDomainObjectManager (subTransaction);
-      Assert.That (invalidDomainObjectManager, Is.TypeOf (typeof (SubInvalidDomainObjectManager)));
-      Assert.That (((SubInvalidDomainObjectManager) invalidDomainObjectManager).ParentTransactionManager, 
-          Is.SameAs (ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction)));
-
+      Assert.That (invalidDomainObjectManager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction);
       Assert.That (persistenceStrategy, Is.TypeOf (typeof (SubPersistenceStrategy)));
     }

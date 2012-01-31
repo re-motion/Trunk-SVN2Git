@@ -80,8 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new ObjectID[0]);
 
       var manager = _factory.CreateInvalidDomainObjectManager (_fakeConstructedTransaction);
-      Assert.That (manager, Is.TypeOf (typeof (SubInvalidDomainObjectManager)));
-      Assert.That (((SubInvalidDomainObjectManager) manager).ParentTransactionManager, Is.SameAs (_parentInvalidDomainObjectManagerStub));
+      Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
     }
 
     [Test]

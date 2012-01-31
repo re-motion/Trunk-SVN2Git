@@ -75,8 +75,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateInvalidDomainObjectManager ()
     {
       var manager = _factory.CreateInvalidDomainObjectManager (_fakeConstructedTransaction);
-      Assert.That (manager, Is.TypeOf (typeof (RootInvalidDomainObjectManager)));
-      Assert.That (((RootInvalidDomainObjectManager) manager).InvalidObjectCount, Is.EqualTo (0));
+      Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
+      Assert.That (((InvalidDomainObjectManager) manager).InvalidObjectCount, Is.EqualTo (0));
     }
 
     [Test]

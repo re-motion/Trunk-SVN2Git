@@ -526,13 +526,10 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointDataManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ReadOnlyCollectionDataDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\CollectionEndPointIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\InvalidObjects\SubInvalidDomainObjectManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\InvalidObjects\InvalidDomainObjectManagerBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\InvalidObjects\InvalidDomainObjectManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\RelationEndPointTestHelper.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\StateValueSetTest.cs" />
-    <Compile Include="DomainObjects\Core\InvalidObjects\RootInvalidDomainObjectManagerTest.cs" />
-    <Compile Include="DomainObjects\Core\InvalidObjects\TestableInvalidDomainObjectManager.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualObjectEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\DomainObjectCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\CollectionData\ModificationCheckingCollectionDataDecoratorTest.cs" />

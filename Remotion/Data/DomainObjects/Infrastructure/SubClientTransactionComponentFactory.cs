@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var parentDataManager = _parentTransaction.DataManager;
       var deletedObjects = parentDataManager.DataContainers.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
 
-      var invalidDomainObjectManager = new SubInvalidDomainObjectManager (_parentInvalidDomainObjectManager);
+      var invalidDomainObjectManager = new InvalidDomainObjectManager();
       foreach (var objectToBeMarkedInvalid in invalidObjects.Concat (deletedObjects))
         invalidDomainObjectManager.MarkInvalid (objectToBeMarkedInvalid);
 
