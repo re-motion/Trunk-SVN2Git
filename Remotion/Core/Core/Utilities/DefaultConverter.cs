@@ -22,7 +22,7 @@ namespace Remotion.Utilities
 {
   /// <summary>
   /// The <see cref="DefaultConverter"/> provides a default implementation of <see cref="TypeConverter"/> that does not actually modify the converted 
-  /// values and can only convert from and to a given <see cref="Type"/>. It is, therefore, de-facto a no-op implementation of 
+  /// values and can only convert from and to a given <see cref="System.Type"/>. It is, therefore, de-facto a no-op implementation of 
   /// <see cref="TypeConverter"/>. It also supports converting from the underlying type to a nullable value type.
   /// </summary>
   public class DefaultConverter : TypeConverter

@@ -27,7 +27,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///     The <see cref="SearchAvailableObjectsServiceTypeAttribute"/> may be assigned to the property's <see cref="Type"/> or to the property declaration itself, 
+  ///     The <see cref="SearchAvailableObjectsServiceTypeAttribute"/> may be assigned to the property's <see cref="System.Type"/> or to the property declaration itself, 
   ///     in case a property specific behavior is required.
   ///   </para><para>
   ///     See <see cref="ReferenceProperty.SearchAvailableObjects"/> on how to use the <see cref="SearchAvailableObjectsServiceTypeAttribute"/>.

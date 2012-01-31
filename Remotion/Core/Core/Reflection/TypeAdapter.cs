@@ -24,7 +24,7 @@ using Remotion.Utilities;
 namespace Remotion.Reflection
 {
   /// <summary>
-  /// Implements the <see cref="ITypeInformation"/> to wrap a <see cref="Type"/> instance.
+  /// Implements the <see cref="ITypeInformation"/> to wrap a <see cref="System.Type"/> instance.
   /// </summary>
   [TypeConverter (typeof (TypeAdapterConverter))]
   public sealed class TypeAdapter : ITypeInformation
