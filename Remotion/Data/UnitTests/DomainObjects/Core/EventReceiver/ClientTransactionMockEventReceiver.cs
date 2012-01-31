@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.DomainObjects.Core.MockConstraints;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Mocks_Is = Rhino.Mocks.Constraints.Is;
