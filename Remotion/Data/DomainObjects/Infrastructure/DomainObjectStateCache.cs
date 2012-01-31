@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         _cache.HandleStateUpdate (container.ID);
       }
 
-      public override void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
+      public override void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
       {
         _cache.HandleStateUpdate (domainObject.ID);
       }
@@ -129,7 +129,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // NotLoadedYet => Changed (data): DataContainerMapRegistering (Changed (data) state requires a registered DataContainer)
   // NotLoadedYet => Deleted: DataContainerMapRegistering (Deleted state requires a registered DataContainer)
   // NotLoadedYet => New: DataContainerMapRegistering (New state requires a registered DataContainer)
-  // NotLoadedYet => Invalid: DataManagerDiscardingObject
+  // NotLoadedYet => Invalid: ObjectMarkedInvalid
   //
   // Unchanged currently requires DataContainer to be loaded.
   // Unchanged => NotLoadedYet: DataContainerMapUnregistering
@@ -138,7 +138,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // Unchanged => Changed (data): DataContainerStateUpdated
   // Unchanged => Deleted: DataContainerStateUpdated
   // Unchanged => New: (not possible)
-  // Unchanged => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  // Unchanged => Invalid: DataContainerMapUnregistering, ObjectMarkedInvalid
   //
   // Changed (end-point) currently requires DataContainer to be loaded. (Future: TODO 3338)
   // Changed (end-point) => NotLoadedYet: DataContainerMapUnregistering
@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // Changed (end-point) => Changed (data): [don't care] (not possible in one step)
   // Changed (end-point) => Deleted: DataContainerStateUpdated
   // Changed (end-point) => New: (not possible)
-  // Changed (end-point) => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  // Changed (end-point) => Invalid: DataContainerMapUnregistering, ObjectMarkedInvalid
   //
   // Changed (data) state requires DataContainer to be loaded.
   // Changed (data) => NotLoadedYet: DataContainerMapUnregistering
@@ -156,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // Changed (data) => Changed (data): [don't care]
   // Changed (data) => Deleted: DataContainerStateUpdated
   // Changed (data) => New: (not possible)
-  // Changed (data) => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  // Changed (data) => Invalid: DataContainerMapUnregistering, ObjectMarkedInvalid
   //
   // Deleted requires DataContainer to be loaded.
   // Deleted => NotLoadedYet: DataContainerMapUnregistering
@@ -165,7 +165,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // Deleted => Changed (data): (not possible in one step)
   // Deleted => Deleted: [don't care]
   // Deleted => New: (not possible)
-  // Deleted => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  // Deleted => Invalid: DataContainerMapUnregistering, ObjectMarkedInvalid
   //
   // New requires DataContainer to be loaded.
   // New => NotLoadedYet: DataContainerMapUnregistering
@@ -174,7 +174,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // New => Changed (data): (not possible in one step)
   // New => Deleted: (not possible in one step)
   // New => New: [don't care]
-  // New => Invalid: DataContainerMapUnregistering, DataManagerDiscardingObject
+  // New => Invalid: DataContainerMapUnregistering, ObjectMarkedInvalid
   //
-  // Invalid: It's currently not possible to resurrect an invalid object.
+  // Invalid => New: DataContainerMapRegistering (when committing a subtransaction where an object was New)
+  // Invalid => *: It's currently not possible to resurrect an invalid object. When it becomes possible, use ObjectMarkedNotInvalid.
 }

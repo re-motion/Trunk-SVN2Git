@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var parentDataManager = _parentTransaction.DataManager;
       var deletedObjects = parentDataManager.DataContainers.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
 
-      return new InvalidDomainObjectManager (invalidObjects.Concat (deletedObjects));
+      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.TransactionEventSink, invalidObjects.Concat (deletedObjects));
     }
 
     public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)

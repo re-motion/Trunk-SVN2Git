@@ -38,7 +38,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class DataManager : ISerializable, IDeserializationCallback, IDataManager
   {
     private ClientTransaction _clientTransaction;
-    private IClientTransactionListener _transactionEventSink;
 
     private DataContainerMap _dataContainerMap;
     
@@ -61,8 +60,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("relationEndPointManager", relationEndPointManager);
 
       _clientTransaction = clientTransaction;
-      _transactionEventSink = clientTransaction.TransactionEventSink;
-
       _dataContainerMap = new DataContainerMap (clientTransaction);
 
       _invalidDomainObjectManager = invalidDomainObjectManager;
@@ -174,7 +171,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       dataContainer.Discard ();
 
       var domainObject = dataContainer.DomainObject;
-      MarkInvalidAndRaiseEvent (domainObject);
+      _invalidDomainObjectManager.MarkInvalid (domainObject);
     }
 
     public void MarkInvalid (DomainObject domainObject)
@@ -201,7 +198,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException (message);
       }
 
-      MarkInvalidAndRaiseEvent (domainObject);
+      _invalidDomainObjectManager.MarkInvalid (domainObject);
     }
 
     public void Commit ()
@@ -242,7 +239,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
         var dataContainerState = dataContainer.State;
         dataContainer.Discard ();
         if (dataContainerState == StateType.New)
-          MarkInvalidAndRaiseEvent (dataContainer.DomainObject);
+        {
+          _invalidDomainObjectManager.MarkInvalid (dataContainer.DomainObject);
+        }
       }
     }
 
@@ -440,12 +439,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new UnloadCommand (_clientTransaction, domainObjects, new ResetCommand (this));
     }
 
-    private void MarkInvalidAndRaiseEvent (DomainObject domainObject)
-    {
-      if (_invalidDomainObjectManager.MarkInvalid (domainObject))
-        _transactionEventSink.DataManagerDiscardingObject (_clientTransaction, domainObject);
-    }
-
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
     {
       return new ClientTransactionsDifferException (String.Format (message, args));
@@ -467,7 +460,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var doInfo = new FlattenedDeserializationInfo (_deserializedData);
       _clientTransaction = doInfo.GetValueForHandle<ClientTransaction>();
-      _transactionEventSink = _clientTransaction.TransactionEventSink;
       _dataContainerMap = doInfo.GetValue<DataContainerMap>();
       _relationEndPointManager = doInfo.GetValueForHandle<RelationEndPointManager>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();

@@ -233,10 +233,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationEndPointUnloading (clientTransaction, endPointID);
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
+    public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       foreach (var listener in _listeners)
-        listener.DataManagerDiscardingObject (clientTransaction, domainObject);
+        listener.ObjectMarkedInvalid (clientTransaction, domainObject);
+    }
+
+    public void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      foreach (var listener in _listeners)
+        listener.ObjectMarkedNotInvalid (clientTransaction, domainObject);
     }
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)

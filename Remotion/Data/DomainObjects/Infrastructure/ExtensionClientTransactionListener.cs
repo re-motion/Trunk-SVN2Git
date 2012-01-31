@@ -198,7 +198,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // not handled by this listener
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
+    public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      // not handled by this listener
+    }
+
+    public void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       // not handled by this listener
     }

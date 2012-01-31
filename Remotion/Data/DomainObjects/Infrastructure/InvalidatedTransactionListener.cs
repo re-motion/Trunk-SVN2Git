@@ -182,9 +182,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
+    public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       throw CreateException();
+    }
+
+    public void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      throw CreateException ();
     }
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)

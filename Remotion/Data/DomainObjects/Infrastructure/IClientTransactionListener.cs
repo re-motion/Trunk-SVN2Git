@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -147,7 +146,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID);
     void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID);
 
-    void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject);
+    void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject);
+    void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject);
 
     void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container);
     void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container);

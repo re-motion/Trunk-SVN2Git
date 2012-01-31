@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new InvalidDomainObjectManager ();
+      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.TransactionEventSink);
     }
 
     public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)

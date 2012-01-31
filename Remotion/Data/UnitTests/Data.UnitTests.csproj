@@ -215,6 +215,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\StateUpdateRaisingCollectionEndPointDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\StateUpdateRaisingCollectionEndPointDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableAssociatedCollectionDataStrategyFactoryFake.cs" />

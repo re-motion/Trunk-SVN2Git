@@ -81,6 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var manager = _factory.CreateInvalidDomainObjectManager (_fakeConstructedTransaction);
       Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
+      Assert.That (((InvalidDomainObjectManager) manager).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
+      Assert.That (((InvalidDomainObjectManager) manager).TransactionEventSink, Is.SameAs (_fakeConstructedTransaction.TransactionEventSink));
     }
 
     [Test]

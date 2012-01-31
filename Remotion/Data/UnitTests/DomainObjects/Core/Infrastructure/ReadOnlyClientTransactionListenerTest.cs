@@ -37,7 +37,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         "VirtualRelationEndPointStateUpdated",
         "RelationReading", 
         "RelationRead", 
-        "DataManagerDiscardingObject", 
+        "ObjectMarkedInvalid", 
+        "ObjectMarkedNotInvalid", 
         "DataContainerStateUpdated", 
         "VirtualRelationEndPointStateUpdated",
         "FilterQueryResult"};
@@ -98,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           typeof (ReadOnlyClientTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
       IEnumerable<MethodInfo> result = methods.Where (n => _neverThrowingMethods.Contains (n.Name));
       
-      Assert.That (result.Count(), Is.EqualTo (9));
+      Assert.That (result.Count(), Is.EqualTo (10));
     }
 
     [Test]

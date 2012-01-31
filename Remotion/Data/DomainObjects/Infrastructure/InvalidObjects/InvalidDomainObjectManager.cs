@@ -26,27 +26,45 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
   [Serializable]
   public class InvalidDomainObjectManager : IInvalidDomainObjectManager
   {
+    private readonly ClientTransaction _clientTransaction;
+    private readonly IClientTransactionListener _transactionEventSink;
     private readonly Dictionary<ObjectID, DomainObject> _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
 
-    public InvalidDomainObjectManager ()
+    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+
+      _clientTransaction = clientTransaction;
+      _transactionEventSink = transactionEventSink;
     }
 
-    public InvalidDomainObjectManager (IEnumerable<DomainObject> invalidObjects)
+    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink, IEnumerable<DomainObject> invalidObjects) 
+        : this (clientTransaction, transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("invalidObjects", invalidObjects);
 
-      foreach (var invalidObject in invalidObjects)
+      foreach (var domainObject in invalidObjects)
       {
         try
         {
-          MarkInvalid (invalidObject);
+          _invalidObjects.Add (domainObject.ID, domainObject);
         }
-        catch (InvalidOperationException ex)
+        catch (ArgumentException ex)
         {
           throw new ArgumentException ("The sequence contains multiple different objects with the same ID.", "invalidObjects", ex);
         }
       }
+    }
+
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
+    public IClientTransactionListener TransactionEventSink
+    {
+      get { return _transactionEventSink; }
     }
 
     public int InvalidObjectCount
@@ -92,6 +110,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
       }
 
       _invalidObjects.Add (domainObject.ID, domainObject);
+      _transactionEventSink.ObjectMarkedInvalid (_clientTransaction, domainObject);
       return true;
     }
 
@@ -99,7 +118,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      return _invalidObjects.Remove (objectID);
+      DomainObject domainObject;
+      if (!_invalidObjects.TryGetValue (objectID, out domainObject))
+        return false;
+
+      _invalidObjects.Remove (objectID);
+      _transactionEventSink.ObjectMarkedNotInvalid (_clientTransaction, domainObject);
+      return true;
     }
   }
 }

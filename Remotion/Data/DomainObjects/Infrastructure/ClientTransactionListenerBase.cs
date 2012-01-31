@@ -148,7 +148,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
+    public virtual void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+    }
+
+    public virtual void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
     {
     }
 

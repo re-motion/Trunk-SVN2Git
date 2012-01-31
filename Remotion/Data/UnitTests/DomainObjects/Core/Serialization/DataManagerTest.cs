@@ -58,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.That (deserializedData.Item2.RelationEndPoints.Count, Is.Not.EqualTo (0));
 
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_clientTransaction"), Is.SameAs (deserializedData.Item1));
-      Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_transactionEventSink"), Is.Not.Null);
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_invalidDomainObjectManager"), Is.Not.Null);
       Assert.That (PrivateInvoke.GetNonPublicField (deserializedData.Item2, "_objectLoader"), Is.Not.Null);
     }

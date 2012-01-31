@@ -338,10 +338,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} RelationEndPointUnloading: {1}", clientTransaction.ID, endPointID);
     }
 
-    public void DataManagerDiscardingObject (ClientTransaction clientTransaction, DomainObject domainObject)
+    public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} DataManagerDiscardingObject: {1}", clientTransaction.ID, GetDomainObjectString (domainObject));
+        s_log.DebugFormat ("{0} ObjectMarkedInvalid: {1}", clientTransaction.ID, GetDomainObjectString (domainObject));
+    }
+
+    public void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("{0} ObjectMarkedNotInvalid: {1}", clientTransaction.ID, GetDomainObjectString (domainObject));
     }
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
