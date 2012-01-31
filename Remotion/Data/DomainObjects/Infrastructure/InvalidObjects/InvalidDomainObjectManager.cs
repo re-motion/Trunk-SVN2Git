@@ -28,6 +28,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
   {
     private readonly Dictionary<ObjectID, DomainObject> _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
 
+    public InvalidDomainObjectManager ()
+    {
+    }
+
+    public InvalidDomainObjectManager (IEnumerable<DomainObject> invalidObjects)
+    {
+      ArgumentUtility.CheckNotNull ("invalidObjects", invalidObjects);
+
+      foreach (var invalidObject in invalidObjects)
+      {
+        try
+        {
+          MarkInvalid (invalidObject);
+        }
+        catch (InvalidOperationException ex)
+        {
+          throw new ArgumentException ("The sequence contains multiple different objects with the same ID.", "invalidObjects", ex);
+        }
+      }
+    }
+
     public int InvalidObjectCount
     {
       get { return _invalidObjects.Count; }

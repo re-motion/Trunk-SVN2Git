@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.InvalidObjects
 {
@@ -32,6 +33,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.InvalidObjects
       base.SetUp ();
       _manager = new InvalidDomainObjectManager ();
       _order1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void Initialization_WithoutInvalidObjects ()
+    {
+      var manager = new InvalidDomainObjectManager ();
+
+      Assert.That (manager.InvalidObjectCount, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void Initialization_WithInvalidObjects ()
+    {
+      var manager = new InvalidDomainObjectManager (new[] { _order1 });
+
+      Assert.That (manager.InvalidObjectCount, Is.EqualTo (1));
+      Assert.That (manager.IsInvalid (_order1.ID), Is.True);
+      Assert.That (manager.GetInvalidObjectReference (_order1.ID), Is.SameAs (_order1));
+    }
+
+    [Test]
+    public void Initialization_WithInvalidObjects_Duplicates ()
+    {
+      var manager = new InvalidDomainObjectManager (new[] { _order1, _order1 });
+      Assert.That (manager.InvalidObjectCount, Is.EqualTo (1));
+      Assert.That (manager.IsInvalid (_order1.ID), Is.True);
+      Assert.That (manager.GetInvalidObjectReference (_order1.ID), Is.SameAs (_order1));
+
+      var otherOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
+      Assert.That (
+          () => new InvalidDomainObjectManager (new[] { _order1, otherOrder1 }),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The sequence contains multiple different objects with the same ID.\r\nParameter name: invalidObjects"));
     }
 
     [Test]
@@ -110,6 +144,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.InvalidObjects
     public void GetInvalidObjectReference_NotInvalid ()
     {
       _manager.GetInvalidObjectReference (_order1.ID);
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      _manager.MarkInvalid (_order1);
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (_manager);
+
+      Assert.That (deserializedInstance.InvalidObjectIDs, Has.Member (_order1.ID));
     }
 
     
