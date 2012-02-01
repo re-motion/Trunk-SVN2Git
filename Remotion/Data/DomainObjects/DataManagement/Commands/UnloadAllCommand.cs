@@ -93,7 +93,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Begin ()
     {
-      _clientTransaction.Execute (() => RaiseRecurringBeginEvent (domainObjects => domainObjects.ForEach (obj => obj.OnUnloading())));
+      _clientTransaction.Execute (() => RaiseRecurringBeginEvent (domainObjects =>
+      {
+        foreach (var obj in domainObjects)
+          obj.OnUnloading();
+      }));
     }
 
     public void Perform ()

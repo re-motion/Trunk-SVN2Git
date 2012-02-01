@@ -320,13 +320,13 @@ public class ClientTransaction
     var emptyTransactionOfSameType = transactionFactory (this);
     if (copyInvalidObjectInformation)
     {
-      _invalidDomainObjectManager.InvalidObjectIDs
-          .Select (id => _invalidDomainObjectManager.GetInvalidObjectReference (id))
-          .ForEach (obj =>
-          {
-            emptyTransactionOfSameType.EnlistDomainObject (obj);
-            emptyTransactionOfSameType._invalidDomainObjectManager.MarkInvalid (obj);
-          });
+      var invalidObjectReferences = _invalidDomainObjectManager.InvalidObjectIDs
+          .Select (id => _invalidDomainObjectManager.GetInvalidObjectReference (id));
+      foreach (var obj in invalidObjectReferences)
+      {
+        emptyTransactionOfSameType.EnlistDomainObject (obj);
+        emptyTransactionOfSameType._invalidDomainObjectManager.MarkInvalid (obj);
+      }
     }
     return emptyTransactionOfSameType;
   }
