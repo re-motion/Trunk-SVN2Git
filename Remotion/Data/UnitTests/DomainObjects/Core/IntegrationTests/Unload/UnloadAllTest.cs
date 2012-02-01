@@ -498,6 +498,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckDataAndEndPoints (order, true);
     }
 
+    [Test]
+    [Ignore ("TODO 4600")]
+    public void Events_Recalculation ()
+    {
+      var order1 = Order.GetObject  (DomainObjectIDs.Order1);
+      var order2 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order2);
+      var order3 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order3);
+
+      var mockRepository = new MockRepository ();
+      // Actual events are more comprehensive, since all opposite objects are also unloaded. We only test for some of them, so use a dynamic mock.
+      var clientTransactionListener = mockRepository.DynamicMock<IClientTransactionListener> ();
+      var unloadEventReceiver = mockRepository.StrictMock<IUnloadEventReceiver> ();
+
+      order1.SetUnloadEventReceiver (unloadEventReceiver);
+      order2.SetUnloadEventReceiver (unloadEventReceiver);
+      order3.SetUnloadEventReceiver (unloadEventReceiver);
+
+      using (mockRepository.Ordered ())
+      {
+        clientTransactionListener
+            .Expect (
+                mock => mock.ObjectsUnloading (
+                    Arg.Is (TestableClientTransaction),
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1 })))
+            .WhenCalled (mi => order2.EnsureDataAvailable());
+        clientTransactionListener
+            .Expect (
+                mock => mock.ObjectsUnloading (
+                    Arg.Is (TestableClientTransaction),
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order2 })));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order1));
+        unloadEventReceiver
+            .Expect (mock => mock.OnUnloading (order2))
+            .WhenCalled (mi => order3.EnsureDataAvailable());
+        clientTransactionListener
+            .Expect (
+                mock => mock.ObjectsUnloading (
+                    Arg.Is (TestableClientTransaction),
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order3 })));
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order3));
+
+        using (mockRepository.Unordered ())
+        {
+          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order1.InternalDataContainer));
+          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order2.InternalDataContainer));
+          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order3.InternalDataContainer));
+        }
+
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order3));
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order2));
+        unloadEventReceiver.Expect (mock => mock.OnUnloaded (order1));
+        clientTransactionListener
+            .Expect (
+                mock => mock.ObjectsUnloaded (
+                    Arg.Is (TestableClientTransaction),
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order3, order2, order1 })));
+      }
+      mockRepository.ReplayAll ();
+
+      TestableClientTransaction.AddListener (clientTransactionListener);
+      try
+      {
+        UnloadService.UnloadAll (TestableClientTransaction);
+      }
+      finally
+      {
+        TestableClientTransaction.RemoveListener (clientTransactionListener);
+      }
+
+      mockRepository.VerifyAll ();
+    }
+
     private void CheckDataAndEndPoints (Order order, bool shouldBePresent)
     {
       CheckDataContainerExists (order, shouldBePresent);
