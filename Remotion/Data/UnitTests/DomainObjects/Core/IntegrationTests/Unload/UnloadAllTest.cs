@@ -523,12 +523,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
                     Arg.Is (TestableClientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1 })))
             .WhenCalled (mi => order2.EnsureDataAvailable());
+        unloadEventReceiver.Expect (mock => mock.OnUnloading (order1));
         clientTransactionListener
             .Expect (
                 mock => mock.ObjectsUnloading (
                     Arg.Is (TestableClientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order2 })));
-        unloadEventReceiver.Expect (mock => mock.OnUnloading (order1));
         unloadEventReceiver
             .Expect (mock => mock.OnUnloading (order2))
             .WhenCalled (mi => order3.EnsureDataAvailable());
