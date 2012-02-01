@@ -59,7 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       CheckDelegation (dm => dm.MarkInvalid (domainObject));
       CheckDelegation (dm => dm.Commit ());
       CheckDelegation (dm => dm.Rollback ());
-      CheckDelegation (dm => dm.Reset ());
       CheckDelegation (dm => dm.CreateDeleteCommand (domainObject), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadCommand (new[] { objectID }), dataManagementCommand);
       CheckDelegation (dm => dm.CreateUnloadVirtualEndPointsCommand (new[] { relationEndPointID }), dataManagementCommand);

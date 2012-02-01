@@ -127,11 +127,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       SafeInnerDataManager.Rollback();
     }
 
-    public void Reset ()
-    {
-      SafeInnerDataManager.Reset();
-    }
-
     public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)
     {
       return SafeInnerDataManager.CreateDeleteCommand (deletedObject);

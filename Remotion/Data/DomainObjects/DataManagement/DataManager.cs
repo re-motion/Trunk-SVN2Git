@@ -227,24 +227,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _dataContainerMap.RollbackAllDataContainers();
     }
 
-    public void Reset ()
-    {
-      // Reset end-point manager before resetting the DataContainers so that the VirtualEndPointUnregistering events come before the
-      // DataManagerUnregistering events (although that shouldn't make any difference to users and is definitely an implementation detail)
-      _relationEndPointManager.Reset ();
-      foreach (var dataContainer in _dataContainerMap.ToList ())
-      {
-        _dataContainerMap.Remove (dataContainer.ID);
-
-        var dataContainerState = dataContainer.State;
-        dataContainer.Discard ();
-        if (dataContainerState == StateType.New)
-        {
-          _invalidDomainObjectManager.MarkInvalid (dataContainer.DomainObject);
-        }
-      }
-    }
-
     public DataContainer GetDataContainerWithoutLoading (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
@@ -436,7 +418,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (domainObjects.Count == 0)
         return new NopCommand();
       else
-        return new UnloadCommand (_clientTransaction, domainObjects, new ResetCommand (this));
+        return new UnloadAllCommand (
+            _relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _clientTransaction, _clientTransaction.TransactionEventSink);
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
@@ -484,52 +467,5 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     #endregion
-
-    // TODO 4600: Move to separate file, test, decide whether to move Reset implementation to command, make Reset private and have the command execute a delegate, or whatever.
-    public class ResetCommand : IDataManagementCommand
-    {
-      private readonly IDataManager _dataManager;
-
-      public ResetCommand (IDataManager dataManager)
-      {
-        ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-        _dataManager = dataManager;
-      }
-
-      public IDataManager DataManager
-      {
-        get { return _dataManager; }
-      }
-
-      public IEnumerable<Exception> GetAllExceptions ()
-      {
-        return Enumerable.Empty<Exception> ();
-      }
-
-      public void NotifyClientTransactionOfBegin ()
-      {
-      }
-
-      public void Begin ()
-      {
-      }
-
-      public void Perform ()
-      {
-        _dataManager.Reset ();
-      }
-
-      public void End ()
-      {
-      }
-
-      public void NotifyClientTransactionOfEnd ()
-      {
-      }
-
-      public ExpandedCommand ExpandToAllRelatedObjects ()
-      {
-        return new ExpandedCommand (this);
-      }
-    }}
+  }
 }
