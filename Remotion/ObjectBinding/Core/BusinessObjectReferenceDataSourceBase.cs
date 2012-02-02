@@ -67,6 +67,10 @@ namespace Remotion.ObjectBinding
     /// </summary>
     protected abstract string GetDataSourceIdentifier ();
 
+    protected BusinessObjectReferenceDataSourceBase ()
+    {
+    }
+
     /// <summary> 
     ///   Loads the <see cref="BusinessObject"/> from the <see cref="ReferencedDataSource"/> using 
     ///   <see cref="ReferenceProperty"/> and populates the bound controls using 
@@ -227,7 +231,7 @@ namespace Remotion.ObjectBinding
     ///   Gets or sets the <see cref="IBusinessObject"/> accessed through the <see cref="ReferenceProperty"/>.
     /// </summary>
     /// <value> An <see cref="IBusinessObject"/> or <see langword="null"/>. </value>
-    public override IBusinessObject BusinessObject
+    public override sealed IBusinessObject BusinessObject
     {
       get { return _businessObject; }
       set
@@ -300,6 +304,7 @@ namespace Remotion.ObjectBinding
 
     private void DeleteBusinessObject ()
     {
+      Assertion.IsNotNull (BusinessObject, "The business object of this reference data source cannot be null when invoking DeleteBusinessObject().");
       if (ReferenceProperty.SupportsDelete)
         ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
     }
