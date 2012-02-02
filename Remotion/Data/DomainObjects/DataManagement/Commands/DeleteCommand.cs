@@ -17,12 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
-using ArgumentUtility=Remotion.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
-  // TODO 3658: Inject event sink
   /// <summary>
   /// Encapsulates all logic that is required to delete a <see cref="DomainObject"/>.
   /// </summary>
@@ -30,16 +29,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
   {
     private readonly ClientTransaction _clientTransaction;
     private readonly DomainObject _deletedObject;
+    private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly DataContainer _dataContainer;
     private readonly CompositeCommand _endPointDeleteCommands;
 
-    public DeleteCommand (ClientTransaction clientTransaction, DomainObject deletedObject)
+    public DeleteCommand (ClientTransaction clientTransaction, DomainObject deletedObject, IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       _clientTransaction = clientTransaction;
       _deletedObject = deletedObject;
+      _transactionEventSink = transactionEventSink;
 
       _dataContainer = _clientTransaction.DataManager.GetDataContainerWithLazyLoad (_deletedObject.ID);
       Assertion.IsFalse (_dataContainer.State == StateType.Deleted);
@@ -61,6 +63,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       get { return _deletedObject; }
     }
 
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
+    }
+
     public IEnumerable<Exception> GetAllExceptions ()
     {
       return Enumerable.Empty<Exception> ();
@@ -70,7 +77,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       _clientTransaction.Execute (delegate
       {
-        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectDeleting (tx, _deletedObject));
+        _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectDeleting (tx, _deletedObject));
         _endPointDeleteCommands.NotifyClientTransactionOfBegin ();
       });
     }
@@ -108,7 +115,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _clientTransaction.Execute (delegate
       {
         _endPointDeleteCommands.NotifyClientTransactionOfEnd ();
-        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectDeleted (tx, _deletedObject));
+        _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectDeleted (tx, _deletedObject));
       });
     }
 

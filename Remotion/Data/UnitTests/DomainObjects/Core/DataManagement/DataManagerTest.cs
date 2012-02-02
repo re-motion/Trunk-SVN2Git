@@ -611,6 +611,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (command, Is.InstanceOf (typeof (DeleteCommand)));
       Assert.That (((DeleteCommand) command).ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
       Assert.That (((DeleteCommand) command).DeletedObject, Is.SameAs (deletedObject));
+      Assert.That (((DeleteCommand) command).TransactionEventSink, Is.SameAs (_dataManager.TransactionEventSink));
     }
 
     [Test]

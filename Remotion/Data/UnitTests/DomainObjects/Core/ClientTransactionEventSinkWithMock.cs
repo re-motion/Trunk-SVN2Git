@@ -36,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
     }
 
-    [Obsolete ("", true)]
     public IClientTransactionListener Mock
     {
       get { return _mock; }

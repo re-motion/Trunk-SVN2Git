@@ -348,7 +348,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (deletedObject.TransactionContext[_clientTransaction].State == StateType.Deleted)
         return new NopCommand();
 
-      return new DeleteCommand (ClientTransaction, deletedObject);
+      return new DeleteCommand (_clientTransaction, deletedObject, _transactionEventSink);
     }
 
     public IDataManagementCommand CreateUnloadCommand (params ObjectID[] objectIDs)

@@ -35,7 +35,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   {
     private TestableClientTransaction _transaction;
     private Order _order1;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+
     private DeleteCommand _deleteOrder1Command;
+    
     private ObjectList<OrderItem> _orderItemsCollection;
 
     public override void SetUp ()
@@ -44,7 +47,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _transaction = new TestableClientTransaction();
       _order1 = (Order) LifetimeService.GetObject (_transaction, DomainObjectIDs.Order1, false);
-      _deleteOrder1Command = new DeleteCommand (_transaction, _order1);
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (_transaction);
+    
+      _deleteOrder1Command = new DeleteCommand (_transaction, _order1, _transactionEventSinkWithMock);
+      
       _orderItemsCollection = _transaction.Execute (() => _order1.OrderItems);
     }
 
@@ -57,39 +63,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _deleteOrder1Command.NotifyClientTransactionOfBegin ();
-
-      listenerMock.AssertWasCalled (mock => mock.ObjectDeleting (_transaction, _order1));
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfBegin_SetsCurrentTransaction ()
-    {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-      listenerMock
+      _transactionEventSinkWithMock
           .Expect (mock => mock.ObjectDeleting (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      listenerMock.Replay ();
+      _transactionEventSinkWithMock.Replay();
+      
+      _deleteOrder1Command.NotifyClientTransactionOfBegin ();
 
-      _deleteOrder1Command.NotifyClientTransactionOfBegin();
-
-      listenerMock.VerifyAllExpectations ();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
     public void NotifyClientTransactionOfBegin_TriggersEndPointModifications ()
     {
-      var mockRepository = new MockRepository ();
+      var mockRepository = _transactionEventSinkWithMock.GetMockRepository();
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
       endPointCommandMock.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
       
       using (mockRepository.Ordered ())
       {
-        listenerMock.Expect (mock => mock.ObjectDeleting (_transaction, _order1));
+        _transactionEventSinkWithMock.Expect (mock => mock.ObjectDeleting (_transaction, _order1));
         endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
       }
 
@@ -108,40 +102,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _deleteOrder1Command.NotifyClientTransactionOfEnd ();
-
-      listenerMock.AssertWasCalled (mock => mock.ObjectDeleted (_transaction, _order1));
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEnd_SetsCurrentTransaction ()
-    {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-      listenerMock
+      _transactionEventSinkWithMock
           .Expect (mock => mock.ObjectDeleted (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      listenerMock.Replay ();
+      _transactionEventSinkWithMock.Replay ();
 
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
 
-      listenerMock.VerifyAllExpectations ();
+      _transactionEventSinkWithMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void NotifyClientTransactionOfEnd_TriggersEndPointModifications ()
     {
-      var mockRepository = new MockRepository ();
+      var mockRepository = _transactionEventSinkWithMock.GetMockRepository();
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
       var endPointCommandMock = mockRepository.StrictMock<IDataManagementCommand> ();
       endPointCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
 
       using (mockRepository.Ordered ())
       {
         endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        listenerMock.Expect (mock => mock.ObjectDeleted (_transaction, _order1));
+        _transactionEventSinkWithMock.Expect (mock => mock.ObjectDeleted (_transaction, _order1));
       }
 
       mockRepository.ReplayAll ();
@@ -248,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void Perform_DiscardsNewDataContainer ()
     {
       var newOrder = _transaction.Execute (() => Order.NewObject ());
-      var deleteNewOrderCommand = new DeleteCommand (_transaction, newOrder);
+      var deleteNewOrderCommand = new DeleteCommand (_transaction, newOrder, _transactionEventSinkWithMock);
 
       deleteNewOrderCommand.Perform ();
 
