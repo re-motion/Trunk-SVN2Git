@@ -220,7 +220,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionEventSinkFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionProviderFake.cs" />
-    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRootClientTransactionListenerFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTopClientTransactionListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableAssociatedCollectionDataStrategyFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionManagerFake.cs" />
@@ -243,7 +243,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataObjectMother.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataWithDataSourceDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\TopClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TestableClientTransactionComponentFactoryBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\CascadedDeleteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingTest.cs" />

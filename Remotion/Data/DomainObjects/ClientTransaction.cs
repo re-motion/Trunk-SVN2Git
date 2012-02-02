@@ -168,7 +168,7 @@ public class ClientTransaction
 
     _applicationData = componentFactory.CreateApplicationData (this);
    
-    _listenerManager = new ClientTransactionListenerManager (this, new RootClientTransactionListener());
+    _listenerManager = new ClientTransactionListenerManager (this, new TopClientTransactionListener());
     _listenerManager.AddListener (new ReadOnlyClientTransactionListener ());
 
     foreach (var listener in componentFactory.CreateListeners (this))

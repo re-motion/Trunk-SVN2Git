@@ -28,15 +28,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   public class ClientTransactionListenerManager : IClientTransactionListenerManager
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly IRootClientTransactionListener _rootListener;
+    private readonly ITopClientTransactionListener _topListener;
 
-    public ClientTransactionListenerManager (ClientTransaction clientTransaction, IRootClientTransactionListener rootListener)
+    public ClientTransactionListenerManager (ClientTransaction clientTransaction, ITopClientTransactionListener topListener)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("rootListener", rootListener);
+      ArgumentUtility.CheckNotNull ("topListener", topListener);
 
       _clientTransaction = clientTransaction;
-      _rootListener = rootListener;
+      _topListener = topListener;
     }
 
     public ClientTransaction ClientTransaction
@@ -44,32 +44,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _clientTransaction; }
     }
 
-    public IRootClientTransactionListener RootListener
+    public ITopClientTransactionListener TopListener
     {
-      get { return _rootListener; }
+      get { return _topListener; }
     }
 
     public IEnumerable<IClientTransactionListener> Listeners
     {
-      get { return _rootListener.Listeners; }
+      get { return _topListener.Listeners; }
     }
 
     public void AddListener (IClientTransactionListener listener)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
-      _rootListener.AddListener (listener);
+      _topListener.AddListener (listener);
     }
 
     public void RemoveListener (IClientTransactionListener listener)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
-      _rootListener.RemoveListener (listener);
+      _topListener.RemoveListener (listener);
     }
 
     public void RaiseEvent (Action<ClientTransaction, IClientTransactionListener> action)
     {
       ArgumentUtility.CheckNotNull ("action", action);
-      action (_clientTransaction, _rootListener);
+      action (_clientTransaction, _topListener);
     }
   }
 }

@@ -27,13 +27,13 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class RootClientTransactionListenerTest : StandardMappingTest
+  public class TopClientTransactionListenerTest : StandardMappingTest
   {
     private ClientTransaction _clientTransaction;
     private Order _order1;
     private Order _order2;
 
-    private RootClientTransactionListener _listener;
+    private TopClientTransactionListener _listener;
 
     private MockRepository _mockRepository;
     private DomainObjectMockEventReceiver _order1EventReceiverMock;
@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _order1 = _clientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       _order2 = _clientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
 
-      _listener = new RootClientTransactionListener ();
+      _listener = new TopClientTransactionListener ();
 
       _mockRepository = new MockRepository();
       _order1EventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void Serializable ()
     {
-      var instance = new RootClientTransactionListener();
+      var instance = new TopClientTransactionListener();
       instance.AddListener (new SerializableClientTransactionListenerFake());
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);

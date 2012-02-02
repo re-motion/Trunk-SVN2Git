@@ -211,7 +211,7 @@
     <Compile Include="Infrastructure\ClientTransactionListenerManager.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventSink.cs" />
     <Compile Include="Infrastructure\IClientTransactionListenerManager.cs" />
-    <Compile Include="Infrastructure\IRootClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\ITopClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\IFetchEnabledPersistenceStrategy.cs" />
@@ -230,7 +230,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionOperations.cs" />
-    <Compile Include="Infrastructure\RootClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\TopClientTransactionListener.cs" />
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />

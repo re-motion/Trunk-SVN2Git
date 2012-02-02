@@ -24,7 +24,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// and raising <see cref="DomainObject"/> and <see cref="ClientTransaction"/> events.
   /// </summary>
   [Serializable]
-  public class RootClientTransactionListener : CompoundClientTransactionListener, IRootClientTransactionListener
+  public class TopClientTransactionListener : CompoundClientTransactionListener, ITopClientTransactionListener
   {
     public override void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {

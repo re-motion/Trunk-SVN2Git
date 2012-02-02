@@ -28,7 +28,7 @@ using Remotion.Data.DomainObjects.Queries;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
   [Serializable]
-  public class SerializableRootClientTransactionListenerFake : IRootClientTransactionListener
+  public class SerializableTopClientTransactionListenerFake : ITopClientTransactionListener
   {
     public bool IsNull
     {

@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class ClientTransactionListenerManagerTest : StandardMappingTest
   {
     private ClientTransaction _clientTransaction;
-    private IRootClientTransactionListener _rootListener;
+    private ITopClientTransactionListener _topListener;
 
     private ClientTransactionListenerManager _listenerManager;
 
@@ -39,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _rootListener = MockRepository.GenerateStrictMock<IRootClientTransactionListener>();
+      _topListener = MockRepository.GenerateStrictMock<ITopClientTransactionListener>();
 
-      _listenerManager = new ClientTransactionListenerManager (_clientTransaction, _rootListener);
+      _listenerManager = new ClientTransactionListenerManager (_clientTransaction, _topListener);
 
       _fakeListener = MockRepository.GenerateStub<IClientTransactionListener>();
     }
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void Listeners ()
     {
-      _rootListener.Stub (stub => stub.Listeners).Return (new[] { _fakeListener });
+      _topListener.Stub (stub => stub.Listeners).Return (new[] { _fakeListener });
 
       Assert.That (_listenerManager.Listeners, Is.EqualTo (new[] { _fakeListener }));
     }
@@ -57,47 +57,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void AddListener()
     {
-      _rootListener.Expect (mock => mock.AddListener (_fakeListener));
-      _rootListener.Replay();
+      _topListener.Expect (mock => mock.AddListener (_fakeListener));
+      _topListener.Replay();
       
       _listenerManager.AddListener (_fakeListener);
 
-      _rootListener.VerifyAllExpectations();
+      _topListener.VerifyAllExpectations();
     }
 
     [Test]
     public void RemoveListener ()
     {
-      _rootListener.Expect (mock => mock.RemoveListener (_fakeListener));
-      _rootListener.Replay ();
+      _topListener.Expect (mock => mock.RemoveListener (_fakeListener));
+      _topListener.Replay ();
 
       _listenerManager.RemoveListener (_fakeListener);
 
-      _rootListener.VerifyAllExpectations ();
+      _topListener.VerifyAllExpectations ();
     }
 
     [Test]
     public void RaiseEvent ()
     {
-      _rootListener.Expect (mock => mock.TransactionInitialize (_clientTransaction));
-      _rootListener.Replay();
+      _topListener.Expect (mock => mock.TransactionInitialize (_clientTransaction));
+      _topListener.Replay();
 
       _listenerManager.RaiseEvent ((tx, l) => l.TransactionInitialize (tx));
 
-      _rootListener.VerifyAllExpectations();
+      _topListener.VerifyAllExpectations();
     }
 
     [Test]
     public void Serializable ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction();
-      var rootListener = new SerializableRootClientTransactionListenerFake();
+      var rootListener = new SerializableTopClientTransactionListenerFake();
       var instance = new ClientTransactionListenerManager (clientTransaction, rootListener);
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
 
       Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
-      Assert.That (deserializedInstance.RootListener, Is.Not.Null);
+      Assert.That (deserializedInstance.TopListener, Is.Not.Null);
     }
   }
 }

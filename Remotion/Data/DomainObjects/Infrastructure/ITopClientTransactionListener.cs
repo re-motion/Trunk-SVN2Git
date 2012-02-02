@@ -23,7 +23,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Defines an interface for classes representing the root of the <see cref="IClientTransactionListener"/> chain attached to a 
   /// <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface IRootClientTransactionListener : IClientTransactionListener
+  public interface ITopClientTransactionListener : IClientTransactionListener
   {
     IEnumerable<IClientTransactionListener> Listeners { get; }
     void AddListener (IClientTransactionListener listener);
