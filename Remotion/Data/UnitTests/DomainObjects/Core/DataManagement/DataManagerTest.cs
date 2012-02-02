@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
@@ -37,6 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private DataManager _dataManager;
 
+    private IClientTransactionEventSink _transactionEventSinkStub;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
     private IObjectLoader _objectLoaderMock;
     private IRelationEndPointManager _endPointManagerMock;
@@ -48,12 +50,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _dataManager = TestableClientTransaction.DataManager;
 
+      _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink>();
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
       _endPointManagerMock = MockRepository.GenerateStrictMock<IRelationEndPointManager> ();
 
       _invalidDomainObjectManagerMock = MockRepository.GenerateMock<IInvalidDomainObjectManager>();
       _dataManagerWithMocks = new DataManager (
           TestableClientTransaction,
+          _transactionEventSinkStub,
           _invalidDomainObjectManagerMock,
           _objectLoaderMock,
           _endPointManagerMock);
@@ -62,15 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Initialization ()
     {
-      var clientTransaction = ClientTransaction.CreateRootTransaction ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var objectLoader = MockRepository.GenerateStub<IObjectLoader> ();
-      var endPointManager = MockRepository.GenerateStub<IRelationEndPointManager>();
-
-      var dataManager = new DataManager (clientTransaction, invalidDomainObjectManager, objectLoader, endPointManager);
-
-      var manager = DataManagerTestHelper.GetRelationEndPointManager (dataManager);
-      Assert.That (manager, Is.SameAs (endPointManager));
+      Assert.That (_dataManagerWithMocks.ClientTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (_dataManagerWithMocks.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
+      Assert.That (DataManagerTestHelper.GetRelationEndPointManager (_dataManagerWithMocks), Is.SameAs (_endPointManagerMock));
     }
 
     [Test]
@@ -780,7 +778,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (unloadAllCommand.DataContainerMap, Is.SameAs (DataManagerTestHelper.GetDataContainerMap (_dataManagerWithMocks)));
       Assert.That (unloadAllCommand.InvalidDomainObjectManager, Is.SameAs (DataManagerTestHelper.GetInvalidDomainObjectManager (_dataManagerWithMocks)));
       Assert.That (unloadAllCommand.ClientTransaction, Is.SameAs (_dataManagerWithMocks.ClientTransaction));
-      Assert.That (unloadAllCommand.TransactionEventSink, Is.SameAs (ClientTransactionTestHelper.GetListenerManager (_dataManagerWithMocks.ClientTransaction)));
+      Assert.That (unloadAllCommand.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
     }
 
     [Test]

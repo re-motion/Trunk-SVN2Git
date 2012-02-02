@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           GetEndPointProvider (delegatingDataManager),
           GetLazyLoader (delegatingDataManager));
 
-      var dataManager = new DataManager (constructedTransaction, invalidDomainObjectManager, objectLoader, endPointManager);
+      var dataManager = new DataManager (constructedTransaction, eventSink, invalidDomainObjectManager, objectLoader, endPointManager);
       delegatingDataManager.InnerDataManager = dataManager;
       return dataManager;
     }

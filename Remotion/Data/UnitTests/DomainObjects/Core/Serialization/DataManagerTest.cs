@@ -54,6 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
           Serializer.SerializeAndDeserialize (Tuple.Create (ClientTransaction.Current, dataManager));
 
       Assert.That (deserializedData.Item2.DomainObjectStateCache, Is.Not.Null);
+      Assert.That (deserializedData.Item2.TransactionEventSink, Is.Not.Null);
+
       Assert.That (deserializedData.Item2.DataContainers.Count, Is.Not.EqualTo (0));
       Assert.That (deserializedData.Item2.RelationEndPoints.Count, Is.Not.EqualTo (0));
 

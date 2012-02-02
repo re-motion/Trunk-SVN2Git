@@ -30,7 +30,6 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  // TODO 3658: Inject event sink and use instead of ListenerManager
   /// <summary>
   /// Manages the data (<see cref="DataContainer"/> instances, <see cref="IRelationEndPoint"/> instances, and invalid objects) for a 
   /// <see cref="ClientTransaction"/>.
@@ -39,18 +38,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
   public class DataManager : ISerializable, IDeserializationCallback, IDataManager
   {
     private ClientTransaction _clientTransaction;
-
-    private DataContainerMap _dataContainerMap;
-    
+    private IClientTransactionEventSink _transactionEventSink;
     private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private IObjectLoader _objectLoader;
-    private DomainObjectStateCache _domainObjectStateCache;
     private IRelationEndPointManager _relationEndPointManager;
+
+    private DataContainerMap _dataContainerMap;
+    private DomainObjectStateCache _domainObjectStateCache;
 
     private object[] _deserializedData; // only used for deserialization
 
     public DataManager (
         ClientTransaction clientTransaction, 
+        IClientTransactionEventSink transactionEventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IObjectLoader objectLoader,
         IRelationEndPointManager relationEndPointManager)
@@ -61,18 +61,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("relationEndPointManager", relationEndPointManager);
 
       _clientTransaction = clientTransaction;
-      _dataContainerMap = new DataContainerMap (clientTransaction);
-
+      _transactionEventSink = transactionEventSink;
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
-      _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
-
       _relationEndPointManager = relationEndPointManager;
+
+      _dataContainerMap = new DataContainerMap (clientTransaction);
+      _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
     }
 
     public ClientTransaction ClientTransaction
     {
       get { return _clientTransaction; }
+    }
+
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
     }
 
     public IDataContainerMapReadOnlyView DataContainers
@@ -420,7 +425,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new NopCommand();
       else
         return new UnloadAllCommand (
-            _relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _clientTransaction, _clientTransaction.ListenerManager);
+            _relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _clientTransaction, _transactionEventSink);
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)
@@ -443,7 +448,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void IDeserializationCallback.OnDeserialization (object sender)
     {
       var doInfo = new FlattenedDeserializationInfo (_deserializedData);
-      _clientTransaction = doInfo.GetValueForHandle<ClientTransaction>();
+      _clientTransaction = doInfo.GetValueForHandle<ClientTransaction> ();
+      _transactionEventSink = doInfo.GetValueForHandle<IClientTransactionEventSink> ();
       _dataContainerMap = doInfo.GetValue<DataContainerMap>();
       _relationEndPointManager = doInfo.GetValueForHandle<RelationEndPointManager>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();
@@ -458,6 +464,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       var doInfo = new FlattenedSerializationInfo();
       doInfo.AddHandle (_clientTransaction);
+      doInfo.AddHandle (_transactionEventSink);
       doInfo.AddValue (_dataContainerMap);
       doInfo.AddHandle (_relationEndPointManager);
       doInfo.AddValue (_domainObjectStateCache);

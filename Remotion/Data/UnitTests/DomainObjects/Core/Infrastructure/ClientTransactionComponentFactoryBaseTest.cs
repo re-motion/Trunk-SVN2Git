@@ -79,9 +79,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateDataManager ()
     {
-      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
-      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy>();
+      var fakeEventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
+      var fakeInvalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy>();
 
       var fakeEndPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       var fakeLazyLoader = MockRepository.GenerateStub<ILazyLoader> ();
@@ -109,9 +109,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           .Expect (
               mock => mock.CallCreateObjectLoader (
                   Arg.Is (_fakeConstructedTransaction),
-                  Arg.Is (eventSink),
-                  Arg.Is (persistenceStrategy),
-                  Arg.Is (invalidDomainObjectManager),
+                  Arg.Is (fakeEventSink),
+                  Arg.Is (fakePersistenceStrategy),
+                  Arg.Is (fakeInvalidDomainObjectManager),
                   Arg<DelegatingDataManager>.Is.TypeOf))
           .Return (fakeObjectLoader)
           .WhenCalled (mi => objectLoaderDataManager = (DelegatingDataManager) mi.Arguments[4]);
@@ -119,9 +119,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       var dataManager = (DataManager) factoryPartialMock.CreateDataManager (
           _fakeConstructedTransaction, 
-          eventSink, 
-          invalidDomainObjectManager, 
-          persistenceStrategy);
+          fakeEventSink, 
+          fakeInvalidDomainObjectManager, 
+          fakePersistenceStrategy);
 
       factoryPartialMock.VerifyAllExpectations();
       Assert.That (endPointProviderDataManager.InnerDataManager, Is.SameAs (dataManager));
@@ -129,7 +129,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (objectLoaderDataManager.InnerDataManager, Is.SameAs (dataManager));
 
       Assert.That (dataManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (invalidDomainObjectManager));
+      Assert.That (dataManager.TransactionEventSink, Is.SameAs (fakeEventSink));
+      Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (fakeInvalidDomainObjectManager));
       Assert.That (DataManagerTestHelper.GetObjectLoader (dataManager), Is.SameAs (fakeObjectLoader));
       Assert.That (DataManagerTestHelper.GetRelationEndPointManager (dataManager), Is.SameAs (fakeRelationEndPointManager));
     }
