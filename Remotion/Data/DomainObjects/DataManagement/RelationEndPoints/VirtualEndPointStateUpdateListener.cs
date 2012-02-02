@@ -19,6 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
+  // TODO 3658: Inject event sink
   /// <summary>
   /// Implements the <see cref="IVirtualEndPointStateUpdateListener"/> interface by passing information about state updates on to a 
   /// <see cref="ClientTransaction"/>.
@@ -42,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public void VirtualEndPointStateUpdated (RelationEndPointID endPointID, bool? newChangedState)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      _clientTransaction.TransactionEventSink.VirtualRelationEndPointStateUpdated (_clientTransaction, endPointID, newChangedState);
+      _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.VirtualRelationEndPointStateUpdated (tx, endPointID, newChangedState));
     }
   }
 }

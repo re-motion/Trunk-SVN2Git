@@ -18,8 +18,10 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -83,6 +85,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _listener.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
 
       _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var instance = new RootClientTransactionListener();
+      instance.AddListener (new SerializableClientTransactionListenerFake());
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (deserializedInstance.Listeners, Is.Not.Empty);
     }
   }
 }

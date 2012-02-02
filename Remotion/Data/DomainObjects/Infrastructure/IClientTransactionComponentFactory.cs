@@ -45,13 +45,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     IDataManager CreateDataManager (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IPersistenceStrategy persistenceStrategy);
 
     IQueryManager CreateQueryManager (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IPersistenceStrategy persistenceStrategy,
         IDataManager dataManager);

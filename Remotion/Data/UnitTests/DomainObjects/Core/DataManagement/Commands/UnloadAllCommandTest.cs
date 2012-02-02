@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -36,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     private IRelationEndPointManager _endPointManagerMock;
     private ClientTransaction _clientTransaction;
     private DataContainerMap _dataContainerMap;
-    private IClientTransactionListener _transactionEventSinkMock;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
 
     private DataContainer _existingDataContainer;
@@ -53,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _endPointManagerMock = MockRepository.GenerateStrictMock<IRelationEndPointManager>();
       _clientTransaction = ClientTransaction.CreateRootTransaction();
       _dataContainerMap = new DataContainerMap (_clientTransaction);
-      _transactionEventSinkMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (_clientTransaction);
       _invalidDomainObjectManagerMock = MockRepository.GenerateStrictMock<IInvalidDomainObjectManager>();
 
       _existingDataContainer = CreateExistingDataContainer ();
@@ -63,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _newDomainObject = (TestDomainBase) _newDataContainer.DomainObject;
 
       _unloadCommand = new UnloadAllCommand (
-          _endPointManagerMock, _dataContainerMap, _invalidDomainObjectManagerMock, _clientTransaction, _transactionEventSinkMock);
+          _endPointManagerMock, _dataContainerMap, _invalidDomainObjectManagerMock, _clientTransaction, _transactionEventSinkWithMock);
     }
 
     [Test]
@@ -73,16 +72,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _dataContainerMap.Register (_newDataContainer);
 
       // Order of registration
-      _transactionEventSinkMock
+      _transactionEventSinkWithMock
           .Expect (
               mock => mock.ObjectsUnloading (
                   Arg.Is (_clientTransaction),
                   Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _existingDomainObject, _newDomainObject })));
-      _transactionEventSinkMock.Replay ();
+      _transactionEventSinkWithMock.Replay ();
 
       _unloadCommand.NotifyClientTransactionOfBegin ();
 
-      _transactionEventSinkMock.VerifyAllExpectations();
+      _transactionEventSinkWithMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -90,22 +89,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       _dataContainerMap.Register (_existingDataContainer);
 
-      _transactionEventSinkMock
+      _transactionEventSinkWithMock
           .Expect (
               mock => mock.ObjectsUnloading (
                   Arg.Is (_clientTransaction),
                   Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _existingDomainObject })))
           .WhenCalled (mi => _dataContainerMap.Register (_newDataContainer));
-      _transactionEventSinkMock
+      _transactionEventSinkWithMock
           .Expect (
               mock => mock.ObjectsUnloading (
                   Arg.Is (_clientTransaction),
                   Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _newDomainObject })));
-      _transactionEventSinkMock.Replay ();
+      _transactionEventSinkWithMock.Replay ();
 
       _unloadCommand.NotifyClientTransactionOfBegin ();
 
-      _transactionEventSinkMock.VerifyAllExpectations ();
+      _transactionEventSinkWithMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -259,8 +258,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _unloadCommand.NotifyClientTransactionOfEnd();
 
-      _transactionEventSinkMock.AssertWasNotCalled (
-          mock => mock.ObjectsUnloaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _transactionEventSinkWithMock
+          .AssertWasNotCalled (mock => mock.ObjectsUnloaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
     }
 
     [Test]
@@ -274,14 +273,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _unloadCommand.Perform ();
 
       // Order of registration
-      _transactionEventSinkMock.Expect (
+      _transactionEventSinkWithMock.Expect (
           mock => mock.ObjectsUnloaded (
               Arg.Is (_clientTransaction),
               Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _existingDataContainer.DomainObject, _newDataContainer.DomainObject })));
 
       _unloadCommand.NotifyClientTransactionOfEnd ();
 
-      _transactionEventSinkMock.VerifyAllExpectations();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]

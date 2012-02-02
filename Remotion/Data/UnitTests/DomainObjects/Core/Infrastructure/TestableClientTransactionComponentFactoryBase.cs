@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       throw new NotImplementedException();
     }
 
-    protected override IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IClientTransactionListener eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager)
+    protected override IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager)
     {
       throw new NotImplementedException();
     }
@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     public IObjectLoader CallCreateObjectLoader (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)

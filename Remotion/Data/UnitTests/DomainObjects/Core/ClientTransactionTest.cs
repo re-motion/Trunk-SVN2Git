@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       extensionMock.BackToRecord ();
 
       ClientTransaction constructedTransaction = null;
-      CompoundClientTransactionListener transactionEventSink = null;
+      IClientTransactionListenerManager clientTransactionListenerManager = null;
 
       using (_mockRepository.Ordered ())
       {
@@ -149,13 +149,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 mi =>
                 {
                   Assert.That (constructedTransaction.ApplicationData, Is.SameAs (_fakeApplicationData));
-                  transactionEventSink = ClientTransactionTestHelper.GetTransactionEventSink (constructedTransaction);
-                  Assert.That (transactionEventSink.Listeners, Has.Some.TypeOf<ReadOnlyClientTransactionListener>());
+                  clientTransactionListenerManager = ClientTransactionTestHelper.GetListenerManager (constructedTransaction);
+                  Assert.That (clientTransactionListenerManager.Listeners, Has.Some.TypeOf<ReadOnlyClientTransactionListener>());
                 });
         componentFactoryMock
             .Expect (mock => mock.CreateEnlistedObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_enlistedObjectManagerMock)
-            .WhenCalled (mi => Assert.That (transactionEventSink.Listeners, Has.Member (listenerMock)));
+            .WhenCalled (mi => Assert.That (clientTransactionListenerManager.Listeners, Has.Member (listenerMock)));
         componentFactoryMock
             .Expect (mock => mock.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_invalidDomainObjectManagerMock)
@@ -173,7 +173,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 mock =>
                 mock.CreateDataManager (
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
-                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink),
+                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == clientTransactionListenerManager),
                     Arg.Is (_invalidDomainObjectManagerMock), 
                     Arg.Is (_persistenceStrategyMock)))
             .Return (_dataManagerMock)
@@ -184,7 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 mock =>
                 mock.CreateQueryManager (
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
-                    Arg<IClientTransactionListener>.Matches (listener => listener == transactionEventSink), 
+                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == clientTransactionListenerManager), 
                     Arg.Is (_invalidDomainObjectManagerMock), 
                     Arg.Is (_persistenceStrategyMock), 
                     Arg.Is (_dataManagerMock)))
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .WhenCalled (mi =>
             {
               Assert.That (constructedTransaction.QueryManager, Is.SameAs (_queryManagerMock));
-              Assert.That (transactionEventSink.Listeners, Has.No.TypeOf<ExtensionClientTransactionListener>());
+              Assert.That (clientTransactionListenerManager.Listeners, Has.No.TypeOf<ExtensionClientTransactionListener>());
             });
 
         parentListenerMock.Expect (
@@ -220,7 +220,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       Assert.That (result, Is.SameAs (constructedTransaction));
       Assert.That (constructedTransaction.Extensions, Has.Member (extensionMock));
-      Assert.That (transactionEventSink.Listeners, Has.Some.TypeOf<ExtensionClientTransactionListener>());
+      Assert.That (clientTransactionListenerManager.Listeners, Has.Some.TypeOf<ExtensionClientTransactionListener>());
     }
 
     [Test]
@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerStub = MockRepository.GenerateStub<IClientTransactionListener>();
       _transactionWithMocks.AddListener (listenerStub);
 
-      Assert.That (_transactionWithMocks.TransactionEventSink.Listeners, Has.Some.SameAs (listenerStub));
+      Assert.That (_transactionWithMocks.ListenerManager.Listeners, Has.Some.SameAs (listenerStub));
     }
 
     [Test]
@@ -288,11 +288,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var listenerStub = MockRepository.GenerateStub<IClientTransactionListener> ();
       _transactionWithMocks.AddListener (listenerStub);
-      Assert.That (_transactionWithMocks.TransactionEventSink.Listeners, Has.Some.SameAs (listenerStub));
+      Assert.That (_transactionWithMocks.ListenerManager.Listeners, Has.Some.SameAs (listenerStub));
 
       _transactionWithMocks.RemoveListener (listenerStub);
 
-      Assert.That (_transactionWithMocks.TransactionEventSink.Listeners, Has.None.SameAs (listenerStub));
+      Assert.That (_transactionWithMocks.ListenerManager.Listeners, Has.None.SameAs (listenerStub));
     }
 
     [Test]
@@ -1006,7 +1006,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _fakeListeners.AddListener (listenerMock);
 
       Assert.That (_transactionWithMocks.IsDiscarded, Is.False);
-      var eventSink = ClientTransactionTestHelper.GetTransactionEventSink (_transactionWithMocks);
+      var eventSink = ClientTransactionTestHelper.GetListenerManager (_transactionWithMocks);
       Assert.That (eventSink.Listeners.OfType<InvalidatedTransactionListener> ().SingleOrDefault (), Is.Null);
 
       _transactionWithMocks.Discard();

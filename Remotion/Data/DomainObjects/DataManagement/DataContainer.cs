@@ -24,6 +24,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  // TODO 3658: Inject event sink rather than ClientTransaction (?)
   /// <summary>
   /// Represents a container for the persisted properties of a DomainObject.
   /// </summary>
@@ -507,12 +508,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectDeletedException (_id);
 
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueChanging (
-            _clientTransaction, 
+        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueChanging (
+            tx, 
             this, 
             args.PropertyValue, 
             args.OldValue, 
-            args.NewValue);
+            args.NewValue));
 
       if (!args.PropertyValue.Definition.IsObjectID)
       {
@@ -543,19 +544,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueChanged (_clientTransaction, this, args.PropertyValue, args.OldValue, args.NewValue);
+        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueChanged (tx, this, args.PropertyValue, args.OldValue, args.NewValue));
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
     {
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueReading (_clientTransaction, this, propertyValue, valueAccess);
+        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueReading (tx, this, propertyValue, valueAccess));
     }
 
     internal void PropertyValueRead (PropertyValue propertyValue, object value, ValueAccess valueAccess)
     {
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.PropertyValueRead (_clientTransaction, this, propertyValue, value, valueAccess);
+        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueRead (tx, this, propertyValue, value, valueAccess));
     }
 
     private void CheckNotDiscarded ()
@@ -598,7 +599,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       Assertion.DebugAssert (State == state);
 
       if (_clientTransaction != null)
-        _clientTransaction.TransactionEventSink.DataContainerStateUpdated (_clientTransaction, this, state);
+        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.DataContainerStateUpdated (tx, this, state));
     }
 
     #region Serialization

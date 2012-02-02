@@ -122,9 +122,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return listenerMock;
     }
 
-    public static CompoundClientTransactionListener GetTransactionEventSink (ClientTransaction clientTransaction)
+    public static IClientTransactionListenerManager GetListenerManager (ClientTransaction clientTransaction)
     {
-      return (CompoundClientTransactionListener) PrivateInvoke.GetNonPublicProperty (clientTransaction, "TransactionEventSink");
+      return (IClientTransactionListenerManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "ListenerManager");
     }
 
     public static void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
@@ -151,9 +151,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void ClearAllListeners (ClientTransaction clientTransaction)
     {
-      var compoundListener = GetTransactionEventSink (clientTransaction);
-      foreach (var listener in compoundListener.Listeners.ToArray ().Reverse ())
-        compoundListener.RemoveListener (listener);
+      var listenerManager = GetListenerManager (clientTransaction);
+      foreach (var listener in listenerManager.Listeners.ToArray ().Reverse ())
+        listenerManager.RemoveListener (listener);
     }
   }
 }

@@ -20,6 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
 {
+  // TODO 3658: Remove ClientTransaction
   /// <summary>
   /// Keeps a collection of <see cref="DomainObject"/> references that were marked as invalid in a given <see cref="ClientTransaction"/>.
   /// </summary>
@@ -27,10 +28,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
   public class InvalidDomainObjectManager : IInvalidDomainObjectManager
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly Dictionary<ObjectID, DomainObject> _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
 
-    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
+    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
@@ -39,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
       _transactionEventSink = transactionEventSink;
     }
 
-    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink, IEnumerable<DomainObject> invalidObjects) 
+    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionEventSink transactionEventSink, IEnumerable<DomainObject> invalidObjects) 
         : this (clientTransaction, transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("invalidObjects", invalidObjects);
@@ -62,7 +63,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
       get { return _clientTransaction; }
     }
 
-    public IClientTransactionListener TransactionEventSink
+    public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
     }
@@ -110,7 +111,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
       }
 
       _invalidObjects.Add (domainObject.ID, domainObject);
-      _transactionEventSink.ObjectMarkedInvalid (_clientTransaction, domainObject);
+      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectMarkedInvalid (tx, domainObject));
       return true;
     }
 
@@ -123,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
         return false;
 
       _invalidObjects.Remove (objectID);
-      _transactionEventSink.ObjectMarkedNotInvalid (_clientTransaction, domainObject);
+      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectMarkedNotInvalid (tx, domainObject));
       return true;
     }
   }

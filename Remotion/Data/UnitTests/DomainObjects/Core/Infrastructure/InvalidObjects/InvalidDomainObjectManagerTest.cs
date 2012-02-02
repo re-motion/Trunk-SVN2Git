@@ -30,7 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
   public class InvalidDomainObjectManagerTest : StandardMappingTest
   {
     private ClientTransaction _clientTransaction;
-    private IClientTransactionListener _transactionEventSinkMock;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
 
     private InvalidDomainObjectManager _manager;
     private Order _order1;
@@ -40,16 +40,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
       base.SetUp ();
 
       _clientTransaction = ClientTransaction.CreateRootTransaction ();
-      _transactionEventSinkMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock(_clientTransaction);
 
-      _manager = new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkMock);
+      _manager = new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkWithMock);
       _order1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
     }
 
     [Test]
     public void Initialization_WithoutInvalidObjects ()
     {
-      var manager = new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkMock);
+      var manager = new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkWithMock);
 
       Assert.That (manager.InvalidObjectCount, Is.EqualTo (0));
     }
@@ -57,13 +57,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     [Test]
     public void Initialization_WithInvalidObjects ()
     {
-      var manager = new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkMock, new[] { _order1 });
+      var manager = new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkWithMock, new[] { _order1 });
 
       Assert.That (manager.InvalidObjectCount, Is.EqualTo (1));
       Assert.That (manager.IsInvalid (_order1.ID), Is.True);
       Assert.That (manager.GetInvalidObjectReference (_order1.ID), Is.SameAs (_order1));
 
-      _transactionEventSinkMock.AssertWasNotCalled (
+      _transactionEventSinkWithMock.AssertWasNotCalled (
           mock => mock.ObjectMarkedInvalid (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything));
     }
 
@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     public void Initialization_WithInvalidObjects_Duplicates ()
     {
       Assert.That (
-          () => new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkMock, new[] { _order1, _order1 }),
+          () => new InvalidDomainObjectManager (_clientTransaction, _transactionEventSinkWithMock, new[] { _order1, _order1 }),
           Throws.ArgumentException.With.Message.EqualTo (
               "The sequence contains multiple different objects with the same ID.\r\nParameter name: invalidObjects"));
     }
@@ -82,12 +82,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
       Assert.That (_manager.IsInvalid (_order1.ID), Is.False);
       Assert.That (_manager.InvalidObjectCount, Is.EqualTo (0));
 
-      _transactionEventSinkMock.Expect (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1));
-      _transactionEventSinkMock.Replay();
+      _transactionEventSinkWithMock.Expect (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1));
+      _transactionEventSinkWithMock.Replay();
 
       var result = _manager.MarkInvalid (_order1);
 
-      _transactionEventSinkMock.VerifyAllExpectations();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
 
       Assert.That (result, Is.True);
       Assert.That (_manager.IsInvalid (_order1.ID), Is.True);
@@ -97,8 +97,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     [Test]
     public void MarkInvalid_AlreadyInvalid ()
     {
-      _transactionEventSinkMock.Expect (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1)).Repeat.Once();
-      _transactionEventSinkMock.Replay ();
+      _transactionEventSinkWithMock.Expect (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1)).Repeat.Once();
+      _transactionEventSinkWithMock.Replay ();
 
       _manager.MarkInvalid (_order1);
       var result = _manager.MarkInvalid (_order1);
@@ -114,31 +114,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
         + "been marked.")]
     public void MarkInvalid_OtherObjectAlreadyInvalid ()
     {
-      _transactionEventSinkMock.Expect (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1)).Repeat.Once ();
-      _transactionEventSinkMock.Replay();
+      _transactionEventSinkWithMock.Expect (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1)).Repeat.Once ();
+      _transactionEventSinkWithMock.Replay();
 
       _manager.MarkInvalid (_order1);
       var otherOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _manager.MarkInvalid (otherOrder1);
 
-      _transactionEventSinkMock.AssertWasNotCalled (mock => mock.ObjectMarkedInvalid (Arg<ClientTransaction>.Is.Anything, Arg.Is (otherOrder1)));
+      _transactionEventSinkWithMock.AssertWasNotCalled (mock => mock.ObjectMarkedInvalid (Arg<ClientTransaction>.Is.Anything, Arg.Is (otherOrder1)));
     }
 
     [Test]
     public void MarkNotInvalid ()
     {
-      _transactionEventSinkMock.Stub (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1));
+      _transactionEventSinkWithMock.Stub (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1));
       _manager.MarkInvalid (_order1);
 
-      _transactionEventSinkMock.Expect (mock => mock.ObjectMarkedNotInvalid (_clientTransaction, _order1));
-      _transactionEventSinkMock.Replay();
+      _transactionEventSinkWithMock.Expect (mock => mock.ObjectMarkedNotInvalid (_clientTransaction, _order1));
+      _transactionEventSinkWithMock.Replay();
       
       Assert.That (_manager.IsInvalid (_order1.ID), Is.True);
       Assert.That (_manager.InvalidObjectCount, Is.EqualTo (1));
 
       var result = _manager.MarkNotInvalid (_order1.ID);
 
-      _transactionEventSinkMock.VerifyAllExpectations();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (result, Is.True);
       Assert.That (_manager.IsInvalid (_order1.ID), Is.False);
       Assert.That (_manager.InvalidObjectCount, Is.EqualTo (0));
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     {
       var result = _manager.MarkNotInvalid (_order1.ID);
 
-      _transactionEventSinkMock.AssertWasNotCalled (mock => mock.ObjectMarkedNotInvalid (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything));
+      _transactionEventSinkWithMock.AssertWasNotCalled (mock => mock.ObjectMarkedNotInvalid (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything));
       Assert.That (result, Is.False);
       Assert.That (_manager.IsInvalid (_order1.ID), Is.False);
       Assert.That (_manager.InvalidObjectCount, Is.EqualTo (0));
@@ -158,7 +158,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     [Test]
     public void GetInvalidObjectReference ()
     {
-      _transactionEventSinkMock.Stub (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1));
+      _transactionEventSinkWithMock.Stub (mock => mock.ObjectMarkedInvalid (_clientTransaction, _order1));
       _manager.MarkInvalid (_order1);
 
       var result = _manager.GetInvalidObjectReference (_order1.ID);
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     [Test]
     public void Serializable ()
     {
-      var transactionEventSink = new SerializableClientTransactionListenerFake();
+      var transactionEventSink = new SerializableClientTransactionEventSinkFake();
       var manager = new InvalidDomainObjectManager (_clientTransaction, transactionEventSink);
 
       manager.MarkInvalid (_order1);

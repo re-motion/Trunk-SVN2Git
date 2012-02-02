@@ -22,6 +22,7 @@ using ArgumentUtility=Remotion.Linq.Utilities.ArgumentUtility;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
+  // TODO 3658: Inject event sink
   /// <summary>
   /// Encapsulates all logic that is required to delete a <see cref="DomainObject"/>.
   /// </summary>
@@ -69,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       _clientTransaction.Execute (delegate
       {
-        _clientTransaction.TransactionEventSink.ObjectDeleting (_clientTransaction, _deletedObject);
+        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectDeleting (tx, _deletedObject));
         _endPointDeleteCommands.NotifyClientTransactionOfBegin ();
       });
     }
@@ -107,7 +108,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       _clientTransaction.Execute (delegate
       {
         _endPointDeleteCommands.NotifyClientTransactionOfEnd ();
-        _clientTransaction.TransactionEventSink.ObjectDeleted (_clientTransaction, _deletedObject);
+        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectDeleted (tx, _deletedObject));
       });
     }
 

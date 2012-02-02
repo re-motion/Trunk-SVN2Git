@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Utilities;
-using Castle.Core;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
@@ -32,7 +31,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly DataContainerMap _dataContainerMap;
     private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IClientTransactionEventSink _transactionEventSink;
 
     private List<DataContainer> _unloadedDataContainers = new List<DataContainer>();
 
@@ -41,7 +40,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         DataContainerMap dataContainerMap, 
         IInvalidDomainObjectManager invalidDomainObjectManager,
         ClientTransaction clientTransaction,
-        IClientTransactionListener transactionEventSink)
+        IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointManager", relationEndPointManager);
       ArgumentUtility.CheckNotNull ("dataContainerMap", dataContainerMap);
@@ -76,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       get { return _clientTransaction; }
     }
 
-    public IClientTransactionListener TransactionEventSink
+    public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
     }
@@ -88,7 +87,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void NotifyClientTransactionOfBegin ()
     {
-      RaiseRecurringBeginEvent (domainObjects => _transactionEventSink.ObjectsUnloading (_clientTransaction, domainObjects));
+      RaiseRecurringBeginEvent (domainObjects => _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, domainObjects)));
     }
 
     public void Begin ()
@@ -132,7 +131,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public void NotifyClientTransactionOfEnd ()
     {
       if (_unloadedDataContainers.Count > 0)
-        _transactionEventSink.ObjectsUnloaded (_clientTransaction, _unloadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly());
+        _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, _unloadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly()));
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

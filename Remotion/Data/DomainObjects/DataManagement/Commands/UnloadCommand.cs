@@ -22,6 +22,7 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
+  // TODO 3658: Inject event sink
   /// <summary>
   /// Unloads a <see cref="DomainObject"/> instance.
   /// </summary>
@@ -72,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       this.EnsureCanExecute ();
 
-      _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloading (_clientTransaction, Array.AsReadOnly (_domainObjects)));
+      _clientTransaction.Execute (() => _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, Array.AsReadOnly (_domainObjects))));
 
       _unloadDataCommand.NotifyClientTransactionOfBegin ();
     }
@@ -118,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
       _unloadDataCommand.NotifyClientTransactionOfEnd ();
 
-      _clientTransaction.Execute (() => _clientTransaction.TransactionEventSink.ObjectsUnloaded (_clientTransaction, Array.AsReadOnly (_domainObjects)));
+      _clientTransaction.Execute (() => _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, Array.AsReadOnly (_domainObjects))));
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

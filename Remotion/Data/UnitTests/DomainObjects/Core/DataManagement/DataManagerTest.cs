@@ -780,7 +780,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (unloadAllCommand.DataContainerMap, Is.SameAs (DataManagerTestHelper.GetDataContainerMap (_dataManagerWithMocks)));
       Assert.That (unloadAllCommand.InvalidDomainObjectManager, Is.SameAs (DataManagerTestHelper.GetInvalidDomainObjectManager (_dataManagerWithMocks)));
       Assert.That (unloadAllCommand.ClientTransaction, Is.SameAs (_dataManagerWithMocks.ClientTransaction));
-      Assert.That (unloadAllCommand.TransactionEventSink, Is.SameAs (ClientTransactionTestHelper.GetTransactionEventSink (_dataManagerWithMocks.ClientTransaction)));
+      Assert.That (unloadAllCommand.TransactionEventSink, Is.SameAs (ClientTransactionTestHelper.GetListenerManager (_dataManagerWithMocks.ClientTransaction)));
     }
 
     [Test]

@@ -7,6 +7,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints
 {
+  // TODO 3658: Inject event sink
   /// <summary>
   /// Defines common logic for <see cref="IVirtualEndPoint"/> implementations in complete state, ie., when lazy loading has completed.
   /// </summary>
@@ -102,7 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      _clientTransaction.TransactionEventSink.RelationEndPointUnloading (_clientTransaction, endPoint.ID);
+      _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.RelationEndPointUnloading (tx, endPoint.ID));
 
       stateSetter ();
 

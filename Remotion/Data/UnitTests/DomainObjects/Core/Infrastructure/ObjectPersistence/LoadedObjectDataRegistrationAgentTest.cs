@@ -20,9 +20,9 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     private ClientTransaction _clientTransaction;
 
     private MockRepository _mockRepository;
-    private IClientTransactionListener _eventSinkMock;
+    private ClientTransactionEventSinkWithMock _eventSinkWithMock;
     private IDataContainerLifetimeManager _lifetimeManagerMock;
     private ClientTransactionMockEventReceiver _transactionEventReceiverMock;
 
@@ -50,11 +50,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _clientTransaction = ClientTransaction.CreateRootTransaction();
 
       _mockRepository = new MockRepository();
-      _eventSinkMock = _mockRepository.StrictMock<IClientTransactionListener> ();
+      _eventSinkWithMock = new ClientTransactionEventSinkWithMock (_clientTransaction);
       _lifetimeManagerMock = _mockRepository.StrictMock<IDataContainerLifetimeManager> ();
       _transactionEventReceiverMock = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_clientTransaction);
 
-      _agent = new LoadedObjectDataRegistrationAgent (_clientTransaction, _eventSinkMock);
+      _agent = new LoadedObjectDataRegistrationAgent (_clientTransaction, _eventSinkWithMock);
     }
 
     [Test]
@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _agent.RegisterIfRequired (alreadyExistingLoadedObject, _lifetimeManagerMock);
 
-      _eventSinkMock.AssertWasNotCalled (
+      _eventSinkWithMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
       _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
@@ -81,12 +81,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       using (_mockRepository.Ordered ())
       {
-        _eventSinkMock.Expect (
+        _eventSinkWithMock.Expect (
             mock => mock.ObjectsLoading (Arg.Is (_clientTransaction), Arg<ReadOnlyCollection<ObjectID>>.Is.Equal (new[] { dataContainer.ID })));
         _lifetimeManagerMock
             .Expect (mock => mock.RegisterDataContainer (dataContainer))
             .WhenCalled (mi => CheckHasEnlistedDomainObject (dataContainer));
-        _eventSinkMock
+        _eventSinkWithMock
             .Expect (mock => mock.ObjectsLoaded (
                     Arg.Is (_clientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.Matches (c => c.SequenceEqual (new[] { dataContainer.DomainObject }))))
@@ -115,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _agent.RegisterIfRequired (nullLoadedObject, _lifetimeManagerMock);
 
-      _eventSinkMock.AssertWasNotCalled (
+      _eventSinkWithMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
       _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _agent.RegisterIfRequired (alreadyExistingLoadedObject, _lifetimeManagerMock);
 
-      _eventSinkMock.AssertWasNotCalled (
+      _eventSinkWithMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
       _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       using (_mockRepository.Ordered ())
       {
-        _eventSinkMock.Expect (mock => mock.ObjectsLoading (
+        _eventSinkWithMock.Expect (mock => mock.ObjectsLoading (
             Arg.Is (_clientTransaction), 
             Arg<ReadOnlyCollection<ObjectID>>.Is.Equal (new[] { registerableDataContainer1.ID, registerableDataContainer2.ID })));
         _lifetimeManagerMock
@@ -162,7 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
         _lifetimeManagerMock
             .Expect (mock => mock.RegisterDataContainer (registerableDataContainer2))
             .WhenCalled (mi => CheckHasEnlistedDomainObject (registerableDataContainer2));
-        _eventSinkMock
+        _eventSinkWithMock
             .Expect (
                 mock => mock.ObjectsLoaded (
                     Arg.Is (_clientTransaction),
@@ -195,10 +195,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _agent.RegisterIfRequired (new ILoadedObjectData[0], _lifetimeManagerMock);
 
-      _eventSinkMock.AssertWasNotCalled (
+      _eventSinkWithMock.AssertWasNotCalled (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
-      _eventSinkMock.AssertWasNotCalled (
+      _eventSinkWithMock.AssertWasNotCalled (
           mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       _transactionEventReceiverMock.AssertWasNotCalled (
           mock => mock.Loaded (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
@@ -219,14 +219,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       using (_mockRepository.Ordered ())
       {
-        _eventSinkMock.Expect (mock => mock.ObjectsLoading (
+        _eventSinkWithMock.Expect (mock => mock.ObjectsLoading (
             Arg.Is (_clientTransaction),
             Arg<ReadOnlyCollection<ObjectID>>.Is.Equal (new[] { registerableDataContainer1.ID, registerableDataContainer2.ID })));
         _lifetimeManagerMock.Expect (mock => mock.RegisterDataContainer (registerableDataContainer1));
         _lifetimeManagerMock
             .Expect (mock => mock.RegisterDataContainer (registerableDataContainer2))
             .Throw (exception);
-        _eventSinkMock
+        _eventSinkWithMock
             .Expect (
                 mock => mock.ObjectsLoaded (
                     Arg.Is (_clientTransaction),
@@ -260,7 +260,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       using (_mockRepository.Ordered())
       {
-        _eventSinkMock.Expect (
+        _eventSinkWithMock.Expect (
             mock => mock.ObjectsLoading (
                 Arg.Is (_clientTransaction),
                 Arg<ReadOnlyCollection<ObjectID>>.Is.Equal (new[] { registerableDataContainer1.ID })));
@@ -274,16 +274,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           () => _agent.RegisterIfRequired (new ILoadedObjectData[] { freshlyLoadedObject1 }, _lifetimeManagerMock),
           Throws.Exception.SameAs (exception));
 
-      _eventSinkMock.AssertWasNotCalled (
+      _eventSinkWithMock.AssertWasNotCalled (
           mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
     }
 
     [Test]
-    public void Serializability ()
+    public void Serializable ()
     {
       var clientTransaction = ClientTransaction.CreateRootTransaction();
-      var agent = new LoadedObjectDataRegistrationAgent (clientTransaction, ClientTransactionTestHelper.GetTransactionEventSink (clientTransaction));
+      var agent = new LoadedObjectDataRegistrationAgent (clientTransaction, new SerializableClientTransactionEventSinkFake());
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (agent);
 

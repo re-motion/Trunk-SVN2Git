@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected abstract IObjectLoader CreateObjectLoader (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager);
@@ -62,7 +62,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual IDataManager CreateDataManager (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IPersistenceStrategy persistenceStrategy)
     {
@@ -84,7 +84,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public IQueryManager CreateQueryManager (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IPersistenceStrategy persistenceStrategy,
         IDataManager dataManager)

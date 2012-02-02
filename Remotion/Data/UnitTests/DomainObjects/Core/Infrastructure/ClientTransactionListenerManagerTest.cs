@@ -18,6 +18,8 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
@@ -83,6 +85,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _listenerManager.RaiseEvent ((tx, l) => l.TransactionInitialize (tx));
 
       _rootListener.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var clientTransaction = ClientTransaction.CreateRootTransaction();
+      var rootListener = new SerializableRootClientTransactionListenerFake();
+      var instance = new ClientTransactionListenerManager (clientTransaction, rootListener);
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.RootListener, Is.Not.Null);
     }
   }
 }

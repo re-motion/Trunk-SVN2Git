@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var manager = _factory.CreateInvalidDomainObjectManager (_fakeConstructedTransaction);
       Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
       Assert.That (((InvalidDomainObjectManager) manager).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (((InvalidDomainObjectManager) manager).TransactionEventSink, Is.SameAs (_fakeConstructedTransaction.TransactionEventSink));
+      Assert.That (((InvalidDomainObjectManager) manager).TransactionEventSink, Is.SameAs (_fakeConstructedTransaction.ListenerManager));
     }
 
     [Test]
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
 
       var fakeBasicObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
 
@@ -211,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
 
       var result = CallCreateBasicObjectLoader (
           _factory,
@@ -240,7 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private object CallCreateBasicObjectLoader (
         SubClientTransactionComponentFactory factory,
         TestableClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)

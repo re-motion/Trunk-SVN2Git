@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
@@ -66,11 +65,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new DictionaryBasedEnlistedDomainObjectManager ();
     }
 
-
+    // TODO 3658: Inject event sink
     public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.TransactionEventSink);
+      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.ListenerManager);
     }
 
     public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)
@@ -150,7 +149,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected override IObjectLoader CreateObjectLoader (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)
@@ -180,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected virtual IFetchEnabledObjectLoader CreateBasicObjectLoader (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IFetchEnabledPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)

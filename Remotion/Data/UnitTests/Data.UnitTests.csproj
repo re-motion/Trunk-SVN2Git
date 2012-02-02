@@ -205,6 +205,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\VirtualEndPointStateUpdatedRaisingCommandDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadAllCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerTestHelper.cs" />
@@ -216,8 +217,10 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\CollectionEndPointCollectionProviderTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\StateUpdateRaisingCollectionEndPointDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\StateUpdateRaisingCollectionEndPointDecoratorTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionEventSinkFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableClientTransactionListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionProviderFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableRootClientTransactionListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableVirtualEndPointLoaderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableAssociatedCollectionDataStrategyFactoryFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableCollectionEndPointCollectionManagerFake.cs" />

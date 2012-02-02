@@ -24,6 +24,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Manages the <see cref="IClientTransactionListener"/> instances attached to a <see cref="DomainObjects.ClientTransaction"/> instance and
   /// allows clients to raise events for the <see cref="ClientTransaction"/>.
   /// </summary>
+  [Serializable]
   public class ClientTransactionListenerManager : IClientTransactionListenerManager
   {
     private readonly ClientTransaction _clientTransaction;

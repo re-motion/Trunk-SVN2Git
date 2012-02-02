@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var parentDataManager = _parentTransaction.DataManager;
       var deletedObjects = parentDataManager.DataContainers.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
 
-      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.TransactionEventSink, invalidObjects.Concat (deletedObjects));
+      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.ListenerManager, invalidObjects.Concat (deletedObjects));
     }
 
     public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)
@@ -163,7 +163,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected override IObjectLoader CreateObjectLoader (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)
@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     protected virtual IObjectLoader CreateBasicObjectLoader (
         ClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)

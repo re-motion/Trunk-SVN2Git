@@ -30,6 +30,7 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  // TODO 3658: Inject event sink and use instead of ListenerManager
   /// <summary>
   /// Manages the data (<see cref="DataContainer"/> instances, <see cref="IRelationEndPoint"/> instances, and invalid objects) for a 
   /// <see cref="ClientTransaction"/>.
@@ -419,7 +420,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return new NopCommand();
       else
         return new UnloadAllCommand (
-            _relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _clientTransaction, _clientTransaction.TransactionEventSink);
+            _relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _clientTransaction, _clientTransaction.ListenerManager);
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)

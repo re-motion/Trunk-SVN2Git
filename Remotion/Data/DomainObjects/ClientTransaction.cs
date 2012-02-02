@@ -32,7 +32,6 @@ using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 using Remotion.Data.DomainObjects.Linq;
-using Castle.Core;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -146,7 +145,7 @@ public class ClientTransaction
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly ClientTransactionExtensionCollection _extensions;
 
-  private readonly CompoundClientTransactionListener _eventSink;
+  private readonly IClientTransactionListenerManager _listenerManager;
 
   private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
   private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
@@ -169,24 +168,24 @@ public class ClientTransaction
 
     _applicationData = componentFactory.CreateApplicationData (this);
    
-    _eventSink = new CompoundClientTransactionListener ();
-    _eventSink.AddListener (new ReadOnlyClientTransactionListener ());
+    _listenerManager = new ClientTransactionListenerManager (this, new RootClientTransactionListener());
+    _listenerManager.AddListener (new ReadOnlyClientTransactionListener ());
 
     foreach (var listener in componentFactory.CreateListeners (this))
-      _eventSink.AddListener (listener);
+      _listenerManager.AddListener (listener);
 
     _enlistedDomainObjectManager = componentFactory.CreateEnlistedObjectManager (this);
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
-    _dataManager = componentFactory.CreateDataManager (this, _eventSink, _invalidDomainObjectManager, _persistenceStrategy);
-    _queryManager = componentFactory.CreateQueryManager (this, _eventSink, _invalidDomainObjectManager, _persistenceStrategy, _dataManager);
+    _dataManager = componentFactory.CreateDataManager (this, _listenerManager, _invalidDomainObjectManager, _persistenceStrategy);
+    _queryManager = componentFactory.CreateQueryManager (this, _listenerManager, _invalidDomainObjectManager, _persistenceStrategy, _dataManager);
 
     _extensions = componentFactory.CreateExtensionCollection (this);
-    _eventSink.AddListener (new ExtensionClientTransactionListener (_extensions));
+    _listenerManager.AddListener (new ExtensionClientTransactionListener (_extensions));
 
     if (_parentTransaction != null)
-      _parentTransaction.TransactionEventSink.SubTransactionInitialize (_parentTransaction, this);
-    TransactionEventSink.TransactionInitialize (this);
+      _parentTransaction.ListenerManager.RaiseEvent ((tx, l) => l.SubTransactionInitialize (tx, this));
+    ListenerManager.RaiseEvent ((tx, l) => l.TransactionInitialize (tx));
   }
 
   /// <summary>
@@ -339,19 +338,19 @@ public class ClientTransaction
   /// Objects such as <see cref="DataManager"/>, changes to which logically represent changes to the transaction, can use the object returned by
   /// this property in order to inform the <see cref="ClientTransaction"/> and its listeners of events.
   /// </remarks>
-  internal IClientTransactionListener TransactionEventSink
+  internal IClientTransactionListenerManager ListenerManager
   {
-    get { return _eventSink; }
+    get { return _listenerManager; }
   }
 
   protected internal void AddListener (IClientTransactionListener listener)
   {
-    _eventSink.AddListener (listener);
+    _listenerManager.AddListener (listener);
   }
 
   protected internal void RemoveListener (IClientTransactionListener listener)
   {
-    _eventSink.RemoveListener (listener);
+    _listenerManager.RemoveListener (listener);
   }
 
   /// <summary>
@@ -376,7 +375,7 @@ public class ClientTransaction
   {
     if (!_isDiscarded)
     {
-      TransactionEventSink.TransactionDiscard (this);
+      ListenerManager.RaiseEvent ((tx, l) => l.TransactionDiscard (tx));
 
       if (ParentTransaction != null)
       {
@@ -764,7 +763,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 
-    TransactionEventSink.SubTransactionCreating (this);
+    ListenerManager.RaiseEvent ((tx, l) => l.SubTransactionCreating (tx));
 
     IsReadOnly = true;
 
@@ -807,7 +806,7 @@ public class ClientTransaction
       BeginCommit();
 
       var persistableDataItems = _dataManager.GetNewChangedDeletedData().ToList().AsReadOnly();
-      TransactionEventSink.TransactionCommitValidate (this, persistableDataItems);
+      ListenerManager.RaiseEvent ((tx, l) => l.TransactionCommitValidate (tx, persistableDataItems));
       
       _persistenceStrategy.PersistData (persistableDataItems);
 
@@ -1053,11 +1052,11 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Current));
 
       var objectEndPoint = (IObjectEndPoint) DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       DomainObject relatedObject = objectEndPoint.GetOppositeObject ();
-      TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current));
 
       return relatedObject;
     }
@@ -1081,10 +1080,10 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Original));
       var objectEndPoint = (IObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       DomainObject relatedObject = objectEndPoint.GetOriginalOppositeObject ();
-      TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original));
 
       return relatedObject;
     }
@@ -1108,12 +1107,12 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Current);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Current));
 
       var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       var relatedObjects = collectionEndPoint.Collection;
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
-      TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current));
 
       return relatedObjects;
     }
@@ -1137,11 +1136,11 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      TransactionEventSink.RelationReading (this, domainObject, relationEndPointID.Definition, ValueAccess.Original);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Original));
       var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       var relatedObjects = collectionEndPoint.GetCollectionWithOriginalData();
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
-      TransactionEventSink.RelationRead (this, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original);
+      ListenerManager.RaiseEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original));
 
       return relatedObjects;
     }
@@ -1184,7 +1183,7 @@ public class ClientTransaction
   {
     using (EnterNonDiscardingScope ())
     {
-      TransactionEventSink.TransactionCommitting (this, args.DomainObjects);
+      ListenerManager.RaiseEvent ((tx, l) => l.TransactionCommitting (tx, args.DomainObjects));
 
       if (Committing != null)
         Committing (this, args);
@@ -1203,7 +1202,7 @@ public class ClientTransaction
       if (Committed != null)
         Committed (this, args);
 
-      TransactionEventSink.TransactionCommitted (this, args.DomainObjects);
+      ListenerManager.RaiseEvent ((tx, l) => l.TransactionCommitted (tx, args.DomainObjects));
     }
   }
 
@@ -1215,7 +1214,7 @@ public class ClientTransaction
   {
     using (EnterNonDiscardingScope ())
     {
-      TransactionEventSink.TransactionRollingBack (this, args.DomainObjects);
+      ListenerManager.RaiseEvent ((tx, l) => l.TransactionRollingBack (tx, args.DomainObjects));
 
       if (RollingBack != null)
         RollingBack (this, args);
@@ -1233,7 +1232,7 @@ public class ClientTransaction
       if (RolledBack != null)
         RolledBack (this, args);
 
-      TransactionEventSink.TransactionRolledBack (this, args.DomainObjects);
+      ListenerManager.RaiseEvent ((tx, l) => l.TransactionRolledBack (tx, args.DomainObjects));
     }
   }
 
@@ -1252,7 +1251,7 @@ public class ClientTransaction
       if (SubTransactionCreated != null)
         SubTransactionCreated (this, eventArgs);
 
-      TransactionEventSink.SubTransactionCreated (this, eventArgs.SubTransaction);
+      ListenerManager.RaiseEvent ((tx, l) => l.SubTransactionCreated (tx, eventArgs.SubTransaction));
     }
   }
 

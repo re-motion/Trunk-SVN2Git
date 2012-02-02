@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       public void RegisterAllDataContainers (
           IDataContainerLifetimeManager lifetimeManager,
           ClientTransaction clientTransaction,
-          IClientTransactionListener transactionEventSink)
+          IClientTransactionEventSink transactionEventSink)
       {
         ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
 
@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           return;
 
         var objectIDs = ListAdapter.AdaptReadOnly (_dataContainersToBeRegistered, dc => dc.ID);
-        transactionEventSink.ObjectsLoading (clientTransaction, objectIDs);
+        transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsLoading (tx, objectIDs));
 
         var loadedDomainObjects = new List<DomainObject> (_dataContainersToBeRegistered.Count);
 
@@ -90,23 +90,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         }
       }
 
-      private void RaiseLoadedEvents (IClientTransactionListener transactionEventSink, ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+      private void RaiseLoadedEvents (
+          IClientTransactionEventSink transactionEventSink, ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
       {
         if (domainObjects.Count > 0)
         {
           foreach (var domainObject in domainObjects)
             domainObject.OnLoaded();
 
-          transactionEventSink.ObjectsLoaded (clientTransaction, domainObjects);
+          transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsLoaded (tx, domainObjects));
           clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
         }
       }
     }
 
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IClientTransactionEventSink _transactionEventSink;
 
-    public LoadedObjectDataRegistrationAgent (ClientTransaction clientTransaction, IClientTransactionListener transactionEventSink)
+    public LoadedObjectDataRegistrationAgent (ClientTransaction clientTransaction, IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
@@ -120,7 +121,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _clientTransaction; }
     }
 
-    public IClientTransactionListener TransactionEventSink
+    public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
     }

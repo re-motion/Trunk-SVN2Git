@@ -23,6 +23,7 @@ using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
+  // TODO 3658: Remove ClientTransaction
   /// <summary>
   /// <see cref="QueryManager"/> provides methods to execute queries within a <see cref="RootPersistenceStrategy"/>.
   /// </summary>
@@ -32,7 +33,7 @@ namespace Remotion.Data.DomainObjects.Queries
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly IObjectLoader _objectLoader;
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IClientTransactionEventSink _transactionEventSink;
 
     // construction and disposing
 
@@ -41,14 +42,14 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     /// <param name="persistenceStrategy">The <see cref="IPersistenceStrategy"/> used to load query results not involving <see cref="DomainObject"/> instances.</param>
     /// <param name="objectLoader">An <see cref="IObjectLoader"/> implementation that can be used to load objects. This parameter determines
-    /// the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
+    ///   the <see cref="ClientTransaction"/> housing the objects loaded by queries.</param>
     /// <param name="clientTransaction">The client transaction to use for the notifications via <paramref name="transactionEventSink"/>.</param>
     /// <param name="transactionEventSink">The transaction event sink to use for raising query-related notifications.</param>
     public QueryManager (
         IPersistenceStrategy persistenceStrategy,
         IObjectLoader objectLoader,
         ClientTransaction clientTransaction,
-        IClientTransactionListener transactionEventSink)
+        IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
@@ -76,7 +77,7 @@ namespace Remotion.Data.DomainObjects.Queries
       get { return _clientTransaction; }
     }
 
-    public IClientTransactionListener TransactionEventSink
+    public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
     }
@@ -162,7 +163,8 @@ namespace Remotion.Data.DomainObjects.Queries
           .GetOrLoadCollectionQueryResult (query)
           .Select (data => ConvertLoadedDomainObject<T> (data.GetDomainObjectReference())).ToArray();
       var queryResult = new QueryResult<T> (query, resultArray);
-      return _transactionEventSink.FilterQueryResult (_clientTransaction, queryResult);
+      _transactionEventSink.RaiseEvent ((tx, l) => queryResult = l.FilterQueryResult (tx, queryResult));
+      return queryResult;
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject

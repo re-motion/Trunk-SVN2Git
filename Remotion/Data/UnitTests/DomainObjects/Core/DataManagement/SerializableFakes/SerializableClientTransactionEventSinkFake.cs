@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,18 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Collections.Generic;
+using System;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Defines an interface for classes managing the <see cref="IClientTransactionListener"/> instances attached to a 
-  /// <see cref="DomainObjects.ClientTransaction"/> instance and allowing clients to raise events for the <see cref="ClientTransaction"/>.
-  /// </summary>
-  public interface IClientTransactionListenerManager : IClientTransactionEventSink
+  [Serializable]
+  public class SerializableClientTransactionEventSinkFake : IClientTransactionEventSink
   {
-    IEnumerable<IClientTransactionListener> Listeners { get; }
-    void AddListener (IClientTransactionListener listener);
-    void RemoveListener (IClientTransactionListener listener);
+    public void RaiseEvent (Action<ClientTransaction, IClientTransactionListener> action)
+    {
+    }
   }
 }

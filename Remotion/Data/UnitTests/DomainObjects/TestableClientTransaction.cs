@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
     }
 
-    public CompoundClientTransactionListener TransactionEventSink
+    public IClientTransactionListenerManager ListenerManager
     {
-      get { return (CompoundClientTransactionListener) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "TransactionEventSink"); }
+      get { return (IClientTransactionListenerManager) PrivateInvoke.GetNonPublicProperty (this, typeof (ClientTransaction), "ListenerManager"); }
     }
 
     public new DomainObject GetObject (ObjectID id, bool includeDeleted)

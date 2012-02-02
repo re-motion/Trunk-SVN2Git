@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryStub
           .Stub (stub => stub.CreateDataManager(
               Arg<ClientTransaction>.Is.Anything,
-              Arg<IClientTransactionListener>.Is.Anything, 
+              Arg<IClientTransactionEventSink>.Is.Anything, 
               Arg<IInvalidDomainObjectManager>.Is.Anything, 
               Arg<IPersistenceStrategy>.Is.Anything))
           .Return (dataManager);
@@ -118,7 +118,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (
               Arg<ClientTransaction>.Is.Anything,
-              Arg<ReadOnlyClientTransactionListener>.Is.Anything, Arg<IInvalidDomainObjectManager>.Is.Anything, Arg<IPersistenceStrategy>.Is.Anything, Arg<IDataManager>.Is.Anything))
+              Arg<IClientTransactionEventSink>.Is.Anything,
+              Arg<IInvalidDomainObjectManager>.Is.Anything,
+              Arg<IPersistenceStrategy>.Is.Anything,
+              Arg<IDataManager>.Is.Anything))
           .Return (queryManager);
       return componentFactoryStub;
     }

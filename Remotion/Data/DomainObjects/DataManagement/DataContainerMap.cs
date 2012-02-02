@@ -23,6 +23,7 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
+  // TODO 3658: Inject event sink rather than ClientTransaction
   public class DataContainerMap : IFlattenedSerializable, IDataContainerMapReadOnlyView
   {
     // types
@@ -32,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // member fields
 
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly DataContainerCollection _dataContainers;
 
     // construction and disposing
@@ -42,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       _clientTransaction = clientTransaction;
-      _transactionEventSink = clientTransaction.TransactionEventSink;
+      _transactionEventSink = clientTransaction.ListenerManager;
       _dataContainers = new DataContainerCollection();
     }
 
@@ -53,7 +54,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _clientTransaction; }
     }
 
-    public IClientTransactionListener TransactionEventSink
+    public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
     }
@@ -83,7 +84,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Register (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      _transactionEventSink.DataContainerMapRegistering (_clientTransaction, dataContainer);
+      _transactionEventSink.RaiseEvent ((tx, l) => l.DataContainerMapRegistering (tx, dataContainer));
       _dataContainers.Add (dataContainer);
     }
 
@@ -98,7 +99,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "id");
       }
 
-      _transactionEventSink.DataContainerMapUnregistering (_clientTransaction, dataContainer);
+      _transactionEventSink.RaiseEvent ((tx, l) => l.DataContainerMapUnregistering (tx, dataContainer));
       _dataContainers.Remove (dataContainer);
     }
 

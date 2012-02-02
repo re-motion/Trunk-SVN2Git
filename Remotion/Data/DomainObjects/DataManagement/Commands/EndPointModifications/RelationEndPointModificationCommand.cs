@@ -22,6 +22,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
+  // TODO 3658: Inject event sink
   /// <summary>
   /// Represents a modification performed on a <see cref="RelationEndPoint"/>. Provides default behavior for triggering the required
   /// events and notifying the <see cref="ClientTransaction"/> about the modification. The actual modification has to be specified by subclasses
@@ -130,15 +131,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected void RaiseClientTransactionBeginNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      var eventSink = _modifiedEndPoint.ClientTransaction.TransactionEventSink;
-      eventSink.RelationChanging (
-          _modifiedEndPoint.ClientTransaction, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject);
+      var eventSink = _modifiedEndPoint.ClientTransaction.ListenerManager;
+      eventSink.RaiseEvent ((tx, l) => l.RelationChanging (
+          tx, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject));
     }
 
     protected void RaiseClientTransactionEndNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      var eventSink = _modifiedEndPoint.ClientTransaction.TransactionEventSink;
-      eventSink.RelationChanged (_modifiedEndPoint.ClientTransaction, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject);
+      var eventSink = _modifiedEndPoint.ClientTransaction.ListenerManager;
+      eventSink.RaiseEvent ((tx, l) => l.RelationChanged (tx, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject));
     }
 
     protected IRelationEndPoint GetOppositeEndPoint (

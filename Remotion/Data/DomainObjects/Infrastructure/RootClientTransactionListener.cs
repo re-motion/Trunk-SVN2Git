@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.ObjectModel;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -22,6 +23,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// Holds all the <see cref="IClientTransactionListener"/> instances attached to a <see cref="ClientTransaction"/>, forwarding events to them, 
   /// and raising <see cref="DomainObject"/> and <see cref="ClientTransaction"/> events.
   /// </summary>
+  [Serializable]
   public class RootClientTransactionListener : CompoundClientTransactionListener, IRootClientTransactionListener
   {
     public override void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)

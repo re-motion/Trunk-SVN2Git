@@ -24,13 +24,14 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
+  // TODO 3658: Inject event sink
   /// <summary>
   /// Holds a set of <see cref="IRelationEndPoint"/> instances and provides access to them.
   /// </summary>
   public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly IClientTransactionListener _transactionEventSink;
+    private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
 
     public RelationEndPointMap (ClientTransaction clientTransaction)
@@ -38,7 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
       _clientTransaction = clientTransaction;
-      _transactionEventSink = clientTransaction.TransactionEventSink;
+      _transactionEventSink = clientTransaction.ListenerManager;
       _relationEndPoints = new Dictionary<RelationEndPointID, IRelationEndPoint> ();
     }
 
@@ -47,7 +48,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _clientTransaction; }
     }
 
-    public IClientTransactionListener TransactionEventSink
+    public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
     }
@@ -88,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      _transactionEventSink.RelationEndPointMapRegistering (_clientTransaction, endPoint);
+      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationEndPointMapRegistering (tx, endPoint));
       var id = endPoint.ID;
       try
       {
@@ -111,7 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         throw new ArgumentException (message, "endPointID");
       }
 
-      _transactionEventSink.RelationEndPointMapUnregistering (_clientTransaction, endPointID);
+      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationEndPointMapUnregistering (tx, endPointID));
       _relationEndPoints.Remove (endPointID);
     }
 

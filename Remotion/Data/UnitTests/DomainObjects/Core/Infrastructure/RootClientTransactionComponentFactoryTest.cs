@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
       Assert.That (((InvalidDomainObjectManager) manager).InvalidObjectCount, Is.EqualTo (0));
       Assert.That (((InvalidDomainObjectManager) manager).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (((InvalidDomainObjectManager) manager).TransactionEventSink, Is.SameAs (_fakeConstructedTransaction.TransactionEventSink));
+      Assert.That (((InvalidDomainObjectManager) manager).TransactionEventSink, Is.SameAs (_fakeConstructedTransaction.ListenerManager));
     }
 
     [Test]
@@ -182,15 +182,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var persistenceStrategy = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy> ();
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
 
       var fakeBasicObjectLoader = MockRepository.GenerateStub<IFetchEnabledObjectLoader> ();
 
       var factoryPartialMock = MockRepository.GeneratePartialMock<RootClientTransactionComponentFactory> ();
       factoryPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (
-              mock,
-              "CreateBasicObjectLoader",
+          .Expect (mock => CallCreateBasicObjectLoader (
+              mock, 
               _fakeConstructedTransaction,
               eventSink,
               persistenceStrategy,
@@ -234,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var persistenceStrategy = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy> ();
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
 
       var result = CallCreateBasicObjectLoader (
           _factory,
@@ -263,7 +262,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private object CallCreateBasicObjectLoader (
         RootClientTransactionComponentFactory factory,
         TestableClientTransaction constructedTransaction,
-        IClientTransactionListener eventSink,
+        IClientTransactionEventSink eventSink,
         IFetchEnabledPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager)

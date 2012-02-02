@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateDataManager ()
     {
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy>();
 
@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
-      var eventSink = MockRepository.GenerateStub<IClientTransactionListener> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
 
       var fakeObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
 
