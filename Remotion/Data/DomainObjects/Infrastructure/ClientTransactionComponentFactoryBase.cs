@@ -53,9 +53,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager);
 
-    public virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
+    public virtual IClientTransactionListenerManager CreateListenerManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+
+      var listenerManager = new ClientTransactionListenerManager (constructedTransaction, new TopClientTransactionListener ());
+      foreach (var listener in CreateListeners (constructedTransaction))
+        listenerManager.AddListener (listener);
+      return listenerManager;
+    }
+
+    protected virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      yield return new ReadOnlyClientTransactionListener ();
       yield return new LoggingClientTransactionListener ();
       yield return new NewObjectHierarchyInvalidationClientTransactionListener();
     }
@@ -82,7 +93,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return dataManager;
     }
 
-    public IQueryManager CreateQueryManager (
+    public virtual IQueryManager CreateQueryManager (
         ClientTransaction constructedTransaction,
         IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,

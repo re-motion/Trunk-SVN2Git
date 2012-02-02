@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction);
     Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
-    IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction);
+    IClientTransactionListenerManager CreateListenerManager (ClientTransaction constructedTransaction);
     IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
     IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction);
     IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);

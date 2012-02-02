@@ -69,6 +69,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       throw new NotImplementedException();
     }
 
+    public IEnumerable<IClientTransactionListener> CallCreateListeners (ClientTransaction constructedTransaction)
+    {
+      return CreateListeners (constructedTransaction);
+    }
+
     public IRelationEndPointManager CallCreateRelationEndPointManager (
         ClientTransaction constructedTransaction, IRelationEndPointProvider endPointProvider, ILazyLoader lazyLoader)
     {
@@ -94,5 +99,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       return GetLazyLoader (dataManager);
     }
+
   }
 }

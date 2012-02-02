@@ -167,13 +167,8 @@ public class ClientTransaction
     _parentTransaction = componentFactory.GetParentTransaction (this);
 
     _applicationData = componentFactory.CreateApplicationData (this);
-   
-    _listenerManager = new ClientTransactionListenerManager (this, new TopClientTransactionListener());
-    _listenerManager.AddListener (new ReadOnlyClientTransactionListener ());
 
-    foreach (var listener in componentFactory.CreateListeners (this))
-      _listenerManager.AddListener (listener);
-
+    _listenerManager = componentFactory.CreateListenerManager (this);
     _enlistedDomainObjectManager = componentFactory.CreateEnlistedObjectManager (this);
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);

@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -45,13 +46,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void CreateListenerManager ()
+    {
+      var fakeListener = MockRepository.GenerateStub<IClientTransactionListener>();
+
+      var factoryPartialMock = MockRepository.GeneratePartialMock<TestableClientTransactionComponentFactoryBase> ();
+      factoryPartialMock.Stub (stub => stub.CallCreateListeners (_fakeConstructedTransaction)).Return (new[] { fakeListener });
+
+      var result = factoryPartialMock.CreateListenerManager (_fakeConstructedTransaction);
+
+      Assert.That (
+          result,
+          Is.TypeOf<ClientTransactionListenerManager>()
+              .With.Property<ClientTransactionListenerManager> (m => m.ClientTransaction).SameAs (_fakeConstructedTransaction)
+              .And.Property<ClientTransactionListenerManager> (m => m.TopListener).TypeOf<TopClientTransactionListener>()
+              .And.Property<ClientTransactionListenerManager> (m => m.Listeners).EqualTo (new[] { fakeListener }));
+    }
+
+    [Test]
     public void CreateListeners ()
     {
-      IEnumerable<IClientTransactionListener> listeners = _factory.CreateListeners (_fakeConstructedTransaction).ToArray ();
+      IEnumerable<IClientTransactionListener> listeners = _factory.CallCreateListeners (_fakeConstructedTransaction).ToArray ();
       Assert.That (
           listeners,
           Has
-              .Length.EqualTo (2)
+              .Length.EqualTo (3)
+              .And.Some.TypeOf<ReadOnlyClientTransactionListener> ()
               .And.Some.TypeOf<LoggingClientTransactionListener> ()
               .And.Some.TypeOf<NewObjectHierarchyInvalidationClientTransactionListener> ());
     }

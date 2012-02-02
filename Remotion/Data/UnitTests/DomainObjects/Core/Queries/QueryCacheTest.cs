@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           MockRepository.GenerateStub<IEnlistedDomainObjectManager>(),
           new ClientTransactionExtensionCollection("test"),
           MockRepository.GenerateStub<IInvalidDomainObjectManager>(),
-          new CompoundClientTransactionListener[0],
+          MockRepository.GenerateStub<IClientTransactionListenerManager>(),
           MockRepository.GenerateStub<IPersistenceStrategy>(),
           queryManagerMock);
 

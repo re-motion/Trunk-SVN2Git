@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        CompoundClientTransactionListener[] listeners,
+        IClientTransactionListenerManager listenerManager,
         IPersistenceStrategy persistenceStrategy,
         IQueryManager queryManager)
       where T : ClientTransaction
@@ -80,7 +80,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           enlistedDomainObjectManager,
           extensions,
           invalidDomainObjectManager,
-          listeners,
+          listenerManager,
           persistenceStrategy,
           queryManager);
 
@@ -95,7 +95,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        CompoundClientTransactionListener[] listeners,
+        IClientTransactionListenerManager listenerManager,
         IPersistenceStrategy persistenceStrategy,
         IQueryManager queryManager)
     {
@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (enlistedDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
       componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (invalidDomainObjectManager);
-      componentFactoryStub.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);
+      componentFactoryStub.Stub (stub => stub.CreateListenerManager (Arg<ClientTransaction>.Is.Anything)).Return (listenerManager);
       componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<ClientTransaction>.Is.Anything)).Return (persistenceStrategy);
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (
@@ -129,7 +129,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static ClientTransaction CreateWithCustomListeners (params IClientTransactionListener[] listeners)
     {
       var componentFactoryPartialMock = MockRepository.GeneratePartialMock<RootClientTransactionComponentFactory>();
-      componentFactoryPartialMock.Stub (stub => stub.CreateListeners (Arg<ClientTransaction>.Is.Anything)).Return (listeners);
+      componentFactoryPartialMock
+          .Stub (stub => PrivateInvoke.InvokeNonPublicMethod (stub, "CreateListeners", Arg<ClientTransaction>.Is.Anything))
+          .Return (listeners);
       componentFactoryPartialMock.Replay ();
 
       return Create<ClientTransaction> (componentFactoryPartialMock);
