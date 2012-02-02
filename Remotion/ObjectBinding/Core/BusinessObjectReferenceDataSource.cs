@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding
     ///   <see cref="IBusinessObjectReferenceDataSource"/> connects.
     ///  </value>
     /// <remarks> Identical to <see cref="DataSource"/>. </remarks>
-    public override IBusinessObjectDataSource ReferencedDataSource
+    public override sealed IBusinessObjectDataSource ReferencedDataSource
     {
       get { return _dataSource; }
     }
@@ -131,7 +131,7 @@ namespace Remotion.ObjectBinding
     ///   <see cref="IBusinessObjectDataSource.BusinessObjectClass"/>.
     /// </value>
     [Browsable (false)]
-    public override IBusinessObjectReferenceProperty ReferenceProperty
+    public override sealed IBusinessObjectReferenceProperty ReferenceProperty
     {
       get
       {
