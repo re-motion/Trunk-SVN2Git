@@ -499,7 +499,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4600")]
     public void Events_Recalculation ()
     {
       var order1 = Order.GetObject  (DomainObjectIDs.Order1);
@@ -531,7 +530,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
                     Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order2 })));
         unloadEventReceiver
             .Expect (mock => mock.OnUnloading (order2))
-            .WhenCalled (mi => order3.EnsureDataAvailable());
+            .WhenCalled (mi => order3.EnsureDataAvailable ());
         clientTransactionListener
             .Expect (
                 mock => mock.ObjectsUnloading (
@@ -541,9 +540,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
         using (mockRepository.Unordered ())
         {
-          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order1.InternalDataContainer));
-          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order2.InternalDataContainer));
-          clientTransactionListener.Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, order3.InternalDataContainer));
+          clientTransactionListener.Expect (
+              mock => mock.DataContainerMapUnregistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Matches (dc => dc.ID == order1.ID)));
+          clientTransactionListener.Expect (
+              mock => mock.DataContainerMapUnregistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Matches (dc => dc.ID == order2.ID)));
+          clientTransactionListener.Expect (
+              mock => mock.DataContainerMapUnregistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Matches (dc => dc.ID == order3.ID)));
         }
 
         unloadEventReceiver.Expect (mock => mock.OnUnloaded (order3));
@@ -553,7 +555,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
             .Expect (
                 mock => mock.ObjectsUnloaded (
                     Arg.Is (TestableClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order3, order2, order1 })));
+                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { order1, order2, order3 })));
       }
       mockRepository.ReplayAll ();
 
