@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin_NoEvents()
     {
-      _transactionEventSinkWithMock.Replay();
+      _transactionEventSinkWithMock.ReplayMock();
       
       _command.NotifyClientTransactionOfBegin();
     }
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfEnd_NoEvents ()
     {
-      _transactionEventSinkWithMock.Replay();
+      _transactionEventSinkWithMock.ReplayMock();
 
       _command.NotifyClientTransactionOfEnd ();
     }

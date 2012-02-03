@@ -64,13 +64,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void NotifyClientTransactionOfBegin ()
     {
       _transactionEventSinkWithMock
-          .Expect (mock => mock.ObjectDeleting (_transaction, _order1))
+          .ExpectMock (mock => mock.ObjectDeleting (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      _transactionEventSinkWithMock.Replay();
+      _transactionEventSinkWithMock.ReplayMock();
       
       _deleteOrder1Command.NotifyClientTransactionOfBegin ();
 
-      _transactionEventSinkWithMock.VerifyAllExpectations();
+      _transactionEventSinkWithMock.VerifyMock();
     }
 
     [Test]
@@ -83,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       
       using (mockRepository.Ordered ())
       {
-        _transactionEventSinkWithMock.Expect (mock => mock.ObjectDeleting (_transaction, _order1));
+        _transactionEventSinkWithMock.ExpectMock (mock => mock.ObjectDeleting (_transaction, _order1));
         endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
       }
 
@@ -103,13 +103,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void NotifyClientTransactionOfEnd ()
     {
       _transactionEventSinkWithMock
-          .Expect (mock => mock.ObjectDeleted (_transaction, _order1))
+          .ExpectMock (mock => mock.ObjectDeleted (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      _transactionEventSinkWithMock.Replay ();
+      _transactionEventSinkWithMock.ReplayMock ();
 
       _deleteOrder1Command.NotifyClientTransactionOfEnd ();
 
-      _transactionEventSinkWithMock.VerifyAllExpectations ();
+      _transactionEventSinkWithMock.VerifyMock ();
     }
 
     [Test]
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       using (mockRepository.Ordered ())
       {
         endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        _transactionEventSinkWithMock.Expect (mock => mock.ObjectDeleted (_transaction, _order1));
+        _transactionEventSinkWithMock.ExpectMock (mock => mock.ObjectDeleted (_transaction, _order1));
       }
 
       mockRepository.ReplayAll ();

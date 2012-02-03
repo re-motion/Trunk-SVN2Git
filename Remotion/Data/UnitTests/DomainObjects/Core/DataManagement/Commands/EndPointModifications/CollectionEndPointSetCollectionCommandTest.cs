@@ -152,14 +152,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
-        TransactionEventSinkWithMock.Expect (
+        TransactionEventSinkWithMock.ExpectMock (
             mock => mock.RelationChanging (
                 TestableClientTransaction,
                 DomainObject,
                 CollectionEndPoint.Definition,
                 _orderWithoutOrderItem,
                 null));
-        TransactionEventSinkWithMock.Expect (
+        TransactionEventSinkWithMock.ExpectMock (
             mock => mock.RelationChanging (
                 TestableClientTransaction,
                 DomainObject,
@@ -167,11 +167,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                 null,
                 _order2));
       }
-      TransactionEventSinkWithMock.Replay ();
+      TransactionEventSinkWithMock.ReplayMock ();
 
       _command.NotifyClientTransactionOfBegin ();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations ();
+      TransactionEventSinkWithMock.VerifyMock ();
     }
 
     [Test]
@@ -179,14 +179,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
-        TransactionEventSinkWithMock.Expect (
+        TransactionEventSinkWithMock.ExpectMock (
             mock => mock.RelationChanged (
                 TestableClientTransaction,
                 DomainObject,
                 CollectionEndPoint.Definition,
                 null,
                 _order2));
-        TransactionEventSinkWithMock.Expect (
+        TransactionEventSinkWithMock.ExpectMock (
             mock => mock.RelationChanged (
                 TestableClientTransaction,
                 DomainObject,
@@ -195,11 +195,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                 null));
       }
 
-      TransactionEventSinkWithMock.Replay ();
+      TransactionEventSinkWithMock.ReplayMock ();
 
       _command.NotifyClientTransactionOfEnd();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations ();
+      TransactionEventSinkWithMock.VerifyMock ();
     }
 
     [Test]

@@ -51,17 +51,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       action (_clientTransaction, _mock);
     }
 
-    public void Replay()
+    public void ReplayMock()
     {
       _mock.Replay();
     }
 
-    public void VerifyAllExpectations ()
+    public void VerifyMock ()
     {
       _mock.VerifyAllExpectations();
     }
 
-    public void BackToRecord ()
+    public void BackToRecordMock ()
     {
       _mock.BackToRecord();
     }
@@ -71,42 +71,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return _mock.GetMockRepository();
     }
 
-    public IMethodOptions<R> Expect<R> (Function<IClientTransactionListener,R> func)
+    public IMethodOptions<R> ExpectMock<R> (Function<IClientTransactionListener,R> func)
     {
       return _mock.Expect (func);
     }
 
-    public IMethodOptions<RhinoMocksExtensions.VoidType> Expect (Action<IClientTransactionListener> action)
+    public IMethodOptions<RhinoMocksExtensions.VoidType> ExpectMock (Action<IClientTransactionListener> action)
     {
       return _mock.Expect (action);
     }
 
-    public IMethodOptions<R> Stub<R> (Function<IClientTransactionListener, R> func)
+    public IMethodOptions<R> StubMock<R> (Function<IClientTransactionListener, R> func)
     {
       return _mock.Stub (func);
     }
 
-    public IMethodOptions<object> Stub (Action<IClientTransactionListener> action)
+    public IMethodOptions<object> StubMock (Action<IClientTransactionListener> action)
     {
       return _mock.Stub (action);
     }
 
-    public void AssertWasCalled (Func<IClientTransactionListener, object> action)
+    public void AssertWasCalledMock (Func<IClientTransactionListener, object> action)
     {
       _mock.AssertWasCalled (action);
     }
 
-    public void AssertWasCalled (Action<IClientTransactionListener> action)
+    public void AssertWasCalledMock (Action<IClientTransactionListener> action)
     {
       _mock.AssertWasCalled (action);
     }
 
-    public void AssertWasNotCalled (Func<IClientTransactionListener, object> action)
+    public void AssertWasNotCalledMock (Func<IClientTransactionListener, object> action)
     {
       _mock.AssertWasNotCalled (action);
     }
 
-    public void AssertWasNotCalled (Action<IClientTransactionListener> action)
+    public void AssertWasNotCalledMock (Action<IClientTransactionListener> action)
     {
       _mock.AssertWasNotCalled (action);
     }

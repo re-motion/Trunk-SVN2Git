@@ -84,14 +84,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _commandPartialMock.Replay ();
 
       _transactionEventSinkWithMock
-          .Expect (mock => mock.RelationChanging (_transaction, _domainObject, _endPointDefinition, _oldRelatedObject, _newRelatedObject))
+          .ExpectMock (mock => mock.RelationChanging (_transaction, _domainObject, _endPointDefinition, _oldRelatedObject, _newRelatedObject))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      _transactionEventSinkWithMock.Replay();
+      _transactionEventSinkWithMock.ReplayMock();
 
       _commandPartialMock.NotifyClientTransactionOfBegin ();
 
       _commandPartialMock.VerifyAllExpectations ();
-      _transactionEventSinkWithMock.VerifyAllExpectations();
+      _transactionEventSinkWithMock.VerifyMock();
     }
 
     [Test]
@@ -104,14 +104,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _commandPartialMock.Replay ();
 
       _transactionEventSinkWithMock
-          .Expect (mock => mock.RelationChanged (_transaction, _domainObject, _endPointDefinition, _oldRelatedObject, _newRelatedObject))
+          .ExpectMock (mock => mock.RelationChanged (_transaction, _domainObject, _endPointDefinition, _oldRelatedObject, _newRelatedObject))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      _transactionEventSinkWithMock.Replay ();
+      _transactionEventSinkWithMock.ReplayMock ();
       
       _commandPartialMock.NotifyClientTransactionOfEnd ();
 
       _commandPartialMock.VerifyAllExpectations ();
-      _transactionEventSinkWithMock.VerifyAllExpectations ();
+      _transactionEventSinkWithMock.VerifyMock ();
     }
 
     [Test]

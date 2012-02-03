@@ -155,35 +155,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public virtual void NotifyClientTransactionOfBegin ()
     {
-      TransactionEventSinkWithMock.Expect (
+      TransactionEventSinkWithMock.ExpectMock (
           mock => mock.RelationChanging (
               TestableClientTransaction,
               _endPoint.GetDomainObject(),
               _endPoint.Definition,
               _oldRelatedObject,
               _newRelatedObject));
-      TransactionEventSinkWithMock.Replay();
+      TransactionEventSinkWithMock.ReplayMock();
 
       _command.NotifyClientTransactionOfBegin();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations();
+      TransactionEventSinkWithMock.VerifyMock();
     }
 
     [Test]
     public virtual void NotifyClientTransactionOfEnd ()
     {
-      TransactionEventSinkWithMock.Expect (
+      TransactionEventSinkWithMock.ExpectMock (
           mock => mock.RelationChanged (
               TestableClientTransaction,
               _endPoint.GetDomainObject(),
               _endPoint.Definition,
               _oldRelatedObject,
               _newRelatedObject));
-      TransactionEventSinkWithMock.Replay();
+      TransactionEventSinkWithMock.ReplayMock();
 
       _command.NotifyClientTransactionOfEnd();
 
-      TransactionEventSinkWithMock.VerifyAllExpectations();
+      TransactionEventSinkWithMock.VerifyMock();
     }
 
     [Test]
