@@ -79,11 +79,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateInvalidDomainObjectManager ()
     {
       _parentInvalidDomainObjectManagerStub.Stub (stub => stub.InvalidObjectIDs).Return (new ObjectID[0]);
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink>();
 
-      var manager = _factory.CreateInvalidDomainObjectManager (_fakeConstructedTransaction);
+      var manager = _factory.CreateInvalidDomainObjectManager (_fakeConstructedTransaction, eventSink);
       Assert.That (manager, Is.TypeOf (typeof (InvalidDomainObjectManager)));
-      Assert.That (((InvalidDomainObjectManager) manager).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (((InvalidDomainObjectManager) manager).TransactionEventSink, Is.SameAs (_fakeConstructedTransaction.ListenerManager));
+      Assert.That (((InvalidDomainObjectManager) manager).TransactionEventSink, Is.SameAs (eventSink));
     }
 
     [Test]
@@ -98,7 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       
       _parentTransaction.Delete (objectDeletedInParent);
 
-      var invalidOjectManager = _factory.CreateInvalidDomainObjectManager (_fakeConstructedTransaction);
+      var invalidOjectManager = _factory.CreateInvalidDomainObjectManager (
+          _fakeConstructedTransaction, MockRepository.GenerateStub<IClientTransactionEventSink>());
 
       Assert.That (invalidOjectManager.IsInvalid (objectInvalidInParent.ID), Is.True);
       Assert.That (invalidOjectManager.IsInvalid (objectDeletedInParent.ID), Is.True);

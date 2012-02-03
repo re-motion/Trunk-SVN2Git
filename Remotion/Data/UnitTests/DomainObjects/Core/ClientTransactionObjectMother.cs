@@ -112,7 +112,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Return (dataManager);
       componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (enlistedDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
-      componentFactoryStub.Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (invalidDomainObjectManager);
+      componentFactoryStub
+          .Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything, Arg<IClientTransactionEventSink>.Is.Anything))
+          .Return (invalidDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateListenerManager (Arg<ClientTransaction>.Is.Anything)).Return (listenerManager);
       componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<ClientTransaction>.Is.Anything)).Return (persistenceStrategy);
       componentFactoryStub

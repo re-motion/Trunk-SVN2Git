@@ -20,28 +20,23 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
 {
-  // TODO 3658: Remove ClientTransaction
   /// <summary>
   /// Keeps a collection of <see cref="DomainObject"/> references that were marked as invalid in a given <see cref="ClientTransaction"/>.
   /// </summary>
   [Serializable]
   public class InvalidDomainObjectManager : IInvalidDomainObjectManager
   {
-    private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly Dictionary<ObjectID, DomainObject> _invalidObjects = new Dictionary<ObjectID, DomainObject> ();
 
-    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionEventSink transactionEventSink)
+    public InvalidDomainObjectManager (IClientTransactionEventSink transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
-
-      _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
     }
 
-    public InvalidDomainObjectManager (ClientTransaction clientTransaction, IClientTransactionEventSink transactionEventSink, IEnumerable<DomainObject> invalidObjects) 
-        : this (clientTransaction, transactionEventSink)
+    public InvalidDomainObjectManager (IClientTransactionEventSink transactionEventSink, IEnumerable<DomainObject> invalidObjects) 
+        : this (transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("invalidObjects", invalidObjects);
 
@@ -56,11 +51,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
           throw new ArgumentException ("The sequence contains multiple different objects with the same ID.", "invalidObjects", ex);
         }
       }
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
     }
 
     public IClientTransactionEventSink TransactionEventSink

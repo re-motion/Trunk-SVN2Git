@@ -170,7 +170,7 @@ public class ClientTransaction
 
     _listenerManager = componentFactory.CreateListenerManager (this);
     _enlistedDomainObjectManager = componentFactory.CreateEnlistedObjectManager (this);
-    _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this);
+    _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this, _listenerManager);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
     _dataManager = componentFactory.CreateDataManager (this, _listenerManager, _invalidDomainObjectManager, _persistenceStrategy);
     _queryManager = componentFactory.CreateQueryManager (this, _listenerManager, _invalidDomainObjectManager, _persistenceStrategy, _dataManager);

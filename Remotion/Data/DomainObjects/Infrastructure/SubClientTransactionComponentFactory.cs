@@ -82,9 +82,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return _parentEnlistedDomainObjectManager;
     }
 
-    public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)
+    public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (
+        ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
 
       var invalidObjects =
           _parentInvalidDomainObjectManager.InvalidObjectIDs.Select (id => _parentInvalidDomainObjectManager.GetInvalidObjectReference (id));
@@ -92,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var parentDataManager = _parentTransaction.DataManager;
       var deletedObjects = parentDataManager.DataContainers.Where (dc => dc.State == StateType.Deleted).Select (dc => dc.DomainObject);
 
-      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.ListenerManager, invalidObjects.Concat (deletedObjects));
+      return new InvalidDomainObjectManager (eventSink, invalidObjects.Concat (deletedObjects));
     }
 
     public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)

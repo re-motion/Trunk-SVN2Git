@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
     IClientTransactionListenerManager CreateListenerManager (ClientTransaction constructedTransaction);
     IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
-    IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction);
+    IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
     IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
 
     IDataManager CreateDataManager (

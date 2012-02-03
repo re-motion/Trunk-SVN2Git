@@ -65,11 +65,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new DictionaryBasedEnlistedDomainObjectManager ();
     }
 
-    // TODO 3658: Inject event sink
-    public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction)
+    public override IInvalidDomainObjectManager CreateInvalidDomainObjectManager (
+        ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new InvalidDomainObjectManager (constructedTransaction, constructedTransaction.ListenerManager);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      return new InvalidDomainObjectManager (eventSink);
     }
 
     public override IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)

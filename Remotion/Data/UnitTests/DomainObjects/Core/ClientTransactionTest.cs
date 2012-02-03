@@ -145,7 +145,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Return (_enlistedObjectManagerMock)
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetListenerManager (constructedTransaction), Is.SameAs (listenerManagerMock)));
         componentFactoryMock
-            .Expect (mock => mock.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Expect (mock => mock.CreateInvalidDomainObjectManager (
+                Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
+                Arg.Is (listenerManagerMock)))
             .Return (_invalidDomainObjectManagerMock)
             .WhenCalled (
                 mi => Assert.That (
