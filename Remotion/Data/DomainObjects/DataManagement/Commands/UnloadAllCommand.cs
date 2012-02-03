@@ -92,11 +92,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Begin ()
     {
-      _clientTransaction.Execute (() => RaiseRecurringBeginEvent (domainObjects =>
-      {
-        foreach (var obj in domainObjects)
-          obj.OnUnloading();
-      }));
+      // 4619: Moved to TopClientTransactionListener
     }
 
     public void Perform ()
@@ -120,12 +116,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      _clientTransaction.Execute (
-          delegate
-          {
-            for (int i = _unloadedDataContainers.Count - 1; i >= 0; --i)
-              _unloadedDataContainers[i].DomainObject.OnUnloaded ();
-          });
+      // 4619: Moved to TopClientTransactionListener
     }
 
     public void NotifyClientTransactionOfEnd ()

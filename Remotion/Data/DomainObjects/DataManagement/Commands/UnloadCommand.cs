@@ -82,13 +82,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       this.EnsureCanExecute();
 
-      _clientTransaction.Execute (
-          delegate
-          {
-            for (int i = 0; i < _domainObjects.Length; i++)
-              _domainObjects[i].OnUnloading ();
-          });
-
+      // 4619: Moved rest to TopClientTransactionListener
       _unloadDataCommand.Begin ();
     }
 
@@ -103,14 +97,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       this.EnsureCanExecute ();
 
+      // 4619: Moved rest to TopClientTransactionListener
       _unloadDataCommand.End ();
-
-      _clientTransaction.Execute (
-          delegate
-          {
-            for (int i = _domainObjects.Length - 1; i >= 0; i--)
-              _domainObjects[i].OnUnloaded ();
-          });
     }
 
     public void NotifyClientTransactionOfEnd ()

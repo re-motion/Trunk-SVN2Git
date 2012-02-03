@@ -39,17 +39,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       base.ObjectsUnloading (clientTransaction, unloadedDomainObjects);
-      // TODO 4619
-      //clientTransaction.Execute (
-      //    () =>
-      //    {
-      //      foreach (var domainObject in unloadedDomainObjects)
-      //        domainObject.OnUnloading();
-      //    });
+      clientTransaction.Execute (
+          () =>
+          {
+            for (int i = 0; i < unloadedDomainObjects.Count; i++)
+            {
+              var domainObject = unloadedDomainObjects[i];
+              domainObject.OnUnloading();
+            }
+          });
     }
 
-    public override void ObjectsUnloaded (ClientTransaction clientTransaction, System.Collections.ObjectModel.ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public override void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
+      clientTransaction.Execute (
+         () =>
+         {
+           for (int i = unloadedDomainObjects.Count - 1; i >= 0; i--)
+           {
+             var domainObject = unloadedDomainObjects[i];
+             domainObject.OnUnloaded();
+           }
+         });
       base.ObjectsUnloaded (clientTransaction, unloadedDomainObjects);
     }
 

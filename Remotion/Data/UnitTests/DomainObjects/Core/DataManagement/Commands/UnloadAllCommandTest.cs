@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -108,54 +107,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Begin ()
-    {
-      _dataContainerMap.Register (_existingDataContainer);
-      _dataContainerMap.Register (_newDataContainer);
-
-      var unloadEventReceiverMock = MockRepository.GenerateStrictMock<IUnloadEventReceiver>();
-      _existingDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-      _newDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-
-      using (unloadEventReceiverMock.GetMockRepository ().Ordered ())
-      {
-        // Order of registration
-        unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloading (_existingDomainObject))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-        unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloading (_newDomainObject))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-      }
-      unloadEventReceiverMock.Replay ();
-
-      _unloadCommand.Begin ();
-
-      unloadEventReceiverMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void Begin_ReexecutedForNewlyRegisteredObjects ()
-    {
-      _dataContainerMap.Register (_existingDataContainer);
-
-      var unloadEventReceiverMock = MockRepository.GenerateStrictMock<IUnloadEventReceiver> ();
-      _existingDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-      _newDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-
-      unloadEventReceiverMock
-          .Expect (mock => mock.OnUnloading (_existingDomainObject))
-          .WhenCalled (mi => _dataContainerMap.Register (_newDataContainer));
-      unloadEventReceiverMock
-          .Expect (mock => mock.OnUnloading (_newDomainObject));
-      unloadEventReceiverMock.Replay ();
-
-      _unloadCommand.Begin ();
-
-      unloadEventReceiverMock.VerifyAllExpectations ();
-    }
-
-    [Test]
     public void Perform_ClearsAndDiscardsDataContainers_AndResetsEndPoints ()
     {
       _dataContainerMap.Register (_existingDataContainer);
@@ -200,54 +151,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _invalidDomainObjectManagerMock.VerifyAllExpectations ();
       Assert.That (_newDataContainer.IsDiscarded, Is.True);
-    }
-
-    [Test]
-    public void End_WithoutPerform ()
-    {
-      _dataContainerMap.Register (_existingDataContainer);
-      _dataContainerMap.Register (_newDataContainer);
-      
-      var unloadEventReceiverMock = MockRepository.GenerateStrictMock<IUnloadEventReceiver> ();
-      _existingDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-      _newDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-
-      unloadEventReceiverMock.Replay ();
-
-      _unloadCommand.End ();
-
-      unloadEventReceiverMock.AssertWasNotCalled (mock => mock.OnUnloaded (Arg<DomainObject>.Is.Anything));
-    }
-
-    [Test]
-    public void End_WithPerform ()
-    {
-      _dataContainerMap.Register (_existingDataContainer);
-      _dataContainerMap.Register (_newDataContainer);
-
-      _invalidDomainObjectManagerMock.Stub (mock => mock.MarkInvalid (Arg<DomainObject>.Is.Anything)).Return (true);
-      _endPointManagerMock.Stub (mock => mock.Reset());
-      _unloadCommand.Perform ();
-      
-      var unloadEventReceiverMock = MockRepository.GenerateStrictMock<IUnloadEventReceiver> ();
-      _existingDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-      _newDomainObject.SetUnloadEventReceiver (unloadEventReceiverMock);
-      
-      using (unloadEventReceiverMock.GetMockRepository ().Ordered ())
-      {
-        // Reverse order of registration
-        unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloaded (_newDataContainer.DomainObject))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-        unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloaded (_existingDataContainer.DomainObject))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-      }
-      unloadEventReceiverMock.Replay ();
-
-      _unloadCommand.End ();
-
-      unloadEventReceiverMock.VerifyAllExpectations();
     }
 
     [Test]

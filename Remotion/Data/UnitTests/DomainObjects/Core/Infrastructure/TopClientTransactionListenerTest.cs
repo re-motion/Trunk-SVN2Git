@@ -65,7 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    [Ignore ("TODO 4619")]
     public void ObjectsUnloading ()
     {
       var unloadedDomainObjects = Array.AsReadOnly (new DomainObject[] { _order1, _order2 });
@@ -83,6 +82,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _mockRepository.ReplayAll();
 
       _listener.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void ObjectsUnloaded ()
+    {
+      var unloadedDomainObjects = Array.AsReadOnly (new DomainObject[] { _order1, _order2 });
+
+      using (_mockRepository.Ordered ())
+      {
+        _unloadEventReceiverMock
+            .Expect (mock => mock.OnUnloaded (_order2))
+            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+        _unloadEventReceiverMock
+            .Expect (mock => mock.OnUnloaded (_order1))
+            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+        _innerListenerMock.Expect (mock => mock.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects));
+      }
+      _mockRepository.ReplayAll ();
+
+      _listener.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
 
       _mockRepository.VerifyAll ();
     }
