@@ -365,6 +365,7 @@
     <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons.cs" />
     <Compile Include="Reflection\TypeAdapterConverterTest.cs" />
     <Compile Include="Reflection\TypeAdapterTest.cs" />
+    <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecoratorTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FixedRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\NamedRootAssemblyFinderTest.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\RootAssemblyTest.cs" />
