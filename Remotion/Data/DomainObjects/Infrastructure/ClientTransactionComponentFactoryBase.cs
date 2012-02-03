@@ -109,7 +109,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var objectLoader = CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
-      return new QueryManager (persistenceStrategy, objectLoader, constructedTransaction, eventSink);
+      return new QueryManager (persistenceStrategy, objectLoader, eventSink);
     }
 
     public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)

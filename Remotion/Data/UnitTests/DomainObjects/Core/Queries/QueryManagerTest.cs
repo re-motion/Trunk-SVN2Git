@@ -32,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
     private IPersistenceStrategy _persistenceStrategyMock;
     private IObjectLoader _objectLoaderMock;
-    private ClientTransaction _clientTransaction;
     private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
     
     private IQuery _collectionQuery;
@@ -49,13 +48,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _persistenceStrategyMock = MockRepository.GenerateStrictMock<IPersistenceStrategy> ();
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (_clientTransaction);
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (ClientTransaction.CreateRootTransaction());
 
       _queryManager = new QueryManager (
           _persistenceStrategyMock,
           _objectLoaderMock,
-          _clientTransaction,
           _transactionEventSinkWithMock);
 
       _collectionQuery =  QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
@@ -164,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var filteredResult = new QueryResult<Order> (_collectionQuery, new[] { _fakeOrder2 });
       _transactionEventSinkWithMock
           .ExpectMock (mock => mock.FilterQueryResult (
-              Arg.Is (_clientTransaction), 
+              Arg.Is (_transactionEventSinkWithMock.ClientTransaction), 
               Arg<QueryResult<Order>>.Matches (qr => qr.ToArray().SequenceEqual (new[] { _fakeOrder1 }))))
           .Return (filteredResult);
       _transactionEventSinkWithMock.ReplayMock ();
@@ -196,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var filteredResult = new QueryResult<DomainObject> (_collectionQuery, new[] { _fakeOrder2 });
       _transactionEventSinkWithMock
           .ExpectMock (mock => mock.FilterQueryResult (
-              Arg.Is (_clientTransaction), 
+              Arg.Is (_transactionEventSinkWithMock.ClientTransaction), 
               Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray().SequenceEqual (new[] { _fakeOrder1, _fakeOrder2 }))))
           .Return (filteredResult);
       _transactionEventSinkWithMock.ReplayMock ();

@@ -158,7 +158,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (result, Is.TypeOf (typeof (QueryManager)));
       Assert.That (((QueryManager) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
-      Assert.That (((QueryManager) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (((QueryManager) result).TransactionEventSink, Is.SameAs (eventSink));
       Assert.That (((QueryManager) result).ObjectLoader, Is.SameAs (fakeObjectLoader));
     }
