@@ -424,8 +424,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (domainObjects.Count == 0)
         return new NopCommand();
       else
-        return new UnloadAllCommand (
-            _relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _clientTransaction, _transactionEventSink);
+        return new UnloadAllCommand (_relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _transactionEventSink);
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)

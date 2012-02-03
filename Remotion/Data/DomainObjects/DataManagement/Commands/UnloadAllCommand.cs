@@ -30,7 +30,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     private readonly IRelationEndPointManager _relationEndPointManager;
     private readonly DataContainerMap _dataContainerMap;
     private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
-    private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionEventSink _transactionEventSink;
 
     private List<DataContainer> _unloadedDataContainers = new List<DataContainer>();
@@ -39,19 +38,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         IRelationEndPointManager relationEndPointManager, 
         DataContainerMap dataContainerMap, 
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        ClientTransaction clientTransaction,
         IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointManager", relationEndPointManager);
       ArgumentUtility.CheckNotNull ("dataContainerMap", dataContainerMap);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       _relationEndPointManager = relationEndPointManager;
       _dataContainerMap = dataContainerMap;
       _invalidDomainObjectManager = invalidDomainObjectManager;
-      _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
     }
 
@@ -68,11 +64,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public IInvalidDomainObjectManager InvalidDomainObjectManager
     {
       get { return _invalidDomainObjectManager; }
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
     }
 
     public IClientTransactionEventSink TransactionEventSink

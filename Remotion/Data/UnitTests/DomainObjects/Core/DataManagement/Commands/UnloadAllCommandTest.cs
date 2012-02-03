@@ -32,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   public class UnloadAllCommandTest : StandardMappingTest
   {
     private IRelationEndPointManager _endPointManagerMock;
-    private ClientTransaction _clientTransaction;
     private DataContainerMap _dataContainerMap;
     private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
@@ -49,9 +48,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       base.SetUp ();
       _endPointManagerMock = MockRepository.GenerateStrictMock<IRelationEndPointManager>();
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
-      _dataContainerMap = new DataContainerMap (_clientTransaction);
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (_clientTransaction);
+      _dataContainerMap = new DataContainerMap (ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (ClientTransaction.CreateRootTransaction ());
       _invalidDomainObjectManagerMock = MockRepository.GenerateStrictMock<IInvalidDomainObjectManager>();
 
       _existingDataContainer = CreateExistingDataContainer ();
@@ -60,8 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _newDataContainer = CreateNewDataContainer ();
       _newDomainObject = (TestDomainBase) _newDataContainer.DomainObject;
 
-      _unloadCommand = new UnloadAllCommand (
-          _endPointManagerMock, _dataContainerMap, _invalidDomainObjectManagerMock, _clientTransaction, _transactionEventSinkWithMock);
+      _unloadCommand = new UnloadAllCommand (_endPointManagerMock, _dataContainerMap, _invalidDomainObjectManagerMock, _transactionEventSinkWithMock);
     }
 
     [Test]
@@ -74,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transactionEventSinkWithMock
           .ExpectMock (
               mock => mock.ObjectsUnloading (
-                  Arg.Is (_clientTransaction),
+                  Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
                   Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _existingDomainObject, _newDomainObject })));
       _transactionEventSinkWithMock.ReplayMock ();
 
@@ -91,13 +88,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _transactionEventSinkWithMock
           .ExpectMock (
               mock => mock.ObjectsUnloading (
-                  Arg.Is (_clientTransaction),
+                  Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
                   Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _existingDomainObject })))
           .WhenCalled (mi => _dataContainerMap.Register (_newDataContainer));
       _transactionEventSinkWithMock
           .ExpectMock (
               mock => mock.ObjectsUnloading (
-                  Arg.Is (_clientTransaction),
+                  Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
                   Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _newDomainObject })));
       _transactionEventSinkWithMock.ReplayMock ();
 
@@ -178,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       // Order of registration
       _transactionEventSinkWithMock.ExpectMock (
           mock => mock.ObjectsUnloaded (
-              Arg.Is (_clientTransaction),
+              Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
               Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _existingDataContainer.DomainObject, _newDataContainer.DomainObject })));
 
       _unloadCommand.NotifyClientTransactionOfEnd ();
@@ -197,14 +194,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     private DataContainer CreateExistingDataContainer ()
     {
       var dataContainer = DataContainer.CreateForExisting (new ObjectID (typeof (Order), Guid.NewGuid ()), null, pd => pd.DefaultValue);
-      dataContainer.SetDomainObject (LifetimeService.GetObjectReference (_clientTransaction, dataContainer.ID));
+      dataContainer.SetDomainObject (LifetimeService.GetObjectReference (_dataContainerMap.ClientTransaction, dataContainer.ID));
       return dataContainer;
     }
 
     private DataContainer CreateNewDataContainer ()
     {
       var dataContainer = DataContainer.CreateNew (new ObjectID (typeof (Order), Guid.NewGuid ()));
-      dataContainer.SetDomainObject (LifetimeService.GetObjectReference(_clientTransaction, dataContainer.ID));
+      dataContainer.SetDomainObject (LifetimeService.GetObjectReference (_dataContainerMap.ClientTransaction, dataContainer.ID));
       return dataContainer;
     }
   }
