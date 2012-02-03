@@ -18,10 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -38,6 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
+    private IClientTransactionEventSink _transactionEventSinkStub;
     private IVirtualObjectEndPointDataManagerFactory _dataManagerFactory;
     private IVirtualObjectEndPointLoadState _loadStateMock;
     
@@ -54,6 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     
       _lazyLoaderMock = MockRepository.GenerateStrictMock<ILazyLoader>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink>();
       _dataManagerFactory = new VirtualObjectEndPointDataManagerFactory();
       _loadStateMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointLoadState> ();
 
@@ -62,6 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID, 
           _lazyLoaderMock, 
           _endPointProviderStub,
+          _transactionEventSinkStub,
           _dataManagerFactory);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
 
@@ -77,6 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _endPointID,
           _lazyLoaderMock,
           _endPointProviderStub,
+          _transactionEventSinkStub,
           _dataManagerFactory);
 
       Assert.That (endPoint.ID, Is.EqualTo (_endPointID));
@@ -101,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void Initialization_NonVirtualDefinition ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
-      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _dataManagerFactory);
+      new VirtualObjectEndPoint (TestableClientTransaction, id, _lazyLoaderMock, _endPointProviderStub, _transactionEventSinkStub, _dataManagerFactory);
     }
 
     [Test]
@@ -297,7 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteVirtualObjectEndPointLoadState)));
 
       Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).DataManager, Is.SameAs (dataManagerStub));
-      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
       Assert.That (((CompleteVirtualObjectEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 

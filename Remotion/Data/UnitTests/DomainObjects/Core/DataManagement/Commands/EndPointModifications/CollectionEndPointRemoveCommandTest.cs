@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
@@ -36,8 +35,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       base.SetUp();
       
       _removedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
-      
-      _command = new CollectionEndPointRemoveCommand (CollectionEndPoint, _removedRelatedObject, CollectionDataMock, EndPointProviderStub);
+
+      _command = new CollectionEndPointRemoveCommand (
+          CollectionEndPoint, _removedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointRemoveCommand (endPoint, _removedRelatedObject, CollectionDataMock, EndPointProviderStub);
+      new CollectionEndPointRemoveCommand (endPoint, _removedRelatedObject, CollectionDataMock, EndPointProviderStub, TransactionEventSinkWithMock);
     }
 
     [Test]

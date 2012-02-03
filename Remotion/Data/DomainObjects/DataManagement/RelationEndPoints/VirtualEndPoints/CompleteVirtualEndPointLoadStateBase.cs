@@ -1,13 +1,29 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Logging;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints
 {
-  // TODO 3658: Inject event sink
   /// <summary>
   /// Defines common logic for <see cref="IVirtualEndPoint"/> implementations in complete state, ie., when lazy loading has completed.
   /// </summary>
@@ -23,22 +39,22 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     private readonly TDataManager _dataManager;
     private readonly IRelationEndPointProvider _endPointProvider;
-    private readonly ClientTransaction _clientTransaction;
+    private readonly IClientTransactionEventSink _transactionEventSink;
 
     private readonly Dictionary<ObjectID, IRealObjectEndPoint> _unsynchronizedOppositeEndPoints;
 
     protected CompleteVirtualEndPointLoadStateBase (
         TDataManager dataManager,
         IRelationEndPointProvider endPointProvider,
-        ClientTransaction clientTransaction)
+        IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       _dataManager = dataManager;
       _endPointProvider = endPointProvider;
-      _clientTransaction = clientTransaction;
+      _transactionEventSink = transactionEventSink;
 
       _unsynchronizedOppositeEndPoints = new Dictionary<ObjectID, IRealObjectEndPoint> ();
     }
@@ -65,9 +81,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       get { return _endPointProvider; }
     }
 
-    public ClientTransaction ClientTransaction
+    public IClientTransactionEventSink TransactionEventSink
     {
-      get { return _clientTransaction; }
+      get { return _transactionEventSink; }
     }
 
     public ICollection<IRealObjectEndPoint> UnsynchronizedOppositeEndPoints
@@ -103,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.RelationEndPointUnloading (tx, endPoint.ID));
+      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationEndPointUnloading (tx, endPoint.ID));
 
       stateSetter ();
 
@@ -279,7 +295,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       _dataManager = info.GetValueForHandle<TDataManager> ();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
-      _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
+      _transactionEventSink = info.GetValueForHandle<IClientTransactionEventSink> ();
       var unsynchronizedOppositeEndPoints = new List<IRealObjectEndPoint> ();
       info.FillCollection (unsynchronizedOppositeEndPoints);
       _unsynchronizedOppositeEndPoints = unsynchronizedOppositeEndPoints.ToDictionary (ep => ep.ObjectID);
@@ -296,7 +312,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       info.AddHandle (_dataManager);
       info.AddHandle (_endPointProvider);
-      info.AddHandle (_clientTransaction);
+      info.AddHandle (_transactionEventSink);
       info.AddCollection (_unsynchronizedOppositeEndPoints.Values);
     }
 

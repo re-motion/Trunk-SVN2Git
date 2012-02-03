@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IVirtualEndPoint<object> _virtualEndPointMock;
     private IVirtualEndPointDataManager _dataManagerMock;
     private IRelationEndPointProvider _endPointProviderStub;
-    private ClientTransaction _clientTransaction;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
 
     private TestableCompleteVirtualEndPointLoadState _loadState;
 
@@ -54,9 +54,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock = MockRepository.GenerateStrictMock<IVirtualEndPointDataManager>();
       _dataManagerMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (ClientTransaction.CreateRootTransaction());
 
-      _loadState = new TestableCompleteVirtualEndPointLoadState (_dataManagerMock, _endPointProviderStub, _clientTransaction);
+      _loadState = new TestableCompleteVirtualEndPointLoadState (_dataManagerMock, _endPointProviderStub, _transactionEventSinkWithMock);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint>();
@@ -116,14 +116,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadState.StubOriginalOppositeEndPoints (new IRealObjectEndPoint[0]);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_clientTransaction);
+      _transactionEventSinkWithMock.Expect (mock => mock.RelationEndPointUnloading (_transactionEventSinkWithMock.ClientTransaction, endPointID));
+      _transactionEventSinkWithMock.Replay();
 
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => { });
 
       _virtualEndPointMock.VerifyAllExpectations();
       _dataManagerMock.VerifyAllExpectations();
-
-      listenerMock.AssertWasCalled (mock => mock.RelationEndPointUnloading (_clientTransaction, endPointID));
+      _transactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -154,6 +154,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataManagerMock.Replay ();
 
+      _transactionEventSinkWithMock.Stub (mock => mock.RelationEndPointUnloading (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
+
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => stateSetterCalled = true);
 
       _virtualEndPointMock.VerifyAllExpectations();
@@ -175,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (true);
       _dataManagerMock.Replay ();
 
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_clientTransaction);
+      _transactionEventSinkWithMock.Replay();
 
       Assert.That (
           () =>_loadState.MarkDataIncomplete (_virtualEndPointMock, () => Assert.Fail ("Must not be called.")),
@@ -183,6 +185,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           "Cannot mark virtual end-point "
           + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' incomplete "
           + "because it has been changed."));
+
+      _transactionEventSinkWithMock.AssertWasNotCalled (
+          mock => mock.RelationEndPointUnloading (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
     }
 
     [Test]
@@ -406,9 +411,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      var dataManager = new SerializableVirtualEndPointDataManagerFake();
-      var endPointProvider = new SerializableRelationEndPointProviderFake();
-      var state = new TestableCompleteVirtualEndPointLoadState (dataManager, endPointProvider, _clientTransaction);
+      var state = new TestableCompleteVirtualEndPointLoadState (
+          new SerializableVirtualEndPointDataManagerFake(),
+          new SerializableRelationEndPointProviderFake(),
+          new SerializableClientTransactionEventSinkFake());
 
       var oppositeEndPoint = new SerializableRealObjectEndPointFake (null, _relatedObject);
       AddUnsynchronizedOppositeEndPoint (state, oppositeEndPoint);
@@ -417,8 +423,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataManager, Is.Not.Null);
-      Assert.That (result.ClientTransaction, Is.Not.Null);
       Assert.That (result.EndPointProvider, Is.Not.Null);
+      Assert.That (result.TransactionEventSink, Is.Not.Null);
       Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
     }
 

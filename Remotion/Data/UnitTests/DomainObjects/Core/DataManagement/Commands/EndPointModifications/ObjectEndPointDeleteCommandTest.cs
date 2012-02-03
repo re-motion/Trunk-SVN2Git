@@ -32,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     private bool _oppositeObjectNullSetterCalled;
     private Action _oppositeObjectNullSetter;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
 
     private ObjectEndPointDeleteCommand _command;
 
@@ -48,8 +49,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       {
         _oppositeObjectNullSetterCalled = true;
       };
-      
-      _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectNullSetter);
+
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (TestableClientTransaction);
+      _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectNullSetter, _transactionEventSinkWithMock);
     }
 
     [Test]
@@ -66,21 +68,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (TestableClientTransaction, _endPointID.Definition);
-      new ObjectEndPointDeleteCommand (endPoint, () => { });
+      new ObjectEndPointDeleteCommand (endPoint, () => { }, _transactionEventSinkWithMock);
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin()
+    public void NotifyClientTransactionOfBegin_NoEvents()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      _transactionEventSinkWithMock.Replay();
       
       _command.NotifyClientTransactionOfBegin();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void NotifyClientTransactionOfEnd_NoEvents ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      _transactionEventSinkWithMock.Replay();
 
       _command.NotifyClientTransactionOfEnd ();
     }

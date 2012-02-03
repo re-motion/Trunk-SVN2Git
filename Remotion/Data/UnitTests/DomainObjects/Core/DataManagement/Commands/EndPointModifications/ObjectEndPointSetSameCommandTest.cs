@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -36,6 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     private RelationEndPointID _endPointID;
     private ObjectEndPoint _endPoint;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
 
     private ObjectEndPointSetSameCommand _command;
 
@@ -48,8 +48,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _endPointID = RelationEndPointID.Resolve (_domainObject, c => c.Employee);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _relatedObject.ID);
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (TestableClientTransaction);
 
-      _command = new ObjectEndPointSetSameCommand (_endPoint);
+      _command = new ObjectEndPointSetSameCommand (_endPoint, _transactionEventSinkWithMock);
     }
 
     [Test]
@@ -93,12 +94,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      TestableClientTransaction.AddListener (listenerMock);
+      _transactionEventSinkWithMock.Replay();
 
       _command.NotifyClientTransactionOfBegin();
 
-      listenerMock.AssertWasNotCalled (
+      _transactionEventSinkWithMock.AssertWasNotCalled (
           mock => mock.RelationChanging (
               Arg<ClientTransaction>.Is.Anything,
               Arg<DomainObject>.Is.Anything,
@@ -110,12 +110,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      TestableClientTransaction.AddListener (listenerMock);
+      _transactionEventSinkWithMock.Replay ();
 
       _command.NotifyClientTransactionOfBegin();
 
-      listenerMock.AssertWasNotCalled (
+      _transactionEventSinkWithMock.AssertWasNotCalled (
           mock => mock.RelationChanged (
               Arg<ClientTransaction>.Is.Anything,
               Arg<DomainObject>.Is.Anything,
@@ -133,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (unidirectionalEndPointID);
       Assert.That (unidirectionalEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous, Is.True);
 
-      var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint);
+      var setSameModification = new ObjectEndPointSetSameCommand (unidirectionalEndPoint, _transactionEventSinkWithMock);
 
       var bidirectionalModification = setSameModification.ExpandToAllRelatedObjects();
       Assert.That (bidirectionalModification.GetNestedCommands(), Is.EqualTo (new[] { setSameModification }));

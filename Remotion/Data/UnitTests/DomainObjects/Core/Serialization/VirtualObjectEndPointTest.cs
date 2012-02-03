@@ -87,6 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Assert.That (deserializedEndPoint.LazyLoader, Is.Not.Null);
       Assert.That (deserializedEndPoint.EndPointProvider, Is.Not.Null);
+      Assert.That (deserializedEndPoint.TransactionEventSink, Is.Not.Null);
       Assert.That (deserializedEndPoint.DataManagerFactory, Is.Not.Null);
 
       var loadState = VirtualObjectEndPointTestHelper.GetLoadState(deserializedEndPoint);

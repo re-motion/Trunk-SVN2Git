@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
@@ -44,6 +45,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     }
 
     private readonly DataContainer _foreignKeyDataContainer;
+    private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly PropertyValue _foreignKeyProperty;
 
     private IRealObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
@@ -52,25 +55,40 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         ClientTransaction clientTransaction, 
         RelationEndPointID id,
         DataContainer foreignKeyDataContainer,
-        IRelationEndPointProvider endPointProvider)
+        IRelationEndPointProvider endPointProvider,
+        IClientTransactionEventSink transactionEventSink)
       : base (
           ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
-          ArgumentUtility.CheckNotNull ("id", id),
-          ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
+          ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("foreignKeyDataContainer", foreignKeyDataContainer);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       if (ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "id");
 
       _foreignKeyDataContainer = foreignKeyDataContainer;
+      _endPointProvider = endPointProvider;
+      _transactionEventSink = transactionEventSink;
+
       _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
-      _syncState = new UnknownRealObjectEndPointSyncState (EndPointProvider);
+      _syncState = new UnknownRealObjectEndPointSyncState (_endPointProvider);
     }
 
     public DataContainer ForeignKeyDataContainer
     {
       get { return _foreignKeyDataContainer; }
+    }
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
+    }
+
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
     }
 
     public PropertyValue ForeignKeyProperty
@@ -134,13 +152,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public override void Synchronize ()
     {
       var oppositeID = RelationEndPointID.CreateOpposite (Definition, OppositeObjectID);
-      var oppositeEndPoint = (IVirtualEndPoint) EndPointProvider.GetRelationEndPointWithLazyLoad (oppositeID);
+      var oppositeEndPoint = (IVirtualEndPoint) _endPointProvider.GetRelationEndPointWithLazyLoad (oppositeID);
       _syncState.Synchronize (this, oppositeEndPoint);
     }
 
     public void MarkSynchronized ()
     {
-      _syncState = new SynchronizedRealObjectEndPointSyncState (EndPointProvider);
+      _syncState = new SynchronizedRealObjectEndPointSyncState (_endPointProvider, _transactionEventSink);
     }
 
     public void MarkUnsynchronized ()
@@ -150,7 +168,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public void ResetSyncState ()
     {
-      _syncState = new UnknownRealObjectEndPointSyncState (EndPointProvider);
+      _syncState = new UnknownRealObjectEndPointSyncState (_endPointProvider);
     }
 
     public override IDataManagementCommand CreateDeleteCommand ()
@@ -201,6 +219,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       _foreignKeyDataContainer = info.GetValueForHandle<DataContainer> ();
       _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
+      _transactionEventSink = info.GetValueForHandle<IClientTransactionEventSink> ();
       _syncState = info.GetValueForHandle<IRealObjectEndPointSyncState> ();
     }
 
@@ -208,6 +228,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       base.SerializeIntoFlatStructure (info);
       info.AddHandle (_foreignKeyDataContainer);
+      info.AddHandle (_endPointProvider);
+      info.AddHandle (_transactionEventSink);
       info.AddHandle (_syncState);
     }
     #endregion

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -28,10 +29,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly Action<DomainObject> _oppositeObjectSetter;
 
     protected ObjectEndPointSetCommand (
-        IObjectEndPoint modifiedEndPoint, 
-        DomainObject newRelatedObject, 
-        Action<DomainObject> oppositeObjectSetter)
-      : base (modifiedEndPoint, modifiedEndPoint.GetOppositeObject(), newRelatedObject)
+        IObjectEndPoint modifiedEndPoint,
+        DomainObject newRelatedObject,
+        Action<DomainObject> oppositeObjectSetter,
+        IClientTransactionEventSink transactionEventSink
+        )
+        : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
+                modifiedEndPoint.GetOppositeObject(),
+                newRelatedObject,
+                ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink))
     {
       ArgumentUtility.CheckNotNull ("oppositeObjectSetter", oppositeObjectSetter);
 

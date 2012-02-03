@@ -16,18 +16,18 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
   public class TestableRelationEndPointModificationCommand : RelationEndPointModificationCommand
   {
     public TestableRelationEndPointModificationCommand (
-        IRelationEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
-        : base (modifiedEndPoint, oldRelatedObject, newRelatedObject)
+        IRelationEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject, IClientTransactionEventSink transactionEventSink)
+        : base (modifiedEndPoint, oldRelatedObject, newRelatedObject, transactionEventSink)
     {
     }
 

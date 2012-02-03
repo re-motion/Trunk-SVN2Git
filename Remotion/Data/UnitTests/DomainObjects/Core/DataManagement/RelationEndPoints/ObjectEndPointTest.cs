@@ -29,7 +29,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class ObjectEndPointTest : ClientTransactionBaseTest
   {
     private RelationEndPointID _endPointID;
-    private IRelationEndPointProvider _endPointProviderStub;
     private TestableObjectEndPoint _endPointPartialMock;
 
     public override void SetUp ()
@@ -37,9 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp ();
 
       _endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
-      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-
-      _endPointPartialMock = MockRepository.GeneratePartialMock<TestableObjectEndPoint> (TestableClientTransaction, _endPointID, _endPointProviderStub);
+      _endPointPartialMock = MockRepository.GeneratePartialMock<TestableObjectEndPoint> (TestableClientTransaction, _endPointID);
     }
 
     [Test]
@@ -49,8 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var endPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
       new TestableObjectEndPoint (
           TestableClientTransaction,
-          endPointID,
-          _endPointProviderStub);
+          endPointID);
     }
 
     [Test]

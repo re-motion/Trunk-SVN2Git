@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -35,8 +36,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     public CompleteCollectionEndPointLoadState (
         ICollectionEndPointDataManager dataManager,
         IRelationEndPointProvider endPointProvider,
-        ClientTransaction clientTransaction)
-        : base (dataManager, endPointProvider, clientTransaction)
+        IClientTransactionEventSink transactionEventSink)
+        : base (dataManager, endPointProvider, transactionEventSink)
     {
     }
 
@@ -144,7 +145,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      return new CollectionEndPointSetCollectionCommand (collectionEndPoint, newCollection, DataManager.CollectionData, collectionEndPointCollectionManager);
+      return new CollectionEndPointSetCollectionCommand (
+          collectionEndPoint, newCollection, DataManager.CollectionData, collectionEndPointCollectionManager, TransactionEventSink);
     }
 
     public IDataManagementCommand CreateRemoveCommand (ICollectionEndPoint collectionEndPoint, DomainObject removedRelatedObject)
@@ -153,7 +155,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("removedRelatedObject", removedRelatedObject);
 
       CheckRemovedObject (removedRelatedObject);
-      return new CollectionEndPointRemoveCommand (collectionEndPoint, removedRelatedObject, DataManager.CollectionData, EndPointProvider);
+      return new CollectionEndPointRemoveCommand (
+          collectionEndPoint, removedRelatedObject, DataManager.CollectionData, EndPointProvider, TransactionEventSink);
     }
 
     public IDataManagementCommand CreateDeleteCommand (ICollectionEndPoint collectionEndPoint)
@@ -186,7 +189,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      return new CollectionEndPointDeleteCommand (collectionEndPoint, DataManager.CollectionData);
+      return new CollectionEndPointDeleteCommand (collectionEndPoint, DataManager.CollectionData, TransactionEventSink);
     }
 
     public IDataManagementCommand CreateInsertCommand (ICollectionEndPoint collectionEndPoint, DomainObject insertedRelatedObject, int index)
@@ -195,7 +198,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       ArgumentUtility.CheckNotNull ("insertedRelatedObject", insertedRelatedObject);
 
       CheckAddedObject (insertedRelatedObject);
-      return new CollectionEndPointInsertCommand (collectionEndPoint, index, insertedRelatedObject, DataManager.CollectionData, EndPointProvider);
+      return new CollectionEndPointInsertCommand (
+          collectionEndPoint, index, insertedRelatedObject, DataManager.CollectionData, EndPointProvider, TransactionEventSink);
     }
 
     public IDataManagementCommand CreateAddCommand (ICollectionEndPoint collectionEndPoint, DomainObject addedRelatedObject)
@@ -214,9 +218,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       var replacedObject = DataManager.CollectionData.GetObject (index);
       if (replacedObject == replacementObject)
-        return new CollectionEndPointReplaceSameCommand (collectionEndPoint, replacedObject);
+        return new CollectionEndPointReplaceSameCommand (collectionEndPoint, replacedObject, TransactionEventSink);
       else
-        return new CollectionEndPointReplaceCommand (collectionEndPoint, replacedObject, index, replacementObject, DataManager.CollectionData);
+        return new CollectionEndPointReplaceCommand (
+            collectionEndPoint, replacedObject, index, replacementObject, DataManager.CollectionData, TransactionEventSink);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()

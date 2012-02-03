@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -37,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _replacedRelatedObject = Order.GetObject (DomainObjectIDs.Order1);
 
-      _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject);
+      _command = new CollectionEndPointReplaceSameCommand (CollectionEndPoint, _replacedRelatedObject, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -54,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject);
+      new CollectionEndPointReplaceSameCommand (endPoint, _replacedRelatedObject, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -94,17 +93,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public void NotifyClientTransactionOfBegin_NoEvents ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      TransactionEventSinkWithMock.Replay();
 
       _command.NotifyClientTransactionOfBegin ();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void NotifyClientTransactionOfEnd_NoEvents ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      TransactionEventSinkWithMock.Replay ();
 
       _command.NotifyClientTransactionOfEnd ();
     }

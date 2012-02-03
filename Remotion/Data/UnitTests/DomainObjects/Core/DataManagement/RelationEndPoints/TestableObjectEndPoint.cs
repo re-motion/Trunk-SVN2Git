@@ -24,8 +24,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 {
   public class TestableObjectEndPoint : ObjectEndPoint
   {
-    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointProvider endPointProvider)
-        : base (clientTransaction, id, endPointProvider)
+    public TestableObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id)
+        : base (clientTransaction, id)
     {
     }
 

@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -35,11 +36,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         DomainObject replacedObject, 
         int index, 
         DomainObject replacementObject, 
-        IDomainObjectCollectionData collectionData)
+        IDomainObjectCollectionData collectionData,
+        IClientTransactionEventSink transactionEventSink)
       : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             ArgumentUtility.CheckNotNull ("replacedObject", replacedObject),
-            ArgumentUtility.CheckNotNull ("replacementObject", replacementObject))
+            ArgumentUtility.CheckNotNull ("replacementObject", replacementObject),
+            ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink))
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");

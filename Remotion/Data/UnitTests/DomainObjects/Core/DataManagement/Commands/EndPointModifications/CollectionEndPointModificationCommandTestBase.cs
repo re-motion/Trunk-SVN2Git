@@ -15,12 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
-using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -39,6 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private RelationEndPointID _relationEndPointID;
     private Order _order1;
     private Order _orderWithoutOrderItem;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
 
     public CollectionEndPoint CollectionEndPoint
     {
@@ -70,6 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       get { return _relationEndPointID; }
     }
 
+    public ClientTransactionEventSinkWithMock TransactionEventSinkWithMock
+    {
+      get { return _transactionEventSinkWithMock; }
+    }
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -87,6 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       CollectionDataMock.Replay ();
 
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (_collectionEndPoint.ClientTransaction);
     }
   }
 }

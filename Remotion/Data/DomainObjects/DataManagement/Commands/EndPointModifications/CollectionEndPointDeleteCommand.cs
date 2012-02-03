@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -30,12 +31,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly DomainObjectCollection _modifiedCollection;
 
     public CollectionEndPointDeleteCommand (
-        ICollectionEndPoint modifiedEndPoint, 
-        IDomainObjectCollectionData collectionData)
+        ICollectionEndPoint modifiedEndPoint,
+        IDomainObjectCollectionData collectionData,
+        IClientTransactionEventSink transactionEventSink)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             null,
-            null)
+            null,
+            ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink))
     {
       if (modifiedEndPoint.IsNull)
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");

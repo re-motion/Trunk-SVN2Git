@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -33,6 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   public class SynchronizedRealObjectEndPointSyncStateTest : StandardMappingTest
   {
     private IRealObjectEndPoint _endPointMock;
+    private IRelationEndPointProvider _endPointProviderStub;
+    private IClientTransactionEventSink _transactionEventSinkStub;
+
     private SynchronizedRealObjectEndPointSyncState _state;
 
     private Order _order;
@@ -41,7 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IRelationEndPointDefinition _orderOrderTicketEndPointDefinition;
     private IRelationEndPointDefinition _locationClientEndPointDefinition;
     private IRelationEndPointDefinition _orderCustomerEndPointDefinition;
-    private IRelationEndPointProvider _endPointProviderStub;
 
     private Action<DomainObject> _fakeSetter;
     private Action _fakeNullSetter;
@@ -52,8 +55,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       
       _endPointMock = MockRepository.GenerateStrictMock<IRealObjectEndPoint>();
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink>();
 
-      _state = new SynchronizedRealObjectEndPointSyncState (_endPointProviderStub);
+      _state = new SynchronizedRealObjectEndPointSyncState (_endPointProviderStub, _transactionEventSinkStub);
 
       _order = DomainObjectMother.CreateFakeObject<Order> ();
       _location = DomainObjectMother.CreateFakeObject<Location> ();
@@ -293,12 +297,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      var state = new SynchronizedRealObjectEndPointSyncState (new SerializableRelationEndPointProviderFake());
+      var state = new SynchronizedRealObjectEndPointSyncState (
+          new SerializableRelationEndPointProviderFake(), new SerializableClientTransactionEventSinkFake());
 
       var result = FlattenedSerializer.SerializeAndDeserialize (state);
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.EndPointProvider, Is.Not.Null);
+      Assert.That (result.TransactionEventSink, Is.Not.Null);
     }
 
     private IRelationEndPointDefinition GetRelationEndPointDefinition (Type classType, string shortPropertyName)

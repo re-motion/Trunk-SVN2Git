@@ -111,11 +111,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     protected override IRelationEndPointManager CreateRelationEndPointManager (
         ClientTransaction clientTransaction,
         IRelationEndPointProvider endPointProvider,
-        ILazyLoader lazyLoader)
+        ILazyLoader lazyLoader,
+        IClientTransactionEventSink eventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
 
       var endPointChangeDetectionStrategy = new SubCollectionEndPointChangeDetectionStrategy ();
       var collectionEndPointDataManagerFactory = new CollectionEndPointDataManagerFactory (endPointChangeDetectionStrategy);
@@ -125,6 +127,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           clientTransaction,
           endPointProvider,
           lazyLoader,
+          eventSink,
           virtualObjectEndPointDataManagerFactory,
           collectionEndPointDataManagerFactory);
       var virtualEndPointStateUpdateListener = new VirtualEndPointStateUpdateListener (clientTransaction);
@@ -140,12 +143,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction clientTransaction,
         IRelationEndPointProvider endPointProvider,
         ILazyLoader lazyLoader,
+        IClientTransactionEventSink eventSink,
         IVirtualObjectEndPointDataManagerFactory virtualObjectEndPointDataManagerFactory,
         ICollectionEndPointDataManagerFactory collectionEndPointDataManagerFactory)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
       ArgumentUtility.CheckNotNull ("virtualObjectEndPointDataManagerFactory", virtualObjectEndPointDataManagerFactory);
       ArgumentUtility.CheckNotNull ("collectionEndPointDataManagerFactory", collectionEndPointDataManagerFactory);
 
@@ -155,6 +160,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           clientTransaction,
           endPointProvider,
           lazyLoader,
+          eventSink,
           virtualObjectEndPointDataManagerFactory,
           collectionEndPointDataManagerFactory, 
           collectionEndPointCollectionProvider,

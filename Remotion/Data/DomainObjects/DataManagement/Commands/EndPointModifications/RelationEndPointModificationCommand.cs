@@ -18,11 +18,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
 {
-  // TODO 3658: Inject event sink
   /// <summary>
   /// Represents a modification performed on a <see cref="RelationEndPoint"/>. Provides default behavior for triggering the required
   /// events and notifying the <see cref="ClientTransaction"/> about the modification. The actual modification has to be specified by subclasses
@@ -37,15 +37,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly DomainObject _oldRelatedObject;
     private readonly DomainObject _newRelatedObject;
 
-    protected RelationEndPointModificationCommand (IRelationEndPoint modifiedEndPoint, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    private readonly IClientTransactionEventSink _transactionEventSink;
+
+    protected RelationEndPointModificationCommand (
+        IRelationEndPoint modifiedEndPoint,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject,
+        IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       _modifiedEndPoint = modifiedEndPoint;
       _domainObject = modifiedEndPoint.GetDomainObject ();
 
       _oldRelatedObject = oldRelatedObject;
       _newRelatedObject = newRelatedObject;
+
+      _transactionEventSink = transactionEventSink;
     }
 
     public IRelationEndPoint ModifiedEndPoint
@@ -66,6 +75,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public DomainObject NewRelatedObject
     {
       get { return _newRelatedObject; }
+    }
+
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
     }
 
     /// <summary>
@@ -131,15 +145,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected void RaiseClientTransactionBeginNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      var eventSink = _modifiedEndPoint.ClientTransaction.ListenerManager;
-      eventSink.RaiseEvent ((tx, l) => l.RelationChanging (
+      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationChanging (
           tx, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject));
     }
 
     protected void RaiseClientTransactionEndNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      var eventSink = _modifiedEndPoint.ClientTransaction.ListenerManager;
-      eventSink.RaiseEvent ((tx, l) => l.RelationChanged (tx, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject));
+      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationChanged (tx, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject));
     }
 
     protected IRelationEndPoint GetOppositeEndPoint (

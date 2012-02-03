@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -33,15 +34,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     private readonly DomainObjectCollection _modifiedCollection;
 
     public CollectionEndPointInsertCommand (
-        ICollectionEndPoint modifiedEndPoint, 
-        int index, 
+        ICollectionEndPoint modifiedEndPoint,
+        int index,
         DomainObject insertedObject,
         IDomainObjectCollectionData collectionData,
-        IRelationEndPointProvider endPointProvider)
+        IRelationEndPointProvider endPointProvider,
+        IClientTransactionEventSink transactionEventSink)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             null,
-            ArgumentUtility.CheckNotNull ("insertedObject", insertedObject))
+            ArgumentUtility.CheckNotNull ("insertedObject", insertedObject),
+            ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink))
     {
       ArgumentUtility.CheckNotNull ("collectionData", collectionData);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);

@@ -36,6 +36,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
     }
 
+    public ClientTransaction ClientTransaction
+    {
+      get { return _clientTransaction; }
+    }
+
     public IClientTransactionListener Mock
     {
       get { return _mock; }

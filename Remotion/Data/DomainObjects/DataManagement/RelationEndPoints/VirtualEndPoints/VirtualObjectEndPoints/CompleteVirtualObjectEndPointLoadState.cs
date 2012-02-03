@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -33,8 +34,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     public CompleteVirtualObjectEndPointLoadState (
         IVirtualObjectEndPointDataManager dataManager, 
         IRelationEndPointProvider endPointProvider, 
-        ClientTransaction clientTransaction)
-        : base (dataManager, endPointProvider, clientTransaction)
+        IClientTransactionEventSink transactionEventSink)
+        : base (dataManager, endPointProvider, transactionEventSink)
     {
     }
 
@@ -52,7 +53,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
       return DataManager.OriginalOppositeObject;
     }
 
-    public override void SetDataFromSubTransaction (IVirtualObjectEndPoint endPoint, IVirtualEndPointLoadState<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataManager> sourceLoadState)
+    public override void SetDataFromSubTransaction (
+        IVirtualObjectEndPoint endPoint,
+        IVirtualEndPointLoadState<IVirtualObjectEndPoint, DomainObject, IVirtualObjectEndPointDataManager> sourceLoadState)
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
       var sourceCompleteLoadState = ArgumentUtility.CheckNotNullAndType<CompleteVirtualObjectEndPointLoadState> ("sourceLoadState", sourceLoadState);
@@ -106,14 +109,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
       if (oldRelatedObject == newRelatedObject)
       {
-        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint);
+        return new ObjectEndPointSetSameCommand (virtualObjectEndPoint, TransactionEventSink);
       }
       else
       {
         if (newRelatedObject != null)
           CheckAddedObject (newRelatedObject);
 
-        return new ObjectEndPointSetOneOneCommand (virtualObjectEndPoint, newRelatedObject, domainObject => DataManager.CurrentOppositeObject = domainObject);
+        return new ObjectEndPointSetOneOneCommand (
+            virtualObjectEndPoint, newRelatedObject, domainObject => DataManager.CurrentOppositeObject = domainObject, TransactionEventSink);
       }
     }
 
@@ -147,7 +151,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, () => DataManager.CurrentOppositeObject = null);
+      return new ObjectEndPointDeleteCommand (virtualObjectEndPoint, () => DataManager.CurrentOppositeObject = null, TransactionEventSink);
     }
 
     protected override IEnumerable<IRealObjectEndPoint> GetOriginalOppositeEndPoints ()

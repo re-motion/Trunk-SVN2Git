@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -25,8 +26,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// </summary>
   public class ObjectEndPointSetOneOneCommand : ObjectEndPointSetCommand
   {
-    public ObjectEndPointSetOneOneCommand (IObjectEndPoint modifiedEndPoint, DomainObject newRelatedObject, Action<DomainObject> oppositeObjectSetter)
-      : base (modifiedEndPoint, newRelatedObject, oppositeObjectSetter)
+    public ObjectEndPointSetOneOneCommand (
+        IObjectEndPoint modifiedEndPoint,
+        DomainObject newRelatedObject,
+        Action<DomainObject> oppositeObjectSetter,
+        IClientTransactionEventSink transactionEventSink)
+        : base (modifiedEndPoint, newRelatedObject, oppositeObjectSetter, transactionEventSink)
     {
       if (modifiedEndPoint.Definition.GetOppositeEndPointDefinition().IsAnonymous)
       {

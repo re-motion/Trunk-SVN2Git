@@ -26,25 +26,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   public abstract class ObjectEndPoint : RelationEndPoint, IObjectEndPoint
   {
-    private readonly IRelationEndPointProvider _endPointProvider;
-
-    protected ObjectEndPoint (
-        ClientTransaction clientTransaction, RelationEndPointID id, IRelationEndPointProvider endPointProvider)
+    protected ObjectEndPoint (ClientTransaction clientTransaction, RelationEndPointID id)
         : base (clientTransaction, id)
     {
-      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
-
       if (id.Definition.Cardinality != CardinalityType.One)
         throw new ArgumentException ("End point ID must refer to an end point with cardinality 'One'.", "id");
 
       Assertion.IsFalse (id.Definition.IsAnonymous);
-
-      _endPointProvider = endPointProvider;
-    }
-
-    public IRelationEndPointProvider EndPointProvider
-    {
-      get { return _endPointProvider; }
     }
 
     public abstract ObjectID OppositeObjectID { get; }
@@ -131,12 +119,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected ObjectEndPoint (FlattenedDeserializationInfo info)
         : base (info)
     {
-      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
     }
 
     protected override void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddHandle (_endPointProvider);
     }
 
     #endregion

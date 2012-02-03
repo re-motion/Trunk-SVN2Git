@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -28,17 +29,25 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
   public class SynchronizedRealObjectEndPointSyncState : IRealObjectEndPointSyncState
   {
     private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly IClientTransactionEventSink _transactionEventSink;
 
-    public SynchronizedRealObjectEndPointSyncState(IRelationEndPointProvider endPointProvider)
+    public SynchronizedRealObjectEndPointSyncState(IRelationEndPointProvider endPointProvider, IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
       _endPointProvider = endPointProvider;
+      _transactionEventSink = transactionEventSink;
     }
 
     public IRelationEndPointProvider EndPointProvider
     {
       get { return _endPointProvider; }
+    }
+
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
     }
 
     public bool? IsSynchronized (IRealObjectEndPoint endPoint)
@@ -61,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
 
       var oppositeEndPointDefinition = endPoint.Definition.GetOppositeEndPointDefinition ();
 
-      var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectNullSetter);
+      var objectEndPointDeleteCommand = new ObjectEndPointDeleteCommand (endPoint, oppositeObjectNullSetter, _transactionEventSink);
 
       if (!oppositeEndPointDefinition.IsAnonymous && oppositeEndPointDefinition.IsVirtual)
       {
@@ -84,14 +93,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
 
       var newRelatedObjectID = newRelatedObject.GetSafeID();
       if (endPoint.OppositeObjectID == newRelatedObjectID)
-        return new ObjectEndPointSetSameCommand (endPoint);
+        return new ObjectEndPointSetSameCommand (endPoint, _transactionEventSink);
       else if (oppositeEndPointDefinition.IsAnonymous)
-        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectSetter);
+        return new ObjectEndPointSetUnidirectionalCommand (endPoint, newRelatedObject, oppositeObjectSetter, _transactionEventSink);
       else
       {
-        var setCommand = oppositeEndPointDefinition.Cardinality == CardinalityType.One
-                             ? (IDataManagementCommand) new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectSetter)
-                             : new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectSetter, _endPointProvider);
+        var setCommand =
+            oppositeEndPointDefinition.Cardinality == CardinalityType.One
+                ? (IDataManagementCommand)
+                  new ObjectEndPointSetOneOneCommand (endPoint, newRelatedObject, oppositeObjectSetter, _transactionEventSink)
+                : new ObjectEndPointSetOneManyCommand (endPoint, newRelatedObject, oppositeObjectSetter, _endPointProvider, _transactionEventSink);
 
         var oldRelatedEndPoint = GetOppositeEndPoint (endPoint, endPoint.OppositeObjectID);
         var newRelatedEndPoint = GetOppositeEndPoint (endPoint, newRelatedObjectID);
@@ -112,6 +123,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       ArgumentUtility.CheckNotNull ("info", info);
 
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider>();
+      _transactionEventSink = info.GetValueForHandle<IClientTransactionEventSink>();
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
@@ -119,6 +131,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjec
       ArgumentUtility.CheckNotNull ("info", info);
 
       info.AddHandle (_endPointProvider);
+      info.AddHandle (_transactionEventSink);
     }
 
     #endregion

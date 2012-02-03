@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints.VirtualEndPoints
@@ -28,8 +29,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IRealObjectEndPoint[] _stubbedOriginalOppositeEndPoints;
     private DomainObject[] _stubbedOriginalItemsWithoutEndPoints;
 
-    public TestableCompleteVirtualEndPointLoadState (IVirtualEndPointDataManager dataManager, IRelationEndPointProvider endPointProvider, ClientTransaction clientTransaction)
-        : base(dataManager, endPointProvider, clientTransaction)
+    public TestableCompleteVirtualEndPointLoadState (
+        IVirtualEndPointDataManager dataManager, IRelationEndPointProvider endPointProvider, IClientTransactionEventSink transactionEventSink)
+        : base(dataManager, endPointProvider, transactionEventSink)
     {
     }
 
@@ -43,7 +45,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       throw new NotImplementedException();
     }
 
-    public override void SetDataFromSubTransaction (IVirtualEndPoint<object> endPoint, IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataManager> sourceLoadState)
+    public override void SetDataFromSubTransaction (
+        IVirtualEndPoint<object> endPoint, IVirtualEndPointLoadState<IVirtualEndPoint<object>, object, IVirtualEndPointDataManager> sourceLoadState)
     {
       throw new NotImplementedException();
     }

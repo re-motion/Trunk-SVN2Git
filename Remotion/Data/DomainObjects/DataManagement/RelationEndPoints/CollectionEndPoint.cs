@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
@@ -74,25 +75,27 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     private readonly ICollectionEndPointCollectionManager _collectionManager;
     private readonly ILazyLoader _lazyLoader;
     private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly ICollectionEndPointDataManagerFactory _dataManagerFactory;
 
     private ICollectionEndPointLoadState _loadState; // keeps track of whether this end-point has been completely loaded or not
 
     private bool _hasBeenTouched;
 
-    // TODO: The next time this signature is changed, first refactor to take a CollectionEndPointContext parameter object instead.
     public CollectionEndPoint (
         ClientTransaction clientTransaction,
         RelationEndPointID id,
         ICollectionEndPointCollectionManager collectionManager,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
+        IClientTransactionEventSink transactionEventSink,
         ICollectionEndPointDataManagerFactory dataManagerFactory)
         : base (ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction), ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("collectionManager", collectionManager);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
       ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
 
       if (id.Definition.Cardinality != CardinalityType.Many)
@@ -107,6 +110,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collectionManager = collectionManager;
       _lazyLoader = lazyLoader;
       _endPointProvider = endPointProvider;
+      _transactionEventSink = transactionEventSink;
       _dataManagerFactory = dataManagerFactory;
 
       SetIncompleteLoadState ();
@@ -125,6 +129,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public IRelationEndPointProvider EndPointProvider
     {
       get { return _endPointProvider; }
+    }
+
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
     }
 
     public ICollectionEndPointDataManagerFactory DataManagerFactory
@@ -381,7 +390,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private void SetCompleteLoadState (ICollectionEndPointDataManager dataManager)
     {
-      _loadState = new CompleteCollectionEndPointLoadState (dataManager, _endPointProvider, ClientTransaction);
+      _loadState = new CompleteCollectionEndPointLoadState (dataManager, _endPointProvider, _transactionEventSink);
     }
 
     private void SetIncompleteLoadState ()
@@ -403,6 +412,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _collectionManager = info.GetValueForHandle<ICollectionEndPointCollectionManager>();
       _lazyLoader = info.GetValueForHandle<ILazyLoader>();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
+      _transactionEventSink = info.GetValueForHandle<IClientTransactionEventSink> ();
       _dataManagerFactory = info.GetValueForHandle<ICollectionEndPointDataManagerFactory> ();
 
       _loadState = info.GetValue<ICollectionEndPointLoadState>();
@@ -414,6 +424,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       info.AddHandle (_collectionManager);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointProvider);
+      info.AddHandle (_transactionEventSink);
       info.AddHandle (_dataManagerFactory);
 
       info.AddValue (_loadState);

@@ -20,12 +20,10 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -52,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _endPointID = RelationEndPointID.Resolve (_domainObject, o => o.OrderTicket);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
 
-      _command = new ObjectEndPointSetOneOneCommand (_endPoint, _newRelatedObject, OppositeObjectSetter);
+      _command = new ObjectEndPointSetOneOneCommand (_endPoint, _newRelatedObject, OppositeObjectSetter, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -69,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullObjectEndPoint (TestableClientTransaction, _endPointID.Definition);
-      new ObjectEndPointSetOneOneCommand (endPoint, _newRelatedObject, OppositeObjectSetter);
+      new ObjectEndPointSetOneOneCommand (endPoint, _newRelatedObject, OppositeObjectSetter, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -83,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var id = RelationEndPointID.Create (client.ID, definition);
       var endPoint = (IObjectEndPoint)
           TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (id);
-      new ObjectEndPointSetOneOneCommand (endPoint, Client.NewObject (), mi => { });
+      new ObjectEndPointSetOneOneCommand (endPoint, Client.NewObject (), mi => { }, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -96,7 +94,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       var relationEndPointID = RelationEndPointID.Create (OrderItem.GetObject (DomainObjectIDs.OrderItem1).ID, definition);
       var endPoint =
           (IObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
-      new ObjectEndPointSetOneOneCommand (endPoint, Order.NewObject (), mi => { });
+      new ObjectEndPointSetOneOneCommand (endPoint, Order.NewObject (), mi => { }, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -106,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_Same ()
     {
       var endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _oldRelatedObject.ID);
-      new ObjectEndPointSetOneOneCommand (endPoint, _oldRelatedObject, mi => { });
+      new ObjectEndPointSetOneOneCommand (endPoint, _oldRelatedObject, mi => { }, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -157,35 +155,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public virtual void NotifyClientTransactionOfBegin ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      TestableClientTransaction.AddListener (listenerMock);
+      TransactionEventSinkWithMock.Expect (
+          mock => mock.RelationChanging (
+              TestableClientTransaction,
+              _endPoint.GetDomainObject (),
+              _endPoint.Definition,
+              _oldRelatedObject,
+              _newRelatedObject));
+      TransactionEventSinkWithMock.Replay ();
 
-      _command.NotifyClientTransactionOfBegin();
+      _command.NotifyClientTransactionOfBegin ();
 
-      listenerMock.AssertWasCalled(mock => mock.RelationChanging (
-          TestableClientTransaction, 
-          _endPoint.GetDomainObject (), 
-          _endPoint.Definition, 
-          _oldRelatedObject, 
-          _newRelatedObject));
+      TransactionEventSinkWithMock.VerifyAllExpectations ();
     }
 
     [Test]
     public virtual void NotifyClientTransactionOfEnd ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      TestableClientTransaction.AddListener (listenerMock);
+      TransactionEventSinkWithMock.Expect (
+          mock => mock.RelationChanged (
+              TestableClientTransaction,
+              _endPoint.GetDomainObject (),
+              _endPoint.Definition,
+              _oldRelatedObject,
+              _newRelatedObject));
+      TransactionEventSinkWithMock.Replay ();
 
       _command.NotifyClientTransactionOfEnd ();
 
-      listenerMock.AssertWasCalled (mock => mock.RelationChanged (
-          TestableClientTransaction, 
-          _endPoint.GetDomainObject (), 
-          _endPoint.Definition, 
-          _oldRelatedObject, 
-          _newRelatedObject));
+      TransactionEventSinkWithMock.VerifyAllExpectations ();
     }
-
+    
     [Test]
     public void ExpandToAllRelatedObjects_SetDifferent_BidirectionalOneOne ()
     {

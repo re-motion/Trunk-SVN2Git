@@ -103,7 +103,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           .WhenCalled (mi => lazyLoaderDataManager = (DelegatingDataManager) mi.Arguments[0]);
       factoryPartialMock
           .Expect (
-              mock => mock.CallCreateRelationEndPointManager (_fakeConstructedTransaction, fakeEndPointProvider, fakeLazyLoader))
+              mock => mock.CallCreateRelationEndPointManager (_fakeConstructedTransaction, fakeEndPointProvider, fakeLazyLoader, fakeEventSink))
           .Return (fakeRelationEndPointManager);
       factoryPartialMock
           .Expect (

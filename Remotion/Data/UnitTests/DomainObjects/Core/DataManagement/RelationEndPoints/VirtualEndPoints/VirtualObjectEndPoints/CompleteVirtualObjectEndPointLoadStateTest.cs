@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -36,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IVirtualObjectEndPoint _virtualObjectEndPointMock;
     private IVirtualObjectEndPointDataManager _dataManagerMock;
     private IRelationEndPointProvider _endPointProviderStub;
-    private ClientTransaction _clientTransaction;
+    private IClientTransactionEventSink _transactionEventSinkStub;
 
     private CompleteVirtualObjectEndPointLoadState _loadState;
 
@@ -60,9 +61,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock = MockRepository.GenerateStrictMock<IVirtualObjectEndPointDataManager> ();
       _dataManagerMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Order1, _definition));
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
-      _clientTransaction = ClientTransaction.CreateRootTransaction ();
+      _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink>();
 
-      _loadState = new CompleteVirtualObjectEndPointLoadState (_dataManagerMock, _endPointProviderStub, _clientTransaction);
+      _loadState = new CompleteVirtualObjectEndPointLoadState (_dataManagerMock, _endPointProviderStub, _transactionEventSinkStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<OrderTicket> (DomainObjectIDs.OrderTicket1);
 
@@ -106,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void SetDataFromSubTransaction ()
     {
       var sourceDataManager = MockRepository.GenerateStub<IVirtualObjectEndPointDataManager>();
-      var sourceLoadState = new CompleteVirtualObjectEndPointLoadState (sourceDataManager, _endPointProviderStub, _clientTransaction);
+      var sourceLoadState = new CompleteVirtualObjectEndPointLoadState (sourceDataManager, _endPointProviderStub, _transactionEventSinkStub);
       _dataManagerMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataManager, _endPointProviderStub));
       _dataManagerMock.Replay();
 
@@ -182,6 +183,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
     }
 
     [Test]
@@ -254,6 +256,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (newRelatedObject));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
 
       CheckOppositeObjectIDSetter ((ObjectEndPointSetCommand) command);
     }
@@ -307,6 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command, Is.TypeOf (typeof (ObjectEndPointDeleteCommand)));
       Assert.That (command.DomainObject, Is.SameAs (_owningObject));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_virtualObjectEndPointMock));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
 
       CheckOppositeObjectNullSetter ((ObjectEndPointDeleteCommand) command);
     }
@@ -389,9 +393,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      var dataManager = new SerializableVirtualObjectEndPointDataManagerFake ();
-      var endPointProvider = new SerializableRelationEndPointProviderFake ();
-      var state = new CompleteVirtualObjectEndPointLoadState (dataManager, endPointProvider, _clientTransaction);
+      var state = new CompleteVirtualObjectEndPointLoadState (
+          new SerializableVirtualObjectEndPointDataManagerFake(),
+          new SerializableRelationEndPointProviderFake(),
+          new SerializableClientTransactionEventSinkFake());
 
       var oppositeEndPoint = new SerializableRealObjectEndPointFake (null, _relatedObject);
       AddUnsynchronizedOppositeEndPoint (state, oppositeEndPoint);
@@ -400,7 +405,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataManager, Is.Not.Null);
-      Assert.That (result.ClientTransaction, Is.Not.Null);
+      Assert.That (result.TransactionEventSink, Is.Not.Null);
       Assert.That (result.EndPointProvider, Is.Not.Null);
       Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
     }

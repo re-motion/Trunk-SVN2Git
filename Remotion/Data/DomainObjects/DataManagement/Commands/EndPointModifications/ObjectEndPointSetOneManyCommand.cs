@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -32,8 +33,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         IRealObjectEndPoint modifiedEndPoint,
         DomainObject newRelatedObject,
         Action<DomainObject> oppositeObjectSetter,
-        IRelationEndPointProvider endPointProvider)
-        : base (modifiedEndPoint, newRelatedObject, oppositeObjectSetter)
+        IRelationEndPointProvider endPointProvider,
+        IClientTransactionEventSink transactionEventSink)
+        : base (
+            modifiedEndPoint,
+            newRelatedObject,
+            oppositeObjectSetter,
+            transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
 

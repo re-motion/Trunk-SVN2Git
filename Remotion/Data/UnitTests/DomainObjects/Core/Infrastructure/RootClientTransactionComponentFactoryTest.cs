@@ -139,6 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var lazyLoader = MockRepository.GenerateStub<ILazyLoader> ();
       var endPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
 
       var relationEndPointManager =
           (RelationEndPointManager) PrivateInvoke.InvokeNonPublicMethod (
@@ -146,7 +147,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
               "CreateRelationEndPointManager",
               _fakeConstructedTransaction,
               endPointProvider,
-              lazyLoader);
+              lazyLoader,
+              eventSink);
 
       Assert.That (relationEndPointManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (relationEndPointManager.RegistrationAgent, Is.TypeOf<RootRelationEndPointRegistrationAgent> ());
@@ -162,6 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (endPointFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (endPointFactory.LazyLoader, Is.SameAs (lazyLoader));
       Assert.That (endPointFactory.EndPointProvider, Is.SameAs (endPointProvider));
+      Assert.That (endPointFactory.TransactionEventSink, Is.SameAs (eventSink));
 
       Assert.That (endPointFactory.CollectionEndPointDataManagerFactory, Is.TypeOf (typeof (CollectionEndPointDataManagerFactory)));
       var collectionEndPointDataManagerFactory = ((CollectionEndPointDataManagerFactory) endPointFactory.CollectionEndPointDataManagerFactory);

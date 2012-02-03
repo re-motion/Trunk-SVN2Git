@@ -28,6 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private bool _oppositeObjectSetterCalled;
     private DomainObject _oppositeObjectSetterObject;
     private Action<DomainObject> _oppositeObjectSetter;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
 
     protected IRelationEndPointProvider EndPointProviderStub
     {
@@ -49,6 +50,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       get { return _oppositeObjectSetter; }
     }
 
+    public ClientTransactionEventSinkWithMock TransactionEventSinkWithMock
+    {
+      get { return _transactionEventSinkWithMock; }
+    }
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -60,6 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         _oppositeObjectSetterCalled = true;
         _oppositeObjectSetterObject = id;
       };
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (TestableClientTransaction);
     }
   }
 }

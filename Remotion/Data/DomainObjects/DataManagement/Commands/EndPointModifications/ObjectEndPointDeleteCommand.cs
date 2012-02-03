@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications
@@ -27,11 +28,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   {
     private readonly Action _oppositeObjectNullSetter;
 
-    public ObjectEndPointDeleteCommand (IObjectEndPoint modifiedEndPoint, Action oppositeObjectNullSetter)
+    public ObjectEndPointDeleteCommand (
+        IObjectEndPoint modifiedEndPoint, Action oppositeObjectNullSetter, IClientTransactionEventSink transactionEventSink)
         : base (
             ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
             null,
-            null)
+            null,
+            ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink))
     {
       ArgumentUtility.CheckNotNull ("oppositeObjectNullSetter", oppositeObjectNullSetter);
 

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Utilities;
 
@@ -69,6 +70,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     }
 
     private readonly ILazyLoader _lazyLoader;
+    private readonly IRelationEndPointProvider _endPointProvider;
+    private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly IVirtualObjectEndPointDataManagerFactory _dataManagerFactory;
 
     private IVirtualObjectEndPointLoadState _loadState;
@@ -80,19 +83,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         RelationEndPointID id,
         ILazyLoader lazyLoader,
         IRelationEndPointProvider endPointProvider,
+        IClientTransactionEventSink transactionEventSink,
         IVirtualObjectEndPointDataManagerFactory dataManagerFactory)
         : base (
             ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction),
-            ArgumentUtility.CheckNotNull ("id", id),
-            ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider))
+            ArgumentUtility.CheckNotNull ("id", id))
     {
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("endPointProvider", endPointProvider);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
       ArgumentUtility.CheckNotNull ("dataManagerFactory", dataManagerFactory);
 
       if (!ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a virtual end point.", "id");
 
       _lazyLoader = lazyLoader;
+      _endPointProvider = endPointProvider;
+      _transactionEventSink = transactionEventSink;
       _dataManagerFactory = dataManagerFactory;
 
       SetIncompleteState();
@@ -104,7 +111,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       get { return _lazyLoader; }
     }
-    
+
+    public IRelationEndPointProvider EndPointProvider
+    {
+      get { return _endPointProvider; }
+    }
+
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
+    }
+
     public IVirtualObjectEndPointDataManagerFactory DataManagerFactory
     {
       get { return _dataManagerFactory; }
@@ -272,7 +289,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     private void SetCompleteState (IVirtualObjectEndPointDataManager dataManager)
     {
-      _loadState = new CompleteVirtualObjectEndPointLoadState (dataManager, EndPointProvider, ClientTransaction);
+      _loadState = new CompleteVirtualObjectEndPointLoadState (dataManager, EndPointProvider, _transactionEventSink);
     }
 
     #region Serialization
@@ -281,6 +298,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         : base (info)
     {
       _lazyLoader = info.GetValueForHandle<ILazyLoader> ();
+      _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
+      _transactionEventSink = info.GetValueForHandle<IClientTransactionEventSink> ();
       _dataManagerFactory = info.GetValueForHandle<IVirtualObjectEndPointDataManagerFactory> ();
       
       _loadState = info.GetValue<IVirtualObjectEndPointLoadState> ();
@@ -292,6 +311,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       base.SerializeIntoFlatStructure (info);
 
       info.AddHandle (_lazyLoader);
+      info.AddHandle (_endPointProvider);
+      info.AddHandle (_transactionEventSink);
       info.AddHandle (_dataManagerFactory);
 
       info.AddValue (_loadState);

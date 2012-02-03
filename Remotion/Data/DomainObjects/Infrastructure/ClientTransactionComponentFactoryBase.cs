@@ -44,7 +44,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     protected abstract IRelationEndPointManager CreateRelationEndPointManager (
         ClientTransaction constructedTransaction,
         IRelationEndPointProvider endPointProvider,
-        ILazyLoader lazyLoader);
+        ILazyLoader lazyLoader,
+        IClientTransactionEventSink eventSink);
 
     protected abstract IObjectLoader CreateObjectLoader (
         ClientTransaction constructedTransaction,
@@ -86,7 +87,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var endPointManager = CreateRelationEndPointManager (
           constructedTransaction,
           GetEndPointProvider (delegatingDataManager),
-          GetLazyLoader (delegatingDataManager));
+          GetLazyLoader (delegatingDataManager),
+          eventSink);
 
       var dataManager = new DataManager (constructedTransaction, eventSink, invalidDomainObjectManager, objectLoader, endPointManager);
       delegatingDataManager.InnerDataManager = dataManager;

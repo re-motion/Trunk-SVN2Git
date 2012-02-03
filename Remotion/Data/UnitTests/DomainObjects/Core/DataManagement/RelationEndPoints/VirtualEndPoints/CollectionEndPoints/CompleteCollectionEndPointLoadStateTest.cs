@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -38,9 +39,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ICollectionEndPoint _collectionEndPointMock;
     private ICollectionEndPointDataManager _dataManagerMock;
     private IRelationEndPointProvider _endPointProviderStub;
-    private ClientTransaction _clientTransaction;
+    private IClientTransactionEventSink _transactionEventSinkStub;
     private IDomainObjectCollectionEventRaiser _eventRaiserMock;
-
+    
     private CompleteCollectionEndPointLoadState _loadState;
 
     private IRelationEndPointDefinition _definition;
@@ -59,11 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionEndPointMock = MockRepository.GenerateStrictMock<ICollectionEndPoint>();
       _dataManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointDataManager>();
       _dataManagerMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
-      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _clientTransaction = ClientTransaction.CreateRootTransaction ();
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink> ();
       _eventRaiserMock = MockRepository.GenerateStrictMock<IDomainObjectCollectionEventRaiser>();
 
-      _loadState = new CompleteCollectionEndPointLoadState (_dataManagerMock, _endPointProviderStub, _clientTransaction);
+      _loadState = new CompleteCollectionEndPointLoadState (_dataManagerMock, _endPointProviderStub, _transactionEventSinkStub);
 
       _relatedObject = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
       _relatedEndPointStub = MockRepository.GenerateStub<IRealObjectEndPoint> ();
@@ -117,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _collectionEndPointMock.Stub (stub => stub.GetCollectionEventRaiser ()).Return (_eventRaiserMock);
 
       var sourceDataManager = MockRepository.GenerateStub<ICollectionEndPointDataManager> ();
-      var sourceLoadState = new CompleteCollectionEndPointLoadState (sourceDataManager, _endPointProviderStub, _clientTransaction);
+      var sourceLoadState = new CompleteCollectionEndPointLoadState (sourceDataManager, _endPointProviderStub, _transactionEventSinkStub);
       _dataManagerMock.Expect (mock => mock.SetDataFromSubTransaction (sourceDataManager, _endPointProviderStub)).Ordered (counter);
       _dataManagerMock.Replay ();
 
@@ -238,6 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (command, Is.TypeOf (typeof (CollectionEndPointSetCollectionCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).NewCollection, Is.SameAs (newCollection));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).CollectionEndPointCollectionManager, Is.SameAs (_collectionManagerStub));
       Assert.That (((CollectionEndPointSetCollectionCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
@@ -292,6 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.DomainObject, Is.SameAs (_owningObject));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
 
       Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
       Assert.That (((CollectionEndPointRemoveCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
@@ -341,6 +344,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var command = (RelationEndPointModificationCommand) _loadState.CreateDeleteCommand (_collectionEndPointMock);
       Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointDeleteCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
 
       Assert.That (((CollectionEndPointDeleteCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
       Assert.That (((CollectionEndPointDeleteCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
@@ -391,8 +395,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command, Is.InstanceOf (typeof (CollectionEndPointInsertCommand)));
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
-      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
 
+      Assert.That (((CollectionEndPointInsertCommand) command).Index, Is.EqualTo (12));
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
       Assert.That (((CollectionEndPointInsertCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
       Assert.That (((CollectionEndPointInsertCommand) command).EndPointProvider, Is.SameAs (_endPointProviderStub));
@@ -498,6 +503,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (oldRelatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
 
       Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollectionData, Is.SameAs (fakeCollectionData));
       Assert.That (((CollectionEndPointReplaceCommand) command).ModifiedCollection, Is.SameAs (fakeCollection));
@@ -520,6 +526,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (command.ModifiedEndPoint, Is.SameAs (_collectionEndPointMock));
       Assert.That (command.OldRelatedObject, Is.SameAs (_relatedObject));
       Assert.That (command.NewRelatedObject, Is.SameAs (_relatedObject));
+      Assert.That (command.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
     }
 
     [Test]
@@ -620,9 +627,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void FlattenedSerializable ()
     {
-      var dataManager = new SerializableCollectionEndPointDataManagerFake ();
-      var endPointProvider = new SerializableRelationEndPointProviderFake();
-      var state = new CompleteCollectionEndPointLoadState (dataManager, endPointProvider, _clientTransaction);
+      var state = new CompleteCollectionEndPointLoadState (
+          new SerializableCollectionEndPointDataManagerFake(),
+          new SerializableRelationEndPointProviderFake(),
+          new SerializableClientTransactionEventSinkFake());
 
       var oppositeEndPoint = new SerializableRealObjectEndPointFake (null, _relatedObject);
       AddUnsynchronizedOppositeEndPoint (state, oppositeEndPoint);
@@ -631,7 +639,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (result, Is.Not.Null);
       Assert.That (result.DataManager, Is.Not.Null);
-      Assert.That (result.ClientTransaction, Is.Not.Null);
+      Assert.That (result.TransactionEventSink, Is.Not.Null);
       Assert.That (result.EndPointProvider, Is.Not.Null);
       Assert.That (result.UnsynchronizedOppositeEndPoints.Count, Is.EqualTo (1));
     }

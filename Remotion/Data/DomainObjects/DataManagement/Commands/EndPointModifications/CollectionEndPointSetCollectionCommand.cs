@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -40,8 +41,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         ICollectionEndPoint modifiedEndPoint,
         DomainObjectCollection newCollection,
         IDomainObjectCollectionData modifiedCollectionData,
-        ICollectionEndPointCollectionManager collectionEndPointCollectionManager)
-      : base (ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint), null, null)
+        ICollectionEndPointCollectionManager collectionEndPointCollectionManager,
+        IClientTransactionEventSink transactionEventSink)
+      : base (
+          ArgumentUtility.CheckNotNull ("modifiedEndPoint", modifiedEndPoint),
+          null,
+          null,
+          ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink))
     {
       ArgumentUtility.CheckNotNull ("newCollection", newCollection);
       ArgumentUtility.CheckNotNull ("modifiedCollectionData", modifiedCollectionData);

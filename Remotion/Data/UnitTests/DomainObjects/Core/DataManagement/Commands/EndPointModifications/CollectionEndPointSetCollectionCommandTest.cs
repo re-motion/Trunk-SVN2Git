@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Collections.Generic;
@@ -63,7 +62,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           CollectionEndPoint, 
           _newCollection,
           _modifiedCollectionData,
-          _collectionManagerMock);
+          _collectionManagerMock,
+          TransactionEventSinkWithMock);
     }
 
     public override void TearDown ()
@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointSetCollectionCommand (endPoint, _newCollection, CollectionDataMock, _collectionManagerMock);
+      new CollectionEndPointSetCollectionCommand (endPoint, _newCollection, CollectionDataMock, _collectionManagerMock, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -150,17 +150,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void NotifyClientTransactionOfBegin ()
     {
-      var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      using (listenerMock.GetMockRepository ().Ordered ())
+      using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
-        listenerMock.Expect (
+        TransactionEventSinkWithMock.Expect (
             mock => mock.RelationChanging (
                 TestableClientTransaction,
                 DomainObject,
                 CollectionEndPoint.Definition,
                 _orderWithoutOrderItem,
                 null));
-        listenerMock.Expect (
+        TransactionEventSinkWithMock.Expect (
             mock => mock.RelationChanging (
                 TestableClientTransaction,
                 DomainObject,
@@ -168,29 +167,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                 null,
                 _order2));
       }
-      listenerMock.Replay ();
-
-      TestableClientTransaction.AddListener (listenerMock);
+      TransactionEventSinkWithMock.Replay ();
 
       _command.NotifyClientTransactionOfBegin ();
 
-      listenerMock.VerifyAllExpectations ();
+      TransactionEventSinkWithMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
-      var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      using (listenerMock.GetMockRepository ().Ordered ())
+      using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
-        listenerMock.Expect (
+        TransactionEventSinkWithMock.Expect (
             mock => mock.RelationChanged (
                 TestableClientTransaction,
                 DomainObject,
                 CollectionEndPoint.Definition,
                 null,
                 _order2));
-        listenerMock.Expect (
+        TransactionEventSinkWithMock.Expect (
             mock => mock.RelationChanged (
                 TestableClientTransaction,
                 DomainObject,
@@ -199,13 +195,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                 null));
       }
 
-      listenerMock.Replay ();
-
-      TestableClientTransaction.AddListener (listenerMock);
+      TransactionEventSinkWithMock.Replay ();
 
       _command.NotifyClientTransactionOfEnd();
 
-      listenerMock.VerifyAllExpectations ();
+      TransactionEventSinkWithMock.VerifyAllExpectations ();
     }
 
     [Test]

@@ -121,13 +121,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    public void EndPointProvider ()
+    public void InjectedProperties ()
     {
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (_endPoint);
 
-      var endPointProvider = deserializedEndPoint.EndPointProvider;
-      Assert.That (endPointProvider, Is.Not.Null);
-
+      Assert.That (deserializedEndPoint.EndPointProvider, Is.Not.Null);
+      Assert.That (deserializedEndPoint.TransactionEventSink, Is.Not.Null);
     }
   }
 }

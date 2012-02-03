@@ -33,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
   {
     private DataContainer _foreignKeyDataContainer;
     private IRelationEndPointProvider _endPointProviderStub;
+    private IClientTransactionEventSink _transactionEventSinkStub;
     private IRealObjectEndPointSyncState _syncStateMock;
 
     private RealObjectEndPoint _endPoint;
@@ -45,9 +46,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       _foreignKeyDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink>();
       _syncStateMock = MockRepository.GenerateStrictMock<IRealObjectEndPointSyncState> ();
-    
-      _endPoint = new RealObjectEndPoint (TestableClientTransaction, _endPointID, _foreignKeyDataContainer, _endPointProviderStub);
+
+      _endPoint = new RealObjectEndPoint (
+          TestableClientTransaction, _endPointID, _foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
       PrivateInvoke.SetNonPublicField (_endPoint, "_syncState", _syncStateMock);
     }
 
@@ -58,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderTicket");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub);
+      new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
     }
 
     [Test]
@@ -68,13 +71,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var foreignKeyDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub);
+      new RealObjectEndPoint (TestableClientTransaction, id, foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
     }
 
     [Test]
     public void Initialization_SyncState ()
     {
-      var endPoint = new RealObjectEndPoint (TestableClientTransaction, _endPointID, _foreignKeyDataContainer, _endPointProviderStub);
+      var endPoint = new RealObjectEndPoint (TestableClientTransaction, _endPointID, _foreignKeyDataContainer, _endPointProviderStub, _transactionEventSinkStub);
 
       var syncState = RealObjectEndPointTestHelper.GetSyncState (endPoint);
       Assert.That (syncState, Is.TypeOf (typeof (UnknownRealObjectEndPointSyncState)));
@@ -278,6 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       Assert.That (RealObjectEndPointTestHelper.GetSyncState (_endPoint), Is.TypeOf (typeof (SynchronizedRealObjectEndPointSyncState)));
       Assert.That (_endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (_endPoint.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
     }
 
     [Test]
@@ -395,7 +399,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var sourceDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
       var sourceForeignKeyProperty = sourceDataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")];
       sourceForeignKeyProperty.Value = DomainObjectIDs.Order2;
-      var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub);
+      var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub, _transactionEventSinkStub);
 
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
@@ -414,7 +418,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var sourceDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
       var sourceForeignKeyProperty = sourceDataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")];
       sourceForeignKeyProperty.Value = DomainObjectIDs.Order2;
-      var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub);
+      var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub, _transactionEventSinkStub);
 
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
     }

@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.CollectionData;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -43,6 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private ICollectionEndPointCollectionManager _collectionManagerMock;
     private ILazyLoader _lazyLoaderMock;
     private IRelationEndPointProvider _endPointProviderStub;
+    private IClientTransactionEventSink _transactionEventSinkStub;
     private ICollectionEndPointDataManagerFactory _dataManagerFactoryStub;
     private ICollectionEndPointLoadState _loadStateMock;
 
@@ -61,7 +63,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _fakeCollection = new OrderCollection ();
       _collectionManagerMock = MockRepository.GenerateStrictMock<ICollectionEndPointCollectionManager> ();
       _lazyLoaderMock = MockRepository.GenerateMock<ILazyLoader> ();
-      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
+      _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider> ();
+      _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink> ();
       _dataManagerFactoryStub = MockRepository.GenerateStub<ICollectionEndPointDataManagerFactory> ();
       _loadStateMock = MockRepository.GenerateStrictMock<ICollectionEndPointLoadState> ();
 
@@ -71,6 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _collectionManagerMock,
           _lazyLoaderMock,
           _endPointProviderStub,
+          _transactionEventSinkStub,
           _dataManagerFactoryStub);
       PrivateInvoke.SetNonPublicField (_endPoint, "_loadState", _loadStateMock);
       _endPointProviderStub.Stub (stub => stub.GetOrCreateVirtualEndPoint (_customerEndPointID)).Return (_endPoint);
@@ -87,12 +91,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _collectionManagerMock,
           _lazyLoaderMock, 
           _endPointProviderStub,
+          _transactionEventSinkStub,
           _dataManagerFactoryStub);
 
       Assert.That (endPoint.ID, Is.EqualTo (_customerEndPointID));
       Assert.That (endPoint.CollectionManager, Is.SameAs (_collectionManagerMock));
       Assert.That (endPoint.LazyLoader, Is.SameAs (_lazyLoaderMock));
       Assert.That (endPoint.EndPointProvider, Is.SameAs (_endPointProviderStub));
+      Assert.That (endPoint.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
       Assert.That (endPoint.DataManagerFactory, Is.SameAs (_dataManagerFactoryStub));
 
       var loadState = CollectionEndPointTestHelper.GetLoadState (endPoint);
@@ -114,6 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _collectionManagerMock,
           _lazyLoaderMock,
           _endPointProviderStub,
+          _transactionEventSinkStub,
           _dataManagerFactoryStub);
     }
 
@@ -128,6 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           _collectionManagerMock,
           _lazyLoaderMock,
           _endPointProviderStub,
+          _transactionEventSinkStub,
           _dataManagerFactoryStub);
     }
 
@@ -354,7 +362,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       Assert.That (newLoadState, Is.TypeOf (typeof (CompleteCollectionEndPointLoadState)));
 
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).DataManager, Is.SameAs (dataManagerStub));
-      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).ClientTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
       Assert.That (((CompleteCollectionEndPointLoadState) newLoadState).EndPointProvider, Is.SameAs (_endPointProviderStub));
     }
 

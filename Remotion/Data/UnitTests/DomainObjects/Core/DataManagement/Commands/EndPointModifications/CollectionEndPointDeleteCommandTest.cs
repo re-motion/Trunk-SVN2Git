@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Rhino.Mocks;
@@ -32,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       base.SetUp();
 
-      _command = new CollectionEndPointDeleteCommand (CollectionEndPoint, CollectionDataMock);
+      _command = new CollectionEndPointDeleteCommand (CollectionEndPoint, CollectionDataMock, TransactionEventSinkWithMock);
     }
 
     [Test]
@@ -51,21 +50,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void Initialization_FromNullEndPoint ()
     {
       var endPoint = new NullCollectionEndPoint (TestableClientTransaction, RelationEndPointID.Definition);
-      new CollectionEndPointDeleteCommand (endPoint, CollectionDataMock);
+      new CollectionEndPointDeleteCommand (endPoint, CollectionDataMock, TransactionEventSinkWithMock);
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin()
+    public void NotifyClientTransactionOfBegin_NoEvents()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      TransactionEventSinkWithMock.Replay();
       
       _command.NotifyClientTransactionOfBegin();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void NotifyClientTransactionOfEnd_NoEvents ()
     {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (TestableClientTransaction);
+      TransactionEventSinkWithMock.Replay ();
 
       _command.NotifyClientTransactionOfEnd ();
     }
