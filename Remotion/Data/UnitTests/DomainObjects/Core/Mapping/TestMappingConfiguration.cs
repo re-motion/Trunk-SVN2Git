@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var rootAssemlbies = new[] { new RootAssembly (typeof (TestMappingConfiguration).Assembly, true) };
       var rootAssemblyFinder = new FixedRootAssemblyFinder (rootAssemlbies);
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (rootAssemblyFinder, assemblyLoader));
       var typeDiscoveryService = (ITypeDiscoveryService) new AssemblyFinderTypeDiscoveryService (assemblyFinder);
       typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (typeDiscoveryService, testMappingNamespace);
 

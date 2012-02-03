@@ -50,7 +50,7 @@ namespace Remotion.Mixins.MixerTools
 
       var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
       var assemblyLoader = new FilteringAssemblyLoader (new LoadAllAssemblyLoaderFilter());
-      var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+      var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (rootAssemblyFinder, assemblyLoader));
       var typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
       var finder = new ClassContextFinder (typeDiscoveryService);

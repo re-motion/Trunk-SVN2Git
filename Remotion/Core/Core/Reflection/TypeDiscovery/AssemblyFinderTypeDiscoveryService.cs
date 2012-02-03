@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Remotion.Configuration.TypeDiscovery;
@@ -39,8 +40,6 @@ namespace Remotion.Reflection.TypeDiscovery
     private static readonly ILog s_log = LogManager.GetLogger (typeof (AssemblyFinderTypeDiscoveryService));
 
     private readonly IAssemblyFinder _assemblyFinder;
-
-    private _Assembly[] _assemblyCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AssemblyFinderTypeDiscoveryService"/> class with a specific <see cref="AssemblyFinder"/>
@@ -76,7 +75,7 @@ namespace Remotion.Reflection.TypeDiscovery
       using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to discover types: {elapsed}."))
       {
         var types = new List<Type>();
-        foreach (_Assembly assembly in GetAssemblies (excludeGlobalTypes))
+        foreach (var assembly in GetAssemblies (excludeGlobalTypes))
           types.AddRange (GetTypes (assembly, baseType));
 
         return types.LogAndReturn (s_log, LogLevel.Debug, typeList => string.Format ("Discovered {0} types.", typeList.Count));
@@ -92,7 +91,11 @@ namespace Remotion.Reflection.TypeDiscovery
       }
       catch (ReflectionTypeLoadException ex)
       {
-        string message = string.Format ("The types from assembly '{0}' could not be loaded.{1}{2}", assembly.GetName (), Environment.NewLine, SeparatedStringBuilder.Build (Environment.NewLine, ex.LoaderExceptions, e => e.Message));
+        string message = string.Format (
+            "The types from assembly '{0}' could not be loaded.{1}{2}",
+            assembly.GetName(),
+            Environment.NewLine,
+            SeparatedStringBuilder.Build (Environment.NewLine, ex.LoaderExceptions, e => e.Message));
         throw new TypeLoadException (message, ex);
       }
 
@@ -104,23 +107,13 @@ namespace Remotion.Reflection.TypeDiscovery
 
     private IEnumerable<Type> GetFilteredTypes (IEnumerable<Type> types, Type baseType)
     {
-      foreach (Type type in types)
-      {
-        if (baseType.IsAssignableFrom (type))
-          yield return type;
-      }
+      return types.Where (baseType.IsAssignableFrom);
     }
 
-    private IEnumerable<_Assembly> GetAssemblies (bool excludeGlobalTypes)
+    private IEnumerable<Assembly> GetAssemblies (bool excludeGlobalTypes)
     {
-      if (_assemblyCache == null)
-        _assemblyCache = _assemblyFinder.FindAssemblies();
-
-      foreach (_Assembly assembly in _assemblyCache)
-      {
-        if (!excludeGlobalTypes || !assembly.GlobalAssemblyCache)
-          yield return assembly;
-      }
+      var assemblies = _assemblyFinder.FindAssemblies();
+      return assemblies.Where (assembly => !excludeGlobalTypes || !assembly.GlobalAssemblyCache);
     }
   }
 }

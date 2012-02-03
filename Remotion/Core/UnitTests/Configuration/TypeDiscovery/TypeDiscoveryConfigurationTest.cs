@@ -107,7 +107,8 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var service = section.CreateTypeDiscoveryService ();
 
       Assert.That (service, Is.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
-      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
+      Assert.That (((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder, Is.TypeOf<CachingAssemblyFinderDecorator>());
+      var assemblyFinder = (AssemblyFinder) ((CachingAssemblyFinderDecorator) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder).InnerFinder;
       Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOf (typeof (SearchPathRootAssemblyFinder)));
 
       var searchPathRootAssemblyFinder = (SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
@@ -127,7 +128,8 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var service = section.CreateTypeDiscoveryService ();
 
       Assert.That (service, Is.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
-      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
+      Assert.That (((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder, Is.TypeOf<CachingAssemblyFinderDecorator>());
+      var assemblyFinder = (AssemblyFinder) ((CachingAssemblyFinderDecorator) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder).InnerFinder;
       Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOf (typeof (FakeRootAssemblyFinder)));
     }
 
@@ -149,7 +151,8 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       var service = section.CreateTypeDiscoveryService ();
 
       Assert.That (service, Is.InstanceOf (typeof (AssemblyFinderTypeDiscoveryService)));
-      var assemblyFinder = (AssemblyFinder) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder;
+      Assert.That (((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder, Is.TypeOf<CachingAssemblyFinderDecorator> ());
+      var assemblyFinder = (AssemblyFinder) ((CachingAssemblyFinderDecorator) ((AssemblyFinderTypeDiscoveryService) service).AssemblyFinder).InnerFinder;
       Assert.That (assemblyFinder.RootAssemblyFinder, Is.InstanceOf (typeof (CompositeRootAssemblyFinder)));
 
       var rootAssemblyFinder = (CompositeRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;

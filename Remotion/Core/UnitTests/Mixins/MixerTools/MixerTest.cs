@@ -249,9 +249,9 @@ namespace Remotion.UnitTests.Mixins.MixerTools
       Assert.That (((ClassContextFinder) mixer.ClassContextFinder).TypeDiscoveryService, Is.TypeOf (typeof (AssemblyFinderTypeDiscoveryService)));
 
       var service = (AssemblyFinderTypeDiscoveryService) ((ClassContextFinder) mixer.ClassContextFinder).TypeDiscoveryService;
-      Assert.That (service.AssemblyFinder, Is.TypeOf (typeof (AssemblyFinder)));
+      Assert.That (service.AssemblyFinder, Is.TypeOf (typeof (CachingAssemblyFinderDecorator)));
 
-      var assemblyFinder = (AssemblyFinder) service.AssemblyFinder;
+      var assemblyFinder = (AssemblyFinder) ((CachingAssemblyFinderDecorator) service.AssemblyFinder).InnerFinder;
       Assert.That (assemblyFinder.RootAssemblyFinder, Is.TypeOf (typeof (SearchPathRootAssemblyFinder)));
       Assert.That (((SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder).BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
       Assert.That (((SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder).ConsiderDynamicDirectory, Is.False);

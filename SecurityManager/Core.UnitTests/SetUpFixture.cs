@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests
 
         var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (BaseSecurityManagerObject).Assembly, true));
         var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
+        var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (rootAssemblyFinder, assemblyLoader));
         ITypeDiscoveryService typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 
         MappingConfiguration.SetCurrent (

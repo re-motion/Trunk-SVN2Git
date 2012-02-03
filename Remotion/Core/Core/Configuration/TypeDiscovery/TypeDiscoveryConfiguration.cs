@@ -185,7 +185,7 @@ namespace Remotion.Configuration.TypeDiscovery
     private ITypeDiscoveryService CreateServiceWithAssemblyFinder (IRootAssemblyFinder customRootAssemblyFinder)
     {
       var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-      var assemblyFinder = new AssemblyFinder (customRootAssemblyFinder, assemblyLoader);
+      var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (customRootAssemblyFinder, assemblyLoader));
       return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
     }
     

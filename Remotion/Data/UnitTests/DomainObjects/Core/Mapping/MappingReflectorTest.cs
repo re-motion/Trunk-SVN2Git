@@ -57,10 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetRelationDefinitions ()
     {
-      var mappingReflector = MappingReflectorObjectMother.CreateMappingReflector (TestMappingConfiguration.GetTypeDiscoveryService ());
-
-      var actualClassDefinitions = mappingReflector.GetClassDefinitions ().ToDictionary (cd => cd.ClassType);
-      var actualRelationDefinitions = mappingReflector.GetRelationDefinitions (actualClassDefinitions).ToDictionary (rd => rd.ID);
+      var actualClassDefinitions = _mappingReflector.GetClassDefinitions ().ToDictionary (cd => cd.ClassType);
+      var actualRelationDefinitions = _mappingReflector.GetRelationDefinitions (actualClassDefinitions).ToDictionary (rd => rd.ID);
 
       var relationDefinitionChecker = new RelationDefinitionChecker();
       relationDefinitionChecker.Check (FakeMappingConfiguration.Current.RelationDefinitions.Values, actualRelationDefinitions, true);
