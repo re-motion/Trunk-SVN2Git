@@ -2646,7 +2646,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { Value = ArgumentUtility.CheckType<IList> ("value", value); }
     }
 
-    /// <summary>Gets a flag indicating whether the <see cref="BocTreeView"/> contains a value. </summary>
+    /// <summary>Gets a flag indicating whether the <see cref="BocList"/> contains a value. </summary>
     public override bool HasValue
     {
       get { return _value != null; }
