@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -41,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       base.SetUp();
 
       _endPointProviderMock = MockRepository.GenerateStrictMock<IVirtualEndPointProvider> ();
-      _map = new RelationEndPointMap (ClientTransaction.CreateRootTransaction());
+      _map = new RelationEndPointMap (MockRepository.GenerateStub<IClientTransactionEventSink> ());
 
       _realOneManyEndPointID = RelationEndPointID.Create (DomainObjectIDs.OrderItem1, typeof (OrderItem), "Order");
       _virtualEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderItems");
@@ -192,7 +193,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       var oppositeEndPointID = RelationEndPointID.CreateOpposite (endPointMock.Definition, null);
       _endPointProviderMock
           .Expect (mock => mock.GetOrCreateVirtualEndPoint (oppositeEndPointID))
-          .Return (new NullCollectionEndPoint (_map.ClientTransaction, oppositeEndPointID.Definition));
+          .Return (new NullCollectionEndPoint (ClientTransaction.CreateRootTransaction(), oppositeEndPointID.Definition));
       _endPointProviderMock.Replay ();
 
       _agent.UnregisterEndPoint (endPointMock, _map);

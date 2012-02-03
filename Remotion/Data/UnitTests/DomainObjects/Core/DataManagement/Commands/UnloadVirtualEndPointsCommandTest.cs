@@ -16,9 +16,9 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _endPointMock2 = _mockRepository.StrictMock<IVirtualEndPoint> ();
 
       _registrationAgentMock = _mockRepository.StrictMock<IRelationEndPointRegistrationAgent>();
-      _relationEndPointMap = new RelationEndPointMap (ClientTransaction.CreateRootTransaction());
+      _relationEndPointMap = new RelationEndPointMap (MockRepository.GenerateStub<IClientTransactionEventSink>());
 
       _command = new UnloadVirtualEndPointsCommand (new[] { _endPointMock1, _endPointMock2 }, _registrationAgentMock, _relationEndPointMap);
     }

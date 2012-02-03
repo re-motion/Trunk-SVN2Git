@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _agentPartialMock = MockRepository.GeneratePartialMock<TestableDataContainerEndPointsRegistrationAgentBase> (
           _endPointFactoryMock, _registrationAgentMock);
 
-      _map = new RelationEndPointMap (ClientTransaction.CreateRootTransaction());
+      _map = new RelationEndPointMap (MockRepository.GenerateStub<IClientTransactionEventSink> ());
 
       _orderTicketEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "OrderTicket");
       _customerEndPointID = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");

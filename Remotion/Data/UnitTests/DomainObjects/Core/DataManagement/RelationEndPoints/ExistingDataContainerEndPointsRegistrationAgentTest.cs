@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -42,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _endPointFactoryStub = MockRepository.GenerateStub<IRelationEndPointFactory> ();
       _registrationAgentStub = MockRepository.GenerateStub<IRelationEndPointRegistrationAgent> ();
-      _map = new RelationEndPointMap(ClientTransaction.CreateRootTransaction());
+      _map = new RelationEndPointMap (MockRepository.GenerateStub<IClientTransactionEventSink> ());
 
       _agent = new ExistingDataContainerEndPointsRegistrationAgent (_endPointFactoryStub, _registrationAgentStub);
     }

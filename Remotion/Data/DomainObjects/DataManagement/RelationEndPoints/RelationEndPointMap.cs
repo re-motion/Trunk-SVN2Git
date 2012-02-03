@@ -24,28 +24,20 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
-  // TODO 3658: Inject event sink
   /// <summary>
   /// Holds a set of <see cref="IRelationEndPoint"/> instances and provides access to them.
   /// </summary>
   public class RelationEndPointMap : IRelationEndPointMapReadOnlyView, IFlattenedSerializable
   {
-    private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly Dictionary<RelationEndPointID, IRelationEndPoint> _relationEndPoints;
 
-    public RelationEndPointMap (ClientTransaction clientTransaction)
+    public RelationEndPointMap (IClientTransactionEventSink transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
-      _clientTransaction = clientTransaction;
-      _transactionEventSink = clientTransaction.ListenerManager;
+      _transactionEventSink = transactionEventSink;
       _relationEndPoints = new Dictionary<RelationEndPointID, IRelationEndPoint> ();
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
     }
 
     public IClientTransactionEventSink TransactionEventSink
@@ -119,7 +111,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     #region Serialization
 
     protected RelationEndPointMap (FlattenedDeserializationInfo info)
-      : this (info.GetValueForHandle<ClientTransaction>())
+      : this (info.GetValueForHandle<IClientTransactionEventSink>())
     {
       var endPointArray = info.GetArray<IRelationEndPoint> ();
       foreach (IRelationEndPoint endPoint in endPointArray)
@@ -129,7 +121,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
-      info.AddHandle (_clientTransaction);
+      info.AddHandle (_transactionEventSink);
 
       var endPointArray = new IRelationEndPoint[Count];
       _relationEndPoints.Values.CopyTo (endPointArray, 0);

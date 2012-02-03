@@ -136,7 +136,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           virtualEndPointStateUpdateListener);
 
       var relationEndPointRegistrationAgent = new RelationEndPointRegistrationAgent (endPointProvider);
-      return new RelationEndPointManager (clientTransaction, lazyLoader, stateUpdateRaisingRelationEndPointFactory, relationEndPointRegistrationAgent);
+      return new RelationEndPointManager (
+          clientTransaction, lazyLoader, eventSink, stateUpdateRaisingRelationEndPointFactory, relationEndPointRegistrationAgent);
     }
 
     protected virtual RelationEndPointFactory CreateRelationEndPointFactory (

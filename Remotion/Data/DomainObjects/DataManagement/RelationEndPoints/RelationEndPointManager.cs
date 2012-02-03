@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -54,11 +55,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public RelationEndPointManager (
         ClientTransaction clientTransaction,
         ILazyLoader lazyLoader,
+        IClientTransactionEventSink transactionEventSink,
         IRelationEndPointFactory endPointFactory,
         IRelationEndPointRegistrationAgent registrationAgent)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("lazyLoader", lazyLoader);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
       ArgumentUtility.CheckNotNull ("endPointFactory", endPointFactory);
       ArgumentUtility.CheckNotNull ("registrationAgent", registrationAgent);
 
@@ -68,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       _registrationAgent = registrationAgent;
       _dataContainerEndPointsRegistrationAgent = new DelegatingDataContainerEndPointsRegistrationAgent (endPointFactory, registrationAgent);
 
-      _map = new RelationEndPointMap (_clientTransaction);
+      _map = new RelationEndPointMap (transactionEventSink);
     }
 
     public ClientTransaction ClientTransaction
@@ -235,25 +238,26 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         throw new ArgumentException (message, argumentName);
       }
     }
-
-
+    
     #region Serialization
 
-    // Note: RelationEndPointManager should never be serialized on its own; always start from the DataManager.
     protected RelationEndPointManager (FlattenedDeserializationInfo info)
-        : this (
-            info.GetValueForHandle<ClientTransaction>(),
-            info.GetValueForHandle<ILazyLoader>(),
-            info.GetValueForHandle<IRelationEndPointFactory>(),
-            info.GetValueForHandle<IRelationEndPointRegistrationAgent> ())
     {
-      _dataContainerEndPointsRegistrationAgent = new DelegatingDataContainerEndPointsRegistrationAgent (_endPointFactory, _registrationAgent);
+      ArgumentUtility.CheckNotNull ("info", info);
+
+      _clientTransaction = info.GetValueForHandle<ClientTransaction>();
+      _lazyLoader = info.GetValueForHandle<ILazyLoader>();
+      _endPointFactory = info.GetValueForHandle<IRelationEndPointFactory>();
+      _registrationAgent = info.GetValueForHandle<IRelationEndPointRegistrationAgent> ();
       _map = info.GetValue<RelationEndPointMap> ();
+
+      _dataContainerEndPointsRegistrationAgent = new DelegatingDataContainerEndPointsRegistrationAgent (_endPointFactory, _registrationAgent);
     }
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
+
       info.AddHandle (_clientTransaction);
       info.AddHandle (_lazyLoader);
       info.AddHandle (_endPointFactory);
