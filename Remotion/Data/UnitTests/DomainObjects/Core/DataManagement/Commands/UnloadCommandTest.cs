@@ -20,8 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -32,13 +30,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
   {
     private MockRepository _mockRepository;
 
-    private ClientTransaction _clientTransaction;
-    private IClientTransactionListener _clientTransactionListenerMock;
-
     private Order _domainObject1;
     private Order _domainObject2;
 
-    private IUnloadEventReceiver _unloadEventReceiverMock;
+    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
 
     private IDataManagementCommand _unloadDataCommandMock;
 
@@ -52,25 +47,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _mockRepository = new MockRepository();
 
-      _clientTransaction = ClientTransaction.CreateRootTransaction();
+      _domainObject1 = DomainObjectMother.CreateFakeObject<Order>();
+      _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _domainObject1 = DomainObjectMother.CreateObjectInTransaction<Order> (_clientTransaction);
-      _domainObject2 = DomainObjectMother.CreateObjectInTransaction<Order> (_clientTransaction);
-
-      _clientTransactionListenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      ClientTransactionTestHelper.AddListener (_clientTransaction, _clientTransactionListenerMock);
-
-      _unloadEventReceiverMock = _mockRepository.StrictMock<IUnloadEventReceiver> ();
-
-      _domainObject1.SetUnloadEventReceiver (_unloadEventReceiverMock);
-      _domainObject2.SetUnloadEventReceiver (_unloadEventReceiverMock);
+      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (ClientTransaction.CreateRootTransaction());
 
       _unloadDataCommandMock = _mockRepository.StrictMock<IDataManagementCommand>();
 
       _unloadCommand = new UnloadCommand (
-          _clientTransaction,
           new[] { _domainObject1, _domainObject2 },
-          _unloadDataCommandMock);
+          _unloadDataCommandMock,
+          _transactionEventSinkWithMock);
 
       _exception1 = new Exception ("1");
       _exception2 = new Exception ("2");
@@ -86,17 +73,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    [Ignore ("TODO 4619: Inject TransactionEventSink in order to avoid side effects")]
     public void NotifyClientTransactionOfBegin ()
     {
       _unloadDataCommandMock.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
 
       using (_mockRepository.Ordered())
       {
-        _clientTransactionListenerMock
-            .Expect (
+        _transactionEventSinkWithMock
+            .ExpectMock (
                 mock => mock.ObjectsUnloading (
-                    Arg.Is (_clientTransaction),
+                    Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _domainObject1, _domainObject2 })));
         _unloadDataCommandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
       }
@@ -197,7 +183,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
     
     [Test]
-    [Ignore ("TODO 4619: Inject TransactionEventSink in order to avoid side effects")]
     public void NotifyClientTransactionOfEnd ()
     {
       _unloadDataCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
@@ -205,10 +190,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       using (_mockRepository.Ordered ())
       {
         _unloadDataCommandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        _clientTransactionListenerMock
-            .Expect (
+        _transactionEventSinkWithMock
+            .ExpectMock (
                 mock => mock.ObjectsUnloaded (
-                    Arg.Is (_clientTransaction),
+                    Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _domainObject1, _domainObject2 })));
       }
       _mockRepository.ReplayAll ();

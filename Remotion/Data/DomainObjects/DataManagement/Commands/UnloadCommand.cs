@@ -17,41 +17,36 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 using System.Linq;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
-  // TODO 3658: Inject event sink
   /// <summary>
   /// Unloads a <see cref="DomainObject"/> instance.
   /// </summary>
   public class UnloadCommand : IDataManagementCommand
   {
-    private readonly ClientTransaction _clientTransaction;
     private readonly DomainObject[] _domainObjects;
     private readonly IDataManagementCommand _unloadDataCommand;
+    private readonly IClientTransactionEventSink _transactionEventSink;
 
     public UnloadCommand (
-        ClientTransaction clientTransaction,
         ICollection<DomainObject> domainObjects,
-        IDataManagementCommand unloadDataCommand)
+        IDataManagementCommand unloadDataCommand,
+        IClientTransactionEventSink transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
       ArgumentUtility.CheckNotNull ("unloadDataCommand", unloadDataCommand);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
-      _clientTransaction = clientTransaction;
       _domainObjects = domainObjects.ToArray();
       _unloadDataCommand = unloadDataCommand;
+      _transactionEventSink = transactionEventSink;
 
       if (_domainObjects.Length == 0)
         throw new ArgumentEmptyException ("domainObjects");
-    }
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
     }
 
     public ReadOnlyCollection<DomainObject> DomainObjects
@@ -64,6 +59,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       get { return _unloadDataCommand; }
     }
 
+    public IClientTransactionEventSink TransactionEventSink
+    {
+      get { return _transactionEventSink; }
+    }
+
     public IEnumerable<Exception> GetAllExceptions ()
     {
       return _unloadDataCommand.GetAllExceptions ();
@@ -73,8 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       this.EnsureCanExecute ();
 
-      _clientTransaction.Execute (() => _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, Array.AsReadOnly (_domainObjects))));
-
+      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, Array.AsReadOnly (_domainObjects)));
       _unloadDataCommand.NotifyClientTransactionOfBegin ();
     }
 
@@ -106,8 +105,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       this.EnsureCanExecute ();
 
       _unloadDataCommand.NotifyClientTransactionOfEnd ();
-
-      _clientTransaction.Execute (() => _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, Array.AsReadOnly (_domainObjects))));
+      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, Array.AsReadOnly (_domainObjects)));
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

@@ -395,7 +395,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
       {
         var compositeCommand = new CompositeCommand (commands);
-        return new UnloadCommand (_clientTransaction, domainObjects, compositeCommand);
+        return new UnloadCommand (domainObjects, compositeCommand, _transactionEventSink);
       }
     }
 

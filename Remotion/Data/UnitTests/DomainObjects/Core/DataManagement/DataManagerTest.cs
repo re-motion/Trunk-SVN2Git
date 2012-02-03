@@ -675,9 +675,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (result, Is.TypeOf<UnloadCommand>());
       var unloadCommand = (UnloadCommand) result;
-      Assert.That (unloadCommand.ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
       Assert.That (unloadCommand.DomainObjects, Is.EqualTo (new[] { loadedObject1, loadedObject2 }));
       Assert.That (unloadCommand.UnloadDataCommand, Is.TypeOf<CompositeCommand> ());
+      Assert.That (unloadCommand.TransactionEventSink, Is.SameAs (_dataManager.TransactionEventSink));
 
       var unloadDataCommandSteps = ((CompositeCommand) unloadCommand.UnloadDataCommand).GetNestedCommands();
       Assert.That (unloadDataCommandSteps, Has.Count.EqualTo (4));
