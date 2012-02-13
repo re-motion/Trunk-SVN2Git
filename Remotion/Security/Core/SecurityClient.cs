@@ -61,7 +61,7 @@ namespace Remotion.Security
     {
       ArgumentUtility.CheckNotNull ("securityProvider", securityProvider);
       ArgumentUtility.CheckNotNull ("permissionProvider", permissionProvider);
-      ArgumentUtility.CheckNotNull ("userProvider", principalProvider);
+      ArgumentUtility.CheckNotNull ("principalProvider", principalProvider);
       ArgumentUtility.CheckNotNull ("functionalSecurityStrategy", functionalSecurityStrategy);
       ArgumentUtility.CheckNotNull ("memberResolver", memberResolver);
 
