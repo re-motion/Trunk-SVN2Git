@@ -89,8 +89,8 @@ namespace Remotion.UnitTests.Mixins
     }
 
     [Test]
-    [ExpectedException (typeof (MemberAccessException), ExpectedMessage = "Cannot create an instance of "
-        + "Remotion.UnitTests.Mixins.TestDomain.MixinWithAbstractMembers because it is an abstract class.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Cannot create an instance of "
+        + "'Remotion.UnitTests.Mixins.TestDomain.MixinWithAbstractMembers' because it is an abstract type.")]
     public void CreateMixinWithMockedTarget_AbstractMixin ()
     {
       var thisMock = new ClassOverridingMixinMembers();

@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding
   /// </remarks>
   public class BusinessObjectPropertyPath : IBusinessObjectPropertyPath
   {
-    /// <summary> Property path formatters can be passed to <see cref="String.Format"/> for full <see cref="IFormattable"/> support. </summary>
+    /// <summary> Property path formatters can be passed to <see cref="string.Format(string,object[])"/> for full <see cref="IFormattable"/> support. </summary>
     public class Formatter : IFormattable
     {
       private readonly IBusinessObject _object;

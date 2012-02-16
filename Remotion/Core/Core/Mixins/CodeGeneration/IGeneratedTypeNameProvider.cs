@@ -14,8 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using Remotion.Implementation;
 using Remotion.Mixins.Definitions;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.CodeGeneration
 {

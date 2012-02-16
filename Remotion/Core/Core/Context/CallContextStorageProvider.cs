@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Runtime.Remoting.Messaging;
-using Remotion.BridgeInterfaces;
 using Remotion.Utilities;
 
 namespace Remotion.Context
@@ -24,7 +23,7 @@ namespace Remotion.Context
   /// <summary>
   /// Implements <see cref="ISafeContextStorageProvider"/> by storing data in the thread-local <see cref="CallContext"/>.
   /// </summary>
-  public class CallContextStorageProvider : ICallContextStorageProvider
+  public class CallContextStorageProvider : ISafeContextStorageProvider
   {
     public object GetData (string key)
     {

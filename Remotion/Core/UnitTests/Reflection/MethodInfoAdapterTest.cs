@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests.TestDomain;
@@ -37,21 +36,10 @@ namespace Remotion.UnitTests.Reflection
     private MethodInfoAdapter _adapter;
     private MethodInfoAdapter _explicitInterfaceAdapter;
     private MethodInfoAdapter _implicitInterfaceAdapter;
-
-
+    
     [SetUp]
     public void SetUp ()
     {
-      var propertyInfoAdapterDataStore =
-          (IDataStore<PropertyInfo, PropertyInfoAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (PropertyInfoAdapter), "s_dataStore");
-      propertyInfoAdapterDataStore.Clear();
-      var methodInfoAdapterDataStore =
-          (IDataStore<MethodInfo, MethodInfoAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (MethodInfoAdapter), "s_dataStore");
-      methodInfoAdapterDataStore.Clear();
-      var typeAdapterDataStore =
-          (IDataStore<Type, TypeAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (TypeAdapter), "s_dataStore");
-      typeAdapterDataStore.Clear ();
-
       _method = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("TestMethod");
       _adapter = MethodInfoAdapter.Create(_method);
 
@@ -84,9 +72,9 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void MethodInfo ()
     {
-      Assert.That (_adapter.MethodInfo, Is.SameAs (_method));
-      Assert.That (_implicitInterfaceAdapter.MethodInfo, Is.SameAs (_implicitInterfaceImplementationMethod));
-      Assert.That (_explicitInterfaceAdapter.MethodInfo, Is.SameAs (_explicitInterfaceImplementationMethod));
+      CheckMethodInfo (_method, _adapter);
+      CheckMethodInfo (_implicitInterfaceImplementationMethod, _implicitInterfaceAdapter);
+      CheckMethodInfo (_explicitInterfaceImplementationMethod, _explicitInterfaceAdapter);
     }
 
     [Test]
@@ -137,12 +125,6 @@ namespace Remotion.UnitTests.Reflection
     }
 
     [Test]
-    public void GetMethodInfo ()
-    {
-      Assert.That (_adapter.MethodInfo, Is.SameAs (_method));
-    }
-
-    [Test]
     public void GetReturnType ()
     {
       Assert.That (_adapter.ReturnType, Is.EqualTo (_method.ReturnType));
@@ -167,7 +149,7 @@ namespace Remotion.UnitTests.Reflection
       var adapter = MethodInfoAdapter.Create(methodInfo);
       var result = adapter.Invoke (new ClassWithBaseMember(), new object[] { });
 
-      Assert.That (result, Is.EqualTo (null));
+      Assert.That (result, Is.Null);
     }
 
     [Test]
@@ -187,7 +169,7 @@ namespace Remotion.UnitTests.Reflection
       var adapter = MethodInfoAdapter.Create(methodInfo);
       var result = adapter.Invoke ("Test", new object[0]);
 
-      Assert.That (result, Is.EqualTo (null));
+      Assert.That (result, Is.Null);
     }
 
     [Test]
@@ -198,9 +180,8 @@ namespace Remotion.UnitTests.Reflection
 
       var implementation = adapter.FindInterfaceImplementation (typeof (ClassWithReferenceType<object>));
 
-      Assert.That (
-          ((MethodInfoAdapter) implementation).MethodInfo,
-          Is.EqualTo (typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar")));
+      var expectedPropertyGetter = typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
+      CheckMethodInfo(expectedPropertyGetter, (MethodInfoAdapter) implementation);
     }
 
     [Test]
@@ -214,7 +195,7 @@ namespace Remotion.UnitTests.Reflection
       var expectedPropertyGetter = typeof (ClassWithReferenceType<object>).GetMethod (
           "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar",
           BindingFlags.Instance | BindingFlags.NonPublic);
-      Assert.That (((MethodInfoAdapter) implementation).MethodInfo, Is.EqualTo (expectedPropertyGetter));
+      CheckMethodInfo(expectedPropertyGetter, (MethodInfoAdapter) implementation);
     }
 
     [Test]
@@ -266,9 +247,8 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindInterfaceDeclaration();
 
-      Assert.That (
-          ((MethodInfoAdapter) result).MethodInfo,
-          Is.EqualTo (typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar")));
+      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
+      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
     }
 
     [Test]
@@ -281,9 +261,8 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindInterfaceDeclaration();
 
-      Assert.That (
-          ((MethodInfoAdapter) result).MethodInfo,
-          Is.EqualTo (typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar")));
+      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar");
+      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
     }
 
     [Test]
@@ -296,9 +275,8 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindInterfaceDeclaration();
 
-      Assert.That (
-          ((MethodInfoAdapter) result).MethodInfo,
-          Is.EqualTo (typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar")));
+      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar");
+      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
     }
 
     [Test]
@@ -311,9 +289,8 @@ namespace Remotion.UnitTests.Reflection
 
       var result = adapter.FindInterfaceDeclaration();
 
-      Assert.That (
-          ((MethodInfoAdapter) result).MethodInfo,
-          Is.EqualTo (typeof (IInterfaceWithReferenceType<object>).GetMethod ("ImplicitInterfaceMethod")));
+      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("ImplicitInterfaceMethod");
+      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
     }
 
     [Test]
@@ -499,7 +476,7 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.GetBaseDefinition();
 
       Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
-      Assert.That (((MethodInfoAdapter) result).MethodInfo, Is.SameAs (method));
+      CheckMethodInfo (method, (MethodInfoAdapter) result);
     }
 
     [Test]
@@ -511,9 +488,9 @@ namespace Remotion.UnitTests.Reflection
       var result = adapter.GetBaseDefinition();
 
       Assert.That (result, Is.TypeOf (typeof (MethodInfoAdapter)));
-      Assert.That (
-          ((MethodInfoAdapter) result).MethodInfo,
-          Is.SameAs (typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_ImplicitInterfaceScalar")));
+
+      var expectedMethodInfo = typeof (ClassWithReferenceType<SimpleReferenceType>).GetMethod ("get_ImplicitInterfaceScalar");
+      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
     }
 
     [Test]
@@ -556,6 +533,14 @@ namespace Remotion.UnitTests.Reflection
     {
       Assert.That (actualProperty.Name, Is.EqualTo (expectedName));
       Assert.That (actualProperty.DeclaringType, Is.SameAs (expectedDeclaringType));
+    }
+
+    // Cannot compare methods using MethodInfo.Equals because MethodInfoAdapter doesn't take the ReflectedType into account, 
+    // whereas MethodInfo.Equals does. Therefore, use equality comparer instead.
+    private void CheckMethodInfo (MethodInfo expectedMethodInfo, MethodInfoAdapter methodInfoAdapter)
+    {
+      var actualMethodInfo = methodInfoAdapter.MethodInfo;
+      Assert.That (MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (expectedMethodInfo, actualMethodInfo), Is.True);
     }
   }
 }

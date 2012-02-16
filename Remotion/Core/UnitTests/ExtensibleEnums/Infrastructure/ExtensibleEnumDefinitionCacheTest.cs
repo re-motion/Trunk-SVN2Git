@@ -36,10 +36,13 @@ namespace Remotion.UnitTests.ExtensibleEnums.Infrastructure
     }
 
     [Test]
-    public void ValueDiscoveryService ()
+    public void Initialization ()
     {
-      Assert.That (_cache.ValueDiscoveryService, Is.InstanceOf (typeof (ExtensibleEnumValueDiscoveryService)));
-      Assert.That (((ExtensibleEnumValueDiscoveryService) _cache.ValueDiscoveryService).TypeDiscoveryService, 
+      // Important: Create a new instance of the cache - this is the only way how we can be sure that the type discovery service is exactly as expected.
+      var cache = (ExtensibleEnumDefinitionCache) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (ExtensibleEnumDefinitionCache));
+
+      Assert.That (cache.ValueDiscoveryService, Is.InstanceOf (typeof (ExtensibleEnumValueDiscoveryService)));
+      Assert.That (((ExtensibleEnumValueDiscoveryService) cache.ValueDiscoveryService).TypeDiscoveryService, 
           Is.SameAs (ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService()));
     }
 

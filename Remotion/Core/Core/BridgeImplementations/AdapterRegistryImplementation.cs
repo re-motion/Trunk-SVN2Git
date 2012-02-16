@@ -21,6 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.BridgeImplementations
 {
+  // TODO 4614: Will be removed when AdapterRegistry is replaced with ServiceLocator.
   public class AdapterRegistryImplementation : IAdapterRegistryImplementation
   {
     private readonly Dictionary<Type, IAdapter> _registry = new Dictionary<Type, IAdapter> ();

@@ -16,12 +16,12 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Implementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.SecurityManager.Clients.Web.UI;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.UI;
 

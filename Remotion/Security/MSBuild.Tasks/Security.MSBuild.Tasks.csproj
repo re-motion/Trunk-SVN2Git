@@ -82,10 +82,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
-      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
-      <Name>Core.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
@@ -93,10 +89,6 @@
     <ProjectReference Include="..\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Interfaces\Security.Interfaces.csproj">
-      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
-      <Name>Security.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

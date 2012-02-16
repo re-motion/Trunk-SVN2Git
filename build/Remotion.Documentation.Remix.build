@@ -32,7 +32,6 @@
     <ItemGroup>
       <BinaryFiles Remove="@(BinaryFiles)"/>
       <BinaryFiles Include="$(DocumentationBinariesDirectory)Remotion.dll" />
-      <BinaryFiles Include="$(DocumentationBinariesDirectory)Remotion.Interfaces.dll" />
     </ItemGroup>
   </Target>
 

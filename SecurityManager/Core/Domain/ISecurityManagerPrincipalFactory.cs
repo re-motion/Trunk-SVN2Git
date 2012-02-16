@@ -17,8 +17,8 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Implementation;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
+using Remotion.ServiceLocation;
 
 namespace Remotion.SecurityManager.Domain
 {

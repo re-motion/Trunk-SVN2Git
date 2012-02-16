@@ -25,7 +25,7 @@ namespace Remotion.Context
   /// Implements <see cref="ISafeContextStorageProvider"/> for bootstrapping of <see cref="SafeContext"/>. This provider should not be
   /// used for any other purpose because it does not store its data in a thread-local way.
   /// </summary>
-  public class BootstrapStorageProvider : IBootstrapStorageProvider
+  public class BootstrapStorageProvider : ISafeContextStorageProvider
   {
     private readonly SimpleDataStore<string, object> _data = new SimpleDataStore<string, object> ();
     

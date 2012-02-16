@@ -19,7 +19,6 @@ using System.Collections;
 using System.ComponentModel.Design;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Implementation;
 using Remotion.Reflection.TypeDiscovery;
 using Remotion.ServiceLocation;
 using System.Linq;

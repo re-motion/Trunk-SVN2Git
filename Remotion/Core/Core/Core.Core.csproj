@@ -127,36 +127,111 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="AdapterRegistry.cs" />
     <Compile Include="BridgeImplementations\AdapterRegistryImplementation.cs" />
-    <Compile Include="BridgeImplementations\InterlockedCacheFactoryImplementation.cs" />
-    <Compile Include="BridgeImplementations\TypeDiscoveryServiceFactoryImplementation.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.generated.cs" />
     <Compile Include="BridgeImplementations\ParamListCreateImplementation.template.cs" />
+    <Compile Include="BridgeInterfaces\IAdapterRegistryImplementation.cs" />
+    <Compile Include="BridgeInterfaces\IParamListCreateImplementation.generated.cs" />
+    <Compile Include="BridgeInterfaces\IParamListCreateImplementation.template.cs" />
     <Compile Include="Collections\CacheFactory.cs" />
     <Compile Include="Collections\DataStoreFactory.cs" />
     <Compile Include="Collections\ExpiringDataStore.cs" />
     <Compile Include="Collections\ExpiringDataStoreFactory.cs" />
+    <Compile Include="Collections\ICache.cs" />
+    <Compile Include="Collections\IDataStore.cs" />
     <Compile Include="Collections\IExpirationPolicy.cs" />
     <Compile Include="Collections\LazyLockingCachingAdapter.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
+    <Compile Include="Context\ISafeContextStorageProvider.cs" />
+    <Compile Include="Context\SafeContext.cs" />
+    <Compile Include="Context\SafeContextKeys.cs" />
+    <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="Diagnostics\DebuggerInterface.cs" />
     <Compile Include="Diagnostics\IDebuggerInterface.cs" />
+    <Compile Include="IAdapter.cs" />
+    <Compile Include="ServiceLocation\ConcreteImplementationAttribute.cs" />
+    <Compile Include="ServiceLocation\FrameworkVersion.cs" />
+    <Compile Include="ServiceLocation\FrameworkVersionNotFoundException.cs" />
+    <Compile Include="ServiceLocation\FrameworkVersionRetriever.cs" />
+    <Compile Include="ServiceLocation\LifetimeKind.cs" />
+    <Compile Include="ServiceLocation\TypeNameTemplateResolver.cs" />
+    <Compile Include="INullObject.cs" />
+    <Compile Include="Logging\ILog.cs" />
+    <Compile Include="Logging\ILogManager.cs" />
     <Compile Include="Logging\LogExtensions.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogManager.cs" />
+    <Compile Include="Logging\LogThreshold.cs" />
+    <Compile Include="Mixins\AcceptsAlphabeticOrderingAttribute.cs" />
+    <Compile Include="Mixins\BindToConstraintsAttribute.cs" />
+    <Compile Include="Mixins\BindToGenericTargetParameterAttribute.cs" />
+    <Compile Include="Mixins\BindToTargetTypeAttribute.cs" />
+    <Compile Include="Mixins\CodeGeneration\IObjectFactoryImplementation.cs" />
+    <Compile Include="Mixins\CodeGeneration\ITypeFactoryImplementation.cs" />
     <Compile Include="Mixins\CodeGeneration\IConcreteMixinTypeProvider.cs" />
     <Compile Include="Mixins\CodeGeneration\IConcreteTypeProvider.cs" />
+    <Compile Include="Mixins\CompleteInterfaceAttribute.cs" />
+    <Compile Include="Mixins\ComposedObject.cs" />
+    <Compile Include="Mixins\CopyCustomAttributesAttribute.cs" />
+    <Compile Include="Mixins\ExtendsAttribute.cs" />
+    <Compile Include="Mixins\GenerationPolicy.cs" />
+    <Compile Include="Mixins\IgnoreForMixinConfigurationAttribute.cs" />
+    <Compile Include="Mixins\IgnoresClassAttribute.cs" />
+    <Compile Include="Mixins\IgnoresMixinAttribute.cs" />
+    <Compile Include="Mixins\IHasCompleteInterface.cs" />
+    <Compile Include="Mixins\IInitializableMixin.cs" />
+    <Compile Include="Mixins\IOverrideAttribute.cs" />
+    <Compile Include="Mixins\MemberVisibility.cs" />
+    <Compile Include="Mixins\MemberVisibilityAttribute.cs" />
+    <Compile Include="Mixins\MixAttribute.cs" />
+    <Compile Include="Mixins\Mixin.cs" />
+    <Compile Include="Mixins\MixinRelationship.cs" />
+    <Compile Include="Mixins\MixinRelationshipAttribute.cs" />
+    <Compile Include="Mixins\NonIntroducedAttribute.cs" />
+    <Compile Include="Mixins\ObjectFactory.cs" />
+    <Compile Include="Mixins\OverrideMixinAttribute.cs" />
+    <Compile Include="Mixins\OverrideTargetAttribute.cs" />
     <Compile Include="Mixins\TypeExtensions.cs" />
+    <Compile Include="Mixins\TypeFactory.cs" />
+    <Compile Include="Mixins\UsesAttribute.cs" />
     <Compile Include="Mixins\Utilities\Singleton\ServiceLocatorInstanceCreator.cs" />
     <Compile Include="Mixins\Validation\ValidatedDefinitionDescription.cs" />
     <Compile Include="Mixins\Validation\ValidationLogData.cs" />
+    <Compile Include="PermanentGuidAttribute.cs" />
+    <Compile Include="Reflection\ActionInvokerWrapper.generated.cs" />
+    <Compile Include="Reflection\ActionInvokerWrapper.template.cs" />
+    <Compile Include="Reflection\FuncInvokerWrapper.generated.cs" />
+    <Compile Include="Reflection\FuncInvokerWrapper.template.cs" />
+    <Compile Include="Reflection\IActionInvoker.generated.cs" />
+    <Compile Include="Reflection\IActionInvoker.template.cs" />
+    <Compile Include="Reflection\IConstructorLookupInfo.cs" />
+    <Compile Include="Reflection\IFuncInvoker.generated.cs" />
+    <Compile Include="Reflection\IFuncInvoker.template.cs" />
+    <Compile Include="Reflection\IMemberInformation.cs" />
+    <Compile Include="Reflection\IMethodInformation.cs" />
+    <Compile Include="Reflection\IPropertyInformation.cs" />
+    <Compile Include="Reflection\ITypeInformation.cs" />
     <Compile Include="Reflection\MethodInfoAdapterConverter.cs" />
+    <Compile Include="Reflection\ParamList.generated.cs" />
+    <Compile Include="Reflection\ParamList.template.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderProvider.cs" />
     <Compile Include="Reflection\TypeAdapter.cs" />
     <Compile Include="Reflection\TypeAdapterConverter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecorator.cs" />
+    <Compile Include="Reflection\TypeDiscovery\ContextAwareTypeDiscoveryUtility.cs" />
+    <Compile Include="ServiceLocation\SafeServiceLocator.cs" />
+    <Compile Include="StandardDelegates.cs" />
+    <Compile Include="SuppressAttributesAttribute.cs" />
+    <Compile Include="Utilities\ArgumentEmptyException.cs" />
+    <Compile Include="Utilities\ArgumentItemDuplicateException.cs" />
+    <Compile Include="Utilities\ArgumentItemNullException.cs" />
+    <Compile Include="Utilities\ArgumentItemTypeException.cs" />
+    <Compile Include="Utilities\ArgumentTypeException.cs" />
     <Compile Include="Utilities\CompoundComparer.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparer.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapper.cs" />
@@ -277,6 +352,7 @@
     <Compile Include="ServiceLocation\ServiceConfigurationEntry.cs" />
     <Compile Include="Utilities\DefaultConverter.cs" />
     <Compile Include="Utilities\DelegateBasedEqualityComparer.cs" />
+    <Compile Include="Utilities\DesignerUtility.cs" />
     <Compile Include="Utilities\FuncUtility.cs" />
     <Compile Include="Mixins\CodeGeneration\AttributeBasedMetadataImporter.cs" />
     <Compile Include="Mixins\CodeGeneration\CodeGenerationCache.cs" />
@@ -400,7 +476,7 @@
     <Compile Include="Mixins\CodeGeneration\IGeneratedTypeNameProvider.cs" />
     <Compile Include="Mixins\CodeGeneration\ITypeGenerator.cs" />
     <Compile Include="Mixins\CodeGeneration\NamespaceChangingNameProvider.cs" />
-    <Compile Include="Mixins\BridgeImplementations\TypeFactoryImplementation.cs" />
+    <Compile Include="Mixins\CodeGeneration\TypeFactoryImplementation.cs" />
     <Compile Include="Mixins\ConfigurationException.cs" />
     <Compile Include="Mixins\Context\ClassContext.cs" />
     <Compile Include="Mixins\Context\ClassContextCollection.cs" />
@@ -491,9 +567,8 @@
     <Compile Include="Mixins\Utilities\DependencySort\DependentObjectSorterAlgorithm.cs" />
     <Compile Include="Mixins\Utilities\DependencySort\IDependencyAnalyzer.cs" />
     <Compile Include="Mixins\Utilities\ConstraintBasedGenericParameterInstantiator.cs" />
-    <Compile Include="Mixins\BridgeImplementations\ObjectFactoryImplementation.cs" />
+    <Compile Include="Mixins\CodeGeneration\ObjectFactoryImplementation.cs" />
     <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfo.cs" />
-    <Compile Include="Mixins\BridgeImplementations\MixinImplementation.cs" />
     <Compile Include="Mixins\Utilities\MixinReflector.cs" />
     <Compile Include="Mixins\Utilities\MixinTypeCloser.cs" />
     <Compile Include="Mixins\Utilities\MultiSet.cs" />
@@ -742,6 +817,7 @@
     <None Include="Mixins\Validation\Validation.cd" />
     <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />
     <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
+    <Content Include="doc\include\Logging\ILog.xml" />
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
     <Content Include="doc\include\MSDN.css" />
     <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
@@ -753,12 +829,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Interfaces\Core.Interfaces.csproj">
-      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
-      <Name>Core.Interfaces</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mixins\Utilities\Serialization\" />

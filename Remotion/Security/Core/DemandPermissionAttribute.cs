@@ -19,7 +19,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Security
 {
-  // TODO FS: Move to Security.Interfaces
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false)]
   public class DemandPermissionAttribute : Attribute
   {

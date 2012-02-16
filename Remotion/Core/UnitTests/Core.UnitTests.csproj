@@ -137,10 +137,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\Interfaces\Core.Interfaces.csproj">
-      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
-      <Name>Core.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Mixins.MixerTools\Core.Mixins.MixerTools.csproj">
       <Project>{152DAF45-13C9-4A73-90D0-DF774ED12528}</Project>
       <Name>Core.Mixins.MixerTools</Name>
@@ -219,13 +215,10 @@
     <Compile Include="FunctionalProgramming\MaybeTest.cs" />
     <Compile Include="FunctionalProgramming\TestDomain\RecursiveItem.cs" />
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
-    <Compile Include="Interfaces\BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
-    <Compile Include="Interfaces\BridgeInterfaces\IBootstrapStorageProviderTest.cs" />
-    <Compile Include="Interfaces\BridgeInterfaces\ICallContextStorageProviderTest.cs" />
-    <Compile Include="Interfaces\BridgeInterfaces\IInterlockedCacheFactoryImplementationTest.cs" />
-    <Compile Include="Interfaces\BridgeInterfaces\IParamListCreateImplementationTest.cs" />
-    <Compile Include="Interfaces\BridgeInterfaces\ITypeDiscoveryServiceFactoryImplementationTest.cs" />
-    <Compile Include="Interfaces\Implementation\TypeNameTemplateResolverTest.cs" />
+    <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
+    <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
+    <Compile Include="ServiceLocation\TypeNameTemplateResolverTest.cs" />
     <Compile Include="Logging\ILogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
     <Compile Include="Logging\LogExtensionsTest.cs" />
@@ -303,9 +296,8 @@
     <Compile Include="Mixins\Definitions\Building\RequirementsAnalyzerTest.cs" />
     <Compile Include="Mixins\Definitions\TestDomain\GenericMixinWithSameRequirementTwice.cs" />
     <Compile Include="Mixins\ObjectFactoryPerformanceTest.cs" />
-    <Compile Include="Mixins\IMixinImplementationTest.cs" />
-    <Compile Include="Mixins\IObjectFactoryImplementationTest.cs" />
-    <Compile Include="Mixins\ITypeFactoryImplementationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IObjectFactoryImplementationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ITypeFactoryImplementationTest.cs" />
     <Compile Include="Mixins\TestDomain\GenericMixinWithPositionalAndConstraintBoundParameter.cs" />
     <Compile Include="Mixins\TestDomain\GenericMixin.cs" />
     <Compile Include="Mixins\TestDomain\GenericMixinWithPositionalAfterTargetBoundParameter.cs" />
@@ -647,9 +639,9 @@
     <Compile Include="Globalization\TestDomain\ClassWithoutMultiLingualResourcesAttributes.cs" />
     <Compile Include="Globalization\TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
     <Compile Include="Globalization\TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
-    <Compile Include="Interfaces\Implementation\ConcreteImplementationAttributeTest.cs" />
-    <Compile Include="Interfaces\Implementation\FrameworkVersionRetrieverTest.cs" />
-    <Compile Include="Interfaces\Implementation\FrameworkVersionTest.cs" />
+    <Compile Include="ServiceLocation\ConcreteImplementationAttributeTest.cs" />
+    <Compile Include="ServiceLocation\FrameworkVersionRetrieverTest.cs" />
+    <Compile Include="ServiceLocation\FrameworkVersionTest.cs" />
     <Compile Include="Logging\Log4NetLogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\BaseTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\ConvertTest.cs" />
@@ -936,7 +928,7 @@
     <Compile Include="Mixins\MixinTypeUtilityTest.cs" />
     <Compile Include="Mixins\Utilities\DependencySortTest.cs" />
     <Compile Include="Mixins\Utilities\ConstraintBasedGenericParameterInstantiatorTest.cs" />
-    <Compile Include="Mixins\Utilities\ObjectFactoryImplementationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\ObjectFactoryImplementationTest.cs" />
     <Compile Include="Mixins\Utilities\MixedTypeConstructorLookupInfoTest.cs" />
     <Compile Include="Mixins\Utilities\MixinTypeCloserTest.cs" />
     <Compile Include="Mixins\Utilities\ReflectionUtilityTest.cs" />

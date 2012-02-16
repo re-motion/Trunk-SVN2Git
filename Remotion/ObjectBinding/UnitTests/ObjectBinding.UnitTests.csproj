@@ -494,10 +494,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
-      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
-      <Name>Core.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
@@ -514,10 +510,6 @@
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Security\Interfaces\Security.Interfaces.csproj">
-      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
-      <Name>Security.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Web\Core\Web.Core.csproj">
       <Project>{DF8BA786-9679-4879-8757-16AE2709D83A}</Project>
       <Name>Web.Core</Name>
@@ -529,10 +521,6 @@
     <ProjectReference Include="..\Core\ObjectBinding.Core.csproj">
       <Project>{FDCCDB1E-0962-41DA-99A1-2DB390C48748}</Project>
       <Name>ObjectBinding.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Interfaces\ObjectBinding.Interfaces.csproj">
-      <Project>{A1FCDC69-E8E3-4DC0-8EE7-A8FEA772EF5B}</Project>
-      <Name>ObjectBinding.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Web.Legacy\ObjectBinding.Web.Legacy.csproj">
       <Project>{38BAE576-C67B-471D-82C6-91B0BB6F14DA}</Project>

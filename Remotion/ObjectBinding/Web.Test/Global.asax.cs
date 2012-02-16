@@ -21,7 +21,6 @@ using System.Threading;
 using System.Web;
 using log4net.Config;
 using Microsoft.Practices.ServiceLocation;
-using Remotion.Implementation;
 using Remotion.Logging;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;

@@ -62,7 +62,6 @@
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.dll" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.xml" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.pdb" />
-      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Interfaces.*" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\TypeMixer.*" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Castle.*" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\log4net.*" />

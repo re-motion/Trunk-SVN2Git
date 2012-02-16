@@ -15,8 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Web.UI.WebControls;
-using Remotion.Implementation;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering
 {

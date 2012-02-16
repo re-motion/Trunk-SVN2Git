@@ -57,10 +57,6 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Remotion\Core\Interfaces\Core.Interfaces.csproj">
-      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
-      <Name>Core.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Remotion\Data\DomainObjects.UberProfIntegration\Data.DomainObjects.UberProfIntegration.csproj">
       <Project>{81E5BEC0-B845-4470-BD19-9FCB121CB413}</Project>
       <Name>Data.DomainObjects.UberProfIntegration</Name>
@@ -72,10 +68,6 @@
     <ProjectReference Include="..\..\Remotion\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Remotion\Security\Interfaces\Security.Interfaces.csproj">
-      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
-      <Name>Security.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\SecurityManager.Core.csproj">
       <Project>{990B8638-A08F-4A94-B01A-E7DAEF089F27}</Project>

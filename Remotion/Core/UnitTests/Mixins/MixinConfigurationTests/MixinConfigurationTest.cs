@@ -17,8 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Mixins;
-using Remotion.Mixins.Context;
-using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.UnitTests.Mixins.TestDomain;
 
 namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
@@ -26,10 +24,21 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
   [TestFixture]
   public class MixinConfigurationTest
   {
-    [Test]
-    public void Initialization ()
+    private MixinConfiguration _oldMasterConfiguration;
+    private MixinConfiguration _oldActiveConfiguration;
+
+    [SetUp]
+    public void SetUp ()
     {
-      
+      _oldMasterConfiguration = MixinConfiguration.GetMasterConfiguration ();
+      _oldActiveConfiguration = MixinConfiguration.ActiveConfiguration;
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      MixinConfiguration.SetMasterConfiguration (_oldMasterConfiguration);
+      MixinConfiguration.SetActiveConfiguration (_oldActiveConfiguration);
     }
 
     [Test]
@@ -127,21 +136,14 @@ namespace Remotion.UnitTests.Mixins.MixinConfigurationTests
     [Test]
     public void GetMasterConfiguration_Default ()
     {
-      var oldMasterConfiguration = MixinConfiguration.GetMasterConfiguration ();
+      var oldMasterConfiguration = MixinConfiguration.GetMasterConfiguration();
+      
+      MixinConfiguration.SetMasterConfiguration (null);
+      var newMasterConfiguration = MixinConfiguration.GetMasterConfiguration ();
 
-      try
-      {
-        MixinConfiguration.SetMasterConfiguration (null);
-        var newMasterConfiguration = MixinConfiguration.GetMasterConfiguration ();
-
-        Assert.That (newMasterConfiguration, Is.Not.Null);
-        Assert.That (newMasterConfiguration, Is.Not.SameAs (oldMasterConfiguration));
-        Assert.That (newMasterConfiguration.GetContext (typeof (BaseType1)), Is.Not.Null);
-      }
-      finally
-      {
-        MixinConfiguration.SetMasterConfiguration (oldMasterConfiguration);
-      }
+      Assert.That (newMasterConfiguration, Is.Not.Null);
+      Assert.That (newMasterConfiguration, Is.Not.SameAs (oldMasterConfiguration));
+      Assert.That (newMasterConfiguration.GetContext (typeof (BaseType1)), Is.Not.Null);
     }
   }
 }

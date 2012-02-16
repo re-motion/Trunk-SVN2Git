@@ -57,6 +57,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\prereq\Assemblies\nunit 2.5\nunit.framework.dll</HintPath>
@@ -221,10 +222,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Interfaces\Core.Interfaces.csproj">
-      <Project>{BD061F4A-A9E6-461E-A804-7999623A0060}</Project>
-      <Name>Core.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Name>Core.Core</Name>
@@ -232,10 +229,6 @@
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Interfaces\Security.Interfaces.csproj">
-      <Project>{6B243694-318E-4C20-A2EA-B910EFE5F2F6}</Project>
-      <Name>Security.Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnitTests.TestDomain\Security.UnitTests.TestDomain.csproj">
       <Project>{AC34B1D8-A295-44A4-AE9D-8167B3C3ED44}</Project>

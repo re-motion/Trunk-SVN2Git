@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security;
 using log4net.Appender;
 using log4net.Config;
 using log4net.Core;
@@ -33,6 +34,8 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
   {
     private static readonly string s_eventLogName = "Remotion_UnitTests";
     private static readonly string s_eventLogSource = "LogToEventLogTest_Log";
+    private bool _skipFixtureTearDown;
+
     private ILogger _logger;
     private ILog _log;
     private EventLog _testEventLog;
@@ -40,14 +43,27 @@ namespace Remotion.UnitTests.Logging.Log4NetLogTests
     [TestFixtureSetUp]
     public void SetUpFixture ()
     {
-      if (!EventLog.SourceExists (s_eventLogSource))
-        EventLog.CreateEventSource (s_eventLogSource, s_eventLogName);
+      try
+      {
+        if (!EventLog.SourceExists (s_eventLogSource))
+          EventLog.CreateEventSource (s_eventLogSource, s_eventLogName);
+        _skipFixtureTearDown = false;
+      }
+      catch (SecurityException ex)
+      {
+        _skipFixtureTearDown = true;
+        Assert.Ignore ("Event log access denied: " + ex.Message);
+      }
+
       _testEventLog = Array.Find (EventLog.GetEventLogs(), delegate (EventLog current) { return current.Log == s_eventLogName; });
     }
 
     [TestFixtureTearDown]
     public void TearDownFixture ()
     {
+      if (_skipFixtureTearDown)
+        return;
+
       if (EventLog.SourceExists (s_eventLogSource))
         EventLog.DeleteEventSource (s_eventLogSource);
 

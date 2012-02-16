@@ -19,12 +19,12 @@ using System;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.FunctionalProgramming;
-using Remotion.Implementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.Domain.SearchInfrastructure.OrganizationalStructure;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure

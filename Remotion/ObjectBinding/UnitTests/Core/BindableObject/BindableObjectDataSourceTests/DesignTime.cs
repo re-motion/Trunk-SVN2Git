@@ -23,7 +23,7 @@ using Remotion.Context;
 using Remotion.Design;
 using Remotion.Development.UnitTesting;
 using Remotion.Logging;
-using Remotion.Mixins.BridgeImplementations;
+using Remotion.Mixins.CodeGeneration;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Utilities;

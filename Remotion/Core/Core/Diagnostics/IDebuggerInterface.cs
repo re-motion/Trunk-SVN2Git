@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System.Diagnostics;
-using Remotion.Implementation;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Diagnostics
 {

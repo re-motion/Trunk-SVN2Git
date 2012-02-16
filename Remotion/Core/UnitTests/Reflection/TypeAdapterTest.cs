@@ -21,7 +21,6 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -35,14 +34,6 @@ namespace Remotion.UnitTests.Reflection
     private interface IDoubleInheritingGenericInterface : IEnumerable<int>, IEnumerable<string>
 // ReSharper restore PossibleInterfaceMemberAmbiguity
     {
-    }
-
-    [SetUp]
-    public void SetUp ()
-    {
-      var typeAdapterDataStore =
-          (IDataStore<Type, TypeAdapter>) PrivateInvoke.GetNonPublicStaticField (typeof (TypeAdapter), "s_dataStore");
-      typeAdapterDataStore.Clear ();
     }
 
     [Test]
@@ -492,7 +483,7 @@ namespace Remotion.UnitTests.Reflection
     {
       var type = typeof (List<int>);
       Assert.That (TypeAdapter.Create (type).GetGenericArguments(), Has.All.TypeOf<TypeAdapter>());
-      Assert.That (TypeAdapter.Create (type).GetGenericArguments().Cast<TypeAdapter>().Select (ta => ta.Type), Is.EqualTo (new[] { typeof (int) }));
+      Assert.That (TypeAdapter.Create (type).GetGenericArguments(), Is.EqualTo (new[] { TypeAdapter.Create (typeof (int)) }));
     }
 
     [Test]
@@ -525,8 +516,8 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (TypeAdapter.Create (type).GetGenericParameterConstraints(), Has.All.TypeOf<TypeAdapter>());
       Assert.That (
-          TypeAdapter.Create (type).GetGenericParameterConstraints().Cast<TypeAdapter>().Select (ta => ta.Type),
-          Is.EqualTo (new[] { typeof (ValueType) }));
+          TypeAdapter.Create (type).GetGenericParameterConstraints(),
+          Is.EqualTo (new[] { TypeAdapter.Create (typeof (ValueType)) }));
     }
 
     [Test]
@@ -814,7 +805,7 @@ namespace Remotion.UnitTests.Reflection
       var type = typeof (ArrayList);
       var arguments = TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList)));
       Assert.That (arguments, Has.All.TypeOf<TypeAdapter> ());
-      Assert.That (arguments.Cast<TypeAdapter> ().Select (ta => ta.Type), Is.Empty);
+      Assert.That (arguments, Is.Empty);
     }
 
     [Test]
@@ -823,7 +814,7 @@ namespace Remotion.UnitTests.Reflection
       var type = typeof (List<int>);
       var arguments = TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList<>)));
       Assert.That (arguments, Has.All.TypeOf<TypeAdapter> ());
-      Assert.That (arguments.Cast<TypeAdapter> ().Select (ta => ta.Type), Is.EqualTo (new[] { typeof (int) }));
+      Assert.That (arguments, Is.EqualTo (new[] { TypeAdapter.Create (typeof (int)) }));
     }
 
     [Test]
@@ -832,7 +823,7 @@ namespace Remotion.UnitTests.Reflection
       var type = typeof (List<int>);
       var arguments = TypeAdapter.Create (type).GetAscribedGenericArgumentsFor (TypeAdapter.Create (typeof (IList)));
       Assert.That (arguments, Has.All.TypeOf<TypeAdapter> ());
-      Assert.That (arguments.Cast<TypeAdapter> ().Select (ta => ta.Type), Is.Empty);
+      Assert.That (arguments, Is.Empty);
     }
 
     [Test]

@@ -17,9 +17,9 @@
 using System;
 using System.Reflection.Emit;
 using System.Runtime.Serialization;
-using Remotion.Implementation;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.CodeGeneration
 {

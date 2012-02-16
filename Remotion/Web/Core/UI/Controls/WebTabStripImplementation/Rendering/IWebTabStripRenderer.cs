@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web;
-using Remotion.Implementation;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {

@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web;
-using Remotion.Implementation;
+using Remotion.ServiceLocation;
 using Remotion.Web.UI;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering

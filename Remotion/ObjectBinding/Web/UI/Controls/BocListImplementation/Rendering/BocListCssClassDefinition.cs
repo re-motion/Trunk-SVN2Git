@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Web.UI.WebControls;
-using Remotion.Implementation;
+using Remotion.ServiceLocation;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
