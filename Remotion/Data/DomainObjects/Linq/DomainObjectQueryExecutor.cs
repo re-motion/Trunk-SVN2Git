@@ -123,6 +123,26 @@ namespace Remotion.Data.DomainObjects.Linq
       get { return _generationStage; }
     }
 
+    public IMappingResolutionContext MappingResolutionContext
+    {
+      get { return _mappingResolutionContext; }
+    }
+
+    public ClassDefinition StartingClassDefinition
+    {
+      get { return _startingClassDefinition; }
+    }
+
+    public IStorageTypeInformationProvider StorageTypeInformationProvider
+    {
+      get { return _storageTypeInformationProvider; }
+    }
+
+    public TypeConversionProvider TypeConversionProvider
+    {
+      get { return _typeConversionProvider; }
+    }
+
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
     /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a scalar query.

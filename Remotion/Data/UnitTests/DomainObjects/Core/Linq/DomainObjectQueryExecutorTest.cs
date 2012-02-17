@@ -83,6 +83,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void StorageTypeInformationProvider ()
+    {
+      Assert.That (_orderExecutor.StorageTypeInformationProvider, Is.SameAs (_sqlStorageTypeInformationProvider));
+    }
+
+    [Test]
     public void ExecuteScalar ()
     {
       var expression = ExpressionHelper.MakeExpression (() => QueryFactory.CreateLinqQuery<Order>().Count());
