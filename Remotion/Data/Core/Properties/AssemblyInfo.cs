@@ -23,8 +23,8 @@ using System.Reflection;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle("Remotion Data Interfaces Library")]
-[assembly: AssemblyDescription("Stable interfaces for data management used by the Remotion library")]
+[assembly: AssemblyTitle("Remotion Data Library")]
+[assembly: AssemblyDescription("Common API for data management used by the Remotion library")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
 
