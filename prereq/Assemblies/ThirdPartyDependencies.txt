@@ -4,7 +4,7 @@ Autofac.*					MIT			http://code.google.com/p/autofac/
 IronPython.*				ML-PL			http://ironpython.codeplex.com/
 Microsoft.Practices.ServiceLocation	MS-PL			http://commonservicelocator.codeplex.com/
 Microsoft.Scripting.*			MS-PL			http://dlr.codeplex.com/
-Castle.*				Apache License 2.0	http://www.castleproject.org/				trunk, latest version
+Castle.*				Apache License 2.0	http://www.castleproject.org/				trunk, version from 30.09.2009
 log4net					Apache License 2.0	http://logging.apache.org/log4net/index.html
 nunit.*					zlib/libpng variant	http://nunit.org/					Source from matching verison, patched for partal trust
 Rhino.Mocks				BSD			http://ayende.com/projects/rhino-mocks.aspx		trunk, latest version
