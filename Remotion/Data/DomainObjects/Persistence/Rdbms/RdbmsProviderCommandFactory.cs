@@ -105,6 +105,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       get { return _dataStoragePropertyDefinitionFactory; }
     }
 
+    public LookupCommandFactory LookupCommandFactory
+    {
+      get { return _lookupCommandFactory; }
+    }
+
+    public RelationLookupCommandFactory RelationLookupCommandFactory
+    {
+      get { return _relationLookupCommandFactory; }
+    }
+
+    public SaveCommandFactory SaveCommandFactory
+    {
+      get { return _saveCommandFactory; }
+    }
+
+    public QueryCommandFactory QueryCommandFactory
+    {
+      get { return _queryCommandFactory; }
+    }
+
     public IStorageProviderCommand<ObjectLookupResult<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForSingleIDLookup (
         ObjectID objectID)
     {
