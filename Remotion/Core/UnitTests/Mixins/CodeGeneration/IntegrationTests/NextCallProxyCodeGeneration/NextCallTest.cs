@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Mixins;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection;
+using Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.NextCallProxyCodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.CodeGeneration.TestDomain;
 using Remotion.UnitTests.Mixins.TestDomain;
 
@@ -114,6 +115,29 @@ namespace Remotion.UnitTests.Mixins.CodeGeneration.IntegrationTests.NextCallProx
         object instance = ObjectFactory.Create<ClassOverridingToString>(ParamList.Empty);
         Assert.AreEqual("Overridden: ClassOverridingToString", instance.ToString());
       }
+    }
+
+    [Test]
+    public void NextCall_ToMethodWithArgument ()
+    {
+      var instance = ObjectFactory.Create<TargetClassForMixinOverridingMethodWithArgument>();
+      var result = instance.VirtualMethod ("Test");
+
+      Assert.That (
+          result,
+          Is.EqualTo ("MixinOverridingMethodWithArgument.VirtualMethod(Test) - TargetClassForMixinOverridingMethodWithArgument.VirtualMethod(Test)"));
+    }
+
+    [Test]
+    [Ignore ("TODO 4648")]
+    public void NextCall_ToMethodWithArgument_AlsoDeclaredOnObject ()
+    {
+      var instance = ObjectFactory.Create<TargetClassForMixinOverridingMethodWithArgument> ();
+      var result1 = instance.Equals (instance);
+      var result2 = instance.Equals (null);
+
+      Assert.That (result1, Is.True);
+      Assert.That (result2, Is.False);
     }
   }
 }

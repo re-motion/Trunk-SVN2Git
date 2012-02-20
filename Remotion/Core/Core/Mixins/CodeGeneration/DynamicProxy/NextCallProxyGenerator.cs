@@ -23,6 +23,7 @@ using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
@@ -131,8 +132,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
       _overriddenMethodToImplementationMap.Add (methodDefinitionOnTarget, methodOverride.MethodBuilder);
 
-      MethodInfo sameMethodOnProxyBase = _emitter.BaseType.GetMethod(methodDefinitionOnTarget.Name,
+      // If the base type of the emitter (object) already has the method being overridden (ToString, Equals, etc.), mixins could use the base 
+      // implementation of the method rather than coming via the next call interface. Therefore, we need to override that base method and point it
+      // towards our next call above.
+      Assertion.IsTrue (_emitter.BaseType == typeof (object));
+      // TODO 4648: Due to a bug in methodOverride.ParameterTypes, this will only work for methods with an empty argument list.
+#pragma warning disable 612,618
+      MethodInfo sameMethodOnProxyBase = _emitter.BaseType.GetMethod (methodDefinitionOnTarget.Name,
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, methodOverride.ParameterTypes, null);
+#pragma warning restore 612,618
       if (sameMethodOnProxyBase != null && sameMethodOnProxyBase.IsVirtual)
         _emitter.CreateMethodOverride (sameMethodOnProxyBase).ImplementByDelegating (
             new TypeReferenceWrapper (SelfReference.Self, _emitter.TypeBuilder),

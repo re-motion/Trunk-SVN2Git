@@ -217,6 +217,7 @@
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Mixins\CodeGeneration\IntegrationTests\NextCallProxyCodeGeneration\TestDomain\MixinOverridingMethodWithArgument.cs" />
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
     <Compile Include="ServiceLocation\TypeNameTemplateResolverTest.cs" />
     <Compile Include="Logging\ILogManagerTest.cs" />

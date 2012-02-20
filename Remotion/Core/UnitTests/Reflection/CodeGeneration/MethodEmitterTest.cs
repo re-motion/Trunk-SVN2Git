@@ -30,6 +30,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
   public class MethodEmitterTest : MethodGenerationTestBase
   {
     [Test]
+    [Obsolete ("TODO RM-4648 : MethodEmitter.ParameterTypes returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     public void SimpleMethod ()
     {
       var method = ClassEmitter.CreateMethod ("SimpleMethod", MethodAttributes.Public)
