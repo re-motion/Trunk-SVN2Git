@@ -19,7 +19,7 @@ using System;
 namespace Remotion.Context
 {
   /// <summary>
-  /// Common interface for classes implementing a storage mechanism for <see cref="SafeContext"/>.
+  /// Common interface for classes implementing a storage mechanism for <see cref="T:Remotion.Context.SafeContext"/>.
   /// </summary>
   public interface ISafeContextStorageProvider
   {

@@ -15,9 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
-using Remotion.Mixins.Utilities;
-using Remotion.Utilities;
 
 namespace Remotion.Reflection.CodeGeneration
 {

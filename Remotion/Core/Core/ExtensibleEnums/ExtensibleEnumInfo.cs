@@ -58,7 +58,7 @@ namespace Remotion.ExtensibleEnums
     /// <value>The value.</value>
     public T Value { get; private set; }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IExtensibleEnumInfo.Value" />
     IExtensibleEnum IExtensibleEnumInfo.Value
     {
       get { return Value; }

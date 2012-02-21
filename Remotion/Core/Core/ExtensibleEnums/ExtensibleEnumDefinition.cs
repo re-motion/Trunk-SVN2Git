@@ -172,7 +172,7 @@ namespace Remotion.ExtensibleEnums
       return array;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IExtensibleEnumDefinition.GetCustomAttributes{TAttribute}" />
     public TAttribute[] GetCustomAttributes<TAttribute> () where TAttribute : class
     {
       return (TAttribute[]) GetCustomAttributes (typeof(TAttribute));

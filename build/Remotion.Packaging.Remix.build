@@ -50,6 +50,8 @@
                    Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\Mixins\**"
+                   Exclude="$(SolutionDirectory)Remotion\Mixins\**\bin\**;$(SolutionDirectory)Remotion\Mixins\**\obj\**;@(StandardExcludes)" />
     </ItemGroup>
   </Target>
 
@@ -62,6 +64,9 @@
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.dll" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.xml" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.pdb" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Mixins.dll" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Mixins.xml" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Mixins.pdb" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\TypeMixer.*" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Castle.*" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\log4net.*" />

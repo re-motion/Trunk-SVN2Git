@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
-using Remotion.Mixins.CodeGeneration;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
@@ -39,7 +38,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void Retrieve_FromRootAssembly ()
     {
-      var retriever = new FrameworkVersionRetriever ("Remotion", new[] { typeof (ObjectFactoryImplementation).Assembly });
+      var retriever = new FrameworkVersionRetriever ("Remotion", new[] { typeof (FrameworkVersionRetriever).Assembly });
       Assert.That (retriever.RetrieveVersion (), Is.EqualTo (typeof (INullObject).Assembly.GetName ().Version));
     }
 
@@ -104,7 +103,7 @@ namespace Remotion.UnitTests.ServiceLocation
     public void Retrieve_FromDisk ()
     {
       var retriever = new FrameworkVersionRetriever ("Remotion", new Assembly[0]);
-      Assert.That (retriever.RetrieveVersion (), Is.EqualTo (typeof (ObjectFactoryImplementation).Assembly.GetName ().Version));
+      Assert.That (retriever.RetrieveVersion (), Is.EqualTo (typeof (FrameworkVersionRetriever).Assembly.GetName ().Version));
     }
   }
 }

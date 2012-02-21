@@ -27,6 +27,7 @@ namespace Remotion.Web.UnitTests.Core.Context
     [Test]
     public void StorageProvider_IsHttpProvider_InWebProject ()
     {
+      // TODO (RM-4633) : When SafeContext is moved to 'Common' remove reference to Mixins.Core
       Assert.That (SafeContext.Instance, Is.InstanceOf (typeof (HttpContextStorageProvider)));
     }
   }

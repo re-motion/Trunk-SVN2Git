@@ -15,15 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.BridgeInterfaces;
 using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Context
 {
   /// <summary>
-  /// Implements <see cref="ISafeContextStorageProvider"/> for bootstrapping of <see cref="SafeContext"/>. This provider should not be
-  /// used for any other purpose because it does not store its data in a thread-local way.
+  /// Implements <see cref="ISafeContextStorageProvider"/> for bootstrapping of <see cref="T:Remotion.Context.SafeContext"/>.
+  /// This provider should not be used for any other purpose because it does not store its data in a thread-local way.
   /// </summary>
   public class BootstrapStorageProvider : ISafeContextStorageProvider
   {

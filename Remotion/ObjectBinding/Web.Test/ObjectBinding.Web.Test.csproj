@@ -133,6 +133,10 @@
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
+    <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
+      <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
+      <Name>Mixins.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Web\Legacy\Web.Legacy.csproj">
       <Project>{DD30FC13-485F-425D-8FA0-0CE8998B925D}</Project>
       <Name>Web.Legacy</Name>

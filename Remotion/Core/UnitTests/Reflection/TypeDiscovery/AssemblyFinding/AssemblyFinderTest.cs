@@ -15,9 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Mixins.Samples.UsesAndExtends.Core;
+using Remotion.Development.UnitTesting;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
@@ -85,33 +86,46 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void FindAssemblies_FindsReferencedAssemblies_Transitive ()
     {
-      var mixinSamplesAssembly = typeof (EquatableMixin<>).Assembly;
-      var remotionAssembly = typeof (AssemblyFinder).Assembly;
-      var log4netAssembly = typeof (log4net.LogManager).Assembly;
+      const string buildOutputDirectory = "Reflection.AssemblyFinderTest.FindAssemblies_FindsReferencedAssemblies_Transitive";
+      const string sourceDirectoryRoot = @"Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest";
 
-      // dependency chain: mixinSamples -> remotion -> log4net
-      Assert.That (IsAssemblyReferencedBy (remotionAssembly, mixinSamplesAssembly), Is.True);
-      Assert.That (IsAssemblyReferencedBy (log4netAssembly, mixinSamplesAssembly), Is.False);
-      Assert.That (IsAssemblyReferencedBy (log4netAssembly, remotionAssembly), Is.True);
+      Action<object[]> testAction = delegate (object[] args)
+      {
+        var outputManagerWithoutClosure = (AssemblyCompilerBuildOutputManager) args[0];
 
-      var loaderMock = MockRepository.GenerateMock<IAssemblyLoader> ();
-      loaderMock
-          .Expect (mock => mock.TryLoadAssembly (ArgReferenceMatchesDefinition (remotionAssembly), Arg.Is (mixinSamplesAssembly.FullName))) // load re-motion via samples
-          .Return (remotionAssembly);
-      loaderMock
-          .Expect (mock => mock.TryLoadAssembly (ArgReferenceMatchesDefinition (log4netAssembly), Arg.Is (remotionAssembly.FullName))) // load log4net via re-motion
-          .Return (log4netAssembly);
-      loaderMock.Replay ();
-      
-      var rootAssemblyFinderStub = MockRepository.GenerateMock<IRootAssemblyFinder> ();
-      rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loaderMock)).Return (new[] { new RootAssembly (mixinSamplesAssembly, true) });
-      rootAssemblyFinderStub.Replay ();
+        // dependency chain: mixinSamples -> remotion -> log4net
+        var log4NetAssembly = typeof (log4net.LogManager).Assembly;
+        var remotionAssembly = typeof (AssemblyFinder).Assembly;
+        var referencingAssembly = CompileReferencingAssembly (outputManagerWithoutClosure, remotionAssembly);
 
-      var finder = new AssemblyFinder (rootAssemblyFinderStub, loaderMock);
-      var result = finder.FindAssemblies ();
+        var loaderMock = MockRepository.GenerateMock<IAssemblyLoader>();
+        loaderMock
+            .Expect (mock => mock.TryLoadAssembly (ArgReferenceMatchesDefinition (remotionAssembly), Arg.Is (referencingAssembly.FullName)))
+            // load re-motion via samples
+            .Return (remotionAssembly);
+        loaderMock
+            .Expect (mock => mock.TryLoadAssembly (ArgReferenceMatchesDefinition (log4NetAssembly), Arg.Is (remotionAssembly.FullName)))
+            // load log4net via re-motion
+            .Return (log4NetAssembly);
+        loaderMock.Replay();
 
-      loaderMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EquivalentTo (new[] { mixinSamplesAssembly, remotionAssembly, log4netAssembly }));
+        var rootAssemblyFinderStub = MockRepository.GenerateMock<IRootAssemblyFinder>();
+        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loaderMock)).Return (
+            new[] { new RootAssembly (referencingAssembly, true) });
+        rootAssemblyFinderStub.Replay();
+
+        var finder = new AssemblyFinder (rootAssemblyFinderStub, loaderMock);
+        var result = finder.FindAssemblies();
+
+        loaderMock.VerifyAllExpectations();
+        Assert.That (result, Is.EquivalentTo (new[] { referencingAssembly, remotionAssembly, log4NetAssembly }));
+      };
+
+      // Run test action in separate AppDomain
+      using (var outputManager = new AssemblyCompilerBuildOutputManager (buildOutputDirectory, true, sourceDirectoryRoot))
+      {
+        AppDomainRunner.Run (testAction, outputManager);
+      }
     }
 
     [Test]
@@ -186,7 +200,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       Assert.That (result.Length, Is.EqualTo (2));
     }
 
-    private AssemblyName ArgReferenceMatchesDefinition (Assembly referencedAssembly)
+    private static AssemblyName ArgReferenceMatchesDefinition (Assembly referencedAssembly)
     {
       return Arg<AssemblyName>.Matches (name => AssemblyName.ReferenceMatchesDefinition (name, referencedAssembly.GetName()));
     }
@@ -196,6 +210,13 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       return origin.GetReferencedAssemblies ()
           .Where (assemblyName => AssemblyName.ReferenceMatchesDefinition (assemblyName, referenced.GetName ()))
           .Any ();
+    }
+
+    private static Assembly CompileReferencingAssembly (AssemblyCompilerBuildOutputManager outputManager, Assembly remotionAssembly)
+    {
+      var referencingAssemblyRelativePath = outputManager.CompileInSeparateAppDomain ("RemotionCoreReferencingAssembly.dll", remotionAssembly.Location);
+      var referencingAssemblyFullPath = Path.GetFullPath (referencingAssemblyRelativePath);
+      return Assembly.LoadFile (referencingAssemblyFullPath);
     }
   }
 }
