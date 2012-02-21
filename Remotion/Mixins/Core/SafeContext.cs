@@ -19,7 +19,7 @@ using System.Runtime.Remoting.Messaging;
 using Remotion.Mixins;
 using Remotion.Reflection;
 
-// TODO (RM-4633) : Move SafeContext into new 'Commons' assembly
+// TODO 4650: Move SafeContext into new 'Commons' assembly
 // ReSharper disable CheckNamespace
 namespace Remotion.Context
 // ReSharper restore CheckNamespace

@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.Domain
 
     public static ISecurityManagerPrincipal Current
     {
-      // TODO (RM-4633) : When SafeContext is moved to 'Common' remove reference to Mixins.Core
+      // TODO 4650: When SafeContext is moved to 'Common' remove reference to Mixins.Core
       get { return (ISecurityManagerPrincipal) SafeContext.Instance.GetData (s_currentKey) ?? Null; }
       set
       {

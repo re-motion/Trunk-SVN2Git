@@ -19,7 +19,7 @@ using Remotion.Context;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 
-// TODO (RM-4633) : Move to 'Common' unit test assembly
+// TODO 4650: Move to 'Common' unit test assembly
 // ReSharper disable CheckNamespace
 namespace Remotion.Mixins.UnitTests.Core
 // ReSharper restore CheckNamespace
