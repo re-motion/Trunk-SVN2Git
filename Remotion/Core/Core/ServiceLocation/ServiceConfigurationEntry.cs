@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
@@ -50,13 +51,15 @@ namespace Remotion.ServiceLocation
     /// Initializes a new instance of the <see cref="ServiceConfigurationEntry"/> class.
     /// </summary>
     /// <param name="serviceType">The service type. This is a type for which instances are requested from a service locator.</param>
-    /// <param name="serviceImplementationInfo">The service implementation information.</param>
-    public ServiceConfigurationEntry (Type serviceType, ServiceImplementationInfo serviceImplementationInfo)
+    /// <param name="serviceImplementationInfo">A single required service implementation information.</param>
+    /// <param name="additionalServiceImplementationInfos">Additional service implementation infos.</param>
+    public ServiceConfigurationEntry (
+        Type serviceType, ServiceImplementationInfo serviceImplementationInfo, params ServiceImplementationInfo[] additionalServiceImplementationInfos)
+        : this (
+            serviceType,
+            EnumerableUtility.Singleton (ArgumentUtility.CheckNotNull ("serviceImplementationInfo", serviceImplementationInfo))
+                .Concat (ArgumentUtility.CheckNotNull ("additionalServiceImplementationInfos", additionalServiceImplementationInfos)))
     {
-      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      
-      _serviceType = serviceType;
-      _implementationInfos = Array.AsReadOnly (new[] { serviceImplementationInfo });
     }
 
     /// <summary>

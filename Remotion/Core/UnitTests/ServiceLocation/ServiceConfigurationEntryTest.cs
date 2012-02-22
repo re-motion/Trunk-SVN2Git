@@ -26,13 +26,25 @@ namespace Remotion.UnitTests.ServiceLocation
   public class ServiceConfigurationEntryTest
   {
     [Test]
-    public void Initialize_WithSingleValue ()
+    public void Initialize_WithSingleInfo ()
     {
       var implementationInfo = new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), implementationInfo);
 
       Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
       Assert.That (serviceConfigurationEntry.ImplementationInfos, Is.EqualTo (new[] { implementationInfo }));
+    }
+
+    [Test]
+    public void Initialize_WithAdditonalInfos ()
+    {
+      var implementationInfo1 = new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      var implementationInfo2 = new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (
+          typeof (ITestSingletonConcreteImplementationAttributeType), implementationInfo1, implementationInfo2);
+
+      Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
+      Assert.That (serviceConfigurationEntry.ImplementationInfos, Is.EqualTo (new[] { implementationInfo1, implementationInfo2 }));
     }
 
     [Test]
