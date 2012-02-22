@@ -109,7 +109,7 @@ namespace Remotion.UnitTests.ServiceLocation
         "The implementation type does not implement the service interface. Unable to cast object of type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' to type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithInvalidImplementation'.")]
-    public void GetInstance_Generic_ServiceTypeWithWithIncompatibleImplementationType ()
+    public void GetInstance_Generic_ServiceTypeWithIncompatibleImplementationType ()
     {
       _serviceLocator.GetInstance<ITestConcreteImplementationAttributeTypeWithInvalidImplementation>();
     }
