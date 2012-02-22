@@ -252,7 +252,7 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("serviceConfigurationEntry", serviceConfigurationEntry);
 
-      var factory = CreateInstanceFactory (serviceConfigurationEntry);
+      var factory = CreateInstanceFactories (serviceConfigurationEntry).Single();
       Register (serviceConfigurationEntry.ServiceType, factory);
     }
 
@@ -287,15 +287,17 @@ namespace Remotion.ServiceLocation
         return () => null;
 
       var serviceConfigurationEntry = ServiceConfigurationEntry.CreateFromAttribute (serviceType, concreteImplementationAttribute);
-      return CreateInstanceFactory (serviceConfigurationEntry);
+      return CreateInstanceFactories (serviceConfigurationEntry).Single();
     }
 
-    // TODO 4652: Change to return IEnumerable<Func<object>>.
-    private Func<object> CreateInstanceFactory (ServiceConfigurationEntry serviceConfigurationEntry)
+    private IEnumerable<Func<object>> CreateInstanceFactories (ServiceConfigurationEntry serviceConfigurationEntry)
     {
-      // TODO 4652: Should support more than one info
-      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfos.Single();
-      var publicCtors = serviceImplementationInfo.ImplementationType.GetConstructors ().Where (ci => ci.IsPublic).ToArray ();
+      return serviceConfigurationEntry.ImplementationInfos.Select (CreateInstanceFactory);
+    }
+
+    private Func<object> CreateInstanceFactory (ServiceImplementationInfo serviceImplementationInfo)
+    {
+      var publicCtors = serviceImplementationInfo.ImplementationType.GetConstructors();
       if (publicCtors.Length != 1)
       {
         throw new ActivationException (
