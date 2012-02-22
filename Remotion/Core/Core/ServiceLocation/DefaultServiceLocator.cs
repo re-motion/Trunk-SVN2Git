@@ -21,6 +21,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
@@ -125,10 +126,10 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
 
       var instance = GetInstanceOrNull (serviceType);
-      if (instance != null)
-        return new[] { instance };
-      else
-        return new object[0];
+      if (instance == null)
+        return Enumerable.Empty<object>();
+      
+      return EnumerableUtility.Singleton (instance);
     }
 
     /// <summary>
@@ -182,10 +183,10 @@ namespace Remotion.ServiceLocation
     public IEnumerable<TService> GetAllInstances<TService> ()
     {
       var instance = GetInstanceOrNull (typeof (TService));
-      if (instance != null)
-        return new[] { (TService) instance };
-      else
-        return new TService[0];
+      if (instance == null)
+        return Enumerable.Empty<TService>();
+      
+      return EnumerableUtility.Singleton ((TService) instance);
     }
 
     /// <summary>
@@ -258,6 +259,11 @@ namespace Remotion.ServiceLocation
     private object GetInstanceOrNull (Type serviceType)
     {
       var factory = _dataStore.GetOrCreateValue (serviceType, CreateInstanceFactory);
+      return SafeInvokeInstanceFactory(factory);
+    }
+
+    private object SafeInvokeInstanceFactory (Func<object> factory)
+    {
       try
       {
         return factory ();
