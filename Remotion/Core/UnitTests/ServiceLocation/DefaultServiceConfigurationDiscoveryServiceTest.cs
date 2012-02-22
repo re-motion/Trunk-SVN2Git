@@ -43,9 +43,10 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (serviceConfigurationEntries, Is.Not.Null);
       Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (1));
       var serviceConfigurationEntry = serviceConfigurationEntries.First ();
-      Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceConfigurationEntry.ImplementationType), Is.True);
-      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
+      Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceImplementationInfo.ImplementationType), Is.True);
+      Assert.That (serviceImplementationInfo.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceImplementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
@@ -60,9 +61,10 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (serviceConfigurationEntries, Is.Not.Null);
       Assert.That (serviceConfigurationEntries.Count (), Is.EqualTo (1));
       var serviceConfigurationEntry = serviceConfigurationEntries.First ();
-      Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceConfigurationEntry.ImplementationType), Is.True);
-      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
+      Assert.That (serviceConfigurationEntry.ServiceType.IsAssignableFrom (serviceImplementationInfo.ImplementationType), Is.True);
+      Assert.That (serviceImplementationInfo.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceImplementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
@@ -83,8 +85,9 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (serviceConfigurationEntries.Count(), Is.EqualTo (1));
       var resultEntry = serviceConfigurationEntries.ToArray()[0];
       Assert.That (resultEntry.ServiceType, Is.EqualTo(typeof (ITestSingletonConcreteImplementationAttributeType)));
-      Assert.That (resultEntry.ImplementationType, Is.EqualTo(typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (resultEntry.Lifetime, Is.EqualTo(LifetimeKind.Singleton));
+      var serviceImplementationInfo = resultEntry.ImplementationInfo;
+      Assert.That (serviceImplementationInfo.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceImplementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]

@@ -85,9 +85,9 @@ namespace Remotion.Web.Legacy
           typeof (IThemedResourceUrlResolverFactory), CreateSingletonImplementationInfo<QuirksModeResourceUrlResolverFactory>());
     }
 
-    private static ServiceConfigurationEntry.ImplementationInfo CreateSingletonImplementationInfo<T> ()
+    private static ServiceConfigurationEntry.ServiceImplementationInfo CreateSingletonImplementationInfo<T> ()
     {
-      return new ServiceConfigurationEntry.ImplementationInfo (typeof (T), LifetimeKind.Singleton);
+      return new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (T), LifetimeKind.Singleton);
     }
   }
 }

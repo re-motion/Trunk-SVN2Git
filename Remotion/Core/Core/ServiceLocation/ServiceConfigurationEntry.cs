@@ -27,17 +27,17 @@ namespace Remotion.ServiceLocation
     /// <summary>
     /// Encapsulates a service implementation type and <see cref="LifetimeKind"/>.
     /// </summary>
-    public struct ImplementationInfo
+    public struct ServiceImplementationInfo
     {
       private readonly Type _implementationType;
       private readonly LifetimeKind _lifetime;
 
       /// <summary>
-      /// Initializes a new instance of the <see cref="ImplementationInfo"/> struct.
+      /// Initializes a new instance of the <see cref="ServiceImplementationInfo"/> struct.
       /// </summary>
       /// <param name="implementationType">The concrete implementation of the service type.</param>
       /// <param name="lifetime">The lifetime of the instances of <paramref name="implementationType"/>.</param>
-      public ImplementationInfo (Type implementationType, LifetimeKind lifetime)
+      public ServiceImplementationInfo (Type implementationType, LifetimeKind lifetime)
       {
         _implementationType = implementationType;
         _lifetime = lifetime;
@@ -63,7 +63,7 @@ namespace Remotion.ServiceLocation
     }
 
     private readonly Type _serviceType;
-    private readonly ImplementationInfo _implementationInfo;
+    private readonly ServiceImplementationInfo _serviceImplementationInfo;
 
     /// <summary>
     /// Creates a <see cref="ServiceConfigurationEntry"/> from a <see cref="ConcreteImplementationAttribute"/>.
@@ -73,7 +73,7 @@ namespace Remotion.ServiceLocation
     /// <returns>A <see cref="ServiceConfigurationEntry"/> containing the data from the <paramref name="attribute"/>.</returns>
     public static ServiceConfigurationEntry CreateFromAttribute (Type serviceType, ConcreteImplementationAttribute attribute)
     {
-      var serviceImplementation = new ImplementationInfo (TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.Lifetime);
+      var serviceImplementation = new ServiceImplementationInfo (TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.Lifetime);
       return new ServiceConfigurationEntry (serviceType, serviceImplementation);
     }
 
@@ -81,11 +81,11 @@ namespace Remotion.ServiceLocation
     /// Initializes a new instance of the <see cref="ServiceConfigurationEntry"/> class.
     /// </summary>
     /// <param name="serviceType">The service type. This is a type for which instances are requested from a service locator.</param>
-    /// <param name="implementationInfo">The service implementation information.</param>
-    public ServiceConfigurationEntry (Type serviceType, ImplementationInfo implementationInfo)
+    /// <param name="serviceImplementationInfo">The service implementation information.</param>
+    public ServiceConfigurationEntry (Type serviceType, ServiceImplementationInfo serviceImplementationInfo)
     {
       _serviceType = serviceType;
-      _implementationInfo = implementationInfo;
+      _serviceImplementationInfo = serviceImplementationInfo;
     }
 
     /// <summary>
@@ -98,21 +98,12 @@ namespace Remotion.ServiceLocation
     }
 
     /// <summary>
-    /// Gets the concrete implementation of the <see cref="ServiceType"/>.
+    /// Gets information about the service implementation.
     /// </summary>
-    /// <value>The concrete implementation.</value>
-    public Type ImplementationType
+    /// <value>The <see cref="ServiceImplementationInfo"/>.</value>
+    public ServiceImplementationInfo ImplementationInfo
     {
-      get { return _implementationInfo.ImplementationType; }
-    }
-
-    /// <summary>
-    /// Gets the lifetime of the instances of <see cref="ImplementationType"/>.
-    /// </summary>
-    /// <value>The lifetime of the instances.</value>
-    public LifetimeKind Lifetime
-    {
-      get { return _implementationInfo.Lifetime; }
+      get { return _serviceImplementationInfo; }
     }
   }
 }

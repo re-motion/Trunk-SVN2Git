@@ -42,7 +42,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
           Is.EquivalentTo (BocLegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType).ToArray()));
 
       Assert.That (
-          BocLegacyServiceConfigurationService.GetConfiguration ().Where (e => !nonLegacyServices.Contains (e.ServiceType)).Select (e => e.ImplementationType.Assembly).ToArray (),
+          BocLegacyServiceConfigurationService.GetConfiguration()
+              .Where (e => !nonLegacyServices.Contains (e.ServiceType))
+              .Select (e => e.ImplementationInfo.ImplementationType.Assembly)
+              .ToArray(),
           Is.All.EqualTo (typeof (BocLegacyServiceConfigurationService).Assembly));
     }
 
@@ -56,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy
         locator.Register (serviceConfigurationEntry);
 
       foreach (var legacyServiceType in legacyServiceTypes)
-        Assert.That (locator.GetInstance (legacyServiceType.ServiceType), Is.TypeOf (legacyServiceType.ImplementationType));
+        Assert.That (locator.GetInstance (legacyServiceType.ServiceType), Is.TypeOf (legacyServiceType.ImplementationInfo.ImplementationType));
     }
   }
 }

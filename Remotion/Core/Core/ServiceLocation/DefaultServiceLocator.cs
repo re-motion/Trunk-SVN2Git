@@ -236,7 +236,7 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
 
-      var serviceImplemetation = new ServiceConfigurationEntry.ImplementationInfo (concreteImplementationType, lifetime);
+      var serviceImplemetation = new ServiceConfigurationEntry.ServiceImplementationInfo (concreteImplementationType, lifetime);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, serviceImplemetation);
       Register (serviceConfigurationEntry);
     }
@@ -281,18 +281,19 @@ namespace Remotion.ServiceLocation
 
     private Func<object> CreateInstanceFactory (ServiceConfigurationEntry serviceConfigurationEntry)
     {
-      var publicCtors = serviceConfigurationEntry.ImplementationType.GetConstructors().Where (ci => ci.IsPublic).ToArray();
+      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
+      var publicCtors = serviceImplementationInfo.ImplementationType.GetConstructors ().Where (ci => ci.IsPublic).ToArray ();
       if (publicCtors.Length != 1)
       {
         throw new ActivationException (
             string.Format (
-                "Type '{0}' has not exactly one public constructor and cannot be instantiated.", serviceConfigurationEntry.ImplementationType.Name));
+                "Type '{0}' has not exactly one public constructor and cannot be instantiated.", serviceImplementationInfo.ImplementationType.Name));
       }
 
       var ctorInfo = publicCtors[0];
       Func<object> factory = CreateInstanceFactory (ctorInfo);
 
-      switch (serviceConfigurationEntry.Lifetime)
+      switch (serviceImplementationInfo.Lifetime)
       {
         case LifetimeKind.Singleton:
           var factoryContainer = new DoubleCheckedLockingContainer<object> (factory);

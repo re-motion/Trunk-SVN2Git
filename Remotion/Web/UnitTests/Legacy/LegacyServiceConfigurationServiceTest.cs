@@ -40,7 +40,10 @@ namespace Remotion.Web.UnitTests.Legacy
           legacyServiceTypes, Is.EquivalentTo (LegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType)));
 
       Assert.That (
-          LegacyServiceConfigurationService.GetConfiguration ().Where (e => !nonLegacyServices.Contains (e.ServiceType)).Select (e => e.ImplementationType.Assembly).ToArray (),
+          LegacyServiceConfigurationService.GetConfiguration()
+              .Where (e => !nonLegacyServices.Contains (e.ServiceType))
+              .Select (e => e.ImplementationInfo.ImplementationType.Assembly)
+              .ToArray(),
           Is.All.EqualTo (typeof (LegacyServiceConfigurationService).Assembly));
     }
 
@@ -54,7 +57,7 @@ namespace Remotion.Web.UnitTests.Legacy
         locator.Register (serviceConfigurationEntry);
 
       foreach (var legacyServiceType in legacyServiceTypes)
-        Assert.That (locator.GetInstance (legacyServiceType.ServiceType), Is.TypeOf (legacyServiceType.ImplementationType));
+        Assert.That (locator.GetInstance (legacyServiceType.ServiceType), Is.TypeOf (legacyServiceType.ImplementationInfo.ImplementationType));
     }
   }
 }

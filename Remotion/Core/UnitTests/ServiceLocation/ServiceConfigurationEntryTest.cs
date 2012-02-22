@@ -27,14 +27,15 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void Initialize ()
     {
-      var serviceImplementation = new ServiceConfigurationEntry.ImplementationInfo (
+      var serviceImplementation = new ServiceConfigurationEntry.ServiceImplementationInfo (
           typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (
           typeof (ITestSingletonConcreteImplementationAttributeType), serviceImplementation);
 
+      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
       Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+      Assert.That (serviceImplementationInfo.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceImplementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
@@ -48,18 +49,19 @@ namespace Remotion.UnitTests.ServiceLocation
           typeof (ITestSingletonConcreteImplementationAttributeType),
           attribute);
 
+      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
       Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceConfigurationEntry.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+      Assert.That (serviceImplementationInfo.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (serviceImplementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
     }
 
     [Test]
     public void ImplementationInfo_Equals ()
     {
-      var implementation0 = new ServiceConfigurationEntry.ImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation1 = new ServiceConfigurationEntry.ImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation2 = new ServiceConfigurationEntry.ImplementationInfo (typeof (string), LifetimeKind.Instance);
-      var implementation3 = new ServiceConfigurationEntry.ImplementationInfo (typeof (object), LifetimeKind.Singleton);
+      var implementation0 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
+      var implementation1 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
+      var implementation2 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (string), LifetimeKind.Instance);
+      var implementation3 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton);
 
       Assert.That (implementation0, Is.EqualTo (implementation1));
       Assert.That (implementation0, Is.Not.EqualTo (implementation2));
@@ -69,8 +71,8 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void ImplementationInfo_GetHashCode ()
     {
-      var implementation0 = new ServiceConfigurationEntry.ImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation1 = new ServiceConfigurationEntry.ImplementationInfo (typeof (object), LifetimeKind.Instance);
+      var implementation0 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
+      var implementation1 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
 
       Assert.That (implementation0.GetHashCode (), Is.EqualTo (implementation1.GetHashCode ()));
     }

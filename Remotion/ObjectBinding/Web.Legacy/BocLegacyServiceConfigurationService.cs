@@ -110,8 +110,8 @@ namespace Remotion.ObjectBinding.Web.Legacy
           typeof (IBocAutoCompleteReferenceValueRenderer), CreateSingletonImplementationInfo<BocAutoCompleteReferenceValueQuirksModeRenderer> ());
     }
 
-    private static ServiceConfigurationEntry.ImplementationInfo CreateSingletonImplementationInfo<T>() {
-      return new ServiceConfigurationEntry.ImplementationInfo(typeof(T), LifetimeKind.Singleton);
+    private static ServiceConfigurationEntry.ServiceImplementationInfo CreateSingletonImplementationInfo<T>() {
+      return new ServiceConfigurationEntry.ServiceImplementationInfo(typeof(T), LifetimeKind.Singleton);
     }
   }
 }
