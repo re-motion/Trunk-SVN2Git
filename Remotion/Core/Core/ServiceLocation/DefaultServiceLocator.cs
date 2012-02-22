@@ -236,7 +236,8 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
 
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, concreteImplementationType, lifetime);
+      var serviceImplemetation = new ServiceConfigurationEntry.ImplementationInfo (concreteImplementationType, lifetime);
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, serviceImplemetation);
       Register (serviceConfigurationEntry);
     }
 

@@ -41,7 +41,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void InitializationWithTyp ()
+    public void InitializationWithType ()
     {
       _attribute = new ConcreteImplementationAttribute (typeof (ConcreteImplementationAttributeTest));
 

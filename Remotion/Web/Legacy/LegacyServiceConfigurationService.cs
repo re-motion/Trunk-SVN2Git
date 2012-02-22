@@ -43,46 +43,51 @@ namespace Remotion.Web.Legacy
     public static IEnumerable<ServiceConfigurationEntry> GetConfiguration ()
     {
       yield return new ServiceConfigurationEntry (
-          typeof (IClientScriptBehavior), typeof (QuirksModeClientScriptBehavior), LifetimeKind.Singleton);
+          typeof (IClientScriptBehavior), CreateSingletonImplementationInfo<QuirksModeClientScriptBehavior>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IResourceUrlFactory), typeof (QuirksModeResourceUrlFactory), LifetimeKind.Singleton);
+          typeof (IResourceUrlFactory), CreateSingletonImplementationInfo<QuirksModeResourceUrlFactory>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IDatePickerButtonRenderer), typeof (DatePickerButtonQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (IDatePickerButtonRenderer), CreateSingletonImplementationInfo<DatePickerButtonQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IDatePickerPageRenderer), typeof (DatePickerPageQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (IDatePickerPageRenderer), CreateSingletonImplementationInfo<DatePickerPageQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IDropDownMenuRenderer), typeof (DropDownMenuQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (IDropDownMenuRenderer), CreateSingletonImplementationInfo<DropDownMenuQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IListMenuRenderer), typeof (ListMenuQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (IListMenuRenderer), CreateSingletonImplementationInfo<ListMenuQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (ISingleViewRenderer), typeof (SingleViewQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (ISingleViewRenderer), CreateSingletonImplementationInfo<SingleViewQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (ITabbedMenuRenderer), typeof (TabbedMenuQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (ITabbedMenuRenderer), CreateSingletonImplementationInfo<TabbedMenuQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (ITabbedMultiViewRenderer), typeof (TabbedMultiViewQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (ITabbedMultiViewRenderer),CreateSingletonImplementationInfo<TabbedMultiViewQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IWebButtonRenderer), typeof (WebButtonQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (IWebButtonRenderer), CreateSingletonImplementationInfo<WebButtonQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IWebTabStripRenderer), typeof (WebTabStripQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (IWebTabStripRenderer), CreateSingletonImplementationInfo<WebTabStripQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IWebTreeViewRenderer), typeof (WebTreeViewQuirksModeRenderer), LifetimeKind.Singleton);
+          typeof (IWebTreeViewRenderer), CreateSingletonImplementationInfo<WebTreeViewQuirksModeRenderer>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IThemedResourceUrlResolver), typeof (QuirksModeResourceUrlResolver), LifetimeKind.Singleton);
+          typeof (IThemedResourceUrlResolver), CreateSingletonImplementationInfo<QuirksModeResourceUrlResolver>());
 
       yield return new ServiceConfigurationEntry (
-          typeof (IThemedResourceUrlResolverFactory), typeof (QuirksModeResourceUrlResolverFactory), LifetimeKind.Singleton);
+          typeof (IThemedResourceUrlResolverFactory), CreateSingletonImplementationInfo<QuirksModeResourceUrlResolverFactory>());
+    }
+
+    private static ServiceConfigurationEntry.ImplementationInfo CreateSingletonImplementationInfo<T> ()
+    {
+      return new ServiceConfigurationEntry.ImplementationInfo (typeof (T), LifetimeKind.Singleton);
     }
   }
 }

@@ -288,16 +288,20 @@ namespace Remotion.UnitTests.ServiceLocation
     public void Register_ServiceConfigurationEntry_ServiceAlreadyExists_ThrowsException ()
     {
       _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType>();
+      var serviceImplementation = new ServiceConfigurationEntry.ImplementationInfo (
+          typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (
-          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+          typeof (ITestSingletonConcreteImplementationAttributeType), serviceImplementation);
       _serviceLocator.Register (serviceConfigurationEntry);
     }
 
     [Test]
     public void Register_ServiceConfigurationEntry_ServiceAdded ()
     {
+      var serviceImplementation = new ServiceConfigurationEntry.ImplementationInfo (
+          typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (
-          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+          typeof (ITestSingletonConcreteImplementationAttributeType), serviceImplementation);
 
       _serviceLocator.Register (serviceConfigurationEntry);
 
