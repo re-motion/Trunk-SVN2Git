@@ -88,6 +88,21 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    public void GetInstance_WithMutipleServiceImplementationsRegistered ()
+    {
+      var implementation1 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType1), LifetimeKind.Singleton);
+      var implementation2 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType2), LifetimeKind.Singleton);
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestMultipleRegistrationsType), implementation1, implementation2);
+
+      _serviceLocator.Register (serviceConfigurationEntry);
+
+      Assert.That (
+          () => _serviceLocator.GetInstance<ITestMultipleRegistrationsType> (),
+          Throws.TypeOf<ActivationException> ().With.Message.EqualTo (
+              "Multiple implemetations are configured for service type: 'ITestMultipleRegistrationsType'. Consider using 'GetAllInstances'."));
+    }
+
+    [Test]
     public void GetAllInstances ()
     {
       var result = _serviceLocator.GetAllInstances (typeof (ITestInstanceConcreteImplementationAttributeType));
@@ -200,10 +215,18 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedException (typeof (ActivationException),
-        ExpectedMessage = "Type 'TestTypeWithNotExactOnePublicConstructor' has not exactly one public constructor and cannot be instantiated.")]
-    public void GetInstance_TypeHasNotExaclytOnePublicConstructor ()
+        ExpectedMessage = "Type 'TestTypeWithTooManyPublicConstructors' has not exactly one public constructor and cannot be instantiated.")]
+    public void GetInstance_TypeWithTooManyPublicCtors ()
     {
-      _serviceLocator.GetInstance<ITestTypeWithNotExactOnePublicConstructor>();
+      _serviceLocator.GetInstance<ITestTypeWithTooManyPublicConstructors>();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ActivationException),
+        ExpectedMessage = "Type 'TestTypeWithOnlyProtectedConstructor' has not exactly one public constructor and cannot be instantiated.")]
+    public void GetInstance_TypeWithOnlyProtectedCtor ()
+    {
+      _serviceLocator.GetInstance<ITestTypeWithOnlyProtectedConstructor> ();
     }
 
     [Test]
@@ -224,7 +247,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestInstanceConcreteImplementationAttributeType")
+        ExpectedMessage = "Register cannot be called twice or after GetInstance for service type: 'ITestInstanceConcreteImplementationAttributeType'.")
     ]
     public void Register_Factory_ServiceAlreadyExists ()
     {
@@ -244,21 +267,47 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void Register_Factory_SameServiceFactoryIsAddedTwice_NoExceptionIsThrown ()
+    public void Register_MultipleFactories_ServiceIsAdded ()
     {
-      Func<object> instanceFactory = () => new object();
-      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
-      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
+      var instance1 = new object ();
+      var instance2 = new object ();
+      Func<object> instanceFactory1 = () => instance1;
+      Func<object> instanceFactory2 = () => instance2;
+
+      _serviceLocator.Register (typeof (object), instanceFactory1, instanceFactory2);
+
+      Assert.That (_serviceLocator.GetAllInstances (typeof (object)), Is.EqualTo (new[] { instance1, instance2 }));
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestSingletonConcreteImplementationAttributeType")]
+    public void Register_NoFactories_OverridesAttributes ()
+    {
+      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType));
+
+      Assert.That (_serviceLocator.GetAllInstances (typeof (object)), Is.Empty);
+    }
+
+    [Test]
+    public void Register_Twice_ExceptionIsThrown ()
+    {
+      Func<object> instanceFactory = () => new object();
+      _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory);
+
+      Assert.That (
+          () => _serviceLocator.Register (typeof (ITestInstanceConcreteImplementationAttributeType), instanceFactory),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "Register cannot be called twice or after GetInstance for service type: 'ITestInstanceConcreteImplementationAttributeType'."));
+    }
+
+    [Test]
     public void Register_ConcreteImplementation_ServiceAlreadyExists_ThrowsException ()
     {
       _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType>();
-      _serviceLocator.Register (
-          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      Assert.That (
+          () => _serviceLocator.Register (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "Register cannot be called twice or after GetInstance for service type: 'ITestSingletonConcreteImplementationAttributeType'."));
     }
 
     [Test]
@@ -283,7 +332,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException),
-        ExpectedMessage = "Register cannot be called after GetInstance for service type: ITestSingletonConcreteImplementationAttributeType")
+        ExpectedMessage = "Register cannot be called twice or after GetInstance for service type: 'ITestSingletonConcreteImplementationAttributeType'.")
     ]
     public void Register_ServiceConfigurationEntry_ServiceAlreadyExists_ThrowsException ()
     {
@@ -309,5 +358,21 @@ namespace Remotion.UnitTests.ServiceLocation
       var instance2 = _serviceLocator.GetInstance (typeof (ITestSingletonConcreteImplementationAttributeType));
       Assert.That (instance1, Is.SameAs (instance2));
     }
+
+    [Test]
+    public void Register_ServiceConfigurationEntry_MultipleServices ()
+    {
+      var implementation1 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType1), LifetimeKind.Singleton);
+      var implementation2 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType2), LifetimeKind.Singleton);
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestMultipleRegistrationsType), implementation1, implementation2);
+
+      _serviceLocator.Register (serviceConfigurationEntry);
+
+      var instances = _serviceLocator.GetAllInstances<ITestMultipleRegistrationsType> ().ToArray ();
+      Assert.That (instances, Has.Length.EqualTo (2));
+      Assert.That (instances[0], Is.TypeOf<TestMultipleRegistrationType1> ());
+      Assert.That (instances[1], Is.TypeOf<TestMultipleRegistrationType2> ());
+    }
+
   }
 }

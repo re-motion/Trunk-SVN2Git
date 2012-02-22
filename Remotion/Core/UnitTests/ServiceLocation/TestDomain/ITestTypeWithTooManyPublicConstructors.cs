@@ -15,17 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  internal class TestTypeWithNotExactOnePublicConstructor : ITestTypeWithNotExactOnePublicConstructor
+  [ConcreteImplementation (typeof (TestTypeWithTooManyPublicConstructors))]
+  internal interface ITestTypeWithTooManyPublicConstructors
   {
-    public TestTypeWithNotExactOnePublicConstructor ()
-    {
-    }
-
-    public TestTypeWithNotExactOnePublicConstructor (ITestSingletonConcreteImplementationAttributeType param)
-    {
-    }
   }
 }

@@ -66,7 +66,7 @@ namespace Remotion.ServiceLocation
   {
     private static readonly MethodInfo s_genericGetInstanceMethod = typeof (IServiceLocator).GetMethod ("GetInstance", Type.EmptyTypes);
 
-    private readonly IDataStore<Type, Func<object>> _dataStore = DataStoreFactory.CreateWithLocking<Type, Func<object>>();
+    private readonly IDataStore<Type, Func<object>[]> _dataStore = DataStoreFactory.CreateWithLocking<Type, Func<object>[]> ();
 
     /// <summary>
     /// Get an instance of the given <paramref name="serviceType"/>. The type must either have a <see cref="ConcreteImplementationAttribute"/>, or
@@ -125,11 +125,10 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
 
-      var instance = GetInstanceOrNull (serviceType);
-      if (instance == null)
-        return Enumerable.Empty<object>();
-      
-      return EnumerableUtility.Singleton (instance);
+      var factories = GetOrCreateFactories (serviceType);
+      var instances = factories.Select (func => func());
+
+      return instances;
     }
 
     /// <summary>
@@ -182,11 +181,7 @@ namespace Remotion.ServiceLocation
     /// implementation could not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
     public IEnumerable<TService> GetAllInstances<TService> ()
     {
-      var instance = GetInstanceOrNull (typeof (TService));
-      if (instance == null)
-        return Enumerable.Empty<TService>();
-      
-      return EnumerableUtility.Singleton ((TService) instance);
+      return GetAllInstances (typeof (TService)).Cast<TService>();
     }
 
     /// <summary>
@@ -206,21 +201,41 @@ namespace Remotion.ServiceLocation
     }
 
     /// <summary>
-    /// Registers a factory for the specified <paramref name="serviceType"/>. 
-    /// The factory is subsequently invoked whenever an instance for the <paramref name="serviceType"/> is requested.
+    /// Registers factories for the specified <paramref name="serviceType"/>. 
+    /// The factories are subsequently invoked whenever instances for the <paramref name="serviceType"/> is requested.
     /// </summary>
-    /// <param name="serviceType">The service type to register a factory for.</param>
-    /// <param name="instanceFactory">The instance factory to use when resolving an instance for the <paramref name="serviceType"/>.</param>
-    /// <exception cref="InvalidOperationException">An instance of the <paramref name="serviceType"/> has already been retrieved. Registering factories
-    /// or concrete implementations can only be done before any instances are retrieved.</exception>
-    public void Register (Type serviceType, Func<object> instanceFactory)
+    /// <param name="serviceType">The service type to register the factories for.</param>
+    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>.</param>
+    /// <exception cref="InvalidOperationException">Factories have already been registered or an instance of the <paramref name="serviceType"/> has 
+    /// already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
+    public void Register (Type serviceType, params Func<object>[] instanceFactories)
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("instanceFactory", instanceFactory);
+      ArgumentUtility.CheckNotNull ("instanceFactories", instanceFactories);
 
-      Func<object> factory = _dataStore.GetOrCreateValue (serviceType, t => instanceFactory);
-      if (factory != instanceFactory)
-        throw new InvalidOperationException (string.Format ("Register cannot be called after GetInstance for service type: {0}", serviceType.Name));
+      Register (serviceType, (IEnumerable<Func<object>>) instanceFactories);
+    }
+
+    /// <summary>
+    /// Registers factories for the specified <paramref name="serviceType"/>. 
+    /// The factories are subsequently invoked whenever instances for the <paramref name="serviceType"/> is requested.
+    /// </summary>
+    /// <param name="serviceType">The service type to register the factories for.</param>
+    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>.</param>
+    /// <exception cref="InvalidOperationException">Factories have already been registered or an instance of the <paramref name="serviceType"/> has 
+    /// already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
+    public void Register (Type serviceType, IEnumerable<Func<object>> instanceFactories)
+    {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNull ("instanceFactories", instanceFactories);
+
+      var factoryArray = instanceFactories.ToArray();
+      var factories = _dataStore.GetOrCreateValue (serviceType, t => factoryArray);
+      if (factories != factoryArray)
+      {
+        var message = string.Format ("Register cannot be called twice or after GetInstance for service type: '{0}'.", serviceType.Name);
+        throw new InvalidOperationException (message);
+      }
     }
 
     /// <summary>
@@ -252,15 +267,29 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("serviceConfigurationEntry", serviceConfigurationEntry);
 
-      var factory = CreateInstanceFactories (serviceConfigurationEntry).Single();
-      Register (serviceConfigurationEntry.ServiceType, factory);
+      var factories = CreateInstanceFactories (serviceConfigurationEntry);
+      Register (serviceConfigurationEntry.ServiceType, factories);
+    }
+
+    private Func<Object>[] GetOrCreateFactories (Type serviceType)
+    {
+      return _dataStore.GetOrCreateValue (serviceType, t => CreateInstanceFactories (t).ToArray ());
     }
 
     private object GetInstanceOrNull (Type serviceType)
     {
-      // TODO 4652: When the factory sequence is empty, return null. When the sequence has more than one 
-      // element, throw an ActivationException with a good message.
-      var factory = _dataStore.GetOrCreateValue (serviceType, CreateInstanceFactory);
+      var factories = GetOrCreateFactories (serviceType);
+      if (factories.Length > 1)
+      {
+        var message = string.Format (
+          "Multiple implemetations are configured for service type: '{0}'. Consider using 'GetAllInstances'.",
+          serviceType.Name);
+        throw new ActivationException (message);
+      }
+      if (factories.Length == 0)
+        return null;
+
+      var factory = factories.Single();
       return SafeInvokeInstanceFactory(factory);
     }
 
@@ -277,17 +306,11 @@ namespace Remotion.ServiceLocation
       }
     }
 
-    // TODO 4652: Change to return IEnumerable<Func<object>>
-    private Func<object> CreateInstanceFactory (Type serviceType)
+    private IEnumerable<Func<object>> CreateInstanceFactories (Type serviceType)
     {
-      // TODO 4652: Change to use GetCustomAttributes.
-      var concreteImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceType, false);
-      // TODO 4652: Remove this. Instead, return empty sequence.
-      if (concreteImplementationAttribute == null)
-        return () => null;
-
-      var serviceConfigurationEntry = ServiceConfigurationEntry.CreateFromAttribute (serviceType, concreteImplementationAttribute);
-      return CreateInstanceFactories (serviceConfigurationEntry).Single();
+      return AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (serviceType, false)
+          .Select (conImplAttr => ServiceConfigurationEntry.CreateFromAttribute (serviceType, conImplAttr))
+          .SelectMany (CreateInstanceFactories);
     }
 
     private IEnumerable<Func<object>> CreateInstanceFactories (ServiceConfigurationEntry serviceConfigurationEntry)
@@ -305,7 +328,7 @@ namespace Remotion.ServiceLocation
                 "Type '{0}' has not exactly one public constructor and cannot be instantiated.", serviceImplementationInfo.ImplementationType.Name));
       }
 
-      var ctorInfo = publicCtors[0];
+      var ctorInfo = publicCtors.Single();
       Func<object> factory = CreateInstanceFactory (ctorInfo);
 
       switch (serviceImplementationInfo.Lifetime)

@@ -94,7 +94,7 @@ namespace Remotion.UnitTests.ServiceLocation
           new[] { GetType().Assembly });
 
       var testDomainEntries = serviceConfigurationEntries.Where (entry => entry.ServiceType.Namespace.StartsWith (GetType().Namespace + ".TestDomain"));
-      Assert.That (testDomainEntries.Count(), Is.EqualTo (9));
+      Assert.That (testDomainEntries.Count(), Is.EqualTo (10));
     }
   }
 }

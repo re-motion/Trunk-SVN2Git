@@ -19,8 +19,8 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation (typeof(TestTypeWithNotExactOnePublicConstructor))]
-  internal interface ITestTypeWithNotExactOnePublicConstructor
+  [ConcreteImplementation (typeof (TestTypeWithOnlyProtectedConstructor))]
+  internal interface ITestTypeWithOnlyProtectedConstructor
   {
   }
 }

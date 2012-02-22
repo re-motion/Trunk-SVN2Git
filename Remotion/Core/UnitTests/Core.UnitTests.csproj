@@ -213,6 +213,9 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
     <Compile Include="ServiceLocation\ServiceImplementationInfoTest.cs" />
+    <Compile Include="ServiceLocation\TestDomain\ITestMultipleRegistrationsType.cs" />
+    <Compile Include="ServiceLocation\TestDomain\TestTypeWithOnlyProtectedConstructor.cs" />
+    <Compile Include="ServiceLocation\TestDomain\ITestTypeWithOnlyProtectedConstructor.cs" />
     <Compile Include="ServiceLocation\TypeNameTemplateResolverTest.cs" />
     <Compile Include="Logging\ILogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
@@ -293,7 +296,7 @@
     <Compile Include="ServiceLocation\TestDomain\ITestConstructorInjectionWithThreeParameters.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestInstanceConcreteImplementationAttributeType.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestSingletonConcreteImplementationAttributeType.cs" />
-    <Compile Include="ServiceLocation\TestDomain\ITestTypeWithNotExactOnePublicConstructor.cs" />
+    <Compile Include="ServiceLocation\TestDomain\ITestTypeWithTooManyPublicConstructors.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeType.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConcreteImplementationAttributeTypeThrowingExceptionInCtor.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionForServiceWithoutConcreteImplementationAttribute.cs" />
@@ -301,7 +304,7 @@
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameterWithInstanceLifetime.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithOneParameterWithSingletonLifetime.cs" />
     <Compile Include="ServiceLocation\TestDomain\TestConstructorInjectionWithThreeParameters.cs" />
-    <Compile Include="ServiceLocation\TestDomain\TestTypeWithNotExactOnePublicConstructor.cs" />
+    <Compile Include="ServiceLocation\TestDomain\TestTypeWithTooManyPublicConstructors.cs" />
     <Compile Include="Utilities\AppDomainAssemblyResolverTest.cs" />
     <Compile Include="Reflection\MethodResolverTest.cs" />
     <Compile Include="Reflection\CodeGeneration\BlockStatementTest.cs" />
