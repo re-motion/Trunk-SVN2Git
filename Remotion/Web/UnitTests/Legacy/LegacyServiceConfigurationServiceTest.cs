@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
@@ -42,7 +43,7 @@ namespace Remotion.Web.UnitTests.Legacy
       Assert.That (
           LegacyServiceConfigurationService.GetConfiguration()
               .Where (e => !nonLegacyServices.Contains (e.ServiceType))
-              .Select (e => e.ImplementationInfo.ImplementationType.Assembly)
+              .Select (e => GetSingleServiceImplementationInfo(e).ImplementationType.Assembly)
               .ToArray(),
           Is.All.EqualTo (typeof (LegacyServiceConfigurationService).Assembly));
     }
@@ -57,7 +58,17 @@ namespace Remotion.Web.UnitTests.Legacy
         locator.Register (serviceConfigurationEntry);
 
       foreach (var legacyServiceType in legacyServiceTypes)
-        Assert.That (locator.GetInstance (legacyServiceType.ServiceType), Is.TypeOf (legacyServiceType.ImplementationInfo.ImplementationType));
+      {
+        Assert.That (
+            locator.GetInstance (legacyServiceType.ServiceType),
+            Is.TypeOf (GetSingleServiceImplementationInfo (legacyServiceType).ImplementationType));
+      }
+    }
+
+    private ServiceImplementationInfo GetSingleServiceImplementationInfo (ServiceConfigurationEntry e)
+    {
+      Assert.That (e.ImplementationInfos, Has.Count.EqualTo (1));
+      return e.ImplementationInfos.Single ();
     }
   }
 }

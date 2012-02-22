@@ -156,6 +156,7 @@
     <Compile Include="ServiceLocation\FrameworkVersionNotFoundException.cs" />
     <Compile Include="ServiceLocation\FrameworkVersionRetriever.cs" />
     <Compile Include="ServiceLocation\LifetimeKind.cs" />
+    <Compile Include="ServiceLocation\ServiceImplementationInfo.cs" />
     <Compile Include="ServiceLocation\TypeNameTemplateResolver.cs" />
     <Compile Include="INullObject.cs" />
     <Compile Include="Logging\ILog.cs" />

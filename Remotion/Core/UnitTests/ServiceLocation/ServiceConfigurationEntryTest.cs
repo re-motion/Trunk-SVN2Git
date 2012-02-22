@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.UnitTests.ServiceLocation
 {
@@ -25,56 +26,47 @@ namespace Remotion.UnitTests.ServiceLocation
   public class ServiceConfigurationEntryTest
   {
     [Test]
-    public void Initialize ()
+    public void Initialize_WithSingleValue ()
     {
-      var serviceImplementation = new ServiceConfigurationEntry.ServiceImplementationInfo (
-          typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (
-          typeof (ITestSingletonConcreteImplementationAttributeType), serviceImplementation);
+      var implementationInfo = new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), implementationInfo);
 
-      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
       Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
-      Assert.That (serviceImplementationInfo.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceImplementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+      Assert.That (serviceConfigurationEntry.ImplementationInfos, Is.EqualTo (new[] { implementationInfo }));
+    }
+
+    [Test]
+    public void Initialize_WithEnumerable ()
+    {
+      var info1 = new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      var info2 = new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+
+      var entry = new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), new[] { info1, info2 });
+
+      Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
+      Assert.That (entry.ImplementationInfos, Is.EqualTo (new[] { info1, info2 }));
+    }
+
+    [Test]
+    [ExpectedException(typeof(ArgumentEmptyException), ExpectedMessage = 
+      "Parameter 'implementationInfos' cannot be empty.\r\nParameter name: implementationInfos")]
+    public void Initialize_WithEnumerable_Empty ()
+    {
+      new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), new ServiceImplementationInfo[0]);
     }
 
     [Test]
     public void CreateFromAttribute ()
     {
-      var attribute = new ConcreteImplementationAttribute (
-          "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>")
-                      { Lifetime = LifetimeKind.Singleton };
+      var template = "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>";
+      var attribute = new ConcreteImplementationAttribute (template) { Lifetime = LifetimeKind.Singleton };
 
-      var serviceConfigurationEntry = ServiceConfigurationEntry.CreateFromAttribute (
-          typeof (ITestSingletonConcreteImplementationAttributeType),
-          attribute);
+      var entry = ServiceConfigurationEntry.CreateFromAttribute (typeof (ITestSingletonConcreteImplementationAttributeType), attribute);
 
-      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
-      Assert.That (serviceConfigurationEntry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
-      Assert.That (serviceImplementationInfo.ImplementationType, Is.EqualTo (typeof (TestConcreteImplementationAttributeType)));
-      Assert.That (serviceImplementationInfo.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
-    }
-
-    [Test]
-    public void ImplementationInfo_Equals ()
-    {
-      var implementation0 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation1 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation2 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (string), LifetimeKind.Instance);
-      var implementation3 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton);
-
-      Assert.That (implementation0, Is.EqualTo (implementation1));
-      Assert.That (implementation0, Is.Not.EqualTo (implementation2));
-      Assert.That (implementation0, Is.Not.EqualTo (implementation3));
-    }
-
-    [Test]
-    public void ImplementationInfo_GetHashCode ()
-    {
-      var implementation0 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
-      var implementation1 = new ServiceConfigurationEntry.ServiceImplementationInfo (typeof (object), LifetimeKind.Instance);
-
-      Assert.That (implementation0.GetHashCode (), Is.EqualTo (implementation1.GetHashCode ()));
+      Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
+      Assert.That (
+          entry.ImplementationInfos, 
+          Is.EqualTo (new[] { new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton) }));
     }
   }
 }

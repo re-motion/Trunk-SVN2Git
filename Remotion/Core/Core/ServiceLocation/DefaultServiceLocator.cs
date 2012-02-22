@@ -236,7 +236,7 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
 
-      var serviceImplemetation = new ServiceConfigurationEntry.ServiceImplementationInfo (concreteImplementationType, lifetime);
+      var serviceImplemetation = new ServiceImplementationInfo (concreteImplementationType, lifetime);
       var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, serviceImplemetation);
       Register (serviceConfigurationEntry);
     }
@@ -281,7 +281,8 @@ namespace Remotion.ServiceLocation
 
     private Func<object> CreateInstanceFactory (ServiceConfigurationEntry serviceConfigurationEntry)
     {
-      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfo;
+      // TODO 4652: Should support more than one info
+      var serviceImplementationInfo = serviceConfigurationEntry.ImplementationInfos.Single();
       var publicCtors = serviceImplementationInfo.ImplementationType.GetConstructors ().Where (ci => ci.IsPublic).ToArray ();
       if (publicCtors.Length != 1)
       {

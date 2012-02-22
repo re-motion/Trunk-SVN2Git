@@ -15,6 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
@@ -24,46 +28,8 @@ namespace Remotion.ServiceLocation
   /// </summary>
   public class ServiceConfigurationEntry
   {
-    /// <summary>
-    /// Encapsulates a service implementation type and <see cref="LifetimeKind"/>.
-    /// </summary>
-    public struct ServiceImplementationInfo
-    {
-      private readonly Type _implementationType;
-      private readonly LifetimeKind _lifetime;
-
-      /// <summary>
-      /// Initializes a new instance of the <see cref="ServiceImplementationInfo"/> struct.
-      /// </summary>
-      /// <param name="implementationType">The concrete implementation of the service type.</param>
-      /// <param name="lifetime">The lifetime of the instances of <paramref name="implementationType"/>.</param>
-      public ServiceImplementationInfo (Type implementationType, LifetimeKind lifetime)
-      {
-        _implementationType = implementationType;
-        _lifetime = lifetime;
-      }
-
-      /// <summary>
-      /// Gets the concrete implementation of the <see cref="ServiceType"/>.
-      /// </summary>
-      /// <value>The concrete implementation.</value>
-      public Type ImplementationType
-      {
-        get { return _implementationType; }
-      }
-
-      /// <summary>
-      /// Gets the lifetime of the instances of <see cref="ImplementationType"/>.
-      /// </summary>
-      /// <value>The lifetime of the instances.</value>
-      public LifetimeKind Lifetime
-      {
-        get { return _lifetime; }
-      }
-    }
-
     private readonly Type _serviceType;
-    private readonly ServiceImplementationInfo _serviceImplementationInfo;
+    private readonly ReadOnlyCollection<ServiceImplementationInfo> _implementationInfos;
 
     /// <summary>
     /// Creates a <see cref="ServiceConfigurationEntry"/> from a <see cref="ConcreteImplementationAttribute"/>.
@@ -73,6 +39,9 @@ namespace Remotion.ServiceLocation
     /// <returns>A <see cref="ServiceConfigurationEntry"/> containing the data from the <paramref name="attribute"/>.</returns>
     public static ServiceConfigurationEntry CreateFromAttribute (Type serviceType, ConcreteImplementationAttribute attribute)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNull ("attribute", attribute);
+
       var serviceImplementation = new ServiceImplementationInfo (TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.Lifetime);
       return new ServiceConfigurationEntry (serviceType, serviceImplementation);
     }
@@ -84,8 +53,27 @@ namespace Remotion.ServiceLocation
     /// <param name="serviceImplementationInfo">The service implementation information.</param>
     public ServiceConfigurationEntry (Type serviceType, ServiceImplementationInfo serviceImplementationInfo)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      
       _serviceType = serviceType;
-      _serviceImplementationInfo = serviceImplementationInfo;
+      _implementationInfos = Array.AsReadOnly (new[] { serviceImplementationInfo });
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ServiceConfigurationEntry"/> class.
+    /// </summary>
+    /// <param name="serviceType">The service type. This is a type for which instances are requested from a service locator.</param>
+    /// <param name="implementationInfos">The service implementation information.</param>
+    public ServiceConfigurationEntry (Type serviceType, IEnumerable<ServiceImplementationInfo> implementationInfos)
+    {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNull ("implementationInfos", implementationInfos);
+
+      var implementationInfoArray = implementationInfos.ToArray ();
+      ArgumentUtility.CheckNotEmpty ("implementationInfos", implementationInfoArray);
+
+      _serviceType = serviceType;
+      _implementationInfos = Array.AsReadOnly (implementationInfoArray);
     }
 
     /// <summary>
@@ -98,12 +86,12 @@ namespace Remotion.ServiceLocation
     }
 
     /// <summary>
-    /// Gets information about the service implementation.
+    /// Gets information about all service implementations.
     /// </summary>
-    /// <value>The <see cref="ServiceImplementationInfo"/>.</value>
-    public ServiceImplementationInfo ImplementationInfo
+    /// <value>A collection of <see cref="ServiceImplementationInfo"/> instances.</value>
+    public ReadOnlyCollection<ServiceImplementationInfo> ImplementationInfos
     {
-      get { return _serviceImplementationInfo; }
+      get { return _implementationInfos; }
     }
   }
 }

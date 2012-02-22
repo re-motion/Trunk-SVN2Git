@@ -212,6 +212,7 @@
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
+    <Compile Include="ServiceLocation\ServiceImplementationInfoTest.cs" />
     <Compile Include="ServiceLocation\TypeNameTemplateResolverTest.cs" />
     <Compile Include="Logging\ILogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\IsEnabledTest.cs" />
