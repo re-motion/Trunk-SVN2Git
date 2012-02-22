@@ -258,6 +258,8 @@ namespace Remotion.ServiceLocation
 
     private object GetInstanceOrNull (Type serviceType)
     {
+      // TODO 4652: When the factory sequence is empty, return null. When the sequence has more than one 
+      // element, throw an ActivationException with a good message.
       var factory = _dataStore.GetOrCreateValue (serviceType, CreateInstanceFactory);
       return SafeInvokeInstanceFactory(factory);
     }
@@ -275,9 +277,12 @@ namespace Remotion.ServiceLocation
       }
     }
 
+    // TODO 4652: Change to return IEnumerable<Func<object>>
     private Func<object> CreateInstanceFactory (Type serviceType)
     {
+      // TODO 4652: Change to use GetCustomAttributes.
       var concreteImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceType, false);
+      // TODO 4652: Remove this. Instead, return empty sequence.
       if (concreteImplementationAttribute == null)
         return () => null;
 
@@ -285,6 +290,7 @@ namespace Remotion.ServiceLocation
       return CreateInstanceFactory (serviceConfigurationEntry);
     }
 
+    // TODO 4652: Change to return IEnumerable<Func<object>>.
     private Func<object> CreateInstanceFactory (ServiceConfigurationEntry serviceConfigurationEntry)
     {
       // TODO 4652: Should support more than one info

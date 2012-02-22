@@ -17,7 +17,6 @@
 using System;
 using Remotion.Utilities;
 
-// TODO Interfaces: Find a better name for this namespace.
 namespace Remotion.ServiceLocation
 {
   /// <summary>

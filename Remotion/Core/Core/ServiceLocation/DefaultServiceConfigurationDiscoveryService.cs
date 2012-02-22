@@ -65,8 +65,11 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("types", types);
 
       return (from type in types
+              // TODO 4652: Change to use GetCustomAttributes.
               let customImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (type, false)
+              // TODO 4652: Change to check for not empty.
               where customImplementationAttribute != null
+              // TODO 4652: Change to use CreateFromAttributes.
               select ServiceConfigurationEntry.CreateFromAttribute (type, customImplementationAttribute));
     }
 
