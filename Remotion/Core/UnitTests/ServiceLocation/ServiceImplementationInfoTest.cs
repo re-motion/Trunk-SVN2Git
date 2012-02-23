@@ -44,5 +44,15 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (implementation0.GetHashCode (), Is.EqualTo (implementation1.GetHashCode ()));
     }
+
+    [Test]
+    public void ToString_DebugInfo ()
+    {
+      var implementation0 = new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton);
+      var implementation1 = new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance);
+
+      Assert.That (implementation0.ToString (), Is.EqualTo ("{System.Object, Singleton}"));
+      Assert.That (implementation1.ToString (), Is.EqualTo ("{System.String, Instance}"));
+    }
   }
 }

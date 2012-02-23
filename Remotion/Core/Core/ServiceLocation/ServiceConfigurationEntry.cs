@@ -136,5 +136,13 @@ namespace Remotion.ServiceLocation
     {
       get { return _implementationInfos; }
     }
+
+    /// <inheritdoc />
+    public override string ToString ()
+    {
+      var implementationInfos = _implementationInfos.Select (i => i.ToString()).ToArray();
+      var joinedImplementationInfos = string.Join (", ", implementationInfos);
+      return string.Format ("{0} implementations: [{1}]", _serviceType, joinedImplementationInfos);
+    }
   }
 }

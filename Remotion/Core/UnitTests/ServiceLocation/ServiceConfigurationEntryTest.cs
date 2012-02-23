@@ -192,5 +192,25 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (entry.ImplementationInfos, Is.Empty);
     }
+
+    [Test]
+    public void ToString_EmptyEntry ()
+    {
+      var entry = new ServiceConfigurationEntry (typeof (IServiceProvider));
+
+      Assert.That (entry.ToString (), Is.EqualTo ("System.IServiceProvider implementations: []"));
+    }
+
+    [Test]
+    public void ToString_TwoEntries ()
+    {
+      var entry = new ServiceConfigurationEntry (
+          typeof (IServiceProvider),
+          new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton),
+          new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance));
+
+      Assert.That (entry.ToString (), Is.EqualTo (
+        "System.IServiceProvider implementations: [{System.Object, Singleton}, {System.String, Instance}]"));
+    }
   }
 }
