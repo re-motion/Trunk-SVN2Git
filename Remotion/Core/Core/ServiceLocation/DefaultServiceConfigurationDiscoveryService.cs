@@ -65,13 +65,22 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("types", types);
 
       return (from type in types
-              // TODO 4652: Change to use GetCustomAttributes.
-              let customImplementationAttribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (type, false)
-              // TODO 4652: Change to check for not empty.
-              where customImplementationAttribute != null
-              // TODO 4652: Change to use CreateFromAttributes.
-              // TODO 4652: May throw InvalidOperationException, consider wrapping.
-              select ServiceConfigurationEntry.CreateFromAttributes (type, new [] {customImplementationAttribute}));
+              let concreteImplementationAttributes = AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (type, false)
+              where concreteImplementationAttributes.Length != 0
+              select CreateServiceConfigurationEntry (type, concreteImplementationAttributes));
+    }
+
+    private static ServiceConfigurationEntry CreateServiceConfigurationEntry (Type type, ConcreteImplementationAttribute[] concreteImplementationAttributes)
+    {
+      try
+      {
+        return ServiceConfigurationEntry.CreateFromAttributes (type, concreteImplementationAttributes);
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = string.Format ("Invalid configuration of service type '{0}'. {1}", type, ex.Message);
+        throw new InvalidOperationException (message, ex);
+      }
     }
 
     /// <summary>

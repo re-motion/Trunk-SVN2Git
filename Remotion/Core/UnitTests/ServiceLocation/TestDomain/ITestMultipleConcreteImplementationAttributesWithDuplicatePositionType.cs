@@ -18,8 +18,8 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesWithDuplicatePositionType1))]
-  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesWithDuplicatePositionType2))]
+  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesWithDuplicatePositionType1))] // Position = 0
+  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesWithDuplicatePositionType2))] // Position = 0
   public interface ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType
   { 
   }
