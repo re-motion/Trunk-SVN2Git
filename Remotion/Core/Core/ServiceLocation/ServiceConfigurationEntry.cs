@@ -47,9 +47,8 @@ namespace Remotion.ServiceLocation
       int distinctPositionCount = attributeArray.Select (attr => attr.Position).Distinct().Count();
       if (attributeArray.Length != distinctPositionCount)
       {
-        var message = string.Format ("Ambigious '{0}' on service type '{1}': Position must be unique.",
-          typeof(ConcreteImplementationAttribute).Name, serviceType.GetType().Name);
-        throw new ArgumentException(message, "attributes");
+        var message = string.Format ("Ambigious {0}: Position must be unique.", typeof(ConcreteImplementationAttribute).Name);
+        throw new InvalidOperationException (message);
       }
 
       var serviceImplementationInfos =

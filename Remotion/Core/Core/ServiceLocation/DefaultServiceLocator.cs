@@ -297,7 +297,7 @@ namespace Remotion.ServiceLocation
       }
       catch (Exception ex)
       {
-        var message = string.Format ("{0} : {1}", ex.GetType ().FullName, ex.Message);
+        var message = string.Format ("{0}: {1}", ex.GetType ().Name, ex.Message);
         throw new ActivationException (message, ex);
       }
     }
@@ -305,7 +305,16 @@ namespace Remotion.ServiceLocation
     private IEnumerable<Func<object>> CreateInstanceFactories (Type serviceType)
     {
       var attributes = AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (serviceType, false);
-      var entry = ServiceConfigurationEntry.CreateFromAttributes (serviceType, attributes);
+      ServiceConfigurationEntry entry;
+      try
+      {
+        entry = ServiceConfigurationEntry.CreateFromAttributes (serviceType, attributes);
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = string.Format ("Invalid configuration for service type '{0}'. {1}", serviceType, ex.Message);
+        throw new ActivationException (message, ex);
+      }
       return CreateInstanceFactories (entry);
     }
 

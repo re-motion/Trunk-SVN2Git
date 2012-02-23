@@ -18,22 +18,19 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesType1), Lifetime = LifetimeKind.Singleton, Position = 3)]
-  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesType2), Lifetime = LifetimeKind.Instance, Position = 1)]
-  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesType3), Lifetime = LifetimeKind.Instance, Position = 2)]
-  public interface ITestMultipleConcreteImplementationAttributesType
+  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesWithDuplicatePositionType1))]
+  [ConcreteImplementation (typeof (TestMultipleConcreteImplementationAttributesWithDuplicatePositionType2))]
+  public interface ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType
   { 
   }
 
-  public class TestMultipleConcreteImplementationAttributesType1 : ITestMultipleConcreteImplementationAttributesType
+  public class TestMultipleConcreteImplementationAttributesWithDuplicatePositionType1
+      : ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType
   {
   }
 
-  public class TestMultipleConcreteImplementationAttributesType2 : ITestMultipleConcreteImplementationAttributesType
-  {
-  }
-
-  public class TestMultipleConcreteImplementationAttributesType3 : ITestMultipleConcreteImplementationAttributesType
+  public class TestMultipleConcreteImplementationAttributesWithDuplicatePositionType2
+      : ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType
   {
   }
 }

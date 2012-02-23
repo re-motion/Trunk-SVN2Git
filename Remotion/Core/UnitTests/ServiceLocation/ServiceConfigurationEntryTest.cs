@@ -131,8 +131,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (
           () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
-          Throws.ArgumentException.With.Message.EqualTo (
-              "Ambigious 'ConcreteImplementationAttribute' on service type 'RuntimeType': Position must be unique.\r\nParameter name: attributes"));
+          Throws.InvalidOperationException.With.Message.EqualTo ("Ambigious ConcreteImplementationAttribute: Position must be unique."));
     }
   }
 }

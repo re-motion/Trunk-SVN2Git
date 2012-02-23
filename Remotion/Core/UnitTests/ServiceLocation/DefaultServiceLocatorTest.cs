@@ -55,7 +55,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException (typeof (ActivationException), ExpectedMessage = "System.InvalidOperationException : This exception comes from the ctor.")]
+    [ExpectedException (typeof (ActivationException), ExpectedMessage = "InvalidOperationException: This exception comes from the ctor.")]
     public void GetInstance_ConstructorThrowingException ()
     {
       _serviceLocator.GetInstance (typeof (ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor));
@@ -109,6 +109,16 @@ namespace Remotion.UnitTests.ServiceLocation
 
       Assert.That (result, Has.Length.EqualTo (1));
       Assert.That (result.Single(), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
+        "Invalid configuration for service type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType'. "
+        + "Ambigious ConcreteImplementationAttribute: Position must be unique.")]
+    public void GetAllInstances_ServiceTypeWithAmbiguousPosition ()
+    {
+      _serviceLocator.GetAllInstances (typeof (ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType)).ToArray ();
     }
 
     [Test]
@@ -174,14 +184,14 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [Ignore ("TODO 4652: Ordering needed")]
     public void GetAllInstances_Generic_ServiceTypeWithMultipleConcreteImplementationAttributes ()
     {
       var result = _serviceLocator.GetAllInstances<ITestMultipleConcreteImplementationAttributesType> ().ToArray();
 
-      Assert.That (result, Has.Length.EqualTo(2));
-      Assert.That (result[0], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType1)));
-      Assert.That (result[1], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType2)));
+      Assert.That (result, Has.Length.EqualTo(3));
+      Assert.That (result[0], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType2)));
+      Assert.That (result[1], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType3)));
+      Assert.That (result[2], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType1)));
     }
 
     [Test]
