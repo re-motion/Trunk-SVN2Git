@@ -90,16 +90,11 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetInstance_WithMutipleServiceImplementationsRegistered ()
     {
-      var implementation1 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType1), LifetimeKind.Singleton);
-      var implementation2 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType2), LifetimeKind.Singleton);
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestMultipleRegistrationsType), implementation1, implementation2);
-
-      _serviceLocator.Register (serviceConfigurationEntry);
-
       Assert.That (
-          () => _serviceLocator.GetInstance<ITestMultipleRegistrationsType> (),
+          () => _serviceLocator.GetInstance<ITestMultipleConcreteImplementationAttributesType> (),
           Throws.TypeOf<ActivationException> ().With.Message.EqualTo (
-              "Multiple implemetations are configured for service type: 'ITestMultipleRegistrationsType'. Consider using 'GetAllInstances'."));
+              "Multiple implemetations are configured for service type: 'ITestMultipleConcreteImplementationAttributesType'. " 
+              + "Consider using 'GetAllInstances'."));
     }
 
     [Test]
@@ -285,6 +280,16 @@ namespace Remotion.UnitTests.ServiceLocation
       var result = ((IServiceLocator) _serviceLocator).GetService (typeof (string));
 
       Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    public void GetService_TypeWithMutipleServiceImplementationsRegistered ()
+    {
+      Assert.That (
+          () => ((IServiceLocator) _serviceLocator).GetService (typeof (ITestMultipleConcreteImplementationAttributesType)),
+          Throws.TypeOf<ActivationException> ().With.Message.EqualTo (
+              "Multiple implemetations are configured for service type: 'ITestMultipleConcreteImplementationAttributesType'. "
+              + "Consider using 'GetAllInstances'."));
     }
 
     [Test]
