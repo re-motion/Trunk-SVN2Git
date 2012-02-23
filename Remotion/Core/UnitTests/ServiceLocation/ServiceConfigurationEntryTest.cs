@@ -60,15 +60,14 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [ExpectedException(typeof(ArgumentEmptyException), ExpectedMessage = 
-      "Parameter 'implementationInfos' cannot be empty.\r\nParameter name: implementationInfos")]
     public void Initialize_WithEnumerable_Empty ()
     {
-      new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), new ServiceImplementationInfo[0]);
+      var entry = new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), new ServiceImplementationInfo[0]);
+      Assert.That (entry.ImplementationInfos, Is.Empty);
     }
 
     [Test]
-    public void CreateFromAttribute ()
+    public void CreateFromSingleAttribute ()
     {
       var template = "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>";
       var attribute = new ConcreteImplementationAttribute (template) { Lifetime = LifetimeKind.Singleton };
@@ -80,5 +79,27 @@ namespace Remotion.UnitTests.ServiceLocation
           entry.ImplementationInfos, 
           Is.EqualTo (new[] { new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton) }));
     }
+
+    //[Test]
+    //public void CreateFromMultipleAttributes ()
+    //{
+    //  var template1 = "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>";
+    //  var attribute1 = new ConcreteImplementationAttribute (template1) { Lifetime = LifetimeKind.Singleton };
+    //  var template2 = "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType, Remotion.UnitTests, Version = <version>";
+    //  var attribute2 = new ConcreteImplementationAttribute (template2) { Lifetime = LifetimeKind.Singleton };
+
+    //  var entry = ServiceConfigurationEntry.CreateFromAttributes (
+    //    typeof (ITestSingletonConcreteImplementationAttributeType), attribute1, attribute2).ToArray();
+
+    //  Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestMultipleConcreteImplementationAttributesType)));
+    //  Assert.That (
+    //      entry.ImplementationInfos,
+    //      Is.EqualTo (
+    //          new[]
+    //          {
+    //              new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType1), LifetimeKind.Singleton),
+    //              new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType2), LifetimeKind.Singleton)
+    //          }));
+    //}
   }
 }

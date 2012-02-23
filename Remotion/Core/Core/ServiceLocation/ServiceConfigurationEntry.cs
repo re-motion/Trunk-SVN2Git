@@ -51,14 +51,10 @@ namespace Remotion.ServiceLocation
     /// Initializes a new instance of the <see cref="ServiceConfigurationEntry"/> class.
     /// </summary>
     /// <param name="serviceType">The service type. This is a type for which instances are requested from a service locator.</param>
-    /// <param name="serviceImplementationInfo">A single required service implementation information.</param>
-    /// <param name="additionalServiceImplementationInfos">Additional service implementation infos.</param>
+    /// <param name="implementationInfos">The <see cref="ServiceImplementationInfo"/> for the <paramref name="serviceType" />.</param>
     public ServiceConfigurationEntry (
-        Type serviceType, ServiceImplementationInfo serviceImplementationInfo, params ServiceImplementationInfo[] additionalServiceImplementationInfos)
-        : this (
-            serviceType,
-            EnumerableUtility.Singleton (ArgumentUtility.CheckNotNull ("serviceImplementationInfo", serviceImplementationInfo))
-                .Concat (ArgumentUtility.CheckNotNull ("additionalServiceImplementationInfos", additionalServiceImplementationInfos)))
+        Type serviceType, params ServiceImplementationInfo[] implementationInfos)
+        : this (serviceType, (IEnumerable<ServiceImplementationInfo>) implementationInfos)
     {
     }
 
@@ -72,11 +68,8 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("implementationInfos", implementationInfos);
 
-      var implementationInfoArray = implementationInfos.ToArray ();
-      ArgumentUtility.CheckNotEmpty ("implementationInfos", implementationInfoArray);
-
       _serviceType = serviceType;
-      _implementationInfos = Array.AsReadOnly (implementationInfoArray);
+      _implementationInfos = Array.AsReadOnly (implementationInfos.ToArray ());
     }
 
     /// <summary>
