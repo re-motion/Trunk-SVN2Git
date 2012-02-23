@@ -122,6 +122,16 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
+        "Invalid configuration for service type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType'. "
+        + "Ambigious ConcreteImplementationAttribute: Implementation type must be unique.")]
+    public void GetAllInstances_ServiceTypeWithDuplicateImplementation ()
+    {
+      _serviceLocator.GetAllInstances (typeof (ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType)).ToArray ();
+    }
+
+    [Test]
     public void GetAllInstances_ServiceTypeWithMultipleConcreteImplementationAttributes ()
     {
       var result = _serviceLocator.GetAllInstances (typeof (ITestMultipleConcreteImplementationAttributesType)).ToArray ();

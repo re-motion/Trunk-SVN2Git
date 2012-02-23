@@ -133,5 +133,29 @@ namespace Remotion.UnitTests.ServiceLocation
           () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
           Throws.InvalidOperationException.With.Message.EqualTo ("Ambigious ConcreteImplementationAttribute: Position must be unique."));
     }
+
+    [Test]
+    public void CreateFromAttributes_Multiple_WithEqualTypes_Throws ()
+    {
+      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
+      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 2 };
+      var attributes = new[] { attribute1, attribute2 };
+
+      Assert.That (
+          () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
+          Throws.InvalidOperationException.With.Message.EqualTo ("Ambigious ConcreteImplementationAttribute: Implementation type must be unique."));
+    }
+
+    [Test]
+    public void CreateFromAttributes_Multiple_WithEqualTypesAndPositions_ThrowsForType ()
+    {
+      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
+      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
+      var attributes = new[] { attribute1, attribute2 };
+
+      Assert.That (
+          () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
+          Throws.InvalidOperationException.With.Message.EqualTo ("Ambigious ConcreteImplementationAttribute: Implementation type must be unique."));
+    }
   }
 }

@@ -43,30 +43,32 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("attributes", attributes);
 
-      var attributeCollection = attributes.ConvertToCollection();
+      var attributesAndResolvedTypes =
+          (from attribute in attributes
+           orderby attribute.Position
+           let resolvedType = TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate)
+           select new { Attribute = attribute, ResolvedType = resolvedType }).ConvertToCollection();
 
-      EnsureUniquePositions (attributeCollection);
+      EnsureUniqueProperty ("Implementation type", attributesAndResolvedTypes.Select (tuple => tuple.ResolvedType));
+      EnsureUniqueProperty ("Position", attributesAndResolvedTypes.Select (tuple => tuple.Attribute.Position));
 
-      var serviceImplementationInfos =
-          from attribute in attributeCollection
-          orderby attribute.Position
-          let resolvedType = TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate)
-          select new ServiceImplementationInfo (resolvedType, attribute.Lifetime);
+      var serviceImplementationInfos = 
+          attributesAndResolvedTypes.Select (tuple => new ServiceImplementationInfo (tuple.ResolvedType, tuple.Attribute.Lifetime));
       
       return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
     }
 
-    private static void EnsureUniquePositions (IEnumerable<ConcreteImplementationAttribute> attributeCollection)
+    private static void EnsureUniqueProperty<T> (string propertyDescription, IEnumerable<T> propertyValues)
     {
-      var positions = new HashSet<int> ();
-      foreach (var attribute in attributeCollection)
+      var visitedValues = new HashSet<T> ();
+      foreach (var value in propertyValues)
       {
-        if (positions.Contains (attribute.Position))
+        if (visitedValues.Contains (value))
         {
-          var message = string.Format ("Ambigious {0}: Position must be unique.", typeof (ConcreteImplementationAttribute).Name);
+          var message = string.Format ("Ambigious {0}: {1} must be unique.", typeof (ConcreteImplementationAttribute).Name, propertyDescription);
           throw new InvalidOperationException (message);
         }
-        positions.Add (attribute.Position);
+        visitedValues.Add (value);
       }
     }
 
