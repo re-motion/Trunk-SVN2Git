@@ -147,10 +147,6 @@
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Mixins\Core\Mixins.Core.csproj">
-      <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>
-      <Name>Mixins.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Security\Core\Security.Core.csproj">
       <Project>{FBE0CBDD-82FF-4173-8536-47D3B5BC2E98}</Project>
       <Name>Security.Core</Name>
