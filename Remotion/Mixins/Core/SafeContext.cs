@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Runtime.Remoting.Messaging;
-using Remotion.Mixins;
-using Remotion.Reflection;
+using Remotion.ServiceLocation;
+using System.Linq;
 
 // TODO 4650: Move SafeContext into new 'Commons' assembly
 // ReSharper disable CheckNamespace
@@ -55,11 +55,9 @@ namespace Remotion.Context
         {
           if (s_instance == null)
           {
-            // set temporary context so that mixins can be used
-            s_instance = new BootstrapStorageProvider();
-            
-            // then determine the actual context to be used
-            s_instance = ObjectFactory.Create<SafeContext> (ParamList.Empty).GetDefaultInstance();
+            s_instance = SafeServiceLocator.Current.GetAllInstances<ISafeContextStorageProvider>().FirstOrDefault();
+            if (s_instance == null)
+              throw new InvalidOperationException ("No instance of ISafeContextStorageProvider has been registered with the ServiceLocator.");
           }
           return s_instance;
         }
@@ -72,32 +70,6 @@ namespace Remotion.Context
       {
         s_instance = newInstance;
       }
-    }
-
-    /// <summary>
-    /// Gets or creates the default instance to be used when the <see cref="SafeContext"/> is initialized.
-    /// </summary>
-    /// <returns>The default storage instance for this <see cref="SafeContext"/>.</returns>
-    /// <remarks>
-    /// <para>
-    /// This method can be overridden by a mixin in order to change the default <see cref="Instance"/>. While this method is executed,
-    /// a temporary default <see cref="CallContext"/>-based storage provider is set active. Therefore, code executed from within
-    /// <see cref="GetDefaultInstance"/> can safely access <see cref="Instance"/> without causing a stack overflow.
-    /// </para>
-    /// <para>
-    /// However, the fact that it is temporary means that the data written into the context will not be available after <see cref="Instance"/>
-    /// has been initialized (unless the new instance is also based on the <see cref="CallContext"/>). This also means that it is not possible to
-    /// imperatively prepare a certain mixin configuration before the <see cref="SafeContext"/> is initialized; only the mixins present in the
-    /// default mixin configuration will be considered for overriding this method.
-    /// </para>
-    /// </remarks>
-    public virtual ISafeContextStorageProvider GetDefaultInstance ()
-    {
-      // assert that access to bootstrapper Instance is possible while actual Instance is initialized:
-#pragma warning disable 168
-      object bootstrapperInstance = Instance;
-#pragma warning restore 168
-      return new CallContextStorageProvider();
     }
   }
 }

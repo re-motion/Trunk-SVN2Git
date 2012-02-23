@@ -179,7 +179,6 @@
     <Compile Include="Configuration\TypeDiscovery\FakeTypeDiscoveryService.cs" />
     <Compile Include="Configuration\TypeDiscovery\RootAssembliesElementTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\TypeDiscoveryConfigurationTest.cs" />
-    <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Design\DesignerUtilityTest.cs" />
     <Compile Include="Diagnostics\ByteValueTest.cs" />
     <Compile Include="Diagnostics\BugReportTest.cs" />

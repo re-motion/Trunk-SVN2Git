@@ -15,12 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Context
 {
+  // TODO 4650: When SafeContext is moved to 'Common' fix cref below
   /// <summary>
   /// Common interface for classes implementing a storage mechanism for <see cref="T:Remotion.Context.SafeContext"/>.
   /// </summary>
+  // By default, use HttpContextStorageProvider. Only if not available, use CallContextStorageProvider.
+  [ConcreteImplementation (
+      "Remotion.Web.Context.HttpContextStorageProvider, Remotion.Web, Version=<version>, Culture=neutral, PublicKeyToken=<publicKeyToken>", 
+      ignoreIfNotFound: true, 
+      Position = 0)]
+  [ConcreteImplementation (typeof (CallContextStorageProvider), Position = 1)]
   public interface ISafeContextStorageProvider
   {
     /// <summary>

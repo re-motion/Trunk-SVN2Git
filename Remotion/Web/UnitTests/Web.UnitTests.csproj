@@ -174,7 +174,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
-    <Compile Include="Core\Context\WebSafeContextMixinTest.cs" />
+    <Compile Include="Core\Context\SafeContextWebIntegrationTest.cs" />
     <Compile Include="Core\Design\DesignTimeResourceUrlTest.cs" />
     <Compile Include="Core\Design\DesignTimeThemedResourceUrlTest.cs" />
     <Compile Include="Core\Factories\ResourceUrlFactoryTest.cs" />

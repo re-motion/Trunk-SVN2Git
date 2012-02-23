@@ -65,7 +65,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectDat
     private void PrepareMixinConfiguration (IDesignerHost host)
     {
       SetupResult.For (host.GetType (typeof (TypeFactoryImplementation).AssemblyQualifiedName)).Return (typeof (TypeFactoryImplementation));
-      SetupResult.For (host.GetType (typeof (BootstrapStorageProvider).AssemblyQualifiedName)).Return (typeof (BootstrapStorageProvider));
       SetupResult.For (host.GetType (typeof (ObjectFactoryImplementation).AssemblyQualifiedName)).Return (typeof (ObjectFactoryImplementation));
       var serviceStub = _mockRepository.Stub<ITypeDiscoveryService> ();
       SetupResult.For (serviceStub.GetTypes (null, false)).IgnoreArguments ().Return (Assembly.GetExecutingAssembly ().GetTypes ());

@@ -214,7 +214,6 @@
     <Compile Include="Configuration\TypeDiscovery\RootAssembliesElement.cs" />
     <Compile Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.cs" />
     <Compile Include="Configuration\TypeDiscovery\TypeDiscoveryMode.cs" />
-    <Compile Include="Context\BootstrapStorageProvider.cs" />
     <Compile Include="Diagnostics\ByteValue.cs" />
     <Compile Include="Diagnostics\IOuterProductProcessor.cs" />
     <Compile Include="Diagnostics\MemoryUsageInfo.cs" />

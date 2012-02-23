@@ -14,10 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Context;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
+using Rhino.Mocks;
 
 // TODO 4650: Move to 'Common' unit test assembly
 // ReSharper disable CheckNamespace
@@ -48,6 +50,40 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
+    public void Instance_AutoInitialization_UsesFirstInstance_FromServiceLocator ()
+    {
+      var fakeProvider1 = MockRepository.GenerateStub<ISafeContextStorageProvider> ();
+      var fakeProvider2 = MockRepository.GenerateStub<ISafeContextStorageProvider> ();
+      var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
+      serviceLocatorStub
+          .Stub (stub => stub.GetAllInstances<ISafeContextStorageProvider>())
+          .Return (new[] { fakeProvider1, fakeProvider2 });
+
+      using (new ServiceLocatorScope (serviceLocatorStub))
+      {
+        var instance = SafeContext.Instance;
+        Assert.That (instance, Is.SameAs (fakeProvider1));
+      }
+    }
+
+    [Test]
+    public void Instance_AutoInitialization_WithNoConfiguredInstances ()
+    {
+      var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
+      serviceLocatorStub
+          .Stub (stub => stub.GetAllInstances<ISafeContextStorageProvider> ())
+          .Return (new ISafeContextStorageProvider[0]);
+
+      using (new ServiceLocatorScope (serviceLocatorStub))
+      {
+        Assert.That (
+            () => SafeContext.Instance,
+            Throws.InvalidOperationException.With.Message.EqualTo (
+                "No instance of ISafeContextStorageProvider has been registered with the ServiceLocator."));
+      }
+    }
+
+    [Test]
     public void SetInstance ()
     {
       ISafeContextStorageProvider myInstance = new CallContextStorageProvider();
@@ -64,36 +100,6 @@ namespace Remotion.Mixins.UnitTests.Core
       SafeContext.SetInstance (null);
       Assert.That (SafeContext.Instance, Is.Not.SameAs (myInstance));
       Assert.That (SafeContext.Instance, Is.Not.Null);
-    }
-
-    [Test]
-    public void DefaultInstanceMixable ()
-    {
-      using (MixinConfiguration.BuildNew ().ForClass<SafeContext> ().AddMixin<TestSafeContextMixin> ().EnterScope ())
-      {
-        Assert.That (ObjectFactory.Create<SafeContext>(ParamList.Empty).GetDefaultInstance(), Is.SameAs (TestSafeContextMixin.NewDefaultInstance));
-      }
-    }
-
-    public class TestSafeContextMixin : Mixin<SafeContext>
-    {
-      public static ISafeContextStorageProvider NewDefaultInstance = new CallContextStorageProvider();
-
-      [OverrideTarget]
-      public ISafeContextStorageProvider GetDefaultInstance ()
-      {
-        return NewDefaultInstance;
-      }
-    }
-
-    [Test]
-    public void AutoInitialization_LeavesMixinConfigurationEmpty ()
-    {
-      MixinConfiguration.SetActiveConfiguration (null);
-
-      Assert.That (MixinConfiguration.HasActiveConfiguration, Is.False);
-      Dev.Null = SafeContext.Instance;
-      Assert.That (MixinConfiguration.HasActiveConfiguration, Is.False);
     }
   }
 }
