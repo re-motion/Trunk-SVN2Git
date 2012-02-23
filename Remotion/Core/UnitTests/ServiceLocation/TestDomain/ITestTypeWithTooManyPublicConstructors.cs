@@ -20,7 +20,18 @@ using Remotion.ServiceLocation;
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
   [ConcreteImplementation (typeof (TestTypeWithTooManyPublicConstructors))]
-  internal interface ITestTypeWithTooManyPublicConstructors
+  public interface ITestTypeWithTooManyPublicConstructors
   {
+  }
+
+  public class TestTypeWithTooManyPublicConstructors : ITestTypeWithTooManyPublicConstructors
+  {
+    public TestTypeWithTooManyPublicConstructors ()
+    {
+    }
+
+    public TestTypeWithTooManyPublicConstructors (ITestSingletonConcreteImplementationAttributeType param)
+    {
+    }
   }
 }

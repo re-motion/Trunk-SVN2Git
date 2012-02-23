@@ -20,7 +20,17 @@ using Remotion.ServiceLocation;
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
   [ConcreteImplementation (typeof(TestConstructorInjectionWithOneParameterWithSingletonLifetime))]
-  internal interface ITestConstructorInjectionWithOneParameterWithSingletonLifetime
+  public interface ITestConstructorInjectionWithOneParameterWithSingletonLifetime
   {
+  }
+
+  public class TestConstructorInjectionWithOneParameterWithSingletonLifetime : ITestConstructorInjectionWithOneParameterWithSingletonLifetime
+  {
+    public readonly ITestSingletonConcreteImplementationAttributeType Param;
+
+    public TestConstructorInjectionWithOneParameterWithSingletonLifetime (ITestSingletonConcreteImplementationAttributeType param)
+    {
+      Param = param;
+    }
   }
 }

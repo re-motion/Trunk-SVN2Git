@@ -18,15 +18,15 @@ using System;
 
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
-  internal interface ITestMultipleRegistrationsType
+  public interface ITestMultipleRegistrationsType
   {
   }
 
-  class TestMultipleRegistrationType1 : ITestMultipleRegistrationsType
+  public class TestMultipleRegistrationType1 : ITestMultipleRegistrationsType
   { 
   }
 
-  class TestMultipleRegistrationType2 : ITestMultipleRegistrationsType
+  public class TestMultipleRegistrationType2 : ITestMultipleRegistrationsType
   {
   }
 }

@@ -20,7 +20,15 @@ using Remotion.ServiceLocation;
 namespace Remotion.UnitTests.ServiceLocation.TestDomain
 {
   [ConcreteImplementation (typeof (TestConcreteImplementationAttributeTypeThrowingExceptionInCtor), Lifetime = LifetimeKind.Instance)]
-  internal interface ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor
+  public interface ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor
   {
+  }
+
+  public class TestConcreteImplementationAttributeTypeThrowingExceptionInCtor : ITestConcreteImplementationAttributeTypeThrowingExceptionInCtor
+  {
+    public TestConcreteImplementationAttributeTypeThrowingExceptionInCtor ()
+    {
+      throw new InvalidOperationException ("This exception comes from the ctor.");
+    }
   }
 }
