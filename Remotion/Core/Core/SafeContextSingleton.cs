@@ -18,7 +18,6 @@ using System;
 using Remotion.Context;
 using Remotion.Utilities;
 
-// TODO 4650: Move SafeContextSingleton into new 'Commons' assembly
 // ReSharper disable CheckNamespace
 namespace Remotion
 // ReSharper restore CheckNamespace

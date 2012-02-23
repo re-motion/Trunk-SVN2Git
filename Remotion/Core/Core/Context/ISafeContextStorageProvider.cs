@@ -19,9 +19,8 @@ using Remotion.ServiceLocation;
 
 namespace Remotion.Context
 {
-  // TODO 4650: When SafeContext is moved to 'Common' fix cref below
   /// <summary>
-  /// Common interface for classes implementing a storage mechanism for <see cref="T:Remotion.Context.SafeContext"/>.
+  /// Common interface for classes implementing a storage mechanism for <see cref="SafeContext"/>.
   /// </summary>
   // By default, use HttpContextStorageProvider. Only if not available, use CallContextStorageProvider.
   [ConcreteImplementation (

@@ -260,8 +260,6 @@
     <Compile Include="OverrideMixinAttribute.cs" />
     <Compile Include="OverrideTargetAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SafeContext.cs" />
-    <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="TypeFactory.cs" />
     <Compile Include="UsesAttribute.cs" />

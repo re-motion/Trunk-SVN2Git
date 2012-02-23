@@ -18,13 +18,9 @@ using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Context;
 using Remotion.Development.UnitTesting;
-using Remotion.Reflection;
 using Rhino.Mocks;
 
-// TODO 4650: Move to 'Common' unit test assembly
-// ReSharper disable CheckNamespace
-namespace Remotion.Mixins.UnitTests.Core
-// ReSharper restore CheckNamespace
+namespace Remotion.UnitTests.Context
 {
   [TestFixture]
   public class SafeContextTest

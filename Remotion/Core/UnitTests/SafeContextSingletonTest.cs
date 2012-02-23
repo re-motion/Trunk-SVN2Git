@@ -18,7 +18,7 @@ using NUnit.Framework;
 using Remotion.Context;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Mixins.UnitTests.Core
+namespace Remotion.UnitTests
 {
   [TestFixture]
   public class SafeContextSingletonTest

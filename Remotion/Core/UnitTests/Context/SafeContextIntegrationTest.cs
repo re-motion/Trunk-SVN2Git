@@ -18,10 +18,7 @@ using System.Runtime.Remoting.Messaging;
 using NUnit.Framework;
 using Remotion.Context;
 
-// TODO 4650: Move to 'Common' unit test assembly
-// ReSharper disable CheckNamespace
-namespace Remotion.Mixins.UnitTests.Core
-// ReSharper restore CheckNamespace
+namespace Remotion.UnitTests.Context
 {
   [TestFixture]
   public class SafeContextIntegrationTest

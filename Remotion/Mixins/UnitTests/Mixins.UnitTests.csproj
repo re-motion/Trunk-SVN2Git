@@ -220,8 +220,6 @@
     <Compile Include="Core\Context\MixinContextCollectionTest.cs" />
     <Compile Include="Core\Context\MixinContextTest.cs" />
     <Compile Include="Core\Context\ReadOnlyContextCollectionTest.cs" />
-    <Compile Include="Core\SafeContextIntegrationTest.cs" />
-    <Compile Include="Core\SafeContextTest.cs" />
     <Compile Include="Core\Context\Serialization\AttributeClassContextSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
     <Compile Include="Core\Context\Serialization\SerializationInfoClassContextSerializationTest.cs" />
@@ -333,7 +331,6 @@
     <Compile Include="Core\MixinTypeUtilityTest.cs" />
     <Compile Include="Core\ObjectFactoryPerformanceTest.cs" />
     <Compile Include="Core\ObjectFactoryTest.cs" />
-    <Compile Include="Core\SafeContextSingletonTest.cs" />
     <Compile Include="Core\TypeExtensionsTest.cs" />
     <Compile Include="Core\Utilities\ConstraintBasedGenericParameterInstantiatorTest.cs" />
     <Compile Include="Core\Utilities\DependencySortTest.cs" />
