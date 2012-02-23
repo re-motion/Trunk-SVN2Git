@@ -125,10 +125,7 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
 
-      var factories = GetOrCreateFactories (serviceType);
-      var instances = factories.Select (func => func());
-
-      return instances;
+      return GetOrCreateFactories (serviceType).Select (factory => factory());
     }
 
     /// <summary>
@@ -282,8 +279,7 @@ namespace Remotion.ServiceLocation
       if (factories.Length > 1)
       {
         var message = string.Format (
-          "Multiple implemetations are configured for service type: '{0}'. Consider using 'GetAllInstances'.",
-          serviceType.Name);
+          "Multiple implemetations are configured for service type: '{0}'. Consider using 'GetAllInstances'.", serviceType.Name);
         throw new ActivationException (message);
       }
       if (factories.Length == 0)
