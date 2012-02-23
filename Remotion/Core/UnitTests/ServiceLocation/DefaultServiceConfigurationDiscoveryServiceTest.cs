@@ -117,14 +117,40 @@ namespace Remotion.UnitTests.ServiceLocation
     public void GetDefaultConfiguration_Types ()
     {
       var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
-          new[] { typeof (ITestSingletonConcreteImplementationAttributeType) });
+          new[] { typeof (ITestSingletonConcreteImplementationAttributeType) }).ToArray();
 
-      Assert.That (serviceConfigurationEntries.Count(), Is.EqualTo (1));
-      var resultEntry = serviceConfigurationEntries.Single();
-      Assert.That (resultEntry.ServiceType, Is.EqualTo(typeof (ITestSingletonConcreteImplementationAttributeType)));
+      Assert.That (serviceConfigurationEntries, Has.Length.EqualTo (1));
+      var entry = serviceConfigurationEntries.Single();
+      Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestSingletonConcreteImplementationAttributeType)));
       Assert.That (
-          resultEntry.ImplementationInfos,
+          entry.ImplementationInfos,
           Is.EqualTo (new[] { new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton) }));
+    }
+
+    [Test]
+    public void GetDefaultConfiguration_Types_Unresolvable ()
+    {
+      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
+          new[] { typeof (ITestConcreteImplementationAttributeWithUnresolvableImplementationType) }).ToArray();
+
+      Assert.That (serviceConfigurationEntries, Has.Length.EqualTo (1));
+      var entry = serviceConfigurationEntries.Single();
+      Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestConcreteImplementationAttributeWithUnresolvableImplementationType)));
+      Assert.That (entry.ImplementationInfos, Is.Empty);
+    }
+
+    [Test]
+    public void GetDefaultConfiguration_Types_UnresolvableAndResolvable ()
+    {
+      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
+          new[] { typeof (ITestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypes) }).ToArray();
+
+      Assert.That (serviceConfigurationEntries, Has.Length.EqualTo (1));
+      var entry = serviceConfigurationEntries.Single();
+      Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypes)));
+      var implementationInfo = new ServiceImplementationInfo (
+          typeof (TestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypesExisting), LifetimeKind.Instance);
+      Assert.That (entry.ImplementationInfos, Is.EqualTo (new[] { implementationInfo }));
     }
 
     [Test]
