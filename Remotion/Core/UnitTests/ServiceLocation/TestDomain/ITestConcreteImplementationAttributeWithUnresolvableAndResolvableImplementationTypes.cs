@@ -21,14 +21,14 @@ namespace Remotion.UnitTests.ServiceLocation.TestDomain
   [ConcreteImplementation ("Remotion.UnitTests.ServiceLocation.TestDomain.IDoNotExist, Remotion.UnitTests, Version = <version>",
     ignoreIfNotFound: true, Position = 1)]
   [ConcreteImplementation (
-    "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypesExisting, "
+    "Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypesExisting, "
     + "Remotion.UnitTests, Version = <version>", Position = 2)]
-  public interface ITestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypes
+  public interface ITestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypes
   {
   }
 
-  public class TestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypesExisting
-    : ITestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypes
+  public class TestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypesExisting
+    : ITestConcreteImplementationAttributeWithUnresolvableAndResolvableImplementationTypes
   {
   }
 }
