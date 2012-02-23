@@ -70,7 +70,7 @@ namespace Remotion.ServiceLocation
               // TODO 4652: Change to check for not empty.
               where customImplementationAttribute != null
               // TODO 4652: Change to use CreateFromAttributes.
-              select ServiceConfigurationEntry.CreateFromAttribute (type, customImplementationAttribute));
+              select ServiceConfigurationEntry.CreateFromAttributes (type, new [] {customImplementationAttribute}));
     }
 
     /// <summary>

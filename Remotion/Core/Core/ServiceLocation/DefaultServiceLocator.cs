@@ -304,9 +304,15 @@ namespace Remotion.ServiceLocation
 
     private IEnumerable<Func<object>> CreateInstanceFactories (Type serviceType)
     {
-      return AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (serviceType, false)
-          .Select (conImplAttr => ServiceConfigurationEntry.CreateFromAttribute (serviceType, conImplAttr))
-          .SelectMany (CreateInstanceFactories);
+      var attribute = AttributeUtility.GetCustomAttribute<ConcreteImplementationAttribute> (serviceType, false);
+      var atributes = attribute == null ? Enumerable.Empty<ConcreteImplementationAttribute>() : new[] { attribute };
+      var serviceConfigurationEntry = ServiceConfigurationEntry.CreateFromAttributes (serviceType, atributes);
+      return CreateInstanceFactories (serviceConfigurationEntry);
+
+      // TODO 4652
+      //return AttributeUtility.GetCustomAttributes<ConcreteImplementationAttribute> (serviceType, false)
+      //    .Select (conImplAttr => ServiceConfigurationEntry.CreateFromAttributes (serviceType, conImplAttr))
+      //    .SelectMany (CreateInstanceFactories);
     }
 
     private IEnumerable<Func<object>> CreateInstanceFactories (ServiceConfigurationEntry serviceConfigurationEntry)

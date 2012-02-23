@@ -36,15 +36,19 @@ namespace Remotion.ServiceLocation
     /// Creates a <see cref="ServiceConfigurationEntry"/> from a <see cref="ConcreteImplementationAttribute"/>.
     /// </summary>
     /// <param name="serviceType">The service type.</param>
-    /// <param name="attribute">The attribute holding information about the concrete implementation of the <paramref name="serviceType"/>.</param>
-    /// <returns>A <see cref="ServiceConfigurationEntry"/> containing the data from the <paramref name="attribute"/>.</returns>
-    public static ServiceConfigurationEntry CreateFromAttribute (Type serviceType, ConcreteImplementationAttribute attribute)
+    /// <param name="attributes">The attributes holding information about the concrete implementation of the <paramref name="serviceType"/>.</param>
+    /// <returns>A <see cref="ServiceConfigurationEntry"/> containing the data from the <paramref name="attributes"/>.</returns>
+    public static ServiceConfigurationEntry CreateFromAttributes (Type serviceType, IEnumerable<ConcreteImplementationAttribute> attributes)
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
-      ArgumentUtility.CheckNotNull ("attribute", attribute);
+      ArgumentUtility.CheckNotNull ("attributes", attributes);
+      
+      var serviceImplementationInfos =
+          from attribute in attributes
+          let resolvedType = TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate)
+          select new ServiceImplementationInfo (resolvedType, attribute.Lifetime);
 
-      var serviceImplementation = new ServiceImplementationInfo (TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate), attribute.Lifetime);
-      return new ServiceConfigurationEntry (serviceType, serviceImplementation);
+      return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
     }
 
     /// <summary>
