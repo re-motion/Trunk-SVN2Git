@@ -105,10 +105,21 @@ namespace Remotion.UnitTests.ServiceLocation
     [Test]
     public void GetAllInstances ()
     {
-      var result = _serviceLocator.GetAllInstances (typeof (ITestInstanceConcreteImplementationAttributeType));
+      var result = _serviceLocator.GetAllInstances (typeof (ITestInstanceConcreteImplementationAttributeType)).ToArray();
 
-      Assert.That (result.ToArray().Length, Is.EqualTo (1));
-      Assert.That (result.ToArray()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (result, Has.Length.EqualTo (1));
+      Assert.That (result.Single(), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    [Ignore ("TODO 4652: Ordering needed")]
+    public void GetAllInstances_ServiceTypeWithMultipleConcreteImplementationAttributes ()
+    {
+      var result = _serviceLocator.GetAllInstances (typeof (ITestMultipleConcreteImplementationAttributesType)).ToArray ();
+
+      Assert.That (result, Has.Length.EqualTo (2));
+      Assert.That (result[0], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType1)));
+      Assert.That (result[1], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType2)));
     }
 
     [Test]
@@ -116,7 +127,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       var result = _serviceLocator.GetAllInstances (typeof (IServiceLocator));
 
-      Assert.That (result.ToArray().Length, Is.EqualTo (0));
+      Assert.That (result, Is.Empty);
     }
 
     [Test]
@@ -150,16 +161,27 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       var result = _serviceLocator.GetAllInstances<IServiceLocator>();
 
-      Assert.That (result.ToArray().Length, Is.EqualTo (0));
+      Assert.That (result, Is.Empty);
     }
 
     [Test]
     public void GetAllInstances_Generic_ServiceTypeWithConcreteImplementationAttribute ()
     {
-      var result = _serviceLocator.GetAllInstances<ITestInstanceConcreteImplementationAttributeType>();
+      var result = _serviceLocator.GetAllInstances<ITestInstanceConcreteImplementationAttributeType>().ToArray();
 
-      Assert.That (result.ToArray().Length, Is.EqualTo (1));
-      Assert.That (result.ToArray()[0], Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+      Assert.That (result, Has.Length.EqualTo (1));
+      Assert.That (result.Single(), Is.TypeOf (typeof (TestConcreteImplementationAttributeType)));
+    }
+
+    [Test]
+    [Ignore ("TODO 4652: Ordering needed")]
+    public void GetAllInstances_Generic_ServiceTypeWithMultipleConcreteImplementationAttributes ()
+    {
+      var result = _serviceLocator.GetAllInstances<ITestMultipleConcreteImplementationAttributesType> ().ToArray();
+
+      Assert.That (result, Has.Length.EqualTo(2));
+      Assert.That (result[0], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType1)));
+      Assert.That (result[1], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType2)));
     }
 
     [Test]

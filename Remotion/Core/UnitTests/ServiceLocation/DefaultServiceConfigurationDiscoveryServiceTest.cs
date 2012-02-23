@@ -88,6 +88,7 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    [Ignore ("TODO 4652: Need to support multiple attributes")]
     public void GetDefaultConfiguration_UnitTestAssembly ()
     {
       var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
