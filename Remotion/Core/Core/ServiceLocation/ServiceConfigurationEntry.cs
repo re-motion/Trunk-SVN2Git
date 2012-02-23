@@ -18,8 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.ServiceLocation
 {
@@ -43,21 +43,31 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
       ArgumentUtility.CheckNotNull ("attributes", attributes);
 
-      var attributeArray = attributes.ToArray();
-      int distinctPositionCount = attributeArray.Select (attr => attr.Position).Distinct().Count();
-      if (attributeArray.Length != distinctPositionCount)
-      {
-        var message = string.Format ("Ambigious {0}: Position must be unique.", typeof(ConcreteImplementationAttribute).Name);
-        throw new InvalidOperationException (message);
-      }
+      var attributeCollection = attributes.ConvertToCollection();
+
+      EnsureUniquePositions (attributeCollection);
 
       var serviceImplementationInfos =
-          from attribute in attributes
+          from attribute in attributeCollection
           orderby attribute.Position
           let resolvedType = TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate)
           select new ServiceImplementationInfo (resolvedType, attribute.Lifetime);
-
+      
       return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
+    }
+
+    private static void EnsureUniquePositions (IEnumerable<ConcreteImplementationAttribute> attributeCollection)
+    {
+      var positions = new HashSet<int> ();
+      foreach (var attribute in attributeCollection)
+      {
+        if (positions.Contains (attribute.Position))
+        {
+          var message = string.Format ("Ambigious {0}: Position must be unique.", typeof (ConcreteImplementationAttribute).Name);
+          throw new InvalidOperationException (message);
+        }
+        positions.Add (attribute.Position);
+      }
     }
 
     /// <summary>
