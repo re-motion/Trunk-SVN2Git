@@ -213,6 +213,7 @@
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
     <Compile Include="ServiceLocation\ServiceImplementationInfoTest.cs" />
+    <Compile Include="ServiceLocation\TestDomain\ITestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypes.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType.cs" />
     <Compile Include="ServiceLocation\TestDomain\ITestMultipleConcreteImplementationAttributesType.cs" />

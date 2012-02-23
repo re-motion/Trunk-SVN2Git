@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
@@ -46,7 +47,8 @@ namespace Remotion.ServiceLocation
       var attributesAndResolvedTypes =
           (from attribute in attributes
            orderby attribute.Position
-           let resolvedType = TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate)
+           let resolvedType = ResolveType(attribute)
+           where resolvedType != null
            select new { Attribute = attribute, ResolvedType = resolvedType }).ConvertToCollection();
 
       EnsureUniqueProperty ("Implementation type", attributesAndResolvedTypes.Select (tuple => tuple.ResolvedType));
@@ -56,6 +58,26 @@ namespace Remotion.ServiceLocation
           attributesAndResolvedTypes.Select (tuple => new ServiceImplementationInfo (tuple.ResolvedType, tuple.Attribute.Lifetime));
       
       return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
+    }
+
+    private static Type ResolveType (ConcreteImplementationAttribute attribute)
+    {
+      try
+      {
+        return TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate);
+      }
+      catch (FileNotFoundException) // Invalid assembly
+      {
+        if (attribute.IgnoreIfNotFound)
+          return null;
+        throw;
+      }
+      catch (TypeLoadException) // Invalid type name
+      {
+        if (attribute.IgnoreIfNotFound)
+          return null;
+        throw;
+      }
     }
 
     private static void EnsureUniqueProperty<T> (string propertyDescription, IEnumerable<T> propertyValues)

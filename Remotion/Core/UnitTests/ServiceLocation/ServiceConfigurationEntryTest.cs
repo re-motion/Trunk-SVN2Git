@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.IO;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
@@ -156,6 +157,40 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (
           () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
           Throws.InvalidOperationException.With.Message.EqualTo ("Ambiguous ConcreteImplementationAttribute: Implementation type must be unique."));
+    }
+
+    [Test]
+    public void CreateFromAttributes_IgnoreIfNotFoundFalse_InvalidAssembly ()
+    {
+      var attribute = new ConcreteImplementationAttribute ("DoesNotMatter, InvalidAssembly", ignoreIfNotFound: false);
+      Assert.That (() => ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute }), Throws.TypeOf<FileNotFoundException>());
+    }
+
+    [Test]
+    public void CreateFromAttributes_IgnoreIfNotFoundTrue_InvalidAssembly ()
+    {
+      var attribute = new ConcreteImplementationAttribute ("DoesNotMatter, InvalidAssembly", ignoreIfNotFound: true);
+
+      var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute });
+
+      Assert.That (entry.ImplementationInfos, Is.Empty);
+    }
+
+    [Test]
+    public void CreateFromAttributes_IgnoreIfNotFoundFalse_InvalidType ()
+    {
+      var attribute = new ConcreteImplementationAttribute ("IDoNotExist, mscorlib", ignoreIfNotFound: false);
+      Assert.That (() => ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute }), Throws.TypeOf<TypeLoadException> ());
+    }
+
+    [Test]
+    public void CreateFromAttributes_IgnoreIfNotFoundTrue_InvalidType ()
+    {
+      var attribute = new ConcreteImplementationAttribute ("IDoNotExist, mscorlib", ignoreIfNotFound: true);
+
+      var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (object), new[] { attribute });
+
+      Assert.That (entry.ImplementationInfos, Is.Empty);
     }
   }
 }

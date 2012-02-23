@@ -172,6 +172,14 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    public void GetInstance_Generic_ServiceTypeWithUnresolvableAndResolveImplementationTypes ()
+    {
+      var result = _serviceLocator.GetInstance<ITestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypes> ();
+
+      Assert.That (result, Is.TypeOf<TestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypesExisting> ());
+    }
+
+    [Test]
     public void GetAllInstances_Generic_ServiceTypeWithoutConcreteImplementationAttribute ()
     {
       var result = _serviceLocator.GetAllInstances<IServiceLocator>();
@@ -197,6 +205,15 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (result[0], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType2)));
       Assert.That (result[1], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType3)));
       Assert.That (result[2], Is.TypeOf (typeof (TestMultipleConcreteImplementationAttributesType1)));
+    }
+
+    [Test]
+    public void GetAllInstances_Generic_ServiceTypeWithUnresolvableAndResolveImplementationTypes ()
+    {
+      var results = _serviceLocator.GetAllInstances<ITestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypes>().ToArray();
+
+      Assert.That (results, Has.Length.EqualTo (1));
+      Assert.That (results[0], Is.TypeOf<TestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypesExisting> ());
     }
 
     [Test]
@@ -290,6 +307,15 @@ namespace Remotion.UnitTests.ServiceLocation
           Throws.TypeOf<ActivationException> ().With.Message.EqualTo (
               "Multiple implemetations are configured for service type: 'ITestMultipleConcreteImplementationAttributesType'. "
               + "Consider using 'GetAllInstances'."));
+    }
+
+    [Test]
+    public void GetService_ServiceTypeWithUnresolvableAndResolveImplementationTypes ()
+    {
+      var result =
+        ((IServiceLocator) _serviceLocator).GetService (typeof (ITestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypes));
+
+      Assert.That (result, Is.TypeOf<TestConcreteImplementationAttributeWithUnresolvableAndResolveImplementationTypesExisting> ());
     }
 
     [Test]
