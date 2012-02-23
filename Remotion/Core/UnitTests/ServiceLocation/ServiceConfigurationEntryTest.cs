@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
 using Remotion.UnitTests.ServiceLocation.TestDomain;
-using Remotion.Utilities;
 
 namespace Remotion.UnitTests.ServiceLocation
 {
@@ -83,9 +82,9 @@ namespace Remotion.UnitTests.ServiceLocation
     public void CreateFromAttributes_Multiple ()
     {
       var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1))
-                       { Lifetime = LifetimeKind.Singleton };
+                       { Lifetime = LifetimeKind.Singleton, Position = 0 };
       var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType2))
-                       { Lifetime = LifetimeKind.Instance };
+                       { Lifetime = LifetimeKind.Instance, Position = 1 };
       var attributes = new[] { attribute1, attribute2};
 
       var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes);
@@ -99,6 +98,41 @@ namespace Remotion.UnitTests.ServiceLocation
                   new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType1), LifetimeKind.Singleton),
                   new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType2), LifetimeKind.Instance)
               }));
+    }
+
+    [Test]
+    public void CreateFromAttributes_Multiple_EntriesAreSortedCorrectly ()
+    {
+      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1))
+                       { Lifetime = LifetimeKind.Singleton, Position = 0 };
+      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType2))
+                       { Lifetime = LifetimeKind.Instance, Position = -1 };
+      var attributes = new[] { attribute1, attribute2 };
+
+      var entry = ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes);
+
+      Assert.That (entry.ServiceType, Is.EqualTo (typeof (ITestMultipleConcreteImplementationAttributesType)));
+      Assert.That (
+          entry.ImplementationInfos,
+          Is.EqualTo (
+              new[]
+              {
+                  new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType2), LifetimeKind.Instance),
+                  new ServiceImplementationInfo (typeof (TestMultipleConcreteImplementationAttributesType1), LifetimeKind.Singleton)
+              }));
+    }
+
+    [Test]
+    public void CreateFromAttributes_Multiple_WithEqualPositions_Throws ()
+    {
+      var attribute1 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType1)) { Position = 1 };
+      var attribute2 = new ConcreteImplementationAttribute (typeof (TestMultipleConcreteImplementationAttributesType2)) { Position = 1 };
+      var attributes = new[] { attribute1, attribute2 };
+
+      Assert.That (
+          () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestMultipleConcreteImplementationAttributesType), attributes),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Ambigious 'ConcreteImplementationAttribute' on service type 'RuntimeType': Position must be unique.\r\nParameter name: attributes"));
     }
   }
 }

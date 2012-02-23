@@ -28,8 +28,6 @@ namespace Remotion.ServiceLocation
   public class ConcreteImplementationAttribute : Attribute
   {
     private readonly string _typeNameTemplate;
-    
-    private LifetimeKind _lifetime = LifetimeKind.Instance;
 
     /// <summary>
     /// Defines a concrete implementation for a service type by means of a type name template. The template can contain placeholders such as
@@ -42,6 +40,7 @@ namespace Remotion.ServiceLocation
     public ConcreteImplementationAttribute (string typeNameTemplate)
     {
       _typeNameTemplate = ArgumentUtility.CheckNotNull ("typeNameTemplate", typeNameTemplate);
+      Lifetime = LifetimeKind.Instance;
     }
 
     /// <summary>
@@ -53,6 +52,7 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("type", type);
 
       _typeNameTemplate = type.AssemblyQualifiedName;
+      Lifetime = LifetimeKind.Instance;
     }
 
     /// <summary>
@@ -70,11 +70,14 @@ namespace Remotion.ServiceLocation
     /// instances of the concrete implementation type and when to create new ones. The default value is <see cref="LifetimeKind.Instance"/>.
     /// </summary>
     /// <value>The lifetime of instances of the concrete implementation type.</value>
-    public LifetimeKind Lifetime
-    {
-      get { return _lifetime; }
-      set { _lifetime = value; }
-    }
-    
+    public LifetimeKind Lifetime { get; set; }
+
+    /// <summary>
+    /// Gets the position of the concrete implementation in the list of all concrete implementations for the respective service type. The position
+    /// does not denote the exact index; instead, it only influences the relative ordering of this implementation with respect to the other
+    /// implementations.
+    /// </summary>
+    /// <value>The position of the concrete implementation in the list of all concrete implementations.</value>
+    public int Position  { get; set; }
   }
 }

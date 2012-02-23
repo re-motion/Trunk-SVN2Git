@@ -38,6 +38,7 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       Assert.That (_attribute.TypeNameTemplate, Is.SameAs (_typeNameTemplate));
       Assert.That (_attribute.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
+      Assert.That (_attribute.Position, Is.EqualTo (0));
     }
 
     [Test]
