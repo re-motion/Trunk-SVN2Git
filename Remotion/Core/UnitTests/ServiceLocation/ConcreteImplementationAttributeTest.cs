@@ -22,33 +22,23 @@ namespace Remotion.UnitTests.ServiceLocation
   [TestFixture]
   public class ConcreteImplementationAttributeTest
   {
-    private ConcreteImplementationAttribute _attribute;
-    private string _typeNameTemplate;
-
-    [SetUp]
-    public void SetUp ()
-    {
-      _typeNameTemplate = "Remotion.UnitTests.ServiceLocation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
-      _attribute = new ConcreteImplementationAttribute (_typeNameTemplate);
-      _attribute.Lifetime = LifetimeKind.Singleton;
-    }
-
     [Test]
     public void Initialization ()
     {
-      Assert.That (_attribute.TypeNameTemplate, Is.SameAs (_typeNameTemplate));
-      Assert.That (_attribute.Lifetime, Is.EqualTo (LifetimeKind.Singleton));
-      Assert.That (_attribute.Position, Is.EqualTo (0));
+      const string typeNameTemplate = "Remotion.UnitTests.ServiceLocation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
+      
+      var attribute = new ConcreteImplementationAttribute (typeNameTemplate);
+      
+      Assert.That (attribute.TypeNameTemplate, Is.SameAs (typeNameTemplate));
+      Assert.That (attribute.Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (attribute.Position, Is.EqualTo (0));
     }
 
     [Test]
     public void InitializationWithType ()
     {
-      _attribute = new ConcreteImplementationAttribute (typeof (ConcreteImplementationAttributeTest));
-
-      Assert.That (
-        _attribute.TypeNameTemplate.StartsWith ("Remotion.UnitTests.ServiceLocation.ConcreteImplementationAttributeTest, Remotion.UnitTests"), 
-        Is.True);
+      var attribute = new ConcreteImplementationAttribute (typeof (ConcreteImplementationAttributeTest));
+      Assert.That (attribute.TypeNameTemplate, Is.EqualTo (typeof (ConcreteImplementationAttributeTest).AssemblyQualifiedName));
     }
   }
 }
