@@ -23,7 +23,7 @@ namespace Remotion.UnitTests.ServiceLocation
   public class ConcreteImplementationAttributeTest
   {
     [Test]
-    public void Initialization ()
+    public void Initialization_Defaults ()
     {
       const string typeNameTemplate = "Remotion.UnitTests.ServiceLocation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
       
@@ -32,6 +32,20 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (attribute.TypeNameTemplate, Is.SameAs (typeNameTemplate));
       Assert.That (attribute.Lifetime, Is.EqualTo (LifetimeKind.Instance));
       Assert.That (attribute.Position, Is.EqualTo (0));
+      Assert.That (attribute.IgnoreIfNotFound, Is.False);
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      const string typeNameTemplate = "Remotion.UnitTests.ServiceLocation.ConcreteImplementationAttributeTest, Remotion.UnitTests, Version = <version>";
+
+      var attribute = new ConcreteImplementationAttribute (typeNameTemplate, ignoreIfNotFound: true);
+
+      Assert.That (attribute.TypeNameTemplate, Is.SameAs (typeNameTemplate));
+      Assert.That (attribute.Lifetime, Is.EqualTo (LifetimeKind.Instance));
+      Assert.That (attribute.Position, Is.EqualTo (0));
+      Assert.That (attribute.IgnoreIfNotFound, Is.True);
     }
 
     [Test]

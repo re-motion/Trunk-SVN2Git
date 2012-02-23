@@ -23,23 +23,27 @@ namespace Remotion.ServiceLocation
   /// Defines the concrete implementation for a service type (usually an interface or abstract class) as well as its <see cref="LifetimeKind"/>.
   /// This attribute is used by the DefaultServiceProvider to determine how to instantiate a service type. Mutiple 
   /// <see cref="ConcreteImplementationAttribute"/> istances can be applied to a single service type. They are not inherited.
+  /// TODO : mention ignoreIfNotFound
   /// </summary>
   [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
   public class ConcreteImplementationAttribute : Attribute
   {
     private readonly string _typeNameTemplate;
+    private readonly bool _ignoreIfNotFound;
 
     /// <summary>
     /// Defines a concrete implementation for a service type by means of a type name template. The template can contain placeholders such as
     /// "&lt;version&gt;" and "&lt;publicKeyToken&gt;" that are replaced with the version and public key token of the re-motion assemblies when
     /// the type is resolved. See <see cref="TypeNameTemplateResolver"/> for details.
+    /// TODO : mention ignoreIfNotFound
     /// </summary>
-    /// <param name="typeNameTemplate">
-    /// A type name indicating the concrete implementation for the service type, optionally containing placeholders.
-    /// </param>
-    public ConcreteImplementationAttribute (string typeNameTemplate)
+    /// <param name="typeNameTemplate">A type name indicating the concrete implementation for the service type, optionally containing
+    /// placeholders.</param>
+    /// <param name="ignoreIfNotFound">TODO</param>
+    public ConcreteImplementationAttribute (string typeNameTemplate, bool ignoreIfNotFound = false)
     {
       _typeNameTemplate = ArgumentUtility.CheckNotNull ("typeNameTemplate", typeNameTemplate);
+      _ignoreIfNotFound = ignoreIfNotFound;
       Lifetime = LifetimeKind.Instance;
     }
 
@@ -63,6 +67,15 @@ namespace Remotion.ServiceLocation
     public string TypeNameTemplate
     {
       get { return _typeNameTemplate; }
+    }
+
+    /// <summary>
+    /// Gets TODO
+    /// </summary>
+    /// <value>TODO</value>
+    public bool IgnoreIfNotFound
+    {
+      get { return _ignoreIfNotFound; }
     }
 
     /// <summary>
