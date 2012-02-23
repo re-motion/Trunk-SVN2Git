@@ -83,7 +83,7 @@ namespace Remotion.UnitTests.ServiceLocation
           Throws.InvalidOperationException.With.Message.EqualTo (
               "Invalid configuration of service type "
               + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType'. "
-              + "Ambigious ConcreteImplementationAttribute: Position must be unique.")
+              + "Ambiguous ConcreteImplementationAttribute: Position must be unique.")
               .And.InnerException.Not.Null);
     }
 
@@ -101,7 +101,7 @@ namespace Remotion.UnitTests.ServiceLocation
             .With.Message.EqualTo (
               "Invalid configuration of service type "
               + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType'. "
-              + "Ambigious ConcreteImplementationAttribute: Implementation type must be unique.")
+              + "Ambiguous ConcreteImplementationAttribute: Implementation type must be unique.")
             .And.InnerException.Not.Null);
     }
 
@@ -128,16 +128,12 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    [Ignore ("TODO 4652")]
     public void GetDefaultConfiguration_Assembly ()
     {
-      var serviceConfigurationEntries = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (
-          new[] { GetType().Assembly });
-
-// ReSharper disable PossibleNullReferenceException
-      var testDomainEntries = serviceConfigurationEntries.Where (entry => entry.ServiceType.Namespace.StartsWith (GetType().Namespace + ".TestDomain"));
-// ReSharper restore PossibleNullReferenceException
-      Assert.That (testDomainEntries.Count(), Is.EqualTo (10));
+      // Because the TestDomain contains test classes with ambiguous attributes, we expect an exception here.
+      Assert.That (
+          () => DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { GetType().Assembly }).ToArray(), 
+            Throws.InvalidOperationException.With.Message.Contains ("Ambiguous"));
     }
   }
 }

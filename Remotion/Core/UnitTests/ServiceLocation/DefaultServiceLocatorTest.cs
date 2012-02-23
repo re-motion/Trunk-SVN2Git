@@ -110,7 +110,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
         "Invalid configuration for service type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType'. "
-        + "Ambigious ConcreteImplementationAttribute: Position must be unique.")]
+        + "Ambiguous ConcreteImplementationAttribute: Position must be unique.")]
     public void GetAllInstances_ServiceTypeWithAmbiguousPosition ()
     {
       _serviceLocator.GetAllInstances (typeof (ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType)).ToArray ();
@@ -120,7 +120,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
         "Invalid configuration for service type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType'. "
-        + "Ambigious ConcreteImplementationAttribute: Implementation type must be unique.")]
+        + "Ambiguous ConcreteImplementationAttribute: Implementation type must be unique.")]
     public void GetAllInstances_ServiceTypeWithDuplicateImplementation ()
     {
       _serviceLocator.GetAllInstances (typeof (ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType)).ToArray ();

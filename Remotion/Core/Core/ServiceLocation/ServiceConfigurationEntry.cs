@@ -65,7 +65,7 @@ namespace Remotion.ServiceLocation
       {
         if (visitedValues.Contains (value))
         {
-          var message = string.Format ("Ambigious {0}: {1} must be unique.", typeof (ConcreteImplementationAttribute).Name, propertyDescription);
+          var message = string.Format ("Ambiguous {0}: {1} must be unique.", typeof (ConcreteImplementationAttribute).Name, propertyDescription);
           throw new InvalidOperationException (message);
         }
         visitedValues.Add (value);
