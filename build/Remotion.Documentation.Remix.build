@@ -41,7 +41,7 @@
 
     <ItemGroup>
       <NamespaceSummaryFiles Remove="@(NamespaceSummaryFiles)"/>
-      <NamespaceSummaryFiles Include="$(SolutionDirectory)Remotion\Mixins\**\doc\include\*.NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
+      <NamespaceSummaryFiles Include="$(SolutionDirectory)Remotion\Core\**\doc\include\*.NamespaceDoc.xml" Exclude="@(StandardExcludes)"/>
     </ItemGroup>
   </Target>
 
