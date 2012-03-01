@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
@@ -132,6 +133,10 @@ namespace Remotion.ServiceLocation
     /// Gets information about all service implementations.
     /// </summary>
     /// <value>A collection of <see cref="ServiceImplementationInfo"/> instances.</value>
+    /// <remarks>
+    /// When this information is used to configure an implementation of <see cref="IServiceLocator"/>, <see cref="IServiceLocator.GetAllInstances"/>
+    /// must return the implementing instances in exactly the same order as defined by <see cref="ImplementationInfos"/>.
+    /// </remarks>
     public ReadOnlyCollection<ServiceImplementationInfo> ImplementationInfos
     {
       get { return _implementationInfos; }
