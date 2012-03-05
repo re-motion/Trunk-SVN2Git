@@ -20,6 +20,7 @@ using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourceBaseTests
 {
+#pragma warning disable 612,618
   [TestFixture]
   public class BusinessObject
   {
@@ -60,4 +61,5 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       _referencePropertyStub.AssertWasCalled (stub => stub.Delete (_referencedDataSourceStub.BusinessObject, oldValue));
     }
   }
+#pragma warning restore 612,618
 }

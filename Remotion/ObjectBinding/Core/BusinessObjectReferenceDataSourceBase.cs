@@ -32,6 +32,7 @@ namespace Remotion.ObjectBinding
   /// <seealso cref="IBusinessObjectReferenceDataSource"/>
   public abstract class BusinessObjectReferenceDataSourceBase : BusinessObjectDataSource, IBusinessObjectReferenceDataSource
   {
+#pragma warning disable 612,618
     /// <summary>
     ///   The <see cref="IBusinessObject"/> accessed through <see cref="ReferenceProperty"/> and provided as 
     ///   the <see cref="BusinessObject"/>.
@@ -308,5 +309,6 @@ namespace Remotion.ObjectBinding
       if (ReferenceProperty.SupportsDelete)
         ReferenceProperty.Delete (ReferencedDataSource.BusinessObject, BusinessObject);
     }
+#pragma warning restore 612,618
   }
 }

@@ -21,6 +21,7 @@ using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourceBaseTests
 {
+#pragma warning disable 612,618
   [TestFixture]
   public class LoadValue
   {
@@ -447,4 +448,5 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       Assert.That (referenceDataSource.BusinessObject, Is.SameAs (expectedValue));
     }
   }
+#pragma warning restore 612,618
 }

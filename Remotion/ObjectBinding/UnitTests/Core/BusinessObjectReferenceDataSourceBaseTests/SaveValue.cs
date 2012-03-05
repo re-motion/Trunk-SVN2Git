@@ -21,6 +21,7 @@ using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourceBaseTests
 {
+#pragma warning disable 612,618
   [TestFixture]
   public class SaveValue
   {
@@ -640,4 +641,5 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectReferenceDataSourc
       controlMock.VerifyAllExpectations();
     }
   }
+#pragma warning restore 612,618
 }

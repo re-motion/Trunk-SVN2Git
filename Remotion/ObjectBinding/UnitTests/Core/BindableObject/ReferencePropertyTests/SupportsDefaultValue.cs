@@ -25,6 +25,7 @@ using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests
 {
+#pragma warning disable 612,618
   [TestFixture]
   public class SupportsDefaultValue : TestBase
   {
@@ -181,4 +182,5 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
       return GetPropertyParameters (GetPropertyInfo (typeof (ClassWithBusinessObjectProperties), propertyName), _bindableObjectProviderForDeclaringType);
     }
   }
+#pragma warning restore 612,618
 }

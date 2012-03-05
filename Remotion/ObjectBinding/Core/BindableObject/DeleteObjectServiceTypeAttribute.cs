@@ -35,6 +35,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// <seealso cref="IDeleteObjectService"/>
   /// <seealso cref="ReferenceProperty"/>
   /// <seealso cref="ReferenceProperty.Delete"/>
+  [Obsolete ("The delete-object feature is not supported. (Version 1.12.42)")]
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public sealed class DeleteObjectServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute<IDeleteObjectService>
   {

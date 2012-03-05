@@ -19,7 +19,9 @@ using Remotion.ObjectBinding.BindableObject;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
+#pragma warning disable 612,618
   public interface IDefaultValueServiceOnProperty : IDefaultValueService
   {
   }
+#pragma warning restore 612,618
 }

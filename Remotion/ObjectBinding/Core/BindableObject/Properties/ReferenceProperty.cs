@@ -43,8 +43,10 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       _concreteType = parameters.ConcreteType;
       _referenceClass = new DoubleCheckedLockingContainer<IBusinessObjectClass> (GetReferenceClass);
       _searchServiceDefinition = GetServiceDeclaration<ISearchAvailableObjectsService>();
+#pragma warning disable 612,618
       _defaultValueServiceDefinition = GetServiceDeclaration<IDefaultValueService>();
       _deleteObjectServiceDefinition = GetServiceDeclaration<IDeleteObjectService>();
+#pragma warning restore 612,618
     }
 
     /// <summary> Gets the class information for elements of this property. </summary>
@@ -137,7 +139,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///     </item>
     ///   </list>
     ///   If no service was registered on the <see cref="IBusinessObjectProvider"/> for the specified <see cref="Type"/>, the feature is disabled and 
-    ///   <see cref="SupportsDelete"/> will evaluate <see langword="false"/>.
+    ///   <see cref="SupportsSearchAvailableObjects"/> will evaluate <see langword="false"/>.
     /// </para>
     /// </remarks>
     /// <seealso cref="SearchAvailableObjectsServiceTypeAttribute"/>
@@ -176,6 +178,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <seealso cref="IDefaultValueService"/>
     /// <seealso cref="CreateDefaultValue"/>
     /// <seealso cref="IsDefaultValue"/>
+    [Obsolete ("The default value feature is not supported. (Version 1.12.42)")]
     public bool SupportsDefaultValue
     {
       get
@@ -234,13 +237,14 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     ///     </item>
     ///   </list>
     ///   If no service was registered on the <see cref="IBusinessObjectProvider"/> for the specified <see cref="Type"/>, the feature is disabled and 
-    ///   <see cref="SupportsDelete"/> will evaluate <see langword="false"/>.
+    ///   <see cref="get_SupportsDefaultValue"/> will evaluate <see langword="false"/>.
     /// </para>
     /// </remarks>
     /// <seealso cref="DefaultValueServiceTypeAttribute"/>
     /// <seealso cref="IDefaultValueService"/>
     /// <seealso cref="SupportsDefaultValue"/>
     /// <seealso cref="IsDefaultValue"/>
+    [Obsolete ("The default value feature is not supported. (Version 1.12.42)")]
     public IBusinessObject CreateDefaultValue (IBusinessObject referencingObject)
     {
       if (!SupportsDefaultValue)
@@ -287,6 +291,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <seealso cref="IDefaultValueService"/>
     /// <seealso cref="SupportsDefaultValue"/>
     /// <seealso cref="CreateDefaultValue"/>
+    [Obsolete ("The default value feature is not supported. (Version 1.12.42)")]
     public bool IsDefaultValue (IBusinessObject referencingObject, IBusinessObject value, IBusinessObjectProperty[] emptyProperties)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -321,6 +326,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <seealso cref="DeleteObjectServiceTypeAttribute"/>
     /// <seealso cref="IDeleteObjectService"/>
     /// <seealso cref="Delete"/>
+    [Obsolete ("The delete-object feature is not supported. (Version 1.12.42)")]
     public bool SupportsDelete
     {
       get
@@ -388,6 +394,7 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
     /// <seealso cref="DeleteObjectServiceTypeAttribute"/>
     /// <seealso cref="IDeleteObjectService"/>
     /// <seealso cref="SupportsDelete"/>
+    [Obsolete ("The delete-object feature is not supported. (Version 1.12.42)")]
     public void Delete (IBusinessObject referencingObject, IBusinessObject value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
@@ -458,15 +465,19 @@ namespace Remotion.ObjectBinding.BindableObject.Properties
       return GetService<ISearchAvailableObjectsService> (_searchServiceDefinition);
     }
 
+#pragma warning disable 612,618
     private IDefaultValueService GetDefaultValueService ()
     {
       return GetService<IDefaultValueService> (_defaultValueServiceDefinition);
     }
+#pragma warning restore 612,618
 
+#pragma warning disable 612,618
     private IDeleteObjectService GetDeleteObjectService ()
     {
       return GetService<IDeleteObjectService> (_deleteObjectServiceDefinition);
     }
+#pragma warning restore 612,618
 
     private TService GetService<TService> (Tuple<ServiceProvider, Type> serviceDefinition)
         where TService: IBusinessObjectService

@@ -36,16 +36,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
 
     public ClassWithDefaultValueServiceTypeAttribute DefaultValueServiceFromPropertyType { get; set; }
 
+#pragma warning disable 612,618
     [DefaultValueServiceType (typeof (IDefaultValueServiceOnProperty))]
     public ClassWithDefaultValueServiceTypeAttribute DefaultValueServiceFromPropertyDeclaration { get; set; }
+#pragma warning restore 612,618
 
     public ClassFromOtherBusinessObjectImplementation NoDefaultValueService { get; set; }
 
 
     public ClassWithDeleteObjectServiceTypeAttribute DeleteObjectServiceFromPropertyType { get; set; }
 
+#pragma warning disable 612,618
     [DeleteObjectServiceType (typeof (IDeleteObjectServiceOnProperty))]
     public ClassWithDeleteObjectServiceTypeAttribute DeleteObjectServiceFromPropertyDeclaration { get; set; }
+#pragma warning restore 612,618
 
     public ClassFromOtherBusinessObjectImplementation NoDeleteObjectService { get; set; }
   }

@@ -20,6 +20,7 @@ using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferencePropertyTests.TestDomain
 {
+#pragma warning disable 612,618
   [BindableObjectProviderForDefaultValueService]
   [BindableObjectBaseClass]
   [DefaultValueServiceType (typeof (IDefaultValueServiceOnType))]
@@ -29,4 +30,5 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.ReferenceProperty
     {
     }
   }
+#pragma warning restore 612,618
 }

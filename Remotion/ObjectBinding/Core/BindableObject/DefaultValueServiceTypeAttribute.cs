@@ -36,6 +36,7 @@ namespace Remotion.ObjectBinding.BindableObject
   /// <seealso cref="IDefaultValueService"/>
   /// <seealso cref="ReferenceProperty"/>
   /// <seealso cref="ReferenceProperty.CreateDefaultValue"/>
+  [Obsolete ("The default value feature is not supported. (Version 1.12.42)")]
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
   public sealed class DefaultValueServiceTypeAttribute : Attribute, IBusinessObjectServiceTypeAttribute<IDefaultValueService>
   {

@@ -95,6 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BusinessObjectReferen
       Assert.That (_dataSourceControl.Validate (), Is.False);
     }
 
+#pragma warning disable 612,618
     [Test]
     public void SupportsDefaultValue_True_AllBoundControlsEmpty_NotAllBoundControlsValid_ReturnsTrue ()
     {
@@ -115,7 +116,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BusinessObjectReferen
 
       Assert.That (_dataSourceControl.Validate (), Is.True);
     }
+#pragma warning restore 612,618
 
+#pragma warning disable 612,618
     [Test]
     public void IsRequired_True_AllBoundControlsEmpty_NotAllBoundControlsValid_ReturnsFalse ()
     {
@@ -138,5 +141,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BusinessObjectReferen
       _referencePropertyStub.AssertWasNotCalled (stub => stub.SupportsDefaultValue);
       _referencePropertyStub.AssertWasNotCalled (stub => stub.IsDefaultValue (null, null, null), options => options.IgnoreArguments());
     }
+#pragma warning restore 612,618
   }
 }
