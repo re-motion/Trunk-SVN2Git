@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.ServiceLocation
 {
@@ -33,6 +34,7 @@ namespace Remotion.ServiceLocation
     /// <param name="lifetime">The lifetime of the instances of <paramref name="implementationType"/>.</param>
     public ServiceImplementationInfo (Type implementationType, LifetimeKind lifetime)
     {
+      ArgumentUtility.CheckNotNull ("implementationType", implementationType);
       _implementationType = implementationType;
       _lifetime = lifetime;
     }
