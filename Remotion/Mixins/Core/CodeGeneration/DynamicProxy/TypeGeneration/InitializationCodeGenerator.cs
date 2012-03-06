@@ -67,7 +67,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     /// </summary>
     public Statement GetInitializationStatement ()
     {
-      // ((IInitializableMixinTarget) this).Initialize ()
+      // if (__extensions == null)
+      //   ((IInitializableMixinTarget) this).Initialize ()
 
       var initializationMethodCall = new ExpressionStatement (
           new VirtualMethodInvocationExpression (
@@ -115,7 +116,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
     private void ImplementCreatingMixinInstances (IMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField)
     {
-      // __extensions = <mixinArrayInitializerField>.CreateMixinArray (MixedObjectInstantiationScope.Current.SuppliedMixinInstances);
+      // __extensions = __mixinArrayInitializer.CreateMixinArray (MixedObjectInstantiationScope.Current.SuppliedMixinInstances);
 
       var currentMixedObjectInstantiationScope = new PropertyReference (null, typeof (MixedObjectInstantiationScope).GetProperty ("Current"));
       var suppliedMixinInstances = new PropertyReference (
@@ -132,7 +133,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
 
     private void ImplementSettingMixinInstances (IMethodEmitter initializeMethod, FieldReference mixinArrayInitializerField)
     {
-      // <mixinArrayInitializerField>.CheckMixinArray (<arguments[0]>)
+      // __mixinArrayInitializer.CheckMixinArray (<arguments[0]>)
       // __extensions = <arguments[0]>;
 
       initializeMethod.AddStatement (new ExpressionStatement (new VirtualMethodInvocationExpression (
