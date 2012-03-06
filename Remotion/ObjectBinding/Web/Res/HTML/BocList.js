@@ -317,61 +317,65 @@ function BocList_GetSelectionCount (bocListID)
 
 function BocList_HasDimensions(bocList)
 {
-  var hasHeight = false;
-  var hasWidth = false;
-
   var heightFromAttribute = $(bocList).attr('height');
   if (TypeUtility.IsDefined(heightFromAttribute) && heightFromAttribute != '')
-    hasHeight = true;
+    return true;
 
   var heightFromInlineStyle = bocList.style.height;
   if (TypeUtility.IsDefined(heightFromInlineStyle) && heightFromInlineStyle != '')
-    hasHeight = true;
+    return true;
 
   var widthFromAttribute = $(bocList).attr('width');
   if (TypeUtility.IsDefined(widthFromAttribute) && widthFromAttribute != '')
-    hasWidth = true;
+    return true;
 
   var widthFromInlineStyle = bocList.style.width;
   if (TypeUtility.IsDefined(widthFromInlineStyle) && widthFromInlineStyle != '')
-    hasWidth = true;
+    return true;
 
-  if (!hasHeight || !hasWidth)
+  var referenceHeight = 0;
+  var referenceWidth = 0;
+  if ($('body').is('.msie7'))
   {
-    var referenceHeight = 0;
-    var referenceWidth = 0;
-    if ($('body').is('.msie7'))
-    {
-      // height reserved for scroll bar
-      referenceHeight = 25;
-    }
+    // height reserved for scroll bar
+    referenceHeight = 25;
+  }
 
-    var tempList = $("<div/>").attr("class", $(bocList).prop("class")).css("display", "none");
+  var tempList = $("<div/>").attr("class", $(bocList).prop("class")).css("display", "none");
 
-    // Catch styles applied to pseudo-selectors starting at the first element in the DOM collection
-    tempList.insertBefore ($(bocList));
+  // Catch styles applied to pseudo-selectors starting at the first element in the DOM collection
+  tempList.insertBefore($(bocList));
 
+  try
+  {
     if (tempList.height() > referenceHeight)
-      hasHeight = true;
+      return true;
 
     if (tempList.width() > referenceWidth)
-      hasWidth = true;
-
-    tempList.remove();
-
-    // Catch styles applied to pseudo-selectors starting at the last element in the DOM collection
-    tempList.insertAfter($(bocList));
-
-    if (tempList.height() > referenceHeight)
-      hasHeight = true;
-
-    if (tempList.width() > referenceWidth)
-      hasWidth = true;
-
+      return true;
+  } 
+  finally
+  {
     tempList.remove();
   }
 
-  return hasWidth || hasHeight;
+  // Catch styles applied to pseudo-selectors starting at the last element in the DOM collection
+  tempList.insertAfter($(bocList));
+
+  try
+  {
+    if (tempList.height() > referenceHeight)
+      return true;
+
+    if (tempList.width() > referenceWidth)
+      return true;
+  }
+  finally
+  {
+    tempList.remove();
+  }
+
+  return false;
 }
 
 function BocList_FixUpScrolling(bocList)
