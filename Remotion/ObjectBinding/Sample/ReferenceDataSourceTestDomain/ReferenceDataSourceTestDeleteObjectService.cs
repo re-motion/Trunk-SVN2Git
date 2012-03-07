@@ -19,6 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Sample.ReferenceDataSourceTestDomain
 {
+#pragma warning disable 612,618
   public class ReferenceDataSourceTestDeleteObjectService : IDeleteObjectService
   {
     public bool SupportsProperty (IBusinessObjectReferenceProperty property)
@@ -35,4 +36,5 @@ namespace Remotion.ObjectBinding.Sample.ReferenceDataSourceTestDomain
       // NOP
     }
   }
+#pragma warning restore 612,618
 }
