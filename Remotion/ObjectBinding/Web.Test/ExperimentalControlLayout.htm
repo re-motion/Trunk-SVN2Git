@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title></title>
+  <style type="text/css">
+    .dateTimeValue input.dateField
+    {
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      
+      width: 8em;
+      padding-right: 34px;
+    }
+    
+    .dateTimeValue input.timeField
+    {
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+
+      width: 4.5em;
+    }
+    
+    .dateTimeValue a.datePicker
+    {
+      background-image: url('res/Remotion.Web/Themes/NovaBlue/Image/DatePicker.gif');
+      background-position: left center;
+      background-repeat: no-repeat;
+      display: inline-block;
+      margin-left: -36px;
+      margin-right: 0.2em;
+      width:29px;
+      height: 1.2em;
+    }
+    
+    .referenceValue select.dropDownList
+    {
+      width: 12.8em;
+    }
+    
+    .autoCompleteReferenceValue input.textField
+    {
+      box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      
+      width: 12.8em;
+      padding-right: 15px;
+    }
+    
+    .autoCompleteReferenceValue a.dropDownButton
+    {
+      background-image: url('res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/AutoCompleteReferenceValueDropDownArrow.gif');
+      background-position: left center;
+      background-repeat: no-repeat;
+      background-color: Gray;
+      display: inline-block;
+      margin-left: -21px;
+      margin-right: 0.1em;
+      width:15px;
+      height: 1.2em;
+    }
+    
+    a 
+    {
+      text-decoration:none;
+    }
+  </style>
+</head>
+<body>
+  <form action="/" method="post">
+  Date Time Value:<br />
+  <span class="dateTimeValue">
+    <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
+    <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
+    <input name="timeValue" type="text" class="timeField" maxlength="10" value="12:24:59" />
+  </span>
+  M
+  <br />
+  Date Value:<br />
+  <span class="dateTimeValue">
+    <input name="dateValue" type="text" class="dateField" maxlength="10" value="13.02.2011" />
+    <a href="#" class="datePicker" title="Open Date Picker">&nbsp;</a>
+  </span>
+  M
+  <br />
+  Reference Value:<br />
+  <span class="referenceValue">
+    <select name="referenceValue" class="dropDownList" >
+      <option value="1" >Value 1</option>
+      <option value="2" >Value 2</option>
+    </select>
+  </span>
+  M
+  <br />
+  Auto Complete Reference Value:<br />
+  <span class="autoCompleteReferenceValue">
+    <input name="autoCompleteReferenceValue" type="text" class="textField" />
+    <a href="#" class="dropDownButton" title="Show the value list">&nbsp;</a>
+  </span>
+  M
+  <br />
+  </form>
+</body>
+</html>
