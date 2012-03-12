@@ -199,7 +199,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     ArrayList Validators { get; }
     BocListRowMenuTuple[] RowMenus { get; }
     System.Collections.Generic.IDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
-    bool IsEmptyList { get; }
     bool HasListMenu { get; }
     bool IsClientSideSortingEnabled { get; }
     bool HasOptionsMenu { get; }

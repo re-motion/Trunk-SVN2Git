@@ -1297,11 +1297,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HasListMenu; }
     }
 
-    bool IBocList.IsEmptyList
-    {
-      get { return !HasValue; }
-    }
-    
     private void PopulateAvailableViewsList ()
     {
       _availableViewsList.Items.Clear();

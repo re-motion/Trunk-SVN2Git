@@ -61,7 +61,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Initialize (false);
       CommonInitialize();
-      List.Stub (mock => mock.IsEmptyList).Return (true);
       List.Stub (mock => mock.ShowEmptyListMessage).Return (true);
       List.Stub (mock => mock.ShowEmptyListEditMode).Return (true);
 
@@ -77,7 +76,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     {
       Initialize (false);
       CommonInitialize();
-      List.Stub (mock => mock.IsEmptyList).Return (true);
 
       IBocListTableBlockRenderer renderer = new BocListTableBlockQuirksModeRenderer (
           _bocListQuirksModeCssClassDefinition, new StubRowQuirksModeRenderer());

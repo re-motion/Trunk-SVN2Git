@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           (new ReflectionBusinessObjectWebUIService ());
 
       EventArgs = new BocListDataRowRenderEventArgs (10, (IBusinessObject) businessObject.FirstValue, false, true);
-      
+
       InitializeMockList();
     }
 
@@ -80,7 +80,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.DataSource.BusinessObject = BusinessObject;
       List.Stub (list => list.Property).Return (BusinessObject.BusinessObjectClass.GetPropertyDefinition ("ReferenceList"));
 
-      List.Stub (list => list.Value).Return (((TypeWithReference) BusinessObject).ReferenceList);
+      var value = ((TypeWithReference) BusinessObject).ReferenceList;
+      List.Stub (list => list.Value).Return (value);
+      List.Stub (list => list.HasValue).Return (value != null && value.Length > 0);
 
       List.Stub (list => list.SelectorControlCheckedState).Return (new List<int> ());
 

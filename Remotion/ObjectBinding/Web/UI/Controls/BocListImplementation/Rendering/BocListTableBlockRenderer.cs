@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       bool showForEmptyList = isReadOnly && renderingContext.Control.ShowEmptyListReadOnlyMode
                               || !isReadOnly && renderingContext.Control.ShowEmptyListEditMode;
 
-      if (renderingContext.Control.IsEmptyList && !showForEmptyList)
+      if (!renderingContext.Control.HasValue && !showForEmptyList)
         RenderTable (renderingContext, isDesignMode, false);
       else
         RenderTable (renderingContext, true, true);
