@@ -138,7 +138,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       int count = 0;
       if (renderingContext.Control.IsPagingEnabled)
         count = renderingContext.Control.PageSize.Value;
-      else if (!renderingContext.Control.IsEmptyList)
+      else if (renderingContext.Control.HasValue)
         count = renderingContext.Control.Value.Count;
 
       if (renderingContext.Control.HasClientScript)

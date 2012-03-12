@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClasses.TableBody);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tbody);
 
-      if (renderingContext.Control.IsEmptyList && renderingContext.Control.ShowEmptyListMessage)
+      if (!renderingContext.Control.HasValue && renderingContext.Control.ShowEmptyListMessage)
         RowRenderer.RenderEmptyListDataRow (renderingContext);
       else
       {
