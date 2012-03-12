@@ -26,12 +26,12 @@ using Remotion.Utilities;
 namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
 {
   /// <summary>
-  /// <see cref="UserRolesListEditableRowControlFactory"/> overrides <see cref="EditableRowAutoCompleteControlFactory"/> 
-  /// and provides special logic for editing the <b>Roles</b> <see cref="BocList"/> on the <see cref="EditUserControl"/>.
+  /// <see cref="UserSubstitedByListEditableRowControlFactory"/> overrides <see cref="EditableRowAutoCompleteControlFactory"/> 
+  /// and provides special logic for editing the <b>SubstitutedBy</b> <see cref="BocList"/> on the <see cref="EditUserControl"/>.
   /// </summary>
   /// <remarks>
-  /// The <see cref="UserRolesListEditableRowControlFactory"/> instance is retrieved form the <see cref="IServiceLocator"/> using the type
-  /// <see cref="UserRolesListEditableRowControlFactory"/> as key.
+  /// The <see cref="UserSubstitedByListEditableRowControlFactory"/> instance is retrieved form the <see cref="IServiceLocator"/> using the type
+  /// <see cref="UserSubstitedByListEditableRowControlFactory"/> as key.
   /// </remarks>
   [ConcreteImplementation (typeof (UserSubstitedByListEditableRowControlFactory), Lifetime = LifetimeKind.Singleton)]
   public class UserSubstitedByListEditableRowControlFactory : EditableRowAutoCompleteControlFactory
