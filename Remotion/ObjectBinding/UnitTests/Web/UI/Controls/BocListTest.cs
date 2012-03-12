@@ -102,8 +102,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void HasValue_ValueIsSet_ReturnsTrue ()
     {
-      _bocList.Value = new IBusinessObjectWithIdentity[0];
+      _bocList.Value = new IBusinessObjectWithIdentity[1];
       Assert.IsTrue (_bocList.HasValue);
+    }
+
+    [Test]
+    public void HasValue_ValueIsEmpty_ReturnsFalse ()
+    {
+      _bocList.Value = new IBusinessObjectWithIdentity[0];
+      Assert.IsFalse(_bocList.HasValue);
     }
 
     [Test]

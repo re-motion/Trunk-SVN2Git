@@ -564,7 +564,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         throw new ArgumentOutOfRangeException (
             "Column index of argument 'eventargument' was out of the range of valid values."
-            + "Index must be less than the number of displayed columns.'");
+            + "Index must be less than the number of displayed columns.'",
+            (Exception) null);
       }
 
       BocCommandEnabledColumnDefinition column = (BocCommandEnabledColumnDefinition) columns[columnIndex];
@@ -661,7 +662,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (columnIndex >= columns.Length)
       {
         throw new ArgumentOutOfRangeException (
-            "Column index of argument 'eventargument' was out of the range of valid values. Index must be less than the number of displayed columns.'");
+            "Column index of argument 'eventargument' was out of the range of valid values. Index must be less than the number of displayed columns.'",
+            (Exception) null);
+      }
+      
+      if (Value == null)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "The BocList '{0}' does not have a Value when attempting to handle the custom cell event.", ID));
       }
 
       BocCustomColumnDefinition column = (BocCustomColumnDefinition) columns[columnIndex];
@@ -720,7 +729,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (listIndex >= Value.Count)
           {
             throw new ArgumentOutOfRangeException (
-                "list-index of argument 'eventargument' was out of the range of valid values. Index must be less than the number of business objects in the list.'");
+                "list-index of argument 'eventargument' was out of the range of valid values. Index must be less than the number of business objects in the list.'",
+                (Exception) null);
           }
           SwitchRowIntoEditMode (listIndex);
           break;
@@ -1180,7 +1190,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         bool isReadOnly = IsReadOnly;
         bool showForEmptyList = isReadOnly && _showEmptyListReadOnlyMode
                                 || !isReadOnly && _showEmptyListEditMode;
-        if (!IsDesignMode && IsEmptyList && !showForEmptyList)
+        if (!IsDesignMode && !HasValue && !showForEmptyList)
           hasNavigator = false;
         return hasNavigator;
       }
@@ -1213,7 +1223,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         bool showForEmptyList = isReadOnly && _showEmptyListReadOnlyMode
                                 || ! isReadOnly && _showEmptyListEditMode;
         return showAvailableViewsList
-               && (! IsEmptyList || showForEmptyList);
+               && (HasValue || showForEmptyList);
       }
     }
 
@@ -1252,7 +1262,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         bool showForEmptyList = isReadOnly && ShowMenuForEmptyListReadOnlyMode
                                 || ! isReadOnly && ShowMenuForEmptyListEditMode;
         return showOptionsMenu
-               && (! IsEmptyList || showForEmptyList);
+               && (HasValue || showForEmptyList);
       }
     }
 
@@ -1278,7 +1288,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         bool showForEmptyList = isReadOnly && ShowMenuForEmptyListReadOnlyMode
                                 || ! isReadOnly && ShowMenuForEmptyListEditMode;
         return showListMenu
-               && (! IsEmptyList || showForEmptyList);
+               && (HasValue || showForEmptyList);
       }
     }
 
@@ -1287,14 +1297,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HasListMenu; }
     }
 
-    protected bool IsEmptyList
-    {
-      get { return Value == null || Value.Count == 0; }
-    }
-
     bool IBocList.IsEmptyList
     {
-      get { return IsEmptyList; }
+      get { return !HasValue; }
     }
     
     private void PopulateAvailableViewsList ()
@@ -1631,7 +1636,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
       if (IsDesignMode)
         return;
-      if (IsEmptyList)
+      if (!HasValue)
         return;
 
       EnsureChildControls();
@@ -1831,7 +1836,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (IsDesignMode)
         return;
-      if (IsEmptyList)
+      if (!HasValue)
         return;
 
       int firstRow = 0;
@@ -1887,7 +1892,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (IsDesignMode)
         return;
-      if (IsEmptyList)
+      if (!HasValue)
         return;
 
       EnsureChildControls();
@@ -2375,7 +2380,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <returns> Pair &lt;original index, IBusinessObject&gt; </returns>
     protected BocListRow[] GetIndexedRows (bool sorted)
     {
-      int rowCount = IsEmptyList ? 0 : Value.Count;
+      int rowCount = HasValue ? Value.Count : 0;
       ArrayList rows = new ArrayList (rowCount);
       for (int idxRows = 0; idxRows < rowCount; idxRows++)
         rows.Add (new BocListRow (this, idxRows, (IBusinessObject) Value[idxRows]));
@@ -2395,17 +2400,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     BocListRow[] IBocList.GetRowsToDisplay (out int firstRow)
     {
       firstRow = 0;
-      int totalRowCount = (Value != null) ? Value.Count : 0;
+      int totalRowCount = HasValue ? Value.Count : 0;
       int displayedRowCount = totalRowCount;
 
-      if (IsPagingEnabled && !IsEmptyList)
+      if (IsPagingEnabled && HasValue)
       {
         firstRow = CurrentPage * PageSize.Value;
         displayedRowCount = PageSize.Value;
      
 
         //  Check row count on last page
-        if (Value != null && Value.Count < (firstRow + displayedRowCount))
+        if (Value.Count < (firstRow + displayedRowCount))
           displayedRowCount = Value.Count - firstRow;
       }
       var allRows = EnsureGotIndexedRowsSorted();
@@ -2634,7 +2639,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected void SetValue (IList value)
     {
       _value = value;
-      _selectorControlCheckedState.Clear();
+      ClearSelectedRows();
       ResetRows();
     }
 
@@ -2649,7 +2654,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary>Gets a flag indicating whether the <see cref="BocList"/> contains a value. </summary>
     public override bool HasValue
     {
-      get { return _value != null; }
+      get { return _value != null && _value.Count > 0; }
     }
 
     /// <summary>
@@ -2902,9 +2907,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckItemsNotNullAndType ("selectedObjects", selectedObjects, typeof (IBusinessObject));
 
       if (Value == null)
-        return;
-
-      if (Value == null)
         throw new InvalidOperationException (string.Format ("The BocList '{0}' does not have a Value.", ID));
 
       SetSelectedRows (Utilities.ListUtility.IndicesOf (Value, selectedObjects, false));
@@ -2916,8 +2918,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <exception cref="InvalidOperationException"> Thrown if the number of rows do not match the <see cref="Selection"/> mode.</exception>
     public void SetSelectedRows (int[] selectedRows)
     {
-      ClearSelectedRows();
-
       if ((_selection == RowSelection.Undefined || _selection == RowSelection.Disabled)
           && selectedRows.Length > 0)
         throw new InvalidOperationException ("Cannot select rows if the BocList is set to RowSelection.Disabled.");
@@ -2948,8 +2948,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNullOrItemsNull ("businessObjects", businessObjects);
 
       Value = ListUtility.AddRange (Value, businessObjects, Property, false, true);
-
-      ClearSelectedRows();
     }
 
     /// <summary> Adds the <paramref name="businessObject"/> to the <see cref="Value"/> collection. </summary>
@@ -2964,8 +2962,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
       Value = ListUtility.AddRange (Value, businessObject, Property, false, true);
-
-      ClearSelectedRows();
 
       if (Value == null)
         return -1;
@@ -2984,10 +2980,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("businessObjects", businessObjects);
 
-      if (Value != null)
-        Value = ListUtility.Remove (Value, businessObjects, Property, false);
-
-      ClearSelectedRows ();
+      Value = ListUtility.Remove (Value, businessObjects, Property, false);
     }
 
     /// <summary> Removes the <paramref name="businessObject"/> from the <see cref="Value"/> collection. </summary>
@@ -3016,10 +3009,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
-      if (Value != null)
-        Value = ListUtility.Remove (Value, businessObject, Property, false);
-
-      ClearSelectedRows ();
+      Value = ListUtility.Remove (Value, businessObject, Property, false);
     }
 
     /// <summary>
