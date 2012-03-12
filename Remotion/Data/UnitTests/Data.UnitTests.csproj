@@ -300,6 +300,7 @@
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\TargetClassWithSameInterfaceAsPersistentMixin.cs" />
     <Compile Include="DomainObjects\Core\Persistence\ObjectsNotFoundExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\EagerFetcherTest.cs" />
+    <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectGetObjectServiceTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ParameterEnlistingTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\ResetTest.cs" />
     <Compile Include="DomainObjects\Web\WxeTransactedFunctionIntegrationTests\SerializationTest.cs" />

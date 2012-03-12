@@ -30,7 +30,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
       var objectID = ObjectID.Parse (uniqueIdentifier);
-      return (IBusinessObjectWithIdentity) ClientTransaction.Current.TryGetObjects<DomainObject> (objectID).SingleOrDefault();
+      return ClientTransaction.Current.TryGetObjects<DomainObject> (objectID)
+          .Where (o => o!= null && o.State != StateType.Deleted && o.State != StateType.Invalid)
+          .Cast<IBusinessObjectWithIdentity>()
+          .SingleOrDefault();
     }
   }
 }

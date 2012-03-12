@@ -67,5 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.TestDomain
     [StorageClassTransaction]
     [DBBidirectionalRelation ("OppositeSampleObjects")]
     public abstract OppositeBidirectionalBindableDomainObject RelatedObjectProperty2 { get; set; }
+
+    public new void Delete()
+    {
+      base.Delete();
+    }
   }
 }
