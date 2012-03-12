@@ -61,10 +61,12 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       _parentField = GetControl<BocAutoCompleteReferenceValue> ("ParentField", "Parent");
       _groupTypeField = GetControl<BocAutoCompleteReferenceValue> ("GroupTypeField", "GroupType");
+      _groupTypeField.SelectionChanged += GroupTypeField_SelectionChanged;
+      _groupTypeField.TextBoxStyle.AutoPostBack = true;
 
       var bocListInlineEditingConfigurator = ServiceLocator.GetInstance<BocListInlineEditingConfigurator>();
 
-      RolesList.EditModeControlFactory = ServiceLocator.GetInstance<EditableRowAutoCompleteControlFactory>();
+      RolesList.EditModeControlFactory = ServiceLocator.GetInstance<GroupRolesListEditableRowControlFactory>();
       bocListInlineEditingConfigurator.Configure (RolesList, Role.NewObject);
 
       if (string.IsNullOrEmpty (_parentField.SearchServicePath))
@@ -105,6 +107,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     protected void ParentValidator_ServerValidate (object source, ServerValidateEventArgs args)
     {
       args.IsValid = IsParentHierarchyValid ((Group) _parentField.Value);
+    }
+
+    private void GroupTypeField_SelectionChanged (object sender, EventArgs e)
+    {
+      var referenceValue = ((BocAutoCompleteReferenceValue) sender);
+      referenceValue.SaveValue (false);
+      referenceValue.IsDirty = true;
     }
 
     private bool IsParentHierarchyValid (Group group)

@@ -173,6 +173,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Classes\AccessControl\PermissionBooleanValue.cs" />
+    <Compile Include="Classes\OrganizationalStructure\GroupRolesListEditableRowControlFactory.cs" />
     <Compile Include="Classes\OrganizationalStructure\EditableRowAutoCompleteControlFactory.cs" />
     <Compile Include="Classes\OrganizationalStructure\InlineEditingDeleteItemMenuItemCommand.cs" />
     <Compile Include="Classes\OrganizationalStructure\InlineEditingNewItemMenuItemCommand.cs" />
