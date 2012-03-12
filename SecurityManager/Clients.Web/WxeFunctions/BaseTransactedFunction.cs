@@ -38,7 +38,13 @@ namespace Remotion.SecurityManager.Clients.Web.WxeFunctions
 
     public ObjectID TenantID
     {
-      get { return (!SecurityManagerPrincipal.Current.IsNull) ? SecurityManagerPrincipal.Current.Tenant.ID : null; }
+      get
+      {
+        var securityManagerPrincipal = SecurityManagerPrincipal.Current;
+        if (securityManagerPrincipal.IsNull)
+          throw new InvalidOperationException ("The Seucrity Manager principal is not set. Possible reason: session timeout");
+        return securityManagerPrincipal.Tenant.ID;
+      }
     }
 
     public bool HasUserCancelled

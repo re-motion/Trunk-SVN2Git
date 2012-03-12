@@ -98,9 +98,6 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
     {
       base.OnPreRender (e);
 
-      if (CurrentFunction.TenantID == null)
-        throw new InvalidOperationException ("No current tenant has been set. Possible reason: session timeout");
-
       _parentField.Args = CurrentFunction.TenantID.ToString();
     }
 
