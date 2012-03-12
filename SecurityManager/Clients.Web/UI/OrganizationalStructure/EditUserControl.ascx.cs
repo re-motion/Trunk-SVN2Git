@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.OrganizationalStructure
 
       var bocListInlineEditingConfigurator = ServiceLocator.GetInstance<BocListInlineEditingConfigurator>();
 
-      SubstitutedByList.EditModeControlFactory = ServiceLocator.GetInstance<EditableRowAutoCompleteControlFactory>();
+      SubstitutedByList.EditModeControlFactory = ServiceLocator.GetInstance<UserSubstitedByListEditableRowControlFactory>();
       bocListInlineEditingConfigurator.Configure (SubstitutedByList, Substitution.NewObject);
 
       RolesList.EditModeControlFactory = ServiceLocator.GetInstance<UserRolesListEditableRowControlFactory>();

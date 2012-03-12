@@ -178,6 +178,7 @@
     <Compile Include="Classes\OrganizationalStructure\InlineEditingNewItemMenuItemCommand.cs" />
     <Compile Include="Classes\OrganizationalStructure\IOrganizationalStructureEditControlFormGridRowProvider.cs" />
     <Compile Include="Classes\OrganizationalStructure\UserRolesListEditableRowControlFactory.cs" />
+    <Compile Include="Classes\OrganizationalStructure\UserSubstitedByListEditableRowControlFactory.cs" />
     <Compile Include="Classes\SecurableClassDefinitionTreeView.cs" />
     <Compile Include="Classes\BaseControl.cs">
       <SubType>ASPXCodeBehind</SubType>
