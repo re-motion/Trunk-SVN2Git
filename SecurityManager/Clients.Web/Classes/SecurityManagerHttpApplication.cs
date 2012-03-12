@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Security.Principal;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Data.DomainObjects;
@@ -81,23 +82,26 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
     {
       if (HasSessionState)
       {
-        var principal = LoadPrincipalFromSession();
-        if (principal.IsNull && Context.User.Identity.IsAuthenticated)
-          principal = GetSecurityManagerPrincipalByUserName (Context.User.Identity.Name);
+        ISecurityManagerPrincipal principal;
+        if (Session.IsNewSession)
+          principal = GetSecurityManagerPrincipalByUserName (Context.User);
         else
-          principal.Refresh();
+          principal = LoadPrincipalFromSession();
 
         SetCurrentPrincipal (principal);
       }
     }
 
-    private ISecurityManagerPrincipal GetSecurityManagerPrincipalByUserName (string userName)
+    private ISecurityManagerPrincipal GetSecurityManagerPrincipalByUserName (IPrincipal principal)
     {
+      if (!principal.Identity.IsAuthenticated)
+        return SecurityManagerPrincipal.Null;
+
       using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
         using (new SecurityFreeSection())
         {
-          var user = SecurityManagerUser.FindByUserName (userName);
+          var user = SecurityManagerUser.FindByUserName (principal.Identity.Name);
           if (user == null)
             return SecurityManagerPrincipal.Null;
           else
