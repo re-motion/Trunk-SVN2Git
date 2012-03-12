@@ -101,8 +101,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! isDateOrTimeRequired && ! isDateRequired && ! isTimeRequired)
         return true;
 
-      bool hasDate = ! string.IsNullOrEmpty (control.DateString);
-      bool hasTime = ! string.IsNullOrEmpty (control.TimeString);
+      bool hasDate = !IsNullOrEmptyOrWhiteSpace (control.DateString);
+      bool hasTime = !IsNullOrEmptyOrWhiteSpace (control.TimeString);
 
       bool isDateAndTimeMissing = isDateOrTimeRequired && ! (hasDate || hasTime);
       bool isDateMissing = isDateRequired && ! hasDate;
@@ -122,8 +122,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! isDateRequired)
         return true;
 
-      bool hasDate = !string.IsNullOrEmpty (control.DateString);
-      bool hasTime = ! string.IsNullOrEmpty (control.TimeString);
+      bool hasDate = !IsNullOrEmptyOrWhiteSpace (control.DateString);
+      bool hasTime = !IsNullOrEmptyOrWhiteSpace (control.TimeString);
 
       bool isDateMissing = isDateRequired && ! hasDate;
 
@@ -149,13 +149,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string dateValue = control.DateString;
 
-      //  Test for empty
-      if (dateValue == null)
-        return true;
-
-      //  Test for empty
-      dateValue = dateValue.Trim();
-      if (dateValue.Length == 0)
+      if (IsNullOrEmptyOrWhiteSpace (dateValue))
         return true;
 
       try
@@ -221,13 +215,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       string timeValue = control.TimeString;
 
-      //  Test for empty
-      if (timeValue == null)
-        return true;
-
-      //  Test for empty
-      timeValue = timeValue.Trim();
-      if (timeValue.Length == 0)
+      if (IsNullOrEmptyOrWhiteSpace(timeValue))
         return true;
 
       try
@@ -414,6 +402,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         _error = value;
         RefreshBaseErrorMessage();
       }
+    }
+
+    private bool IsNullOrEmptyOrWhiteSpace (string value)
+    {
+      return value == null || value.Trim().Length == 0;
     }
   }
 
