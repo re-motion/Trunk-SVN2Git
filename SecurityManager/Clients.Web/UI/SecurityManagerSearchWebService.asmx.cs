@@ -53,7 +53,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
               .GetUrl();
     }
 
-    [WebMethod]
+    [WebMethod (EnableSession = true)]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy[] Search (
         string prefixText,
@@ -79,7 +79,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
       }
     }
 
-    [WebMethod]
+    [WebMethod (EnableSession = true)]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy SearchExact (
         string prefixText,
