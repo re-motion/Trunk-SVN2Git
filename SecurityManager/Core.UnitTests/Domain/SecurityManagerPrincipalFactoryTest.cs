@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
@@ -30,16 +31,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     [Test]
     public void CreateWithLocking ()
     {
-      var factory = new SecurityManagerPrincipalFactory();
+      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
+      {
+        var dbFixtures = new DatabaseFixtures();
+        var tenant = dbFixtures.CreateAndCommitOrganizationalStructureWithTwoTenants (ClientTransaction.Current);
+        var user = User.FindByTenantID (tenant.ID).First();
 
-      var principal = factory.CreateWithLocking (
-          new ObjectID (typeof (Tenant), Guid.NewGuid()),
-          new ObjectID (typeof (User), Guid.NewGuid()),
-          null);
+        var factory = new SecurityManagerPrincipalFactory();
 
-      Assert.That (principal, Is.TypeOf<LockingSecurityManagerPrincipalDecorator> ());
-      var innerPrincipal = PrivateInvoke.GetNonPublicField (principal, "_innerPrincipal");
-      Assert.That (innerPrincipal, Is.TypeOf<SecurityManagerPrincipal>());
+        var principal = factory.CreateWithLocking (tenant.ID, user.ID, null);
+
+        Assert.That (principal, Is.TypeOf<LockingSecurityManagerPrincipalDecorator>());
+        var innerPrincipal = PrivateInvoke.GetNonPublicField (principal, "_innerPrincipal");
+        Assert.That (innerPrincipal, Is.TypeOf<SecurityManagerPrincipal>());
+      }
     }
   }
 }

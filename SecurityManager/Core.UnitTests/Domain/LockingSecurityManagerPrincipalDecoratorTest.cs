@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Development.UnitTesting;
 using Remotion.Security;
 using Remotion.SecurityManager.Domain;
@@ -30,6 +29,50 @@ namespace Remotion.SecurityManager.UnitTests.Domain
   [TestFixture]
   public class LockingSecurityManagerPrincipalDecoratorTest : DomainTest
   {
+    [Serializable]
+    private class SerializeableSecurityManagerPrincipalStub : ISecurityManagerPrincipal
+    {
+      public bool IsNull
+      {
+        get { return false; }
+      }
+
+      public TenantProxy Tenant
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public UserProxy User
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public SubstitutionProxy Substitution
+      {
+        get { throw new NotImplementedException(); }
+      }
+
+      public void Refresh ()
+      {
+        throw new NotImplementedException();
+      }
+
+      public ISecurityPrincipal GetSecurityPrincipal ()
+      {
+        throw new NotImplementedException();
+      }
+
+      public TenantProxy[] GetTenants (bool includeAbstractTenants)
+      {
+        throw new NotImplementedException();
+      }
+
+      public SubstitutionProxy[] GetActiveSubstitutions ()
+      {
+        throw new NotImplementedException();
+      }
+    }
+
     private ISecurityManagerPrincipal _innerPrincipalMock;
     private LockingSecurityManagerPrincipalDecorator _decorator;
     private LockingSecurityManagerPrincipalDecoratorTestHelper _lockingTestHelper;
@@ -92,12 +135,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     [Test]
     public void Serialization ()
     {
-      ISecurityManagerPrincipal decorator =
-          new LockingSecurityManagerPrincipalDecorator (
-              new SecurityManagerPrincipal (
-                  new ObjectID (typeof (Tenant), Guid.NewGuid()),
-                  new ObjectID (typeof (User), Guid.NewGuid()),
-                  null));
+      ISecurityManagerPrincipal decorator = new LockingSecurityManagerPrincipalDecorator (SecurityManagerPrincipal.Null);
 
       var deserialized = Serializer.SerializeAndDeserialize (decorator);
 

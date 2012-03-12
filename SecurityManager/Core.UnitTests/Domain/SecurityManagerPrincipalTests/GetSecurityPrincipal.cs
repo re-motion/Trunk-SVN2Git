@@ -77,13 +77,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     }
 
     [Test]
-    public void DoesNotCacheDuringSerialization ()
+    public void SerializesCache ()
     {
       var deserialized = Serializer.SerializeAndDeserialize (Tuple.Create (_principal, _principal.GetSecurityPrincipal()));
       SecurityManagerPrincipal deserialziedSecurityManagerPrincipal = deserialized.Item1;
       ISecurityPrincipal deserialziedSecurityPrincipal = deserialized.Item2;
 
-      Assert.That (deserialziedSecurityManagerPrincipal.GetSecurityPrincipal(), Is.Not.SameAs (deserialziedSecurityPrincipal));
+      Assert.That (deserialziedSecurityManagerPrincipal.GetSecurityPrincipal(), Is.SameAs (deserialziedSecurityPrincipal));
     }
 
     [Test]

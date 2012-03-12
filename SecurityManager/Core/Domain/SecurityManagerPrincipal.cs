@@ -61,23 +61,14 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private ClientTransaction _transaction;
     private int _revision;
     private readonly ObjectID _tenantID;
     private readonly ObjectID _userID;
     private readonly ObjectID _substitutionID;
-
-    [NonSerialized]
-    private ISecurityPrincipal _securityPrincipal;
-
-    [NonSerialized]
     private TenantProxy _tenantProxy;
-
-    [NonSerialized]
     private UserProxy _userProxy;
-
-    [NonSerialized]
     private SubstitutionProxy _substitutionProxy;
+    private ISecurityPrincipal _securityPrincipal;
 
     public SecurityManagerPrincipal (ObjectID tenantID, ObjectID userID, ObjectID substitutionID)
     {
@@ -92,49 +83,28 @@ namespace Remotion.SecurityManager.Domain
       _userID = userID;
       _substitutionID = substitutionID;
 
-      InitializeClientTransaction();
+      InitializeCache();
     }
 
     public TenantProxy Tenant
     {
-      get
-      {
-        if (_tenantProxy == null)
-          _tenantProxy = CreateTenantProxy (GetTenant (_transaction));
-        return _tenantProxy;
-      }
+      get { return _tenantProxy; }
     }
 
     public UserProxy User
     {
-      get
-      {
-        if (_userProxy == null)
-          _userProxy = CreateUserProxy (GetUser (_transaction));
-        return _userProxy;
-      }
+      get { return _userProxy; }
     }
 
     public SubstitutionProxy Substitution
     {
-      get
-      {
-        if (_substitutionProxy == null)
-        {
-          Substitution substitution = GetSubstitution (_transaction);
-          _substitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
-        }
-        return _substitutionProxy;
-      }
+      get { return _substitutionProxy; }
     }
 
     public void Refresh ()
     {
       if (GetRevision() > _revision)
-      {
-        ResetCache();
-        InitializeClientTransaction();
-      }
+        InitializeCache();
     }
 
     public TenantProxy[] GetTenants (bool includeAbstractTenants)
@@ -142,7 +112,7 @@ namespace Remotion.SecurityManager.Domain
       Tenant tenant;
       using (new SecurityFreeSection())
       {
-        tenant = GetUser (_transaction).Tenant;
+        tenant = GetUser (CreateClientTransaction()).Tenant;
       }
 
       return tenant.GetHierachy()
@@ -153,29 +123,27 @@ namespace Remotion.SecurityManager.Domain
 
     public SubstitutionProxy[] GetActiveSubstitutions ()
     {
-      return GetUser (_transaction).GetActiveSubstitutions()
+      return GetUser (CreateClientTransaction()).GetActiveSubstitutions()
           .Select (CreateSubstitutionProxy)
           .ToArray();
     }
 
     public ISecurityPrincipal GetSecurityPrincipal ()
     {
-      if (_securityPrincipal == null)
-        _securityPrincipal = CreateSecurityPrincipal();
       return _securityPrincipal;
     }
 
-    private SecurityPrincipal CreateSecurityPrincipal ()
+    private SecurityPrincipal CreateSecurityPrincipal (ClientTransaction transaction)
     {
       using (new SecurityFreeSection())
       {
-        string user = GetUser (_transaction).UserName;
+        string user = GetUser (transaction).UserName;
         ISecurityPrincipalRole role = null;
 
         string substitutedUser = null;
         ISecurityPrincipalRole substitutedRole = null;
 
-        Substitution substitution = GetSubstitution (_transaction);
+        Substitution substitution = GetSubstitution (transaction);
         if (substitution != null)
         {
           substitutedUser = substitution.SubstitutedUser.UserName;
@@ -215,12 +183,22 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private void ResetCache ()
+    private void InitializeCache ()
     {
-      _tenantProxy = null;
-      _userProxy = null;
-      _substitutionProxy = null;
-      _securityPrincipal = null;
+      _revision = GetRevision();
+
+      var transaction = CreateClientTransaction();
+
+      var newTenantProxy = CreateTenantProxy (GetTenant (transaction));
+      var newUserProxy = CreateUserProxy (GetUser (transaction));
+      var substitution = GetSubstitution (transaction);
+      var newSubstitutionProxy = substitution != null ? CreateSubstitutionProxy (substitution) : null;
+      var newSecurityPrincipal = CreateSecurityPrincipal (transaction);
+
+      _tenantProxy = newTenantProxy;
+      _userProxy = newUserProxy;
+      _substitutionProxy = newSubstitutionProxy;
+      _securityPrincipal = newSecurityPrincipal;
     }
 
     private Tenant GetTenant (ClientTransaction transaction)
@@ -250,13 +228,14 @@ namespace Remotion.SecurityManager.Domain
       }
     }
 
-    private void InitializeClientTransaction ()
+    private ClientTransaction CreateClientTransaction ()
     {
-      _transaction = ClientTransaction.CreateBindingTransaction ();
-      _revision = GetRevision ();
+      var transaction = ClientTransaction.CreateBindingTransaction ();
 
       if (!SecurityConfiguration.Current.SecurityProvider.IsNull)
-        _transaction.Extensions.Add (new SecurityClientTransactionExtension ());
+        transaction.Extensions.Add (new SecurityClientTransactionExtension ());
+
+      return transaction;
     }
 
     private int GetRevision ()
