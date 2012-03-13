@@ -17,6 +17,9 @@
 // 
 using System;
 using System.Web.UI;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.SecurityManager.Clients.Web.Classes;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI.AccessControl;
@@ -88,6 +91,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       }
       else
       {
+        var classDefinition = SecurableClassDefinition.GetObject (((EditPermissionsFormFunction) ReturningFunction).CurrentObjectID);
+        UnloadService.UnloadVirtualEndPoint (
+            ClientTransaction.Current,
+            RelationEndPointID.Resolve (classDefinition, c => c.StatelessAccessControlList));
+        UnloadService.UnloadVirtualEndPoint (
+            ClientTransaction.Current,
+            RelationEndPointID.Resolve (classDefinition, c => c.StatefulAccessControlLists));
+
         LoadTree (false, true);
       }
     }
