@@ -17,6 +17,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using Remotion.Data.DomainObjects;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -83,18 +84,26 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
     private TenantProxy[] GetPossibleTenants ()
     {
-      return SecurityManagerPrincipal.Current.GetTenants (EnableAbstractTenants);
+      return SecurityManagerPrincipal.Current.GetTenants (EnableAbstractTenants).OrderBy (t => t.DisplayName).ToArray();
     }
 
     private SubstitutionProxy[] GetPossibleSubstitutions ()
     {
-      return SecurityManagerPrincipal.Current.GetActiveSubstitutions();
+      return SecurityManagerPrincipal.Current.GetActiveSubstitutions().OrderBy (s => s.DisplayName).ToArray();
     }
 
     protected void CurrentTenantField_SelectionChanged (object sender, EventArgs e)
     {
       string tenantID = CurrentTenantField.BusinessObjectUniqueIdentifier;
       Assertion.IsNotNull (tenantID);
+      var possibleTenants = GetPossibleTenants();
+      CurrentTenantField.SetBusinessObjectList (possibleTenants);
+      if (!possibleTenants.Where (s=>s.UniqueIdentifier == tenantID).Any())
+      {
+        CurrentTenantField.Value = null;
+        _isCurrentTenantFieldReadOnly = false;
+        return;
+      }
 
       var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
       var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
@@ -110,6 +119,14 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     protected void CurrentSubstitutionField_SelectionChanged (object sender, EventArgs e)
     {
       string substitutionID = CurrentSubstitutionField.BusinessObjectUniqueIdentifier;
+      var possibleSubstitutions = GetPossibleSubstitutions();
+      CurrentSubstitutionField.SetBusinessObjectList (possibleSubstitutions);
+      if (substitutionID != null && !possibleSubstitutions.Where (s=>s.UniqueIdentifier == substitutionID).Any())
+      {
+        CurrentSubstitutionField.Value = null;
+        _isCurrentSubstitutionFieldReadOnly = false;
+        return;
+      }
 
       var oldSecurityManagerPrincipal = SecurityManagerPrincipal.Current;
       var newSecurityManagerPrincipal = ApplicationInstance.SecurityManagerPrincipalFactory.CreateWithLocking (
