@@ -177,6 +177,20 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       PermissionsInternal.Add (permission);
     }
 
+    public void RemoveAccessType (AccessTypeDefinition accessType)
+    {
+      ArgumentUtility.CheckNotNull ("accessType", accessType);
+
+      var permission = FindPermission (accessType);
+      if (permission == null)
+      {
+        throw new ArgumentException (
+            string.Format ("The access type '{0}' is not associated with the access control entry.", accessType.Name), "accessType");
+      }
+
+      permission.Delete();
+    }
+
     public void AllowAccess (AccessTypeDefinition accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);

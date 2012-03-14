@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
-    public void FailsForExistingAccessType ()
+    public void FailsForNonExistentAccessType ()
     {
       var securableClassDefinition = SecurableClassDefinition.NewObject();
       securableClassDefinition.Name = "Class";

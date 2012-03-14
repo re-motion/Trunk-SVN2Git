@@ -127,29 +127,58 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       var ace = AccessControlEntry.NewObject();
       securableClassDefinition.StatelessAccessControlList.AccessControlEntries.Add (ace);
 
-      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
-      {
-        ace.EnsureDataAvailable ();
-        Assert.AreEqual (StateType.Unchanged, ace.State);
+      ace.AddAccessType (accessType);
 
-        ace.AddAccessType (accessType);
-
-        Assert.AreEqual (1, ace.GetPermissions().Count);
-        Assert.AreSame (accessType, ace.GetPermissions()[0].AccessType);
-        Assert.AreEqual (StateType.Changed, ace.State);
-      }
+      Assert.AreEqual (1, ace.GetPermissions().Count);
+      Assert.AreSame (accessType, ace.GetPermissions()[0].AccessType);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The access type 'Test' has already been added to this access control entry.\r\nParameter name: accessType")]
     public void AddAccessType_ExistingAccessType ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
       AccessTypeDefinition accessType = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Test", 42);
 
       ace.AddAccessType (accessType);
-      ace.AddAccessType (accessType);
+      Assert.That (
+          () => ace.AddAccessType (accessType),
+          Throws.ArgumentException.And.Message.StartsWith ("The access type 'Test' has already been added to this access control entry."));
+    }
+
+    [Test]
+    public void RemoveAccessType()
+    {
+      var accessType0 = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 0", 0);
+      var accessType1 = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 1", 1);
+      var accessType2 = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 2", 2);
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.CreateStatelessAccessControlList();
+      securableClassDefinition.AddAccessType (accessType0);
+      securableClassDefinition.AddAccessType (accessType2);
+      var ace = AccessControlEntry.NewObject();
+      securableClassDefinition.StatelessAccessControlList.AccessControlEntries.Add (ace);
+
+      ace.AddAccessType (accessType0);
+      ace.AddAccessType (accessType1);
+      ace.AddAccessType (accessType2);
+      
+      ace.RemoveAccessType (accessType1);
+
+      var permissions = ace.GetPermissions();
+      Assert.AreEqual (2, permissions.Count);
+      Assert.AreSame (accessType0, permissions[0].AccessType);
+      Assert.AreSame (accessType2, permissions[1].AccessType);
+    }
+
+    [Test]
+    public void RemoveAccessType_AccessTypeDoesNotExist ()
+    {
+      var ace = AccessControlEntry.NewObject();
+
+      ace.AddAccessType (AccessTypeDefinition.NewObject());
+      Assert.That (
+          () => ace.RemoveAccessType (AccessTypeDefinition.NewObject (Guid.NewGuid(), "Test", 42)),
+          Throws.ArgumentException.And.Message.StartsWith ("The access type 'Test' is not associated with the access control entry."));
     }
 
     [Test]
