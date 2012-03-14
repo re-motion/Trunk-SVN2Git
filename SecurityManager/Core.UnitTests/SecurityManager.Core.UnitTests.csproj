@@ -252,9 +252,9 @@
     <Compile Include="Domain\Metadata\MetadataImporterTest.cs" />
     <Compile Include="Domain\Metadata\MetadataObjectAssert.cs" />
     <Compile Include="Domain\Metadata\MetadataTestHelper.cs" />
-    <Compile Include="Domain\Metadata\SecurableClassDefinitionTest.cs" />
+    <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\Common.cs" />
     <Compile Include="Domain\Metadata\StatePropertyDefinitionTest.cs" />
-    <Compile Include="Domain\Metadata\SecurableClassDefinitionWrapper.cs" />
+    <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\SecurableClassDefinitionWrapper.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTypePositionTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\OrganizationalStructureFactoryTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTypeTest.cs" />

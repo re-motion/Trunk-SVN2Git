@@ -27,10 +27,10 @@ using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 using Remotion.SecurityManager.UnitTests.TestDomain;
 using Remotion.Utilities;
 
-namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
+namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefinitionTests
 {
   [TestFixture]
-  public class SecurableClassDefinitionTest : DomainTest
+  public class Common : DomainTest
   {
     [Test]
     public void AddStateProperty ()
