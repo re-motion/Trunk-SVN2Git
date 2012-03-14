@@ -36,15 +36,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     }
 
     [Test]
-    public void SetAndGet_Index ()
-    {
-      Permission permission = Permission.NewObject();
-
-      permission.Index = 1;
-      Assert.AreEqual (1, permission.Index);
-    }
-
-    [Test]
     public void TouchClassOnCommit ()
     {
       SecurableClassDefinition classDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
@@ -58,7 +49,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         bool commitOnClassWasCalled = false;
         classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
-        ace.Permissions[0].MarkAsChanged();
+        ace.GetPermissions()[0].MarkAsChanged();
 
         ClientTransaction.Current.Commit();
 

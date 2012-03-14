@@ -16,6 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -116,26 +118,24 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void AddAccessType_TwoNewAccessType ()
+    public void AddAccessType()
     {
-      AccessControlEntry ace = AccessControlEntry.NewObject();
-      AccessTypeDefinition accessType0 = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 0", 0);
-      AccessTypeDefinition accessType1 = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 1", 1);
+      var accessType = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 0", 0);
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.CreateStatelessAccessControlList();
+      securableClassDefinition.AddAccessType (accessType);
+      var ace = AccessControlEntry.NewObject();
+      securableClassDefinition.StatelessAccessControlList.AccessControlEntries.Add (ace);
+
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         ace.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, ace.State);
 
-        ace.AddAccessType (accessType0);
-        ace.AddAccessType (accessType1);
+        ace.AddAccessType (accessType);
 
-        Assert.AreEqual (2, ace.Permissions.Count);
-        Permission permission0 = ace.Permissions[0];
-        Assert.AreSame (accessType0, permission0.AccessType);
-        Assert.AreEqual (0, permission0.Index);
-        Permission permission1 = ace.Permissions[1];
-        Assert.AreSame (accessType1, permission1.AccessType);
-        Assert.AreEqual (1, permission1.Index);
+        Assert.AreEqual (1, ace.GetPermissions().Count);
+        Assert.AreSame (accessType, ace.GetPermissions()[0].AccessType);
         Assert.AreEqual (StateType.Changed, ace.State);
       }
     }
@@ -153,16 +153,26 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void Get_PermissionsFromDatabase ()
+    public void GetPermissions_SortedByAccessTypeFromSecurableClassDefinition ()
     {
-      DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      ObjectID aceID = dbFixtures.CreateAndCommitAccessControlEntryWithPermissions (10, ClientTransaction.CreateRootTransaction());
-
-      AccessControlEntry ace = AccessControlEntry.GetObject (aceID);
-
-      Assert.AreEqual (10, ace.Permissions.Count);
+      var accessTypes = new List<AccessTypeDefinition>();
       for (int i = 0; i < 10; i++)
-        Assert.AreEqual (string.Format ("Access Type {0}", i), (ace.Permissions[i]).AccessType.Name);
+        accessTypes.Add (AccessTypeDefinition.NewObject (Guid.NewGuid(), string.Format ("Access Type {0}", i), i));
+
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.CreateStatelessAccessControlList();
+
+      foreach (var accessType in accessTypes)
+        securableClassDefinition.AddAccessType (accessType);
+
+      var ace = AccessControlEntry.NewObject();
+      securableClassDefinition.StatelessAccessControlList.AccessControlEntries.Add (ace);
+      foreach (var accessType in accessTypes.AsEnumerable().Reverse())
+        ace.AddAccessType (accessType);
+
+      var permissions = ace.GetPermissions();
+      for (int i = 0; i < accessTypes.Count; i++)
+        Assert.That (permissions[i].AccessType, Is.SameAs (accessTypes[i]));
     }
 
     [Test]

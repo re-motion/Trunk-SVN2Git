@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
-using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefinitionTests
 {
@@ -77,9 +76,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       securableClassDefinition.AddAccessType (accessType1);
       foreach (var acl in acls)
       {
-        Assert.That (acl.AccessControlEntries[0].Permissions.Count, Is.EqualTo (2));
-        Assert.That (acl.AccessControlEntries[0].Permissions[1].AccessType, Is.SameAs (accessType1));
-        Assert.That (acl.AccessControlEntries[0].Permissions[1].Allowed, Is.Null);
+        Assert.That (acl.AccessControlEntries[0].GetPermissions().Count, Is.EqualTo (2));
+        Assert.That (acl.AccessControlEntries[0].GetPermissions()[1].AccessType, Is.SameAs (accessType1));
+        Assert.That (acl.AccessControlEntries[0].GetPermissions()[1].Allowed, Is.Null);
       }
     }
 

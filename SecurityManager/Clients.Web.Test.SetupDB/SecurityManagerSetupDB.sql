@@ -30,7 +30,6 @@ CREATE TABLE [dbo].[Permission]
   [ID] uniqueidentifier NOT NULL,
   [ClassID] varchar (100) NOT NULL,
   [Timestamp] rowversion NOT NULL,
-  [Index] int NOT NULL,
   [Allowed] bit NULL,
   [AccessTypeDefinitionID] uniqueidentifier NULL,
   [AccessTypeDefinitionIDClassID] varchar (100) NULL,
@@ -261,9 +260,9 @@ CREATE VIEW [dbo].[AccessControlEntryView] ([ID], [ClassID], [Timestamp], [Index
   WITH CHECK OPTION
 GO
 
-CREATE VIEW [dbo].[PermissionView] ([ID], [ClassID], [Timestamp], [Index], [Allowed], [AccessTypeDefinitionID], [AccessTypeDefinitionIDClassID], [AccessControlEntryID])
+CREATE VIEW [dbo].[PermissionView] ([ID], [ClassID], [Timestamp], [Allowed], [AccessTypeDefinitionID], [AccessTypeDefinitionIDClassID], [AccessControlEntryID])
   WITH SCHEMABINDING AS
-  SELECT [ID], [ClassID], [Timestamp], [Index], [Allowed], [AccessTypeDefinitionID], [AccessTypeDefinitionIDClassID], [AccessControlEntryID]
+  SELECT [ID], [ClassID], [Timestamp], [Allowed], [AccessTypeDefinitionID], [AccessTypeDefinitionIDClassID], [AccessControlEntryID]
     FROM [dbo].[Permission]
   WITH CHECK OPTION
 GO

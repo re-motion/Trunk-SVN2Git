@@ -65,7 +65,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools
           testHelper.AttachAccessType (orderClass, Guid.NewGuid(), "FirstAccessType3", 3);
           aclList = testHelper.CreateAclsForOrderAndPaymentAndDeliveryStates (orderClass);
           var ace = aclList[0].CreateAccessControlEntry ();
-          ace.Permissions[0].Allowed = true; // FirstAccessType
+          ace.GetPermissions()[0].Allowed = true; // FirstAccessType
 
           var invoiceClass = testHelper.CreateInvoiceClassDefinition();
           InvoiceClassID = invoiceClass.ID;

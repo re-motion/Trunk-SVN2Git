@@ -315,7 +315,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
     private void LoadPermissions (bool interim)
     {
-      CreateEditPermissionControls (CurrentAccessControlEntry.Permissions);
+      CreateEditPermissionControls (CurrentAccessControlEntry.GetPermissions());
       foreach (var control in _editPermissionControls)
         control.LoadValues (interim);
     }

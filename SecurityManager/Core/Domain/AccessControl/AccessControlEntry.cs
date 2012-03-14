@@ -126,13 +126,29 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
     }
 
-    [DBBidirectionalRelation ("AccessControlEntry", SortExpression = "Index ASC")]
+    [DBBidirectionalRelation ("AccessControlEntry")]
     protected abstract ObjectList<Permission> PermissionsInternal { get; }
 
-    [StorageClassNone]
-    public ReadOnlyCollection<Permission> Permissions
+    public ReadOnlyCollection<Permission> GetPermissions ()
     {
-      get { return PermissionsInternal.AsReadOnlyCollection(); }
+      if (Class.AccessTypes.Count != PermissionsInternal.Count)
+      {
+        throw new InvalidOperationException (
+            string.Format ("Inconsistent access type definition found for securable class definition '{0}'.", Class.Name));
+      }
+
+      var permissions = (from accessType in Class.AccessTypes
+                         // LiNQ join preserves order of OUTER
+                         join permission in PermissionsInternal on accessType equals permission.AccessType
+                         select permission).ToList().AsReadOnly();
+
+      if (Class.AccessTypes.Count != permissions.Count)
+      {
+        throw new InvalidOperationException (
+            string.Format ("Inconsistent access type definition found for securable class definition '{0}'.", Class.Name));
+      }
+
+      return permissions;
     }
 
     public AccessTypeDefinition[] GetAllowedAccessTypes ()
@@ -159,10 +175,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       permission.AccessType = accessType;
       permission.Allowed = null;
       PermissionsInternal.Add (permission);
-      if (PermissionsInternal.Count == 1)
-        permission.Index = 0;
-      else
-        permission.Index = PermissionsInternal[PermissionsInternal.Count - 2].Index + 1;
     }
 
     public void AllowAccess (AccessTypeDefinition accessType)
@@ -210,7 +222,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private Permission FindPermission (AccessTypeDefinition accessType)
     {
-      return Permissions.Where (p => p.AccessType.ID == accessType.ID).SingleOrDefault();
+      return PermissionsInternal.Where (p => p.AccessType.ID == accessType.ID).SingleOrDefault();
     }
 
     //TODO: Rewrite with test
@@ -219,7 +231,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleting (args);
 
-      _deleteHandler = new DomainObjectDeleteHandler (Permissions);
+      _deleteHandler = new DomainObjectDeleteHandler (PermissionsInternal);
     }
 
     protected override void OnDeleted (EventArgs args)

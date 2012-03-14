@@ -190,11 +190,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         AccessControlEntry entry = acl.CreateAccessControlEntry();
 
         Assert.AreSame (acl, entry.AccessControlList);
-        Assert.AreEqual (2, entry.Permissions.Count);
-        Assert.AreSame (readAccessType, (entry.Permissions[0]).AccessType);
-        Assert.AreSame (entry, (entry.Permissions[0]).AccessControlEntry);
-        Assert.AreSame (deleteAccessType, (entry.Permissions[1]).AccessType);
-        Assert.AreSame (entry, (entry.Permissions[1]).AccessControlEntry);
+        Assert.AreEqual (2, entry.GetPermissions().Count);
+        Assert.AreSame (readAccessType, (entry.GetPermissions()[0]).AccessType);
+        Assert.AreSame (entry, (entry.GetPermissions()[0]).AccessControlEntry);
+        Assert.AreSame (deleteAccessType, (entry.GetPermissions()[1]).AccessType);
+        Assert.AreSame (entry, (entry.GetPermissions()[1]).AccessControlEntry);
         Assert.AreEqual (StateType.Changed, acl.State);
       }
     }

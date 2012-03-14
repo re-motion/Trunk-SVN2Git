@@ -36,8 +36,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
     }
 
-    public abstract int Index { get; set; }
-
     public abstract bool? Allowed { get; set; }
 
     [DBBidirectionalRelation ("Permissions")]
