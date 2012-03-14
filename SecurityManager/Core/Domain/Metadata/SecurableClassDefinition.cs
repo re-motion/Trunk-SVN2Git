@@ -161,14 +161,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       get
       {
         if (_accessTypes == null)
-        {
-          var accessTypes = new List<AccessTypeDefinition>();
-
-          foreach (var accessTypeReference in AccessTypeReferences)
-            accessTypes.Add (accessTypeReference.AccessType);
-
-          _accessTypes = accessTypes.AsReadOnly();
-        }
+          _accessTypes = AccessTypeReferences.Select (accessTypeReference => accessTypeReference.AccessType).ToList().AsReadOnly();
 
         return _accessTypes;
       }
@@ -212,6 +205,26 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       foreach (var ace in GetAccessControlLists().SelectMany (acl => acl.AccessControlEntries))
         ace.AddAccessType (accessType);
+
+      Touch();
+    }
+
+    public void RemoveAccessType (AccessTypeDefinition accessType)
+    {
+      ArgumentUtility.CheckNotNull ("accessType", accessType);
+
+      _accessTypes = null;
+
+      var accessTypeReference = AccessTypeReferences.SingleOrDefault (r => r.AccessType == accessType);
+      if (accessTypeReference == null)
+      {
+        throw CreateArgumentException (
+            "accessType", "The access type '{0}' is not associated with the securable class definition '{1}'.", accessType.Name, Name);
+      }
+
+      accessTypeReference.Delete();
+      for (int i = 0; i < AccessTypeReferences.Count; i++)
+        AccessTypeReferences[i].Index = i;
 
       Touch();
     }

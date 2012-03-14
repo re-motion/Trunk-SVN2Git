@@ -16,13 +16,82 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.SecurityManager.Domain.AccessControl;
+using Remotion.SecurityManager.Domain.Metadata;
+using Remotion.SecurityManager.UnitTests.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefinitionTests
 {
   [TestFixture]
   public class RemoveAccessType : DomainTest
   {
-    
+    public override void SetUp ()
+    {
+      base.SetUp();
+
+      ClientTransaction.CreateRootTransaction().EnterDiscardingScope();
+    }
+
+    [Test]
+    public void RemovesAccessType()
+    {
+      var accessType0 = AccessTypeDefinition.NewObject();
+      var accessType1 = AccessTypeDefinition.NewObject();
+      var accessType2 = AccessTypeDefinition.NewObject();
+      var accessType3 = AccessTypeDefinition.NewObject();
+      var accessType4 = AccessTypeDefinition.NewObject();
+
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.AddAccessType (accessType0);
+      securableClassDefinition.AddAccessType (accessType1);
+      securableClassDefinition.AddAccessType (accessType2);
+      securableClassDefinition.AddAccessType (accessType3);
+      securableClassDefinition.AddAccessType (accessType4);
+
+      securableClassDefinition.RemoveAccessType (accessType2);
+
+      Assert.That (securableClassDefinition.AccessTypes, Is.EqualTo (new[] { accessType0, accessType1, accessType3, accessType4 }));
+      var references = new SecurableClassDefinitionWrapper (securableClassDefinition).AccessTypeReferences;
+      Assert.That (((AccessTypeReference) references[0]).Index, Is.EqualTo (0));
+      Assert.That (((AccessTypeReference) references[1]).Index, Is.EqualTo (1));
+      Assert.That (((AccessTypeReference) references[2]).Index, Is.EqualTo (2));
+      Assert.That (((AccessTypeReference) references[3]).Index, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void TouchesSecurableClassDefinition ()
+    {
+      var accessType = AccessTypeDefinition.NewObject();
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.AddAccessType (accessType);
+      securableClassDefinition.CreateStatelessAccessControlList();
+      securableClassDefinition.StatelessAccessControlList.CreateAccessControlEntry();
+
+      using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+      {
+        securableClassDefinition.EnsureDataAvailable();
+        Assert.That (securableClassDefinition.State, Is.EqualTo (StateType.Unchanged));
+
+        securableClassDefinition.RemoveAccessType (accessType);
+
+        Assert.That (securableClassDefinition.State, Is.EqualTo (StateType.Changed));
+      }
+    }
+
+    [Test]
+    public void FailsForExistingAccessType ()
+    {
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.Name = "Class";
+      securableClassDefinition.AddAccessType (AccessTypeDefinition.NewObject());
+      securableClassDefinition.AddAccessType (AccessTypeDefinition.NewObject());
+      Assert.That (
+          () => securableClassDefinition.RemoveAccessType (AccessTypeDefinition.NewObject (Guid.NewGuid(), "Test", 42)),
+          Throws.ArgumentException
+              .And.Message.StartsWith ("The access type 'Test' is not associated with the securable class definition 'Class'."));
+    }
   }
 }
