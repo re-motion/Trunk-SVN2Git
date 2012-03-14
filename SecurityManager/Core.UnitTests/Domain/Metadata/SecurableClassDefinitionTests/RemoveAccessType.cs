@@ -62,6 +62,36 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
+    public void RemovesPermissionsForRemovedAccessType()
+    {
+      var accessType0 = AccessTypeDefinition.NewObject();
+      var accessType1 = AccessTypeDefinition.NewObject();
+      var accessType2 = AccessTypeDefinition.NewObject();
+
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.AddAccessType (accessType0);
+      securableClassDefinition.AddAccessType (accessType1);
+      securableClassDefinition.AddAccessType (accessType2);
+
+      var testHelper = new AccessControlTestHelper (ClientTransaction.Current);
+      var acls = new List<AccessControlList>();
+      acls.Add (testHelper.CreateStatefulAcl (securableClassDefinition));
+      acls.Add (testHelper.CreateStatelessAcl (securableClassDefinition));
+
+      foreach (var acl in acls)
+        acl.CreateAccessControlEntry();
+
+      securableClassDefinition.RemoveAccessType (accessType1);
+      foreach (var acl in acls)
+      {
+        var permissions = acl.AccessControlEntries[0].GetPermissions();
+        Assert.That (permissions.Count, Is.EqualTo (2));
+        Assert.That (permissions[0].AccessType, Is.SameAs (accessType0));
+        Assert.That (permissions[1].AccessType, Is.SameAs (accessType2));
+      }
+    }
+
+    [Test]
     public void TouchesSecurableClassDefinition ()
     {
       var accessType = AccessTypeDefinition.NewObject();

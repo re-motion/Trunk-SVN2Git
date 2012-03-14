@@ -226,6 +226,9 @@ namespace Remotion.SecurityManager.Domain.Metadata
       for (int i = 0; i < AccessTypeReferences.Count; i++)
         AccessTypeReferences[i].Index = i;
 
+      foreach (var ace in GetAccessControlLists().SelectMany (acl => acl.AccessControlEntries))
+        ace.RemoveAccessType (accessType);
+
       Touch();
     }
 
