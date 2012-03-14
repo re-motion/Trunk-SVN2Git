@@ -291,9 +291,9 @@ namespace Remotion.SecurityManager.UnitTests
       AccessTypeDefinition writeAccessType = AccessTypeDefinition.NewObject (Guid.NewGuid (), "Write|MyTypeName", 1);
       AccessTypeDefinition deleteAccessType = AccessTypeDefinition.NewObject (Guid.NewGuid (), "Delete|MyTypeName", 2);
 
-      ace.AttachAccessType (readAccessType);
-      ace.AttachAccessType (writeAccessType);
-      ace.AttachAccessType (deleteAccessType);
+      ace.AddAccessType (readAccessType);
+      ace.AddAccessType (writeAccessType);
+      ace.AddAccessType (deleteAccessType);
 
       ace.AllowAccess (readAccessType);
 

@@ -170,6 +170,7 @@
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecoratorTest.cs" />
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecoratorTestHelper.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
+    <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\AddAccessType.cs" />
     <Compile Include="Domain\Metadata\StatePropertyReferenceTest.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GetHierarchy.cs" />

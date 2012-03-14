@@ -34,9 +34,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     private readonly ClientTransaction _transaction;
     private readonly OrganizationalStructureFactory _factory;
 
-    public AccessControlTestHelper ()
+    public AccessControlTestHelper()
+      : this ( ClientTransaction.CreateRootTransaction ())
     {
-      _transaction = ClientTransaction.CreateRootTransaction ();
+    }
+
+    public AccessControlTestHelper (ClientTransaction transaction)
+    {
+      _transaction = transaction;
       _factory = new OrganizationalStructureFactory ();
     }
 
@@ -607,7 +612,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       using (_transaction.EnterNonDiscardingScope())
       {
-        ace.AttachAccessType (accessType);
+        ace.AddAccessType (accessType);
         if (!allowAccess.HasValue)
           ace.RemoveAccess (accessType);
         else if (allowAccess.Value)

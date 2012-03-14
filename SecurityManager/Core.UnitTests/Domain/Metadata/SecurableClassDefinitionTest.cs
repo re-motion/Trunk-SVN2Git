@@ -33,33 +33,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
   public class SecurableClassDefinitionTest : DomainTest
   {
     [Test]
-    public void AddAccessType_TwoNewAccessTypes ()
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        AccessTypeDefinition accessType0 = AccessTypeDefinition.NewObject ();
-        AccessTypeDefinition accessType1 = AccessTypeDefinition.NewObject ();
-        SecurableClassDefinitionWrapper classDefinitionWrapper = new SecurableClassDefinitionWrapper (SecurableClassDefinition.NewObject ());
-        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-        {
-          classDefinitionWrapper.SecurableClassDefinition.EnsureDataAvailable ();
-          Assert.AreEqual (StateType.Unchanged, classDefinitionWrapper.SecurableClassDefinition.State);
-
-          classDefinitionWrapper.SecurableClassDefinition.AddAccessType (accessType0);
-          classDefinitionWrapper.SecurableClassDefinition.AddAccessType (accessType1);
-
-          Assert.AreEqual (2, classDefinitionWrapper.SecurableClassDefinition.AccessTypes.Count);
-          Assert.AreSame (accessType0, classDefinitionWrapper.SecurableClassDefinition.AccessTypes[0]);
-          Assert.AreSame (accessType1, classDefinitionWrapper.SecurableClassDefinition.AccessTypes[1]);
-          DomainObjectCollection references = classDefinitionWrapper.AccessTypeReferences;
-          Assert.AreEqual (0, ((AccessTypeReference) references[0]).Index);
-          Assert.AreEqual (1, ((AccessTypeReference) references[1]).Index);
-          Assert.AreEqual (StateType.Changed, classDefinitionWrapper.SecurableClassDefinition.State);
-        }
-      }
-    }
-
-    [Test]
     public void AddStateProperty ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())

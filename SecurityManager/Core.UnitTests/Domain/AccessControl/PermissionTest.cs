@@ -52,7 +52,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       var ace = _testHelper.CreateAceWithOwningUser();
       acl.AccessControlEntries.Add (ace);
       var accessType = _testHelper.AttachJournalizeAccessType (classDefinition);
-      _testHelper.AttachAccessType (ace, accessType, true);
+      ace.AllowAccess (accessType);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {

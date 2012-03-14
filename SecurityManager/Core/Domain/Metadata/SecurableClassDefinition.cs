@@ -195,17 +195,25 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void AddAccessType (AccessTypeDefinition accessType)
     {
-      var reference = AccessTypeReference.NewObject();
-      reference.AccessType = accessType;
-      AccessTypeReferences.Add (reference);
-      var accessTypeReferences = AccessTypeReferences;
-      if (accessTypeReferences.Count == 1)
-        reference.Index = 0;
-      else
-        reference.Index = accessTypeReferences[accessTypeReferences.Count - 2].Index + 1;
-      Touch();
+      ArgumentUtility.CheckNotNull ("accessType", accessType);
+
+      if (AccessTypeReferences.Where (r => r.AccessType == accessType).Any())
+      {
+        throw CreateArgumentException (
+            "accessType", "The access type '{0}' has already been added to the securable class definition '{1}'.", accessType.Name, Name);
+      }
 
       _accessTypes = null;
+
+      var reference = AccessTypeReference.NewObject();
+      reference.AccessType = accessType;
+      reference.Index = AccessTypeReferences.Count;
+      AccessTypeReferences.Add (reference);
+
+      foreach (var ace in GetAccessControlLists().SelectMany (acl => acl.AccessControlEntries))
+        ace.AddAccessType (accessType);
+
+      Touch();
     }
 
     public void AddStateProperty (StatePropertyDefinition stateProperty)
@@ -274,7 +282,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     public void ValidateUniqueStateCombinations (SecurableClassValidationResult result)
     {
       Assertion.IsTrue (
-          State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
+          State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object '{0}' are not empty but the object is deleted.", ID);
 
       var duplicateStateCombinations = StateCombinations
           .GroupBy (sc => sc, new StateCombinationComparer())
@@ -288,7 +296,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     public void ValidateStateCombinationsAgainstStateProperties (SecurableClassValidationResult result)
     {
       Assertion.IsTrue (
-          State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object are not empty but the object is deleted.", ID);
+          State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object '{0}' are not empty but the object is deleted.", ID);
 
       foreach (var stateCombination in StateCombinations.Where (sc => sc.StateUsages.Count != StateProperties.Count))
         result.AddInvalidStateCombination (stateCombination);
@@ -320,6 +328,15 @@ namespace Remotion.SecurityManager.Domain.Metadata
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
     {
       return new ArgumentException (string.Format (format, args), argumentName);
+    }
+
+    private IEnumerable<AccessControlList> GetAccessControlLists()
+    {
+      if (StatelessAccessControlList != null)
+        yield return StatelessAccessControlList;
+
+      foreach (var acl in StatefulAccessControlLists)
+        yield return acl;
     }
   }
 }

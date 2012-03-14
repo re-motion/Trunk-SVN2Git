@@ -145,14 +145,14 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return PermissionsInternal.Where (p => (p.Allowed.HasValue && !p.Allowed.Value)).Select (p => p.AccessType).ToArray ();
     }
 
-    public void AttachAccessType (AccessTypeDefinition accessType)
+    public void AddAccessType (AccessTypeDefinition accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
 
       if (FindPermission (accessType) != null)
       {
         throw new ArgumentException (
-            string.Format ("The access type '{0}' has already been attached to this access control entry.", accessType.Name), "accessType");
+            string.Format ("The access type '{0}' has already been added to this access control entry.", accessType.Name), "accessType");
       }
 
       var permission = Permission.NewObject();

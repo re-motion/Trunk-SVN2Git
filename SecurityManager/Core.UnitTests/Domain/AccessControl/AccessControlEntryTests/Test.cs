@@ -18,10 +18,8 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.SecurityManager.Domain.Metadata;
-using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlEntryTests
 {
@@ -118,7 +116,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
     }
 
     [Test]
-    public void AttachAccessType_TwoNewAccessType ()
+    public void AddAccessType_TwoNewAccessType ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
       AccessTypeDefinition accessType0 = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Access Type 0", 0);
@@ -128,8 +126,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
         ace.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, ace.State);
 
-        ace.AttachAccessType (accessType0);
-        ace.AttachAccessType (accessType1);
+        ace.AddAccessType (accessType0);
+        ace.AddAccessType (accessType1);
 
         Assert.AreEqual (2, ace.Permissions.Count);
         Permission permission0 = ace.Permissions[0];
@@ -144,14 +142,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The access type 'Test' has already been attached to this access control entry.\r\nParameter name: accessType")]
-    public void AttachAccessType_ExistingAccessType ()
+        "The access type 'Test' has already been added to this access control entry.\r\nParameter name: accessType")]
+    public void AddAccessType_ExistingAccessType ()
     {
       AccessControlEntry ace = AccessControlEntry.NewObject();
       AccessTypeDefinition accessType = AccessTypeDefinition.NewObject (Guid.NewGuid(), "Test", 42);
 
-      ace.AttachAccessType (accessType);
-      ace.AttachAccessType (accessType);
+      ace.AddAccessType (accessType);
+      ace.AddAccessType (accessType);
     }
 
     [Test]

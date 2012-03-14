@@ -155,7 +155,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
       var accessControlEntry = AccessControlEntry.NewObject();
       foreach (var accessTypeDefinition in Class.AccessTypes)
-        accessControlEntry.AttachAccessType (accessTypeDefinition);
+        accessControlEntry.AddAccessType (accessTypeDefinition);
       accessControlEntry.AccessControlList = this;
 
       return accessControlEntry;
