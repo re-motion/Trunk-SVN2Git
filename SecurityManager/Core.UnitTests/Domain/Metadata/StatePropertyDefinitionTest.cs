@@ -115,18 +115,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void AddState_WithNameAndValueAndImpliedIndex ()
-    {
-      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
-
-      stateProperty.AddState ("NewState", 42);
-
-      Assert.AreEqual (1, stateProperty.DefinedStates.Count);
-      StateDefinition expectedState = _testHelper.CreateState ("NewState", 42);
-      MetadataObjectAssert.AreEqual (expectedState, stateProperty.GetState ("NewState"));
-    }
-
-    [Test]
     public void AddState_AsStateDefinition ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
@@ -144,7 +132,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       dbFixtures.CreateEmptyDomain();
       StatePropertyDefinition expectdPropertyDefinition = _testHelper.CreateConfidentialityProperty (0);
-      ObjectList<StateDefinition> expectedStateDefinitions = expectdPropertyDefinition.DefinedStates;
+      var expectedStateDefinitions = expectdPropertyDefinition.DefinedStates;
       _testHelper.Transaction.Commit();
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())

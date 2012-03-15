@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     // methods and properties
 
-    [DBBidirectionalRelation ("DefinedStates")]
+    [DBBidirectionalRelation ("DefinedStatesInternal")]
     [Mandatory]
     public abstract StatePropertyDefinition StateProperty { get; }
 
@@ -72,9 +72,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
       set { throw new NotSupportedException ("States do not support MetadataItemID"); }
     }
 
-    //TODO: Rename to StateUsages
     [EditorBrowsable( EditorBrowsableState.Never)]
     [DBBidirectionalRelation ("StateDefinition")]
-    protected abstract ObjectList<StateUsage> Usages { get; }
+    protected abstract ObjectList<StateUsage> StateUsages { get; }
   }
 }

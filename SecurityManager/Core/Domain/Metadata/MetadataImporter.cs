@@ -259,7 +259,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
       XmlNodeList stateNodes = statePropertyDefinitionNode.SelectNodes ("md:state", namespaceManager);
       foreach (XmlNode stateNode in stateNodes)
-        statePropertyDefinition.DefinedStates.Add (CreateStateDefinition (namespaceManager, stateNode));
+        statePropertyDefinition.AddState (CreateStateDefinition (namespaceManager, stateNode));
 
       return statePropertyDefinition;
     }

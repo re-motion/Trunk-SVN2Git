@@ -174,8 +174,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition orderStateProperty = CreateStateProperty ("State");
-        orderStateProperty.AddState (EnumWrapper.Get (OrderState.Received).Name, 0);
-        orderStateProperty.AddState (EnumWrapper.Get (OrderState.Delivered).Name, 1);
+        orderStateProperty.AddState (CreateState (EnumWrapper.Get (OrderState.Received).Name, 0));
+        orderStateProperty.AddState (CreateState (EnumWrapper.Get (OrderState.Delivered).Name, 1));
         classDefinition.AddStateProperty (orderStateProperty);
 
         return orderStateProperty;
@@ -187,8 +187,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition paymentStateProperty = CreateStateProperty ("Payment");
-        paymentStateProperty.AddState (EnumWrapper.Get(PaymentState.None).Name, 0);
-        paymentStateProperty.AddState (EnumWrapper.Get (PaymentState.Paid).Name, 1);
+        paymentStateProperty.AddState (CreateState (EnumWrapper.Get(PaymentState.None).Name, 0));
+        paymentStateProperty.AddState (CreateState (EnumWrapper.Get (PaymentState.Paid).Name, 1));
         classDefinition.AddStateProperty (paymentStateProperty);
 
         return paymentStateProperty;
@@ -200,8 +200,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition deliveryStateProperty = CreateStateProperty ("Delivery");
-        deliveryStateProperty.AddState (EnumWrapper.Get(Delivery.Dhl).Name, 0);
-        deliveryStateProperty.AddState (EnumWrapper.Get (Delivery.Post).Name, 1);
+        deliveryStateProperty.AddState (CreateState (EnumWrapper.Get(Delivery.Dhl).Name, 0));
+        deliveryStateProperty.AddState (CreateState (EnumWrapper.Get (Delivery.Post).Name, 1));
         classDefinition.AddStateProperty (deliveryStateProperty);
 
         return deliveryStateProperty;
@@ -335,8 +335,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (_transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition property = CreateStateProperty ("Test");
-        property.AddState ("Test1", 0);
-        property.AddState ("Test2", 1);
+        property.AddState (CreateState ("Test1", 0));
+        property.AddState (CreateState ("Test2", 1));
 
         return property;
       }
@@ -796,6 +796,15 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         acl.AccessControlEntries.Add (ace);
       }
+    }
+
+    
+    private StateDefinition CreateState (string name, int value)
+    {
+      StateDefinition state = StateDefinition.NewObject (name, value);
+      state.Index = value;
+
+      return state;
     }
   }
 }

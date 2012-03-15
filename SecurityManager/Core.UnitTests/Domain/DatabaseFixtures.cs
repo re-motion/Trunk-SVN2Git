@@ -452,14 +452,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
 
     private StatePropertyDefinition CreateFileStateProperty (ClientTransaction transaction)
     {
-      using (transaction.EnterNonDiscardingScope ())
+      using (transaction.EnterNonDiscardingScope())
       {
         StatePropertyDefinition fileStateProperty = StatePropertyDefinition.NewObject (new Guid ("9e689c4c-3758-436e-ac86-23171289fa5e"), "FileState");
-        fileStateProperty.AddState ("Open", 0);
-        fileStateProperty.AddState ("Cancelled", 1);
-        fileStateProperty.AddState ("Reaccounted", 2);
-        fileStateProperty.AddState ("HandledBy", 3);
-        fileStateProperty.AddState ("Approved", 4);
+        fileStateProperty.AddState (CreateState ("Open", 0));
+        fileStateProperty.AddState (CreateState ("Cancelled", 1));
+        fileStateProperty.AddState (CreateState ("Reaccounted", 2));
+        fileStateProperty.AddState (CreateState ("HandledBy", 3));
+        fileStateProperty.AddState (CreateState ("Approved", 4));
 
         return fileStateProperty;
       }
@@ -469,9 +469,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain
     {
       StatePropertyDefinition confidentialityProperty =
           StatePropertyDefinition.NewObject (new Guid ("93969f13-65d7-49f4-a456-a1686a4de3de"), "Confidentiality");
-      confidentialityProperty.AddState ("Public", 0);
-      confidentialityProperty.AddState ("Secret", 1);
-      confidentialityProperty.AddState ("TopSecret", 2);
+      confidentialityProperty.AddState (CreateState ("Public", 0));
+      confidentialityProperty.AddState (CreateState ("Secret", 1));
+      confidentialityProperty.AddState (CreateState ("TopSecret", 2));
 
       return confidentialityProperty;
     }
@@ -490,6 +490,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       StateCombination stateCombination = acl.CreateStateCombination ();
       stateProperty.AddState (stateDefinition);
       stateCombination.AttachState (stateDefinition);
+    }
+
+    private StateDefinition CreateState (string name, int value)
+    {
+      StateDefinition state = StateDefinition.NewObject (name, value);
+      state.Index = value;
+
+      return state;
     }
   }
 }

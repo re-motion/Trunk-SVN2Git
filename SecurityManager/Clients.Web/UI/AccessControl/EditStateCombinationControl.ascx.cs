@@ -91,13 +91,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
 
       var possibleStateDefinitions = new List<StateDefinition> ();
       if (stateProperties.Count > 0)
-      {
-        var statePropertyDefinition = stateProperties[0];
-        foreach (var stateDefinition in statePropertyDefinition.DefinedStates)
-        {
-          possibleStateDefinitions.Add (stateDefinition);
-        }
-      }
+        possibleStateDefinitions.AddRange (stateProperties[0].DefinedStates);
       StateDefinitionField.SetBusinessObjectList (possibleStateDefinitions);
     }
 

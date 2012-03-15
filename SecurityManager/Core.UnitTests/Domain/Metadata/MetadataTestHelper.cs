@@ -139,9 +139,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         StatePropertyDefinition property = StatePropertyDefinition.NewObject (new Guid ("00000000-0000-0000-0001-000000000001"), "Confidentiality");
         property.Index = index;
-        property.AddState (Confidentiality_NormalName, Confidentiality_NormalValue);
-        property.AddState (Confidentiality_ConfidentialName, Confidentiality_ConfidentialValue);
-        property.AddState (Confidentiality_PrivateName, Confidentiality_PrivateValue);
+        property.AddState (CreateState (Confidentiality_NormalName, Confidentiality_NormalValue));
+        property.AddState (CreateState (Confidentiality_ConfidentialName, Confidentiality_ConfidentialValue));
+        property.AddState (CreateState (Confidentiality_PrivateName, Confidentiality_PrivateValue));
 
         return property;
       }
@@ -153,9 +153,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       {
         StatePropertyDefinition property = StatePropertyDefinition.NewObject (new Guid ("00000000-0000-0000-0002-000000000001"), "State");
         property.Index = index;
-        property.AddState (State_NewName, State_NewValue);
-        property.AddState (State_NormalName, State_NormalValue);
-        property.AddState (State_ArchivedName, State_ArchivedValue);
+        property.AddState (CreateState (State_NewName, State_NewValue));
+        property.AddState (CreateState (State_NormalName, State_NormalValue));
+        property.AddState (CreateState (State_ArchivedName, State_ArchivedValue));
 
         return property;
       }

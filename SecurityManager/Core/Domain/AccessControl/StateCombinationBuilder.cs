@@ -46,8 +46,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public PropertyStateTuple[][] CreatePropertyProduct ()
     {
       IEnumerable<IEnumerable<PropertyStateTuple>> seed = new PropertyStateTuple[][] { };
-      //_classDefinition.StateProperties.Select (p => p.DefinedStates.DefaultIfEmpty().Select (state => new PropertyStateTuple (p, state)));
-      
+
       var allStatesByProperty = from property in _classDefinition.StateProperties
                                 select from state in property.DefinedStates.DefaultIfEmpty()
                                        select new PropertyStateTuple (property, state);

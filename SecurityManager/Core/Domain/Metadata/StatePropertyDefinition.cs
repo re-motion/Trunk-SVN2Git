@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.FunctionalProgramming;
@@ -36,12 +37,12 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static StatePropertyDefinition NewObject (Guid metadataItemID, string name)
     {
-      return NewObject<StatePropertyDefinition>(ParamList.Create (metadataItemID, name));
+      return NewObject<StatePropertyDefinition> (ParamList.Create (metadataItemID, name));
     }
 
     public new static StatePropertyDefinition GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<StatePropertyDefinition> (id);
+      return GetObject<StatePropertyDefinition> (id);
     }
 
     protected StatePropertyDefinition ()
@@ -54,19 +55,24 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Name = name;
     }
 
-    //TODO: Rename to StatePropertyReferences
     [DBBidirectionalRelation ("StateProperty")]
-    public abstract ObjectList<StatePropertyReference> References { get; }
+    protected abstract ObjectList<StatePropertyReference> StatePropertyReferences { get; }
 
-    [DBBidirectionalRelation ("StateProperty", SortExpression = "Index ASC")]
+    [DBBidirectionalRelation ("StateProperty")]
     [Mandatory]
-    public abstract ObjectList<StateDefinition> DefinedStates { get; }
+    protected abstract ObjectList<StateDefinition> DefinedStatesInternal { get; }
+
+    [StorageClassNone]
+    public ReadOnlyCollection<StateDefinition> DefinedStates
+    {
+      get { return DefinedStatesInternal.OrderBy (s => s.Index).ToList().AsReadOnly(); }
+    }
 
     public StateDefinition GetState (string name)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      return DefinedStates.Single (
+      return DefinedStatesInternal.Single (
           s => s.Name == name,
           () => CreateArgumentException ("name", "The state '{0}' is not defined for the property '{1}'.", name, Name));
     }
@@ -75,19 +81,19 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
-      return DefinedStates.Any (s => s.Name == name);
+      return DefinedStatesInternal.Any (s => s.Name == name);
     }
 
     public StateDefinition GetState (int stateValue)
     {
-      return DefinedStates.Single (
+      return DefinedStatesInternal.Single (
           s => s.Value == stateValue,
           () => CreateArgumentException ("stateValue", "A state with the value {0} is not defined for the property '{1}'.", stateValue, Name));
     }
 
     public bool ContainsState (int stateValue)
     {
-      return DefinedStates.Any (s => s.Value == stateValue);
+      return DefinedStatesInternal.Any (s => s.Value == stateValue);
     }
 
     [StorageClassNone]
@@ -96,22 +102,10 @@ namespace Remotion.SecurityManager.Domain.Metadata
       get { return GetState (stateName); }
     }
 
-    public void AddState (string stateName, int value)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("stateName", stateName);
-
-      StateDefinition newStateDefinition = StateDefinition.NewObject();
-      newStateDefinition.Name = stateName;
-      newStateDefinition.Value = value;
-      newStateDefinition.Index = value;
-
-      AddState (newStateDefinition);
-    }
-
     public void AddState (StateDefinition newState)
     {
       ArgumentUtility.CheckNotNull ("newState", newState);
-      DefinedStates.Add (newState);
+      DefinedStatesInternal.Add (newState);
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
