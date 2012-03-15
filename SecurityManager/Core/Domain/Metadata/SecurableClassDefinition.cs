@@ -242,7 +242,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     /// <summary>
-    /// Removes an <see cref="AccessTypeDefinition"/> at from of the <see cref="AccessTypes"/> list.
+    /// Removes an <see cref="AccessTypeDefinition"/> from of the <see cref="AccessTypes"/> list.
     /// </summary>
     /// <param name="accessType">The <see cref="AccessTypeDefinition"/> to be removed. Must not be <see langword="null" />.</param>
     /// <remarks> Also updates all <see cref="AccessControlEntry"/> objects associated with the <see cref="SecurableClassDefinition"/> 
@@ -316,6 +316,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Touch();
     }
 
+    /// <summary>
+    /// Adds a <see cref="StatePropertyDefinition"/> to the <see cref="StateProperties"/> list.
+    /// </summary>
+    /// <param name="stateProperty">The <see cref="StatePropertyDefinition"/> to be added. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="stateProperty"/> already exists on the <see cref="SecurableClassDefinition"/>.
+    /// </exception>
     public void AddStateProperty (StatePropertyDefinition stateProperty)
     {
       ArgumentUtility.CheckNotNull ("stateProperty", stateProperty);
@@ -335,6 +342,17 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Touch();
     }
 
+    /// <summary>
+    /// Removes a <see cref="StatePropertyDefinition"/> from of the <see cref="StateProperties"/> list.
+    /// </summary>
+    /// <param name="stateProperty">The <see cref="StatePropertyDefinition"/> to be removed. Must not be <see langword="null" />.</param>
+    /// <remarks> 
+    /// Also deletes all entries from the <see cref="StatefulAccessControlLists"/> list that use only the removed <see cref="StatePropertyDefinition"/>
+    /// as a selection criteria.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="stateProperty"/> does not exist on the <see cref="SecurableClassDefinition"/>.
+    /// </exception>
     public void RemoveStateProperty (StatePropertyDefinition stateProperty)
     {
       ArgumentUtility.CheckNotNull ("stateProperty", stateProperty);

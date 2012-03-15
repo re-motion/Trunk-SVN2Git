@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
+using Remotion.SecurityManager.Domain.AccessControl;
 using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.Domain.Metadata
@@ -102,6 +103,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
       get { return GetState (stateName); }
     }
 
+    /// <summary>
+    /// Adds a <see cref="StateDefinition"/> to the <see cref="DefinedStates"/> list.
+    /// </summary>
+    /// <param name="state">The <see cref="StateDefinition"/> to be added. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="state"/> already exists on the <see cref="StatePropertyDefinition"/>.
+    /// </exception>
     public void AddState (StateDefinition state)
     {
       ArgumentUtility.CheckNotNull ("state", state);
@@ -113,6 +121,17 @@ namespace Remotion.SecurityManager.Domain.Metadata
       DefinedStatesInternal.Add (state);
     }
 
+    /// <summary>
+    /// Removes a <see cref="StateDefinition"/> from of the <see cref="DefinedStates"/> list.
+    /// </summary>
+    /// <param name="state">The <see cref="StateDefinition"/> to be removed. Must not be <see langword="null" />.</param>
+    /// <remarks> 
+    /// Also deletes all <see cref="StatefulAccessControlList"/> objects that use only the removed <see cref="StateDefinition"/>
+    /// as a selection criteria.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="state"/> does not exist on the <see cref="StatePropertyDefinition"/>.
+    /// </exception>
     public void RemoveState (StateDefinition state)
     {
       ArgumentUtility.CheckNotNull ("state", state);
