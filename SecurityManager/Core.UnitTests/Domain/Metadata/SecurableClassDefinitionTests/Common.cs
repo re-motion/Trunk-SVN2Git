@@ -33,21 +33,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
   public class Common : DomainTest
   {
     [Test]
-    public void AddStateProperty ()
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        StatePropertyDefinition stateProperty = StatePropertyDefinition.NewObject ();
-        SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject ();
-
-        classDefinition.AddStateProperty (stateProperty);
-
-        Assert.AreEqual (1, classDefinition.StateProperties.Count);
-        Assert.AreSame (stateProperty, classDefinition.StateProperties[0]);
-      }
-    }
-
-    [Test]
     public void FindStateCombination_ValidStates ()
     {
       AccessControlTestHelper testHelper = new AccessControlTestHelper ();

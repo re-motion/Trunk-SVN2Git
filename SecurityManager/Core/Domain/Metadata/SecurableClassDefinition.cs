@@ -218,13 +218,13 @@ namespace Remotion.SecurityManager.Domain.Metadata
       if (index < 0 || index > AccessTypeReferences.Count)
       {
         throw CreateArgumentOutOfRangeException (
-            "index", index, "The index must not be less than 0 or greater than the total number of access types for this securable class definition.");
+            "index", index, "The index must not be less than 0 or greater than the total number of access types for the securable class definition.");
       }
 
       if (AccessTypeReferences.Where (r => r.AccessType == accessType).Any())
       {
         throw CreateArgumentException (
-            "accessType", "The access type '{0}' has already been added to this securable class definition.", accessType.Name);
+            "accessType", "The access type '{0}' has already been added to the securable class definition.", accessType.Name);
       }
 
       _accessTypes = null;
@@ -261,7 +261,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       if (accessTypeReference == null)
       {
         throw CreateArgumentException (
-            "accessType", "The access type '{0}' is not associated with this securable class definition.", accessType.Name);
+            "accessType", "The access type '{0}' is not associated with the securable class definition.", accessType.Name);
       }
 
       accessTypeReference.Delete();
@@ -296,14 +296,14 @@ namespace Remotion.SecurityManager.Domain.Metadata
       if (index < 0 || index >= AccessTypeReferences.Count)
       {
         throw CreateArgumentOutOfRangeException (
-            "index", index, "The index must not be less than 0 or greater than the top index of the access types for this securable class definition.");
+            "index", index, "The index must not be less than 0 or greater than the top index of the access types for the securable class definition.");
       }
 
       var accessTypeReference = AccessTypeReferences.SingleOrDefault (r => r.AccessType == accessType);
       if (accessTypeReference == null)
       {
         throw CreateArgumentException (
-            "accessType", "The access type '{0}' is not associated with this securable class definition.", accessType.Name);
+            "accessType", "The access type '{0}' is not associated with the securable class definition.", accessType.Name);
       }
 
       _accessTypes = null;
@@ -318,11 +318,38 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void AddStateProperty (StatePropertyDefinition stateProperty)
     {
+      ArgumentUtility.CheckNotNull ("stateProperty", stateProperty);
+
+      if (StatePropertyReferences.Where (r => r.StateProperty == stateProperty).Any())
+      {
+        throw CreateArgumentException (
+            "stateProperty", "The property '{0}' has already been added to the securable class definition.", stateProperty.Name);
+      }
+
       var reference = StatePropertyReference.NewObject();
       reference.StateProperty = stateProperty;
 
       StatePropertyReferences.Add (reference);
       _stateProperties = null;
+
+      Touch();
+    }
+
+    public void RemoveStateProperty (StatePropertyDefinition stateProperty)
+    {
+      ArgumentUtility.CheckNotNull ("stateProperty", stateProperty);
+
+      var statePropertyReference = StatePropertyReferences.SingleOrDefault (r => r.StateProperty == stateProperty);
+      if (statePropertyReference == null)
+      {
+        throw CreateArgumentException (
+            "stateProperty", "The property '{0}' does not exist on the securable class definition.", stateProperty.Name);
+      }
+
+      statePropertyReference.Delete();
+      _stateProperties = null;
+
+      Touch();
     }
 
     /// <summary>Retrieves the <see cref="StatePropertyDefinition"/> with the passed name.</summary>

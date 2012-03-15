@@ -36,7 +36,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
-    public void AddsTwoNewAccessTypes ()
+    public void AddsAccessTypes ()
     {
       var accessType0 = AccessTypeDefinition.NewObject();
       var accessType1 = AccessTypeDefinition.NewObject();
@@ -104,7 +104,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       Assert.That (
           () => securableClassDefinition.AddAccessType (accessType),
           Throws.ArgumentException
-              .And.Message.StartsWith ("The access type 'Test' has already been added to this securable class definition."));
+              .And.Message.StartsWith ("The access type 'Test' has already been added to the securable class definition."));
     }
   }
 }

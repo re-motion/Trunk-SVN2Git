@@ -151,7 +151,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       Assert.That (
           () => securableClassDefinition.AddAccessType (accessType),
           Throws.ArgumentException
-              .And.Message.StartsWith ("The access type 'Test' has already been added to this securable class definition."));
+              .And.Message.StartsWith ("The access type 'Test' has already been added to the securable class definition."));
     }
 
     [Test]
@@ -164,7 +164,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
           () => securableClassDefinition.InsertAccessType (-1, AccessTypeDefinition.NewObject()),
           Throws.TypeOf<ArgumentOutOfRangeException>()
               .And.Message.StartsWith (
-                  "The index must not be less than 0 or greater than the total number of access types for this securable class definition."));
+                  "The index must not be less than 0 or greater than the total number of access types for the securable class definition."));
     }
 
     [Test]
@@ -177,7 +177,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
           () => securableClassDefinition.InsertAccessType (2, AccessTypeDefinition.NewObject()),
           Throws.TypeOf<ArgumentOutOfRangeException>()
               .And.Message.StartsWith (
-                  "The index must not be less than 0 or greater than the total number of access types for this securable class definition."));
+                  "The index must not be less than 0 or greater than the total number of access types for the securable class definition."));
     }
   }
 }

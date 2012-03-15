@@ -192,7 +192,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       Assert.That (
           () => securableClassDefinition.MoveAccessType (0, AccessTypeDefinition.NewObject (Guid.NewGuid(), "Test", 42)),
           Throws.ArgumentException
-              .And.Message.StartsWith ("The access type 'Test' is not associated with this securable class definition."));
+              .And.Message.StartsWith ("The access type 'Test' is not associated with the securable class definition."));
     }
 
     [Test]
@@ -207,7 +207,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
           () => securableClassDefinition.MoveAccessType (-1, accessType),
           Throws.TypeOf<ArgumentOutOfRangeException>()
               .And.Message.StartsWith (
-                  "The index must not be less than 0 or greater than the top index of the access types for this securable class definition."));
+                  "The index must not be less than 0 or greater than the top index of the access types for the securable class definition."));
     }
 
     [Test]
@@ -222,7 +222,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
           () => securableClassDefinition.MoveAccessType (2, accessType),
           Throws.TypeOf<ArgumentOutOfRangeException>()
               .And.Message.StartsWith (
-                  "The index must not be less than 0 or greater than the top index of the access types for this securable class definition."));
+                  "The index must not be less than 0 or greater than the top index of the access types for the securable class definition."));
     }
   }
 }
