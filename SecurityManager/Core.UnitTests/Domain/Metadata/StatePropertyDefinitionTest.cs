@@ -17,7 +17,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
@@ -29,9 +28,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
     public override void SetUp ()
     {
-      base.SetUp ();
+      base.SetUp();
 
-      _testHelper = new MetadataTestHelper ();
+      _testHelper = new MetadataTestHelper();
       _testHelper.Transaction.EnterNonDiscardingScope();
     }
 
@@ -42,17 +41,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       StateDefinition actualState = stateProperty.GetState (MetadataTestHelper.Confidentiality_ConfidentialName);
 
-      StateDefinition expectedState = _testHelper.CreateConfidentialState ();
+      StateDefinition expectedState = _testHelper.CreateConfidentialState();
       MetadataObjectAssert.AreEqual (expectedState, actualState, "Confidential state");
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "The state 'New' is not defined for the property 'Confidentiality'.\r\nParameter name: name")]
     public void GetState_InvalidName ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateConfidentialityProperty (0);
 
-      StateDefinition actualState = stateProperty.GetState ("New");
+      Assert.That (
+          () => stateProperty.GetState ("New"),
+          Throws.ArgumentException.And.Message.StartsWith ("The state 'New' is not defined for the property 'Confidentiality'."));
     }
 
     [Test]
@@ -76,17 +76,18 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       StateDefinition actualState = stateProperty.GetState (MetadataTestHelper.Confidentiality_PrivateValue);
 
-      StateDefinition expectedState = _testHelper.CreatePrivateState ();
+      StateDefinition expectedState = _testHelper.CreatePrivateState();
       MetadataObjectAssert.AreEqual (expectedState, actualState, "Private state");
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "A state with the value 42 is not defined for the property 'Confidentiality'.\r\nParameter name: stateValue")]
     public void GetState_InvalidValue ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateConfidentialityProperty (0);
 
-      StateDefinition actualState = stateProperty.GetState (42);
+      Assert.That (
+          () => stateProperty.GetState (42),
+          Throws.ArgumentException.And.Message.StartsWith ("A state with the value 42 is not defined for the property 'Confidentiality'."));
     }
 
     [Test]
@@ -110,39 +111,72 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       StateDefinition actualState = stateProperty[MetadataTestHelper.Confidentiality_ConfidentialName];
 
-      StateDefinition expectedState = _testHelper.CreateConfidentialState ();
+      StateDefinition expectedState = _testHelper.CreateConfidentialState();
       MetadataObjectAssert.AreEqual (expectedState, actualState, "Confidential state");
     }
 
     [Test]
-    public void AddState_AsStateDefinition ()
+    public void AddState ()
+    {
+      var state1 = _testHelper.CreateState ("State 1", 1);
+      var state2 = _testHelper.CreateState ("State 2", 2);
+      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
+      stateProperty.AddState (state1);
+      stateProperty.AddState (state2);
+
+      Assert.That (stateProperty.DefinedStates, Is.EqualTo (new[] { state1, state2 }));
+    }
+
+    [Test]
+    public void AddState_DuplicateName ()
     {
       StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
-      StateDefinition newState = _testHelper.CreateState ("NewState", 42);
+      stateProperty.AddState (_testHelper.CreateState ("State 1", 1));
 
-      stateProperty.AddState (newState);
+      Assert.That (
+          () => stateProperty.AddState (_testHelper.CreateState ("State 1", 2)),
+          Throws.ArgumentException.And.Message.StartsWith ("A state with the name 'State 1' was already added to the property 'NewProperty'."));
+    }
 
-      Assert.AreEqual (1, stateProperty.DefinedStates.Count);
-      MetadataObjectAssert.AreEqual (newState, stateProperty.GetState ("NewState"));
+    [Test]
+    public void AddState_DuplicateValue ()
+    {
+      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
+      stateProperty.AddState (_testHelper.CreateState ("State 1", 1));
+
+      Assert.That (
+          () => stateProperty.AddState (_testHelper.CreateState ("State 2", 1)),
+          Throws.ArgumentException.And.Message.StartsWith ("A state with the value 1 was already added to the property 'NewProperty'."));
+    }
+
+    [Test]
+    public void RemoveState ()
+    {
+      var state1 = _testHelper.CreateState ("State 1", 1);
+      var state2 = _testHelper.CreateState ("State 2", 2);
+      var state3 = _testHelper.CreateState ("State 3", 3);
+      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
+      stateProperty.AddState (state1);
+      stateProperty.AddState (state2);
+      stateProperty.AddState (state3);
+
+      stateProperty.RemoveState (state2);
+
+      Assert.That (stateProperty.DefinedStates, Is.EqualTo (new[] { state1, state3 }));
     }
 
     [Test]
     public void GetDefinedStates ()
     {
-      DatabaseFixtures dbFixtures = new DatabaseFixtures();
-      dbFixtures.CreateEmptyDomain();
-      StatePropertyDefinition expectdPropertyDefinition = _testHelper.CreateConfidentialityProperty (0);
-      var expectedStateDefinitions = expectdPropertyDefinition.DefinedStates;
-      _testHelper.Transaction.Commit();
+      var state1 = _testHelper.CreateState ("State 1", 1);
+      var state2 = _testHelper.CreateState ("State 2", 2);
+      var state3 = _testHelper.CreateState ("State 3", 3);
+      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
+      stateProperty.AddState (state1);
+      stateProperty.AddState (state3);
+      stateProperty.AddState (state2);
 
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
-      {
-        StatePropertyDefinition actualStatePropertyDefinition = StatePropertyDefinition.GetObject (expectdPropertyDefinition.ID);
-
-        Assert.AreEqual (3, actualStatePropertyDefinition.DefinedStates.Count);
-        for (int i = 0; i < actualStatePropertyDefinition.DefinedStates.Count; i++)
-          Assert.AreEqual (expectedStateDefinitions[i].ID, actualStatePropertyDefinition.DefinedStates[i].ID);
-      }
+      Assert.That (stateProperty.DefinedStates, Is.EqualTo (new[] { state1, state2, state3 }));
     }
   }
 }

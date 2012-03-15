@@ -102,10 +102,22 @@ namespace Remotion.SecurityManager.Domain.Metadata
       get { return GetState (stateName); }
     }
 
-    public void AddState (StateDefinition newState)
+    public void AddState (StateDefinition state)
     {
-      ArgumentUtility.CheckNotNull ("newState", newState);
-      DefinedStatesInternal.Add (newState);
+      ArgumentUtility.CheckNotNull ("state", state);
+      if (ContainsState (state.Name))
+        throw CreateArgumentException ("state", "A state with the name '{0}' was already added to the property '{1}'.", state.Name, Name);
+      if (ContainsState (state.Value))
+        throw CreateArgumentException ("state", "A state with the value {0} was already added to the property '{1}'.", state.Value, Name);
+
+      DefinedStatesInternal.Add (state);
+    }
+
+    public void RemoveState (StateDefinition state)
+    {
+      ArgumentUtility.CheckNotNull ("state", state);
+
+      DefinedStatesInternal.Remove (state);
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
