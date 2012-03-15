@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     [DBBidirectionalRelation ("StateCombinationsInternal")]
     [Mandatory]
-    public abstract StatefulAccessControlList AccessControlList { get; set; }
+    public abstract StatefulAccessControlList AccessControlList { get; }
 
     public bool MatchesStates (IList<StateDefinition> states)
     {

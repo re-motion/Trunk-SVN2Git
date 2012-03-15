@@ -112,7 +112,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       }
 
       var stateCombination = StateCombination.NewObject();
-      stateCombination.AccessControlList = this;
+      StateCombinationsInternal.Add (stateCombination);
 
       return stateCombination;
     }

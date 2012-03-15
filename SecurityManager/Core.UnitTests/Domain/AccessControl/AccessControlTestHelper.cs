@@ -122,28 +122,12 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         var acl = StatefulAccessControlList.NewObject ();
         classDefinition.StatefulAccessControlLists.Add (acl);
-        StateCombination stateCombination = CreateStateCombination (acl, transaction);
+        StateCombination stateCombination = acl.CreateStateCombination();
 
         foreach (StateDefinition state in states)
           stateCombination.AttachState (state);
 
         return acl;
-      }
-    }
-
-    public StateCombination CreateStateCombination (StatefulAccessControlList acl)
-    {
-      return CreateStateCombination (acl, _transaction);
-    }
-
-    private StateCombination CreateStateCombination (StatefulAccessControlList acl, ClientTransaction transaction)
-    {
-      using (transaction.EnterNonDiscardingScope ())
-      {
-        StateCombination stateCombination = StateCombination.NewObject ();
-        stateCombination.AccessControlList = acl;
-
-        return stateCombination;
       }
     }
 
