@@ -121,7 +121,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       Assert.That (
           () => securableClassDefinition.RemoveAccessType (AccessTypeDefinition.NewObject (Guid.NewGuid(), "Test", 42)),
           Throws.ArgumentException
-              .And.Message.StartsWith ("The access type 'Test' is not associated with the securable class definition 'Class'."));
+              .And.Message.StartsWith ("The access type 'Test' is not associated with this securable class definition."));
     }
   }
 }

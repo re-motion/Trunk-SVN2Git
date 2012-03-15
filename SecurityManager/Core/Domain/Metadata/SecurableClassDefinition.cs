@@ -186,22 +186,61 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [DBBidirectionalRelation ("MyClass", SortExpression = "Index ASC")]
     public abstract ObjectList<StatefulAccessControlList> StatefulAccessControlLists { get; }
 
+    /// <summary>
+    /// Adds an <see cref="AccessTypeDefinition"/> at end of the <see cref="AccessTypes"/> list.
+    /// </summary>
+    /// <param name="accessType">The <see cref="AccessTypeDefinition"/> to be added. Must not be <see langword="null" />.</param>
+    /// <remarks> Also updates all <see cref="AccessControlEntry"/> objects associated with the <see cref="SecurableClassDefinition"/> 
+    /// to include a <see cref="Permission"/> entry for the new <see cref="AccessTypeDefinition"/>.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="accessType"/> already exists on the <see cref="SecurableClassDefinition"/>.
+    /// </exception>
     public void AddAccessType (AccessTypeDefinition accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
 
+      InsertAccessType (AccessTypeReferences.Count, accessType);
+    }
+
+    /// <summary>
+    /// Inserts an <see cref="AccessTypeDefinition"/> at the specified <paramref name="index"/>. 
+    /// </summary>
+    /// <param name="index">The zero-based index at which the <paramref name="accessType"/> should be inserted.</param>
+    /// <param name="accessType">The <see cref="AccessTypeDefinition"/> to be inserted. Must not be <see langword="null" />.</param>
+    /// <remarks> Also updates all <see cref="AccessControlEntry"/> objects associated with the <see cref="SecurableClassDefinition"/> 
+    /// to include a <see cref="Permission"/> entry for the new <see cref="AccessTypeDefinition"/>.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="accessType"/> already exists on the <see cref="SecurableClassDefinition"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <para><paramref name="index"/> is less than 0.</para>
+    /// <para> -or-</para>
+    /// <para><paramref name="index"/> is greater than the total number of <see cref="AccessTypes"/>.</para>
+    /// </exception>
+    public void InsertAccessType (int index, AccessTypeDefinition accessType)
+    {
+      ArgumentUtility.CheckNotNull ("accessType", accessType);
+      if (index < 0 || index > AccessTypeReferences.Count)
+      {
+        throw CreateArgumentOutOfRangeException (
+            "index", index, "The index must not be less than 0 or greater than the total number of access types for this securable class definition.");
+      }
+
       if (AccessTypeReferences.Where (r => r.AccessType == accessType).Any())
       {
         throw CreateArgumentException (
-            "accessType", "The access type '{0}' has already been added to the securable class definition '{1}'.", accessType.Name, Name);
+            "accessType", "The access type '{0}' has already been added to this securable class definition.", accessType.Name);
       }
 
       _accessTypes = null;
 
       var reference = AccessTypeReference.NewObject();
       reference.AccessType = accessType;
-      reference.Index = AccessTypeReferences.Count;
-      AccessTypeReferences.Add (reference);
+      AccessTypeReferences.Insert (index, reference);
+      for (int i = 0; i < AccessTypeReferences.Count; i++)
+        AccessTypeReferences[i].Index = i;
 
       foreach (var ace in GetAccessControlLists().SelectMany (acl => acl.AccessControlEntries))
         ace.AddAccessType (accessType);
@@ -209,6 +248,16 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Touch();
     }
 
+    /// <summary>
+    /// Removes an <see cref="AccessTypeDefinition"/> at from of the <see cref="AccessTypes"/> list.
+    /// </summary>
+    /// <param name="accessType">The <see cref="AccessTypeDefinition"/> to be removed. Must not be <see langword="null" />.</param>
+    /// <remarks> Also updates all <see cref="AccessControlEntry"/> objects associated with the <see cref="SecurableClassDefinition"/> 
+    /// to remove the <see cref="Permission"/> entry for the <see cref="AccessTypeDefinition"/>.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="accessType"/> does not exist on the <see cref="SecurableClassDefinition"/>.
+    /// </exception>
     public void RemoveAccessType (AccessTypeDefinition accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
@@ -219,7 +268,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       if (accessTypeReference == null)
       {
         throw CreateArgumentException (
-            "accessType", "The access type '{0}' is not associated with the securable class definition '{1}'.", accessType.Name, Name);
+            "accessType", "The access type '{0}' is not associated with this securable class definition.", accessType.Name);
       }
 
       accessTypeReference.Delete();
@@ -251,10 +300,10 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return StateProperties.Single (
           p => p.Name == propertyName,
           () => CreateArgumentException (
-                    "propertyName",
-                    "A state property with the name '{0}' is not defined for the secureable class definition '{1}'.",
-                    propertyName,
-                    Name));
+              "propertyName",
+              "A state property with the name '{0}' is not defined for the secureable class definition '{1}'.",
+              propertyName,
+              Name));
     }
 
     public StateCombination FindStateCombination (IList<StateDefinition> states)
@@ -344,6 +393,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
     {
       return new ArgumentException (string.Format (format, args), argumentName);
+    }
+    
+    private ArgumentException CreateArgumentOutOfRangeException (string argumentName, object actualValue, string format, params object[] args)
+    {
+      return new ArgumentOutOfRangeException(argumentName, actualValue, string.Format (format, args));
     }
 
     private IEnumerable<AccessControlList> GetAccessControlLists()

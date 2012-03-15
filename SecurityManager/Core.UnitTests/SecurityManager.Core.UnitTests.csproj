@@ -171,6 +171,7 @@
     <Compile Include="Domain\LockingSecurityManagerPrincipalDecoratorTestHelper.cs" />
     <Compile Include="Domain\Metadata\FindMetadataObjectQueryBuilderTest.cs" />
     <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\AddAccessType.cs" />
+    <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\InsertAccessType.cs" />
     <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\RemoveAccessType.cs" />
     <Compile Include="Domain\Metadata\StatePropertyReferenceTest.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
