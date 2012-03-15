@@ -48,6 +48,64 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
+    public void RemoveStateProperty_DeletesAssociatedStateCombinations ()
+    {
+      var state1 = StateDefinition.NewObject ("Test", 1);
+      var state2 = StateDefinition.NewObject();
+      var stateProperty = StatePropertyDefinition.NewObject();
+      stateProperty.AddState (state1);
+
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.AddStateProperty (stateProperty);
+      var acl = securableClassDefinition.CreateStatefulAccessControlList();
+      acl.StateCombinations[0].AttachState (state1);
+      acl.CreateStateCombination().AttachState (state2);
+
+      securableClassDefinition.RemoveStateProperty (stateProperty);
+
+      Assert.That (acl.StateCombinations.Count, Is.EqualTo (1));
+      Assert.That (acl.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state2));
+    }
+
+    [Test]
+    public void RemoveStateProperty_DeletesAssociatedAccessControlListIfDeletedStateCombinationWasLastStateCombination ()
+    {
+      var state1 = StateDefinition.NewObject ("Test", 1);
+      var state2 = StateDefinition.NewObject();
+      var stateProperty = StatePropertyDefinition.NewObject();
+      stateProperty.AddState (state1);
+
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.AddStateProperty (stateProperty);
+      var acl1 = securableClassDefinition.CreateStatefulAccessControlList();
+      acl1.StateCombinations[0].AttachState (state1);
+
+      var acl2 = securableClassDefinition.CreateStatefulAccessControlList();
+      Assert.That (acl2.StateCombinations, Is.Not.Empty);
+
+      var acl3 = securableClassDefinition.CreateStatefulAccessControlList();
+      acl3.StateCombinations[0].Delete();
+
+      var acl4 = securableClassDefinition.CreateStatefulAccessControlList();
+      acl4.StateCombinations[0].AttachState (state2);
+
+      securableClassDefinition.RemoveStateProperty (stateProperty);
+
+      Assert.That (acl1.State, Is.EqualTo (StateType.Invalid));
+
+      Assert.That (acl2.State, Is.EqualTo (StateType.New));
+      Assert.That (acl2.StateCombinations.Count, Is.EqualTo (1));
+      Assert.That (acl2.StateCombinations[0].StateUsages, Is.Empty);
+
+      Assert.That (acl3.State, Is.EqualTo (StateType.New));
+      Assert.That (acl3.StateCombinations, Is.Empty);
+
+      Assert.That (acl4.State, Is.EqualTo (StateType.New));
+      Assert.That (acl4.StateCombinations.Count, Is.EqualTo (1));
+      Assert.That (acl4.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state2));
+    }
+
+    [Test]
     public void TouchesSecurableClassDefinition ()
     {
       var stateProperty = StatePropertyDefinition.NewObject();

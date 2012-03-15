@@ -347,6 +347,19 @@ namespace Remotion.SecurityManager.Domain.Metadata
       }
 
       statePropertyReference.Delete();
+
+      foreach (var acl in StatefulAccessControlLists.ToList())
+      {
+        var stateCombinationsContainingRemovedStateProperty
+            = acl.StateCombinations.Where (sc => sc.GetStates().Any (sd => sd.StateProperty == stateProperty)).ToList();
+        foreach (var stateCombination in stateCombinationsContainingRemovedStateProperty)
+        {
+          stateCombination.Delete();
+          if (!acl.StateCombinations.Any())
+            acl.Delete();
+        }
+      }
+
       _stateProperties = null;
 
       Touch();
