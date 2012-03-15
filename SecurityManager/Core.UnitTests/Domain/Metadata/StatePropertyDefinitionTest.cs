@@ -246,5 +246,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       Assert.That (acl3.State, Is.EqualTo (StateType.New));
       Assert.That (acl3.StateCombinations, Is.Empty);
     }
+
+    [Test]
+    public void RemoveState_StateNotFound ()
+    {
+      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
+      stateProperty.AddState (_testHelper.CreateState ("State 1", 1));
+
+      Assert.That (
+          () => stateProperty.RemoveState (_testHelper.CreateState ("State 2", 2)),
+          Throws.ArgumentException.And.Message.StartsWith ("The state 'State 2' does not exist on the property 'NewProperty'."));
+    }
   }
 }

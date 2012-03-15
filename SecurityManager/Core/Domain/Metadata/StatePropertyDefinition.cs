@@ -117,7 +117,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
     {
       ArgumentUtility.CheckNotNull ("state", state);
 
+      if (!DefinedStatesInternal.Contains (state.ID))
+          throw CreateArgumentException ("state", "The state '{0}' does not exist on the property '{1}'.", state.Name, Name);
+
       DefinedStatesInternal.Remove (state);
+
       foreach (var acl in StatePropertyReferences.SelectMany (r=> r.Class.StatefulAccessControlLists).ToList())
       {
         var stateCombinationsContainingRemovedState = acl.StateCombinations.Where (sc => sc.GetStates().Contains (state)).ToList();
