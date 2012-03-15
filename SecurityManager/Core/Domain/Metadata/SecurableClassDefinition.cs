@@ -138,14 +138,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       get
       {
         if (_stateProperties == null)
-        {
-          var stateProperties = new List<StatePropertyDefinition>();
-
-          foreach (var propertyReference in StatePropertyReferences)
-            stateProperties.Add (propertyReference.StateProperty);
-
-          _stateProperties = stateProperties.AsReadOnly();
-        }
+          _stateProperties = StatePropertyReferences.Select (propertyReference => propertyReference.StateProperty).ToList().AsReadOnly();
 
         return _stateProperties;
       }
