@@ -17,6 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
@@ -116,6 +117,20 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
+    public void GetDefinedStates ()
+    {
+      var state1 = _testHelper.CreateState ("State 1", 1);
+      var state2 = _testHelper.CreateState ("State 2", 2);
+      var state3 = _testHelper.CreateState ("State 3", 3);
+      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
+      stateProperty.AddState (state1);
+      stateProperty.AddState (state3);
+      stateProperty.AddState (state2);
+
+      Assert.That (stateProperty.DefinedStates, Is.EqualTo (new[] { state1, state2, state3 }));
+    }
+
+    [Test]
     public void AddState ()
     {
       var state1 = _testHelper.CreateState ("State 1", 1);
@@ -166,17 +181,70 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     }
 
     [Test]
-    public void GetDefinedStates ()
+    public void RemoveState_DeletesAssociatedStateCombinations ()
     {
       var state1 = _testHelper.CreateState ("State 1", 1);
       var state2 = _testHelper.CreateState ("State 2", 2);
       var state3 = _testHelper.CreateState ("State 3", 3);
       StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
       stateProperty.AddState (state1);
-      stateProperty.AddState (state3);
       stateProperty.AddState (state2);
+      stateProperty.AddState (state3);
 
-      Assert.That (stateProperty.DefinedStates, Is.EqualTo (new[] { state1, state2, state3 }));
+      var securableClassDefinition1 = SecurableClassDefinition.NewObject();
+      securableClassDefinition1.AddStateProperty (stateProperty);
+      var acl1 = securableClassDefinition1.CreateStatefulAccessControlList();
+      acl1.StateCombinations[0].AttachState (state1);
+      acl1.CreateStateCombination().AttachState (state2);
+
+      var securableClassDefinition2 = SecurableClassDefinition.NewObject();
+      securableClassDefinition2.AddStateProperty (stateProperty);
+
+      var acl2 = securableClassDefinition2.CreateStatefulAccessControlList();
+      acl2.StateCombinations[0].AttachState (state2);
+      acl2.CreateStateCombination().AttachState (state3);
+
+      stateProperty.RemoveState (state2);
+
+      Assert.That (acl1.StateCombinations.Count, Is.EqualTo (1));
+      Assert.That (acl1.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state1));
+
+      Assert.That (acl2.StateCombinations.Count, Is.EqualTo (1));
+      Assert.That (acl2.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state3));
+    }
+
+    [Test]
+    public void RemoveState_DeletesAssociatedAccessControlListIfDeletedStateCombinationWasLastStateCombination()
+    {
+      var state1 = _testHelper.CreateState ("State 1", 1);
+      var state2 = _testHelper.CreateState ("State 2", 2);
+      var state3 = _testHelper.CreateState ("State 3", 3);
+      StatePropertyDefinition stateProperty = _testHelper.CreateNewStateProperty ("NewProperty");
+      stateProperty.AddState (state1);
+      stateProperty.AddState (state2);
+      stateProperty.AddState (state3);
+
+      var securableClassDefinition1 = SecurableClassDefinition.NewObject();
+      securableClassDefinition1.AddStateProperty (stateProperty);
+      var acl1 = securableClassDefinition1.CreateStatefulAccessControlList();
+      acl1.StateCombinations[0].AttachState (state2);
+
+      var acl2 = securableClassDefinition1.CreateStatefulAccessControlList();
+      Assert.That (acl2.StateCombinations, Is.Not.Empty);
+
+      var acl3 = securableClassDefinition1.CreateStatefulAccessControlList();
+      acl3.StateCombinations[0].Delete();
+
+      stateProperty.RemoveState (state2);
+
+      Assert.That (acl1.State, Is.EqualTo (StateType.Invalid));
+
+      Assert.That (acl2.State, Is.EqualTo (StateType.New));
+      Assert.That (acl2.StateCombinations.Count, Is.EqualTo (1));
+      Assert.That (acl2.StateCombinations[0].StateUsages, Is.Empty);
+
+      Assert.That (acl3.State, Is.EqualTo (StateType.New));
+      Assert.That (acl3.StateCombinations, Is.Empty);
     }
   }
 }

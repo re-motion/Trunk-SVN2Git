@@ -118,6 +118,16 @@ namespace Remotion.SecurityManager.Domain.Metadata
       ArgumentUtility.CheckNotNull ("state", state);
 
       DefinedStatesInternal.Remove (state);
+      foreach (var acl in StatePropertyReferences.SelectMany (r=> r.Class.StatefulAccessControlLists).ToList())
+      {
+        var stateCombinationsContainingRemovedState = acl.StateCombinations.Where (sc => sc.GetStates().Contains (state)).ToList();
+        foreach (var stateCombination in stateCombinationsContainingRemovedState)
+        {
+          stateCombination.Delete();
+          if (!acl.StateCombinations.Any())
+            acl.Delete();
+        }
+      }
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
