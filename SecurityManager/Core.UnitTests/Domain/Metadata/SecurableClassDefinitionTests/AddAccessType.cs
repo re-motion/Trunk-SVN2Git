@@ -55,8 +55,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     public void TouchesSecurableClassDefinition ()
     {
       var securableClassDefinition = SecurableClassDefinition.NewObject();
-      securableClassDefinition.CreateStatelessAccessControlList();
-      securableClassDefinition.StatelessAccessControlList.CreateAccessControlEntry();
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {

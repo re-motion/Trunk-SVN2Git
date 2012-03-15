@@ -97,8 +97,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       var accessType = AccessTypeDefinition.NewObject();
       var securableClassDefinition = SecurableClassDefinition.NewObject();
       securableClassDefinition.AddAccessType (accessType);
-      securableClassDefinition.CreateStatelessAccessControlList();
-      securableClassDefinition.StatelessAccessControlList.CreateAccessControlEntry();
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {

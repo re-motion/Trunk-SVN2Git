@@ -281,6 +281,48 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Touch();
     }
 
+    /// <summary>
+    /// Moves an <see cref="AccessTypeDefinition"/> to the specified <paramref name="index"/>. 
+    /// </summary>
+    /// <param name="index">The zero-based index to which the <paramref name="accessType"/> should be moved.</param>
+    /// <param name="accessType">The <see cref="AccessTypeDefinition"/> to be moved. Must not be <see langword="null" />.</param>
+    /// <remarks> Does not alter the <see cref="Permission"/> entries of the <see cref="AccessControlEntry"/> objects associated 
+    /// with the <see cref="SecurableClassDefinition"/>.
+    /// </remarks>
+    /// <exception cref="ArgumentException">
+    /// The <paramref name="accessType"/> does not exist on the <see cref="SecurableClassDefinition"/>.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <para><paramref name="index"/> is less than 0.</para>
+    /// <para> -or-</para>
+    /// <para><paramref name="index"/> is greater than the top index of the <see cref="AccessTypes"/>.</para>
+    /// </exception>
+    public void MoveAccessType (int index, AccessTypeDefinition accessType)
+    {
+      ArgumentUtility.CheckNotNull ("accessType", accessType);
+      if (index < 0 || index >= AccessTypeReferences.Count)
+      {
+        throw CreateArgumentOutOfRangeException (
+            "index", index, "The index must not be less than 0 or greater than the top index of the access types for this securable class definition.");
+      }
+
+      var accessTypeReference = AccessTypeReferences.SingleOrDefault (r => r.AccessType == accessType);
+      if (accessTypeReference == null)
+      {
+        throw CreateArgumentException (
+            "accessType", "The access type '{0}' is not associated with this securable class definition.", accessType.Name);
+      }
+
+      _accessTypes = null;
+
+      AccessTypeReferences.Remove (accessTypeReference);
+      AccessTypeReferences.Insert (index, accessTypeReference);
+      for (int i = 0; i < AccessTypeReferences.Count; i++)
+        AccessTypeReferences[i].Index = i;
+
+      Touch();
+    }
+
     public void AddStateProperty (StatePropertyDefinition stateProperty)
     {
       var reference = StatePropertyReference.NewObject();
