@@ -106,7 +106,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (transaction.EnterNonDiscardingScope ())
       {
         var acl = StatelessAccessControlList.NewObject ();
-        acl.Class = classDefinition;
+        classDefinition.StatelessAccessControlList = acl;
         return acl;
       }
     }
@@ -121,7 +121,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       using (transaction.EnterNonDiscardingScope ())
       {
         var acl = StatefulAccessControlList.NewObject ();
-        acl.Class = classDefinition;
+        classDefinition.StatefulAccessControlLists.Add (acl);
         StateCombination stateCombination = CreateStateCombination (acl, transaction);
 
         foreach (StateDefinition state in states)

@@ -16,6 +16,7 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects;
 using Remotion.SecurityManager.Domain.Metadata;
 
@@ -51,13 +52,13 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     private void SubscribeCollectionEvents ()
     {
-      StateCombinations.Added += StateCombinations_Added;
+      StateCombinationsInternal.Added += StateCombinations_Added;
     }
 
     private void StateCombinations_Added (object sender, DomainObjectCollectionChangeEventArgs args)
     {
       var stateCombination = (StateCombination) args.DomainObject;
-      var stateCombinations = StateCombinations;
+      var stateCombinations = StateCombinationsInternal;
       if (stateCombinations.Count == 1)
         stateCombination.Index = 0;
       else
@@ -69,16 +70,21 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("StatefulAccessControlLists")]
     [DBColumn ("StatefulAcl_ClassID")]
     [Mandatory]
-    protected abstract SecurableClassDefinition MyClass { get; set; }
+    protected abstract SecurableClassDefinition MyClass { get; }
 
     [DBBidirectionalRelation ("AccessControlList", SortExpression = "Index ASC")]
     [Mandatory]
-    public abstract ObjectList<StateCombination> StateCombinations { get; }
+    protected abstract ObjectList<StateCombination> StateCombinationsInternal { get; }
+
+    [StorageClassNone]
+    public ReadOnlyCollection<StateCombination> StateCombinations
+    {
+      get { return StateCombinationsInternal.AsReadOnlyCollection(); }
+    }
 
     public override SecurableClassDefinition Class
     {
       get { return MyClass; }
-      set { MyClass = value; }
     }
 
     //TODO: Rewrite with test
@@ -86,7 +92,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
       base.OnDeleting (args);
 
-      _deleteHandler = new DomainObjectDeleteHandler (StateCombinations);
+      _deleteHandler = new DomainObjectDeleteHandler (StateCombinationsInternal);
     }
 
     //TODO: Rewrite with test
@@ -100,8 +106,10 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public StateCombination CreateStateCombination ()
     {
       if (Class == null)
+      {
         throw new InvalidOperationException (
             "Cannot create StateCombination if no SecurableClassDefinition is assigned to this StatefulAccessControlList.");
+      }
 
       var stateCombination = StateCombination.NewObject();
       stateCombination.AccessControlList = this;

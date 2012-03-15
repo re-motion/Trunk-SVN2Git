@@ -410,7 +410,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
         throw new InvalidOperationException ("A SecurableClassDefinition only supports a single StatelessAccessControlList at a time.");
 
       var accessControlList = StatelessAccessControlList.NewObject();
-      accessControlList.Class = this;
+      StatelessAccessControlList = accessControlList;
       accessControlList.CreateAccessControlEntry ();
 
       return accessControlList;
@@ -419,7 +419,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     public StatefulAccessControlList CreateStatefulAccessControlList ()
     {
       var accessControlList = StatefulAccessControlList.NewObject ();
-      accessControlList.Class = this;
+      StatefulAccessControlLists.Add (accessControlList);
       accessControlList.CreateStateCombination();
       accessControlList.CreateAccessControlEntry();
 

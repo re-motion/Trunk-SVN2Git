@@ -87,7 +87,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
         control.LoadValues (interim);
     }
 
-    private void CreateEditStateCombinationControls (ObjectList<StateCombination> stateCombinations)
+    private void CreateEditStateCombinationControls (IList<StateCombination> stateCombinations)
     {
       StateCombinationControls.Controls.Clear ();
       _editStateCombinationControls.Clear ();

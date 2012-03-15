@@ -42,12 +42,11 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     [DBBidirectionalRelation ("StatelessAccessControlList", ContainsForeignKey = true)]
     [DBColumn ("StatelessAcl_ClassID")]
     [Mandatory]
-    protected abstract SecurableClassDefinition MyClass { get; set; }
+    protected abstract SecurableClassDefinition MyClass { get; }
 
     public override SecurableClassDefinition Class
     {
       get { return MyClass; }
-      set { MyClass = value; }
     }
   }
 }

@@ -81,7 +81,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
         acl.EnsureDataAvailable ();
         Assert.AreEqual (StateType.Unchanged, acl.State);
 
-        acl.StateCombinations.Add (StateCombination.NewObject ());
+        acl.CreateStateCombination();
 
         Assert.AreEqual (StateType.Changed, acl.State);
       }
@@ -91,7 +91,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void CreateStateCombination_TwoNewEntries ()
     {
       StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
-      acl.Class = _testHelper.CreateClassDefinition ("SecurableClass");
+      var securableClassDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      securableClassDefinition.StatefulAccessControlLists.Add (acl);
       using (_testHelper.Transaction.CreateSubTransaction ().EnterDiscardingScope ())
       {
         acl.EnsureDataAvailable ();
@@ -113,8 +114,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Get_StateCombinationsFromDatabase ()
     {
       DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      StatefulAccessControlList expectedAcl = dbFixtures.CreateAndCommitAccessControlListWithStateCombinations (10, ClientTransactionScope.CurrentTransaction);
-      ObjectList<StateCombination> expectedStateCombinations = expectedAcl.StateCombinations;
+      var expectedAcl = dbFixtures.CreateAndCommitAccessControlListWithStateCombinations (10, ClientTransactionScope.CurrentTransaction);
+      var expectedStateCombinations = expectedAcl.StateCombinations;
 
       using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
       {
@@ -139,7 +140,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void TouchClassOnCommit ()
     {
       StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
-      acl.Class = _testHelper.CreateClassDefinition ("SecurableClass");
+      var securableClassDefinition = _testHelper.CreateClassDefinition ("SecurableClass");
+      securableClassDefinition.StatefulAccessControlLists.Add (acl);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {

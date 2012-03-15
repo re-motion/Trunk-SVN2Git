@@ -238,7 +238,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
         StatelessAccessControlList statelessAccessControlList = StatelessAccessControlList.NewObject();
-        statelessAccessControlList.Class = classDefinition;
+        classDefinition.StatelessAccessControlList = statelessAccessControlList;
         
         var stateProperty = StatePropertyDefinition.NewObject (Guid.NewGuid (), "Property");
         classDefinition.AddStateProperty (stateProperty);
@@ -246,7 +246,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
         for (int i = 1; i < accessControlLists; i++)
         {
           StatefulAccessControlList statefulAccessControlList = StatefulAccessControlList.NewObject();
-          statefulAccessControlList.Class = classDefinition;
+          classDefinition.StatefulAccessControlLists.Add (statefulAccessControlList);
           statefulAccessControlList.CreateAccessControlEntry();
           CreateStateCombination (statefulAccessControlList, stateProperty, StateDefinition.NewObject (string.Format ("Value {0}", i), i));
         }
@@ -265,7 +265,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition ();
         StatefulAccessControlList acl = StatefulAccessControlList.NewObject ();
-        acl.Class = classDefinition;
+        classDefinition.StatefulAccessControlLists.Add (acl);
         acl.CreateStateCombination ();
 
         for (int i = 0; i < accessControlEntries; i++)
@@ -284,7 +284,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       {
         SecurableClassDefinition classDefinition = CreateOrderSecurableClassDefinition();
         StatefulAccessControlList statefulAccessControlList = StatefulAccessControlList.NewObject ();
-        statefulAccessControlList.Class = classDefinition;
+       classDefinition.StatefulAccessControlLists.Add (statefulAccessControlList);
         statefulAccessControlList.CreateAccessControlEntry();
 
         var stateProperty = StatePropertyDefinition.NewObject (Guid.NewGuid (), "Property");

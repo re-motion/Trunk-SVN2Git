@@ -62,7 +62,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       get { return AccessControlList != null ? AccessControlList.Class : null; }
     }
 
-    [DBBidirectionalRelation ("StateCombinations")]
+    [DBBidirectionalRelation ("StateCombinationsInternal")]
     [Mandatory]
     public abstract StatefulAccessControlList AccessControlList { get; set; }
 
