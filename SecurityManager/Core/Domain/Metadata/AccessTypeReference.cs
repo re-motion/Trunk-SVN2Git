@@ -40,7 +40,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [DBBidirectionalRelation ("AccessTypeReferences")]
     [DBColumn ("SecurableClassID")]
     [Mandatory]
-    public abstract SecurableClassDefinition Class { get; set; }
+    public abstract SecurableClassDefinition Class { get; }
 
     [DBBidirectionalRelation ("AccessTypeReferences")]
     [Mandatory]

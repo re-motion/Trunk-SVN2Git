@@ -37,15 +37,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     public void TouchClassOnCommit ()
     {
       SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
-      var statePropertyReference = StatePropertyReference.NewObject();
-      statePropertyReference.Class = classDefinition;
-      statePropertyReference.StateProperty = _testHelper.CreateFileStateProperty (0);
+      var stateProperty = _testHelper.CreateFileStateProperty (0);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
         classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
-        statePropertyReference.MarkAsChanged();
+        classDefinition.AddStateProperty (stateProperty);
 
         ClientTransaction.Current.Commit();
 

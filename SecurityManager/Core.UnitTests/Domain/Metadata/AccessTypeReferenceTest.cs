@@ -47,15 +47,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     public void TouchClassOnCommit ()
     {
       SecurableClassDefinition classDefinition = SecurableClassDefinition.NewObject();
-      var accessTypeReference = AccessTypeReference.NewObject();
-      accessTypeReference.Class = classDefinition;
-      accessTypeReference.AccessType = _testHelper.CreateAccessTypeCreate (0);
+      var accessType = _testHelper.CreateAccessTypeCreate (0);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
         classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
-        accessTypeReference.MarkAsChanged();
+        classDefinition.AddAccessType (accessType);
 
         ClientTransaction.Current.Commit();
 
