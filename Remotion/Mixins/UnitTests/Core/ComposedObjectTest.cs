@@ -16,7 +16,6 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
 
@@ -72,7 +71,7 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       var instance = ObjectFactory.Create<ClassDerivedFromComposedObject> (ParamList.Empty);
 
-      var result = PrivateInvoke.GetNonPublicProperty (instance, "This");
+      var result = instance.This;
 
       Assert.That (result, Is.SameAs (instance));
       Assert.That (result, Is.InstanceOf (typeof (ClassDerivedFromComposedObject.IClassDerivedFromComposedObject)));
