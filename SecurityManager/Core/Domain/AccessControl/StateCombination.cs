@@ -73,13 +73,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       if (StateUsages.Count == 0 && states.Count > 0)
         return false;
 
-      foreach (StateUsage stateUsage in StateUsages)
-      {
-        if (!states.Contains (stateUsage.StateDefinition))
-          return false;
-      }
-
-      return true;
+      return StateUsages.Select (stateUsage => stateUsage.StateDefinition).All (usedState => states.Contains (usedState));
     }
 
     public void AttachState (StateDefinition state)
