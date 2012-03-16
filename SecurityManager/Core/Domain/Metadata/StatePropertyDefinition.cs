@@ -153,6 +153,16 @@ namespace Remotion.SecurityManager.Domain.Metadata
       }
     }
 
+    protected override void OnDeleting (EventArgs args)
+    {
+      if (StatePropertyReferences.Any())
+      {
+        throw new InvalidOperationException (
+            string.Format ("State property '{0}' cannot be deleted because it is associated with at least one securable class definition.", Name));
+      }
+      base.OnDeleting (args);
+    }
+
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
     {
       return new ArgumentException (string.Format (format, args), argumentName);

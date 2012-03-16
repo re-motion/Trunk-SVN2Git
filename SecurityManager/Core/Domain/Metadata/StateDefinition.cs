@@ -16,10 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using System.ComponentModel;
 using Remotion.Data.DomainObjects;
 using Remotion.Reflection;
-using Remotion.SecurityManager.Domain.AccessControl;
 
 namespace Remotion.SecurityManager.Domain.Metadata
 {
@@ -33,17 +31,17 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public static StateDefinition NewObject ()
     {
-      return NewObject<StateDefinition> ();
-   }
+      return NewObject<StateDefinition>();
+    }
 
     public static StateDefinition NewObject (string name, int value)
     {
       return NewObject<StateDefinition> (ParamList.Create (name, value));
     }
 
-    public static new StateDefinition GetObject (ObjectID id)
+    public new static StateDefinition GetObject (ObjectID id)
     {
-      return DomainObject.GetObject<StateDefinition> (id);
+      return GetObject<StateDefinition> (id);
     }
 
     // member fields
@@ -72,8 +70,14 @@ namespace Remotion.SecurityManager.Domain.Metadata
       set { throw new NotSupportedException ("States do not support MetadataItemID"); }
     }
 
-    [EditorBrowsable( EditorBrowsableState.Never)]
-    [DBBidirectionalRelation ("StateDefinition")]
-    protected abstract ObjectList<StateUsage> StateUsages { get; }
+    protected override void OnDeleting (EventArgs args)
+    {
+      if (StateProperty != null)
+      {
+        throw new InvalidOperationException (
+            string.Format ("State '{0}' cannot be deleted because it is associated with state property '{1}'.", Name, StateProperty.Name));
+      }
+      base.OnDeleting (args);
+    }
   }
 }

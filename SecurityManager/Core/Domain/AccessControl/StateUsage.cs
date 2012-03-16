@@ -36,7 +36,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     {
     }
 
-    [DBBidirectionalRelation ("StateUsages")]
     [Mandatory]
     public abstract StateDefinition StateDefinition { get; set; }
 

@@ -257,5 +257,16 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
           () => stateProperty.RemoveState (_testHelper.CreateState ("State 2", 2)),
           Throws.ArgumentException.And.Message.StartsWith ("The state 'State 2' does not exist on the property 'NewProperty'."));
     }
+
+    [Test]
+    public void DeleteFailsIfStatePropertyDefinitionIsAssociatedWithSecurableClassDefinition ()
+    {
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      var property =  _testHelper.CreateNewStateProperty ("NewProperty");
+      securableClassDefinition.AddStateProperty (property);
+
+      var messge = "State property 'NewProperty' cannot be deleted because it is associated with at least one securable class definition.";
+      Assert.That (() => property.Delete(), Throws.InvalidOperationException.And.Message.EqualTo (messge));
+    }
   }
 }

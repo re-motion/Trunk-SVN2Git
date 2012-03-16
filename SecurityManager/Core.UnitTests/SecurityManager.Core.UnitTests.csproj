@@ -176,6 +176,7 @@
     <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\InsertAccessType.cs" />
     <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\RemoveAccessType.cs" />
     <Compile Include="Domain\Metadata\SecurableClassDefinitionTests\RemoveStateProperty.cs" />
+    <Compile Include="Domain\Metadata\StateDefinitionTest.cs" />
     <Compile Include="Domain\Metadata\StatePropertyReferenceTest.cs" />
     <Compile Include="Domain\NullSecurityManagerPrincipalTest.cs" />
     <Compile Include="Domain\OrganizationalStructure\GroupTests\GetHierarchy.cs" />
