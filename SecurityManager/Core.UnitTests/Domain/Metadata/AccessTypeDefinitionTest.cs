@@ -17,11 +17,12 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 {
   [TestFixture]
-  public class StateDefinitionTest : DomainTest
+  public class AccessTypeDefinitionTest : DomainTest
   {
     private MetadataTestHelper _testHelper;
 
@@ -36,11 +37,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
     [Test]
     public void DeleteFailsIfStateDefinitionIsAssociatedWithStateProperty ()
     {
-      var property = _testHelper.CreateConfidentialityProperty (0);
-      var state = property["Private"];
+      var accessType = _testHelper.CreateAccessTypeCreate(0);
+      var securableClassDefinition = SecurableClassDefinition.NewObject();
+      securableClassDefinition.AddAccessType (accessType);
 
-      var messge = "State 'Private' cannot be deleted because it is associated with state property 'Confidentiality'.";
-      Assert.That (() => state.Delete(), Throws.InvalidOperationException.And.Message.EqualTo (messge));
+      var messge = "Access type 'Create|Remotion.Security.GeneralAccessTypes, Remotion.Security' "
+                   + "cannot be deleted because it is associated with at least one securable class definition.";
+      Assert.That (() => accessType.Delete(), Throws.InvalidOperationException.And.Message.EqualTo (messge));
     }
   }
 }

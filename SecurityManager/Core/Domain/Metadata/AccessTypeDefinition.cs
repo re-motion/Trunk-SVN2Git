@@ -17,6 +17,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Reflection;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -30,7 +31,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
   {
     public static AccessTypeDefinition NewObject ()
     {
-      return NewObject<AccessTypeDefinition> ();
+      return NewObject<AccessTypeDefinition>();
     }
 
     public static AccessTypeDefinition NewObject (Guid metadataItemID, string name, int value)
@@ -55,7 +56,17 @@ namespace Remotion.SecurityManager.Domain.Metadata
     protected abstract ObjectList<AccessTypeReference> References { get; }
 
     [DBBidirectionalRelation ("AccessType")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
+    [EditorBrowsable (EditorBrowsableState.Never)]
     protected abstract ObjectList<Permission> Permissions { get; }
+
+    protected override void OnDeleting (EventArgs args)
+    {
+      if (References.Any())
+      {
+        throw new InvalidOperationException (
+            string.Format ("Access type '{0}' cannot be deleted because it is associated with at least one securable class definition.", Name));
+      }
+      base.OnDeleting (args);
+    }
   }
 }
