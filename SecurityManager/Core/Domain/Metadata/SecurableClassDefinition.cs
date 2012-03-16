@@ -81,9 +81,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     // member fields
 
-    private ReadOnlyCollection<StatePropertyDefinition> _stateProperties;
-    private ReadOnlyCollection<AccessTypeDefinition> _accessTypes;
-
     // construction and disposing
 
     protected SecurableClassDefinition ()
@@ -135,13 +132,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [StorageClassNone]
     public ReadOnlyCollection<StatePropertyDefinition> StateProperties
     {
-      get
-      {
-        if (_stateProperties == null)
-          _stateProperties = StatePropertyReferences.Select (propertyReference => propertyReference.StateProperty).ToList().AsReadOnly();
-
-        return _stateProperties;
-      }
+      get { return StatePropertyReferences.Select (propertyReference => propertyReference.StateProperty).ToList().AsReadOnly(); }
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
@@ -151,26 +142,14 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [StorageClassNone]
     public ReadOnlyCollection<AccessTypeDefinition> AccessTypes
     {
-      get
-      {
-        if (_accessTypes == null)
-          _accessTypes = AccessTypeReferences.Select (accessTypeReference => accessTypeReference.AccessType).ToList().AsReadOnly();
-
-        return _accessTypes;
-      }
+      get { return AccessTypeReferences.Select (accessTypeReference => accessTypeReference.AccessType).ToList().AsReadOnly(); }
     }
 
     [StorageClassNone]
     [ObjectBinding (ReadOnly = true)]
-    public IList<StateCombination> StateCombinations
+    public ReadOnlyCollection<StateCombination> StateCombinations
     {
-      get
-      {
-        var result = from acl in StatefulAccessControlLists 
-                     from sc in acl.StateCombinations 
-                     select sc;
-        return result.ToArray();
-      }
+      get { return StatefulAccessControlLists.SelectMany (acl => acl.StateCombinations).ToList().AsReadOnly(); }
     }
 
     [DBBidirectionalRelation ("MyClass")]
@@ -227,8 +206,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
             "accessType", "The access type '{0}' has already been added to the securable class definition.", accessType.Name);
       }
 
-      _accessTypes = null;
-
       var reference = AccessTypeReference.NewObject();
       reference.AccessType = accessType;
       AccessTypeReferences.Insert (index, reference);
@@ -254,8 +231,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
     public void RemoveAccessType (AccessTypeDefinition accessType)
     {
       ArgumentUtility.CheckNotNull ("accessType", accessType);
-
-      _accessTypes = null;
 
       var accessTypeReference = AccessTypeReferences.SingleOrDefault (r => r.AccessType == accessType);
       if (accessTypeReference == null)
@@ -306,8 +281,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
             "accessType", "The access type '{0}' is not associated with the securable class definition.", accessType.Name);
       }
 
-      _accessTypes = null;
-
       AccessTypeReferences.Remove (accessTypeReference);
       AccessTypeReferences.Insert (index, accessTypeReference);
       for (int i = 0; i < AccessTypeReferences.Count; i++)
@@ -337,7 +310,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
       reference.StateProperty = stateProperty;
 
       StatePropertyReferences.Add (reference);
-      _stateProperties = null;
 
       Touch();
     }
@@ -377,8 +349,6 @@ namespace Remotion.SecurityManager.Domain.Metadata
             acl.Delete();
         }
       }
-
-      _stateProperties = null;
 
       Touch();
     }

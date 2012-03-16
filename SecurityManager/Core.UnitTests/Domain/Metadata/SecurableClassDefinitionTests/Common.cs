@@ -72,7 +72,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
-    public void StateProperties_IsCached ()
+    public void StateProperties_IsNotCached ()
     {
       AccessControlTestHelper testHelper = new AccessControlTestHelper ();
       using (testHelper.Transaction.EnterNonDiscardingScope ())
@@ -82,7 +82,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         var firstCollection = orderClass.StateProperties;
         var secondCollection = orderClass.StateProperties;
 
-        Assert.AreSame (firstCollection, secondCollection);
+        Assert.AreNotSame (firstCollection, secondCollection);
       }
     }
 
@@ -95,22 +95,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinitionWithProperties ();
 
         Assert.IsTrue (((ICollection<StatePropertyDefinition>)orderClass.StateProperties).IsReadOnly);
-      }
-    }
-
-    [Test]
-    public void StateProperties_IsResetByAddStateProperty ()
-    {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
-      using (testHelper.Transaction.EnterNonDiscardingScope ())
-      {
-        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinitionWithProperties ();
-
-        var firstCollection = orderClass.StateProperties;
-        orderClass.AddStateProperty (testHelper.CreateTestProperty ());
-        var secondCollection = orderClass.StateProperties;
-
-        Assert.AreNotSame (firstCollection, secondCollection);
       }
     }
 
@@ -140,7 +124,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
     }
 
     [Test]
-    public void AccessTypes_IsCached ()
+    public void AccessTypes_IsNotCached ()
     {
       AccessControlTestHelper testHelper = new AccessControlTestHelper ();
       using (testHelper.Transaction.EnterNonDiscardingScope ())
@@ -151,7 +135,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         var firstCollection = orderClass.AccessTypes;
         var secondCollection = orderClass.AccessTypes;
 
-        Assert.AreSame (firstCollection, secondCollection);
+        Assert.AreNotSame (firstCollection, secondCollection);
       }
     }
 
@@ -165,22 +149,6 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
         testHelper.AttachJournalizeAccessType (orderClass);
 
         Assert.IsTrue (((ICollection<AccessTypeDefinition>)orderClass.AccessTypes).IsReadOnly);
-      }
-    }
-
-    [Test]
-    public void AccessTypes_IsResetByAddAccessType ()
-    {
-      AccessControlTestHelper testHelper = new AccessControlTestHelper ();
-      using (testHelper.Transaction.EnterNonDiscardingScope ())
-      {
-        SecurableClassDefinition orderClass = testHelper.CreateOrderClassDefinition ();
-
-        var firstCollection = orderClass.AccessTypes;
-        orderClass.AddAccessType (testHelper.CreateJournalizeAccessType ());
-        var secondCollection = orderClass.AccessTypes;
-
-        Assert.AreNotSame (firstCollection, secondCollection);
       }
     }
 
