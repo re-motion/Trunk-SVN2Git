@@ -207,10 +207,10 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
       stateProperty.RemoveState (state2);
 
       Assert.That (acl1.StateCombinations.Count, Is.EqualTo (1));
-      Assert.That (acl1.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state1));
+      Assert.That (acl1.StateCombinations[0].GetStates(), Is.EqualTo (new[] { state1 }));
 
       Assert.That (acl2.StateCombinations.Count, Is.EqualTo (1));
-      Assert.That (acl2.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state3));
+      Assert.That (acl2.StateCombinations[0].GetStates(), Is.EqualTo (new[] { state3 }));
     }
 
     [Test]
@@ -241,7 +241,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata
 
       Assert.That (acl2.State, Is.EqualTo (StateType.New));
       Assert.That (acl2.StateCombinations.Count, Is.EqualTo (1));
-      Assert.That (acl2.StateCombinations[0].StateUsages, Is.Empty);
+      Assert.That (acl2.StateCombinations[0].GetStates(), Is.Empty);
 
       Assert.That (acl3.State, Is.EqualTo (StateType.New));
       Assert.That (acl3.StateCombinations, Is.Empty);

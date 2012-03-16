@@ -49,13 +49,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       StateDefinition paidState = paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name];
       StateDefinition notPaidState = paymentProperty[EnumWrapper.Get (PaymentState.None).Name];
       _testHelper.CreateStateCombination (orderClass, paidState);
-      StateCombination combination2 = _testHelper.CreateStateCombination (orderClass, notPaidState);
+      _testHelper.CreateStateCombination (orderClass, notPaidState);
       _testHelper.CreateStateCombination (orderClass);
+      var dupicateStateCombination = orderClass.CreateStatefulAccessControlList().StateCombinations[0];
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
-        StateUsage stateUsage = combination2.StateUsages[0];
-        stateUsage.StateDefinition = paidState;
+        dupicateStateCombination.AttachState (paidState);
 
         ClientTransaction.Current.Commit();
       }
@@ -67,14 +67,13 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
       StatePropertyDefinition paymentProperty = _testHelper.CreatePaymentStateProperty (orderClass);
       StateDefinition paidState = paymentProperty[EnumWrapper.Get (PaymentState.Paid).Name];
-      StateCombination combination = _testHelper.CreateStateCombination (orderClass, paidState);
+      StateCombination combination = _testHelper.CreateStateCombination (orderClass);
 
       using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
       {
         bool commitOnClassWasCalled = false;
         orderClass.Committing += delegate { commitOnClassWasCalled = true; };
-        StateUsage stateUsage = combination.StateUsages[0];
-        stateUsage.MarkAsChanged();
+        combination.AttachState (paidState);
 
         ClientTransaction.Current.Commit();
 

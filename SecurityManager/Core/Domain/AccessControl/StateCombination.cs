@@ -54,7 +54,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
     public abstract int Index { get; set; }
 
     [DBBidirectionalRelation ("StateCombination")]
-    public abstract ObjectList<StateUsage> StateUsages { get; }
+    protected abstract ObjectList<StateUsage> StateUsages { get; }
 
     [StorageClassNone]
     public SecurableClassDefinition Class
@@ -84,9 +84,16 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public void AttachState (StateDefinition state)
     {
+      ArgumentUtility.CheckNotNull ("state", state);
       StateUsage stateUsage = StateUsage.NewObject ();
       stateUsage.StateDefinition = state;
       StateUsages.Add (stateUsage);
+    }
+
+    public void ClearStates()
+    {
+      foreach (var stateUsage in StateUsages.ToList())
+        stateUsage.Delete();
     }
 
     public StateDefinition[] GetStates ()

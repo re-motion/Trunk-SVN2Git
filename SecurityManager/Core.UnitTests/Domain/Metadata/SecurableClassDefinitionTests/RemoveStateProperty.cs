@@ -64,7 +64,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
       securableClassDefinition.RemoveStateProperty (stateProperty);
 
       Assert.That (acl.StateCombinations.Count, Is.EqualTo (1));
-      Assert.That (acl.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state2));
+      Assert.That (acl.StateCombinations[0].GetStates(), Is.EqualTo (new[] { state2 }));
     }
 
     [Test]
@@ -95,14 +95,14 @@ namespace Remotion.SecurityManager.UnitTests.Domain.Metadata.SecurableClassDefin
 
       Assert.That (acl2.State, Is.EqualTo (StateType.New));
       Assert.That (acl2.StateCombinations.Count, Is.EqualTo (1));
-      Assert.That (acl2.StateCombinations[0].StateUsages, Is.Empty);
+      Assert.That (acl2.StateCombinations[0].GetStates(), Is.Empty);
 
       Assert.That (acl3.State, Is.EqualTo (StateType.New));
       Assert.That (acl3.StateCombinations, Is.Empty);
 
       Assert.That (acl4.State, Is.EqualTo (StateType.New));
       Assert.That (acl4.StateCombinations.Count, Is.EqualTo (1));
-      Assert.That (acl4.StateCombinations[0].StateUsages[0].StateDefinition, Is.EqualTo (state2));
+      Assert.That (acl4.StateCombinations[0].GetStates(), Is.EqualTo (new[] { state2 }));
     }
 
     [Test]

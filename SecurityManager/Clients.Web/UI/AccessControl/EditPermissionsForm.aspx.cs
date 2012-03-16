@@ -200,18 +200,18 @@ namespace Remotion.SecurityManager.Clients.Web.UI.AccessControl
       if (CurrentFunction.SecurableClassDefinition.StateProperties.Count > 1)
         throw new NotSupportedException ("Only classes with a zero or one StatePropertyDefinition are supported.");
 
-      var usedStates = new Dictionary<StateDefinition, object>();
+      var usedStates = new HashSet<StateDefinition>();
       foreach (var accessControlList in CurrentFunction.SecurableClassDefinition.StatefulAccessControlLists)
       {
         foreach (var stateCombination in accessControlList.StateCombinations)
         {
-          if (stateCombination.StateUsages.Count == 1)
+          var state = stateCombination.GetStates().SingleOrDefault();
+          if (state != null)
           {
-            StateUsage stateUsage = stateCombination.StateUsages[0];
-            if (usedStates.ContainsKey (stateUsage.StateDefinition))
+            if (usedStates.Contains (state))
               args.IsValid = false;
             else
-              usedStates.Add (stateUsage.StateDefinition, null);
+              usedStates.Add (state);
           }
 
           if (!args.IsValid)

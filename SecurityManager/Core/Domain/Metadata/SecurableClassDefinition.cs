@@ -426,7 +426,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
       Assertion.IsTrue (
           State != StateType.Deleted || StateCombinations.Count == 0, "StateCombinations of object '{0}' are not empty but the object is deleted.", ID);
 
-      foreach (var stateCombination in StateCombinations.Where (sc => sc.StateUsages.Count != StateProperties.Count))
+      foreach (var stateCombination in StateCombinations.Where (sc => sc.GetStates().Length != StateProperties.Count))
         result.AddInvalidStateCombination (stateCombination);
     }
 

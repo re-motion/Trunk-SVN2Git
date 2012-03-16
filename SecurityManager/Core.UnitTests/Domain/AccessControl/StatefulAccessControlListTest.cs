@@ -67,7 +67,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
         Assert.AreSame (acl, stateCombination.AccessControlList);
         Assert.AreEqual (acl.Class, stateCombination.Class);
-        Assert.IsEmpty (stateCombination.StateUsages);
+        Assert.IsEmpty (stateCombination.GetStates());
         Assert.AreEqual (StateType.Changed, acl.State);
       }
     }

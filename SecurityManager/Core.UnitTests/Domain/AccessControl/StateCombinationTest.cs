@@ -89,9 +89,9 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         combination.AttachState (property["Test1"]);
 
-        Assert.AreEqual (1, combination.StateUsages.Count);
-        StateUsage stateUsage = combination.StateUsages[0];
-        Assert.AreSame (property["Test1"], stateUsage.StateDefinition);
+        var states = combination.GetStates();
+        Assert.AreEqual (1, states.Length);
+        Assert.AreSame (property["Test1"], states[0]);
       }
     }
 
@@ -103,7 +103,21 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
 
       combination.AttachState (property["Test1"]);
 
-      Assert.AreEqual (1, combination.StateUsages.Count);
+      Assert.AreEqual (1, combination.GetStates().Length);
+    }
+
+    [Test]
+    public void ClearStates ()
+    {
+      SecurableClassDefinition classDefinition = _testHelper.CreateOrderClassDefinition();
+      StateCombination combination = _testHelper.CreateStateCombination (classDefinition);
+      StatePropertyDefinition property = _testHelper.CreateTestProperty();
+      combination.AttachState (property["Test1"]);
+      Assert.That (combination.GetStates(), Is.Not.Empty);
+
+      combination.ClearStates();
+
+      Assert.That (combination.GetStates(), Is.Empty);
     }
 
     [Test]
@@ -164,11 +178,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       combination1.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
       combination2.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
       combination3.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
+      var dupicateStateCombination = orderClass.CreateStatefulAccessControlList().StateCombinations[0];
 
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        combination2.StateUsages.Remove (combination2.StateUsages[0]);
-        combination2.AttachState (paidState);
+        dupicateStateCombination.AttachState (paidState);
 
         ClientTransaction.Current.Commit();
       }
