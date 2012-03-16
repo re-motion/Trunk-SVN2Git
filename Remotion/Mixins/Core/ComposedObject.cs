@@ -95,7 +95,7 @@ namespace Remotion.Mixins
     /// This enables callers to access the members of all composed mixins without explicit casts.
     /// </summary>
     /// <value>This instance, accessed via the <typeparamref name="TComposedInterface"/>.</value>
-    protected TComposedInterface This
+    public TComposedInterface This
     {
       get { return (TComposedInterface) (object) this; }
     }
