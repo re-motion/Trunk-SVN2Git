@@ -53,15 +53,11 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     [DBBidirectionalRelation ("AccessType")]
-    protected abstract ObjectList<AccessTypeReference> References { get; }
-
-    [DBBidirectionalRelation ("AccessType")]
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    protected abstract ObjectList<Permission> Permissions { get; }
+    protected abstract ObjectList<AccessTypeReference> AccessTypeReferences { get; }
 
     protected override void OnDeleting (EventArgs args)
     {
-      if (References.Any())
+      if (AccessTypeReferences.Any())
       {
         throw new InvalidOperationException (
             string.Format ("Access type '{0}' cannot be deleted because it is associated with at least one securable class definition.", Name));

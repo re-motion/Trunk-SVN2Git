@@ -38,7 +38,6 @@ namespace Remotion.SecurityManager.Domain.AccessControl
 
     public abstract bool? Allowed { get; set; }
 
-    [DBBidirectionalRelation ("Permissions")]
     [DBColumn ("AccessTypeDefinitionID")]
     [Mandatory]
     public abstract AccessTypeDefinition AccessType { get; set; }
