@@ -57,5 +57,17 @@ namespace Remotion.Security.UnitTests.Core
     {
       Assert.IsTrue (_securityProvider.IsNull);
     }
+
+    [Test]
+    public void GetHashcode_DifferentInstancesAreEqual ()
+    {
+      Assert.AreEqual (new NullSecurityPrincipal().GetHashCode(), new NullSecurityPrincipal().GetHashCode());
+    }
+
+    [Test]
+    public void Equals_DifferentInstancesAreEqual ()
+    {
+      Assert.IsTrue (new NullSecurityPrincipal().Equals(new NullSecurityPrincipal()));
+    }
   }
 }

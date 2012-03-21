@@ -51,5 +51,15 @@ namespace Remotion.Security
     {
       get { return true; }
     }
+
+    public override bool Equals (object obj)
+    {
+      return obj is NullSecurityPrincipal;
+    }
+
+    public override int GetHashCode ()
+    {
+      return 0;
+    }
   }
 }
