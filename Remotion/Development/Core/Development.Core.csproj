@@ -142,6 +142,7 @@
     <Compile Include="UnitTesting\Data\SqlClient\SqlBatchCommandException.cs" />
     <Compile Include="UnitTesting\Dev.cs" />
     <Compile Include="UnitTesting\Configuration\FakeInternalConfigSystem.cs" />
+    <Compile Include="UnitTesting\PEVerifyPathSources\WindowsSdk80aPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\FixedPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\DotNetSdk20PEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\IMockRepository.cs" />

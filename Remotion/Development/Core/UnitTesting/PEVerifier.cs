@@ -32,7 +32,8 @@ namespace Remotion.Development.UnitTesting
                   new DotNetSdk20PEVerifyPathSource(),
                   new WindowsSdk6PEVerifyPathSource(),
                   new WindowsSdk70aPEVerifyPathSource(),
-                  new WindowsSdk71PEVerifyPathSource()));
+                  new WindowsSdk71PEVerifyPathSource(),
+                  new WindowsSdk80aPEVerifyPathSource()));
     }
 
     private readonly IPEVerifyPathSource _pathSource;
