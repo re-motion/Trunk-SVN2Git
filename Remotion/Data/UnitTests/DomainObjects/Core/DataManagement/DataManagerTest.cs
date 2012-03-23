@@ -184,6 +184,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (dataContainer.EventListener, Is.SameAs (_dataManager.DataContainerEventListener));
       Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID).ObjectID, Is.EqualTo (dataContainer.ID));
@@ -205,6 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager.RegisterDataContainer (dataContainer);
 
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (TestableClientTransaction));
+      Assert.That (dataContainer.EventListener, Is.SameAs (_dataManager.DataContainerEventListener));
       Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.SameAs (dataContainer));
 
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (collectionEndPointID), Is.Null);
@@ -221,22 +223,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "This DataContainer has already been registered with a ClientTransaction.")]
     public void RegisterDataContainer_ContainerAlreadyHasTransaction ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject(dataContainer);
-
-      var otherTransaction = new TestableClientTransaction ();
-      otherTransaction.DataManager.RegisterDataContainer (dataContainer);
-      Assert.That (dataContainer.IsRegistered, Is.True);
-
-      _dataManager.RegisterDataContainer (dataContainer);
-    }
-
-    [Test]
-    public void RegisterDataContainer_ContainerAlreadyHasTransaction_DataRemainsIntact ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
       SetDomainObject (dataContainer);
@@ -244,24 +231,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var otherTransaction = new TestableClientTransaction ();
       otherTransaction.DataManager.RegisterDataContainer (dataContainer);
       Assert.That (dataContainer.IsRegistered, Is.True);
+      var previousEventListener = dataContainer.EventListener;
 
-      try
-      {
-        _dataManager.RegisterDataContainer (dataContainer);
-        Assert.Fail ("Expected exception");
-      }
-      catch (InvalidOperationException)
-      {
-        // ok
-      }
+      Assert.That (
+          () => _dataManager.RegisterDataContainer (dataContainer), 
+          Throws.InvalidOperationException.With.Message.EqualTo ("This DataContainer has already been registered with a ClientTransaction."));
 
       Assert.That (dataContainer.ClientTransaction, Is.SameAs (otherTransaction));
+      Assert.That (dataContainer.EventListener, Is.SameAs (previousEventListener));
       Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.Null);
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
-        "A DataContainer with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction.")]
     public void RegisterDataContainer_AlreadyRegistered ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -271,36 +252,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       SetDomainObject (otherDataContainer);
 
       _dataManager.RegisterDataContainer (otherDataContainer);
-      Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.SameAs (otherDataContainer));
-
-      _dataManager.RegisterDataContainer (dataContainer);
-    }
-
-    [Test]
-    public void RegisterDataContainer_AlreadyRegistered_DataRemainsIntact ()
-    {
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject (dataContainer);
-
-      var otherDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      SetDomainObject (otherDataContainer);
-
-      _dataManager.RegisterDataContainer (otherDataContainer);
       Assert.That (otherDataContainer.IsRegistered, Is.True);
 
-      try
-      {
-        _dataManager.RegisterDataContainer (dataContainer);
-        Assert.Fail ("Expected exception");
-      }
-      catch (InvalidOperationException)
-      {
-        // ok
-      }
+      Assert.That (
+          () => _dataManager.RegisterDataContainer (dataContainer),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "A DataContainer with ID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' already exists in this transaction."));
 
       Assert.That (dataContainer.IsRegistered, Is.False);
       Assert.That (otherDataContainer.IsRegistered, Is.True);
       Assert.That (otherDataContainer.ClientTransaction, Is.SameAs (_dataManager.ClientTransaction));
+      Assert.That (otherDataContainer.EventListener, Is.SameAs (_dataManager.DataContainerEventListener));
       Assert.That (_dataManager.DataContainers[dataContainer.ID], Is.SameAs (otherDataContainer));
     }
 

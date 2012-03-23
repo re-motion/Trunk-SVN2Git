@@ -62,6 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Assert.AreEqual (dataContainer.ID, deserializedDataContainer.ID);
       Assert.IsNotNull (deserializedDataContainer.ClientTransaction);
+      Assert.IsNotNull (deserializedDataContainer.EventListener);
       Assert.AreEqual (dataContainer.Timestamp, deserializedDataContainer.Timestamp);
       Assert.IsNotNull (deserializedDataContainer.DomainObject);
       Assert.AreEqual (dataContainer.DomainObject.ID, deserializedDataContainer.DomainObject.ID);

@@ -39,6 +39,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     private ClientTransaction _clientTransaction;
     private IClientTransactionEventSink _transactionEventSink;
+    private IDataContainerEventListener _dataContainerEventListener;
     private IInvalidDomainObjectManager _invalidDomainObjectManager;
     private IObjectLoader _objectLoader;
     private IRelationEndPointManager _relationEndPointManager;
@@ -62,6 +63,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
+      _dataContainerEventListener = new DataContainerEventListener (_transactionEventSink); // TODO 3658: Inject
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
       _relationEndPointManager = relationEndPointManager;
@@ -78,6 +80,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
+    }
+
+    public IDataContainerEventListener DataContainerEventListener
+    {
+      get { return _dataContainerEventListener; }
     }
 
     public IDataContainerMapReadOnlyView DataContainers
@@ -151,6 +158,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException (string.Format ("A DataContainer with ID '{0}' already exists in this transaction.", dataContainer.ID));
 
       dataContainer.SetClientTransaction (_clientTransaction);
+      dataContainer.SetEventListener (_dataContainerEventListener);
 
       _dataContainerMap.Register (dataContainer);
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
@@ -449,6 +457,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var doInfo = new FlattenedDeserializationInfo (_deserializedData);
       _clientTransaction = doInfo.GetValueForHandle<ClientTransaction> ();
       _transactionEventSink = doInfo.GetValueForHandle<IClientTransactionEventSink> ();
+      _dataContainerEventListener = doInfo.GetValueForHandle<IDataContainerEventListener> ();
       _dataContainerMap = doInfo.GetValue<DataContainerMap>();
       _relationEndPointManager = doInfo.GetValueForHandle<RelationEndPointManager>();
       _domainObjectStateCache = doInfo.GetValue<DomainObjectStateCache>();
@@ -464,6 +473,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var doInfo = new FlattenedSerializationInfo();
       doInfo.AddHandle (_clientTransaction);
       doInfo.AddHandle (_transactionEventSink);
+      doInfo.AddHandle (_dataContainerEventListener);
       doInfo.AddValue (_dataContainerMap);
       doInfo.AddHandle (_relationEndPointManager);
       doInfo.AddValue (_domainObjectStateCache);

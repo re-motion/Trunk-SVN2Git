@@ -24,7 +24,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  // TODO 3658: Inject event sink rather than ClientTransaction (?)
   /// <summary>
   /// Represents a container for the persisted properties of a DomainObject.
   /// </summary>
@@ -98,6 +97,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly PropertyValueCollection _propertyValues;
 
     private ClientTransaction _clientTransaction;
+    private IDataContainerEventListener _eventListener = null;
     private object _timestamp;
     private DataContainerStateType _state;
     private DomainObject _domainObject;
@@ -231,6 +231,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         return _clientTransaction != null;
       }
+    }
+
+    /// <summary>
+    /// Gets the <see cref="IDataContainerEventListener"/> registered for this <see cref="DataContainer"/>, returning <see langword="null" /> if this 
+    /// <see cref="DataContainer"/> doesn't yet have one.
+    /// </summary>
+    /// <value>The <see cref="IDataContainerEventListener"/> registered for this <see cref="DataContainer"/>, or <see langword="null" /> if no
+    /// <see cref="IDataContainerEventListener"/> has been registered.</value>
+    public IDataContainerEventListener EventListener
+    {
+      get { return _eventListener; }
     }
 
     /// <summary>
@@ -456,6 +467,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       RaiseStateUpdatedNotification (StateType.Invalid);
 
       _clientTransaction = null;
+      _eventListener = null;
     }
 
     public void SetPropertyDataFromSubTransaction (DataContainer source)
@@ -492,6 +504,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _domainObject = domainObject;
     }
 
+    public void SetEventListener (IDataContainerEventListener listener)
+    {
+      ArgumentUtility.CheckNotNull ("listener", listener);
+
+      if (_eventListener != null)
+        throw new InvalidOperationException ("Only one event listener can be registered for a DataContainer.");
+      _eventListener = listener;
+    }
+
     internal void SetClientTransaction (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
@@ -507,13 +528,14 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_state == DataContainerStateType.Deleted)
         throw new ObjectDeletedException (_id);
 
-      if (_clientTransaction != null)
-        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueChanging (
-            tx, 
+      if (_eventListener != null)
+      {
+        _eventListener.PropertyValueChanging (
             this, 
             args.PropertyValue, 
             args.OldValue, 
-            args.NewValue));
+            args.NewValue);
+      }
 
       if (!args.PropertyValue.Definition.IsObjectID)
       {
@@ -543,20 +565,20 @@ namespace Remotion.Data.DomainObjects.DataManagement
         }
       }
 
-      if (_clientTransaction != null)
-        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueChanged (tx, this, args.PropertyValue, args.OldValue, args.NewValue));
+      if (_eventListener != null)
+        _eventListener.PropertyValueChanged (this, args.PropertyValue, args.OldValue, args.NewValue);
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
     {
-      if (_clientTransaction != null)
-        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueReading (tx, this, propertyValue, valueAccess));
+      if (_eventListener != null)
+        _eventListener.PropertyValueReading (this, propertyValue, valueAccess);
     }
 
     internal void PropertyValueRead (PropertyValue propertyValue, object value, ValueAccess valueAccess)
     {
-      if (_clientTransaction != null)
-        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.PropertyValueRead (tx, this, propertyValue, value, valueAccess));
+      if (_eventListener != null)
+        _eventListener.PropertyValueRead (this, propertyValue, value, valueAccess);
     }
 
     private void CheckNotDiscarded ()
@@ -598,13 +620,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       Assertion.DebugAssert (State == state);
 
-      if (_clientTransaction != null)
-        _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.DataContainerStateUpdated (tx, this, state));
+      if (_eventListener != null)
+        _eventListener.StateUpdated (this, state);
     }
 
     #region Serialization
 
-// ReSharper disable UnusedMember.Local
+    // ReSharper disable UnusedMember.Local
     private DataContainer (FlattenedDeserializationInfo info)
     {
       ArgumentUtility.CheckNotNull ("info", info);
@@ -623,12 +645,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _propertyValues.RegisterForChangeNotification (this);
 
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
+      _eventListener = info.GetValueForHandle<IDataContainerEventListener> ();
       _state = (DataContainerStateType) info.GetIntValue ();
       _domainObject = info.GetValueForHandle<DomainObject> ();
       _hasBeenMarkedChanged = info.GetBoolValue ();
       _hasBeenChanged = info.GetBoolValue();
     }
-// ReSharper restore UnusedMember.Local
+    // ReSharper restore UnusedMember.Local
 
     private void RestorePropertyValuesFromData (FlattenedDeserializationInfo info)
     {
@@ -655,6 +678,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
 
       info.AddHandle (_clientTransaction);
+      info.AddHandle (_eventListener);
       info.AddIntValue ((int) _state);
       info.AddHandle (_domainObject);
       info.AddBoolValue(_hasBeenMarkedChanged);

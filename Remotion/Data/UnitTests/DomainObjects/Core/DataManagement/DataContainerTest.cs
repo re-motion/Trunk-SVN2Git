@@ -41,6 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DataContainer _deletedDataContainer;
     private DataContainer _discardedDataContainer;
     private ObjectID _invalidObjectID;
+    private IDataContainerEventListener _eventListenerMock;
 
     public override void SetUp ()
     {
@@ -67,13 +68,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
       var additionalPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (orderClass, "Name");
       _additionalPropertyValue = new PropertyValue (additionalPropertyDefinition, "Arthur Dent");
+
+      _eventListenerMock = MockRepository.GenerateMock<IDataContainerEventListener>();
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ClassDefinition: Order' "
         + "of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current mapping.\r\nParameter name: id")]
-    public void ClassDefinitionNotInMapping ()
+    public void CreateNew_ClassDefinitionNotInMapping ()
     {
       TestMappingConfiguration.Initialize();
       MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration());
@@ -82,6 +85,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration());
       Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
       DataContainer.CreateNew (id);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ClassDefinition: Order' "
+        + "of the ObjectID 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not part of the current mapping.\r\nParameter name: id")]
+    public void CreateForExisting_ClassDefinitionNotInMapping ()
+    {
+      TestMappingConfiguration.Initialize ();
+      MappingConfiguration.SetCurrent (TestMappingConfiguration.Instance.GetMappingConfiguration ());
+      var id = new ObjectID (MappingConfiguration.Current.GetClassDefinition ("Order"), new Guid ("5682f032-2f0b-494b-a31c-c97f02b89c36"));
+
+      MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration ());
+      Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
+      DataContainer.CreateForExisting(id, null, pd => pd.DefaultValue);
     }
 
     [Test]
@@ -113,52 +131,103 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void ExistingDataContainerEvents ()
+    public void SetEventListener ()
     {
-      var transaction = ClientTransaction.CreateRootTransaction ();
+      Assert.That (_existingDataContainer.EventListener, Is.Null);
+      
+      _existingDataContainer.SetEventListener (_eventListenerMock);
 
+      Assert.That (_existingDataContainer.EventListener, Is.Not.Null.And.SameAs (_eventListenerMock));
+    }
+
+    [Test]
+    public void SetEventListener_Twice ()
+    {
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+      Assert.That (
+          () => _existingDataContainer.SetEventListener (_eventListenerMock), 
+          Throws.InvalidOperationException.With.Message.EqualTo ("Only one event listener can be registered for a DataContainer."));
+    }
+
+    [Test]
+    public void PropertyRead_WithoutListener ()
+    {
       _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-      ClientTransactionTestHelper.RegisterDataContainer (transaction, _existingDataContainer);
+      Assert.That (_existingDataContainer.EventListener, Is.Null);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (transaction);
-      listenerMock
-          .Expect (
-              mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
+      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
+    }
+
+    [Test]
+    public void PropertyRead_WithListener ()
+    {
+      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+
+      using (_eventListenerMock.GetMockRepository ().Ordered ())
+      {
+        _eventListenerMock.Expect (mock => mock.PropertyValueReading (_existingDataContainer, _additionalPropertyValue, ValueAccess.Current));
+        _eventListenerMock.Expect (mock => mock.PropertyValueRead (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", ValueAccess.Current));
+
+        _eventListenerMock.Expect (mock => mock.PropertyValueReading (_existingDataContainer, _additionalPropertyValue, ValueAccess.Original));
+        _eventListenerMock.Expect (mock => mock.PropertyValueRead (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", ValueAccess.Original));
+      }
+
+      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
+      Assert.That (_existingDataContainer.PropertyValues["Name"].OriginalValue, Is.EqualTo ("Arthur Dent"));
+
+      _eventListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void PropertyChange_WithoutListener ()
+    {
+      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
+      Assert.That (_existingDataContainer.EventListener, Is.Null);
+
+      _existingDataContainer["Name"] = "Zaphod Beeblebrox";
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void PropertyChange_WithListener ()
+    {
+      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+
+      _eventListenerMock
+          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
           .WhenCalled (
               mi =>
               {
                 Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
                 Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
               });
-      listenerMock
-          .Expect (mock => mock.PropertyValueChanged (transaction, _existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
+      _eventListenerMock
+          .Expect (mock => mock.PropertyValueChanged (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
           .WhenCalled (mi =>
           {
             Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
             Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
           });
-      listenerMock.Replay ();
 
       _existingDataContainer["Name"] = "Zaphod Beeblebrox";
 
-      listenerMock.VerifyAllExpectations ();
+      _eventListenerMock.VerifyAllExpectations ();
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
-    public void ExistingDataContainerCancelEvents ()
+    public void PropertyChange_WithCancellation ()
     {
-      var transaction = ClientTransaction.CreateRootTransaction ();
-
       _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-      ClientTransactionTestHelper.RegisterDataContainer (transaction, _existingDataContainer);
+      _existingDataContainer.SetEventListener (_eventListenerMock);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (transaction);
-      listenerMock
-          .Expect (mock => mock.PropertyValueChanging (transaction, _existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
+      _eventListenerMock
+          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
           .Throw (new EventReceiverCancelException());
-      listenerMock.Replay ();
 
       try
       {
@@ -171,7 +240,64 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
       }
 
-      listenerMock.VerifyAllExpectations ();
+      _eventListenerMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void PropertyChange_UpdatesState ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+
+      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
+
+      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void PropertyChange_RaisesStateUpdated ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+
+      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5, StateType.Changed);
+    }
+
+    [Test]
+    public void PropertyChange_ChangeBack_RaisesStateUpdated ()
+    {
+      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+
+      dataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
+      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 0, StateType.Unchanged);
+    }
+
+    [Test]
+    public void PropertyChange_UpdatesState_After_PropertyValueEvent ()
+    {
+      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
+      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+
+      var propertyChangingCalled = false;
+      var propertyChangedCalled = false;
+
+      // It is documented that the DataContainer's state has not been updated in PropertyValueCollection.PropertyChanged:
+
+      dc.PropertyValues.PropertyChanging += delegate
+      {
+        propertyChangingCalled = true;
+        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+      };
+      dc.PropertyValues.PropertyChanged += delegate
+      {
+        propertyChangedCalled = true;
+        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
+      };
+
+      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
+
+      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
+      Assert.That (propertyChangingCalled, Is.True);
+      Assert.That (propertyChangedCalled, Is.True);
     }
 
     [Test]
@@ -353,6 +479,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void Clone_EventListenerEmpty ()
+    {
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+      Assert.That (_existingDataContainer.EventListener, Is.Not.Null);
+
+      var clone = _existingDataContainer.Clone (DomainObjectIDs.Order1);
+      Assert.That (clone.EventListener, Is.Null);
+    }
+
+    [Test]
     public void CommitState_SetsStateToExisting ()
     {
       _newDataContainer.CommitState ();
@@ -363,8 +499,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CommitState_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _newDataContainer);
-
       CheckStateNotification (_newDataContainer, dc => dc.CommitState (), StateType.Unchanged);
     }
 
@@ -435,8 +569,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void RollbackState_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _existingDataContainer);
-
       CheckStateNotification (_existingDataContainer, dc => dc.RollbackState (), StateType.Unchanged);
     }
 
@@ -507,8 +639,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
      [Test]
     public void Delete_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _existingDataContainer);
-
       CheckStateNotification (_existingDataContainer, dc => dc.Delete(), StateType.Deleted);
     }
 
@@ -540,8 +670,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Discard_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _newDataContainer);
-
       CheckStateNotification (_newDataContainer, dc => dc.Discard (), StateType.Invalid);
     }
 
@@ -554,6 +682,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _newDataContainer.Discard ();
 
       Assert.That (propertyValue.IsDiscarded, Is.True);
+    }
+
+    [Test]
+    public void Discard_DisassociatesFromEventListener ()
+    {
+      _newDataContainer.SetEventListener (_eventListenerMock);
+      Assert.That (_newDataContainer.EventListener, Is.Not.Null);
+
+      _newDataContainer.Discard ();
+
+      Assert.That (_newDataContainer.EventListener, Is.Null);
     }
 
     [Test]
@@ -608,8 +747,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_RaisesStateUpdated_Changed ()
     {
-      var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
-      var targetDataContainer = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
+      var sourceDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
+      sourceDataContainer[GetPropertyIdentifier (typeof (Order), "OrderNumber")] = 12;
+
+      var targetDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
 
       CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Changed);
@@ -623,7 +764,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, targetDataContainer);
       CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Unchanged);
     }
 
@@ -635,7 +775,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       targetDataContainer.Delete ();
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Deleted));
 
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, targetDataContainer);
       CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Deleted);
     }
 
@@ -724,8 +863,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void MarkAsChanged_RaisesStateUpdated ()
     {
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, _existingDataContainer);
-
       CheckStateNotification (_existingDataContainer, dc => dc.MarkAsChanged(), StateType.Changed);
     }
 
@@ -941,56 +1078,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainerTestHelper.SetClientTransaction (dc, TestableClientTransaction);
     }
 
-    [Test]
-    public void PropertyValueChanged_UpdatesState ()
-    {
-      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-
-      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
-
-      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
-    }
-
-    [Test]
-    public void PropertyValueChanged_RaisesStateUpdated ()
-    {
-      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-      ClientTransactionTestHelper.RegisterDataContainer (TestableClientTransaction, dataContainer);
-
-      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5, StateType.Changed);
-      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 0, StateType.Unchanged);
-    }
-
-    [Test]
-    public void PropertyValueChanged_UpdatesState_After_PropertyValueEvent ()
-    {
-      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-
-      var propertyChangingCalled = false;
-      var propertyChangedCalled = false;
-
-      // It is documented that the DataContainer's state has not been updated in PropertyValueCollection.PropertyChanged:
-
-      dc.PropertyValues.PropertyChanging += delegate
-      {
-        propertyChangingCalled = true;
-        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-      };
-      dc.PropertyValues.PropertyChanged += delegate
-      {
-        propertyChangedCalled = true;
-        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-      };
-
-      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
-
-      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
-      Assert.That (propertyChangingCalled, Is.True);
-      Assert.That (propertyChangedCalled, Is.True);
-    }
-
     private string GetStorageClassPropertyName (string shortName)
     {
       return ReflectionMappingHelper.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
@@ -998,11 +1085,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
     private void CheckStateNotification (DataContainer dataContainer, Action<DataContainer> action, StateType expectedState)
     {
-      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
+      dataContainer.SetEventListener (_eventListenerMock);
 
       action (dataContainer);
 
-      listener.AssertWasCalled (mock => mock.DataContainerStateUpdated (TestableClientTransaction, dataContainer, expectedState));
+      _eventListenerMock.AssertWasCalled (mock => mock.StateUpdated (dataContainer, expectedState));
     }
   }
 }
