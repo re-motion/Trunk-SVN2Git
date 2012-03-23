@@ -37,8 +37,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       FieldReference delegationTargetCalled = classEmitter.CreateField ("DelegationTargetCalled", typeof (bool));
 
-      var delegationTarget = classEmitter.CreateMethod ("DelegationTarget", MethodAttributes.Public)
-          .SetParameterTypes (typeof (SerializationInfo), typeof (StreamingContext));
+      var delegationTarget = classEmitter.CreateMethod (
+          "DelegationTarget",
+          MethodAttributes.Public,
+          typeof (void),
+          new[] { typeof (SerializationInfo), typeof (StreamingContext) });
 
       delegationTarget
           .AddStatement (new AssignStatement (delegationTargetCalled, new ConstReference (true).ToExpression()))

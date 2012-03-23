@@ -18,7 +18,6 @@ using System;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using NUnit.Framework;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 using Remotion.UnitTests.Reflection.CodeGeneration.TestDomain;
 
@@ -30,9 +29,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void LoadArrayElementFromExpression ()
     {
-      var method = GetMethodEmitter (false);
-      method.SetParameterTypes (new Type[] { typeof (IArrayProvider), typeof (int) });
-      method.SetReturnType (typeof (object));
+      var method = GetMethodEmitter (false, typeof (object), new [] { typeof (IArrayProvider), typeof (int) });
       method.AddStatement (new ILStatement (delegate (IMemberEmitter member, ILGenerator ilgen)
       {
         ilgen.Emit (OpCodes.Ldarg_1); // array provider

@@ -37,7 +37,7 @@
       <SourceFiles Remove="@(SourceFiles)"/>
       <SourceFiles Include="$(SolutionDirectory)Remotion-Mixins.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)How to build re-mix.txt" Exclude="@(StandardExcludes)" />
-      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Castle.*" Exclude="@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Castle 3.0\**" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\log4net.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Microsoft.Practices.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)prereq\Assemblies\Rhino.Mocks*" Exclude="@(StandardExcludes)" />

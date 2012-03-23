@@ -31,8 +31,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void CustomAttributeExpression ()
     {
-      var methodEmitter = GetMethodEmitter (false)
-          .SetReturnType (typeof (Tuple<SimpleAttribute, SimpleAttribute>));
+      var methodEmitter = GetMethodEmitter (false, typeof (Tuple<SimpleAttribute, SimpleAttribute>), new Type[0]);
 
       LocalReference attributeOwner = methodEmitter.DeclareLocal (typeof (Type));
       methodEmitter.AddStatement (new AssignStatement (attributeOwner, new TypeTokenExpression (typeof (ClassWithCustomAttribute))));

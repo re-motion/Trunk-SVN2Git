@@ -164,11 +164,24 @@ namespace Remotion.Reflection.CodeGeneration
       return InnerEmitter.CreateStaticField (name, fieldType, attributes);
     }
 
-    public IMethodEmitter CreateMethod (string name, MethodAttributes attributes)
+    public IMethodEmitter CreateMethod (string name, MethodAttributes attributes, Type returnType, Type[] parameterTypes)
     {
       ArgumentUtility.CheckNotNull ("name", name);
+      ArgumentUtility.CheckNotNull ("attributes", attributes);
+      ArgumentUtility.CheckNotNull ("returnType", returnType);
+      ArgumentUtility.CheckNotNull ("parameterTypes", parameterTypes);
 
-      return new CustomMethodEmitter (this, name, attributes);
+      var method = new CustomMethodEmitter (this, name, attributes, returnType, parameterTypes);
+      return method;
+    }
+
+    public IMethodEmitter CreateMethod (string name, MethodAttributes attributes, MethodInfo methodToUseAsATemplate)
+    {
+      ArgumentUtility.CheckNotNull ("name", name);
+      ArgumentUtility.CheckNotNull ("attributes", attributes);
+      ArgumentUtility.CheckNotNull ("methodToUseAsATemplate", methodToUseAsATemplate);
+
+      return new CustomMethodEmitter (this, name, attributes, methodToUseAsATemplate);
     }
 
     public CustomPropertyEmitter CreateProperty (string name, PropertyKind propertyKind, Type propertyType)
@@ -252,8 +265,7 @@ namespace Remotion.Reflection.CodeGeneration
 
       string methodName = GetMemberOverrideName(baseOrInterfaceMethod, keepName);
 
-      IMethodEmitter methodDefinition = CreateMethod (methodName, methodDefinitionAttributes);
-      methodDefinition.CopyParametersAndReturnType (baseOrInterfaceMethod);
+      IMethodEmitter methodDefinition = CreateMethod (methodName, methodDefinitionAttributes, baseOrInterfaceMethod);
 
       TypeBuilder.DefineMethodOverride (methodDefinition.MethodBuilder, baseOrInterfaceMethod);
 
@@ -394,10 +406,8 @@ namespace Remotion.Reflection.CodeGeneration
     {
       const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig;
 
-      IMethodEmitter wrapper = CreateMethod ("__wrap__" + methodToBeWrapped.Name, attributes);
-      wrapper.CopyParametersAndReturnType (methodToBeWrapped);
+      IMethodEmitter wrapper = CreateMethod ("__wrap__" + methodToBeWrapped.Name, attributes, methodToBeWrapped);
       wrapper.ImplementByDelegating (new TypeReferenceWrapper (SelfReference.Self, TypeBuilder), methodToBeWrapped);
-      
       var attributeBuilder = new CustomAttributeBuilder (s_generatedMethodWrapperAttributeCtor, new object[] { methodToBeWrapped.DeclaringType, methodToBeWrapped.Name, methodToBeWrapped.ToString() });
       wrapper.AddCustomAttribute (attributeBuilder);
 

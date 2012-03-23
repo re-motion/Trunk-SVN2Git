@@ -29,22 +29,38 @@ namespace Remotion.Reflection.CodeGeneration
     private readonly MethodEmitter _innerEmitter;
     private readonly CustomClassEmitter _declaringType;
     private readonly string _name;
-    
-    private Type _returnType;
-    private Type[] _parameterTypes;
 
-    public CustomMethodEmitter (CustomClassEmitter declaringType, string name, MethodAttributes attributes)
+    private readonly Type[] _parameterTypes;
+
+    public CustomMethodEmitter (CustomClassEmitter declaringType, string name, MethodAttributes attributes, Type returnType, Type[] parameterTypes)
     {
       ArgumentUtility.CheckNotNull ("declaringType", declaringType);
       ArgumentUtility.CheckNotNullOrEmpty ("name", name);
       ArgumentUtility.CheckNotNull ("attributes", attributes);
+      ArgumentUtility.CheckNotNull ("returnType", returnType);
+      ArgumentUtility.CheckNotNull ("parameterTypes", parameterTypes);
 
+      MethodEmitter innerEmitter = declaringType.InnerEmitter.CreateMethod (name, attributes, returnType, parameterTypes);
+
+      _innerEmitter = innerEmitter;
       _declaringType = declaringType;
-      _innerEmitter = _declaringType.InnerEmitter.CreateMethod (name, attributes);
       _name = name;
-      _returnType = null;
+      _parameterTypes = parameterTypes;
+    }
+
+    public CustomMethodEmitter (CustomClassEmitter declaringType, string name, MethodAttributes attributes, MethodInfo methodToUseAsATemplate)
+    {
+      ArgumentUtility.CheckNotNull ("declaringType", declaringType);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      ArgumentUtility.CheckNotNull ("attributes", attributes);
+      ArgumentUtility.CheckNotNull ("methodToUseAsATemplate", methodToUseAsATemplate);
+
+      MethodEmitter innerEmitter = declaringType.InnerEmitter.CreateMethod (name, attributes, methodToUseAsATemplate);
+
+      _innerEmitter = innerEmitter;
+      _declaringType = declaringType;
+      _name = name;
       _parameterTypes = new Type[0];
-      SetReturnType (typeof (void));
     }
 
     public MethodBuilder MethodBuilder
@@ -74,7 +90,7 @@ namespace Remotion.Reflection.CodeGeneration
 
     public Type ReturnType
     {
-      get { return _returnType; }
+      get { return _innerEmitter.ReturnType; }
     }
 
     public Type[] ParameterTypes
@@ -88,30 +104,6 @@ namespace Remotion.Reflection.CodeGeneration
       for (int i = 0; i < argumentExpressions.Length; ++i)
         argumentExpressions[i] = ArgumentReferences[i].ToExpression ();
       return argumentExpressions;
-    }
-
-    public IMethodEmitter SetParameterTypes (params Type[] parameters)
-    {
-      ArgumentUtility.CheckNotNull ("parameters", parameters);
-      InnerEmitter.SetParameters (parameters);
-      _parameterTypes = parameters;
-      return this;
-    }
-
-    public IMethodEmitter SetReturnType (Type returnType)
-    {
-      ArgumentUtility.CheckNotNull ("returnType", returnType);
-      InnerEmitter.SetReturnType (returnType);
-      _returnType = returnType;
-      return this;
-    }
-
-    public IMethodEmitter CopyParametersAndReturnType (MethodInfo method)
-    {
-      ArgumentUtility.CheckNotNull ("method", method);
-
-      _innerEmitter.CopyParametersAndReturnTypeFrom (method, _declaringType.InnerEmitter);
-      return this;
     }
 
     public IMethodEmitter ImplementByReturning (Expression result)
@@ -128,11 +120,9 @@ namespace Remotion.Reflection.CodeGeneration
     public IMethodEmitter ImplementByReturningDefault ()
     {
       if (ReturnType == typeof (void))
-        return ImplementByReturningVoid ();
+        return ImplementByReturningVoid();
       else
-      {
         return ImplementByReturning (new InitObjectExpression (this, ReturnType));
-      }
     }
 
     public IMethodEmitter ImplementByDelegating (TypeReference implementer, MethodInfo methodToCall)
@@ -177,14 +167,14 @@ namespace Remotion.Reflection.CodeGeneration
     public IMethodEmitter AddStatement (Statement statement)
     {
       ArgumentUtility.CheckNotNull ("statement", statement);
-      InnerEmitter.CodeBuilder.AddStatement (statement);
+      _innerEmitter.CodeBuilder.AddStatement (statement);
       return this;
     }
 
     public LocalReference DeclareLocal (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      return InnerEmitter.CodeBuilder.DeclareLocal (type);
+      return _innerEmitter.CodeBuilder.DeclareLocal (type);
     }
 
     public void AddCustomAttribute (CustomAttributeBuilder customAttribute)
@@ -198,7 +188,7 @@ namespace Remotion.Reflection.CodeGeneration
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("gen", gen);
 
-      statement.Emit (InnerEmitter, gen);
+      statement.Emit (_innerEmitter, gen);
     }
 
     void IMethodEmitter.AcceptExpression (Expression expression, ILGenerator gen)
@@ -206,7 +196,7 @@ namespace Remotion.Reflection.CodeGeneration
       ArgumentUtility.CheckNotNull ("expression", expression);
       ArgumentUtility.CheckNotNull ("gen", gen);
 
-      expression.Emit (InnerEmitter, gen);
+      expression.Emit (_innerEmitter, gen);
     }
   }
 }

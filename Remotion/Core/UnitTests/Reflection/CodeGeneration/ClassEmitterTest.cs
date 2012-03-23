@@ -146,8 +146,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void CreateMethod ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "CreateMethod", typeof (object));
-      var method = classEmitter.CreateMethod ("Check", MethodAttributes.Public);
-      method.SetReturnType (typeof (string));
+      var method = classEmitter.CreateMethod ("Check", MethodAttributes.Public, typeof (string), new Type[0]);
       method.AddStatement (new ReturnStatement (new ConstReference ("ret")));
       
       object instance = Activator.CreateInstance (classEmitter.BuildType ());
@@ -155,11 +154,102 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
+    public void CreateMethod_CopyParametersAndReturnTypeSimple ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "CreateMethod_CopyParametersAndReturnTypeSimple", typeof (object));
+      var method = classEmitter.CreateMethod (
+          "SimpleClone",
+          MethodAttributes.Public,
+          typeof (object).GetMethod ("Equals", new[] { typeof (object) }));
+      method.ImplementByReturningDefault();
+
+      Type t = classEmitter.BuildType();
+      MethodInfo builtMethod = t.GetMethod ("SimpleClone");
+
+      Assert.AreEqual (typeof (bool), builtMethod.ReturnType);
+      ParameterInfo[] parameters = builtMethod.GetParameters ();
+      Assert.AreEqual (1, parameters.Length);
+      Assert.AreEqual (typeof (object), parameters[0].ParameterType);
+    }
+
+    [Test]
+    public void CreateMethod_CopyParametersAndReturnTypeGeneric ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "CreateMethod_CopyParametersAndReturnTypeGeneric", typeof (object));
+      var method = classEmitter.CreateMethod (
+          "SimpleClone",
+          MethodAttributes.Public,
+          typeof (ClassWithConstrainedGenericMethod).GetMethod ("GenericMethod"));
+      method.ImplementByReturningDefault();
+
+      Type t = classEmitter.BuildType();
+      MethodInfo builtMethod = t.GetMethod ("SimpleClone");
+
+      Assert.AreEqual (typeof (string), builtMethod.ReturnType);
+      ParameterInfo[] parameters = builtMethod.GetParameters ();
+      Assert.AreEqual (3, parameters.Length);
+      
+      Assert.IsTrue (parameters[0].ParameterType.IsGenericParameter);
+      Assert.AreEqual(builtMethod, parameters[0].ParameterType.DeclaringMethod);
+      Assert.AreEqual (GenericParameterAttributes.None, parameters[0].ParameterType.GenericParameterAttributes);
+      Type[] constraints = parameters[0].ParameterType.GetGenericParameterConstraints();
+      Assert.AreEqual (1, constraints.Length);
+      Assert.AreEqual (typeof (IConvertible), constraints[0]);
+
+      Assert.IsTrue (parameters[1].ParameterType.IsGenericParameter);
+      Assert.AreEqual (builtMethod, parameters[1].ParameterType.DeclaringMethod);
+      Assert.AreEqual (GenericParameterAttributes.NotNullableValueTypeConstraint | GenericParameterAttributes.DefaultConstructorConstraint,
+          parameters[1].ParameterType.GenericParameterAttributes);
+      constraints = parameters[1].ParameterType.GetGenericParameterConstraints ();
+      Assert.AreEqual (1, constraints.Length);
+      Assert.AreEqual (typeof (ValueType), constraints[0]);
+
+      Assert.IsTrue (parameters[2].ParameterType.IsGenericParameter);
+      Assert.AreEqual (builtMethod, parameters[2].ParameterType.DeclaringMethod);
+      Assert.AreEqual (GenericParameterAttributes.None, parameters[2].ParameterType.GenericParameterAttributes);
+      constraints = parameters[2].ParameterType.GetGenericParameterConstraints ();
+      Assert.AreEqual (1, constraints.Length);
+      Assert.AreEqual (parameters[0].ParameterType, constraints[0]);
+    }
+
+    [Test]
+    public void CreateMethod_CopyParametersAndReturnTypeOutRef ()
+    {
+      var classEmitter = new CustomClassEmitter (Scope, "CreateMethod_CopyParametersAndReturnTypeOutRef", typeof (object));
+      var method = classEmitter.CreateMethod (
+          "MethodWithOutRef",
+          MethodAttributes.Public,
+          typeof (ClassWithAllKindsOfMembers).GetMethod ("MethodWithOutRef"));
+      method.AddStatement (new AssignStatement (new IndirectReference (method.ArgumentReferences[0]), NullExpression.Instance));
+      method.ImplementByReturningDefault();
+
+      object instance = Activator.CreateInstance (classEmitter.BuildType());
+      MethodInfo builtMethod = instance.GetType().GetMethod ("MethodWithOutRef");
+
+      Assert.AreEqual (typeof (void), builtMethod.ReturnType);
+      ParameterInfo[] parameters = builtMethod.GetParameters ();
+      Assert.AreEqual (2, parameters.Length);
+      Assert.AreEqual (typeof (string).MakeByRefType(), parameters[0].ParameterType);
+      Assert.IsTrue (parameters[0].ParameterType.IsByRef);
+      Assert.IsTrue (parameters[0].IsOut);
+      Assert.IsFalse (parameters[0].IsIn);
+
+      Assert.AreEqual (typeof (int).MakeByRefType (), parameters[1].ParameterType);
+      Assert.IsTrue (parameters[1].ParameterType.IsByRef);
+      Assert.IsFalse (parameters[1].IsOut);
+      Assert.IsFalse (parameters[1].IsIn);
+
+      var arguments = new object[] { "foo", 5 };
+      builtMethod.Invoke (instance, arguments);
+      Assert.AreEqual (null, arguments[0]);
+      Assert.AreEqual (5, arguments[1]);
+    }
+
+    [Test]
     public void CreateStaticMethod ()
     {
       var classEmitter = new CustomClassEmitter (Scope, "CreateStaticMethod", typeof (object));
-      var method = classEmitter.CreateMethod ("Check", MethodAttributes.Public | MethodAttributes.Static);
-      method.SetReturnType (typeof (string));
+      var method = classEmitter.CreateMethod ("Check", MethodAttributes.Public | MethodAttributes.Static, typeof (string), new Type[0]);
       method.AddStatement (new ReturnStatement (new ConstReference ("stat")));
 
       Type t = classEmitter.BuildType ();

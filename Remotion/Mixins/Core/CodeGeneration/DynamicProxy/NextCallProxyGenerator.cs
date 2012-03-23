@@ -124,9 +124,8 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsTrue (methodDefinitionOnTarget.DeclaringClass == _targetClassConfiguration);
 
       MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual;
-      var methodOverride = _emitter.CreateMethod (methodDefinitionOnTarget.FullName, attributes);
-      methodOverride.CopyParametersAndReturnType (methodDefinitionOnTarget.MethodInfo);
-      
+      var methodOverride = _emitter.CreateMethod (methodDefinitionOnTarget.FullName, attributes, methodDefinitionOnTarget.MethodInfo);
+
       NextCallMethodGenerator methodGenerator = new NextCallMethodGenerator (methodOverride, this, _concreteMixinTypes);
       methodGenerator.AddBaseCallToNextInChain (methodDefinitionOnTarget);
 

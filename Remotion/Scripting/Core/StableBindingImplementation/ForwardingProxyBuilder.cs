@@ -248,10 +248,8 @@ namespace Remotion.Scripting.StableBindingImplementation
       {
         // Note: Masking the attributes with MethodAttributes.MemberAccessMask below, would remove 
         // desired attributes such as Final, Virtual and HideBySig.
-        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes);
+        methodEmitter = _classEmitter.CreateMethod (methodInfo.Name, methodAttributes, methodInfo);
       }
-
-      methodEmitter.CopyParametersAndReturnType (methodInfo);
 
       ImplementForwardingMethod (methodInfo, methodEmitter);
 
@@ -307,9 +305,8 @@ namespace Remotion.Scripting.StableBindingImplementation
     {
       ArgumentUtility.CheckNotNull ("methodInfo", methodInfo);
       ArgumentUtility.CheckNotNullOrEmpty ("forwardingMethodName", forwardingMethodName);
-      var methodEmitter = _classEmitter.CreateMethod (forwardingMethodName, methodInfo.Attributes);
-      methodEmitter.CopyParametersAndReturnType (methodInfo);
-     
+      var methodEmitter = _classEmitter.CreateMethod (forwardingMethodName, methodInfo.Attributes, methodInfo);
+
       ImplementForwardingMethod (methodInfo, methodEmitter);
 
       return methodEmitter;

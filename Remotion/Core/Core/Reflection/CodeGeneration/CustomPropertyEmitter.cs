@@ -165,10 +165,8 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        IMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name, "get"), flags);
+        IMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name, "get"), flags, PropertyType, IndexParameters);
 
-        method.SetReturnType (PropertyType);
-        method.SetParameterTypes (IndexParameters);
         GetMethod = method;
         return method;
       }
@@ -200,12 +198,12 @@ namespace Remotion.Reflection.CodeGeneration
         if (PropertyKind == PropertyKind.Static)
           flags |= MethodAttributes.Static;
 
-        IMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name,"set"), flags);
-
         Type[] setterParameterTypes = new Type[IndexParameters.Length + 1];
         IndexParameters.CopyTo (setterParameterTypes, 0);
         setterParameterTypes[IndexParameters.Length] = PropertyType;
-        method.SetParameterTypes (setterParameterTypes);
+
+        IMethodEmitter method = _declaringType.CreateMethod (BuildAccessorMethodName (Name,"set"), flags, typeof (void), setterParameterTypes);
+
         SetMethod = method;
         return method;
       }

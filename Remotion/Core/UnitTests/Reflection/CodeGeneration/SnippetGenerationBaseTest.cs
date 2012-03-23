@@ -62,24 +62,24 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         return _unsavedClassEmitter; }
     }
 
-    public IMethodEmitter GetMethodEmitter (bool isStatic)
+    public IMethodEmitter GetMethodEmitter (bool isStatic, Type returnType, Type[] parameterTypes)
     {
       if (_methodEmitter == null)
       {
         MethodAttributes flags = MethodAttributes.Public;
         if (isStatic)
           flags |= MethodAttributes.Static;
-        _methodEmitter = ClassEmitter.CreateMethod ("TestMethod", flags);
+        _methodEmitter = ClassEmitter.CreateMethod ("TestMethod", flags, returnType, parameterTypes);
       }
       return _methodEmitter;
     }
 
-    public IMethodEmitter GetUnsavedMethodEmitter (bool isStatic)
+    public IMethodEmitter GetUnsavedMethodEmitter (bool isStatic, Type returnType, Type[] parameterTypes)
     {
       MethodAttributes flags = MethodAttributes.Public;
       if (isStatic)
         flags |= MethodAttributes.Static;
-      var methodEmitter = UnsavedClassEmitter.CreateMethod ("TestMethod", flags);
+      var methodEmitter = UnsavedClassEmitter.CreateMethod ("TestMethod", flags, returnType, parameterTypes);
       return methodEmitter;
     }
 

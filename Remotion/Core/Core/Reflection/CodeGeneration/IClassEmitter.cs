@@ -35,7 +35,8 @@ namespace Remotion.Reflection.CodeGeneration
     FieldReference CreateField (string name, Type fieldType, FieldAttributes attributes);
     FieldReference CreateStaticField (string name, Type fieldType);
     FieldReference CreateStaticField (string name, Type fieldType, FieldAttributes attributes);
-    IMethodEmitter CreateMethod (string name, MethodAttributes attributes);
+    IMethodEmitter CreateMethod (string name, MethodAttributes attributes, Type returnType, Type[] parameterTypes);
+    IMethodEmitter CreateMethod (string name, MethodAttributes attributes, MethodInfo methodToUseAsATemplate);
     CustomPropertyEmitter CreateProperty (string name, PropertyKind propertyKind, Type propertyType);
 
     CustomPropertyEmitter CreateProperty (

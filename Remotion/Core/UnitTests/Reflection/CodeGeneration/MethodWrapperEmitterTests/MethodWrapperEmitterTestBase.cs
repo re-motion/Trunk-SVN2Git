@@ -27,9 +27,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration.MethodWrapperEmitterTests
         MethodBase executingTestMethod, Type[] publicParameterTypes, Type publicReturnType, MethodInfo innerMethod)
     {
       var methodName = executingTestMethod.DeclaringType.Name + "_" + executingTestMethod.Name;
-      var method = ClassEmitter.CreateMethod (methodName, MethodAttributes.Public | MethodAttributes.Static)
-          .SetParameterTypes (publicParameterTypes)
-          .SetReturnType (publicReturnType);
+      var method = ClassEmitter.CreateMethod (methodName, MethodAttributes.Public | MethodAttributes.Static, publicReturnType, publicParameterTypes);
 
       var statement = new ILStatement ((memberEmitter, ilGenerator) =>
       {

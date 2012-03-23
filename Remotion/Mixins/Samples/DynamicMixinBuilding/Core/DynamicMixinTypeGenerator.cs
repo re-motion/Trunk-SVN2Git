@@ -72,8 +72,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.Core
 
     private void AddOverrider (MethodInfo method, Reference invocationHandler)
     {
-      var overrider = _emitter.CreateMethod (method.Name, MethodAttributes.Public | MethodAttributes.Virtual);
-      overrider.CopyParametersAndReturnType (method);
+      var overrider = _emitter.CreateMethod (method.Name, MethodAttributes.Public | MethodAttributes.Virtual, method);
       overrider.AddCustomAttribute (new CustomAttributeBuilder (s_attributeConstructor, new object[0]));
 
       Reference targetReference = GetTargetReference ();
@@ -107,9 +106,11 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.Core
 
     private MethodInfo CreateBaseCallStub (MethodInfo methodToBeStubbed)
     {
-      var stubMethod = _emitter.CreateMethod (methodToBeStubbed.Name + "__stub", MethodAttributes.Private);
-      stubMethod.SetReturnType (typeof (object));
-      stubMethod.SetParameterTypes (typeof (object[]));
+      var stubMethod = _emitter.CreateMethod (
+          methodToBeStubbed.Name + "__stub",
+          MethodAttributes.Private,
+          typeof (object),
+          new[] { typeof (object[]) });
 
       PropertyReference baseReference = GetNextReference ();
       ParameterInfo[] stubbedMethodSignature = methodToBeStubbed.GetParameters ();

@@ -28,8 +28,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ExpressionReference ()
     {
-      var methodEmitter = GetMethodEmitter (false);
-      methodEmitter.SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
       
       var expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression(), methodEmitter);
       methodEmitter.ImplementByReturning (new ReferenceExpression (expressionReference));
@@ -41,7 +40,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Expressions cannot be assigned to.")]
     public void ExpressionReferenceCannotBeStored ()
     {
-      var methodEmitter = GetUnsavedMethodEmitter (false);
+      var methodEmitter = GetUnsavedMethodEmitter (false, typeof (void), new Type[0]);
       var expressionReference = new ExpressionReference (typeof (string), new ConstReference ("bla").ToExpression (), methodEmitter);
       expressionReference.StoreReference (null);
     }
@@ -49,8 +48,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void LoadAddressOfExpressionReference ()
     {
-      var methodEmitter = GetMethodEmitter (false);
-      methodEmitter.SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
 
       var expressionReference = new ExpressionReference (
           typeof (StructWithMethod), 

@@ -491,8 +491,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       Assertion.IsTrue (ReflectionUtility.IsPublicOrProtected (method));
 
       const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig;
-      IMethodEmitter baseCallMethod = Emitter.CreateMethod ("__base__" + method.Name, attributes);
-      baseCallMethod.CopyParametersAndReturnType (method);
+      IMethodEmitter baseCallMethod = Emitter.CreateMethod ("__base__" + method.Name, attributes, method);
       baseCallMethod.ImplementByBaseCall (method);
       return baseCallMethod.MethodBuilder;
     }

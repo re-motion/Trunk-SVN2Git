@@ -37,8 +37,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreStatic ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("StaticReferenceTypeField");
-      var methodEmitter = GetMethodEmitter (false)
-        .SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
 
       LocalReference local = methodEmitter.DeclareLocal (typeof (string));
       FieldInfoReference fieldReference = new FieldInfoReference (null, fieldInfo);
@@ -56,9 +55,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreInstance ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("ReferenceTypeField");
-      var methodEmitter = GetMethodEmitter (false)
-          .SetParameterTypes (typeof (ClassWithPublicFields))
-          .SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new[] { typeof (ClassWithPublicFields) });
 
       LocalReference local = methodEmitter.DeclareLocal (typeof (string));
       FieldInfoReference fieldReference = new FieldInfoReference (methodEmitter.ArgumentReferences[0], fieldInfo);
@@ -77,8 +74,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreAddressStatic ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("StaticReferenceTypeField");
-      var methodEmitter = GetMethodEmitter (false)
-          .SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
 
       LocalReference local = methodEmitter.DeclareLocal (typeof (string));
       FieldInfoReference fieldReference = new FieldInfoReference (null, fieldInfo);
@@ -101,9 +97,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void LoadAndStoreAddressInstance ()
     {
       FieldInfo fieldInfo = typeof (ClassWithPublicFields).GetField ("ReferenceTypeField");
-      var methodEmitter = GetMethodEmitter (false)
-          .SetParameterTypes (typeof (ClassWithPublicFields))
-          .SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new[] { typeof (ClassWithPublicFields) });
 
       LocalReference local = methodEmitter.DeclareLocal (typeof (string));
       FieldInfoReference fieldReference = new FieldInfoReference (methodEmitter.ArgumentReferences[0], fieldInfo);

@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
     private ModuleScope CreateModuleScope ()
     {
-      return new ModuleScope (true, StrongAssemblyName, Path.Combine (_directory, StrongAssemblyName + ".dll"),
+      return new ModuleScope (true, false, StrongAssemblyName, Path.Combine (_directory, StrongAssemblyName + ".dll"),
         WeakAssemblyName, Path.Combine (_directory, WeakAssemblyName + ".dll"));
     }
 

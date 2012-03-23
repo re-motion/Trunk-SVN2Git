@@ -85,9 +85,10 @@ namespace Remotion.UnitTests.ServiceLocation
     [Ignore ("TODO 4649: Make this an integration test for Type Pipe Interfaces assembly when/if we get a Type Pipe Interfaces assembly.")]
     public void FailedAutomaticDiscovery ()
     {
-      var scope = new ModuleScope (true, "VersionAccessorAssembly", "VersionAccessorAssembly.dll", "x", "x");
+      var scope = new ModuleScope (true, false, "VersionAccessorAssembly", "VersionAccessorAssembly.dll", "x", "x");
       var versionAccessorTypeBuilder = new CustomClassEmitter (scope, "VersionAccessor", typeof (object));
-      var versionAccessorMethod = versionAccessorTypeBuilder.CreateMethod ("AccessVersion", MethodAttributes.Public | MethodAttributes.Static);
+      var versionAccessorMethod = versionAccessorTypeBuilder.CreateMethod (
+          "AccessVersion", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new Type[0]);
       versionAccessorMethod.AddStatement (
           new ExpressionStatement (new MethodInvocationExpression (null, typeof (FrameworkVersion).GetProperty ("Value").GetGetMethod())));
       versionAccessorMethod.AddStatement (new PopStatement());

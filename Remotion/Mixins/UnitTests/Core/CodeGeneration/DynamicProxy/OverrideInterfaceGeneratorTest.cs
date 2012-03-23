@@ -96,9 +96,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       var fakeMethodBuilder = (MethodBuilder) FormatterServices.GetSafeUninitializedObject (typeof (MethodBuilder));
 
       _classEmitterMock
-          .Expect (mock => mock.CreateMethod ("AbstractMethod", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Abstract))
+          .Expect (
+              mock =>
+              mock.CreateMethod ("AbstractMethod", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Abstract, overriddenMethod))
           .Return (methodEmitterMock);
-      methodEmitterMock.Expect (mock => mock.CopyParametersAndReturnType (overriddenMethod)).Return (methodEmitterMock);
       methodEmitterMock.Expect (mock => mock.AddCustomAttribute (Arg<CustomAttributeBuilder>.Matches (builder =>
           ((ConstructorInfo) PrivateInvoke.GetNonPublicField (builder, "m_con")).DeclaringType == typeof (OverrideInterfaceMappingAttribute))));
       methodEmitterMock.Expect (mock => mock.MethodBuilder).Return (fakeMethodBuilder);
@@ -118,9 +119,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       var fakeMethodBuilder = (MethodBuilder) FormatterServices.GetSafeUninitializedObject (typeof (MethodBuilder));
 
       _classEmitterMock
-          .Expect (mock => mock.CreateMethod ("AbstractMethod", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Abstract))
+          .Expect (
+              mock =>
+              mock.CreateMethod ("AbstractMethod", MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.Abstract, overriddenMethod))
           .Return (methodEmitterMock);
-      methodEmitterMock.Expect (mock => mock.CopyParametersAndReturnType (overriddenMethod)).Return (methodEmitterMock);
       methodEmitterMock.Expect (mock => mock.MethodBuilder).Return (fakeMethodBuilder);
 
       var generator = new OverrideInterfaceGenerator (_classEmitterMock);

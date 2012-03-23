@@ -29,7 +29,7 @@ namespace Remotion.Scripting.StableBindingImplementation
       string nameSigned = name + ".Signed";
       string nameUnsigned = name + ".Unsigned";
       const string ext = ".dll";
-      return new ModuleScope (savePhysicalAssembly, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+      return new ModuleScope (savePhysicalAssembly, false, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
     }
   }
 }

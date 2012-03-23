@@ -204,16 +204,16 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public void CustomAddMethod ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("CustomAddMethod", EventKind.Static, typeof (EventHandler));
-      eventEmitter.AddMethod = _classEmitter.CreateMethod ("CustomAdd", MethodAttributes.Public | MethodAttributes.Static)
-        .SetParameterTypes (typeof (EventHandler));
+      eventEmitter.AddMethod = _classEmitter.CreateMethod (
+          "CustomAdd", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new [] { typeof (EventHandler) });
     }
 
     [Test]
     public void CustomRemoveMethod ()
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("CustomRemoveMethod", EventKind.Static, typeof (EventHandler));
-      eventEmitter.RemoveMethod = _classEmitter.CreateMethod ("CustomRemove", MethodAttributes.Public | MethodAttributes.Static)
-        .SetParameterTypes (typeof (EventHandler));
+      eventEmitter.RemoveMethod = _classEmitter.CreateMethod (
+          "CustomRemove", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new[] { typeof (EventHandler) });
     }
 
     [Test]
@@ -222,7 +222,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("AddMethodCannotBeSetTwice", EventKind.Static, typeof (EventHandler));
       Dev.Null = eventEmitter.AddMethod;
-      eventEmitter.AddMethod = _classEmitter.CreateMethod ("invalid", MethodAttributes.Public | MethodAttributes.Static);
+      eventEmitter.AddMethod = _classEmitter.CreateMethod (
+          "invalid", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new[] { typeof (EventHandler) });
     }
 
     [Test]
@@ -231,7 +232,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     {
       CustomEventEmitter eventEmitter = _classEmitter.CreateEvent ("AddMethodCannotBeSetTwice", EventKind.Static, typeof (EventHandler));
       Dev.Null = eventEmitter.RemoveMethod;
-      eventEmitter.RemoveMethod = _classEmitter.CreateMethod ("invalid", MethodAttributes.Public | MethodAttributes.Static);
+      eventEmitter.RemoveMethod = _classEmitter.CreateMethod (
+          "invalid", MethodAttributes.Public | MethodAttributes.Static, typeof (void), new[] { typeof (EventHandler) });
     }
 
     [Test]

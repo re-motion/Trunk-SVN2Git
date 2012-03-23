@@ -32,7 +32,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy.TypeGeneration
     public void HideFieldFromDebugger (FieldReference field)
     {
       var attributeBuilder = new CustomAttributeBuilder (s_debuggerBrowsableAttributeConstructor, new object[] { DebuggerBrowsableState.Never });
-      field.Reference.SetCustomAttribute (attributeBuilder);
+      field.Fieldbuilder.SetCustomAttribute (attributeBuilder);
     }
   }
 }

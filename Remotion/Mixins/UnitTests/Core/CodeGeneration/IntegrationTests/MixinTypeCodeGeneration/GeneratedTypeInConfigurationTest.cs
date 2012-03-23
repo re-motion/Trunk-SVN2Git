@@ -47,8 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       var typeEmitter = new CustomClassEmitter (ConcreteTypeBuilderTestHelper.GetCurrentModuleManager ().Scope,
           "GeneratedTargetTypeOverridingMixinMethodWorks", typeof (object));
-      typeEmitter.CreateMethod ("ToString", MethodAttributes.Public)
-          .SetReturnType (typeof (string))
+      typeEmitter.CreateMethod ("ToString", MethodAttributes.Public, typeof (string), new Type[0])
           .ImplementByReturning (new ConstReference ("Generated _and_ overridden").ToExpression ())
           .AddCustomAttribute (new CustomAttributeBuilder (typeof (OverrideMixinAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
       Type generatedType = typeEmitter.BuildType ();

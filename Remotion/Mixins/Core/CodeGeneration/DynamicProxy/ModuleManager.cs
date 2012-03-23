@@ -205,7 +205,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       get
       {
         if (_scope == null)
-          _scope = new ModuleScope (true, _strongAssemblyName, _strongModulePath, _weakAssemblyName, _weakModulePath);
+          _scope = new ModuleScope (true, false, _strongAssemblyName, _strongModulePath, _weakAssemblyName, _weakModulePath);
         return _scope;
       }
       set

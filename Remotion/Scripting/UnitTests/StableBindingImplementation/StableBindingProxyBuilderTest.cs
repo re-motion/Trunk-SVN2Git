@@ -706,7 +706,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       string nameSigned = name + ".Signed";
       string nameUnsigned = name + ".Unsigned";
       const string ext = ".dll";
-      return new ModuleScope (true, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+      return new ModuleScope (true, false, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
     }
 
     private void SaveAndVerifyModuleScopeAssembly (ModuleScope moduleScope)

@@ -56,7 +56,7 @@ namespace Remotion.Mixins.Samples.DynamicMixinBuilding.UnitTests
     {
       string directory = PrepareDirectory();
 
-      DynamicMixinBuilder.Scope = new ModuleScope (true, "DynamicMixinBuilder.Signed", Path.Combine (directory, "DynamicMixinBuilder.Signed.dll"),
+      DynamicMixinBuilder.Scope = new ModuleScope (true, false, "DynamicMixinBuilder.Signed", Path.Combine (directory, "DynamicMixinBuilder.Signed.dll"),
         "DynamicMixinBuilder.Unsigned", Path.Combine (directory, "DynamicMixinBuilder.Unsigned.dll"));
 
       ConcreteTypeBuilder.SetCurrent (null);

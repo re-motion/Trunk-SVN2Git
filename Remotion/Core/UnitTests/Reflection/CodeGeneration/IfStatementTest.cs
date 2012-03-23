@@ -27,8 +27,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void IfWithTrueCondition ()
     {
-      var methodEmitter = GetMethodEmitter (false);
-      methodEmitter.SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
       methodEmitter.AddStatement (new IfStatement (new SameConditionExpression (NullExpression.Instance, NullExpression.Instance),
           new ReturnStatement (new ConstReference ("True"))));
       methodEmitter.AddStatement (new ReturnStatement (new ConstReference ("False")));
@@ -39,8 +38,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void FalseCondition ()
     {
-      var methodEmitter = GetMethodEmitter (false);
-      methodEmitter.SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
       methodEmitter.AddStatement (new IfStatement (new SameConditionExpression (NullExpression.Instance, new ConstReference ("5").ToExpression()),
           new ReturnStatement (new ConstReference ("True"))));
       methodEmitter.AddStatement (new ReturnStatement (new ConstReference ("False")));

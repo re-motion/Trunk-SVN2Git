@@ -55,7 +55,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
           const string nameSigned = name + ".Signed";
           const string nameUnsigned = name + ".Unsigned";
           const string ext = ".dll";
-          _moduleScope = new ModuleScope (true, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
+          _moduleScope = new ModuleScope (true, false, nameSigned, nameSigned + ext, nameUnsigned, nameUnsigned + ext);
         }
         return _moduleScope;
       }

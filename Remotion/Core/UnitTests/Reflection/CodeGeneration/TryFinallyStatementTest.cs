@@ -18,7 +18,6 @@ using System;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
 
 namespace Remotion.UnitTests.Reflection.CodeGeneration
@@ -32,7 +31,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       FieldReference tryField = ClassEmitter.CreateField ("TryExecuted", typeof (bool));
       FieldReference finallyField = ClassEmitter.CreateField ("FinallyExecuted", typeof (bool));
 
-      var methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false, typeof (void), new Type[0]);
       Statement[] tryBlock = new Statement[]
       {
         new AssignStatement (tryField, new ConstReference (true).ToExpression())
@@ -56,7 +55,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       FieldReference tryField = ClassEmitter.CreateField ("TryExecuted", typeof (bool));
       FieldReference finallyField = ClassEmitter.CreateField ("FinallyExecuted", typeof (bool));
 
-      var methodEmitter = GetMethodEmitter (false);
+      var methodEmitter = GetMethodEmitter (false, typeof (void), new Type[0]);
       Statement[] tryBlock = new Statement[]
       {
         new ThrowStatement (typeof (Exception), "Expected exception"),

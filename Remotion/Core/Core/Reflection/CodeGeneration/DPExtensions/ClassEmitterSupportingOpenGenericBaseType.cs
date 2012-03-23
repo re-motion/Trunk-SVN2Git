@@ -45,12 +45,12 @@ namespace Remotion.Reflection.CodeGeneration.DPExtensions
       return baseType;
     }
 
-    protected override void InitializeGenericArgumentsFromBases (ref Type baseType, ref Type[] interfaces)
+    protected override IEnumerable<Type> InitializeGenericArgumentsFromBases (ref Type baseType, IEnumerable<Type> interfaces)
     {
       Assertion.IsTrue (baseType.DeclaringType == null || !baseType.DeclaringType.ContainsGenericParameters);
       if (baseType.IsGenericTypeDefinition)
       {
-        Type[] baseTypeParameters = baseType.GetGenericArguments ();
+        Type[] baseTypeParameters = baseType.GetGenericArguments();
         string[] typeParameterNames = Array.ConvertAll<Type, string> (baseTypeParameters, delegate (Type t) { return t.Name; });
 
         Assertion.DebugAssert (
@@ -62,7 +62,7 @@ namespace Remotion.Reflection.CodeGeneration.DPExtensions
       else
         Assertion.IsFalse (baseType.ContainsGenericParameters);
 
-      base.InitializeGenericArgumentsFromBases (ref baseType, ref interfaces); // checks that no interface contains generic parameters
+      return base.InitializeGenericArgumentsFromBases (ref baseType, interfaces); // checks that no interface contains generic parameters
     }
 
     private Type CloseBaseType (Type baseTypeDefinition, string[] genericParameterNames, Type[] baseTypeArguments)

@@ -58,8 +58,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void SameConditionTrue ()
     {
-      var methodEmitter = GetMethodEmitter (false);
-      methodEmitter.SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
 
       methodEmitter.AddStatement (new TestStatement (
           new SameConditionExpression (new TypeTokenExpression (typeof (object)), new TypeTokenExpression (typeof (object)))));
@@ -70,8 +69,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void SameConditionFalse ()
     {
-      var methodEmitter = GetMethodEmitter (false);
-      methodEmitter.SetReturnType (typeof (string));
+      var methodEmitter = GetMethodEmitter (false, typeof (string), new Type[0]);
 
       methodEmitter.AddStatement (new TestStatement (
           new SameConditionExpression (new TypeTokenExpression (typeof (string)), new TypeTokenExpression (typeof (object)))));

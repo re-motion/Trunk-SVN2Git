@@ -50,8 +50,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void TypedMethodInvocationMethodProperty ()
     {
-      var method = GetUnsavedMethodEmitter (false);
-      method.SetReturnType (typeof (string));
+      var method = GetUnsavedMethodEmitter (false, typeof (string), new Type[0]);
       Expression newObject = new NewInstanceExpression (typeof (ReferenceType), Type.EmptyTypes);
       ExpressionReference newObjectReference = new ExpressionReference (typeof (ReferenceType), newObject, method);
 
@@ -63,8 +62,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void TypedMethodInvocationOnReferenceType ()
     {
-      var method = GetMethodEmitter (false);
-      method.SetReturnType (typeof (string));
+      var method = GetMethodEmitter (false, typeof (string), new Type[0]);
       Expression newObject = new NewInstanceExpression (typeof (ReferenceType), Type.EmptyTypes);
       ExpressionReference newObjectReference = new ExpressionReference (typeof (ReferenceType), newObject, method);
       method.ImplementByReturning (new TypedMethodInvocationExpression (newObjectReference,
@@ -76,8 +74,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void TypedMethodInvocationOnValueType ()
     {
-      var method = GetMethodEmitter (false);
-      method.SetReturnType (typeof (string));
+      var method = GetMethodEmitter (false, typeof (string), new Type[0]);
       Expression newObject = new InitObjectExpression (method, typeof (ValueType));
       ExpressionReference newObjectReference = new ExpressionReference (typeof (ValueType), newObject, method);
       method.ImplementByReturning (new TypedMethodInvocationExpression (newObjectReference,
@@ -92,8 +89,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       FieldReference fieldReference = ClassEmitter.CreateField ("CallTarget", typeof (ReferenceType));
       FieldInfoReference fieldInfoReference = new FieldInfoReference (SelfReference.Self, fieldReference.Reference);
 
-      var method = GetMethodEmitter (false);
-      method.SetReturnType (typeof (string));
+      var method = GetMethodEmitter (false, typeof (string), new Type[0]);
 
       method.AddStatement (new AssignStatement (fieldReference, new NewInstanceExpression (typeof (ReferenceType), Type.EmptyTypes)));
 
@@ -108,8 +104,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       FieldReference fieldReference = ClassEmitter.CreateField ("CallTarget", typeof (ReferenceType));
       FieldInfoReference fieldInfoReference = new FieldInfoReference (SelfReference.Self, fieldReference.Reference);
 
-      var method = GetMethodEmitter (false);
-      method.SetReturnType (typeof (Tuple<int, string>));
+      var method = GetMethodEmitter (false, typeof (Tuple<int, string>), new Type[0]);
 
       method.AddStatement (new AssignStatement (fieldReference, new NewInstanceExpression (typeof (ReferenceType), Type.EmptyTypes)));
 

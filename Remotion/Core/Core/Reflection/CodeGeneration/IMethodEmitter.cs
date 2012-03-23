@@ -32,9 +32,6 @@ namespace Remotion.Reflection.CodeGeneration
     Type[] ParameterTypes { get; }
     
     Expression[] GetArgumentExpressions ();
-    IMethodEmitter SetParameterTypes (params Type[] parameters);
-    IMethodEmitter SetReturnType (Type returnType);
-    IMethodEmitter CopyParametersAndReturnType (MethodInfo method);
     IMethodEmitter ImplementByReturning (Expression result);
     IMethodEmitter ImplementByReturningVoid ();
     IMethodEmitter ImplementByReturningDefault ();

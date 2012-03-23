@@ -68,9 +68,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       ArgumentUtility.CheckNotNull ("overriddenMethod", overriddenMethod);
 
-      var emitter = _emitter.CreateMethod (overriddenMethod.Name, MethodAttributes.Public | MethodAttributes.Abstract | MethodAttributes.Virtual);
-      emitter.CopyParametersAndReturnType (overriddenMethod);
-      
+      var emitter = _emitter.CreateMethod (
+          overriddenMethod.Name,
+          MethodAttributes.Public | MethodAttributes.Abstract | MethodAttributes.Virtual,
+          overriddenMethod);
+
       var attributeBuilder = new CustomAttributeBuilder (
           s_mappingAttributeCtor, 
           new object[] { overriddenMethod.DeclaringType, overriddenMethod.Name, overriddenMethod.ToString() });

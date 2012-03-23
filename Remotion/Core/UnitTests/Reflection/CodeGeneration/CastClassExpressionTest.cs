@@ -26,9 +26,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void Cast ()
     {
-      var methodEmitter = GetMethodEmitter (false);
-      methodEmitter.SetReturnType (typeof (IConvertible));
-      methodEmitter.SetParameterTypes (typeof (object));
+      var methodEmitter = GetMethodEmitter (false, typeof (IConvertible), new[] { typeof (object) });
       methodEmitter.ImplementByReturning (new CastClassExpression (typeof (IConvertible), methodEmitter.ArgumentReferences[0].ToExpression ()));
 
       Assert.That (InvokeMethod((object) 12), Is.EqualTo (12));

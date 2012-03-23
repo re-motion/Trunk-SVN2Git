@@ -54,7 +54,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     public virtual void SetUp ()
     {
       Console.WriteLine ("Setting up code generation tests");
-      s_scope = new ModuleScope (true, "Remotion.Reflection.CodeGeneration.Generated.Signed", "Remotion.Reflection.CodeGeneration.Generated.Signed.dll", "Remotion.Reflection.CodeGeneration.Generated.Unsigned", "Remotion.Reflection.CodeGeneration.Generated.Unsigned.dll");
+      s_scope = new ModuleScope (true, false, "Remotion.Reflection.CodeGeneration.Generated.Signed", "Remotion.Reflection.CodeGeneration.Generated.Signed.dll", "Remotion.Reflection.CodeGeneration.Generated.Unsigned", "Remotion.Reflection.CodeGeneration.Generated.Unsigned.dll");
       s_unsavedScope = new ModuleScope (true);
       DeleteIfExists (Path.Combine (s_scope.StrongNamedModuleDirectory ?? Environment.CurrentDirectory, s_scope.StrongNamedModuleName));
       DeleteIfExists (Path.Combine (s_scope.WeakNamedModuleDirectory ?? Environment.CurrentDirectory, s_scope.WeakNamedModuleName));

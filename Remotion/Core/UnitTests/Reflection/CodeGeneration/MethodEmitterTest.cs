@@ -33,9 +33,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Obsolete ("TODO RM-4648 : MethodEmitter.ParameterTypes returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     public void SimpleMethod ()
     {
-      var method = ClassEmitter.CreateMethod ("SimpleMethod", MethodAttributes.Public)
-          .SetReturnType (typeof (string))
-          .SetParameterTypes (new[] { typeof (string) });
+      var method = ClassEmitter.CreateMethod ("SimpleMethod", MethodAttributes.Public, typeof (string), new[] { typeof (string) });
       method.ImplementByReturning (
               new MethodInvocationExpression (null, typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }),
               method.ArgumentReferences[0].ToExpression (), new ConstReference ("Simple").ToExpression ()));
@@ -50,9 +48,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void StaticMethod ()
     {
-      var method = ClassEmitter.CreateMethod ("StaticMethod", MethodAttributes.Public | MethodAttributes.Static)
-          .SetReturnType (typeof (string))
-          .SetParameterTypes (new[] { typeof (string) });
+      var method = ClassEmitter.CreateMethod (
+          "StaticMethod",
+          MethodAttributes.Public | MethodAttributes.Static,
+          typeof (string),
+          new[] { typeof (string) });
       method.ImplementByReturning (
           new MethodInvocationExpression (null, typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) }),
           method.ArgumentReferences[0].ToExpression (), new ConstReference ("Simple").ToExpression ()));
@@ -64,8 +64,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ILGenerator ()
     {
-      var method = ClassEmitter.CreateMethod ("StaticMethod", MethodAttributes.Public | MethodAttributes.Static)
-          .SetReturnType (typeof (string));
+      var method = ClassEmitter.CreateMethod ("StaticMethod", MethodAttributes.Public | MethodAttributes.Static, typeof (string), new Type[0]);
       ILGenerator gen = method.ILGenerator;
       Assert.IsNotNull (gen);
       gen.Emit (OpCodes.Ldstr, "manual retval");
@@ -78,9 +77,11 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void GetArgumentExpressions ()
     {
-      var method = ClassEmitter.CreateMethod ("StaticMethod", MethodAttributes.Public | MethodAttributes.Static)
-          .SetReturnType (typeof (string))
-          .SetParameterTypes (new[] { typeof (string) });
+      var method = ClassEmitter.CreateMethod (
+          "StaticMethod",
+          MethodAttributes.Public | MethodAttributes.Static,
+          typeof (string),
+          new[] { typeof (string) });
       Expression[] argumentExpressions = method.GetArgumentExpressions ();
 
       Assert.AreEqual (method.ArgumentReferences.Length, argumentExpressions.Length);
@@ -89,91 +90,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    public void CopyParametersAndReturnTypeSimple ()
-    {
-      var method = ClassEmitter.CreateMethod ("SimpleClone", MethodAttributes.Public)
-          .CopyParametersAndReturnType (typeof (object).GetMethod ("Equals", new[] { typeof (object) }))
-          .ImplementByReturningDefault ();
-
-      MethodInfo builtMethod = BuildTypeAndGetMethod (method);
-
-      Assert.AreEqual (typeof (bool), builtMethod.ReturnType);
-      ParameterInfo[] parameters = builtMethod.GetParameters ();
-      Assert.AreEqual (1, parameters.Length);
-      Assert.AreEqual (typeof (object), parameters[0].ParameterType);
-    }
-
-    [Test]
-    public void CopyParametersAndReturnTypeGeneric ()
-    {
-      var method = ClassEmitter.CreateMethod ("SimpleClone", MethodAttributes.Public)
-          .CopyParametersAndReturnType (typeof (ClassWithConstrainedGenericMethod).GetMethod ("GenericMethod"))
-          .ImplementByReturningDefault ();
-
-      MethodInfo builtMethod = BuildTypeAndGetMethod (method);
-
-      Assert.AreEqual (typeof (string), builtMethod.ReturnType);
-      ParameterInfo[] parameters = builtMethod.GetParameters ();
-      Assert.AreEqual (3, parameters.Length);
-      
-      Assert.IsTrue (parameters[0].ParameterType.IsGenericParameter);
-      Assert.AreEqual(builtMethod, parameters[0].ParameterType.DeclaringMethod);
-      Assert.AreEqual (GenericParameterAttributes.None, parameters[0].ParameterType.GenericParameterAttributes);
-      Type[] constraints = parameters[0].ParameterType.GetGenericParameterConstraints();
-      Assert.AreEqual (1, constraints.Length);
-      Assert.AreEqual (typeof (IConvertible), constraints[0]);
-
-      Assert.IsTrue (parameters[1].ParameterType.IsGenericParameter);
-      Assert.AreEqual (builtMethod, parameters[1].ParameterType.DeclaringMethod);
-      Assert.AreEqual (GenericParameterAttributes.NotNullableValueTypeConstraint | GenericParameterAttributes.DefaultConstructorConstraint,
-          parameters[1].ParameterType.GenericParameterAttributes);
-      constraints = parameters[1].ParameterType.GetGenericParameterConstraints ();
-      Assert.AreEqual (1, constraints.Length);
-      Assert.AreEqual (typeof (ValueType), constraints[0]);
-
-      Assert.IsTrue (parameters[2].ParameterType.IsGenericParameter);
-      Assert.AreEqual (builtMethod, parameters[2].ParameterType.DeclaringMethod);
-      Assert.AreEqual (GenericParameterAttributes.None, parameters[2].ParameterType.GenericParameterAttributes);
-      constraints = parameters[2].ParameterType.GetGenericParameterConstraints ();
-      Assert.AreEqual (1, constraints.Length);
-      Assert.AreEqual (parameters[0].ParameterType, constraints[0]);
-    }
-
-    [Test]
-    public void CopyParametersAndReturnTypeOutRef ()
-    {
-      var method = ClassEmitter.CreateMethod ("MethodWithOutRef", MethodAttributes.Public)
-          .CopyParametersAndReturnType (typeof (ClassWithAllKindsOfMembers).GetMethod ("MethodWithOutRef"));
-      method.AddStatement (new AssignStatement (new IndirectReference (method.ArgumentReferences[0]), NullExpression.Instance))
-          .ImplementByReturningDefault ();
-
-      object instance = BuildInstance ();
-      MethodInfo builtMethod = GetMethod (instance, method);
-
-      Assert.AreEqual (typeof (void), builtMethod.ReturnType);
-      ParameterInfo[] parameters = builtMethod.GetParameters ();
-      Assert.AreEqual (2, parameters.Length);
-      Assert.AreEqual (typeof (string).MakeByRefType(), parameters[0].ParameterType);
-      Assert.IsTrue (parameters[0].ParameterType.IsByRef);
-      Assert.IsTrue (parameters[0].IsOut);
-      Assert.IsFalse (parameters[0].IsIn);
-
-      Assert.AreEqual (typeof (int).MakeByRefType (), parameters[1].ParameterType);
-      Assert.IsTrue (parameters[1].ParameterType.IsByRef);
-      Assert.IsFalse (parameters[1].IsOut);
-      Assert.IsFalse (parameters[1].IsIn);
-
-      var arguments = new object[] { "foo", 5 };
-      InvokeMethod (instance, method, arguments);
-      Assert.AreEqual (null, arguments[0]);
-      Assert.AreEqual (5, arguments[1]);
-    }
-
-    [Test]
     public void ImplementByReturning ()
     {
-      var method = ClassEmitter.CreateMethod ("MethodReturning", MethodAttributes.Public)
-          .SetReturnType (typeof (string))
+      var method = ClassEmitter.CreateMethod ("MethodReturning", MethodAttributes.Public, typeof (string), new Type[0])
           .ImplementByReturning (new ConstReference ("none").ToExpression());
 
       Assert.AreEqual ("none", BuildInstanceAndInvokeMethod (method));
@@ -182,7 +101,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementByReturningVoid ()
     {
-      var method = ClassEmitter.CreateMethod ("MethodReturningVoid", MethodAttributes.Public)
+      var method = ClassEmitter.CreateMethod ("MethodReturningVoid", MethodAttributes.Public, typeof (void), new Type[0])
           .ImplementByReturningVoid ();
 
       Assert.AreEqual (null, BuildInstanceAndInvokeMethod (method));
@@ -191,11 +110,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementByReturningDefaultValueType ()
     {
-      var intMethod = ClassEmitter.CreateMethod ("IntMethod", MethodAttributes.Public)
-          .SetReturnType (typeof (int))
+      var intMethod = ClassEmitter.CreateMethod ("IntMethod", MethodAttributes.Public, typeof (int), new Type[0])
           .ImplementByReturningDefault ();
-      var dateTimeMethod = ClassEmitter.CreateMethod ("DateTimeMethod", MethodAttributes.Public)
-          .SetReturnType (typeof (DateTime))
+      var dateTimeMethod = ClassEmitter.CreateMethod ("DateTimeMethod", MethodAttributes.Public, typeof (DateTime), new Type[0])
           .ImplementByReturningDefault ();
 
       object instance = BuildInstance ();
@@ -207,11 +124,9 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementByReturningDefaultReferenceType ()
     {
-      var objectMethod = ClassEmitter.CreateMethod ("ObjectMethod", MethodAttributes.Public)
-          .SetReturnType (typeof (object))
+      var objectMethod = ClassEmitter.CreateMethod ("ObjectMethod", MethodAttributes.Public, typeof (object), new Type[0])
           .ImplementByReturningDefault ();
-      var stringMethod = ClassEmitter.CreateMethod ("StringMethod", MethodAttributes.Public)
-          .SetReturnType (typeof (string))
+      var stringMethod = ClassEmitter.CreateMethod ("StringMethod", MethodAttributes.Public, typeof (string), new Type[0])
           .ImplementByReturningDefault ();
 
       object instance = BuildInstance ();
@@ -223,7 +138,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementByReturningDefaultVoid ()
     {
-      var voidMethod = ClassEmitter.CreateMethod ("VoidMethod", MethodAttributes.Public)
+      var voidMethod = ClassEmitter.CreateMethod ("VoidMethod", MethodAttributes.Public, typeof (void), new Type[0])
           .ImplementByReturningDefault ();
 
       object instance = BuildInstance ();
@@ -235,9 +150,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementByDelegating ()
     {
-      var method = ClassEmitter.CreateMethod ("EqualsSelf", MethodAttributes.Public | MethodAttributes.Static)
-          .SetParameterTypes (typeof (object))
-          .SetReturnType (typeof (bool));
+      var method = ClassEmitter.CreateMethod (
+          "EqualsSelf", MethodAttributes.Public | MethodAttributes.Static, typeof (bool), new[] { typeof (object) });
       method.ImplementByDelegating (method.ArgumentReferences[0], typeof (object).GetMethod ("Equals", new[] {typeof (object)}));
 
       object instance = BuildInstance ();
@@ -249,9 +163,8 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementByDelegatingToValueType ()
     {
-      var method = ClassEmitter.CreateMethod ("IntEqualsSelf", MethodAttributes.Public | MethodAttributes.Static)
-          .SetParameterTypes (typeof (int))
-          .SetReturnType (typeof (bool));
+      var method = ClassEmitter.CreateMethod (
+          "IntEqualsSelf", MethodAttributes.Public | MethodAttributes.Static, typeof (bool), new[] { typeof (int) });
       LocalReference local = method.DeclareLocal (typeof (int));
       method.AddStatement (new AssignStatement (local, method.ArgumentReferences[0].ToExpression()));
       method.ImplementByDelegating (local, typeof (int).GetMethod ("Equals", new[] { typeof (int) }));
@@ -263,9 +176,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void ImplementByBaseCall ()
     {
-      var method = ClassEmitter.CreateMethod ("NewEquals", MethodAttributes.Public)
-          .SetParameterTypes (typeof (object))
-          .SetReturnType (typeof (bool));
+      var method = ClassEmitter.CreateMethod ("NewEquals", MethodAttributes.Public, typeof (bool), new[] { typeof (object) });
       method.ImplementByBaseCall (typeof (object).GetMethod ("Equals", new[] { typeof (object) }));
 
       object instance = BuildInstance ();
@@ -279,9 +190,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
         MatchType = MessageMatch.Contains)]
     public void ImplementByBaseCallThrowsOnAbstractMethod ()
     {
-      var method = ClassEmitter.CreateMethod ("NewEquals", MethodAttributes.Public)
-          .SetParameterTypes (typeof (object))
-          .SetReturnType (typeof (bool));
+      var method = ClassEmitter.CreateMethod ("NewEquals", MethodAttributes.Public, typeof (bool), new[]{typeof (object)});
       method.ImplementByBaseCall (typeof (ICloneable).GetMethod ("Clone"));
     }
 
@@ -289,7 +198,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [ExpectedException (typeof (NotFiniteNumberException), ExpectedMessage = "Who would have expected this?")]
     public void ImplementByThrowing ()
     {
-      var method = ClassEmitter.CreateMethod ("ThrowingMethod", MethodAttributes.Public)
+      var method = ClassEmitter.CreateMethod ("ThrowingMethod", MethodAttributes.Public, typeof (void), new Type[0])
           .ImplementByThrowing (typeof (NotFiniteNumberException), "Who would have expected this?");
 
       try
@@ -305,7 +214,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void AddStatement ()
     {
-      var method = ClassEmitter.CreateMethod ("Statement", MethodAttributes.Public)
+      var method = ClassEmitter.CreateMethod ("Statement", MethodAttributes.Public, typeof (void), new Type[0])
         .AddStatement (new ReturnStatement ());
 
       BuildInstanceAndInvokeMethod (method);
@@ -314,8 +223,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void DeclareLocal ()
     {
-      var method = ClassEmitter.CreateMethod ("Statement", MethodAttributes.Public)
-          .SetReturnType (typeof (int));
+      var method = ClassEmitter.CreateMethod ("Statement", MethodAttributes.Public, typeof (int), new Type[0]);
       LocalReference local = method.DeclareLocal (typeof (int));
       method.ImplementByReturning (local.ToExpression ());
 
@@ -325,7 +233,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     [Test]
     public void AddCustomAttribute ()
     {
-      var method = ClassEmitter.CreateMethod ("Statement", MethodAttributes.Public);
+      var method = ClassEmitter.CreateMethod ("Statement", MethodAttributes.Public, typeof (void), new Type[0]);
       method.AddCustomAttribute (new CustomAttributeBuilder (typeof (SimpleAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
 
       MethodInfo methodInfo = BuildTypeAndGetMethod (method);
@@ -338,7 +246,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var fakeGenerator = new DynamicMethod ("Test", typeof (void), Type.EmptyTypes).GetILGenerator ();
       var statementMock = MockRepository.GenerateMock<Statement> ();
 
-      var method = ClassEmitter.CreateMethod ("AcceptStatement", MethodAttributes.Public);
+      var method = ClassEmitter.CreateMethod ("AcceptStatement", MethodAttributes.Public, typeof (void), new Type[0]);
       method.AcceptStatement (statementMock, fakeGenerator);
 
       statementMock.AssertWasCalled (mock => mock.Emit (Arg<IMemberEmitter>.Matches (e => e.Member == method.MethodBuilder), Arg.Is (fakeGenerator)));
@@ -350,7 +258,7 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       var fakeGenerator = new DynamicMethod ("Test", typeof (void), Type.EmptyTypes).GetILGenerator ();
       var expressionMock = MockRepository.GenerateMock<Expression> ();
 
-      var method = ClassEmitter.CreateMethod ("AcceptStatement", MethodAttributes.Public);
+      var method = ClassEmitter.CreateMethod ("AcceptStatement", MethodAttributes.Public, typeof (void), new Type[0]);
       method.AcceptExpression (expressionMock, fakeGenerator);
 
       expressionMock.AssertWasCalled (mock => mock.Emit (Arg<IMemberEmitter>.Matches (e => e.Member == method.MethodBuilder), Arg.Is(fakeGenerator)));
