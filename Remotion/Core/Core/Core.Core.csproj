@@ -548,7 +548,6 @@
     <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
     <Content Include="doc\include\Logging\ILog.xml" />
     <Content Include="doc\include\Logging\Log4NetTraceListener.xml" />
-    <Content Include="doc\include\MSDN.css" />
     <Content Include="doc\include\Reflection\TypesafeInvoker.xml" />
     <Content Include="doc\include\Remotion.NamespaceDoc.xml" />
     <Content Include="doc\include\Text\CommandLine\CommandLineParser.xml" />
