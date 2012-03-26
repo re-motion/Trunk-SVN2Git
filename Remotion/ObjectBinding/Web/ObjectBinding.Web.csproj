@@ -436,6 +436,7 @@
     <Compile Include="UI\Design\PropertyPathBindingCollectionEditor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Content Include="Res\Themes\NovaBlue\Image\Warning.gif" />
     <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
