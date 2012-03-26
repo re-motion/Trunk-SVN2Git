@@ -33,19 +33,19 @@
       </TopControls>
       <Views>
         <remotion:TabView ID="TabView1" runat="server" Title="First">
-          <p>This is view no. 1</p>
+          <asp:Literal runat="server">This is view no. 1</asp:Literal>
         </remotion:TabView>
         <remotion:TabView ID="TabView2" runat="server" Title="Second">
-          <p>This is view no. 2</p>
+          <asp:Literal runat="server">This is view no. 2</asp:Literal>
         </remotion:TabView>
         <remotion:TabView ID="TabView3" runat="server" Title="Person Details" Icon-Url="~/Images/Person.gif" Icon-Height="16" Icon-Width="16">
-          <p>This is view no. 3</p>
+          <asp:Literal runat="server">This is view no. 3</asp:Literal>
         </remotion:TabView>
         <remotion:TabView ID="TabView4" runat="server" Title="Jobs" Icon-Url="~/Images/Job.gif" Icon-Height="16" Icon-Width="16">
-          <p>This is view no. 4</p>
+          <asp:Literal runat="server">This is view no. 4</asp:Literal>
         </remotion:TabView>
         <remotion:TabView ID="TabView5" runat="server" Title="View 5">
-          <p>This is view no. 52</p>
+          <asp:Literal runat="server">This is view no. 52</asp:Literal>
         </remotion:TabView>
       </Views>
       <BottomControls>
