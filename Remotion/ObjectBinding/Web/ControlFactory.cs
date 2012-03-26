@@ -65,7 +65,7 @@ public sealed class ControlFactory
     {
       if (property is IBusinessObjectStringProperty)
         return new BocMultilineTextValue();
-      else if (property is IBusinessObjectReferenceDataSource && editMode != EditMode.InlineEdit)
+      else if (property is IBusinessObjectReferenceProperty && editMode != EditMode.InlineEdit)
         return new BocList();
     }
 
