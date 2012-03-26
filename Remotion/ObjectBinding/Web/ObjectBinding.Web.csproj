@@ -436,7 +436,6 @@
     <Compile Include="UI\Design\PropertyPathBindingCollectionEditor.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Content Include="Res\Themes\NovaBlue\Image\Warning.gif" />
     <EmbeddedResource Include="Globalization\BocAutoCompleteReferenceValue.de.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -523,6 +522,7 @@
     <Content Include="Res\Themes\NovaBlue\Image\MovePrevious.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MovePreviousInactive.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
+    <Content Include="Res\Themes\NovaBlue\Image\ReferenceValueErrorIndicator.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortAscending.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\SortDescending.gif" />
     <EmbeddedResource Include="Globalization\BocBooleanValue.de.resx">
