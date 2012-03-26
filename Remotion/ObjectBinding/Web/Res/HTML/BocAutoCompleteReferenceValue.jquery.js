@@ -135,6 +135,7 @@
             // re-motion: cancel an already running request
             stopLoading();
             abortRequest();
+            options.clearRequestError();
 
             switch (event.keyCode) {
                 case KEY.UP:
@@ -216,6 +217,7 @@
                     return;
             }
         }).bind ('keyup paste', function(event) { // re-motion
+            options.clearRequestError();
             var handleInput = function() {
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
@@ -277,7 +279,8 @@
             }
         }).click(function() {
 
-        }).bind("search", function() {
+        }).bind("search", function () {
+            options.clearRequestError();
             // TODO why not just specifying both arguments?
             var fn = (arguments.length > 1) ? arguments[1] : null;
             function findValueCallback(q, data) {
@@ -323,7 +326,8 @@
             dropdownButton.click(function(event) {
                 // re-motion: block event bubbling
                 event.stopPropagation();
-                
+                options.clearRequestError();
+
                 if (select.visible()) {
                     acceptInput (lastKeyPressCode);
                 } else {
@@ -647,7 +651,9 @@
                                               success(term, parsed);
                                           },
                                           function(err, context, methodName) {
-                                              executingRequest = null;
+                                            executingRequest = null;
+                                            stopLoading();
+                                            options.handleRequestError (err);
                                           });
             } else {
                 // if we have a failure, we need to empty the list -- this prevents the the [TAB] key from selecting the last successful match
@@ -690,6 +696,8 @@
                                                   },
                                                   function (err, context, methodName) {
                                                     executingRequest = null;
+                                                    stopLoading();
+                                                    options.handleRequestError(err);
                                                   });
         };
 
@@ -763,7 +771,9 @@
         },
         scroll: true,
         scrollHeight: 180,
-        repositionInterval: 200
+        repositionInterval: 200,
+        handleRequestError: function (err) { },
+        clearRequestError: function (err) { }
     };
 
     $.Autocompleter.Cache = function(options) {

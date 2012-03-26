@@ -184,6 +184,9 @@ namespace OBWTest.IndividualControlTests
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy SearchExact (string prefixText, string businessObjectClass, string businessObjectProperty, string businessObject, string args)
     {
+      if (prefixText.Equals ("exactthrow", StringComparison.OrdinalIgnoreCase))
+        throw new Exception ("Test Exception");
+
       var result = Search (prefixText, 2, businessObjectClass, businessObjectProperty, businessObject, args);
       if (result.Length == 0)
         return null;

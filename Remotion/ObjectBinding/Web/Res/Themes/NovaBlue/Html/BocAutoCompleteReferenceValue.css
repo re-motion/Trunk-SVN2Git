@@ -21,6 +21,14 @@ span.bocAutoCompleteReferenceValue input
   display: inline-block;
 }
 
+span.bocAutoCompleteReferenceValue input.error
+{
+  background-color: white;
+  background-image: url('../Image/ReferenceValueErrorIndicator.gif');
+  background-position: right center;
+  background-repeat: no-repeat;
+}
+
 span.bocAutoCompleteReferenceValueButton
 {
   display: inline-block;

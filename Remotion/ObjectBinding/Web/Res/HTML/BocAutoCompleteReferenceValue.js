@@ -74,10 +74,10 @@ BocAutoCompleteReferenceValue.Initialize = function (
             return $.map(data, function (row)
             {
               return {
-                data: row,
-                value: row.UniqueIdentifier,
-                result: row.DisplayName
-              }
+                data : row,
+                value : row.UniqueIdentifier,
+                result : row.DisplayName
+              };
             });
           },
           formatItem: function (item) //What we display on input box
@@ -98,6 +98,15 @@ BocAutoCompleteReferenceValue.Initialize = function (
           formatMatch: function (item) //The value used by the cache
           {
             return item.DisplayName;
+          },
+          handleRequestError: function (err)
+          {
+            var message = err.get_message();
+            SetError (message);
+          },
+          clearRequestError: function ()
+          {
+            ClearError();
           }
         }
     ).invalidateResult(function (e, item)
@@ -130,6 +139,23 @@ BocAutoCompleteReferenceValue.Initialize = function (
       command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo);
     } 
   }
+
+  function ClearError()
+  {
+    textbox.attr('title', textbox.data('title-backup'));
+    textbox.removeData ('title-backup');
+    textbox.removeClass('error');
+  };
+
+  function SetError(message)
+  {
+    var oldTitle = textbox.attr('title');
+    if (TypeUtility.IsUndefined(oldTitle))
+      oldTitle = null;
+    textbox.data ('title-backup', oldTitle);
+    textbox.attr('title', message);
+    textbox.addClass('error');
+  };
 };
 
 //  Returns the number of rows selected for the specified ReferenceValue
