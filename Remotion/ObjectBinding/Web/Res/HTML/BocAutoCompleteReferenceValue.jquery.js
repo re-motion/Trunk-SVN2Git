@@ -135,7 +135,6 @@
             // re-motion: cancel an already running request
             stopLoading();
             abortRequest();
-            options.clearRequestError();
 
             switch (event.keyCode) {
                 case KEY.UP:
@@ -189,6 +188,7 @@
                 case KEY.ESC:
                     // re-motion: block event bubbling
                     event.stopPropagation();
+                    clearTimeout(timeout);
                     var wasVisible = select.visible();
                     config.mouseDownOnSelect = false;
 
@@ -217,7 +217,7 @@
                     return;
             }
         }).bind ('keyup paste', function(event) { // re-motion
-            options.clearRequestError();
+            clearTimeout(timeout);
             var handleInput = function() {
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
@@ -268,9 +268,9 @@
             hasFocus = true;
         }).blur(function() {
             hasFocus = false;
-            if (select.visible() && !config.mouseDownOnSelect) {
-                var value = $input.val();
+            if (!select.visible()) {
                 clearTimeout(timeout);
+            } else if (!config.mouseDownOnSelect) {
                 timeout = setTimeout(
                     function() {
                         acceptInput (lastKeyPressCode);
@@ -280,7 +280,6 @@
         }).click(function() {
 
         }).bind("search", function () {
-            options.clearRequestError();
             // TODO why not just specifying both arguments?
             var fn = (arguments.length > 1) ? arguments[1] : null;
             function findValueCallback(q, data) {
@@ -326,7 +325,6 @@
             dropdownButton.click(function(event) {
                 // re-motion: block event bubbling
                 event.stopPropagation();
-                options.clearRequestError();
 
                 if (select.visible()) {
                     acceptInput (lastKeyPressCode);
@@ -622,6 +620,8 @@
                 return;
             }
 
+            options.clearRequestError();
+
             var data = cache.load(term);
             // recieve the cached data
             if (data && data.length) {
@@ -676,6 +676,8 @@
               failure(term);
               return;
             }
+
+            options.clearRequestError();
 
             var params = {
               prefixText: lastWord(term)

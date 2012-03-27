@@ -142,19 +142,26 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
   function ClearError()
   {
-    textbox.attr('title', textbox.data('title-backup'));
-    textbox.removeData ('title-backup');
-    textbox.removeClass('error');
+    if (textbox.hasClass('error'))
+    {
+      textbox.attr ('title', textbox.data ('title-backup'));
+      textbox.removeData ('title-backup');
+      textbox.removeClass ('error');
+    }
   };
 
   function SetError(message)
   {
-    var oldTitle = textbox.attr('title');
-    if (TypeUtility.IsUndefined(oldTitle))
-      oldTitle = null;
-    textbox.data ('title-backup', oldTitle);
-    textbox.attr('title', message);
-    textbox.addClass('error');
+    if (!textbox.hasClass('error'))
+    {
+      var oldTitle = textbox.attr ('title');
+      if (TypeUtility.IsUndefined (oldTitle))
+        oldTitle = null;
+
+      textbox.data ('title-backup', oldTitle);
+    }
+    textbox.attr ('title', message);
+    textbox.addClass ('error');
   };
 };
 
