@@ -482,6 +482,7 @@
     <Content Include="Res\HTML\BocAutoCompleteReferenceValue.jquery.js" />
     <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownArrowDisabled.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
+    <Content Include="Res\Themes\ClassicBlue\Image\ReferenceValueErrorIndicator.gif" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.jquery.css" />
     <Content Include="Res\Themes\NovaBlue\Html\BocBooleanValue.css" />
