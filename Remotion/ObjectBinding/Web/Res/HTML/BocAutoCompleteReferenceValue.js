@@ -128,7 +128,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
     if (isAutoPostBackEnabled)
     {
-      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null);
+      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null, function () { });
     }
     else
     {
@@ -136,7 +136,13 @@ BocAutoCompleteReferenceValue.Initialize = function (
       if (selectedValue != nullValueString)
         businessObject = selectedValue;
 
-      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo);
+      var errorHandler = function (error)
+      {
+        var message = error.get_message();
+        SetError (message);
+      };
+
+      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo, errorHandler);
     } 
   }
 

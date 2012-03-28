@@ -42,12 +42,18 @@ BocReferenceValue.Initialize = function (
 
     if (isAutoPostBackEnabled)
     {
-      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null);
+      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null, function () { });
     }
     else
     {
+      var errorHandler = function (error)
+      {
+        var message = error.get_message();
+        //SetError(message);
+      };
+
       var businessObject = BocReferenceValue.GetSelectedValue(dropDownList, nullValueString);
-      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo);
+      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo, errorHandler);
     }
   });
 };

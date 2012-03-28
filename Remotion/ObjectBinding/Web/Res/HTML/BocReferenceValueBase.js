@@ -23,15 +23,16 @@ BocReferenceValueBase._nullIconUrl = null;
 BocReferenceValueBase.InitializeGlobals = function (nullIconUrl)
 {
   BocReferenceValueBase._nullIconUrl = nullIconUrl;
-}
+};
 
-BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, iconServiceUrl, iconContext, commandInfo)
+BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, iconServiceUrl, iconContext, commandInfo, onFailure)
 {
   ArgumentUtility.CheckNotNull('oldCommand', oldCommand);
   ArgumentUtility.CheckTypeIsString('businessObject', businessObject);
   ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
   ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
   ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
+  ArgumentUtility.CheckTypeIsFunction('onFailure', onFailure);
 
   var newCommand = BocReferenceValueBase.CreateCommand(oldCommand, commandInfo, businessObject);
 
@@ -45,7 +46,7 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
   {
     var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
     if (pageRequestManager.get_isInAsyncPostBack())
-      return;
+      return oldCommand;
 
     var params = { businessObject: businessObject };
     for (var propertyName in iconContext)
@@ -62,11 +63,13 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
         },
         function (err, context, methodName)
         {
+          onFailure(err);
+          BocReferenceValueBase.ResetCommand(newCommand);
         });
   }
 
   return newCommand;
-}
+};
 
 BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, businessObject)
 {
@@ -79,7 +82,7 @@ BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, busines
   var tempCommandInfo = null;
   if (commandInfo != null)
   {
-    var tempCommandInfo = jQuery.extend(true, {}, commandInfo);
+    tempCommandInfo = jQuery.extend(true, {}, commandInfo);
     if (businessObject == null)
     {
       tempCommandInfo.href = null;
@@ -112,7 +115,7 @@ BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, busines
   }
 
   return newCommand;
-}
+};
 
 BocReferenceValueBase.CreateEmptyIcon = function (oldIcon, title)
 {
@@ -127,7 +130,7 @@ BocReferenceValueBase.CreateEmptyIcon = function (oldIcon, title)
   newIcon.css({ width: oldIcon.width(), height: oldIcon.height() });
 
   return newIcon;
-}
+};
 
 BocReferenceValueBase.UpdateIconFromWebService = function (icon, iconInformation)
 {
@@ -147,4 +150,14 @@ BocReferenceValueBase.UpdateIconFromWebService = function (icon, iconInformation
     icon.attr({ title: iconInformation.ToolTip });
 
   icon.css({ width: iconInformation.Width, heght: iconInformation.Height });
-}
+};
+
+BocReferenceValueBase.ResetCommand = function (command)
+{
+  ArgumentUtility.CheckTypeIsObject('command', command);
+  command.removeAttr('href');
+  command.removeAttr('onclick');
+  command.removeAttr('title');
+  command.removeAttr('target');
+
+};
