@@ -37,6 +37,8 @@ BocReferenceValue.Initialize = function (
 
   dropDownList.change(function ()
   {
+    BocReferenceValue.ClearError(dropDownList);
+
     if (command == null || command.length == 0)
       return;
 
@@ -49,7 +51,7 @@ BocReferenceValue.Initialize = function (
       var errorHandler = function (error)
       {
         var message = error.get_message();
-        //SetError(message);
+        BocReferenceValue.SetError(dropDownList, message);
       };
 
       var businessObject = BocReferenceValue.GetSelectedValue(dropDownList, nullValueString);
@@ -69,7 +71,7 @@ BocReferenceValue.GetSelectedValue = function (dropDownList, nullValueString)
   if (selectedValue == nullValueString)
     return null;
   return selectedValue;
-}
+};
 
 //  Returns the number of rows selected for the specified BocList
 BocReferenceValue.GetSelectionCount = function (referenceValueDropDownListID, nullValueString)
@@ -81,4 +83,28 @@ BocReferenceValue.GetSelectionCount = function (referenceValueDropDownListID, nu
   if (BocReferenceValue.GetSelectedValue(dropDownList, nullValueString) == null)
     return 0;
   return 1;
-}
+};
+
+BocReferenceValue.ClearError = function (dropDownList)
+{
+  if (dropDownList.hasClass('error'))
+  {
+    dropDownList.attr('title', dropDownList.data('title-backup'));
+    dropDownList.removeData('title-backup');
+    dropDownList.removeClass('error');
+  }
+};
+
+BocReferenceValue.SetError = function (dropDownList, message)
+{
+  if (!dropDownList.hasClass('error'))
+  {
+    var oldTitle = dropDownList.attr('title');
+    if (TypeUtility.IsUndefined(oldTitle))
+      oldTitle = null;
+
+    dropDownList.data('title-backup', oldTitle);
+  }
+  dropDownList.attr('title', message);
+  dropDownList.addClass('error');
+};

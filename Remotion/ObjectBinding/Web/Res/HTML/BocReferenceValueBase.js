@@ -159,5 +159,4 @@ BocReferenceValueBase.ResetCommand = function (command)
   command.removeAttr('onclick');
   command.removeAttr('title');
   command.removeAttr('target');
-
 };

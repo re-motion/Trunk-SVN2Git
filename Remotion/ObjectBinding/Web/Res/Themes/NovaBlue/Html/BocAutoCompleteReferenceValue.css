@@ -23,7 +23,6 @@ span.bocAutoCompleteReferenceValue input
 
 span.bocAutoCompleteReferenceValue input.error
 {
-  background-color: white;
   background-image: url('../Image/ReferenceValueErrorIndicator.gif');
   background-position: right center;
   background-repeat: no-repeat;
