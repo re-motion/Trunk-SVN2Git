@@ -142,6 +142,7 @@
                     // re-motion: block event bubbling
                     event.stopPropagation();
                     if (select.visible()) {
+                        options.clearRequestError();
                         select.prev();
                     } else {
                         onChange(0, true, $input.val());
@@ -153,6 +154,7 @@
                     // re-motion: block event bubbling
                     event.stopPropagation();
                     if (select.visible()) {
+                        options.clearRequestError();
                         select.next();
                     } else {
                         onChange(0, true, $input.val());
@@ -164,6 +166,7 @@
                     // re-motion: block event bubbling
                     event.stopPropagation();
                     if (select.visible()) {
+                        options.clearRequestError();
                         select.pageUp();
                     } else {
                         onChange(0, true, $input.val());
@@ -175,6 +178,7 @@
                     // re-motion: block event bubbling
                     event.stopPropagation();
                     if (select.visible()) {
+                        options.clearRequestError();
                         select.pageDown();
                     } else {
                         onChange(0, true, $input.val());

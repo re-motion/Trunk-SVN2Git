@@ -146,7 +146,9 @@ namespace OBWTest.IndividualControlTests
                                            "cross-page posting",
                                            "CTS",
                                            "custom attribute (Attribute)",
-                                           "custom control"
+                                           "custom control",
+                                           "throw",
+                                           "exactthrow"
                                        };
 
     #endregion
