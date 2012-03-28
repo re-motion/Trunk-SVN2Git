@@ -382,7 +382,6 @@
             if (confirmValue && term != '' && select.visible())
             {
               var itemIndex = select.findItem (term);
-              var item = null;
               if (itemIndex != -1)
               {
                 select.selectItem (itemIndex);
