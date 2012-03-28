@@ -79,7 +79,7 @@ BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, busines
 
   var newCommand = $('<a/>');
 
-  var tempCommandInfo = null;
+  var tempCommandInfo = {};
   if (commandInfo != null)
   {
     tempCommandInfo = jQuery.extend(true, {}, commandInfo);
