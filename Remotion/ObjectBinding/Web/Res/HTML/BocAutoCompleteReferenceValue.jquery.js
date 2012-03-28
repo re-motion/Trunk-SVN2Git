@@ -274,6 +274,9 @@
             hasFocus = false;
             if (!select.visible()) {
                 clearTimeout(timeout);
+                if ($input.val() == '')  {
+                    options.clearRequestError();
+                }
             } else if (!config.mouseDownOnSelect) {
                 timeout = setTimeout(
                     function() {
@@ -354,10 +357,11 @@
                     break;
             }
 
+            var term = $input.val();
             if (isLastKeyPressedNavigationKey) {
                 var index = -1;
-                if ($input.val() != '')
-                    index = select.findItem ($input.val());
+                if (term != '')
+                    index = select.findItem(term);
                         
                 select.selectItem (index);
             }
@@ -392,6 +396,10 @@
             } else {
               previousValue = term;
               previousValidValue = term;
+            }
+
+            if (selectedItem == null) {
+              options.clearRequestError();
             }
 
             if (selectedItem != null) {
