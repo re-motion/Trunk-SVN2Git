@@ -135,6 +135,7 @@
     <Compile Include="BridgeInterfaces\IParamListCreateImplementation.generated.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementation.template.cs" />
     <Compile Include="Collections\CacheFactory.cs" />
+    <Compile Include="Collections\CollectionExtensions.cs" />
     <Compile Include="Collections\DataStoreFactory.cs" />
     <Compile Include="Collections\ExpiringDataStore.cs" />
     <Compile Include="Collections\ExpiringDataStoreFactory.cs" />

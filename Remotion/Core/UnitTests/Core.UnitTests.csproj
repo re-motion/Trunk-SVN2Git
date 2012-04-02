@@ -149,6 +149,7 @@
     <Compile Include="AdapterRegistryTest.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\TestAssemblies\DelaySignAssembly\DelaySignClass.cs" />
     <Compile Include="Collections\CacheFactoryTest.cs" />
+    <Compile Include="Collections\CollectionExtensionsTest.cs" />
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
     <Compile Include="Collections\DataStoreFactoryTest.cs" />
