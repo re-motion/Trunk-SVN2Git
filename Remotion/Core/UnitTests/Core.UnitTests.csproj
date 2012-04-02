@@ -152,6 +152,7 @@
     <Compile Include="Collections\CompoundValueEqualityComparerTest.cs" />
     <Compile Include="Collections\ComponentwiseEqualsAndHashcodeWrapperTest.cs" />
     <Compile Include="Collections\DataStoreFactoryTest.cs" />
+    <Compile Include="Collections\DictionaryExtensionsTest.cs" />
     <Compile Include="Collections\ExpiringDataStoreFactoryTest.cs" />
     <Compile Include="Collections\ExpiringDataStoreTest.cs" />
     <Compile Include="Collections\LazyLockingCachingAdapterTest.cs" />

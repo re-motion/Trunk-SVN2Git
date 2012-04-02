@@ -16,13 +16,20 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Utilities;
 
 namespace Remotion.Collections
 {
+  /// <summary>
+  /// Provides useful extension methods for <see cref="IDictionary{TKey,TValue}"/>.
+  /// </summary>
   public static class DictionaryExtensions
   {
     public static TValue GetValueOrDefault<TKey, TValue> (this IDictionary<TKey, TValue> dict, TKey key)
     {
+      ArgumentUtility.CheckNotNull ("dict", dict);
+      // Implementations of IDictionary<TKey, TValue> are free to allow null keys.
+
       TValue value;
       if (dict.TryGetValue (key, out value))
       {
@@ -32,7 +39,13 @@ namespace Remotion.Collections
       {
         return default (TValue);
       }
+    }
 
+    public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue> (this IDictionary<TKey, TValue> dict)
+    {
+      ArgumentUtility.CheckNotNull ("dict", dict);
+
+      return new ReadOnlyDictionary<TKey, TValue> (dict);
     }
   }
 }
