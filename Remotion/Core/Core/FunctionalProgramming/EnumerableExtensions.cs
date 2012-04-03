@@ -289,5 +289,22 @@ namespace Remotion.FunctionalProgramming
 
       return source.ToList();
     }
+
+    /// <summary>
+    /// Returns a sequence that has the same elements as the given <paramref name="source"/> sequence, with the given <paramref name="item"/> appended
+    /// to the end. This method is similar to <see cref="Enumerable.Concat{TSource}"/>, but allows a single item to be appended to the sequence.
+    /// </summary>
+    /// <typeparam name="T">The element type of the <paramref name="source"/> sequence.</typeparam>
+    /// <param name="source">The sequence to which a new item should be appended.</param>
+    /// <param name="item">The item to be appended.</param>
+    /// <returns>
+    /// A lazy sequence that first enumerates the items from the <paramref name="source"/> sequence, then yields the <paramref name="item"/>.
+    /// </returns>
+    public static IEnumerable<T> Concat<T> (this IEnumerable<T> source, T item)
+    {
+      ArgumentUtility.CheckNotNull ("source", source);
+
+      return source.Concat (EnumerableUtility.Singleton (item));
+    }
   }
 }

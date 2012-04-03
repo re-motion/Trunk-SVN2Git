@@ -353,5 +353,19 @@ namespace Remotion.UnitTests.FunctionalProgramming
       Assert.That (result, Is.Not.SameAs (collection));
       Assert.That (result, Is.EqualTo (collection));
     }
+
+    [Test]
+    public void Concat_WithSingleElement ()
+    {
+      var result = Enumerable.Range (1, 3).Concat (4);
+      Assert.That (result, Is.EqualTo (new[] { 1, 2, 3, 4 }));
+    }
+
+    [Test]
+    public void Concat_WithSingleElement_NullItem ()
+    {
+      var result = new[] { "test" }.Concat ((string) null);
+      Assert.That (result, Is.EqualTo (new[] { "test", null }));
+    }
   }
 }
