@@ -16,10 +16,14 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.BridgeInterfaces;
 using Remotion.Collections;
+using Remotion.Context;
 using Remotion.Logging;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.Utilities;
 using Rhino.Mocks;
@@ -28,7 +32,10 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {
+    private static readonly Set<Assembly> s_coreAssemblies = new Set<Assembly>
+                                                             { typeof (ISafeContextStorageProvider).Assembly };
     private readonly IDataStore<Type, object> _instances = new SimpleDataStore<Type, object>();
+    private readonly IServiceLocator _defaultServiceLocator = new DefaultServiceLocator();
 
     public StubServiceLocator ()
     {
@@ -45,13 +52,31 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls
 
     protected override object DoGetInstance (Type serviceType, string key)
     {
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
+      if (IsCoreType (serviceType))
+        return _defaultServiceLocator.GetInstance (serviceType, key);
+
       return _instances.GetOrCreateValue (
           serviceType, delegate (Type type) { throw new ArgumentException (string.Format ("No service for type '{0}' registered.", type)); });
     }
 
     protected override IEnumerable<object> DoGetAllInstances (Type serviceType)
     {
-      throw new NotSupportedException();
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+
+      if (IsCoreType (serviceType))
+        return _defaultServiceLocator.GetAllInstances (serviceType);
+
+      object serviceInstance;
+      if (_instances.TryGetValue (serviceType, out serviceInstance))
+        return new[] { serviceInstance };
+      return new object[0];
+    }
+
+    private bool IsCoreType (Type serviceType)
+    {
+      return s_coreAssemblies.Contains (serviceType.Assembly);
     }
   }
 }
