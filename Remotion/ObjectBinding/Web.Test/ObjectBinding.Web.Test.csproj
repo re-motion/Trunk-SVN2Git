@@ -211,7 +211,6 @@
     <Compile Include="StandardMode.Master.designer.cs">
       <DependentUpon>StandardMode.Master</DependentUpon>
     </Compile>
-    <Compile Include="StubServiceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
