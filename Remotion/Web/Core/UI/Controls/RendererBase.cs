@@ -17,6 +17,8 @@
 using System;
 using System.Text;
 using System.Web.UI;
+using Remotion.Collections;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -29,6 +31,9 @@ namespace Remotion.Web.UI.Controls
   public abstract class RendererBase<TControl>
       where TControl: IStyledControl
   {
+    private readonly ICache<Tuple<Type, IResourceManager>, IResourceManager> _resourceManagerCache = 
+        CacheFactory.Create<Tuple<Type, IResourceManager>, IResourceManager>();
+
     private readonly IResourceUrlFactory _resourceUrlFactory;
 
     /// <summary>
@@ -92,6 +97,22 @@ namespace Remotion.Web.UI.Controls
       var page = control.Page.WrappedInstance;
       if (page != null && ScriptManager.GetCurrent (page) == null)
         throw new InvalidOperationException (string.Format (errorMessageFormat, args));
+    }
+
+    /// <summary> Find the <see cref="IResourceManager"/> for this renderer. </summary>
+    /// <param name="localResourcesType"> 
+    ///   A type with the <see cref="MultiLingualResourcesAttribute"/> applied to it. Typically an <b>enum</b> or the derived class itself.
+    /// </param>
+    /// <param name="controlResourceManager"> The <see cref="IResourceManager"/> of the control for which the rendering is done. </param>
+    /// <returns>An <see cref="IResourceManager"/> from which all resources for this renderer can be obtained.</returns>
+    protected IResourceManager GetResourceManager (Type localResourcesType, IResourceManager controlResourceManager)
+    {
+      ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
+      ArgumentUtility.CheckNotNull ("controlResourceManager", controlResourceManager);
+
+      return _resourceManagerCache.GetOrCreateValue (
+          Tuple.Create (localResourcesType, controlResourceManager),
+          key => new ResourceManagerSet (MultiLingualResources.GetResourceManager (key.Item1, true), key.Item2));
     }
   }
 }

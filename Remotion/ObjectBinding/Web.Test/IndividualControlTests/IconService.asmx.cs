@@ -41,8 +41,6 @@ namespace OBWTest.IndividualControlTests
       if (businessObjectClass == null)
         return null;
 
-      if (businessObject == "00000000-0000-0000-0000-000000000009")
-        throw new Exception ("Icon boom!");
       Type type = TypeUtility.GetType (businessObjectClass, true);
       var businessObjectProvider = BindableObjectProvider.GetProviderForBindableObjectType (type);
       var bindableObjectClass = businessObjectProvider.GetBindableObjectClass (type);

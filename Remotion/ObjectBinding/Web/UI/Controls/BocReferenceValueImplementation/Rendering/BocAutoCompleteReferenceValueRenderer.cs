@@ -204,7 +204,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     private string GetResourcesAsJson (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
-      var resourceManager = GetResourceManager (renderingContext, typeof (ResourceIdentifier));
+      var resourceManager = GetResourceManager (renderingContext);
       var jsonBuilder = new StringBuilder (1000);
 
       jsonBuilder.Append ("{ ");
@@ -216,6 +216,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       jsonBuilder.Append (" }");
 
       return jsonBuilder.ToString();
+    }
+
+    protected virtual IResourceManager GetResourceManager (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    {
+      return GetResourceManager (typeof (ResourceIdentifier), renderingContext.Control.GetResourceManager());
     }
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocRenderingContext<IBocAutoCompleteReferenceValue> renderingContext)
