@@ -20,6 +20,7 @@ using System.Web.UI.WebControls;
 using System.Xml;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.AspNetFramework;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -109,6 +110,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
               });
 
       Control.Stub (stub => stub.GetLabelText()).Return ("MyText");
+      Control.Stub (stub => stub.GetResourceManager()).Return (NullResourceManager.Instance);
 
       _resourceUrlFactoryStub = MockRepository.GenerateStub<IResourceUrlFactory>();
       StubResourceUrl.StubFactoryForAnyResourceUrl (_resourceUrlFactoryStub);
