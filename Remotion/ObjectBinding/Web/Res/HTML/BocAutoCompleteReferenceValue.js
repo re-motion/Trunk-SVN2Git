@@ -53,7 +53,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
           extraParams: searchContext,
           isAutoPostBackEnabled: isAutoPostBackEnabled,
           nullValue: nullValueString, // the hidden field value indicating that no value has been selected
-          minChars: 0,
+          validSearchStringRegex: new RegExp (validSearchStringRegex),
           max: completionSetCount, // Set query limit
 
           dropDownDisplayDelay: dropDownDisplayDelay,
@@ -62,7 +62,6 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
           autoFill: true,
           mustMatch: false, // set true if should clear input on no results
-          matchSubset: false, // set false to disable partial cache hits
           matchContains: true,
           multiple: false, // not supprted
           scrollHeight: 220,

@@ -163,7 +163,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.AppendFormat ("{0}, ", renderingContext.Control.DropDownRefreshDelay);
       script.AppendFormat ("{0}, ", renderingContext.Control.SelectionUpdateDelay);
 
-      AppendStringValueOrNullToScript (script, StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringRegex) ?? ".*");
+      AppendStringValueOrNullToScript (script, StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringRegex) ?? "\\S*");
       script.Append (", ");
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);

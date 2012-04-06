@@ -476,14 +476,14 @@
             previousValue = currentValue;
 
             currentValue = lastWord(currentValue);
-            if (currentValue.length >= options.minChars) {
+            if (isDropDown == 1 || currentValue.match (options.validSearchStringRegex)) {
                 startLoading();
                 if (!options.matchCase)
                     currentValue = currentValue.toLowerCase();
 
                 var failureHandler = function() {
                     closeDropDownListAndSetValue(previousValidValue);
-                }
+                };
 
                 // re-motion: if triggered by dropDownButton, get the full list
                 if (isDropDown == 1) {
@@ -756,13 +756,12 @@
         inputClass: "ac_input",
         resultsClass: "ac_results",
         loadingClass: "ac_loading",
-        minChars: 1,
+        validSearchStringRegex: new RegExp ("\\S+"),
         // re-motion: modified delay concept
         dropDownDisplayDelay: 400,
         dropDownRefreshDelay: 400,
         selectionUpdateDelay: 400,
         matchCase: false,
-        matchSubset: true,
         matchContains: false,
         cacheLength: 10,
         max: 100,
@@ -824,7 +823,7 @@
             // no url was specified, we need to adjust the cache length to make sure it fits the local data store
             if (!options.serviceUrl) options.cacheLength = 1;
 
-            // track all options for minChars = 0
+            // track all options for empty search strings
             stMatchSets[""] = [];
 
             // loop through the array and create a lookup structure
@@ -852,7 +851,7 @@
                 // push the current match into the set list
                 stMatchSets[firstChar].push(row);
 
-                // keep track of minChars zero items
+                // keep track of empty search string items
                 if (nullData++ < options.max) {
                     stMatchSets[""].push(row);
                 }
@@ -886,23 +885,6 @@
                 // if the exact item exists, use it
                 if (data[q]) {
                     return data[q];
-                } else 
-                    if (options.matchSubset) {
-                    // re-motion: added check for min-length of q. If q contained only a single character, options.minChars is 0,
-                    //            and the cache contains an entry for an empty string, this complete search result would be returned.
-                    var minChars = Math.max (options.minChars, 1);
-                    for (var i = q.length - 1; i >= minChars; i--) {
-                        var c = data[q.substr(0, i)];
-                        if (c) {
-                            var csub = [];
-                            $.each(c, function(i, x) {
-                                if (matchSubset(x.result, q)) {
-                                    csub[csub.length] = x;
-                                }
-                            });
-                            return csub;
-                        }
-                    }
                 }
                 return null;
             }
