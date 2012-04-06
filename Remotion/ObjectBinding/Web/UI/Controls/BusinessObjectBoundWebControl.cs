@@ -21,6 +21,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Design;
@@ -212,8 +213,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private readonly BusinessObjectBinding _binding;
 
-    /// <summary> Caches the <see cref="ResourceManagerSet"/> for this control. </summary>
-    private ResourceManagerSet _cachedResourceManager;
+    private readonly ICache<Tuple<Type, Control>, IResourceManager> _resourceManagerCache =
+        CacheFactory.Create<Tuple<Type, Control>, IResourceManager>();
 
     private bool _controlExistedInPreviousRequest;
 
@@ -375,18 +376,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
 
-      //  Provider has already been identified.
-      if (_cachedResourceManager != null)
-        return _cachedResourceManager;
+      return _resourceManagerCache.GetOrCreateValue (
+          Tuple.Create (localResourcesType, NamingContainer),
+          key =>
+          {
+            IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
+            IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
 
-      //  Get the resource managers
-
-      IResourceManager localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
-      IResourceManager namingContainerResourceManager = ResourceManagerUtility.GetResourceManager (NamingContainer, true);
-
-      _cachedResourceManager = new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
-
-      return _cachedResourceManager;
+            return new ResourceManagerSet (localResourceManager, namingContainerResourceManager);
+          });
     }
 
     /// <summary> Gets the text to be written into the label for this control. </summary>
