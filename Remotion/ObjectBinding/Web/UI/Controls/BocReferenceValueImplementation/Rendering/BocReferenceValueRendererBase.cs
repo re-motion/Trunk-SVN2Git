@@ -4,11 +4,13 @@ using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
@@ -77,6 +79,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
           renderingContext.Control, typeof (BocReferenceValueRendererBase<>), key, script.ToString ());
+    }
+
+    /// <summary> Find the <see cref="IResourceManager"/> for this renderer. </summary>
+    /// <param name="renderingContext">The <see cref="BocRenderingContext{TControl}"/> used to resolve the <see cref="IResourceManager"/>.</param>
+    /// <param name="localResourcesType"> 
+    ///   A type with the <see cref="MultiLingualResourcesAttribute"/> applied to it. Typically an <b>enum</b> or the derived class itself.
+    /// </param>
+    /// <returns>An <see cref="IResourceManager"/> from which all resources for this renderer can be obtained.</returns>
+    protected IResourceManager GetResourceManager (BocRenderingContext<TControl> renderingContext, Type localResourcesType)
+    {
+      ArgumentUtility.CheckNotNull ("localResourcesType", localResourcesType);
+
+      var localResourceManager = MultiLingualResources.GetResourceManager (localResourcesType, true);
+      var controlResourceManager = renderingContext.Control.GetResourceManager();
+
+      return new ResourceManagerSet (localResourceManager, controlResourceManager);
     }
 
     protected string GetIconServicePath (RenderingContext<TControl> renderingContext)

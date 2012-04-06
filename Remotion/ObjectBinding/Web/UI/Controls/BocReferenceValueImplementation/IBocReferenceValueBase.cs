@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
@@ -58,5 +59,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     string NullValueString { get; }
     string BusinessObjectUniqueIdentifier { get; }
+
+    IResourceManager GetResourceManager ();
   }
 }

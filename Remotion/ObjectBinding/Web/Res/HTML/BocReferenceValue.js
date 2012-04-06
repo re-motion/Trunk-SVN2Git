@@ -25,15 +25,17 @@ BocReferenceValue.Initialize = function (
     isAutoPostBackEnabled,
     iconServiceUrl,
     iconContext,
-    commandInfo)
+    commandInfo,
+    resources)
 {
   ArgumentUtility.CheckNotNullAndTypeIsObject('dropDownList', dropDownList);
   ArgumentUtility.CheckTypeIsObject('command', command);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
-  ArgumentUtility.CheckTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
+  ArgumentUtility.CheckNotNullAndTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
   ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
   ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
   ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('resources', resources);
 
   dropDownList.change(function ()
   {
@@ -50,8 +52,7 @@ BocReferenceValue.Initialize = function (
     {
       var errorHandler = function (error)
       {
-        var message = error.get_message();
-        BocReferenceValue.SetError(dropDownList, message);
+        BocReferenceValue.SetError(dropDownList, resources.LoadIconFailedErrorMessage);
       };
 
       var businessObject = BocReferenceValue.GetSelectedValue(dropDownList, nullValueString);

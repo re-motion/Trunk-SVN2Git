@@ -26,7 +26,8 @@ BocAutoCompleteReferenceValue.Initialize = function (
     searchContext,
     iconServiceUrl,
     iconContext,
-    commandInfo)
+    commandInfo,
+    resources)
 {
   ArgumentUtility.CheckNotNullAndTypeIsObject('textbox', textbox);
   ArgumentUtility.CheckNotNullAndTypeIsObject('hiddenField', hiddenField);
@@ -38,11 +39,12 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownRefreshDelay', dropDownRefreshDelay);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('selectionUpdateDelay', selectionUpdateDelay);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
-  ArgumentUtility.CheckTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
+  ArgumentUtility.CheckNotNullAndTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
   ArgumentUtility.CheckNotNullAndTypeIsObject('searchContext', searchContext);
   ArgumentUtility.CheckTypeIsString('iconServiceUrl', iconServiceUrl);
   ArgumentUtility.CheckTypeIsObject('iconContext', iconContext);
   ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('resources', resources);
 
   textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact',
         {
@@ -101,8 +103,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
           },
           handleRequestError: function (err)
           {
-            var message = err.get_message();
-            SetError (message);
+            SetError (resources.LoadDataFailedErrorMessage);
           },
           clearRequestError: function ()
           {
@@ -138,8 +139,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
       var errorHandler = function (error)
       {
-        var message = error.get_message();
-        SetError (message);
+        SetError (resources.LoadIconFailedErrorMessage);
       };
 
       command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo, errorHandler);
@@ -182,4 +182,5 @@ BocAutoCompleteReferenceValue.GetSelectionCount = function (referenceValueHidden
     return 0;
 
   return 1;
-}
+};
+

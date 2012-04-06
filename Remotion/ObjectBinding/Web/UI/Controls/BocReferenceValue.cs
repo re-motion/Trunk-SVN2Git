@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // types
 
-        /// <summary> A list of control specific resources. </summary>
+    /// <summary> A list of control specific resources. </summary>
     /// <remarks> 
     ///   Resources will be accessed using 
     ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
@@ -430,6 +430,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
+    }
+
+    IResourceManager IBocReferenceValueBase.GetResourceManager ()
+    {
+      return GetResourceManager();
     }
 
     protected override sealed string GetNullItemValidationMessage ()

@@ -17,6 +17,7 @@
 using System;
 using System.Text;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
@@ -33,6 +34,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// </remarks>
   public class BocReferenceValueRenderer : BocReferenceValueRendererBase<IBocReferenceValue>, IBocReferenceValueRenderer
   {
+    /// <summary> A list of control specific resources. </summary>
+    /// <remarks> 
+    ///   Resources will be accessed using 
+    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
+    ///   See the documentation of <b>GetString</b> for further details.
+    /// </remarks>
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocReferenceValueRenderer")]
+    public enum ResourceIdentifier
+    {
+      /// <summary> The error message dispayed when the icon could not be loaded from the server. </summary>
+      LoadIconFailedErrorMessage,
+    }
+
     private readonly Func<DropDownList> _dropDownListFactoryMethod;
 
     public BocReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
@@ -111,10 +126,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.Append (GetIconContextAsJson (renderingContext.IconWebServiceContext) ?? "null");
       script.Append (", ");
       script.Append (GetCommandInfoAsJson (renderingContext) ?? "null");
+      script.Append (", ");
+      script.Append (GetResourcesAsJson (renderingContext));
       script.Append ("); } );");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
           renderingContext.Control, typeof (IBocReferenceValue), key, script.ToString ());
+    }
+
+    private string GetResourcesAsJson (BocReferenceValueRenderingContext renderingContext)
+    {
+      var resourceManager = GetResourceManager (renderingContext, typeof (ResourceIdentifier));
+      var jsonBuilder = new StringBuilder (1000);
+
+      jsonBuilder.Append ("{ ");
+      jsonBuilder.Append ("LoadIconFailedErrorMessage : ");
+      AppendStringValueOrNullToScript (jsonBuilder, resourceManager.GetString (ResourceIdentifier.LoadIconFailedErrorMessage));
+      jsonBuilder.Append (" }");
+
+      return jsonBuilder.ToString();
     }
 
     protected override sealed void RenderEditModeValueWithSeparateOptionsMenu (BocRenderingContext<IBocReferenceValue> renderingContext)

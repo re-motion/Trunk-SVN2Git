@@ -365,6 +365,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
+    IResourceManager IBocReferenceValueBase.GetResourceManager ()
+    {
+      return GetResourceManager();
+    }
+
     string IBocReferenceValueBase.GetLabelText ()
     {
       if (IsDesignMode)

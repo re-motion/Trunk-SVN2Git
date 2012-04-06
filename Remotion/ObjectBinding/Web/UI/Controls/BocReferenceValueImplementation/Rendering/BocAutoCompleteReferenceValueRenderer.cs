@@ -18,6 +18,7 @@ using System;
 using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.Services;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -35,6 +36,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
   /// </remarks>
   public class BocAutoCompleteReferenceValueRenderer : BocReferenceValueRendererBase<IBocAutoCompleteReferenceValue>, IBocAutoCompleteReferenceValueRenderer
   {
+    /// <summary> A list of control specific resources. </summary>
+    /// <remarks> 
+    ///   Resources will be accessed using 
+    ///   <see cref="M:Remotion.Globalization.IResourceManager.GetString(System.Enum)">IResourceManager.GetString(Enum)</see>. 
+    ///   See the documentation of <b>GetString</b> for further details.
+    /// </remarks>
+    [ResourceIdentifiers]
+    [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocAutoCompleteReferenceValueRenderer")]
+    public enum ResourceIdentifier
+    {
+      /// <summary> The error message dispayed when the icon could not be loaded from the server. </summary>
+      LoadIconFailedErrorMessage,
+      /// <summary> The error message dispayed when the business object information for the current search input could not be loaded from the server. </summary>
+      LoadDataFailedErrorMessage,
+    }
+
     private readonly Func<TextBox> _textBoxFactory;
 
     public BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
@@ -156,7 +173,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.Append (GetIconContextAsJson (renderingContext.IconWebServiceContext) ?? "null");
       script.Append (", ");
       script.Append (GetCommandInfoAsJson (renderingContext) ?? "null");
-
+      script.Append (", ");
+      script.Append (GetResourcesAsJson (renderingContext));
       script.Append ("); } );");
 
       renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
@@ -179,6 +197,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       jsonBuilder.Append (", ");
       jsonBuilder.Append ("args : ");
       AppendStringValueOrNullToScript (jsonBuilder, searchContext.Args);
+      jsonBuilder.Append (" }");
+
+      return jsonBuilder.ToString();
+    }
+
+    private string GetResourcesAsJson (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    {
+      var resourceManager = GetResourceManager (renderingContext, typeof (ResourceIdentifier));
+      var jsonBuilder = new StringBuilder (1000);
+
+      jsonBuilder.Append ("{ ");
+      jsonBuilder.Append ("LoadIconFailedErrorMessage : ");
+      AppendStringValueOrNullToScript (jsonBuilder, resourceManager.GetString (ResourceIdentifier.LoadIconFailedErrorMessage));
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("LoadDataFailedErrorMessage : ");
+      AppendStringValueOrNullToScript (jsonBuilder, resourceManager.GetString (ResourceIdentifier.LoadDataFailedErrorMessage));
       jsonBuilder.Append (" }");
 
       return jsonBuilder.ToString();
