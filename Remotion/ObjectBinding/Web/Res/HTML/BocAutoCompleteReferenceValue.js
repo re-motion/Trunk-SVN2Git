@@ -21,6 +21,7 @@ function BocAutoCompleteReferenceValue()
 BocAutoCompleteReferenceValue.Initialize = function (
     textbox, hiddenField, button, command, searchServiceUrl,
     completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
+    validSearchStringRegex,
     nullValueString,
     isAutoPostBackEnabled,
     searchContext,
@@ -38,6 +39,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownDisplayDelay', dropDownDisplayDelay);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownRefreshDelay', dropDownRefreshDelay);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('selectionUpdateDelay', selectionUpdateDelay);
+  ArgumentUtility.CheckNotNullAndTypeIsString('validSearchStringRegex', validSearchStringRegex);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
   ArgumentUtility.CheckNotNullAndTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
   ArgumentUtility.CheckNotNullAndTypeIsObject('searchContext', searchContext);

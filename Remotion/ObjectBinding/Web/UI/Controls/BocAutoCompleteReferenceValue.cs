@@ -95,7 +95,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _invalidItemErrorMessage;
 
     private string _searchServicePath = string.Empty;
-    private string _args = string.Empty;
+    private string _args;
+    private string _validSearchStringRegex;
     private int _completionSetCount = 10;
     private int _dropDownDisplayDelay = 1000;
     private int _dropDownRefreshDelay = 2000;
@@ -598,7 +599,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public string Args
     {
       get { return _args; }
-      set { _args = value; }
+      set { _args = StringUtility.EmptyToNull (value); }
+    }
+
+    [Category ("AutoComplete")]
+    [DefaultValue ("")]
+    [Description ("A Javascript regular expression the user input must match in order for the search to performed upon input. "
+                  + "If the expression is empty, it defaults to matching all input.")]
+    public string ValidSearchStringRegex
+    {
+      get { return _validSearchStringRegex; }
+      set { _validSearchStringRegex = StringUtility.EmptyToNull (value); }
     }
 
     public override string ValidationValue

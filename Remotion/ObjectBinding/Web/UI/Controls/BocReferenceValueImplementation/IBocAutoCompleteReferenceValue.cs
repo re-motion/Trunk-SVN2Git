@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.ComponentModel;
 using System.Web.UI.WebControls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
@@ -36,5 +37,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     int DropDownDisplayDelay { get; }
     int DropDownRefreshDelay { get; }
     int SelectionUpdateDelay { get; }
+
+    string ValidSearchStringRegex { get; }
   }
 }
