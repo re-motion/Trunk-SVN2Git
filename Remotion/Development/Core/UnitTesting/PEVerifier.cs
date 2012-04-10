@@ -94,9 +94,9 @@ namespace Remotion.Development.UnitTesting
       string output = process.StandardOutput.ReadToEnd();
       process.WaitForExit();
 
-      Console.WriteLine ("PEVerify exited with code {0}.", process.ExitCode);
       if (process.ExitCode != 0)
       {
+        Console.WriteLine ("PEVerify exited with code {0}.", process.ExitCode);
         Console.WriteLine (output);
         throw new PEVerifyException (process.ExitCode, output);
       }

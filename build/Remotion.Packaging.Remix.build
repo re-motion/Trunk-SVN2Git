@@ -48,6 +48,8 @@
       <SourceFiles Include="$(SolutionDirectory)Remotion\*.*" Exclude="@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Core\**\bin\**;$(SolutionDirectory)Remotion\Core\**\obj\**;@(StandardExcludes)" />
+      <SourceFiles Include="$(SolutionDirectory)Remotion\TypePipe\**"
+                   Exclude="$(SolutionDirectory)Remotion\TypePipe\**\bin\**;$(SolutionDirectory)Remotion\TypePipe\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Development\Core\**"
                    Exclude="$(SolutionDirectory)Remotion\Development\Core\**\bin\**;$(SolutionDirectory)Remotion\Development\Core\**\obj\**;@(StandardExcludes)" />
       <SourceFiles Include="$(SolutionDirectory)Remotion\Mixins\**"
@@ -64,6 +66,9 @@
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.dll" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.xml" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.pdb" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.TypePipe.dll" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.TypePipe.xml" />
+      <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.TypePipe.pdb" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Mixins.dll" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Mixins.xml" />
       <_includedBinaryFiles Include="$(BinariesDirectory)**\Remotion.Mixins.pdb" />

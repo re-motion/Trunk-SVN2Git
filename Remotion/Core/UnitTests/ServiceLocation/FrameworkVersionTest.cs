@@ -82,7 +82,7 @@ namespace Remotion.UnitTests.ServiceLocation
     [ExpectedException (typeof (FrameworkVersionNotFoundException), ExpectedMessage = "Remotion is neither loaded nor referenced, and trying to load "
         + "it by name ('Remotion') didn't work either. Add a reference to the framework implementation assemblies or manually set "
         + "Remotion.Implementation.FrameworkVersion.Value to specify what version should be used.")]
-    [Ignore ("TODO 4649: Make this an integration test for Type Pipe Interfaces assembly when/if we get a Type Pipe Interfaces assembly.")]
+    [Ignore ("TODO 4649: Make this an integration test for TypePipe Interfaces assembly when/if we get a TypePipe Interfaces assembly.")]
     public void FailedAutomaticDiscovery ()
     {
       var scope = new ModuleScope (true, false, "VersionAccessorAssembly", "VersionAccessorAssembly.dll", "x", "x");

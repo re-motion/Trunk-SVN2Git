@@ -206,7 +206,10 @@
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\FieldSignatureStringBuilderTest.cs" />
+    <Compile Include="Reflection\SignatureStringBuilding\TestDomain\ClassForFieldSignatureStringBuilding.cs" />
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
+    <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons2.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
     <TestAssembly Include="Reflection\TypeDiscovery\AssemblyFinding\TestAssemblies\AssemblyFinderTest\RemotionCoreReferencingAssembly\AssemblyInfo.cs" />
     <Compile Include="SafeContextSingletonTest.cs" />
