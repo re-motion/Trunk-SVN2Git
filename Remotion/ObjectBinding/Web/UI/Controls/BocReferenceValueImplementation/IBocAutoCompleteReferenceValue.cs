@@ -39,5 +39,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     int SelectionUpdateDelay { get; }
 
     string ValidSearchStringRegex { get; }
+    string ValidSearchStringForDropDownButtonRegex { get; }
   }
 }
