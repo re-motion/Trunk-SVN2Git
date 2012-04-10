@@ -1040,41 +1040,7 @@
         var repositionTimer = null;
 
         function applyPositionToDropDown() {
-            var offset = $(input).offset();
-            // re-motion: calculate best position where to open dropdown list
-            var position = $.Autocompleter.calculateSpaceAround(input);
-
-            var requiredHeight = Math.min (element.outerHeight(), options.scrollHeight);
-            var maxHeight;
-            if (position.spaceVertical == 'T' && requiredHeight > position.bottom) {
-                //element.css('bottom', position.bottom + input.offsetHeight);
-                topPosition = 'auto';
-                bottomPosition = position.bottom + input.offsetHeight;
-                maxHeight = Math.min (position.top, options.scrollHeight);
-            } else {
-                //element.css('top', offset.top + input.offsetHeight);
-                bottomPosition = 'auto';
-                topPosition = offset.top + input.offsetHeight;
-                maxHeight = Math.min (position.bottom, options.scrollHeight);
-            }
-
-            // re-motion: need to resize list to specified width in css not in plugin config
-            var elementWidth;
-            if (options.width > 0) {
-                elementWidth = options.width;
-            } else if ($.data (element, 'originalWidth') > 0) {
-                elementWidth = $.data (element, 'originalWidth');
-            } else {
-                elementWidth = $(input).outerWidth();
-            }
-
-            element.css({
-                width: elementWidth,
-                left: offset.left,
-                'max-height': maxHeight,
-                top: topPosition,
-                bottom: bottomPosition
-            });
+            $.Autocompleter.applyPositionToPopUp ($ (input), element, { maxWidth : options.width, maxHeight : options.scrollHeight });
         }
 
         function fillList() {
@@ -1271,13 +1237,7 @@
             return parseInt(num) || 0;
         };
 
-        var element = $(element);
-        // re-motion: check position where to place the element
-        var offsetParent = element.offsetParent();
-        var pos = element.position();
         // re-motion: position and dimensions of the element
-        var top = number(pos.top) + number(element.css('margin-top')); // IE can return 'auto' for margins
-        var left = number(pos.left) + number(element.css('margin-left'));
         var width = element.outerWidth();
         var height = element.outerHeight();
 
@@ -1286,8 +1246,6 @@
         var scrollLeft = number($(document).scrollLeft());
         var documentWidth = number($(window).width());
         var documentHeight = number($(window).height());
-        var windowRight = scrollLeft + documentWidth;
-        var windowBottom = scrollTop + documentHeight;
 
         var space = new Object();
         space.top = element.offset().top - scrollTop;
@@ -1300,6 +1258,44 @@
         space.space = space.spaceVertical + space.spaceHorizontal;
 
         return space;
-    }
+    };
+
+    $.Autocompleter.applyPositionToPopUp = function(reference, popUp, options) {
+      var offset = reference.offset();
+      // re-motion: calculate best position where to open dropdown list
+      var position = $.Autocompleter.calculateSpaceAround(reference);
+
+      var requiredHeight = Math.min (popUp.outerHeight(), options.maxHeight);
+      var topPosition;
+      var bottomPosition;
+      var maxHeight;
+      if (position.spaceVertical == 'T' && requiredHeight > position.bottom) {
+          topPosition = 'auto';
+          bottomPosition = position.bottom + reference.outerHeight();
+          maxHeight = Math.min (position.top, options.maxHeight);
+      } else {
+          topPosition = offset.top + reference.outerHeight();
+          bottomPosition = 'auto';
+          maxHeight = Math.min (position.bottom, options.maxHeight);
+      }
+
+      // re-motion: need to resize list to specified width in css not in plugin config
+      var elementWidth;
+      if (options.maxWidth > 0) {
+          elementWidth = options.maxWidth;
+      } else if (popUp.data ('originalWidth') > 0) {
+          elementWidth = popUp.data ('originalWidth');
+      } else {
+          elementWidth = reference.outerWidth();
+      }
+
+      popUp.css({
+          width: elementWidth,
+          left: offset.left,
+          'max-height': maxHeight,
+          top: topPosition,
+          bottom: bottomPosition
+      });
+    };
 
 })(jQuery);
