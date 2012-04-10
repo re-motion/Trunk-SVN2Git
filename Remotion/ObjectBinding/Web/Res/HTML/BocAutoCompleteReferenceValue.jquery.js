@@ -463,20 +463,23 @@
             return true;
         }
 
-        function onChange(openDropDown, currentValue) {
+        function onChange(dropDownTriggered, currentValue) {
             if (lastKeyPressCode == KEY.DEL) {
                 select.hide();
                 return;
             }
 
-            if (!openDropDown && currentValue == previousValue)
+            if (!dropDownTriggered && currentValue == previousValue)
                 return;
 
             previousValue = currentValue;
 
-            currentValue = lastWord(currentValue);
-            if (openDropDown || currentValue.match (options.validSearchStringRegex)) {
+            var openFromInput = !dropDownTriggered && currentValue.match(options.searchStringValidationParams.inputRegex);
+            var openFromTrigger = dropDownTriggered && currentValue.match(options.searchStringValidationParams.dropDownTriggerRegex);
+
+            if (openFromInput || openFromTrigger) {
                 startLoading();
+                currentValue = lastWord(currentValue);
                 if (!options.matchCase)
                     currentValue = currentValue.toLowerCase();
 
@@ -484,7 +487,6 @@
                 var failureHandler = function() { closeDropDownListAndSetValue(previousValidValue); };
 
                 requestData(currentValue, successHandler, failureHandler);
-
             } else {
                 stopLoading();
                 select.hide();
@@ -749,7 +751,12 @@
         inputClass: "ac_input",
         resultsClass: "ac_results",
         loadingClass: "ac_loading",
-        validSearchStringRegex: new RegExp ("\\S+"),
+        searchStringValidationParams:
+          {
+            inputRegex: new RegExp("\\S+"),
+            dropDownTriggerRegex: new RegExp("\\S+"),
+            dropDownTriggerRegexFailedMessage: null
+          },
         // re-motion: modified delay concept
         dropDownDisplayDelay: 400,
         dropDownRefreshDelay: 400,

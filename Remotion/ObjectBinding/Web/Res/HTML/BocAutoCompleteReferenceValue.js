@@ -21,8 +21,7 @@ function BocAutoCompleteReferenceValue()
 BocAutoCompleteReferenceValue.Initialize = function (
     textbox, hiddenField, button, command, searchServiceUrl,
     completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
-    validSearchStringRegex,
-    validSearchStringForDropDownRegex,
+    searchStringValidationInfo,
     nullValueString,
     isAutoPostBackEnabled,
     searchContext,
@@ -40,8 +39,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownDisplayDelay', dropDownDisplayDelay);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownRefreshDelay', dropDownRefreshDelay);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('selectionUpdateDelay', selectionUpdateDelay);
-  ArgumentUtility.CheckNotNullAndTypeIsString('validSearchStringRegex', validSearchStringRegex);
-  ArgumentUtility.CheckNotNullAndTypeIsString('validSearchStringForDropDownRegex', validSearchStringForDropDownRegex);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('searchStringValidationInfo', searchStringValidationInfo);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
   ArgumentUtility.CheckNotNullAndTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
   ArgumentUtility.CheckNotNullAndTypeIsObject('searchContext', searchContext);
@@ -55,8 +53,12 @@ BocAutoCompleteReferenceValue.Initialize = function (
           extraParams: searchContext,
           isAutoPostBackEnabled: isAutoPostBackEnabled,
           nullValue: nullValueString, // the hidden field value indicating that no value has been selected
-          validSearchStringRegex: new RegExp(validSearchStringRegex),
-          validSearchStringForDropDownRegex: new RegExp (validSearchStringForDropDownRegex),
+          searchStringValidationParams:
+          {
+            inputRegex: new RegExp(searchStringValidationInfo.ValidSearchStringRegex),
+            dropDownTriggerRegex: new RegExp(searchStringValidationInfo.ValidSearchStringForDropDownRegex),
+            dropDownTriggerRegexFailedMessage: searchStringValidationInfo.SearchStringForDropDownDoesNotMatchRegexMessage
+          },
           max: completionSetCount, // Set query limit
 
           dropDownDisplayDelay: dropDownDisplayDelay,

@@ -163,11 +163,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.AppendFormat ("{0}, ", renderingContext.Control.DropDownRefreshDelay);
       script.AppendFormat ("{0}, ", renderingContext.Control.SelectionUpdateDelay);
 
-      string searchString = StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringRegex) ?? "\\S*";
-      string searchStringForDropDown = StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringForDropDownRegex) ?? searchString;
-      AppendStringValueOrNullToScript (script, searchString);
-      script.Append (", ");
-      AppendStringValueOrNullToScript (script, searchStringForDropDown);
+      script.Append (GetSearchStringValidationInfoAsJson (renderingContext));
       script.Append (", ");
 
       script.AppendFormat ("'{0}', ", renderingContext.Control.NullValueString);
@@ -204,6 +200,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       jsonBuilder.Append (", ");
       jsonBuilder.Append ("args : ");
       AppendStringValueOrNullToScript (jsonBuilder, searchContext.Args);
+      jsonBuilder.Append (" }");
+
+      return jsonBuilder.ToString();
+    }
+
+    private string GetSearchStringValidationInfoAsJson (BocAutoCompleteReferenceValueRenderingContext renderingContext)
+    {
+      string searchString = StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringRegex) ?? "\\S*";
+      string searchStringForDropDown = StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringForDropDownRegex) ?? searchString;
+      string searchStringForDropDownDoesNotMatchRegexMessage = StringUtility.EmptyToNull (renderingContext.Control.SearchStringForDropDownDoesNotMatchRegexMessage) ?? "Input not valid for RegEx";
+
+      var jsonBuilder = new StringBuilder (1000);
+
+      jsonBuilder.Append ("{ ");
+      jsonBuilder.Append ("ValidSearchStringRegex : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchString);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("ValidSearchStringForDropDownRegex : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchStringForDropDown);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("SearchStringForDropDownDoesNotMatchRegexMessage : ");
+      AppendStringValueOrNullToScript (jsonBuilder, searchStringForDropDownDoesNotMatchRegexMessage);
       jsonBuilder.Append (" }");
 
       return jsonBuilder.ToString();

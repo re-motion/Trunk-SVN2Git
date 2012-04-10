@@ -98,6 +98,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _args;
     private string _validSearchStringRegex;
     private string _validSearchStringForDropDownRegex;
+    private string _searchStringForDropDownDoesNotMatchRegexMessage;
     private int _completionSetCount = 10;
     private int _dropDownDisplayDelay = 1000;
     private int _dropDownRefreshDelay = 2000;
@@ -622,6 +623,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
+    /// The message displayed when the user input does not match the required format when manually opening the drop-down-list.
+    /// </summary>
+    [Category ("AutoComplete")]
+    [DefaultValue ("")]
+    [Description ("The message displayed when the user input does not match the required format when manually opening the drop-down-list.")]
+    public string ValidSearchStringForDropDownRegex
+    {
+      get { return _validSearchStringForDropDownRegex; }
+      set { _validSearchStringForDropDownRegex = StringUtility.EmptyToNull (value); }
+    }
+
+    /// <summary>
     /// A Javascript regular expression the user input must match in order for the search to performed when manually opening the drop-down-list.
     /// </summary>
     /// <remarks>
@@ -638,10 +651,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Description ("A Javascript regular expression the user input must match in order for the search to performed when manually opening the drop-down-list. "
                   + "If the expression is empty, the ValidSearchStringRegex is used. "
                   + "If the fallback is also empty the control defaults to always openng the drop-down list.")]
-    public string ValidSearchStringForDropDownRegex
+    public string SearchStringForDropDownDoesNotMatchRegexMessage
     {
-      get { return _validSearchStringForDropDownRegex; }
-      set { _validSearchStringForDropDownRegex = StringUtility.EmptyToNull (value); }
+      get { return _searchStringForDropDownDoesNotMatchRegexMessage; }
+      set { _searchStringForDropDownDoesNotMatchRegexMessage = StringUtility.EmptyToNull (value); }
     }
 
     public override string ValidationValue

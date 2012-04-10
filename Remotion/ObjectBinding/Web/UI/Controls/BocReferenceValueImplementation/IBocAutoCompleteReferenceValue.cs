@@ -40,5 +40,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     string ValidSearchStringRegex { get; }
     string ValidSearchStringForDropDownRegex { get; }
+    string SearchStringForDropDownDoesNotMatchRegexMessage { get; }
   }
 }
