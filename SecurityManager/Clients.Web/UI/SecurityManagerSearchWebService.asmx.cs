@@ -56,7 +56,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     [WebMethod (EnableSession = true)]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy[] Search (
-        string prefixText,
+        string searchString,
         int? completionSetCount,
         string businessObjectClass,
         string businessObjectProperty,
@@ -68,7 +68,7 @@ namespace Remotion.SecurityManager.Clients.Web.UI
 
       var businessObjectClassWithIdentity = GetBusinessObjectClassWithIdentity (businessObjectClass);
       var referenceProperty = GetReferenceProperty (businessObjectProperty, businessObjectClassWithIdentity);
-      var securityManagerSearchArguments = GetSearchArguments (args, completionSetCount, prefixText);
+      var securityManagerSearchArguments = GetSearchArguments (args, completionSetCount, searchString);
 
       using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
       {
@@ -82,13 +82,13 @@ namespace Remotion.SecurityManager.Clients.Web.UI
     [WebMethod (EnableSession = true)]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy SearchExact (
-        string prefixText,
+        string searchString,
         string businessObjectClass,
         string businessObjectProperty,
         string businessObject,
         string args)
     {
-      var result = Search (prefixText, 2, businessObjectClass, businessObjectProperty, businessObject, args);
+      var result = Search (searchString, 2, businessObjectClass, businessObjectProperty, businessObject, args);
       if (result.Count() == 1)
         return result.Single();
       return null;

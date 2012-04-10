@@ -648,7 +648,7 @@
                 //           see http://encosia.com/2008/06/05/3-mistakes-to-avoid-when-using-jquery-with-aspnet-ajax/ 
                 //           under "JSON, objects, and strings: oh my!" for details.
                 var params = {
-                    prefixText: (options.ignoreInput ? '' : lastWord(term)),
+                    searchString: lastWord(term),
                     completionSetCount: options.max
                 };
                 for (var propertyName in options.extraParams)
@@ -691,7 +691,7 @@
             options.clearRequestError();
 
             var params = {
-              prefixText: lastWord(term)
+              searchString: lastWord(term)
             };
             for (var propertyName in options.extraParams)
               params[propertyName] = options.extraParams[propertyName];

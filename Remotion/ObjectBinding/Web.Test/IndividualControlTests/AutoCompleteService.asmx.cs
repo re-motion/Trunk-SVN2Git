@@ -156,14 +156,14 @@ namespace OBWTest.IndividualControlTests
     [WebMethod]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
     public BusinessObjectWithIdentityProxy[] Search (
-        string prefixText,
+        string searchString,
         int? completionSetCount,
         string businessObjectClass,
         string businessObjectProperty,
         string businessObject,
         string args)
     {
-      if (prefixText.Equals ("throw", StringComparison.OrdinalIgnoreCase))
+      if (searchString.Equals ("throw", StringComparison.OrdinalIgnoreCase))
         throw new Exception ("Test Exception");
 
       List<BusinessObjectWithIdentityProxy> persons = new List<BusinessObjectWithIdentityProxy>();
@@ -175,7 +175,7 @@ namespace OBWTest.IndividualControlTests
         persons.Add (new BusinessObjectWithIdentityProxy { UniqueIdentifier = "invalid", DisplayName = value, IconUrl = GetUrl (IconInfo.Spacer) });
 
       List<BusinessObjectWithIdentityProxy> filteredPersons =
-          persons.FindAll (person => person.DisplayName.StartsWith (prefixText, StringComparison.OrdinalIgnoreCase));
+          persons.FindAll (person => person.DisplayName.StartsWith (searchString, StringComparison.OrdinalIgnoreCase));
 
       filteredPersons.Sort ((left, right) => string.Compare (left.DisplayName, right.DisplayName, StringComparison.OrdinalIgnoreCase));
 
@@ -184,17 +184,17 @@ namespace OBWTest.IndividualControlTests
 
     [WebMethod]
     [ScriptMethod (UseHttpGet = false, ResponseFormat = ResponseFormat.Json)]
-    public BusinessObjectWithIdentityProxy SearchExact (string prefixText, string businessObjectClass, string businessObjectProperty, string businessObject, string args)
+    public BusinessObjectWithIdentityProxy SearchExact (string searchString, string businessObjectClass, string businessObjectProperty, string businessObject, string args)
     {
-      if (prefixText.Equals ("exactthrow", StringComparison.OrdinalIgnoreCase))
+      if (searchString.Equals ("exactthrow", StringComparison.OrdinalIgnoreCase))
         throw new Exception ("Test Exception");
 
-      var result = Search (prefixText, 2, businessObjectClass, businessObjectProperty, businessObject, args);
+      var result = Search (searchString, 2, businessObjectClass, businessObjectProperty, businessObject, args);
       if (result.Length == 0)
         return null;
       if (result.Length == 1)
         return result[0];
-      if (string.Equals (result[0].DisplayName, prefixText, StringComparison.CurrentCultureIgnoreCase))
+      if (string.Equals (result[0].DisplayName, searchString, StringComparison.CurrentCultureIgnoreCase))
         return result[0];
       return null;
     }

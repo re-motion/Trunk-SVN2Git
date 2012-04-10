@@ -26,9 +26,9 @@ namespace Remotion.ObjectBinding.Web.Services
   public interface ISearchAvailableObjectWebService
   {
     /// <summary>
-    /// Retrieves a list of objects based on the <paramref name="prefixText"/> and the search context (i.e. the <paramref name="businessObjectClass"/> etc).
+    /// Retrieves a list of objects based on the <paramref name="searchString"/> and the search context (i.e. the <paramref name="businessObjectClass"/> etc).
     /// </summary>
-    /// <param name="prefixText">The text all returned values must match.</param>
+    /// <param name="searchString">The <see cref="string"/> all returned values must match.</param>
     /// <param name="completionSetCount">
     /// The maximum number of items to be returned or <see langword="null" /> if the search service implementation can define the result set size.
     /// </param>
@@ -47,7 +47,7 @@ namespace Remotion.ObjectBinding.Web.Services
     /// <param name="args">Additional search arguments.</param>
     /// <returns>An array of <see cref="BusinessObjectWithIdentityProxy"/> objects containing the search result.</returns>
     BusinessObjectWithIdentityProxy[] Search (
-        string prefixText,
+        string searchString,
         int? completionSetCount,
         string businessObjectClass,
         string businessObjectProperty,
@@ -55,9 +55,9 @@ namespace Remotion.ObjectBinding.Web.Services
         string args);
 
     /// <summary>
-    /// Retrieves a single object that exactly matches the <paramref name="prefixText"/> and the search context (i.e. the <paramref name="businessObjectClass"/> etc).
+    /// Retrieves a single object that exactly matches the <paramref name="searchString"/> and the search context (i.e. the <paramref name="businessObjectClass"/> etc).
     /// </summary>
-    /// <param name="prefixText">The text all returned values must match.</param>
+    /// <param name="searchString">The <see cref="string"/> all returned values must match.</param>
     /// <param name="businessObjectClass">
     /// The <see cref="IBusinessObjectClass.Identifier"/> of the <see cref="IBusinessObjectClass"/> the control is bound to or <see langword="null" />.
     /// This value is either the <see cref="IBusinessObject.BusinessObjectClass"/> of the bound <see cref="IBusinessObject"/> or the 
@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.Services
     /// <param name="args">Additional search arguments.</param>
     /// <returns>A <see cref="BusinessObjectWithIdentityProxy"/> object if an exact match is found or <see langword="null" />.</returns>
     BusinessObjectWithIdentityProxy SearchExact (
-        string prefixText,
+        string searchString,
         string businessObjectClass,
         string businessObjectProperty,
         string businessObject,
