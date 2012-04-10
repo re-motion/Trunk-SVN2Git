@@ -50,6 +50,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       LoadIconFailedErrorMessage,
       /// <summary> The error message dispayed when the business object information for the current search input could not be loaded from the server. </summary>
       LoadDataFailedErrorMessage,
+      /// <summary> The message displayed when the user input does not match the regex required for triggering the drop-down list to open.</summary>
+      SearchStringForDropDownDoesNotMatchRegexMessage,
     }
 
     private readonly Func<TextBox> _textBoxFactory;
@@ -209,7 +211,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       string searchString = StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringRegex) ?? "\\S*";
       string searchStringForDropDown = StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringForDropDownRegex) ?? searchString;
-      string searchStringForDropDownDoesNotMatchRegexMessage = StringUtility.EmptyToNull (renderingContext.Control.SearchStringForDropDownDoesNotMatchRegexMessage) ?? "Input not valid for RegEx";
+      string searchStringForDropDownDoesNotMatchRegexMessage =
+          StringUtility.EmptyToNull (renderingContext.Control.SearchStringForDropDownDoesNotMatchRegexMessage)
+          ?? string.Format (
+              GetResourceManager (renderingContext).GetString (ResourceIdentifier.SearchStringForDropDownDoesNotMatchRegexMessage),
+              searchStringForDropDown);
 
       var jsonBuilder = new StringBuilder (1000);
 
