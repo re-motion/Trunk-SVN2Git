@@ -145,7 +145,7 @@
                         options.clearRequestError();
                         select.prev();
                     } else {
-                        onChange(0, true, $input.val());
+                        onChange(true, $input.val());
                     }
                     return;
 
@@ -157,7 +157,7 @@
                         options.clearRequestError();
                         select.next();
                     } else {
-                        onChange(0, true, $input.val());
+                        onChange(true, $input.val());
                     }
                     return;
 
@@ -169,7 +169,7 @@
                         options.clearRequestError();
                         select.pageUp();
                     } else {
-                        onChange(0, true, $input.val());
+                        onChange(true, $input.val());
                     }
                     return;
 
@@ -181,7 +181,7 @@
                         options.clearRequestError();
                         select.pageDown();
                     } else {
-                        onChange(0, true, $input.val());
+                        onChange(true, $input.val());
                     }
                     return;
 
@@ -227,7 +227,7 @@
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
                 timeout = setTimeout(
                     function () { 
-                        onChange(0, false, currentValue); 
+                        onChange(false, currentValue); 
                     }, 
                     dropDownDelay);
             };
@@ -337,7 +337,7 @@
                     acceptInput (lastKeyPressCode);
                 } else {
                     $input.focus();
-                    onChange(1, true, $input.val());
+                    onChange(true, $input.val());
                     clearTimeout(timeout);
                 }
             });
@@ -463,34 +463,27 @@
             return true;
         }
 
-        // re-motion: use obsolete first parameter to indicate whether the onChange event is triggered by input (0) or the dropdownButton (1)
-        function onChange(isDropDown, skipPrevCheck, currentValue) {
+        function onChange(openDropDown, currentValue) {
             if (lastKeyPressCode == KEY.DEL) {
                 select.hide();
                 return;
             }
 
-            if (!skipPrevCheck && currentValue == previousValue)
+            if (!openDropDown && currentValue == previousValue)
                 return;
 
             previousValue = currentValue;
 
             currentValue = lastWord(currentValue);
-            if (isDropDown == 1 || currentValue.match (options.validSearchStringRegex)) {
+            if (openDropDown || currentValue.match (options.validSearchStringRegex)) {
                 startLoading();
                 if (!options.matchCase)
                     currentValue = currentValue.toLowerCase();
 
-                var failureHandler = function() {
-                    closeDropDownListAndSetValue(previousValidValue);
-                };
+                var successHandler = receiveData;
+                var failureHandler = function() { closeDropDownListAndSetValue(previousValidValue); };
 
-                // re-motion: if triggered by dropDownButton, get the full list
-                if (isDropDown == 1) {
-                    requestData('', receiveData, failureHandler);
-                } else {
-                    requestData(currentValue, receiveData, failureHandler);
-                }
+                requestData(currentValue, successHandler, failureHandler);
 
             } else {
                 stopLoading();
