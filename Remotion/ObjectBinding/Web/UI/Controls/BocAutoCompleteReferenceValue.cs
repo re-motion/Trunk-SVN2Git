@@ -97,7 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _searchServicePath = string.Empty;
     private string _args;
     private string _validSearchStringRegex;
-    private string _validSearchStringForDropDownButtonRegex;
+    private string _validSearchStringForDropDownRegex;
     private int _completionSetCount = 10;
     private int _dropDownDisplayDelay = 1000;
     private int _dropDownRefreshDelay = 2000;
@@ -622,7 +622,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    /// A Javascript regular expression the user input must match in order for the search to performed when clicking the drop-down button.
+    /// A Javascript regular expression the user input must match in order for the search to performed when manually opening the drop-down-list.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -631,17 +631,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </para>
     /// <para>
     ///   If the <see cref="ValidSearchStringRegex"/> is also <see langword="null" /> or empty, the <see cref="BocAutoCompleteReferenceValue"/> 
-    ///   always opens the drop-down list when clicking the button. </para>
+    ///   always opens the drop-down list when clicking the button or using the keyboard to open the drop-down list. </para>
     /// </remarks>
     [Category ("AutoComplete")]
     [DefaultValue ("")]
-    [Description ("A Javascript regular expression the user input must match in order for the search to performed when clicking the drop-down button. "
+    [Description ("A Javascript regular expression the user input must match in order for the search to performed when manually opening the drop-down-list. "
                   + "If the expression is empty, the ValidSearchStringRegex is used. "
                   + "If the fallback is also empty the control defaults to always openng the drop-down list.")]
-    public string ValidSearchStringForDropDownButtonRegex
+    public string ValidSearchStringForDropDownRegex
     {
-      get { return _validSearchStringForDropDownButtonRegex; }
-      set { _validSearchStringForDropDownButtonRegex = StringUtility.EmptyToNull (value); }
+      get { return _validSearchStringForDropDownRegex; }
+      set { _validSearchStringForDropDownRegex = StringUtility.EmptyToNull (value); }
     }
 
     public override string ValidationValue

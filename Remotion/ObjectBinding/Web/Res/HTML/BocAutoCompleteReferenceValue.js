@@ -22,6 +22,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
     textbox, hiddenField, button, command, searchServiceUrl,
     completionSetCount, dropDownDisplayDelay, dropDownRefreshDelay, selectionUpdateDelay,
     validSearchStringRegex,
+    validSearchStringForDropDownRegex,
     nullValueString,
     isAutoPostBackEnabled,
     searchContext,
@@ -40,6 +41,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckNotNullAndTypeIsNumber('dropDownRefreshDelay', dropDownRefreshDelay);
   ArgumentUtility.CheckNotNullAndTypeIsNumber('selectionUpdateDelay', selectionUpdateDelay);
   ArgumentUtility.CheckNotNullAndTypeIsString('validSearchStringRegex', validSearchStringRegex);
+  ArgumentUtility.CheckNotNullAndTypeIsString('validSearchStringForDropDownRegex', validSearchStringForDropDownRegex);
   ArgumentUtility.CheckNotNullAndTypeIsString('nullValueString', nullValueString);
   ArgumentUtility.CheckNotNullAndTypeIsBoolean('isAutoPostBackEnabled', isAutoPostBackEnabled);
   ArgumentUtility.CheckNotNullAndTypeIsObject('searchContext', searchContext);
@@ -53,7 +55,8 @@ BocAutoCompleteReferenceValue.Initialize = function (
           extraParams: searchContext,
           isAutoPostBackEnabled: isAutoPostBackEnabled,
           nullValue: nullValueString, // the hidden field value indicating that no value has been selected
-          validSearchStringRegex: new RegExp (validSearchStringRegex),
+          validSearchStringRegex: new RegExp(validSearchStringRegex),
+          validSearchStringForDropDownRegex: new RegExp (validSearchStringForDropDownRegex),
           max: completionSetCount, // Set query limit
 
           dropDownDisplayDelay: dropDownDisplayDelay,
