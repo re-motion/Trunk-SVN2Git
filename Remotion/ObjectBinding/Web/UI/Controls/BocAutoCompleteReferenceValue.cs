@@ -602,10 +602,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _args = StringUtility.EmptyToNull (value); }
     }
 
+    /// <summary>
+    /// A Javascript regular expression the user input must match in order for the search to performed upon input.
+    /// </summary>
+    /// <remarks>
+    /// <para>If the expression is <see langword="null" /> or empty, the <see cref="BocAutoCompleteReferenceValue"/> defaults to matching all input. </para>
+    /// <para>The expression does not constrain the search for an exact match via <see cref="ISearchAvailableObjectWebService.SearchExact"/>.</para>
+    /// </remarks>
     [Category ("AutoComplete")]
     [DefaultValue ("")]
     [Description ("A Javascript regular expression the user input must match in order for the search to performed upon input. "
-                  + "If the expression is empty, it defaults to matching all input.")]
+                  + "If the expression is empty, the control defaults to matching all input. "
+                  + "Note: The expression does not constrain the search for an exact match.")]
     public string ValidSearchStringRegex
     {
       get { return _validSearchStringRegex; }
