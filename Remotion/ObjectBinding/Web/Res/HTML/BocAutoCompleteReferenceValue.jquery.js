@@ -236,9 +236,12 @@
             if (event.type == 'keyup') {
                 var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER && event.keyCode != KEY.BACKSPACE && event.keyCode != KEY.DEL;
                 var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
-                if (!isControlKey && !isValueSeparatorKey)
+                if (!isControlKey && !isValueSeparatorKey) {
+                    informationPopUp.hide();
                     handleInput();
+                }
             } else if (event.type == 'paste') {
+                informationPopUp.hide();
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
