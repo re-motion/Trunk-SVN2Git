@@ -67,3 +67,20 @@
   background-color: Highlight;
   color: HighlightText;
 }
+
+.ac_informationPopUp 
+{
+  padding: 0px;
+  border: 1px solid WindowFrame;
+  background-color: Window;
+  overflow: hidden;
+  z-index: 99999;
+}
+
+.ac_informationPopUp > div
+{
+  width: 100%;
+  padding: 0.25em;
+  margin: 0;
+  background-color: #FFFFCC;
+}

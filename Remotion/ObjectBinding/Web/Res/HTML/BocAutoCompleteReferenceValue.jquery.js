@@ -113,7 +113,7 @@
             mouseDownOnSelect: false
         };
         var select = $.Autocompleter.Select(options, input, selectCurrent, config);
-
+        var informationPopUp = $.Autocompleter.InformationPopUp(options, input);
         var blockSubmit;
 
         // prevent form submit in opera when selecting with return key
@@ -136,7 +136,8 @@
             stopLoading();
             abortRequest();
 
-            switch (event.keyCode) {
+            switch (event.keyCode)
+            {
                 case KEY.UP:
                     event.preventDefault();
                     // re-motion: block event bubbling
@@ -272,6 +273,7 @@
             hasFocus = true;
         }).blur(function() {
             hasFocus = false;
+            informationPopUp.hide();
             if (!select.visible()) {
                 clearTimeout(timeout);
                 if ($input.val() == '')  {
@@ -313,6 +315,7 @@
             if ("data" in arguments[1])
                 cache.populate();
         }).bind("unautocomplete", function() {
+            informationPopUp.unbind();
             select.unbind();
             $input.unbind();
             $(input.form).unbind(".autocomplete");
@@ -464,6 +467,8 @@
         }
 
         function onChange(dropDownTriggered, currentValue) {
+            informationPopUp.hide();
+
             if (lastKeyPressCode == KEY.DEL) {
                 select.hide();
                 return;
@@ -490,6 +495,8 @@
             } else {
                 stopLoading();
                 select.hide();
+                if (dropDownTriggered)
+                  informationPopUp.show(options.searchStringValidationParams.dropDownTriggerRegexFailedMessage);
             }
         };
 
@@ -554,6 +561,7 @@
                 autoFillTimeout = null;
             }
 
+            informationPopUp.hide();
             hideResults();
             $input.val(value);
             resetState();
@@ -595,6 +603,7 @@
         };
 
         function receiveData(q, data) {
+            informationPopUp.hide();
             if (data && hasFocus) {
                 stopLoading();
                 select.display(data, q);
@@ -751,6 +760,7 @@
         inputClass: "ac_input",
         resultsClass: "ac_results",
         loadingClass: "ac_loading",
+        informationPopUpClass: "ac_informationPopUp",
         searchStringValidationParams:
           {
             inputRegex: new RegExp("\\S+"),
@@ -915,7 +925,7 @@
             .appendTo(document.body);
 
             // re-motion: Back up the original width because of jQuery 1.4.3 changes to css module
-            $.data (element, 'originalWidth', element.width());
+            element.data ($.Autocompleter.popUpOriginalWidth, element.width());
 
             //re-motion: block blur bind as long we scroll dropDown list 
             var revertInputStatusTimeout = null;
@@ -1156,7 +1166,7 @@
                         applyPositionToDropDown();
                         repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
                     }
-                }
+                };
                 repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
 
                 // re-motion: set selection
@@ -1203,6 +1213,78 @@
             // re-motion: selects the item at the specified index
             selectItem: function (index) {
                 setSelect (index, false);
+            },
+            unbind: function() {
+                element && element.remove();
+            }
+        };
+    };
+
+    $.Autocompleter.InformationPopUp = function(options, input) {
+
+        var needsInit = true;
+        var element = null;
+        var repositionTimer = null;
+
+        function init() {
+            if (!needsInit)
+                return;
+            element = $("<div/>")
+            .hide()
+            .addClass(options.informationPopUpClass)
+            .css("position", "absolute")
+            .appendTo(document.body);
+
+            element.data ($.Autocompleter.popUpOriginalWidth, element.width());
+
+            if (options.width > 0)
+                element.css("width", options.width);
+
+            var beginRequestHandler = function() {
+                Sys.WebForms.PageRequestManager.getInstance().remove_beginRequest(beginRequestHandler);
+                element.remove();
+                element = null;
+                needsInit = true;
+            };
+            Sys.WebForms.PageRequestManager.getInstance().add_beginRequest(beginRequestHandler);
+
+            needsInit = false;
+        }
+
+        function showPopUp() {
+            element.iFrameShim({ top: '0px', left: '0px', width: '100%', height: '100%' });
+            applyPositionToPopUp();
+            element.show();
+                
+            if (repositionTimer) 
+                clearTimeout(repositionTimer);
+            var repositionHandler = function() {
+                if (repositionTimer) {
+                    clearTimeout(repositionTimer);
+                }
+                if (element.is(':visible')) {
+                    applyPositionToPopUp();
+                    repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
+                }
+            };
+            repositionTimer = setTimeout(repositionHandler, options.repositionInterval);
+        }
+
+        function applyPositionToPopUp() {
+              $.Autocompleter.applyPositionToPopUp ($ (input), element, { maxWidth : options.width, maxHeight : options.scrollHeight });
+        }
+
+        return {
+            show: function(message) {
+                init();
+                element.empty();
+                element.append($('<div/>').html (message));
+                showPopUp();
+            },
+            hide: function() {
+                if (repositionTimer) 
+                    clearTimeout(repositionTimer);
+                element && element.hide();
             },
             unbind: function() {
                 element && element.remove();
@@ -1283,8 +1365,8 @@
       var elementWidth;
       if (options.maxWidth > 0) {
           elementWidth = options.maxWidth;
-      } else if (popUp.data ('originalWidth') > 0) {
-          elementWidth = popUp.data ('originalWidth');
+      } else if (popUp.data ($.Autocompleter.popUpOriginalWidth) > 0) {
+          elementWidth = popUp.data ($.Autocompleter.popUpOriginalWidth);
       } else {
           elementWidth = reference.outerWidth();
       }
@@ -1297,5 +1379,7 @@
           bottom: bottomPosition
       });
     };
+
+    $.Autocompleter.popUpOriginalWidth = 'originalWidth';
 
 })(jQuery);
