@@ -124,6 +124,6 @@
     <value>Das Symbol für die aktuelle Eingabe konnte nicht geladen werden.</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering.BocAutoCompleteReferenceValueRenderer.SearchStringForDropDownDoesNotMatchRegexMessage" xml:space="preserve">
-    <value>Die aktuellen Eingabe entspricht nicht dem vorgegebenen Format: '{0}'</value>
+    <value>Die aktuellen Eingabe entspricht nicht dem vorgegebenen Format.</value>
   </data>
 </root>

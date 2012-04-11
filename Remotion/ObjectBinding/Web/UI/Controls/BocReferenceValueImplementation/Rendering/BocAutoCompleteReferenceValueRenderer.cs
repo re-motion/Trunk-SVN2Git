@@ -213,9 +213,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       string searchStringForDropDown = StringUtility.EmptyToNull (renderingContext.Control.ValidSearchStringForDropDownRegex) ?? searchString;
       string searchStringForDropDownDoesNotMatchRegexMessage =
           StringUtility.EmptyToNull (renderingContext.Control.SearchStringForDropDownDoesNotMatchRegexMessage)
-          ?? string.Format (
-              GetResourceManager (renderingContext).GetString (ResourceIdentifier.SearchStringForDropDownDoesNotMatchRegexMessage),
-              searchStringForDropDown);
+          ?? GetResourceManager (renderingContext).GetString (ResourceIdentifier.SearchStringForDropDownDoesNotMatchRegexMessage);
 
       var jsonBuilder = new StringBuilder (1000);
 

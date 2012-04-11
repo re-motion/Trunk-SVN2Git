@@ -74,11 +74,23 @@
   z-index: 99999;
 }
 
+body.msie7 .ac_informationPopUp 
+{
+  border-right: 1px solid WindowFrame;
+}
+
 .ac_informationPopUp > div
 {
   width: 100%;
   padding: 0.25em;
-  margin: 0;
   border: 1px solid WindowFrame;
-  background-color: #FFFFCC;
+  background-color: InfoBackground;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+body.msie7 .ac_informationPopUp > div
+{
+  border-right: none;
 }
