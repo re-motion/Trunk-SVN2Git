@@ -16,13 +16,16 @@
 // 
 using System.Collections.Generic;
 using Microsoft.Scripting.Ast;
-using Remotion.TypePipe.MutableReflection;
 
-namespace Remotion.TypePipe.UnitTests.MutableReflection
+namespace Remotion.TypePipe.MutableReflection.BodyBuilding
 {
-  public class TestableMethodBodyContextBase : MethodBodyContextBase
+  /// <summary>
+  /// Provides access to expressions needed for building the bodies of added methods. 
+  /// </summary>
+  // TODO 4767 /// See also <see cref="MutableType.AddMethod"/>.
+  public class MethodBodyCreationContext : MethodBodyContextBase
   {
-    public TestableMethodBodyContextBase (MutableType declaringType, IEnumerable<ParameterExpression> parameterExpressions, bool isStatic)
+    public MethodBodyCreationContext (MutableType declaringType, IEnumerable<ParameterExpression> parameterExpressions, bool isStatic)
         : base(declaringType, parameterExpressions, isStatic)
     {
     }
