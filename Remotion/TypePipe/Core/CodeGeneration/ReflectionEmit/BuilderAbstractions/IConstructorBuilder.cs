@@ -23,7 +23,7 @@ namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.BuilderAbstractions
   /// Defines an interface for <see cref="ConstructorBuilder"/>.
   /// </summary>
   [CLSCompliant (false)]
-  public interface IConstructorBuilder : IMethodBuilder
+  public interface IConstructorBuilder : IMethodBaseBuilder
   {
   }
 }
