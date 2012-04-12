@@ -21,6 +21,7 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.Legacy.UI.Controls.Rendering
 {
@@ -40,9 +41,10 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
       _resourceUrlFactory = resourceUrlFactory;
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      ArgumentUtility.CheckNotNull ("control", control);
 
       // Do not call base implementation
       //base.RegisterHtmlHeadContents
@@ -53,6 +55,8 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
         var styleSheetUrl = _resourceUrlFactory.CreateResourceUrl (typeof (WebTabStripQuirksModeRenderer), ResourceType.Html, "TabStrip.css");
         htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
       }
+
+      ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
     }
 
     public void Render (WebTabStripRenderingContext renderingContext)

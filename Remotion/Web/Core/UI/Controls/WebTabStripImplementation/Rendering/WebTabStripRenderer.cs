@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
 {
@@ -32,13 +33,16 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
     {
     }
 
-    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control)
     {
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
+      ArgumentUtility.CheckNotNull ("control", control);
 
       string key = typeof (WebTabStripRenderer).FullName + "_Style";
       var styleSheetUrl = ResourceUrlFactory.CreateThemedResourceUrl (typeof (WebTabStripRenderer), ResourceType.Html, "TabStrip.css");
       htmlHeadAppender.RegisterStylesheetLink (key, styleSheetUrl, HtmlHeadAppender.Priority.Library);
+
+      ScriptUtility.Instance.RegisterJavaScriptInclude (control, htmlHeadAppender);
     }
 
     public void Render (WebTabStripRenderingContext renderingContext)

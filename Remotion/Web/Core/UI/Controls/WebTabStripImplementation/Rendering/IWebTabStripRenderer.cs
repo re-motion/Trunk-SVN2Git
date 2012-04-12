@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
@@ -26,7 +25,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   [ConcreteImplementation (typeof (WebTabStripRenderer), Lifetime = LifetimeKind.Singleton)]
   public interface IWebTabStripRenderer
   {
-    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender);
+    void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender, IControl control);
     void Render (WebTabStripRenderingContext renderingContext);
   }
 }

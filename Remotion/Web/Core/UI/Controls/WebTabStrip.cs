@@ -113,7 +113,7 @@ namespace Remotion.Web.UI.Controls
     public void RegisterHtmlHeadContents (HttpContextBase context, HtmlHeadAppender htmlHeadAppender)
     {
       var renderer = CreateRenderer();
-      renderer.RegisterHtmlHeadContents (htmlHeadAppender);
+      renderer.RegisterHtmlHeadContents (htmlHeadAppender, this);
     }
 
     bool IPostBackDataHandler.LoadPostData (string postDataKey, NameValueCollection postCollection)
