@@ -66,7 +66,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderCellWithInnerWebControl ()
     {
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
-      List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
@@ -83,7 +82,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderCellWithInnerHtmlControl ()
     {
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
-      List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
@@ -100,7 +98,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     public void RenderCellDirectly ()
     {
       Column.Mode = BocCustomColumnDefinitionMode.NoControls;
-      List.OnPreRender();
 
       IBocColumnRenderer renderer = new BocCustomColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);

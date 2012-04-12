@@ -145,10 +145,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// <remarks> The <see cref="MenuBlockOffset"/> is applied as a <c>padding</c> attribute. </remarks>
     Unit MenuBlockOffset { get; }
 
-    /// <summary> Gets or sets the list of menu items to be hidden. </summary>
-    /// <value> The <see cref="WebMenuItem.ItemID"/> values of the menu items to hide. </value>
-    string[] HiddenMenuItems { get; }
-
     /// <summary>
     ///   Gets or sets a value that indicates whether the control displays a drop down list 
     ///   containing the available column definition sets.
@@ -162,37 +158,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// <summary> Gets or sets the text that is rendered as a label for the <c>options menu</c>. </summary>
     string OptionsTitle { get; }
 
-    /// <summary> Gets or sets the rendering option for the <c>list menu</c>. </summary>
-    ListMenuLineBreaks ListMenuLineBreaks { get; }
-
-    /// <summary> Gets or sets the validation error message. </summary>
-    /// <value> 
-    ///   The error message displayed when validation fails. The default value is an empty <see cref="String"/>.
-    ///   In case of the default value, the text is read from the resources for this control.
-    /// </value>
-    string ErrorMessage { get; }
-
     int CurrentPage { get; }
     int PageCount { get; }
     bool HasClientScript { get; }
     DropDownList AvailableViewsList { get; }
     IDropDownMenu OptionsMenu { get; }
 
-    /// <summary>Gets the <see cref="BusinessObjectBinding"/> object used to manage the binding for this <see cref="BusinessObjectBoundWebControl"/>.</summary>
-    /// <value> The <see cref="BusinessObjectBinding"/> instance used to manage this control's binding. </value>
-    BusinessObjectBinding Binding { get; }
-
-    string AccessKey { get; }
-    Color BackColor { get; }
-    Color BorderColor { get; }
-    Unit BorderWidth { get; }
-    BorderStyle BorderStyle { get; }
-    bool ControlStyleCreated { get; }
-    FontInfo Font { get; }
-    Color ForeColor { get; }
-    bool HasAttributes { get; }
-    short TabIndex { get; }
-    string ToolTip { get; }
     System.Collections.Generic.IList<int> SelectorControlCheckedState { get; }
     IEditModeController EditModeController { get; }
     ArrayList SortingOrder { get; }
@@ -235,10 +206,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     BocListRow[] GetRowsToDisplay (out int startAbsoluteIndex);
     void OnDataRowRendering (BocListDataRowRenderEventArgs args);
     bool AreDataRowsClickSensitive ();
-    void OnPreRender ();
-    void OnLoad ();
-    void SwitchRowIntoEditMode (int rowIndex);
     string GetSelectorControlClientId (int? absoluteRowIndex);
     string GetSelectAllControlClientID ();
+    string GetSelectionChangedHandlerScript ();
   }
 }

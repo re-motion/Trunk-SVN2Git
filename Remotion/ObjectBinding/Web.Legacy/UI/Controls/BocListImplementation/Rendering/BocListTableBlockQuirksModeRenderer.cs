@@ -78,8 +78,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         RenderTable (renderingContext, isDesignMode, false);
       else
         RenderTable (renderingContext, true, true);
-
-      RenderClientSelectionScript (renderingContext);
     }
 
     private void RenderTable (BocListRenderingContext renderingContext, bool tableHead, bool tableBody)
@@ -170,41 +168,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       }
 
       renderingContext.Writer.RenderEndTag();
-    }
-
-    private void RenderClientSelectionScript (BocListRenderingContext renderingContext)
-    {
-      if (renderingContext.Control.HasClientScript && renderingContext.Control.IsSelectionEnabled)
-      {
-        //  Render the init script for the client side selection handling
-        int count = 0;
-        if (renderingContext.Control.IsPagingEnabled)
-          count = renderingContext.Control.PageSize.Value;
-        else if (renderingContext.Control.Value != null)
-          count = renderingContext.Control.Value.Count;
-
-        bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive &&
-                                     renderingContext.Control.AreDataRowsClickSensitive();
-
-        bool hasListMenu = renderingContext.Control.HasListMenu;
-
-        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, {5});";
-        string script = string.Format (
-            scriptTemplate,
-            renderingContext.Control.ClientID,
-            renderingContext.Control.GetSelectorControlClientId (null),
-            count,
-            (int) renderingContext.Control.Selection,
-            hasClickSensitiveRows ? "true" : "false",
-            hasListMenu ? string.Format ("$('#{0}')[0]", renderingContext.Control.ListMenu.ClientID) : "null");
-
-        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
-            renderingContext.Control,
-            typeof (BocListTableBlockQuirksModeRenderer),
-            typeof (BocList).FullName + "_" + renderingContext.Control.ClientID
-            + "_InitializeListScript",
-            script);
-      }
     }
 
     /// <summary> Renderes the opening tag of the table. </summary>

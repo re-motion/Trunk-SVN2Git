@@ -112,5 +112,20 @@ namespace Remotion.Web.UI.Controls
     {
       get { return !IsDesignMode && EnableClientScript; }
     }
+
+    /// <summary>
+    /// Gets the Javascript that can be used to update the <see cref="MenuBase.MenuItems"/> of this <see cref="ListMenu"/>.
+    /// </summary>
+    /// <param name="getSelectionCount">
+    ///   A reference to a Javascript function that returns the current selection count or the Javascript <c>null</c> value if there is no selection count. 
+    ///   Must not be <see langword="null" /> or empty.
+    /// </param>
+    /// <returns>A Javascript statement, terminiated with a <c>;</c> (semicolon).</returns>
+    public string GetUpdateScriptReference(string getSelectionCount)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("getSelectionCount", getSelectionCount);
+      
+      return string.Format ("ListMenu_Update (document.getElementById ('{0}'), {1});", ClientID, getSelectionCount);
+    }
   }
 }

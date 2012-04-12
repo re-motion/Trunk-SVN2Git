@@ -414,11 +414,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RestoreCustomColumns();
     }
 
-    void IBocList.OnLoad ()
-    {
-      OnLoad (EventArgs.Empty);
-    }
-
     /// <summary> Implements interface <see cref="IPostBackEventHandler"/>. </summary>
     /// <param name="eventArgument"> &lt;prefix&gt;=&lt;value&gt; </param>
     void IPostBackEventHandler.RaisePostBackEvent (string eventArgument)
@@ -1071,7 +1066,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       PopulateAvailableViewsList();
 
-      _optionsMenu.GetSelectionCount = "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
+      _optionsMenu.GetSelectionCount = GetSelectionCount();
 
     }
 
@@ -3022,11 +3017,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _editModeController.SwitchRowIntoEditMode (index, EnsureColumnsForPreviousLifeCycleGot(), EnsureColumnsGot());
     }
 
-    void IBocList.SwitchRowIntoEditMode (int index)
-    {
-      SwitchRowIntoEditMode (index);
-    }
-
     /// <summary>
     ///   Saves changes to the edited row rows and (re-)starts editing for the entire list.
     /// </summary>
@@ -4066,11 +4056,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsDesignMode; }
     }
 
-    void IBocList.OnPreRender ()
-    {
-      OnPreRender (EventArgs.Empty);
-    }
-
     string IBocList.GetSelectorControlClientId (int? rowIndex)
     {
       return ClientID + c_dataRowSelectorControlIDSuffix + (rowIndex.HasValue ? rowIndex.Value.ToString() : string.Empty);
@@ -4079,6 +4064,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     string IBocList.GetSelectAllControlClientID ()
     {
       return ClientID + c_titleRowSelectorControlIDSuffix;
+    }
+
+    string IBocList.GetSelectionChangedHandlerScript()
+    {
+      return HasListMenu ? string.Format ("function(bocList) {{ {0} }}", _listMenu.GetUpdateScriptReference (GetSelectionCount())) : "function(){{}}";
+    }
+
+    private string GetSelectionCount ()
+    {
+      return "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
     }
   }
 

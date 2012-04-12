@@ -136,6 +136,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       RenderContents (renderingContext);
 
       renderingContext.Writer.RenderEndTag();
+
+      RegisterInitializeListScript (renderingContext);
     }
 
     protected virtual void RenderContents (BocListRenderingContext renderingContext)
@@ -187,6 +189,38 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
             CssClasses.DataRowSelected);
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
             renderingContext.Control, typeof (BocListRenderer), startUpScriptKey, script);
+      }
+    }
+
+    private void RegisterInitializeListScript (BocListRenderingContext renderingContext)
+    {
+      if (renderingContext.Control.HasClientScript)
+      {
+        //  Render the init script for the client side selection handling
+        int count = 0;
+        if (renderingContext.Control.IsPagingEnabled)
+          count = renderingContext.Control.PageSize.Value;
+        else if (renderingContext.Control.Value != null)
+          count = renderingContext.Control.Value.Count;
+
+        bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive
+                                     && renderingContext.Control.AreDataRowsClickSensitive();
+
+        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, {5});";
+        string script = string.Format (
+            scriptTemplate,
+            renderingContext.Control.ClientID,
+            renderingContext.Control.GetSelectorControlClientId (null),
+            count,
+            (int) renderingContext.Control.Selection,
+            hasClickSensitiveRows ? "true" : "false",
+            renderingContext.Control.GetSelectionChangedHandlerScript());
+
+        renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
+            renderingContext.Control,
+            typeof (BocListTableBlockRenderer),
+            typeof (BocList).FullName + "_" + renderingContext.Control.ClientID + "_InitializeListScript",
+            script);
       }
     }
   }

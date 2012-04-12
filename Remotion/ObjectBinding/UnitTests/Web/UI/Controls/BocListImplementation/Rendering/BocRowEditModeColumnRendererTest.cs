@@ -47,8 +47,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (mock => mock.IsReadOnly).Return (false);
       List.DataSource.Mode = DataSourceMode.Edit;
 
-      List.OnPreRender();
-
       _bocListCssClassDefinition = new BocListCssClassDefinition();
 
       _renderingContext =
