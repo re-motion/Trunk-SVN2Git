@@ -27,6 +27,7 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImplementation.Rendering
 {
@@ -43,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     private const string c_defaultControlWidth = "150pt";
 
     public BocAutoCompleteReferenceValueQuirksModeRenderer (IResourceUrlFactory resourceUrlFactory)
-        : this (resourceUrlFactory, () => new TextBox())
+        : this (resourceUrlFactory, () => new RenderOnlyTextBox())
     {
     }
 

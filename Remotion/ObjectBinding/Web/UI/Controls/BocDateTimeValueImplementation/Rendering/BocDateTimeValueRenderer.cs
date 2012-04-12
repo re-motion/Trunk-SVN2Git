@@ -21,6 +21,7 @@ using System.Web.UI.WebControls;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
@@ -41,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.
     private readonly TextBox _timeTextBox;
 
     public BocDateTimeValueRenderer (IResourceUrlFactory resourceUrlFactory)
-      : this (resourceUrlFactory, new TextBox (), new TextBox ())
+      : this (resourceUrlFactory, new RenderOnlyTextBox(), new RenderOnlyTextBox())
     {
     }
 

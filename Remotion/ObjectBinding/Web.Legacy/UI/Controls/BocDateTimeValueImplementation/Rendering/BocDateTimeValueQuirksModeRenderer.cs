@@ -27,6 +27,7 @@ using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation;
 using Remotion.Web.UI.Controls.DatePickerButtonImplementation.Rendering;
 using Remotion.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
@@ -85,12 +86,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocDateTimeValueImplemen
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      var dateTextBox = new TextBox { ID = renderingContext.Control.DateTextboxID };
+      var dateTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.DateTextboxID };
       Initialize (renderingContext, dateTextBox, renderingContext.Control.DateTextBoxStyle, GetDateMaxLength ());
       dateTextBox.Text = renderingContext.Control.Value.HasValue ? Formatter.FormatDateValue (renderingContext.Control.Value.Value) : renderingContext.Control.DateString;
       dateTextBox.Page = renderingContext.Control.Page.WrappedInstance;
 
-      var timeTextBox = new TextBox { ID = renderingContext.Control.TimeTextboxID };
+      var timeTextBox = new RenderOnlyTextBox { ID = renderingContext.Control.TimeTextboxID };
       Initialize (renderingContext, timeTextBox, renderingContext.Control.TimeTextBoxStyle, GetTimeMaxLength (renderingContext));
       timeTextBox.Text = renderingContext.Control.Value.HasValue ? Formatter.FormatTimeValue (renderingContext.Control.Value.Value, renderingContext.Control.ShowSeconds) : renderingContext.Control.TimeString;
       timeTextBox.Page = renderingContext.Control.Page.WrappedInstance;

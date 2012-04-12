@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering
 {
@@ -57,7 +58,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private readonly Func<TextBox> _textBoxFactory;
 
     public BocAutoCompleteReferenceValueRenderer (IResourceUrlFactory resourceUrlFactory)
-      : this (resourceUrlFactory, () => new TextBox ())
+      : this (resourceUrlFactory, () => new RenderOnlyTextBox())
     {
     }
 

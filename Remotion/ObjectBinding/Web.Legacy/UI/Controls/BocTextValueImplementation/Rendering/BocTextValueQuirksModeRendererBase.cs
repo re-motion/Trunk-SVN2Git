@@ -22,6 +22,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocTextValueImplementation.Rendering;
 using Remotion.Utilities;
 using Remotion.Web;
+using Remotion.Web.UI.Controls.Rendering;
 
 namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementation.Rendering
 {
@@ -94,7 +95,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocTextValueImplementati
     /// <returns>A <see cref="TextBox"/> control with the all relevant properties set and all appropriate styles applied to it.</returns>
     protected virtual TextBox GetTextBox (BocRenderingContext<T> renderingContext)
     {
-      TextBox textBox = new TextBox { Text = renderingContext.Control.Text };
+      TextBox textBox = new RenderOnlyTextBox { Text = renderingContext.Control.Text };
       textBox.ID = renderingContext.Control.TextBoxID;
       textBox.EnableViewState = false;
       textBox.Enabled = renderingContext.Control.Enabled;
