@@ -213,7 +213,7 @@ AspNetPatches.Apply = function ()
     Function.emptyMethod = function () { };
   }
 
-  if (window.ValidatorOnChange)
+  if (TypeUtility.IsFunction (window.ValidatorOnChange))
   {
     //patch for ASP.NET 2.0/3.5 issue: ValidatorOnChange does not initialize the 'vals' array if there are no clientside validators.
     //http://connect.microsoft.com/VisualStudio/feedback/details/471224
@@ -224,6 +224,17 @@ AspNetPatches.Apply = function ()
       {
         event = window.event;
       }
+
+      //Hard workaround for missing event argument when raising an event via jquery instead of natively via the DOM.
+      //The other fix, i.e. replacing ValidatorHookupEvent would require a more sophisticated approach for the AspNetPatches 
+      //and re-motion does not use ASP.NET clientside validation (at least, until .NET 4.0)
+      //https://connect.microsoft.com/VisualStudio/feedback/details/720704
+      //Fixed in ASP.NET 4.0
+      if (!event)
+      {
+        return;
+      }
+
       Page_InvalidControlToBeFocused = null;
       var targetedControl;
       if ((typeof (event.srcElement) != "undefined") && (event.srcElement != null))
