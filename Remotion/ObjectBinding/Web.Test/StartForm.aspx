@@ -16,53 +16,21 @@
 --%>
 <%@ Page Trace="false" language="c#" Codebehind="StartForm.aspx.cs" AutoEventWireup="false" Inherits="OBWTest.StartForm" %>
 
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Start Form</title>
-<meta content="Microsoft Visual Studio .NET 7.1" name=GENERATOR>
-<meta content=C# name=CODE_LANGUAGE>
-<meta content=JavaScript name=vs_defaultClientScript>
-<meta content=http://schemas.microsoft.com/intellisense/ie5 name=vs_targetSchema><remotion:htmlheadcontents id=HtmlHeadContents runat="server"></remotion:htmlheadcontents>
-<script language=javascript>
-function OpenClientWindow (url)
-{
-  var clientWindow = window.open (url, 'ClientWindow', 'menubar=yes,toolbar=yes,location=yes,status=yes');
-}
+    <remotion:htmlheadcontents id="HtmlHeadContents" runat="server" />
+<script type="text/javascript">
+  function OpenClientWindow(url)
+  {
+    var clientWindow = window.open(url, 'ClientWindow', 'menubar=yes,toolbar=yes,location=yes,status=yes');
+  }
 </script>
-</head>
-<body MS_POSITIONING="FlowLayout">
-<form id=Form method=post runat="server">
-<script language=javascript>
-document.onkeydown = document.onkeypress = function (evt) 
-{
-  if (typeof evt == 'undefined')
-  {
-    evt = window.event;
-  }
-  if (evt) 
-  {
-    var keyCode = evt.keyCode ? evt.keyCode : evt.charCode;
-    if (keyCode == 8)
-    {
-      if (evt.preventDefault) 
-      {
-         evt.preventDefault();
-      }
-      return false;
-    }
-    else 
-    {
-      return true;
-    }
-  }
-  else 
-  {
-    return true;
-  }
-}
-</script>
+
+  </head>
+<body>
+<form id="TheForm" method="post" runat="server">
 <p>Wxe-Enabled Tests for individual Business Object Controls<br />
 <a href="IndividualControlTest.wxe?UserControl=BocListUserControl.ascx&WxeReturnToSelf=True&TabbedMenuSelection=IndividualControlTests,BocList">IndividualControlTest.wxe</a></p>
 
@@ -74,9 +42,7 @@ Controls in a single Form or User Control<br /><A href="WxeHandler.ashx?WxeFunct
 ('WxeHandler.ashx?WxeFunctionType=OBWTest.ClientFormWxeFunction,OBWTest&amp;ReadOnly=false')</A></p>
 <p><a href="javascript:OpenClientWindow ('WxeHandler.ashx?WxeFunctionType=OBWTest.ClientFormWxeFunction,OBWTest&amp;ReadOnly=true');" >OpenClientWindow 
 ('WxeHandler.ashx?WxeFunctionType=OBWTest.ClientFormWxeFunction,OBWTest&amp;ReadOnly=true')</a></p>
-<p><a 
-href="javascript:OpenClientWindow ('ClientFormFrameset.htm');">OpenClientWindow 
-('ClientFormFrameset.htm')</a></p>
+<p><a href="javascript:OpenClientWindow ('ClientFormFrameset.htm');">OpenClientWindow ('ClientFormFrameset.htm')</a></p>
 <p>Design Test<br /><a 
 href="WxeHandler.ashx?WxeFunctionType=OBWTest.Design.DesignTestFunction,OBWTest">WxeHandler.ashx?WxeFunctionType=OBWTest.Design.DesignTestFunction,OBWTest</a></p>
 <p>Tests for SingleView and TabbedMultiView Layout<br />
