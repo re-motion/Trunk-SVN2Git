@@ -112,15 +112,16 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
     $(bocList).addClass('hasDimensions');
     BocList_FixUpScrolling(bocList);
   }
+
+  BocList_UpdateListMenu(bocList, listMenu);
 }
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu)
 {
   $(row).click( function(evt)
   {
-    BocList_OnRowClick(evt, bocList, row, selectorControl);
-    if (listMenu != null)
-      ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
+    BocList_OnRowClick (evt, bocList, row, selectorControl);
+    BocList_UpdateListMenu (bocList, listMenu);
   });
 }
 
@@ -507,4 +508,10 @@ function BocList_FixHeaderPosition(tableContainer, scrollableContainer)
   var scrollTop = 0;
   var scrollLeft = scrollableContainer.scrollLeft();
   fakeTableHeadContainer.css({ 'top': scrollTop, 'left': scrollLeft * -1 });
+}
+
+function BocList_UpdateListMenu(bocList, listMenu)
+{
+  if (listMenu != null)
+    ListMenu_Update(listMenu, function () { return BocList_GetSelectionCount(bocList.id); });
 }

@@ -27,7 +27,6 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation
     WebMenuItemCollection MenuItems { get; }
     bool Enabled { get; }
     bool HasClientScript { get; }
-    string GetSelectionCount { get; }
     bool IsReadOnly { get; }
   }
 }

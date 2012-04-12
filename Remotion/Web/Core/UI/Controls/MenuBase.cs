@@ -31,7 +31,6 @@ namespace Remotion.Web.UI.Controls
 
     private readonly IControl _ownerControl;
     private bool _isReadOnly;
-    private string _getSelectionCount = "";
 
     protected MenuBase (IControl ownerControl, Type[] supportedMenuItemTypes)
     {
@@ -55,13 +54,6 @@ namespace Remotion.Web.UI.Controls
     public WebMenuItemCollection MenuItems
     {
       get { return _menuItems; }
-    }
-
-    [DefaultValue ("")]
-    public string GetSelectionCount
-    {
-      get { return _getSelectionCount; }
-      set { _getSelectionCount = value; }
     }
 
     [DefaultValue (false)]

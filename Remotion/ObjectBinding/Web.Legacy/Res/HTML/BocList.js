@@ -115,6 +115,8 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
     }
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
+
+  BocList_UpdateListMenu(bocList, listMenu);
 }
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMenu)
@@ -122,8 +124,7 @@ function BocList_BindRowClickEventHandler(bocList, row, selectorControl, listMen
   $(row).click(function(evt)
   {
     BocList_OnRowClick(bocList, row, selectorControl);
-    if (listMenu != null)
-      ListMenu_Update(listMenu, function () { return BocList_GetSelectionCount(bocList.id); });
+    BocList_UpdateListMenu(bocList, listMenu);
   });
 }
 
@@ -313,4 +314,10 @@ function BocList_GetSelectionCount (bocListID)
   if (selectedRows == null)
     return 0;
   return selectedRows.Length;
+}
+
+function BocList_UpdateListMenu(bocList, listMenu)
+{
+  if (listMenu != null)
+    ListMenu_Update(listMenu, function () { return BocList_GetSelectionCount(bocList.id); });
 }

@@ -30,7 +30,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
   /// </summary>
   public class ListMenuRenderer : RendererBase<IListMenu>, IListMenuRenderer
   {
-    protected const string c_whiteSpace = "&nbsp;";
+    private const string c_whiteSpace = "&nbsp;";
 
     public ListMenuRenderer (IResourceUrlFactory resourceUrlFactory)
       : base (resourceUrlFactory)
@@ -193,12 +193,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );\r\n"); // Close AddMenuInfo
 
-        script.Append ("$(document).ready( function() { ");
-        script.AppendFormat (
-            "ListMenu_Update ( document.getElementById ('{0}'), {1} );",
-            renderingContext.Control.ClientID,
-            string.IsNullOrEmpty (renderingContext.Control.GetSelectionCount) ? "null" : renderingContext.Control.GetSelectionCount);
-        script.Append (" } );");
+        script.AppendFormat ("ListMenu_Update ( document.getElementById ('{0}'), null );", renderingContext.Control.ClientID);
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (ListMenuRenderer), key, script.ToString ());
       }
     }

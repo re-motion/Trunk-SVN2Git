@@ -30,16 +30,13 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web;
 using Remotion.Web.ExecutionEngine;
-using System.Web;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
-using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -51,7 +48,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   ///   This control can be used to display and edit a list of <see cref="IBusinessObject"/> instances.
   ///   The properties of the business objects are displayed in individual columns. 
   /// </summary>
-  /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/Class/*' />
   // TODO: see "Doc\Bugs and ToDos.txt"
   [Designer (typeof (BocListDesigner))]
   [DefaultEvent ("CommandClick")]
@@ -59,7 +56,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public class BocList : BusinessObjectBoundEditableWebControl, IBocList
   {
     //  constants
-    private const string c_dataRowIDSuffix = "_Boc_Row_";
     private const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
     private const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
     private const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
@@ -356,16 +352,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override void CreateChildControls ()
     {
-      string getSelectionCountScript = "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
-
       _optionsMenu.ID = ID + c_optionsMenuIDSuffix;
-      _optionsMenu.GetSelectionCount = getSelectionCountScript;
       _optionsMenu.EventCommandClick += MenuItemEventCommandClick;
       _optionsMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
       Controls.Add (_optionsMenu);
 
       _listMenu.ID = ID + c_listMenuIDSuffix;
-      _listMenu.GetSelectionCount = getSelectionCountScript;
       _listMenu.EventCommandClick += MenuItemEventCommandClick;
       _listMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
       Controls.Add (_listMenu);
@@ -769,7 +761,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Fires the <see cref="ListItemCommandClick"/> event. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnListItemCommandClick/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/OnListItemCommandClick/*' />
     protected virtual void OnListItemCommandClick (
         BocCommandEnabledColumnDefinition column,
         int listIndex,
@@ -1078,6 +1070,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       PopulateAvailableViewsList();
+
+      _optionsMenu.GetSelectionCount = "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
+
     }
 
     /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
@@ -1430,7 +1425,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/LoadValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
       if (Property == null)
@@ -1452,7 +1447,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The <see cref="Array"/> of objects implementing <see cref="IBusinessObject"/> to load,
     ///   or <see langword="null"/>. 
     /// </param>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/LoadUnboundValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/LoadUnboundValue/*' />
     public void LoadUnboundValue (IBusinessObject[] value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -1463,7 +1458,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   The <see cref="IList"/> of objects implementing <see cref="IBusinessObject"/> to load,
     ///   or <see langword="null"/>. 
     /// </param>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/LoadUnboundValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/LoadUnboundValue/*' />
     public void LoadUnboundValue (IList value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -1492,7 +1487,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/LoadValue/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/LoadValue/*' />
     public override void SaveValue (bool interim)
     {
       if (Property == null)
@@ -1745,7 +1740,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Handles the click on an Event command of a row menu. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnRowMenuItemEventCommandClick/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/OnRowMenuItemEventCommandClick/*' />
     protected virtual void OnRowMenuItemEventCommandClick (
         WebMenuItem menuItem,
         IBusinessObject businessObject,
@@ -1783,7 +1778,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Handles the click to a WXE function command or a row menu. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnRowMenuItemWxeFunctionCommandClick/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/OnRowMenuItemWxeFunctionCommandClick/*' />
     protected virtual void OnRowMenuItemWxeFunctionCommandClick (
         WebMenuItem menuItem,
         IBusinessObject businessObject,
@@ -3377,7 +3372,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Fires the <see cref="MenuItemClick"/> event. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemEventCommandClick/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemEventCommandClick/*' />
     protected virtual void OnMenuItemEventCommandClick (WebMenuItem menuItem)
     {
       ArgumentUtility.CheckNotNull ("menuItem", menuItem);
@@ -3404,7 +3399,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Handles the click to a WXE function command. </summary>
-    /// <include file='doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemWxeFunctionCommandClick/*' />
+    /// <include file='..\..\doc\include\UI\Controls\BocList.xml' path='BocList/OnMenuItemWxeFunctionCommandClick/*' />
     protected virtual void OnMenuItemWxeFunctionCommandClick (WebMenuItem menuItem)
     {
       ArgumentUtility.CheckNotNull ("menuItem", menuItem);

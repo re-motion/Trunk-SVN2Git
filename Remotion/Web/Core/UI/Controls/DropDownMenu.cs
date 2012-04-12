@@ -26,7 +26,7 @@ using Remotion.Web.UI.Design;
 
 namespace Remotion.Web.UI.Controls
 {
-  /// <include file='doc\include\UI\Controls\DropDownMenu.xml' path='DropDownMenu/Class/*' />
+  /// <include file='..\..\doc\include\UI\Controls\DropDownMenu.xml' path='DropDownMenu/Class/*' />
   [Designer (typeof (WebControlDesigner))]
   public class DropDownMenu : MenuBase, IDropDownMenu
   {
@@ -39,6 +39,7 @@ namespace Remotion.Web.UI.Controls
     private bool _isBrowserCapableOfScripting;
 
     private Action<HtmlTextWriter> _renderHeadTitleMethod;
+    private string _getSelectionCount = "";
 
     public DropDownMenu (IControl ownerControl, Type[] supportedMenuItemTypes)
       :base(ownerControl, supportedMenuItemTypes)
@@ -196,5 +197,12 @@ namespace Remotion.Web.UI.Controls
     }
 
     public MenuMode Mode { get; set; }
+
+    [DefaultValue ("")]
+    public string GetSelectionCount
+    {
+      get { return _getSelectionCount; }
+      set { _getSelectionCount = value; }
+    }
   }
 }
