@@ -52,7 +52,7 @@ function DropDownMenu_BindOpenEvent(node, menuID, eventType, getSelectionCount, 
   ArgumentUtility.CheckNotNullAndTypeIsString('eventType', eventType);
   ArgumentUtility.CheckNotNullAndTypeIsBoolean('moveToMousePosition', moveToMousePosition);
 
-  $(node).bind(eventType, function(evt) { DropDownMenu_OnClick(node, menuID, getSelectionCount, moveToMousePosition ? evt : null) });
+  $(node).bind(eventType, function (evt) { DropDownMenu_OnClick (node, menuID, getSelectionCount, moveToMousePosition ? evt : null); });
 }
 
 function DropDownMenu_ItemInfo(id, category, text, icon, iconDisabled, requiredSelection, isDisabled, href, target)
@@ -212,7 +212,7 @@ function DropDownMenu_CreateTextItem(itemInfo, selectionCount)
 
   var item = document.createElement("li");
 
-  var className = _dropDownMenu_itemClassName
+  var className = _dropDownMenu_itemClassName;
   if (!isEnabled)
     className = _dropDownMenu_itemDisabledClassName;
 
@@ -263,14 +263,8 @@ function DropDownMenu_CreateTextItem(itemInfo, selectionCount)
   }
 
   var span = document.createElement('span');
+  span.innerHTML = itemInfo.Text;
   anchor.appendChild(span);
-
-  var text = ''
-  if (itemInfo.Text != null)
-    text = itemInfo.Text;
-
-  var textNode = document.createTextNode(text);
-  span.appendChild(textNode);
 
   return item;
 }
