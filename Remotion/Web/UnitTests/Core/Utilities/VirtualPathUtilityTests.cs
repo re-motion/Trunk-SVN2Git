@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -56,6 +57,27 @@ namespace Remotion.Web.UnitTests.Core.Utilities
     public void GetVirtualPath_HierchyPath ()
     {
       Assert.That (VirtualPathUtility.GetVirtualPath (_controlStub, "../relative/file.txt"), Is.EqualTo ("~/base/relative/file.txt"));
+    }
+
+    [Test]
+    public void GetVirtualPath_AppRelativeTemplateSourceDirectory_Empty ()
+    {
+      var controlStub = new WebButton();
+      controlStub.ID = "ControlID";
+      controlStub.AppRelativeTemplateSourceDirectory = "";
+      Assert.That (
+          () => VirtualPathUtility.GetVirtualPath (controlStub, "../relative/file.txt"),
+          Throws.InvalidOperationException
+              .And.Message.StartsWith ("The 'AppRelativeTemplateSourceDirectory' property of the WebButton 'ControlID' is not set."));
+    }
+
+    [Test]
+    public void GetVirtualPath_AppRelativeTemplateSourceDirectory_Null ()
+    {
+      var controlStub = new WebButton();
+      controlStub.ID = "ControlID";
+      controlStub.AppRelativeTemplateSourceDirectory = null;
+      Assert.That (() => VirtualPathUtility.GetVirtualPath (controlStub, "../relative/file.txt"), Throws.InvalidOperationException);
     }
   }
 }
