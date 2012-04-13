@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
