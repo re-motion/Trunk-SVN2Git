@@ -166,7 +166,7 @@ namespace Remotion.Web.Legacy.UI.Controls.Rendering
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );\r\n"); // Close AddMenuInfo
 
-        script.AppendFormat (renderingContext.Control.GetUpdateScriptReference ("null"));
+        script.Append (renderingContext.Control.GetUpdateScriptReference ("null"));
 
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (ListMenuQuirksModeRenderer), key, script.ToString ());
       }

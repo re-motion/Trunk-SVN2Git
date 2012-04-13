@@ -193,7 +193,7 @@ namespace Remotion.Web.UI.Controls.ListMenuImplementation.Rendering
         script.Append (" )"); // Close new MenuInfo
         script.Append (" );\r\n"); // Close AddMenuInfo
 
-        script.AppendFormat (renderingContext.Control.GetUpdateScriptReference ("null"));
+        script.Append (renderingContext.Control.GetUpdateScriptReference ("null"));
 
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (renderingContext.Control, typeof (ListMenuRenderer), key, script.ToString ());
       }
