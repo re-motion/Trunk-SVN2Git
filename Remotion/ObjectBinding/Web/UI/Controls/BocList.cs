@@ -325,7 +325,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Determines whether the client script is enabled. </summary>
     private bool _enableClientScript = true;
 
-    private readonly EditModeController _editModeController;
+    private readonly IEditModeController _editModeController;
     private EditableRowDataSourceFactory _editModeDataSourceFactory = new EditableRowDataSourceFactory();
     private EditableRowControlFactory _editModeControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
 
@@ -368,7 +368,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       Controls.Add (_availableViewsList);
 
       _editModeController.ID = ID + "_EditModeController";
-      Controls.Add (_editModeController);
+      Controls.Add ((Control) _editModeController);
 
       Controls.Add (_rowMenusPlaceHolder);
       Controls.Add (_customColumnsPlaceHolder);
@@ -1062,12 +1062,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         LoadCustomColumns();
         PreRenderCustomColumns();
         PreRenderListItemCommands();
+
+        _optionsMenu.GetSelectionCount = GetSelectionCount();
       }
 
       PopulateAvailableViewsList();
-
-      _optionsMenu.GetSelectionCount = GetSelectionCount();
-
     }
 
     /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
