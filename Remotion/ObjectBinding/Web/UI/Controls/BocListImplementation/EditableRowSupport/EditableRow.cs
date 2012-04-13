@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
@@ -32,17 +33,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     // member fields
 
-    private IBocList _ownerControl;
+    private readonly IBocList _ownerControl;
 
     private EditableRowDataSourceFactory _dataSourceFactory;
     private EditableRowControlFactory _controlFactory;
   
     private IBusinessObjectReferenceDataSource _dataSource;
 
-    private PlaceHolder _editControls = null;
-    private PlaceHolder _validatorControls = null;
+    private PlaceHolder _editControls;
+    private PlaceHolder _validatorControls;
 
-    private bool _isRowEditModeValidatorsRestored = false;
+    private bool _isRowEditModeValidatorsRestored;
     private IBusinessObjectBoundEditableWebControl[] _rowEditModeControls;
 
     // construction and disposing
@@ -412,10 +413,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         editModeControlStyle = ((WebControl) editModeControl).Style;
         isEditModeControlWidthEmpty = ((WebControl) editModeControl).Width.IsEmpty;
       }
+// ReSharper disable SuspiciousTypeConversion.Global
       else if (editModeControl is System.Web.UI.HtmlControls.HtmlControl)
       {
         editModeControlStyle = ((System.Web.UI.HtmlControls.HtmlControl) editModeControl).Style;
       }
+// ReSharper restore SuspiciousTypeConversion.Global
 
       if (editModeControlStyle != null)
       {
@@ -475,20 +478,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
       writer.RenderEndTag(); // Span Control
 
-      for (int i = 0; i < validators.Count; i++)
+      foreach (BaseValidator validator in validators)
       {
-        BaseValidator validator = (BaseValidator) validators[i];
-        if (   editModeValidator == null 
-               || disableEditModeValidationMessages)
-        {
-          validator.Display = ValidatorDisplay.None;
-          validator.EnableClientScript = false;
-        }
-        else
-        {
-          validator.Display = editModeValidator.Display;
-          validator.EnableClientScript = editModeValidator.EnableClientScript;
-        }
+        //if (   editModeValidator == null 
+        //       || disableEditModeValidationMessages)
+        //{
+        //  validator.Display = ValidatorDisplay.None;
+        //  validator.EnableClientScript = false;
+        //}
+        //else
+        //{
+        //  validator.Display = editModeValidator.Display;
+        //  validator.EnableClientScript = editModeValidator.EnableClientScript;
+        //}
 
         writer.RenderBeginTag (HtmlTextWriterTag.Div);
         validator.RenderControl (writer);
@@ -509,6 +511,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       }
 
       writer.RenderEndTag(); // Span Container
+    }
+
+    protected override void OnPreRender (EventArgs e)
+    {
+      base.OnPreRender (e);
+
+      if (Controls.Count > 0)
+        PreRenderValidators();
+    }
+
+    private void PreRenderValidators ()
+    {
+      var editModeValidator = OwnerControl.Validators.OfType<EditModeValidator>().FirstOrDefault();
+      var disableEditModeValidationMessages = OwnerControl.EditModeController.DisableEditModeValidationMessages;
+
+      foreach (var validator in _validatorControls.Controls.Cast<Control>().SelectMany (placeHolder => placeHolder.Controls.Cast<BaseValidator>()))
+      {
+        if (editModeValidator == null || disableEditModeValidationMessages)
+        {
+          validator.Display = ValidatorDisplay.None;
+          validator.EnableClientScript = false;
+        }
+        else
+        {
+          validator.Display = editModeValidator.Display;
+          validator.EnableClientScript = editModeValidator.EnableClientScript;
+        }
+      }
     }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s edit mode validation messages. </summary>
