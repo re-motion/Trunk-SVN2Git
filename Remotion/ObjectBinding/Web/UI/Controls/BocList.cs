@@ -1063,7 +1063,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         PreRenderCustomColumns();
         PreRenderListItemCommands();
 
-        _optionsMenu.GetSelectionCount = GetSelectionCount();
+        _optionsMenu.GetSelectionCount = GetSelectionCountScript();
       }
 
       PopulateAvailableViewsList();
@@ -4067,10 +4067,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     string IBocList.GetSelectionChangedHandlerScript()
     {
-      return HasListMenu ? string.Format ("function(bocList) {{ {0} }}", _listMenu.GetUpdateScriptReference (GetSelectionCount())) : "function(){{}}";
+      return HasListMenu
+                 ? string.Format ("function(bocList) {{ {0} }}", _listMenu.GetUpdateScriptReference (GetSelectionCountScript()))
+                 : "function(){{}}";
     }
 
-    private string GetSelectionCount ()
+    private string GetSelectionCountScript ()
     {
       return "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
     }

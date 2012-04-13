@@ -794,7 +794,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
             getSelectionCount = "function() { return 0; }";
         }
         else
-          getSelectionCount = GetSelectionCountFunction();
+          getSelectionCount = GetSelectionCountScript();
         OptionsMenu.GetSelectionCount = getSelectionCount;
       }
     }
@@ -803,7 +803,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected abstract string GetOptionsMenuTitle ();
 
-    protected abstract string GetSelectionCountFunction ();
+    protected abstract string GetSelectionCountScript ();
 
     /// <summary>
     ///   Returns the string to be used in the drop down list for the specified <see cref="IBusinessObjectWithIdentity"/>.

@@ -447,7 +447,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager().GetString (ResourceIdentifier.OptionsTitle);
     }
 
-    protected override sealed string GetSelectionCountFunction ()
+    protected override sealed string GetSelectionCountScript ()
     {
       return "function() { return BocReferenceValue.GetSelectionCount ('" + DropDownListClientID + "', '" + c_nullIdentifier + "'); }";
     }
