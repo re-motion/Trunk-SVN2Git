@@ -33,10 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         HtmlTextWriter writer, 
         BocSimpleColumnDefinition column,
         IBusinessObject businessObject,
-        int columnIndex,
-        EditModeValidator editModeValidator,
-        bool showEditModeValidationMarkers,
-        bool disableEditModeValidationMessages);
+        int columnIndex);
 
     IBusinessObjectBoundEditableWebControl GetEditControl (int index);
   }

@@ -89,14 +89,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private void RenderEditModeControl (
         BocColumnRenderingContext<BocSimpleColumnDefinition> renderingContext, IBusinessObject businessObject, IEditableRow editableRow)
     {
-      EditModeValidator editModeValidator = null;
-      for (int i = 0; i < renderingContext.Control.Validators.Count; i++)
-      {
-        BaseValidator validator = (BaseValidator) renderingContext.Control.Validators[i];
-        if (validator is EditModeValidator)
-          editModeValidator = (EditModeValidator) validator;
-      }
-
       if (renderingContext.Control.HasClientScript)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span
@@ -105,10 +97,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
           renderingContext.Writer,
           renderingContext.ColumnDefinition,
           businessObject,
-          renderingContext.ColumnIndex,
-          editModeValidator,
-          renderingContext.Control.EditModeController.ShowEditModeValidationMarkers,
-          renderingContext.Control.EditModeController.DisableEditModeValidationMessages);
+          renderingContext.ColumnIndex);
 
       renderingContext.Writer.RenderEndTag(); // End span
     }

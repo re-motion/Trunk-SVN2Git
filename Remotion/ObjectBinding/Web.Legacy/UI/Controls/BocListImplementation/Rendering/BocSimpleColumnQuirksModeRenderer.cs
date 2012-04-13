@@ -111,10 +111,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
           renderingContext.Writer,
           renderingContext.ColumnDefinition,
           businessObject,
-          renderingContext.ColumnIndex,
-          editModeValidator,
-          renderingContext.Control.EditModeController.ShowEditModeValidationMarkers,
-          renderingContext.Control.EditModeController.DisableEditModeValidationMessages);
+          renderingContext.ColumnIndex);
 
       renderingContext.Writer.RenderEndTag(); // End span
     }

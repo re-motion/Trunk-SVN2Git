@@ -391,10 +391,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         HtmlTextWriter writer, 
         BocSimpleColumnDefinition column,
         IBusinessObject businessObject,
-        int columnIndex,
-        EditModeValidator editModeValidator,
-        bool showEditModeValidationMarkers,
-        bool disableEditModeValidationMessages) 
+        int columnIndex)
     {
       ArgumentUtility.CheckNotNull ("writer", writer);
       ArgumentUtility.CheckNotNull ("column", column);
@@ -439,7 +436,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       writer.AddStyleAttribute ("display", "inline-block");
       writer.RenderBeginTag (HtmlTextWriterTag.Span); // Span Container
 
-      if (showEditModeValidationMarkers)
+      if (OwnerControl.EditModeController.ShowEditModeValidationMarkers)
       {
         bool isCellValid = true;
         Image validationErrorMarker = _ownerControl.GetValidationErrorMarker();
@@ -480,25 +477,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
       foreach (BaseValidator validator in validators)
       {
-        //if (   editModeValidator == null 
-        //       || disableEditModeValidationMessages)
-        //{
-        //  validator.Display = ValidatorDisplay.None;
-        //  validator.EnableClientScript = false;
-        //}
-        //else
-        //{
-        //  validator.Display = editModeValidator.Display;
-        //  validator.EnableClientScript = editModeValidator.EnableClientScript;
-        //}
-
         writer.RenderBeginTag (HtmlTextWriterTag.Div);
         validator.RenderControl (writer);
         writer.RenderEndTag();
 
         if (   ! validator.IsValid 
                && validator.Display == ValidatorDisplay.None
-               && ! disableEditModeValidationMessages)
+               && ! OwnerControl.EditModeController.DisableEditModeValidationMessages)
         {
           if (! StringUtility.IsNullOrEmpty (validator.CssClass))
             writer.AddAttribute (HtmlTextWriterAttribute.Class, validator.CssClass);

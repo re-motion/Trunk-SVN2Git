@@ -131,10 +131,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
               Html.Writer,
               Column,
               firstObject,
-              0,
-              null,
-              List.EditModeController.ShowEditModeValidationMarkers,
-              List.EditModeController.DisableEditModeValidationMessages));
+              0));
 
       List.EditModeController.Stub (mock => mock.GetEditableRow (EventArgs.ListIndex)).Return (editableRow);
 
@@ -159,10 +156,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
               Html.Writer,
               Column,
               firstObject,
-              0,
-              null,
-              List.EditModeController.ShowEditModeValidationMarkers,
-              List.EditModeController.DisableEditModeValidationMessages));
+              0));
     }
   }
 }
