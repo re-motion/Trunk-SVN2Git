@@ -764,6 +764,7 @@
         resultsClass: "ac_results",
         loadingClass: "ac_loading",
         informationPopUpClass: "ac_informationPopUp",
+        inputAreaClass: "ac_content",
         searchStringValidationParams:
           {
             inputRegex: new RegExp("\\S+"),
@@ -1055,7 +1056,9 @@
         var repositionTimer = null;
 
         function applyPositionToDropDown() {
-            $.Autocompleter.applyPositionToPopUp ($ (input), element, { maxWidth : options.width, maxHeight : options.scrollHeight });
+          var reference = $(input).closest('.' + options.inputAreaClass);
+          var positionOptions = { maxWidth: options.width, maxHeight: options.scrollHeight };
+          $.Autocompleter.applyPositionToPopUp(reference, element, positionOptions);
         }
 
         function fillList() {
@@ -1276,7 +1279,9 @@
         }
 
         function applyPositionToPopUp() {
-              $.Autocompleter.applyPositionToPopUp ($ (input), element, { maxWidth : options.width, maxHeight : options.scrollHeight });
+          var reference = $(input).closest('.' + options.inputAreaClass);
+          var positionOptions = { maxWidth : options.width, maxHeight : options.scrollHeight };
+          $.Autocompleter.applyPositionToPopUp(reference, element, positionOptions);
         }
 
         return {
@@ -1370,7 +1375,6 @@
           maxHeight = Math.min (position.bottom, options.maxHeight);
       }
 
-      // re-motion: need to resize list to specified width in css not in plugin config
       var elementWidth;
       if (options.maxWidth > 0) {
           elementWidth = options.maxWidth;
@@ -1381,11 +1385,12 @@
       }
 
       var elementHeight = popUp.outerHeight();
+      var rightPosition = offset.left + reference.outerWidth() - elementWidth;
 
       popUp.css({
           height: elementHeight,
           width: elementWidth,
-          left: offset.left,
+          left: rightPosition,
           top: topPosition,
           bottom: bottomPosition,
           'max-height': maxHeight
