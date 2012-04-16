@@ -938,7 +938,9 @@
                     $(input).focus();
                 }
             }
-            element.scroll(function() {
+
+            var innerDiv = $("<div/>").appendTo (element);
+            innerDiv.scroll(function() {
                 config.mouseDownOnSelect = true;
                 if (revertInputStatusTimeout) 
                     clearTimeout(revertInputStatusTimeout);
@@ -950,7 +952,7 @@
                 revertInputStatusTimeout = setTimeout(revertInputStatus, 200);
             });
 
-            list = $("<ul/>").appendTo(element).mouseover(function(event) {
+            list = $("<ul/>").appendTo(innerDiv).mouseover(function(event) {
                 if (target(event).nodeName && target(event).nodeName.toUpperCase() == 'LI') {
                     active = $("li", list).removeClass(CLASSES.ACTIVE).index(target(event));
                     $(target(event)).addClass(CLASSES.ACTIVE);
@@ -1009,7 +1011,7 @@
                 // re-motion: do not select the text in the input element when moving the drop-down selection 
                 //$.Autocompleter.Selection(input, 0, input.value.length);
 
-                var resultsElement = $('.' + options.resultsClass);
+                var resultsElement = element.children('div');
 
                 if (options.scroll) {
                     var offset = 0;
@@ -1346,6 +1348,10 @@
     };
 
     $.Autocompleter.applyPositionToPopUp = function(reference, popUp, options) {
+      // Only reset height if element is not scrolled.
+      if (popUp.children('div').scrollTop() == 0)
+        popUp.css({ height: 'auto' });
+
       var offset = reference.offset();
       // re-motion: calculate best position where to open dropdown list
       var position = $.Autocompleter.calculateSpaceAround(reference);
@@ -1374,12 +1380,15 @@
           elementWidth = reference.outerWidth();
       }
 
+      var elementHeight = popUp.outerHeight();
+
       popUp.css({
+          height: elementHeight,
           width: elementWidth,
           left: offset.left,
-          'max-height': maxHeight,
           top: topPosition,
-          bottom: bottomPosition
+          bottom: bottomPosition,
+          'max-height': maxHeight
       });
     };
 

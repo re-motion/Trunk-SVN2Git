@@ -32,8 +32,8 @@
             'z-index': -1,
             top: '0px',
             left: '0px',
-            width: this.width(),
-            height: this.height(),
+            width: '100%',
+            height: '100%',
             filter: "filter:Alpha(Opacity='0')"
         });
 
