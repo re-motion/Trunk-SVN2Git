@@ -5,6 +5,7 @@
   overflow: hidden;
   z-index: 99999;
   /* position, dimension, and max-dimension are set via javascript */
+  max-width: 30em;
 }
 
 body.msie7 .ac_results 
@@ -21,8 +22,7 @@ body.msie7 .ac_results
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  overflow: hidden;
-  overflow-y: auto;
+  overflow: auto;
 }
 
 body.msie7 .ac_results > div
@@ -32,7 +32,7 @@ body.msie7 .ac_results > div
 
 .ac_results ul
 {
-  width: 100%;
+  /*width: 100%;*/
   list-style-position: outside;
   list-style: none;
   padding: 0;
@@ -55,7 +55,7 @@ body.msie7 .ac_results > div
   in relative units scroll will be broken in firefox
   */
   line-height: 16px;
-  overflow: hidden;
+  white-space: nowrap;
 }
 
 .ac_results li img

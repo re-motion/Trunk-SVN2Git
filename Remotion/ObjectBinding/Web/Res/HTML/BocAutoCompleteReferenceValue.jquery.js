@@ -1280,7 +1280,7 @@
 
         function applyPositionToPopUp() {
           var reference = $(input).closest('.' + options.inputAreaClass);
-          var positionOptions = { maxWidth : options.width, maxHeight : options.scrollHeight };
+          var positionOptions = { maxWidth : 0, maxHeight : options.scrollHeight };
           $.Autocompleter.applyPositionToPopUp(reference, element, positionOptions);
         }
 
@@ -1329,21 +1329,20 @@
             return parseInt(num) || 0;
         };
 
-        // re-motion: position and dimensions of the element
         var width = element.outerWidth();
         var height = element.outerHeight();
+        var offset = element.offset();
 
-        // re-motion: calculate space arrownd the element
         var scrollTop = number($(document).scrollTop());
         var scrollLeft = number($(document).scrollLeft());
         var documentWidth = number($(window).width());
         var documentHeight = number($(window).height());
 
         var space = new Object();
-        space.top = element.offset().top - scrollTop;
-        space.bottom = documentHeight - ((element.offset().top + height) - scrollTop);
-        space.left = element.offset().left - scrollLeft;
-        space.right = documentWidth - ((element.offset().left + width) - scrollLeft);
+        space.top = offset.top - scrollTop;
+        space.bottom = documentHeight - ((offset.top + height) - scrollTop);
+        space.left = offset.left - scrollLeft;
+        space.right = documentWidth - ((offset.left + width) - scrollLeft);
 
         (space.top > space.bottom) ? space.spaceVertical = 'T' : space.spaceVertical = 'B';
         (space.left > space.right) ? space.spaceHorizontal = 'L' : space.spaceHorizontal = 'R';
@@ -1352,49 +1351,80 @@
         return space;
     };
 
-    $.Autocompleter.applyPositionToPopUp = function(reference, popUp, options) {
-      // Only reset height if element is not scrolled.
-      if (popUp.children('div').scrollTop() == 0)
-        popUp.css({ height: 'auto' });
-
+    $.Autocompleter.applyPositionToPopUp = function (reference, popUp, options)
+    {
       var offset = reference.offset();
       // re-motion: calculate best position where to open dropdown list
       var position = $.Autocompleter.calculateSpaceAround(reference);
 
-      var requiredHeight = Math.min (popUp.outerHeight(), options.maxHeight);
+      var contentHeight = Math.max(0, Math.max (popUp.children('div').children().map(function () { return $(this).outerHeight() + $(this).position().top; }).get()));
+      var requiredHeight = Math.min(contentHeight, options.maxHeight);
       var topPosition;
       var bottomPosition;
       var maxHeight;
-      if (position.spaceVertical == 'T' && requiredHeight > position.bottom) {
-          topPosition = 'auto';
-          bottomPosition = position.bottom + reference.outerHeight();
-          maxHeight = Math.min (position.top, options.maxHeight);
-      } else {
-          topPosition = offset.top + reference.outerHeight();
-          bottomPosition = 'auto';
-          maxHeight = Math.min (position.bottom, options.maxHeight);
+      if (position.spaceVertical == 'T' && requiredHeight > position.bottom)
+      {
+        topPosition = 'auto';
+        bottomPosition = position.bottom + reference.outerHeight();
+        maxHeight = Math.min(position.top, options.maxHeight);
+      }
+      else
+      {
+        topPosition = offset.top + reference.outerHeight();
+        bottomPosition = 'auto';
+        maxHeight = Math.min(position.bottom, options.maxHeight);
       }
 
-      var elementWidth;
-      if (options.maxWidth > 0) {
-          elementWidth = options.maxWidth;
-      } else if (popUp.data ($.Autocompleter.popUpOriginalWidth) > 0) {
-          elementWidth = popUp.data ($.Autocompleter.popUpOriginalWidth);
-      } else {
-          elementWidth = reference.outerWidth();
-      }
+      // TODO: scroll problem: scrolbar jumps when scrolling to bottom
+      // LOG: 213 220 218
 
+      var popUpOuterHeight = popUp.outerHeight();
+      var popUpInnerHeight = popUp.children ('div').innerHeight();
+      if ((requiredHeight > popUpOuterHeight && requiredHeight != popUpOuterHeight)
+          || (requiredHeight < popUpInnerHeight && requiredHeight != popUpInnerHeight))
+      {
+        if (console)
+          console.log (requiredHeight + ' ' + popUpOuterHeight + ' ' + popUpInnerHeight);
+        popUp.css ({ height : 'auto' });
+      }
       var elementHeight = popUp.outerHeight();
-      var rightPosition = offset.left + reference.outerWidth() - elementWidth;
 
-      popUp.css({
-          height: elementHeight,
-          width: elementWidth,
-          left: rightPosition,
-          top: topPosition,
-          bottom: bottomPosition,
-          'max-height': maxHeight
+      // Only reset width if element is not scrolled.
+      //if (popUp.children('div').scrollLeft() == 0)
+      //  popUp.css({ width: 'auto' });
+      var requiredWidth = Math.max (Math.min (popUp.outerWidth(), reference.outerWidth()), options.maxWidth);
+      //var elementWidth;
+      //if (options.maxWidth > 0)
+      //{
+      //  elementWidth = Math.max(reference.outerWidth(), options.maxWidth);
+      //  //} else if (popUp.data ($.Autocompleter.popUpOriginalWidth) > 0) {
+      //  //    elementWidth = popUp.data ($.Autocompleter.popUpOriginalWidth);
+      //}
+      //else
+      //{
+      //  elementWidth = reference.outerWidth();
+      //}
+
+      //parseInt(element.css('max-width'), 10)
+
+      var rightPosition = position.right;
+      //if (window.console)
+      //{
+      //  console.log('width: ' + requiredWidth);
+      //  console.log (popUp.children ('div').scrollLeft());
+      //}
+      popUp.css ({
+        height : elementHeight,
+        'max-height' : maxHeight,
+        top : topPosition,
+        bottom : bottomPosition,
+        right : rightPosition,
+        width : requiredWidth
       });
+      //if (window.console)
+      //{
+      //  console.log(popUp.children('div').scrollLeft());
+      //}
     };
 
     $.Autocompleter.popUpOriginalWidth = 'originalWidth';
