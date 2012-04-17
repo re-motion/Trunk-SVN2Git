@@ -174,7 +174,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
       Assertion.IsFalse (accessor.IsAbstract);
       Assertion.IsTrue (InterceptedPropertyCollector.IsOverridable (accessor));
 
-      var emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
+      var emitter = _classEmitter.CreateMethodOverride (accessor);
       var baseCallExpression = new MethodInvocationExpression (SelfReference.Self, accessor, emitter.GetArgumentExpressions());
 
       ImplementWrappedAccessor (emitter, propertyIdentifier, baseCallExpression, accessor.ReturnType);
@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       Assertion.IsTrue (accessor.ReturnType != typeof (void));
 
-      var emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
+      var emitter = _classEmitter.CreateMethodOverride (accessor);
 
       ExpressionReference propertyAccessorReference = CreatePropertyAccessorReference (propertyIdentifier, emitter);
       var getValueMethodCall = 
@@ -204,7 +204,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
 
       Assertion.IsTrue (accessor.ReturnType == typeof (void));
 
-      var emitter = _classEmitter.CreateFullNamedMethodOverride (accessor);
+      var emitter = _classEmitter.CreateMethodOverride (accessor);
 
       Assertion.IsTrue (emitter.ArgumentReferences.Length > 0);
       Reference valueArgumentReference = emitter.ArgumentReferences[emitter.ArgumentReferences.Length - 1];
