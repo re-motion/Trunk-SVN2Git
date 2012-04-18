@@ -1357,8 +1357,16 @@
       // re-motion: calculate best position where to open dropdown list
       var position = $.Autocompleter.calculateSpaceAround(reference);
 
+      var isVisibe = popUp.is (':visible');
+      if (!isVisibe)
+        popUp.show(); // provide initial dimensions to popUp
+
       var contentHeight = Math.max(0, Math.max(popUp.children('div').children().map(function () { return this.offsetHeight + this.offsetTop; }).get()));
-      var requiredHeight = Math.min(contentHeight, options.maxHeight);
+
+      if (!isVisibe)
+        popUp.hide();
+
+      var requiredHeight = Math.min(contentHeight == 0 ? popUp.outerHeight() : contentHeight, options.maxHeight);
       var topPosition;
       var bottomPosition;
       var maxHeight;
@@ -1377,6 +1385,10 @@
 
       var popUpOuterHeight = popUp.outerHeight();
       var popUpInnerHeight = popUp.children ('div').innerHeight();
+
+      //if (window.console)
+      //  console.log(requiredHeight + ' ' + popUpOuterHeight + ' ' + popUpInnerHeight + ' ' + position.bottom + ' ' + position.spaceVertical);
+
       if ((requiredHeight > popUpOuterHeight && requiredHeight != popUpOuterHeight)
           || (requiredHeight < popUpInnerHeight && requiredHeight != popUpInnerHeight))
       {
@@ -1384,7 +1396,10 @@
       }
       var elementHeight = popUp.outerHeight();
 
+      //TODO: Height flicker in IE7, IE8
+
       // Only reset width if element is not scrolled.
+      //TODO: Width calculation
       //if (popUp.children('div').scrollLeft() == 0)
       //  popUp.css({ width: 'auto' });
       var requiredWidth = Math.max(Math.min(popUp.outerWidth(), options.maxWidth), reference.outerWidth());
