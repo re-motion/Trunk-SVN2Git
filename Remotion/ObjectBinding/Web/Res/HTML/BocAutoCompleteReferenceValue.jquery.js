@@ -1357,7 +1357,7 @@
       // re-motion: calculate best position where to open dropdown list
       var position = $.Autocompleter.calculateSpaceAround(reference);
 
-      var contentHeight = Math.max(0, Math.max (popUp.children('div').children().map(function () { return $(this).outerHeight() + $(this).position().top; }).get()));
+      var contentHeight = Math.max(0, Math.max(popUp.children('div').children().map(function () { return this.offsetHeight + this.offsetTop; }).get()));
       var requiredHeight = Math.min(contentHeight, options.maxHeight);
       var topPosition;
       var bottomPosition;
@@ -1375,16 +1375,11 @@
         maxHeight = Math.min(position.bottom, options.maxHeight);
       }
 
-      // TODO: scroll problem: scrolbar jumps when scrolling to bottom
-      // LOG: 213 220 218
-
       var popUpOuterHeight = popUp.outerHeight();
       var popUpInnerHeight = popUp.children ('div').innerHeight();
       if ((requiredHeight > popUpOuterHeight && requiredHeight != popUpOuterHeight)
           || (requiredHeight < popUpInnerHeight && requiredHeight != popUpInnerHeight))
       {
-        if (console)
-          console.log (requiredHeight + ' ' + popUpOuterHeight + ' ' + popUpInnerHeight);
         popUp.css ({ height : 'auto' });
       }
       var elementHeight = popUp.outerHeight();
