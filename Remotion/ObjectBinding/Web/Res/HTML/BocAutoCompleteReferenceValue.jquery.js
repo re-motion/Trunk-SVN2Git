@@ -1387,7 +1387,7 @@
       // Only reset width if element is not scrolled.
       //if (popUp.children('div').scrollLeft() == 0)
       //  popUp.css({ width: 'auto' });
-      var requiredWidth = Math.max (Math.min (popUp.outerWidth(), reference.outerWidth()), options.maxWidth);
+      var requiredWidth = Math.max(Math.min(popUp.outerWidth(), options.maxWidth), reference.outerWidth());
       //var elementWidth;
       //if (options.maxWidth > 0)
       //{
