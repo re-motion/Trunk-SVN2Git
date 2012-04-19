@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -21,48 +21,12 @@ using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting.Enumerables
 {
-  public static class OneTimeEnumerable
-  {
-    public static OneTimeEnumerable<T> AsOneTime<T> (this IEnumerable<T> source)
-    {
-      ArgumentUtility.CheckNotNull ("source", source);
-
-      return new OneTimeEnumerable<T> (source);
-    }
-  }
-
+  /// <summary>
+  /// A decorator for <see cref="IEnumerable{T}"/> instances ensuring that they are iterated only once.
+  /// </summary>
+  /// <typeparam name="T">The element type of the <see cref="IEnumerable{T}"/>.</typeparam>
   public class OneTimeEnumerable<T> : IEnumerable<T>
   {
-    private readonly IEnumerable<T> _enumerable;
-    private bool _isUsed = false;
-
-    public OneTimeEnumerable (IEnumerable<T> enumerable)
-    {
-      ArgumentUtility.CheckNotNull ("enumerable", enumerable);
-      _enumerable = enumerable;
-    }
-
-    public IEnumerator<T> GetEnumerator ()
-    {
-      if (_isUsed)
-        throw new NotSupportedException ("OneTimeEnumerable can only be iterated once.");
-      _isUsed = true;
-
-      return new OneTimeEnumerator (_enumerable.GetEnumerator());
-
-
-      //// The generated enumerator (state machine) does not support Reset()
-//// ReSharper disable LoopCanBeConvertedToQuery
-//      //foreach (var x in _enumerable)
-//      //  yield return x;
-//// ReSharper restore LoopCanBeConvertedToQuery
-    }
-
-    IEnumerator IEnumerable.GetEnumerator ()
-    {
-      return GetEnumerator();
-    }
-
     private class OneTimeEnumerator : IEnumerator<T>
     {
       private readonly IEnumerator<T> _enumerator;
@@ -85,18 +49,42 @@ namespace Remotion.Development.UnitTesting.Enumerables
 
       public void Dispose ()
       {
-        _enumerator.Dispose();
+        _enumerator.Dispose ();
       }
 
       public bool MoveNext ()
       {
-        return _enumerator.MoveNext();
+        return _enumerator.MoveNext ();
       }
 
       public void Reset ()
       {
         throw new NotSupportedException ("OneTimeEnumerator does not support Reset().");
       }
+    }
+
+    private readonly IEnumerable<T> _enumerable;
+    private bool _isUsed = false;
+
+    public OneTimeEnumerable (IEnumerable<T> enumerable)
+    {
+      ArgumentUtility.CheckNotNull ("enumerable", enumerable);
+      _enumerable = enumerable;
+    }
+
+    /// <inheritdoc />
+    public IEnumerator<T> GetEnumerator ()
+    {
+      if (_isUsed)
+        throw new InvalidOperationException ("OneTimeEnumerable can only be iterated once.");
+      _isUsed = true;
+
+      return new OneTimeEnumerator (_enumerable.GetEnumerator());
+    }
+
+    IEnumerator IEnumerable.GetEnumerator ()
+    {
+      return GetEnumerator();
     }
   }
 }

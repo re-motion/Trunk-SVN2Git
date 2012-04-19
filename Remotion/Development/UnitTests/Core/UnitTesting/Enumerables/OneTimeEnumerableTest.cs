@@ -25,35 +25,35 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Enumerables
   public class OneTimeEnumerableTest
   {
     [Test]
-    public void WorksLikeANormalEnumerable ()
+    public void GetEnumerator_WorksLikeANormalEnumerable ()
     {
       var source1 = new[] { 1, 2, 3 };
       var source2 = new[] { 1, 3, 2 };
 
-      Assert.That (source1.AsOneTime(), Is.EqualTo (source1));
-      Assert.That (source1.AsOneTime(), Is.Not.EqualTo (source2));
-      Assert.That (source1.AsOneTime(), Is.EquivalentTo (source2));
+      Assert.That (new OneTimeEnumerable<int> (source1), Is.EqualTo (source1));
+      Assert.That (new OneTimeEnumerable<int> (source1), Is.Not.EqualTo (source2));
+      Assert.That (new OneTimeEnumerable<int> (source1), Is.EquivalentTo (source2));
     }
 
     [Test]
-    public void CanOnlyBeIteratedOnce ()
+    public void GetEnumerator_ThrowsForSecondCall ()
     {
       var source = Enumerable.Range(1, 3);
 
-      var oneTime = source.AsOneTime();
+      var oneTime = new OneTimeEnumerable<int> (source);
 
       Assert.That (() => oneTime.GetEnumerator(), Throws.Nothing);
       Assert.That (
           () => oneTime.GetEnumerator(),
-          Throws.TypeOf<NotSupportedException>().With.Message.EqualTo ("OneTimeEnumerable can only be iterated once."));
+          Throws.TypeOf<InvalidOperationException> ().With.Message.EqualTo ("OneTimeEnumerable can only be iterated once."));
     }
 
     [Test]
-    public void ReturnedEnumeratorDoesNotSupportReset ()
+    public void GetEnumerator_ReturnedEnumeratorDoesNotSupportReset ()
     {
       var source = new[] { 1, 2, 3 };
 
-      var oneTimeEnumerator = source.AsOneTime().GetEnumerator();
+      var oneTimeEnumerator = new OneTimeEnumerable<int> (source).GetEnumerator();
       oneTimeEnumerator.MoveNext();
 
       Assert.That (
