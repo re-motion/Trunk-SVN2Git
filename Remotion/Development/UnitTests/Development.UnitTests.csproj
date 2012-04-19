@@ -165,6 +165,7 @@
     <Compile Include="Core\Mixins\TestDomain\MixedClass2.cs" />
     <Compile Include="Core\Mixins\TestDomain\MixedClass1.cs" />
     <Compile Include="Core\Mixins\TestDomain\NullMixin.cs" />
+    <Compile Include="Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs" />
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FilteringTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FixedTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Resources\ResourceUtilityTest.cs" />
@@ -241,6 +242,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Core\UnitTesting\Resources\TestEmbeddedResource.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
