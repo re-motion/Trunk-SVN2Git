@@ -25,67 +25,117 @@ namespace Remotion.Utilities
   /// </summary>
   public static class MemberInfoFromExpressionUtility
   {
-    public static ConstructorInfo GetConstructor<T> (Expression<Func<T>> newExpression)
+    public static MemberInfo GetMember<TMemberType> (Expression<Func<TMemberType>> expression)
     {
-      Assertion.IsTrue (newExpression.Body is NewExpression, "Parameter newExpression must be a NewExpression.");
-      var constructor = ((NewExpression) newExpression.Body).Constructor;
-      return constructor;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMemberInfoFromExpression (expression.Body);
     }
 
-    public static PropertyInfo GetProperty<T> (Expression<Func<T>> memberExpression)
+    public static MemberInfo GetMember<TSourceObject, TMemberType> (Expression<Func<TSourceObject, TMemberType>> expression)
     {
-      Assertion.IsTrue (memberExpression.Body is MemberExpression, "Parameter memberExpression must be a MemberExpression.");
-      var member = ((MemberExpression) memberExpression.Body).Member;
-      Assertion.IsTrue (member is PropertyInfo, "Parameter memberExpression must hold a property access expression.");
-      return (PropertyInfo) member;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMemberInfoFromExpression (expression.Body);
     }
 
-    public static PropertyInfo GetProperty<TSourceObject, TMemberType> (Expression<Func<TSourceObject, TMemberType>> memberExpression)
+    public static FieldInfo GetField<TFieldType> (Expression<Func<TFieldType>> expression)
     {
-      Assertion.IsTrue (memberExpression.Body is MemberExpression, "Parameter memberExpression must be a MemberExpression.");
-      var member = ((MemberExpression) memberExpression.Body).Member;
-      Assertion.IsTrue (member is PropertyInfo, "Parameter memberExpression must hold a property access expression.");
-      return (PropertyInfo) member;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetTypedMemberInfoFromMemberExpression<FieldInfo> (expression.Body, "field");
     }
 
-    public static FieldInfo GetField<T> (Expression<Func<T>> memberExpression)
+    public static FieldInfo GetField<TSourceObject, TFieldType> (Expression<Func<TSourceObject, TFieldType>> expression)
     {
-      Assertion.IsTrue (memberExpression.Body is MemberExpression, "Parameter memberExpression must be a MemberExpression.");
-      var member = ((MemberExpression) memberExpression.Body).Member;
-      Assertion.IsTrue (member is FieldInfo, "Parameter memberExpression must hold a field access expression.");
-      return (FieldInfo) member;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetTypedMemberInfoFromMemberExpression<FieldInfo> (expression.Body, "field");
     }
 
-    public static FieldInfo GetField<TSourceObject, TMemberType> (Expression<Func<TSourceObject, TMemberType>> memberExpression)
+    public static ConstructorInfo GetConstructor<TType> (Expression<Func<TType>> expression)
     {
-      Assertion.IsTrue (memberExpression.Body is MemberExpression, "Parameter memberExpression must be a MemberExpression.");
-      var member = ((MemberExpression) memberExpression.Body).Member;
-      Assertion.IsTrue (member is FieldInfo, "Parameter memberExpression must hold a field access expression.");
-      return (FieldInfo) member;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetConstructorInfoFromNewExpression (expression.Body);
     }
 
-    public static MethodInfo GetMethod<T> (Expression<Func<T>> methodCallExpression)
+    public static MethodInfo GetMethod (Expression<Action> expression)
     {
-      Assertion.IsTrue (methodCallExpression.Body is MethodCallExpression, "Parameter methodCallExpression must be a MethodCallExpression.");
-      return ((MethodCallExpression) methodCallExpression.Body).Method;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMethodInfoFromMethodCallExpression (expression.Body);
     }
 
-    public static MethodInfo GetMethod<TSourceObject, TMemberType> (Expression<Func<TSourceObject, TMemberType>> methodCallExpression)
+    public static MethodInfo GetMethod<TReturnType> (Expression<Func<TReturnType>> expression)
     {
-      Assertion.IsTrue (methodCallExpression.Body is MethodCallExpression, "Parameter methodCallExpression must be a MethodCallExpression.");
-      return ((MethodCallExpression) methodCallExpression.Body).Method;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMethodInfoFromMethodCallExpression (expression.Body);
     }
 
-    public static MethodInfo GetMethod<T> (Expression<Action<T>> methodCallExpression)
+    public static MethodInfo GetMethod<TSourceObject> (Expression<Action<TSourceObject>> expression)
     {
-      Assertion.IsTrue (methodCallExpression.Body is MethodCallExpression, "Parameter methodCallExpression must be a MethodCallExpression.");
-      return ((MethodCallExpression) methodCallExpression.Body).Method;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMethodInfoFromMethodCallExpression (expression.Body);
     }
 
-    public static MethodInfo GetMethod<TSourceObject, TMemberType> (Expression<Action<TSourceObject, TMemberType>> methodCallExpression)
+    public static MethodInfo GetMethod<TSourceObject, TReturnType> (Expression<Func<TSourceObject, TReturnType>> expression)
     {
-      Assertion.IsTrue (methodCallExpression.Body is MethodCallExpression, "Parameter methodCallExpression must be a MethodCallExpression.");
-      return ((MethodCallExpression) methodCallExpression.Body).Method;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMethodInfoFromMethodCallExpression (expression.Body);
+    }
+
+    public static PropertyInfo GetProperty<TPropertyType> (Expression<Func<TPropertyType>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression.Body, "property");
+    }
+
+    public static PropertyInfo GetProperty<TSourceObject, TPropertyType> (Expression<Func<TSourceObject, TPropertyType>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression.Body, "property");
+    }
+
+    private static MemberInfo GetMemberInfoFromExpression (Expression expression)
+    {
+      if (expression is MemberExpression)
+        return GetTypedMemberInfoFromMemberExpression<MemberInfo> (expression, "member");
+      if (expression is MethodCallExpression)
+        return GetMethodInfoFromMethodCallExpression (expression);
+      if (expression is NewExpression)
+        return GetConstructorInfoFromNewExpression (expression);
+
+      throw new ArgumentException ("Must be a MemberExpression, MethodCallExpression or NewExpression.", "expression");
+    }
+
+    private static T GetTypedMemberInfoFromMemberExpression<T> (Expression expression, string memberType)
+        where T: MemberInfo
+    {
+      var memberExpression = expression as MemberExpression;
+      if (memberExpression == null)
+        throw new ArgumentException ("Must be a MemberExpression.", "expression");
+
+      var member = memberExpression.Member as T;
+      if (member == null)
+      {
+        var message = string.Format ("Must hold a {0} access expression.", memberType);
+        throw new ArgumentException (message, "expression");
+      }
+
+      return member;
+    }
+
+    private static MethodInfo GetMethodInfoFromMethodCallExpression (Expression expression)
+    {
+      var methodCallExpression = expression as MethodCallExpression;
+      if (methodCallExpression == null)
+        throw new ArgumentException ("Must be a MethodCallExpression.", "expression");
+
+      return methodCallExpression.Method;
+    }
+
+    private static ConstructorInfo GetConstructorInfoFromNewExpression (Expression expression)
+    {
+      var newExpression = expression as NewExpression;
+      if (newExpression == null)
+        throw new ArgumentException ("Must be a NewExpression.", "expression");
+
+      return newExpression.Constructor;
     }
   }
 }

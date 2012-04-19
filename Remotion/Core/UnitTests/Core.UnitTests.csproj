@@ -570,6 +570,7 @@
     <Compile Include="Utilities\ListUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utilities\MemberInfoFromExpressionUtilityTest.cs" />
     <Compile Include="Utilities\NameValueCollectionUtilityTest.cs">
       <SubType>Code</SubType>
     </Compile>

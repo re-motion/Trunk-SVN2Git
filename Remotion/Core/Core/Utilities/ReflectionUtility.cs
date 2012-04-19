@@ -400,6 +400,7 @@ namespace Remotion.Utilities
         return ascribeeType.IsAssignableFrom (type.GetGenericTypeDefinition ());
     }
 
+    // TODO 4800: [Obsolete ("This method has been replaced by MemberInfoFromExpressionUtility.GetMember. (1.13.147)", true)]
     public static MemberInfo GetMemberFromExpression<TSourceObject, TResult> (Expression<Func<TSourceObject, TResult>> memberAccessExpression)
     {
       ArgumentUtility.CheckNotNull ("memberAccessExpression", memberAccessExpression);
