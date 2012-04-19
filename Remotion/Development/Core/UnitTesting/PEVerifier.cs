@@ -96,8 +96,6 @@ namespace Remotion.Development.UnitTesting
 
       if (process.ExitCode != 0)
       {
-        Console.WriteLine ("PEVerify exited with code {0}.", process.ExitCode);
-        Console.WriteLine (output);
         throw new PEVerifyException (process.ExitCode, output);
       }
     }
@@ -112,7 +110,7 @@ namespace Remotion.Development.UnitTesting
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.UseShellExecute = false;
       process.StartInfo.WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-      process.StartInfo.Arguments = modulePath;
+      process.StartInfo.Arguments = "/verbose " +  modulePath;
       process.Start();
       return process;
     }
