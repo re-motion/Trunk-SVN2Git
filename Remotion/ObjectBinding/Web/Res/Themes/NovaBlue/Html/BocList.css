@@ -33,8 +33,12 @@ div.bocListMenuBlock
 {
   display: block;
   float: right;
-  width: 9.5em;
-  padding-left: 0.5em;
+  width: 10em;
+}
+
+div.bocListMenuBlock > div
+{
+  margin-left: 0.5em;
 }
 
 /*  Style applied to the list-area (table and navigation block) of the BocList.  */

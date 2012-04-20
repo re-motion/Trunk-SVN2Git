@@ -85,8 +85,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var menuBlock = Html.GetAssertedChildElement (div, "div", 0);
       Html.AssertAttribute (menuBlock, "class", _bocListCssClassDefinition.MenuBlock);
       Html.AssertStyleAttribute (menuBlock, "width", s_menuBlockWidth.ToString());
-      Html.AssertStyleAttribute (menuBlock, "margin-left", s_menuBlockOffset.ToString());
-      Html.GetAssertedChildElement (menuBlock, "menu", 0);
+      var menuBlockContent = Html.GetAssertedChildElement (menuBlock, "div", 0);
+      Html.AssertStyleAttribute (menuBlockContent, "margin-left", s_menuBlockOffset.ToString());
+      Html.GetAssertedChildElement (menuBlockContent, "menu", 0);
 
 
       var tableBlock = Html.GetAssertedChildElement (div, "div", 1);
@@ -117,7 +118,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var menuBlock = Html.GetAssertedChildElement (div, "div", 0);
       Html.AssertAttribute (menuBlock, "class", _bocListCssClassDefinition.MenuBlock);
-      Html.GetAssertedChildElement (menuBlock, "menu", 0);
+      var menuBlockContent = Html.GetAssertedChildElement (menuBlock, "div", 0);
+      Html.GetAssertedChildElement (menuBlockContent, "menu", 0);
 
 
       var tableBlock = Html.GetAssertedChildElement (div, "div", 1);

@@ -152,11 +152,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         if (!renderingContext.Control.MenuBlockWidth.IsEmpty)
           renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.Width, renderingContext.Control.MenuBlockWidth.ToString());
 
+        renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+        
         if (!renderingContext.Control.MenuBlockOffset.IsEmpty)
           renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.MarginLeft, renderingContext.Control.MenuBlockOffset.ToString());
-
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Div);
+
         MenuBlockRenderer.Render (renderingContext);
+
+        renderingContext.Writer.RenderEndTag();
         renderingContext.Writer.RenderEndTag();
       }
 

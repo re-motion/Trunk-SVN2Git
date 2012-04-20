@@ -3876,7 +3876,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Gets or sets the width reserved for the menu block. </summary>
     [Category ("Menu")]
-    [Description ("The width reserved for the menu section.")]
+    [Description ("The width reserved for the menu block.")]
     [DefaultValue (typeof (Unit), "")]
     public Unit MenuBlockWidth
     {
@@ -3884,10 +3884,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _menuBlockWidth = value; }
     }
 
-    /// <summary> Gets or sets the offset between the <c>list block</c> and the <c>menu block</c>. </summary>
-    /// <remarks> The <see cref="MenuBlockOffset"/> is applied as a <c>padding</c> attribute. </remarks>
+    /// <summary> Gets or sets the offset between the table and the menu block. </summary>
     [Category ("Menu")]
-    [Description ("The offset between the list of values and the menu section.")]
+    [Description ("The offset between the table and the menu block.")]
     [DefaultValue (typeof (Unit), "")]
     public Unit MenuBlockOffset
     {
