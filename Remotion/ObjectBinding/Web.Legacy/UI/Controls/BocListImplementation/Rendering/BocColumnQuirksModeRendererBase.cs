@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -143,13 +142,11 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     private void RenderTitleCellText (BocColumnRenderingContext<TBocColumnDefinition> renderingContext)
     {
-      if (renderingContext.Control.IsDesignMode && renderingContext.ColumnDefinition.ColumnTitleDisplayValue.Length == 0)
+      if (renderingContext.Control.IsDesignMode && string.IsNullOrEmpty (renderingContext.ColumnDefinition.ColumnTitleDisplayValue))
         renderingContext.Writer.Write (c_designModeEmptyContents);
       else
       {
-        string contents = HttpUtility.HtmlEncode (renderingContext.ColumnDefinition.ColumnTitleDisplayValue);
-        if (StringUtility.IsNullOrEmpty (contents))
-          contents = c_whiteSpace;
+        string contents = StringUtility.EmptyToNull (renderingContext.ColumnDefinition.ColumnTitleDisplayValue) ?? c_whiteSpace;
         renderingContext.Writer.Write (contents);
       }
     }
