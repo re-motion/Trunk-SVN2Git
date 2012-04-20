@@ -1386,17 +1386,24 @@
       var popUpOuterHeight = popUp.outerHeight();
       var popUpInnerHeight = popUp.children ('div').innerHeight();
 
-      //if (window.console)
-      //  console.log(requiredHeight + ' ' + popUpOuterHeight + ' ' + popUpInnerHeight + ' ' + position.bottom + ' ' + position.spaceVertical);
-
+ 
       if ((requiredHeight > popUpOuterHeight && requiredHeight != popUpOuterHeight)
           || (requiredHeight < popUpInnerHeight && requiredHeight != popUpInnerHeight))
       {
         popUp.css ({ height : 'auto' });
       }
       var elementHeight = popUp.outerHeight();
-
-      //TODO: Height flicker in IE7, IE8
+      if (window.console)
+        console.log(requiredHeight + ' ' + popUpOuterHeight + ' ' + popUpInnerHeight + ' ' + position.bottom + ' ' + position.spaceVertical + ' ' + elementHeight);
+      if ($.Autocompleter.getIEVersion() == 7 && requiredHeight < options.maxHeight)
+      {
+        elementHeight = 'auto';
+      }
+      else if ($.Autocompleter.getIEVersion() == 8 && elementHeight < options.maxHeight)
+      {
+        elementHeight = '';
+      }
+      //TODO: Height flicker in IE8
 
       // Only reset width if element is not scrolled.
       //TODO: Width calculation
@@ -1437,6 +1444,24 @@
       //}
     };
 
-    $.Autocompleter.popUpOriginalWidth = 'originalWidth';
+  $.Autocompleter.getIEVersion = function ()
+  {
+    if ($.browser.msie)
+    {
+      var majorVersion;
+      if (TypeUtility.IsDefined (window.document.documentMode))
+        majorVersion = parseInt (window.document.documentMode);
+      else
+        majorVersion = parseInt ($.browser.version);
+
+      return majorVersion;
+    }
+    else
+    {
+      return 0;
+    }
+  };
+
+  $.Autocompleter.popUpOriginalWidth = 'originalWidth';
 
 })(jQuery);
