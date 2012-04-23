@@ -17,32 +17,15 @@
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using Remotion.Utilities;
 
-namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.BuilderAbstractions
+namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
 {
   /// <summary>
-  /// Adapts <see cref="ModuleBuilder"/> with the <see cref="IModuleBuilder"/> interface.
+  /// Defines an interface for <see cref="ModuleBuilder"/>.
   /// </summary>
-  public class ModuleBuilderAdapter : IModuleBuilder
+  [CLSCompliant (false)]
+  public interface IModuleBuilder
   {
-    private readonly ModuleBuilder _moduleBuilder;
-
-    public ModuleBuilderAdapter (ModuleBuilder moduleBuilder)
-    {
-      ArgumentUtility.CheckNotNull ("moduleBuilder", moduleBuilder);
-
-      _moduleBuilder = moduleBuilder;
-    }
-
-    [CLSCompliant (false)]
-    public ITypeBuilder DefineType (string name, TypeAttributes attr, Type parent)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
-      ArgumentUtility.CheckNotNull ("parent", parent);
-
-      var typeBuilder = _moduleBuilder.DefineType (name, attr, parent);
-      return new TypeBuilderAdapter (typeBuilder);
-    }
+    ITypeBuilder DefineType (string name, TypeAttributes attr, Type parent);
   }
 }

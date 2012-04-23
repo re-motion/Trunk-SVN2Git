@@ -15,16 +15,21 @@
 // under the License.
 // 
 using System;
+using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using Microsoft.Scripting.Ast;
+using Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation;
 
-namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.BuilderAbstractions
+namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
 {
   /// <summary>
-  /// Defines an interface for <see cref="FieldBuilder"/>.
+  /// Defines a common interface for <see cref="MethodBuilder"/> and <see cref="ConstructorBuilder"/>.
   /// </summary>
   [CLSCompliant (false)]
-  public interface IFieldBuilder : IEmittableOperand
+  public interface IMethodBaseBuilder : IEmittableOperand
   {
-    void SetCustomAttribute (CustomAttributeBuilder customBuilder);
+    void DefineParameter (int iSequence, ParameterAttributes attributes, string strParamName);
+    void SetBody (LambdaExpression body, IILGeneratorFactory ilGeneratorFactory, DebugInfoGenerator debugInfoGeneratorOrNull);
   }
 }

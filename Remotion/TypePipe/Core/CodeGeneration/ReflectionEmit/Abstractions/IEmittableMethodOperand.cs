@@ -18,14 +18,14 @@ using System;
 using System.Reflection.Emit;
 using Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation;
 
-namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.BuilderAbstractions
+namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
 {
   /// <summary>
-  /// Defines a common interface for emittable operands, e.g. <see cref="IMethodBuilder"/>, <see cref="IFieldBuilder"/> etc.
+  /// Defines an interface for emittable method operands.
   /// </summary>
   [CLSCompliant (false)]
-  public interface IEmittableOperand
+  public interface IEmittableMethodOperand : IEmittableOperand
   {
-    void Emit (IILGenerator ilGenerator, OpCode opCode);
+    void EmitCall (IILGenerator ilGenerator, OpCode opCode, Type[] optionalParameterTypes);
   }
 }
