@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,32 +15,15 @@
 // under the License.
 // 
 using System;
-using System.Reflection.Emit;
-using Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation;
-using Remotion.Utilities;
 
 namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
 {
   /// <summary>
-  /// Represents a type which knows how to emit itself using an <see cref="IILGenerator"/>.
+  /// Defines a common base interface for most builder abstractions.
   /// </summary>
-  public class EmittableType : IEmittableOperand
+  [CLSCompliant (false)]
+  public interface IMemberBuilder
   {
-    private readonly Type _type;
-
-    public EmittableType (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-
-      _type = type;
-    }
-
-    [CLSCompliant (false)]
-    public void Emit (IILGenerator ilGenerator, OpCode opCode)
-    {
-      ArgumentUtility.CheckNotNull ("ilGenerator", ilGenerator);
-
-      ilGenerator.Emit (opCode, _type);
-    }
+    IEmittableOperand GetEmittableOperand ();
   }
 }

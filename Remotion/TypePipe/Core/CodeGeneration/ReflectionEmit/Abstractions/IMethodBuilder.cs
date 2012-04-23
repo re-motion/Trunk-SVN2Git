@@ -24,8 +24,10 @@ namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
   /// Defines an interface for <see cref="MethodBuilder"/>.
   /// </summary>
   [CLSCompliant (false)]
-  public interface IMethodBuilder : IMethodBaseBuilder, IEmittableMethodOperand
+  public interface IMethodBuilder : IMethodBaseBuilder
   {
     void DefineOverride (MethodInfo methodInfoDeclaration);
+
+    new IEmittableMethodOperand GetEmittableOperand ();
   }
 }
