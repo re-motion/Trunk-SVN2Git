@@ -1354,7 +1354,6 @@
     $.Autocompleter.applyPositionToPopUp = function (reference, popUp, options)
     {
       var offset = reference.offset();
-      // re-motion: calculate best position where to open dropdown list
       var position = $.Autocompleter.calculateSpaceAround(reference);
 
       var isVisibe = popUp.is (':visible');
@@ -1386,24 +1385,19 @@
       var popUpOuterHeight = popUp.outerHeight();
       var popUpInnerHeight = popUp.children ('div').innerHeight();
 
- 
       if ((requiredHeight > popUpOuterHeight && requiredHeight != popUpOuterHeight)
           || (requiredHeight < popUpInnerHeight && requiredHeight != popUpInnerHeight))
       {
+        //Reset height if content has changed to calculate new height
         popUp.css ({ height : 'auto' });
       }
       var elementHeight = popUp.outerHeight();
-      if (window.console)
-        console.log(requiredHeight + ' ' + popUpOuterHeight + ' ' + popUpInnerHeight + ' ' + position.bottom + ' ' + position.spaceVertical + ' ' + elementHeight);
-      if ($.Autocompleter.getIEVersion() == 7 && requiredHeight < options.maxHeight)
+
+      if (requiredHeight < options.maxHeight)
       {
         elementHeight = 'auto';
+        maxHeight = '';
       }
-      else if ($.Autocompleter.getIEVersion() == 8 && elementHeight < options.maxHeight)
-      {
-        elementHeight = '';
-      }
-      //TODO: Height flicker in IE8
 
       // Only reset width if element is not scrolled.
       //TODO: Width calculation
@@ -1426,22 +1420,22 @@
 
       var rightPosition = position.right;
       //if (window.console)
-      //{
-      //  console.log('width: ' + requiredWidth);
-      //  console.log (popUp.children ('div').scrollLeft());
-      //}
-      popUp.css ({
+      //  console.log(requiredHeight + ' ' + popUpOuterHeight + ' ' + popUpInnerHeight + ' ' + position.bottom + ' ' + position.spaceVertical + ' ' + elementHeight);
+      popUp.css({
         height : elementHeight,
         'max-height' : maxHeight,
         top : topPosition,
-        bottom : bottomPosition,
+        bottom: bottomPosition,
         right : rightPosition,
         width : requiredWidth
       });
-      //if (window.console)
-      //{
-      //  console.log(popUp.children('div').scrollLeft());
-      //}
+
+      if ($.Autocompleter.getIEVersion() == 8)
+      {
+        //IE8 shows scrollbar because of 1px margin error
+        var overflowY = (requiredHeight > popUpInnerHeight && requiredHeight < options.maxHeight) ? 'hidden' : '';
+        popUp.children('div').css('overflow-y', overflowY);
+      }
     };
 
   $.Autocompleter.getIEVersion = function ()
