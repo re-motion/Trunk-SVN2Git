@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Collections;
@@ -229,12 +230,7 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("info", info);
 
-      foreach (MethodInfo accessor in info.GetAccessors (true))
-      {
-        if (accessor.IsPrivate && accessor.IsVirtual && accessor.IsFinal)
-          return true;
-      }
-      return false;
+      return info.GetAccessors (true).Any (accessor => accessor.IsPrivate && accessor.IsVirtual && accessor.IsFinal);
     }
 
 
@@ -391,6 +387,8 @@ namespace Remotion.Utilities
 
     private static bool CanDirectlyAscribeToGenericTypeInternal (Type type, Type ascribeeType, Type ascribeeGenericTypeDefinition)
     {
+      Assertion.IsNotNull (ascribeeType);
+
       if (!type.IsGenericType || type.GetGenericTypeDefinition () != ascribeeGenericTypeDefinition)
         return false;
 
@@ -400,22 +398,10 @@ namespace Remotion.Utilities
         return ascribeeType.IsAssignableFrom (type.GetGenericTypeDefinition ());
     }
 
-    // TODO 4800: [Obsolete ("This method has been replaced by MemberInfoFromExpressionUtility.GetMember. (1.13.147)", true)]
+    [Obsolete ("This method has been replaced by MemberInfoFromExpressionUtility.GetMember. (1.13.148)", true)]
     public static MemberInfo GetMemberFromExpression<TSourceObject, TResult> (Expression<Func<TSourceObject, TResult>> memberAccessExpression)
     {
-      ArgumentUtility.CheckNotNull ("memberAccessExpression", memberAccessExpression);
-
-      MemberExpression memberExpression;
-      try
-      {
-        memberExpression = (MemberExpression) memberAccessExpression.Body;
-      }
-      catch (InvalidCastException ex)
-      {
-        throw new ArgumentException ("The memberAccessExpression must be a simple member access expression.", "memberAccessExpression", ex);
-      }
-
-      return memberExpression.Member;
+      throw new NotImplementedException ("Obsolete. Use MemberInfoFromExpressionUtility.GetMember instead.");
     }
   }
 }

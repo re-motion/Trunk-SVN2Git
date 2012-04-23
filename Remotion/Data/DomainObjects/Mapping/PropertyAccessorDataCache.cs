@@ -68,9 +68,16 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("propertyAccessExpression", propertyAccessExpression);
 
-      var propertyInfo = Utilities.ReflectionUtility.GetMemberFromExpression (propertyAccessExpression) as PropertyInfo;
-      if (propertyInfo == null)
-        throw new ArgumentException ("The expression must identify a property.", "propertyAccessExpression");
+      PropertyInfo propertyInfo;
+      try
+      {
+        propertyInfo = MemberInfoFromExpressionUtility.GetProperty (propertyAccessExpression);
+      }
+      catch (ArgumentException ex)
+      {
+        throw new ArgumentException ("The expression must identify a property.", "propertyAccessExpression", ex);
+      }
+
       return ResolvePropertyAccessorData (PropertyInfoAdapter.Create (propertyInfo));
     }
 

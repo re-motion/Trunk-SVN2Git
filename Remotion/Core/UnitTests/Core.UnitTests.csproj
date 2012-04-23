@@ -581,7 +581,6 @@
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithGenericInterface.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericClass.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\CanAscribe_WithNonGenericInterface.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\GetMemberFromExpression.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\IsOriginalDeclaration.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTest.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithProperties.cs" />
@@ -590,7 +589,6 @@
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\ClassWithFields.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithFields.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithMethods.cs" />
-    <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\ClassWithFields.cs" />
     <Compile Include="Utilities\ReflectionUtilityTests\TestDomain\DerivedClosedGenericClassWithDifferentProperties.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\DerivedClassWithProperties.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparerTestDomain\FakeMemberInfo.cs" />

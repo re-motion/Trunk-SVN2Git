@@ -27,6 +27,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Reflection;
+using Remotion.Utilities;
 using Rhino.Mocks;
 using ReflectionUtility = Remotion.Utilities.ReflectionUtility;
 
@@ -98,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MappingReflectionIn
 
     protected PropertyInfoAdapter GetPropertyInformation<T, TR> (Expression<Func<T, TR>> propertyAccessExpression)
     {
-      var memberInfo = (PropertyInfo) ReflectionUtility.GetMemberFromExpression (propertyAccessExpression);
+      var memberInfo = MemberInfoFromExpressionUtility.GetProperty (propertyAccessExpression);
       if (memberInfo.DeclaringType != typeof (T))
       {
         var message = string.Format ("Property must be declared on type '{0}', but it is declared on '{1}'.", typeof (T), memberInfo.DeclaringType);
