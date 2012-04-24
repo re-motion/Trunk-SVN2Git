@@ -1358,8 +1358,6 @@
       if (!isVisibe)
       {
         contentWidth = Math.max(0, Math.max(popUp.children('div').children().map(function () { return this.offsetWidth + this.offsetLeft; }).get()));
-        if (window.console)
-          console.log(contentWidth);
         if ($.Autocompleter.getIEVersion() == 7)
         {
           // IE7 has problem with getting the content width
@@ -1410,9 +1408,8 @@
 
       var maxWidth = options.maxWidth;
       var minWidth = reference.outerWidth();
-      var elementWidth = Math.max(Math.min(contentWidth, maxWidth), minWidth);
-      if (window.console)
-        console.log(elementWidth + ' ' + maxWidth + ' ' + minWidth + ' ' + contentWidth);
+      var requiredWidth = contentWidth + 30;
+      var elementWidth = Math.max(Math.min(requiredWidth, maxWidth), minWidth);
 
       var rightPosition = position.right;
 
