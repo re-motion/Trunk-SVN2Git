@@ -928,9 +928,6 @@
             .css("position", "absolute")
             .appendTo(document.body);
 
-            // re-motion: Back up the original width because of jQuery 1.4.3 changes to css module
-            element.data ($.Autocompleter.popUpOriginalWidth, element.width());
-
             //re-motion: block blur bind as long we scroll dropDown list 
             var revertInputStatusTimeout = null;
             function revertInputStatus() {
@@ -969,9 +966,6 @@
             }).mouseup(function() {
                 config.mouseDownOnSelect = false;
             });
-
-            //if (options.width > 0)
-            //    element.css("width", options.width);
 
             // re-motion: clean-up drop-down div during an async postback.
             var beginRequestHandler = function() {                
@@ -1243,11 +1237,6 @@
             .css("position", "absolute")
             .appendTo(document.body);
 
-            element.data ($.Autocompleter.popUpOriginalWidth, element.width());
-
-            if (options.width > 0)
-                element.css("width", options.width);
-
             var beginRequestHandler = function() {
                 Sys.WebForms.PageRequestManager.getInstance().remove_beginRequest(beginRequestHandler);
                 element.remove();
@@ -1371,6 +1360,12 @@
         contentWidth = Math.max(0, Math.max(popUp.children('div').children().map(function () { return this.offsetWidth + this.offsetLeft; }).get()));
         if (window.console)
           console.log(contentWidth);
+        if ($.Autocompleter.getIEVersion() == 7)
+        {
+          // IE7 has problem with getting the content width
+          contentWidth = 0;
+        }
+
         popUp.data('popUpContentWidth', contentWidth);
       }
 
@@ -1411,50 +1406,13 @@
         maxHeight = '';
       }
 
-      // Only reset width if element is not scrolled.
-      //TODO: Width calculation
-      //if (popUp.children('div').scrollLeft() == 0)
-      //  popUp.css({ width: 'auto' });
-      //var requiredWidth = Math.max(Math.min(popUp.outerWidth(), options.maxWidth), reference.outerWidth());
-      //var elementWidth;
-      //if (options.maxWidth > 0)
-      //{
-      //  elementWidth = Math.max(reference.outerWidth(), options.maxWidth);
-      //  //} else if (popUp.data ($.Autocompleter.popUpOriginalWidth) > 0) {
-      //  //    elementWidth = popUp.data ($.Autocompleter.popUpOriginalWidth);
-      //}
-      //else
-      //{
-      //  elementWidth = reference.outerWidth();
-      //}
-
       //parseInt(element.css('max-width'), 10)
 
       var maxWidth = options.maxWidth;
       var minWidth = reference.outerWidth();
-      var requiredWidth = Math.max (Math.min(contentWidth, maxWidth), minWidth);
+      var elementWidth = Math.max(Math.min(contentWidth, maxWidth), minWidth);
       if (window.console)
-        console.log(requiredWidth + ' ' + maxWidth + ' ' + minWidth + ' ' + contentWidth);
-
-/*      var requiredWidth = Math.max (Math.min (contentWidth == 0 ? popUp.outerWidth() : contentWidth, options.maxWidth), minWidth);
-
-      var popUpOuterWidth = popUp.outerWidth();
-      var popUpInnerWidth = popUp.children('div').innerWidth();
-
-      if (requiredWidth > popUpOuterWidth || requiredWidth < popUpInnerWidth)
-      {
-        //Reset width if content has changed to calculate new width
-     //   popUp.css ({ width : 'auto', 'min-width' : minWidth });
-      }
-      var elementWidth = popUp.outerWidth();
-      if (window.console)
-        console.log(requiredWidth + ' ' + popUpOuterWidth + ' ' + popUpInnerWidth + ' ' + elementWidth + ' ' + contentWidth);
-      var maxWidth = options.maxWidth;
-      if (requiredWidth < options.maxWidth)
-      {
-        elementWidth = 'auto';
-       // maxWidth = '';
-      }*/
+        console.log(elementWidth + ' ' + maxWidth + ' ' + minWidth + ' ' + contentWidth);
 
       var rightPosition = position.right;
 
@@ -1465,9 +1423,7 @@
         bottom : bottomPosition,
         left : 'auto',
         right : rightPosition,
-        width: requiredWidth
-        //'max-width' : maxWidth,
-        //'min-width' : minWidth
+        width: elementWidth
       });
 
       if ($.Autocompleter.getIEVersion() == 8)
@@ -1495,7 +1451,5 @@
       return 0;
     }
   };
-
-  $.Autocompleter.popUpOriginalWidth = 'originalWidth';
 
 })(jQuery);
