@@ -1409,10 +1409,11 @@
         maxHeight = '';
       }
 
-      var maxWidth = isNaN (options.maxWidth) ? reference.outerWidth() : options.maxWidth;
+      var availableWidth = position.left + reference.outerWidth();
       var minWidth = reference.outerWidth();
+      var maxWidth = Math.min (isNaN (options.maxWidth) ? reference.outerWidth() : options.maxWidth, availableWidth);
       var requiredWidth = contentWidth + 30;
-      var elementWidth = Math.max(Math.min(requiredWidth, maxWidth), minWidth);
+      var elementWidth = Math.max (Math.min (requiredWidth, maxWidth), minWidth);
 
       var rightPosition = position.right;
 
