@@ -22,9 +22,10 @@ namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit
   /// <summary>
   /// Defines an interface for classes building a subclass proxy.
   /// </summary>
-  public interface ISubclassProxyBuilder : ITypeModificationHandler
+  public interface ISubclassProxyBuilder : IExtendedTypeModificationHandler
   {
     void AddConstructor (MutableConstructorInfo constructor);
+
     Type Build ();
   }
 }
