@@ -787,7 +787,6 @@
         formatItem: function(row) { return row[0]; },
         formatMatch: null,
         autoFill: false,
-        width: 0,
         multiple: false,
         multipleSeparator: ", ",
         highlight: function(value, term) {
@@ -796,7 +795,6 @@
             return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
         },
         scroll: true,
-        scrollHeight: 180,
         repositionInterval: 200,
         handleRequestError: function (err) { },
         clearRequestError: function (err) { }
@@ -928,6 +926,9 @@
             .css("position", "absolute")
             .appendTo(document.body);
 
+            element.data('originalMaxHeight', parseInt(element.css('max-height'), 10));
+            element.data('originalMaxWidth', parseInt(element.css('max-width'), 10));
+
             //re-motion: block blur bind as long we scroll dropDown list 
             var revertInputStatusTimeout = null;
             function revertInputStatus() {
@@ -1051,7 +1052,7 @@
 
         function applyPositionToDropDown() {
           var reference = $(input).closest('.' + options.inputAreaClass);
-          var positionOptions = { maxWidth: options.width, maxHeight: options.scrollHeight };
+          var positionOptions = { maxWidth: element.data('originalMaxWidth'), maxHeight: element.data('originalMaxHeight') };
           $.Autocompleter.applyPositionToPopUp(reference, element, positionOptions);
         }
 
@@ -1237,6 +1238,9 @@
             .css("position", "absolute")
             .appendTo(document.body);
 
+            element.data('originalMaxHeight', parseInt(element.css('max-height'), 10));
+            element.data('originalMaxWidth', parseInt(element.css('max-width'), 10));
+
             var beginRequestHandler = function() {
                 Sys.WebForms.PageRequestManager.getInstance().remove_beginRequest(beginRequestHandler);
                 element.remove();
@@ -1269,7 +1273,7 @@
 
         function applyPositionToPopUp() {
           var reference = $(input).closest('.' + options.inputAreaClass);
-          var positionOptions = { maxWidth : 0, maxHeight : options.scrollHeight };
+          var positionOptions = { maxWidth: element.data('originalMaxWidth'), maxHeight: element.data('originalMaxHeight') };
           $.Autocompleter.applyPositionToPopUp(reference, element, positionOptions);
         }
 
@@ -1370,8 +1374,9 @@
       if (!isVisibe)
         popUp.hide();
 
-      var requiredHeight = Math.min(contentHeight == 0 ? popUp.outerHeight() : contentHeight, options.maxHeight);
+      var maxHeightSafe = isNaN(options.maxHeight) ? (position.spaceVertical == 'T' ? position.top : position.bottom) : options.maxHeight;
 
+      var requiredHeight = Math.min(contentHeight == 0 ? popUp.outerHeight() : contentHeight, maxHeightSafe);
       var topPosition;
       var bottomPosition;
       var maxHeight;
@@ -1379,13 +1384,13 @@
       {
         topPosition = 'auto';
         bottomPosition = position.bottom + reference.outerHeight();
-        maxHeight = Math.min(position.top, options.maxHeight);
+        maxHeight = Math.min(position.top, maxHeightSafe);
       }
       else
       {
         topPosition = offset.top + reference.outerHeight();
         bottomPosition = 'auto';
-        maxHeight = Math.min(position.bottom, options.maxHeight);
+        maxHeight = Math.min(position.bottom, maxHeightSafe);
       }
 
       var popUpOuterHeight = popUp.outerHeight();
@@ -1398,15 +1403,13 @@
       }
       var elementHeight = popUp.outerHeight();
 
-      if (requiredHeight < options.maxHeight)
+      if (requiredHeight < maxHeightSafe)
       {
         elementHeight = 'auto';
         maxHeight = '';
       }
 
-      //parseInt(element.css('max-width'), 10)
-
-      var maxWidth = options.maxWidth;
+      var maxWidth = isNaN (options.maxWidth) ? reference.outerWidth() : options.maxWidth;
       var minWidth = reference.outerWidth();
       var requiredWidth = contentWidth + 30;
       var elementWidth = Math.max(Math.min(requiredWidth, maxWidth), minWidth);
@@ -1426,7 +1429,7 @@
       if ($.Autocompleter.getIEVersion() == 8)
       {
         //IE8 shows scrollbar because of 1px margin error
-        var overflowY = (requiredHeight > popUpInnerHeight && requiredHeight < options.maxHeight) ? 'hidden' : '';
+        var overflowY = (requiredHeight > popUpInnerHeight && requiredHeight < maxHeightSafe) ? 'hidden' : '';
         popUp.children('div').css('overflow-y', overflowY);
       }
     };

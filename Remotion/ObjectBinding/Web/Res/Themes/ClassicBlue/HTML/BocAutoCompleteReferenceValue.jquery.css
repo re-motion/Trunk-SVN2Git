@@ -4,7 +4,9 @@
 {
   overflow: hidden;
   z-index: 99999;
-  /* position, dimension, and max-dimension are set via javascript */
+  /* position and dimension are set via javascript */
+  max-height: 20em;
+  max-width: 30em;
 }
 
 body.msie7 .ac_results 
@@ -92,6 +94,9 @@ body.msie7 .ac_results > div
 {
   overflow: hidden;
   z-index: 99999;
+  /* position and dimension are set via javascript */
+  max-height: 4em;
+  max-width: 30em;
 }
 
 body.msie7 .ac_informationPopUp 
