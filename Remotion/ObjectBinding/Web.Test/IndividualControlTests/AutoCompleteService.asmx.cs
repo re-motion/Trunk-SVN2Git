@@ -148,7 +148,11 @@ namespace OBWTest.IndividualControlTests
                                            "custom attribute (Attribute)",
                                            "custom control",
                                            "throw",
-                                           "exactthrow"
+                                           "exactthrow",
+                                           "very long text so there is a scrollbar",
+                                           "very long text so there is a scrollbar, take 2",
+                                           "very long text so there is a scrollbar, take 3",
+                                           "very long text so there is a scrollbar, because there was not enough yet",
                                        };
 
     #endregion

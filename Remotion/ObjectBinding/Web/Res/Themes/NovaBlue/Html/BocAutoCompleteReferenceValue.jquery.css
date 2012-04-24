@@ -5,7 +5,7 @@
   overflow: hidden;
   z-index: 99999;
   /* position, dimension, and max-dimension are set via javascript */
-  max-width: 30em;
+  /*max-width: 30em;*/
 }
 
 body.msie7 .ac_results 
