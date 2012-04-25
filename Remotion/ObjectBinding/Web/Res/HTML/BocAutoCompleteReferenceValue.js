@@ -90,15 +90,16 @@ BocAutoCompleteReferenceValue.Initialize = function (
           },
           formatItem: function (item) //What we display on input box
           {
-            var row = $('<div/>');
-            row.text(item.DisplayName);
+            var row = $('<li/>');
+            var cell = $ ('<div/>').appendTo(row);
+            cell.text(item.DisplayName);
 
             if (item.IconUrl != '')
             {
               var img = $('<img/>');
               img.attr({ src: item.IconUrl });
-              row.prepend(' ');
-              row.prepend(img);
+              cell.prepend(' ');
+              cell.prepend(img);
             }
 
             return row.html();
