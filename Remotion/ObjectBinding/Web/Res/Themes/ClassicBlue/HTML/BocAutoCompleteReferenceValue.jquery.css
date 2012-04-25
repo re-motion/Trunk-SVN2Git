@@ -50,7 +50,6 @@ body.msie7 .ac_results > div
 .ac_results li > div
 {
   display: table-cell;
-  margin: 0px;
   padding: 2px 5px;
   line-height: 16px;
   white-space: nowrap;
