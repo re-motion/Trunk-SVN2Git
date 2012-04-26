@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities
@@ -207,6 +208,84 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void GetGenericMethodDefinition_StaticVoid ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition (() => DomainType.StaticVoidGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("StaticVoidGenericMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must hold a generic method access expression.\r\nParameter name: expression")]
+    public void GetGenericMethodDefinition_StaticVoid_NonGenericMethod ()
+    {
+      MemberInfoFromExpressionUtility.GetGenericMethodDefinition (() => DomainType.StaticVoidMethod ());
+    }
+
+    [Test]
+    public void GetGenericMethodDefinition_Static ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition (() => DomainType.StaticGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("StaticGenericMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must be a MethodCallExpression.\r\nParameter name: expression")]
+    public void GetGenericMethodDefinition_Static_NonMethodCallExpression ()
+    {
+      MemberInfoFromExpressionUtility.GetGenericMethodDefinition (() => DomainType.StaticProperty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must hold a generic method access expression.\r\nParameter name: expression")]
+    public void GetGenericMethodDefinition_Static_NonGenericMethod ()
+    {
+      MemberInfoFromExpressionUtility.GetGenericMethodDefinition (() => DomainType.StaticMethod ());
+    }
+
+    [Test]
+    public void GetGenericMethodDefinition_InstanceVoid ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceVoidGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("InstanceVoidGenericMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must hold a generic method access expression.\r\nParameter name: expression")]
+    public void GetGenericMethodDefinition_InstanceVoid_NonGenericMethod ()
+    {
+      MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceVoidMethod ());
+    }
+
+    [Test]
+    public void GetGenericMethodDefinition_Instance ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("InstanceGenericMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must be a MethodCallExpression.\r\nParameter name: expression")]
+    public void GetGenericMethodDefinition_Instance_NonMethodCallExpression ()
+    {
+      MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceProperty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must hold a generic method access expression.\r\nParameter name: expression")]
+    public void GetGenericMethodDefinition_Instance_NonGenericMethod ()
+    {
+      MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceMethod ());
+    }
+
+    [Test]
     public void GetProperty_Static ()
     {
       var member = MemberInfoFromExpressionUtility.GetProperty (() => DomainType.StaticProperty);
@@ -267,6 +346,11 @@ namespace Remotion.UnitTests.Utilities
       public static int StaticMethod () { return 0; }
       public void InstanceVoidMethod () { }
       public int InstanceMethod () { return 0; }
+
+      public static void StaticVoidGenericMethod<T> (T t) { }
+      public static int StaticGenericMethod<T> (T t) { return 0; }
+      public void InstanceVoidGenericMethod<T> (T t) { }
+      public int InstanceGenericMethod<T> (T t) { return 0; }
 
       public static int StaticProperty { get; set; }
       public int InstanceProperty { get; set; }

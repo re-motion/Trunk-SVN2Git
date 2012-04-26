@@ -79,6 +79,30 @@ namespace Remotion.Utilities
       return GetMethodInfoFromMethodCallExpression (expression.Body);
     }
 
+    public static MethodInfo GetGenericMethodDefinition (Expression<Action> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetGenericMethodDefinition(expression.Body);
+    }
+
+    public static MethodInfo GetGenericMethodDefinition<TReturnType> (Expression<Func<TReturnType>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetGenericMethodDefinition (expression.Body);
+    }
+
+    public static MethodInfo GetGenericMethodDefinition<TSourceObject> (Expression<Action<TSourceObject>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetGenericMethodDefinition (expression.Body);
+    }
+
+    public static MethodInfo GetGenericMethodDefinition<TSourceObject, TReturnType> (Expression<Func<TSourceObject, TReturnType>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetGenericMethodDefinition (expression.Body);
+    }
+
     public static PropertyInfo GetProperty<TPropertyType> (Expression<Func<TPropertyType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -120,6 +144,15 @@ namespace Remotion.Utilities
       return member;
     }
 
+    private static ConstructorInfo GetConstructorInfoFromNewExpression (Expression expression)
+    {
+      var newExpression = expression as NewExpression;
+      if (newExpression == null)
+        throw new ArgumentException ("Must be a NewExpression.", "expression");
+
+      return newExpression.Constructor;
+    }
+
     private static MethodInfo GetMethodInfoFromMethodCallExpression (Expression expression)
     {
       var methodCallExpression = expression as MethodCallExpression;
@@ -129,13 +162,13 @@ namespace Remotion.Utilities
       return methodCallExpression.Method;
     }
 
-    private static ConstructorInfo GetConstructorInfoFromNewExpression (Expression expression)
+    private static MethodInfo GetGenericMethodDefinition (Expression expression)
     {
-      var newExpression = expression as NewExpression;
-      if (newExpression == null)
-        throw new ArgumentException ("Must be a NewExpression.", "expression");
+      var methodInfo = GetMethodInfoFromMethodCallExpression (expression);
+      if (!methodInfo.IsGenericMethod)
+        throw new ArgumentException ("Must hold a generic method access expression.", "expression");
 
-      return newExpression.Constructor;
+      return methodInfo.GetGenericMethodDefinition ();
     }
   }
 }
