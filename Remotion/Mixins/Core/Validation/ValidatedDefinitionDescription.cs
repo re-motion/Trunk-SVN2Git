@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Mixins.Definitions;
-using Remotion.Reflection.SignatureStringBuilding;
+using Remotion.Reflection.MemberSignatures.SignatureStringBuilding;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation

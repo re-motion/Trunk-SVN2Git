@@ -16,38 +16,38 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Reflection.SignatureStringBuilding;
-using Remotion.UnitTests.Reflection.SignatureStringBuilding.TestDomain;
+using Remotion.Reflection.MemberSignatures.SignatureStringBuilding;
+using Remotion.UnitTests.Reflection.MemberSignatures.SignatureStringBuilding.TestDomain;
 
-namespace Remotion.UnitTests.Reflection.SignatureStringBuilding
+namespace Remotion.UnitTests.Reflection.MemberSignatures.SignatureStringBuilding
 {
   [TestFixture]
-  public class FieldSignatureStringBuilderTest
+  public class EventSignatureStringBuilderTest
   {
-    private FieldSignatureStringBuilder _builder;
+    private EventSignatureStringBuilder _builder;
 
     [SetUp]
     public void SetUp ()
     {
-      _builder = new FieldSignatureStringBuilder ();
+      _builder = new EventSignatureStringBuilder ();
     }
 
     [Test]
-    public void BuildSignatureString_FiedInfo ()
+    public void BuildSignatureString_EventInfo ()
     {
-      var fieldInfo = typeof (ClassForFieldSignatureStringBuilding).GetField ("PublicField");
-      var signature = _builder.BuildSignatureString (fieldInfo);
+      var eventInfo = typeof (ClassForEventSignatureStringBuilding).GetEvent ("Event");
+      var signature = _builder.BuildSignatureString (eventInfo);
 
-      Assert.That (signature, Is.EqualTo ("System.String"));
+      Assert.That (signature, Is.EqualTo ("System.EventHandler"));
     }
 
     [Test]
     public void BuildSignatureString_ExplicitSignature ()
     {
-      var fieldType = typeof (string);
-      var signature = _builder.BuildSignatureString (fieldType);
+      var eventHandlerType = typeof (EventHandler);
+      var signature = _builder.BuildSignatureString (eventHandlerType);
 
-      Assert.That (signature, Is.EqualTo ("System.String"));
+      Assert.That (signature, Is.EqualTo ("System.EventHandler"));
     }
   }
 }

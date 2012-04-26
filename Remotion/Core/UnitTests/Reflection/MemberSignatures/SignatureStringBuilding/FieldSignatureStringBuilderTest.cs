@@ -14,40 +14,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
-using Remotion.Reflection.SignatureStringBuilding;
-using Remotion.UnitTests.Reflection.SignatureStringBuilding.TestDomain;
+using Remotion.Reflection.MemberSignatures.SignatureStringBuilding;
+using Remotion.UnitTests.Reflection.MemberSignatures.SignatureStringBuilding.TestDomain;
 
-namespace Remotion.UnitTests.Reflection.SignatureStringBuilding
+namespace Remotion.UnitTests.Reflection.MemberSignatures.SignatureStringBuilding
 {
   [TestFixture]
-  public class EventSignatureStringBuilderTest
+  public class FieldSignatureStringBuilderTest
   {
-    private EventSignatureStringBuilder _builder;
+    private FieldSignatureStringBuilder _builder;
 
     [SetUp]
     public void SetUp ()
     {
-      _builder = new EventSignatureStringBuilder ();
+      _builder = new FieldSignatureStringBuilder ();
     }
 
     [Test]
-    public void BuildSignatureString_EventInfo ()
+    public void BuildSignatureString_FiedInfo ()
     {
-      var eventInfo = typeof (ClassForEventSignatureStringBuilding).GetEvent ("Event");
-      var signature = _builder.BuildSignatureString (eventInfo);
+      var fieldInfo = typeof (ClassForFieldSignatureStringBuilding).GetField ("PublicField");
+      var signature = _builder.BuildSignatureString (fieldInfo);
 
-      Assert.That (signature, Is.EqualTo ("System.EventHandler"));
+      Assert.That (signature, Is.EqualTo ("System.String"));
     }
 
     [Test]
     public void BuildSignatureString_ExplicitSignature ()
     {
-      var eventHandlerType = typeof (EventHandler);
-      var signature = _builder.BuildSignatureString (eventHandlerType);
+      var fieldType = typeof (string);
+      var signature = _builder.BuildSignatureString (fieldType);
 
-      Assert.That (signature, Is.EqualTo ("System.EventHandler"));
+      Assert.That (signature, Is.EqualTo ("System.String"));
     }
   }
 }

@@ -150,7 +150,7 @@
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
-    <Compile Include="Reflection\SignatureStringBuilding\FieldSignatureStringBuilder.cs" />
+    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\FieldSignatureStringBuilder.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="Diagnostics\DebuggerInterface.cs" />
@@ -189,7 +189,7 @@
     <Compile Include="Reflection\ParamList.template.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverter.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
-    <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderProvider.cs" />
+    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\MemberSignatureStringBuilderProvider.cs" />
     <Compile Include="Reflection\TypeAdapter.cs" />
     <Compile Include="Reflection\TypeAdapterConverter.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CachingAssemblyFinderDecorator.cs" />
@@ -251,11 +251,11 @@
     <Compile Include="Reflection\NullMethodInformation.cs" />
     <Compile Include="Reflection\NullPropertyInformation.cs" />
     <Compile Include="Reflection\PropertyInfoAdapter.cs" />
-    <Compile Include="Reflection\SignatureStringBuilding\EventSignatureStringBuilder.cs" />
-    <Compile Include="Reflection\SignatureStringBuilding\IMemberSignatureStringBuilder.cs" />
-    <Compile Include="Reflection\SignatureStringBuilding\MemberSignatureStringBuilderHelper.cs" />
-    <Compile Include="Reflection\SignatureStringBuilding\MethodSignatureStringBuilder.cs" />
-    <Compile Include="Reflection\SignatureStringBuilding\PropertySignatureStringBuilder.cs" />
+    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\EventSignatureStringBuilder.cs" />
+    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\IMemberSignatureStringBuilder.cs" />
+    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\MemberSignatureStringBuilderHelper.cs" />
+    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\MethodSignatureStringBuilder.cs" />
+    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\PropertySignatureStringBuilder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyNameSpecification.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\CompositeRootAssemblyFinder.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\FilePatternRootAssemblyFinder.cs" />

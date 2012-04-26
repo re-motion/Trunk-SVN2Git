@@ -14,12 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-
-namespace Remotion.UnitTests.Reflection.SignatureStringBuilding.TestDomain
+namespace Remotion.UnitTests.Reflection.MemberSignatures.SignatureStringBuilding.TestDomain
 {
-  public class ClassForEventSignatureStringBuilding
+// ReSharper disable UnusedTypeParameter
+  public class GenericClassWithNestedType<TType1, TType2>
   {
-    public event EventHandler Event;
+    public class Nested
+    {
+    }
+
+    public class NestedGeneric<TNested1>
+    {
+    }
   }
+  // ReSharper restore UnusedTypeParameter
 }
