@@ -208,6 +208,7 @@
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
     <Compile Include="Reflection\MemberSignatures\EventSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\FieldSignatureTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\MemberSignatureProviderTest.cs" />
     <Compile Include="Reflection\MemberSignatures\MethodSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\FieldSignatureStringBuilderTest.cs" />

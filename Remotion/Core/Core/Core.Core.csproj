@@ -152,6 +152,7 @@
     <Compile Include="Reflection\MemberSignatures\EventSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\FieldSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\IMemberSignature.cs" />
+    <Compile Include="Reflection\MemberSignatures\MemberSignatureProvider.cs" />
     <Compile Include="Reflection\MemberSignatures\MethodSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignature.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
