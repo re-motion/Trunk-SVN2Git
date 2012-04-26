@@ -149,6 +149,10 @@
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
+    <Compile Include="Reflection\MemberSignatures\EventSignature.cs" />
+    <Compile Include="Reflection\MemberSignatures\FieldSignature.cs" />
+    <Compile Include="Reflection\MemberSignatures\MethodSignature.cs" />
+    <Compile Include="Reflection\MemberSignatures\PropertySignature.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\FieldSignatureStringBuilder.cs" />
     <Compile Include="SafeContextSingleton.cs" />
