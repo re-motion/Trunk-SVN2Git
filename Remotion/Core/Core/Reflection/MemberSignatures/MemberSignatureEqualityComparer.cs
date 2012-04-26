@@ -17,14 +17,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Reflection.MemberSignatures.SignatureStringBuilding;
 using Remotion.Utilities;
 
-namespace Remotion.Reflection
+namespace Remotion.Reflection.MemberSignatures
 {
   /// <summary>
-  /// Compares the signatures of two members for equality. Two member signatures compare equal if and only if both their member types and
-  /// their signature strings (<see cref="N:Remotion.Reflection.SignatureStringBuilding"/>) are equal. This comparer does not support comparing
+  /// Compares two members for equality by considering only the signatures, but not the names of the members. This comparer does not support comparing
   /// <see langword="null" /> values.
   /// </summary>
   public class MemberSignatureEqualityComparer : IEqualityComparer<MemberInfo>
@@ -34,40 +32,33 @@ namespace Remotion.Reflection
       ArgumentUtility.CheckNotNull ("x", x);
       ArgumentUtility.CheckNotNull ("y", y);
 
-      var signatureBuilderX = GetSignatureStringBuilder (x.MemberType);
-      var signatureBuilderY = GetSignatureStringBuilder (y.MemberType);
+      var signatureX = GetMemberSignature (x);
+      var signatureY = GetMemberSignature (y);
 
-      if (signatureBuilderX != signatureBuilderY)
-        return false;
-
-      var signatureX = signatureBuilderX.BuildSignatureString (x);
-      var signatureY = signatureBuilderY.BuildSignatureString (y);
-
-      return signatureX == signatureY;
+      return signatureX.Equals (signatureY);
     }
-    
+
     public int GetHashCode (MemberInfo obj)
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
 
-      var signatureBuilder = GetSignatureStringBuilder (obj.MemberType);
-      var signatureString = signatureBuilder.BuildSignatureString (obj);
-      return signatureString.GetHashCode ();
+      var signature = GetMemberSignature (obj);
+      return signature.GetHashCode();
     }
 
-    private IMemberSignatureStringBuilder GetSignatureStringBuilder (MemberTypes memberType)
+    private IMemberSignature GetMemberSignature (MemberInfo x)
     {
       try
       {
-        return MemberSignatureStringBuilderProvider.GetSignatureBuilder (memberType);
+        return MemberSignatureProvider.GetMemberSignature (x);
       }
       catch (NotSupportedException ex)
       {
-        var message = String.Format (
-              "MemberSignatureEqualityComparer does not support member type '{0}', "
-              + "only constructors, methods, properties, events and fields are supported.", 
-              memberType);
-          throw new NotSupportedException (message, ex);
+        var message = string.Format (
+            "MemberSignatureEqualityComparer does not support member type '{0}', "
+            + "only constructors, methods, properties, events and fields are supported.",
+            x.MemberType);
+        throw new NotSupportedException (message, ex);
       }
     }
   }

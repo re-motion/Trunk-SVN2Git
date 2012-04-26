@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Reflection;
+using Remotion.Reflection.MemberSignatures;
 using Remotion.Text;
 using Remotion.Utilities;
 using System.Linq;

@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Mixins.Definitions;
-using Remotion.Reflection.MemberSignatures.SignatureStringBuilding;
+using Remotion.Reflection.MemberSignatures;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Validation
@@ -42,8 +42,8 @@ namespace Remotion.Mixins.Validation
       if (definitionAsMemberDefinition == null)
         return null;
 
-      var memberSignatureStringBuilder = MemberSignatureStringBuilderProvider.GetSignatureBuilder (definitionAsMemberDefinition.MemberType);
-      return memberSignatureStringBuilder.BuildSignatureString (definitionAsMemberDefinition.MemberInfo);
+      var memberSignature = MemberSignatureProvider.GetMemberSignature (definitionAsMemberDefinition.MemberInfo);
+      return memberSignature.ToString();
     }
 
     public static bool operator== (ValidatedDefinitionDescription definition1, ValidatedDefinitionDescription definition2)

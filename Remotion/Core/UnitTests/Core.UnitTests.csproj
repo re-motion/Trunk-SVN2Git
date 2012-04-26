@@ -211,8 +211,6 @@
     <Compile Include="Reflection\MemberSignatures\MemberSignatureProviderTest.cs" />
     <Compile Include="Reflection\MemberSignatures\MethodSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignatureTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\FieldSignatureStringBuilderTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\TestDomain\ClassForFieldSignatureStringBuilding.cs" />
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
     <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons2.cs" />
     <Compile Include="Reflection\TypeDiscovery\AssemblyFinding\AssemblyCompilerBuildOutputManager.cs" />
@@ -247,9 +245,8 @@
     <Compile Include="Reflection\MethodInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\PropertyInfoAdapterConverterTest.cs" />
     <Compile Include="Reflection\ReflectionExtensionsTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\MemberSignatureStringBuilderProviderTest.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\DerivedClassWithReferenceType.cs" />
-    <Compile Include="Reflection\MemberSignatureEqualityComparerTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\MemberSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\MethodInfoAdapterTest.cs" />
     <Compile Include="Reflection\NullMethodInformationTest.cs" />
     <Compile Include="Reflection\NullPropertyInformationTest.cs" />
@@ -259,16 +256,8 @@
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\ClassWithReferenceType.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\IInterfaceWithReferenceType.cs" />
     <Compile Include="Reflection\TestDomain\MemberInfoAdapter\SampleAttribute.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\EventSignatureStringBuilderTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\MethodSignatureStringBuilderIntegrationTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\MemberSignatureStringBuilderHelperTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\MethodSignatureStringBuilderTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\PropertySignatureStringBuilderTest.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\TestDomain\ClassForEventSignatureStringBuilding.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\TestDomain\ClassForMethodSignatureStringBuilding.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\TestDomain\ClassForPropertySignatureStringBuilding.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\TestDomain\GenericClassWithNestedType.cs" />
-    <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\TestDomain\GenericClass.cs" />
+    <Compile Include="Reflection\MemberSignatures\MethodSignatureIntegrationTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\MethodSignatureStringBuilderHelperTest.cs" />
     <Compile Include="Reflection\TestDomain\ClassForSignatureComparisons.cs" />
     <Compile Include="Reflection\TypeAdapterConverterTest.cs" />
     <Compile Include="Reflection\TypeAdapterTest.cs" />
@@ -690,6 +679,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Reflection\MemberSignatures\SignatureStringBuilding\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
