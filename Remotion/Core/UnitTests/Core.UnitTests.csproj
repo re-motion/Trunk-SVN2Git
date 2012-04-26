@@ -206,6 +206,10 @@
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\EventSignatureTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\FieldSignatureTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\MethodSignatureTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\PropertySignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\FieldSignatureStringBuilderTest.cs" />
     <Compile Include="Reflection\MemberSignatures\SignatureStringBuilding\TestDomain\ClassForFieldSignatureStringBuilding.cs" />
     <Compile Include="Reflection\TestDomain\AbstractClass.cs" />
