@@ -19,10 +19,17 @@ using System;
 namespace Remotion.Development.UnitTesting
 {
   /// <summary>
-  /// Provides a <see cref="Null"/> property that can be assigned arbitrary values.
+  /// Provides a <see cref="Null"/> property that can be assigned arbitrary values, and a type <see cref="T"/> to be used as a dummy generic argument.
   /// </summary>
   public static class Dev
   {
+    /// <summary>
+    /// Defines a dummy type that can be used as a generic argument.
+    /// </summary>
+    public class T
+    {
+    }
+
     /// <summary>
     /// Use this in unit tests where you need to assign a value to
     /// something (e.g., for syntactic reasons, or to remove unused variable warnings), but don't care about the result of the assignment.
