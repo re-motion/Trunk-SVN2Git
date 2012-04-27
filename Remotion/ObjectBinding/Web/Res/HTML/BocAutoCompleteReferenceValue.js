@@ -120,6 +120,9 @@ BocAutoCompleteReferenceValue.Initialize = function (
         }
     ).invalidateResult(function (e, item)
     {
+      if (hiddenField.val() == nullValueString)
+        return;
+
       hiddenField.val(nullValueString);
       UpdateCommand(nullValueString);
       //Do not fire change-event
