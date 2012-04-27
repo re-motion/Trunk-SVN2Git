@@ -227,6 +227,11 @@
             var handleInput = function() {
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
+
+                informationPopUp.hide();
+                if (currentValue.toLowerCase() != previousValue.toLowerCase())
+                  $input.trigger("invalidateResult");
+
                 timeout = setTimeout(
                     function () { 
                         onChange(false, currentValue); 
@@ -241,13 +246,9 @@
                     && event.keyCode != KEY.SPACE;
                 var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
                 if (!isControlKey && !isValueSeparatorKey) {
-                    informationPopUp.hide();
-                    $input.trigger("invalidateResult");
                     handleInput();
                 }
             } else if (event.type == 'paste') {
-                informationPopUp.hide();
-                $input.trigger("invalidateResult");
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
