@@ -81,6 +81,7 @@
     $.Autocompleter = function(input, options) {
 
         var KEY = {
+            SPACE: 32,
             UP: 38,
             DOWN: 40,
             DEL: 46,
@@ -227,7 +228,10 @@
             };
 
             if (event.type == 'keyup') {
-                var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER && event.keyCode != KEY.BACKSPACE && event.keyCode != KEY.DEL;
+              var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER
+                && event.keyCode != KEY.BACKSPACE
+                  && event.keyCode != KEY.DEL
+                    && event.keyCode != KEY.SPACE;
                 var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
                 if (!isControlKey && !isValueSeparatorKey)
                     handleInput();
