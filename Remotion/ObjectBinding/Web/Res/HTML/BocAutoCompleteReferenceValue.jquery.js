@@ -242,10 +242,12 @@
                 var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
                 if (!isControlKey && !isValueSeparatorKey) {
                     informationPopUp.hide();
+                    $input.trigger("invalidateResult");
                     handleInput();
                 }
             } else if (event.type == 'paste') {
                 informationPopUp.hide();
+                $input.trigger("invalidateResult");
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
@@ -400,12 +402,13 @@
             }
             closeDropDownListAndSetValue(term);
 
-            if (previousValidValue == term) {
-              return;
-            } else {
-              previousValue = term;
-              previousValidValue = term;
+            if (previousValidValue == term && selectedItem != null) {
+                $input.trigger("updateResult", selectedItem.data);
+                return;
             }
+
+            previousValue = term;
+            previousValidValue = term;
 
             if (selectedItem == null) {
               options.clearRequestError();

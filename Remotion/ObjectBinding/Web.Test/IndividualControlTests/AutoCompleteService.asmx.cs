@@ -196,8 +196,6 @@ namespace OBWTest.IndividualControlTests
       var result = Search (searchString, 2, businessObjectClass, businessObjectProperty, businessObject, args);
       if (result.Length == 0)
         return null;
-      if (result.Length == 1)
-        return result[0];
       if (string.Equals (result[0].DisplayName, searchString, StringComparison.CurrentCultureIgnoreCase))
         return result[0];
       return null;
