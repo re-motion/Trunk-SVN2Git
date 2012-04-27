@@ -257,6 +257,9 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Unload\UnloadVirtualEndPointAndItemDataCollectionTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\DomainObjectQueryGeneratorTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\QueryModelObjectMother.cs" />
+    <Compile Include="DomainObjects\Core\Linq\SqlQueryGeneratorTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\MappingReflectionIntegrationTestBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Base.cs" />
     <Compile Include="DomainObjects\Core\Mapping\MappingReflectionIntegrationTests\Mixins\IntroducedRelations\Derived.cs" />
@@ -1005,7 +1008,7 @@
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MixinAddedPropertyIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\PropertyRedirectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\MappingResolverTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\TestQueryExecutorMixin.cs" />
+    <Compile Include="DomainObjects\Core\Linq\TestQueryGeneratorMixin.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedMixinAddingPersistentProperties.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\DerivedTargetClassWithDerivedMixinWithInterface.cs" />
     <Compile Include="DomainObjects\Core\MixedDomains\TestDomain\IMixinAddingSimplePersistentProperties.cs" />

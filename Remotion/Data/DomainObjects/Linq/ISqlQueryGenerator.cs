@@ -15,20 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Linq;
-using Remotion.Mixins;
+using Remotion.Linq;
+using Remotion.Linq.SqlBackend.SqlGeneration;
 
-namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
+namespace Remotion.Data.DomainObjects.Linq
 {
   /// <summary>
-  /// This attribute applies the <see cref="QueryExecutorMixin"/> to the <see cref="DomainObjectQueryExecutor"/> type.
-  /// Apply this attribute to your (unit test) assembly.
+  /// Defines an interface for objects generating a SQL query for a LINQ <see cref="QueryModel"/>.
   /// </summary>
-  public class ApplyQueryExecutorMixinAttribute : MixAttribute
+  public interface ISqlQueryGenerator
   {
-    public ApplyQueryExecutorMixinAttribute ()
-        : base (typeof (DomainObjectQueryExecutor), typeof (QueryExecutorMixin))
-    {
-    }
+    /// <summary>
+    /// Creates a SQL query from a given <see cref="QueryModel"/>.
+    /// </summary>
+    /// <param name="queryModel">
+    ///   The <see cref="QueryModel"/> a SQL query is generated for. The query must not contain any eager fetch result operators.
+    /// </param>
+    /// <returns>A <see cref="SqlCommandData"/> instance containing the SQL text, parameters, and an in-memory projection for the given query model.</returns>
+    SqlQueryGeneratorResult CreateSqlQuery (QueryModel queryModel);
   }
 }

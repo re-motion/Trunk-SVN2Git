@@ -27,59 +27,44 @@ using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
-  public class TestQueryExecutorMixin : Mixin<object, TestQueryExecutorMixin.IBaseCallRequirements>
+  public class TestQueryGeneratorMixin : Mixin<object, TestQueryGeneratorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements
     {
-      IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType);
-      IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType);
-
       IQuery CreateQuery (
           string id,
+          ClassDefinition classDefinition,
           QueryModel queryModel,
           IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
-          QueryType queryType,
-          ClassDefinition classDefinitionOfResult);
-
-      SqlCommandData CreateSqlCommand (QueryModel queryModel, bool queryType);
+          QueryType queryType);
+      IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType);
     }
 
     public bool CreateQueryCalled;
     public bool CreateQueryFromModelCalled;
-    public bool CreateQueryFromModelWithClassDefinitionCalled;
-    public bool CreateSqlCommandCalled;
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
-    {
-      CreateQueryCalled = true;
-      return Next.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
-    }
-
-    [OverrideTarget]
-    public IQuery CreateQuery (string id, QueryModel queryModel, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, QueryType queryType)
+    public IQuery CreateQuery (
+        string id,
+        ClassDefinition classDefinition,
+        QueryModel queryModel,
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
+        QueryType queryType)
     {
       CreateQueryFromModelCalled = true;
-      return Next.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType);
+      return Next.CreateQuery (id, classDefinition, queryModel, fetchQueryModelBuilders, queryType);
     }
 
     [OverrideTarget]
     public IQuery CreateQuery (
         string id,
-        QueryModel queryModel,
-        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
-        QueryType queryType,
-        ClassDefinition classDefinitionOfResult)
+        StorageProviderDefinition storageProviderDefinition,
+        string statement,
+        CommandParameter[] commandParameters,
+        QueryType queryType)
     {
-      CreateQueryFromModelWithClassDefinitionCalled = true;
-      return Next.CreateQuery (id, queryModel, fetchQueryModelBuilders, queryType, classDefinitionOfResult);
-    }
-
-    [OverrideTarget]
-    public SqlCommandData CreateSqlCommand (QueryModel queryModel, bool checkResultIsDomainObject)
-    {
-      CreateSqlCommandCalled = true;
-      return Next.CreateSqlCommand (queryModel, checkResultIsDomainObject);
+      CreateQueryCalled = true;
+      return Next.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
     }
   }
 }

@@ -116,9 +116,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "This query provider does not support the given query ('from Order o in DomainObjectQueryable<Order> select {DomainObjectQueryable<Computer>}'). "
-        + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Queries selecting collections are not supported because SQL is not well-suited to returning collections.", 
+        MatchType = MessageMatch.Contains)]
     public void QueryWithSubQuery_InSelectClause ()
     {
       var orders = from o in QueryFactory.CreateLinqQuery<Order>()

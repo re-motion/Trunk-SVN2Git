@@ -200,18 +200,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (result.Provider.Executor, Is.TypeOf (typeof (DomainObjectQueryExecutor)));
       
       var queryExecutor = (DomainObjectQueryExecutor) result.Provider.Executor;
-      Assert.That (queryExecutor.StorageProviderDefinition, Is.SameAs (TestDomainStorageProviderDefinition));
+      Assert.That (queryExecutor.StartingClassDefinition, Is.SameAs (GetTypeDefinition (typeof (Order))));
+      var domainObjectQueryGenerator = (DomainObjectQueryGenerator) queryExecutor.QueryGenerator;
+      var sqlQueryGenerator = (SqlQueryGenerator) domainObjectQueryGenerator.SqlQueryGenerator;
 
       var expectedMethodCallTransformerProvider = ((DoubleCheckedLockingContainer<IMethodCallTransformerProvider>) PrivateInvoke.GetNonPublicStaticField (
           typeof (QueryFactory), 
           "s_methodCallTransformerProvider")).Value;
-      Assert.That (((DefaultSqlPreparationStage) queryExecutor.PreparationStage).MethodCallTransformerProvider, 
+      Assert.That (((DefaultSqlPreparationStage) sqlQueryGenerator.PreparationStage).MethodCallTransformerProvider, 
           Is.SameAs (expectedMethodCallTransformerProvider));
 
       var expectedResultOperatorHandlerRegistry = ((DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry>) PrivateInvoke.GetNonPublicStaticField (
           typeof (QueryFactory),
           "s_resultOperatorHandlerRegistry")).Value;
-      Assert.That (((DefaultSqlPreparationStage) queryExecutor.PreparationStage).ResultOperatorHandlerRegistry,
+      Assert.That (((DefaultSqlPreparationStage) sqlQueryGenerator.PreparationStage).ResultOperatorHandlerRegistry,
           Is.SameAs (expectedResultOperatorHandlerRegistry));
 
       var expectedQueryParser = ((DoubleCheckedLockingContainer<IQueryParser>) PrivateInvoke.GetNonPublicStaticField (

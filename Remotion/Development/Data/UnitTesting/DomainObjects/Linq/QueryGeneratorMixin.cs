@@ -26,9 +26,9 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
 {
   /// <summary>
   /// This mixin writes the generated Linq statements to the console. 
-  /// Use the <see cref="ApplyQueryExecutorMixinAttribute"/> to your assembly to actually apply the mixin.
+  /// Use the <see cref="ApplyQueryGeneratorMixinAttribute"/> to your assembly to actually apply the mixin.
   /// </summary>
-  public class QueryExecutorMixin : Mixin<object, QueryExecutorMixin.IBaseCallRequirements>
+  public class QueryGeneratorMixin : Mixin<object, QueryGeneratorMixin.IBaseCallRequirements>
   {
     public interface IBaseCallRequirements
     {
@@ -36,7 +36,8 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
     }
 
     [OverrideTarget]
-    public IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
+    public IQuery CreateQuery (
+        string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
       IQuery query = Next.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
       QueryConstructed (query);

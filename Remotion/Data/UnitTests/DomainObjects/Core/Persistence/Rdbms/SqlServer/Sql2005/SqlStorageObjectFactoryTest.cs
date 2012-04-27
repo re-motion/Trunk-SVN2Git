@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -168,16 +167,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateLinqQueryExecutor_CanBeMixed ()
+    public void CreateLinqQueryExecutor_DomainObjectQueryGeneratorCanBeMixed ()
     {
       var classDefintion = ClassDefinitionObjectMother.CreateClassDefinition (typeof (TIOrder), null);
       var methodCallTransformerProvider = MockRepository.GenerateStub<IMethodCallTransformerProvider>();
 
-      using (MixinConfiguration.BuildNew().ForClass (typeof (DomainObjectQueryExecutor)).AddMixin<TestQueryExecutorMixin>().EnterScope())
+      using (MixinConfiguration.BuildNew ().ForClass<DomainObjectQueryGenerator> ().AddMixin<TestQueryGeneratorMixin> ().EnterScope ())
       {
-        var executor = _sqlProviderFactory.CreateLinqQueryExecutor (
+        var executor = (DomainObjectQueryExecutor) _sqlProviderFactory.CreateLinqQueryExecutor (
             classDefintion, methodCallTransformerProvider, ResultOperatorHandlerRegistry.CreateDefault());
-        Assert.That (Mixin.Get<TestQueryExecutorMixin> (executor), Is.Not.Null);
+        var generator = executor.QueryGenerator;
+        Assert.That (Mixin.Get<TestQueryGeneratorMixin> (generator), Is.Not.Null);
       }
     }
 
@@ -195,10 +195,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       {
         var executor = (DomainObjectQueryExecutor) _sqlProviderFactory.CreateLinqQueryExecutor (
             classDefintion, methodCallTransformerProvider, ResultOperatorHandlerRegistry.CreateDefault());
+        var domainObjectQueryGenerator = (DomainObjectQueryGenerator) executor.QueryGenerator;
+        var sqlQueryGenerator = (SqlQueryGenerator) domainObjectQueryGenerator.SqlQueryGenerator;
 
-        Assert.That (Mixin.Get<TestSqlPreparationStageMixin> (executor.PreparationStage), Is.Not.Null);
-        Assert.That (Mixin.Get<TestMappingResolutionStageMixin> (executor.ResolutionStage), Is.Not.Null);
-        Assert.That (Mixin.Get<TestSqlGenerationStageMixin> (executor.GenerationStage), Is.Not.Null);
+        Assert.That (Mixin.Get<TestSqlPreparationStageMixin> (sqlQueryGenerator.PreparationStage), Is.Not.Null);
+        Assert.That (Mixin.Get<TestMappingResolutionStageMixin> (sqlQueryGenerator.ResolutionStage), Is.Not.Null);
+        Assert.That (Mixin.Get<TestSqlGenerationStageMixin> (sqlQueryGenerator.GenerationStage), Is.Not.Null);
       }
     }
   }

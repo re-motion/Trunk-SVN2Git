@@ -536,12 +536,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This query provider does not support the given query ('from OrderItem oi in DomainObjectQueryable<OrderItem> "
-        + "where (([oi].Order.OrderNumber = 1) || ([oi].Order.OrderNumber = 3)) "
-        + "orderby [oi].Order.OrderNumber asc "
-        + "select [oi] => GroupBy([oi].Order, [oi].Product)'). re-store only supports queries selecting a scalar value, a single DomainObject, or a "
-        + "collection of DomainObjects. GroupBy must be executed in memory, for example by issuing AsEnumerable() before performing the grouping "
-        + "operation.")]
+        "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to " 
+        + "efficiently return LINQ groupings.", MatchType = MessageMatch.Contains)]
     public void GroupBy_AtTopLevel ()
     {
       var query = from oi in QueryFactory.CreateLinqQuery<OrderItem> ()

@@ -75,9 +75,9 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTesting\DomainObjects\Linq\ApplyQueryExecutorMixinAttribute.cs" />
+    <Compile Include="UnitTesting\DomainObjects\Linq\ApplyQueryGeneratorMixinAttribute.cs" />
     <Compile Include="UnitTesting\DomainObjects\Linq\ExpressionTreeComparer.cs" />
-    <Compile Include="UnitTesting\DomainObjects\Linq\QueryExecutorMixin.cs" />
+    <Compile Include="UnitTesting\DomainObjects\Linq\QueryGeneratorMixin.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Remotion LGPL.licenseheader">
