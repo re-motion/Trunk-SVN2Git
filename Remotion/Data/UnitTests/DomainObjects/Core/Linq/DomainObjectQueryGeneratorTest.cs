@@ -31,6 +31,8 @@ using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.Clauses.StreamedData;
 using Remotion.Linq.EagerFetching;
 using Remotion.Linq.SqlBackend.SqlGeneration;
+using Remotion.Mixins;
+using Remotion.Reflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -218,6 +220,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       CheckSingleFetchRequest (fetchQuery.Value.EagerFetchQueries, typeof (Ceo), "Company", "INNER FETCH");
     }
 
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "The member 'CtorCalled' is a 'Field', which cannot be fetched by this LINQ provider. Only properties can be fetched.")]
+    public void CreateQuery_WithInvalidFetchRequest_MemberIsNoPropertyInfo ()
+    {
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult ();
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
+
+      var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer o) => o.CtorCalled);
+
+      _generator.CreateQuery ("id", _customerClassDefinition, _customerQueryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Company.Name' is not a relation end point. " 
+        + "Fetching it is not supported by this LINQ provider.")]
+    public void CreateQuery_WithInvalidFetchRequest_MemberIsNoRelationProperty ()
+    {
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult ();
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
+
+      var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer o) => o.Name);
+
+      _generator.CreateQuery ("id", _customerClassDefinition, _customerQueryModel, new[] { fetchQueryModelBuilder }, QueryType.Collection);
+    }
+
+    [Test]
+    public void CreateQuery_FromModel_CanBeMixed ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryGenerator)).AddMixin<TestQueryGeneratorMixin> ().EnterScope ())
+      {
+        var executor = ObjectFactory.Create<DomainObjectQueryGenerator> (
+            ParamList.Create (_sqlQueryGeneratorMock, _typeConversionProvider));
+
+        _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (Arg<QueryModel>.Is.Anything)).Return (CreateSqlQueryGeneratorResult ());
+
+        executor.CreateQuery ("<dynamic query>", _customerClassDefinition, _customerQueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
+        Assert.That (Mixin.Get<TestQueryGeneratorMixin> (executor).CreateQueryFromModelCalled, Is.True);
+      }
+    }
+
+    [Test]
+    public void CreateQuery_FromStatement_CanBeMixed ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass (typeof (DomainObjectQueryGenerator)).AddMixin<TestQueryGeneratorMixin> ().EnterScope ())
+      {
+        var executor = ObjectFactory.Create<DomainObjectQueryGenerator> (
+            ParamList.Create (_sqlQueryGeneratorMock, _typeConversionProvider));
+
+        _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (Arg<QueryModel>.Is.Anything)).Return (CreateSqlQueryGeneratorResult());
+
+        executor.CreateQuery ("<dynamic query>", _customerClassDefinition, _customerQueryModel, new FetchQueryModelBuilder[0], QueryType.Collection);
+        Assert.That (Mixin.Get<TestQueryGeneratorMixin> (executor).CreateQueryFromStatementCalled, Is.True);
+      }
+    }
+
     private SqlQueryGeneratorResult CreateSqlQueryGeneratorResult (
         string commandText = null, 
         CommandParameter[] parameters = null,
@@ -249,7 +308,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private FetchOneRequest CreateFetchOneRequest<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression)
     {
-      var relationMember = MemberInfoFromExpressionUtility.GetProperty (memberExpression);
+      var relationMember = MemberInfoFromExpressionUtility.GetMember (memberExpression);
       return new FetchOneRequest (relationMember);
     }
 

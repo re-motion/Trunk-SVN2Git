@@ -84,10 +84,10 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var fetchQueryModelBuilders = RemoveTrailingFetchRequests (queryModel);
 
-      IQuery query = _queryGenerator.CreateQuery ("<dynamic query>", _startingClassDefinition, queryModel, fetchQueryModelBuilders, QueryType.Scalar);
+      var query = _queryGenerator.CreateQuery ("<dynamic query>", _startingClassDefinition, queryModel, fetchQueryModelBuilders, QueryType.Scalar);
       object scalarValue = ClientTransaction.Current.QueryManager.GetScalar (query);
 
-      if (scalarValue == DBNull.Value)
+      if (scalarValue == null || scalarValue == DBNull.Value)
         return (T) (object) null;
 
       if (scalarValue is T)

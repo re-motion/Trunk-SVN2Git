@@ -198,6 +198,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
+    <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificQueryManager.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\VirtualEndPointStateUpdatedRaisingCommandDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadAllCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerEventListenerTest.cs" />

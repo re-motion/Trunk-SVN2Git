@@ -47,6 +47,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return Create<T> (componentFactory);
     }
 
+    public static T CreateTransactionWithQueryManager<T> (IQueryManager queryManager) where T : ClientTransaction
+    {
+      var componentFactory = new TestComponentFactoryWithSpecificQueryManager (queryManager);
+      return Create<T> (componentFactory);
+    }
+
     public static T CreateTransactionWithObjectLoaderDecorator<T> (TestComponentFactoryWithObjectLoaderDecorator.DecoratorFactory factory) 
         where T : ClientTransaction
     {

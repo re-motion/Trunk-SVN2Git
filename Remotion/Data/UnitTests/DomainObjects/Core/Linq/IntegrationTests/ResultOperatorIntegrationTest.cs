@@ -81,6 +81,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    public void QueryWithFirst_AndInterface ()
+    {
+      var queryResult = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                         orderby o.OrderNumber
+                         select (IOrder) o).First ();
+      Assert.That (queryResult, Is.EqualTo (Order.GetObject (DomainObjectIDs.Order1)));
+    }
+
+    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
     public void QueryWithFirst_Throws_WhenNoItems ()
     {
@@ -442,6 +451,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
         DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);   
+    }
+
+    [Test]
+    public void Max_WithStrings ()
+    {
+      var result = QueryFactory.CreateLinqQuery<Customer> ().Max (c => c.Name);
+
+      Assert.That (result, Is.EqualTo ("Kunde 4"));
+    }
+
+    [Test]
+    public void Max_WithDateTimes ()
+    {
+      var result = QueryFactory.CreateLinqQuery<Order> ().Max (o => o.DeliveryDate);
+
+      Assert.That (result, Is.EqualTo (new DateTime (2006, 3, 1)));
+    }
+
+    [Test]
+    public void Max_WithNullableInt ()
+    {
+      int? result = QueryFactory.CreateLinqQuery<Order> ().Max (o => (int?) o.OrderNumber);
+
+      Assert.That (result, Is.EqualTo (6));
     }
 
     [Test]

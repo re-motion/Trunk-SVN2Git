@@ -189,7 +189,6 @@ namespace Remotion.Data.DomainObjects.Linq
       }
     }
 
-    // TODO Review 2800: Write an integration test similar to the one in the bug report (i.e., with a Cast to an interface). The test should now work.
     private void CheckQueryKind (SqlQueryGeneratorResult.QueryKind actualQueryKind, QueryType expectedQueryType, QueryModel queryModel)
     {
       // check result for DomainObjects unless it's a scalar query

@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType);
     }
 
-    public bool CreateQueryCalled;
+    public bool CreateQueryFromStatementCalled;
     public bool CreateQueryFromModelCalled;
 
     [OverrideTarget]
@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         CommandParameter[] commandParameters,
         QueryType queryType)
     {
-      CreateQueryCalled = true;
+      CreateQueryFromStatementCalled = true;
       return Next.CreateQuery (id, storageProviderDefinition, statement, commandParameters, queryType);
     }
   }
