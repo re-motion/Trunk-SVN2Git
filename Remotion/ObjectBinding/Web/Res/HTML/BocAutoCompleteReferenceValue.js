@@ -48,6 +48,9 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckTypeIsObject('commandInfo', commandInfo);
   ArgumentUtility.CheckNotNullAndTypeIsObject('resources', resources);
 
+  var _itemBackUp = null;
+  BackupItemData ($ (hiddenField).val(), $ (textbox).val());
+
   textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact',
         {
           extraParams: searchContext,
@@ -58,7 +61,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
             inputRegex: new RegExp(searchStringValidationInfo.ValidSearchStringRegex),
             dropDownTriggerRegex: new RegExp(searchStringValidationInfo.ValidSearchStringForDropDownRegex),
             dropDownTriggerRegexFailedMessage: searchStringValidationInfo.SearchStringForDropDownDoesNotMatchRegexMessage,
-            getDropDownSearchString: function (searchString) { return false ? '' : searchString; }
+            getDropDownSearchString: function (searchString) { return false ? GetDropDownSearchStringForValidInput (searchString) : searchString; }
           },
           max: completionSetCount, // Set query limit
 
@@ -130,6 +133,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
     }).updateResult(function (e, item)
     {
       hiddenField.val(item.UniqueIdentifier);
+      BackupItemData (item.UniqueIdentifier, item.DisplayName);
       UpdateCommand(item.UniqueIdentifier);
       hiddenField.trigger('change');
     });
@@ -181,6 +185,21 @@ BocAutoCompleteReferenceValue.Initialize = function (
     textbox.attr ('title', message);
     textbox.addClass ('error');
   };
+
+  function BackupItemData(uniqueIdentifier, displayName)
+  {
+    if (uniqueIdentifier == nullValueString)
+      _itemBackUp = null;
+    else
+      _itemBackUp = { UniqueIdentifier : uniqueIdentifier, DisplayName : displayName };
+  }
+
+  function GetDropDownSearchStringForValidInput(searchString)
+  {
+    if (_itemBackUp != null && searchString.toLowerCase() == _itemBackUp.DisplayName.toLowerCase())
+      return '';
+    return searchString;
+  }
 };
 
 //  Returns the number of rows selected for the specified ReferenceValue
