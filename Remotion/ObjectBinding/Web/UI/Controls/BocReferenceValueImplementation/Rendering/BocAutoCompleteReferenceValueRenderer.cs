@@ -227,6 +227,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       jsonBuilder.Append (", ");
       jsonBuilder.Append ("SearchStringForDropDownDoesNotMatchRegexMessage : ");
       AppendStringValueOrNullToScript (jsonBuilder, searchStringForDropDownDoesNotMatchRegexMessage);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("IgnoreSearchStringForDropDownUponValidInput : ");
+      AppendBooleanValueToScript (jsonBuilder, renderingContext.Control.IgnoreSearchStringForDropDownUponValidInput);
       jsonBuilder.Append (" }");
 
       return jsonBuilder.ToString();

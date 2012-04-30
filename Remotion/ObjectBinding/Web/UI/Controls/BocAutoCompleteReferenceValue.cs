@@ -99,6 +99,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _validSearchStringRegex;
     private string _validSearchStringForDropDownRegex;
     private string _searchStringForDropDownDoesNotMatchRegexMessage;
+    private bool _ignoreSearchStringForDropDownUponValidInput;
     private int _completionSetCount = 10;
     private int _dropDownDisplayDelay = 1000;
     private int _dropDownRefreshDelay = 2000;
@@ -655,6 +656,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return _searchStringForDropDownDoesNotMatchRegexMessage; }
       set { _searchStringForDropDownDoesNotMatchRegexMessage = StringUtility.EmptyToNull (value); }
+    }
+
+    /// <summary>
+    /// If the flag is set and the current input represents a valid value, manually opening the drop-down-list will use an empty search string when retrieving the list of values.
+    /// </summary>
+    [Category ("AutoComplete")]
+    [DefaultValue (false)]
+    [Description ("If the flag is set and the current input represents a valid value, manually opening the drop-down-list will use an empty search string when retrieving the list of values.")]
+    public bool IgnoreSearchStringForDropDownUponValidInput
+    {
+      get { return _ignoreSearchStringForDropDownUponValidInput; }
+      set { _ignoreSearchStringForDropDownUponValidInput = value; }
     }
 
     public override string ValidationValue

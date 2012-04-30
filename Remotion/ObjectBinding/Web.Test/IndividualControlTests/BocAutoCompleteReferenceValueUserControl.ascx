@@ -64,7 +64,7 @@
     <td style="WIDTH: 20%"><asp:label id=ReadOnlyPartnerFieldValueLabel runat="server" enableviewstate="False">#</asp:label></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocAutoCompleteReferenceValue id=UnboundPartnerField runat="server" SearchServicePath="AutoCompleteService.asmx" IconServicePath="IconService.asmx" DataSourceControl="PersonDataSource" required="True" hasvalueembeddedinsideoptionsmenu="False" showoptionsmenu="False"  ValidSearchStringRegex=".{1}">
+    <td><remotion:bocAutoCompleteReferenceValue id=UnboundPartnerField runat="server" SearchServicePath="AutoCompleteService.asmx" IconServicePath="IconService.asmx" DataSourceControl="PersonDataSource" required="True" hasvalueembeddedinsideoptionsmenu="False" showoptionsmenu="False"  ValidSearchStringRegex=".{1}" IgnoreSearchStringForDropDownUponValidInput="True">
 <persistedcommand>
 <remotion:boccommand Type="Event"></remotion:boccommand>
 </PersistedCommand></remotion:bocAutoCompleteReferenceValue></td>
