@@ -315,6 +315,8 @@
                 else $input.trigger("updateResult", result.data);
             }
             $.each(trimWords($input.val()), function(i, value) {
+                if (!options.matchCase)
+                  value = value.toLowerCase();
                 requestData(value, findValueCallback, findValueCallback);
             });
         }).bind("flushCache", function() {
@@ -495,14 +497,16 @@
 
             if (openFromInput || openFromTrigger) {
                 startLoading();
-                currentValue = lastWord(currentValue);
+                var searchString = lastWord(currentValue);
                 if (!options.matchCase)
-                    currentValue = currentValue.toLowerCase();
+                    searchString = searchString.toLowerCase();
+                if (dropDownTriggered)
+                    searchString = options.searchStringValidationParams.getDropDownSearchString(searchString);
 
                 var successHandler = receiveData;
                 var failureHandler = function() { closeDropDownListAndSetValue(previousValidValue); };
 
-                requestData(currentValue, successHandler, failureHandler);
+                requestData(searchString, successHandler, failureHandler);
             } else {
                 stopLoading();
                 select.hide();
@@ -633,9 +637,6 @@
         };
 
         function requestData(term, success, failure) {
-            if (!options.matchCase)
-                term = term.toLowerCase();
-
             // re-motion: cancel an already running request
             abortRequest();
 
@@ -777,7 +778,8 @@
           {
             inputRegex: new RegExp("\\S+"),
             dropDownTriggerRegex: new RegExp("\\S+"),
-            dropDownTriggerRegexFailedMessage: null
+            dropDownTriggerRegexFailedMessage: null,
+            getDropDownSearchString: function (searchString) { return searchString; }
           },
         // re-motion: modified delay concept
         dropDownDisplayDelay: 400,

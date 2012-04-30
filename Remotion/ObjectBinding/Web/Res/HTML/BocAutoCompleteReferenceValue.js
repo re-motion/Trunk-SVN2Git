@@ -57,7 +57,8 @@ BocAutoCompleteReferenceValue.Initialize = function (
           {
             inputRegex: new RegExp(searchStringValidationInfo.ValidSearchStringRegex),
             dropDownTriggerRegex: new RegExp(searchStringValidationInfo.ValidSearchStringForDropDownRegex),
-            dropDownTriggerRegexFailedMessage: searchStringValidationInfo.SearchStringForDropDownDoesNotMatchRegexMessage
+            dropDownTriggerRegexFailedMessage: searchStringValidationInfo.SearchStringForDropDownDoesNotMatchRegexMessage,
+            getDropDownSearchString: function (searchString) { return false ? '' : searchString; }
           },
           max: completionSetCount, // Set query limit
 
