@@ -46,6 +46,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     // member fields
+    private DomainObjectDeleteHandler _deleteHandler;
 
     // construction and disposing
 
@@ -99,6 +100,22 @@ namespace Remotion.SecurityManager.Domain.Metadata
       }
 
       return null;
+    }
+
+    protected override void OnDeleting (EventArgs args)
+    {
+      base.OnDeleting (args);
+
+      //TODO: Rewrite with test
+      _deleteHandler = new DomainObjectDeleteHandler (LocalizedNames);
+    }
+
+    protected override void OnDeleted (EventArgs args)
+    {
+      base.OnDeleted (args);
+
+      //TODO: Rewrite with test
+      _deleteHandler.Delete();
     }
 
     private List<CultureInfo> GetCultureHierachy (CultureInfo cultureInfo)

@@ -80,6 +80,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     }
 
     // member fields
+    private DomainObjectDeleteHandler _deleteHandler;
 
     // construction and disposing
 
@@ -451,6 +452,26 @@ namespace Remotion.SecurityManager.Domain.Metadata
       base.OnCommitting (args);
 
       Touch();
+    }
+
+    protected override void OnDeleting (EventArgs args)
+    {
+      base.OnDeleting (args);
+
+      //TODO: Rewrite with test
+      _deleteHandler = new DomainObjectDeleteHandler (
+          StatefulAccessControlLists,
+          EnumerableUtility.Singleton (StatelessAccessControlList).Where (o => o != null),
+          StatePropertyReferences,
+          AccessTypeReferences);
+    }
+
+    protected override void OnDeleted (EventArgs args)
+    {
+      base.OnDeleted (args);
+
+      //TODO: Rewrite with test
+      _deleteHandler.Delete();
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)

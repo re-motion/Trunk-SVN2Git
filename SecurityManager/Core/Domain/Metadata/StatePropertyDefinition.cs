@@ -46,6 +46,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
       return GetObject<StatePropertyDefinition> (id);
     }
 
+    private DomainObjectDeleteHandler _deleteHandler;
+
     protected StatePropertyDefinition ()
     {
     }
@@ -161,6 +163,17 @@ namespace Remotion.SecurityManager.Domain.Metadata
             string.Format ("State property '{0}' cannot be deleted because it is associated with at least one securable class definition.", Name));
       }
       base.OnDeleting (args);
+
+      //TODO: Rewrite with test
+      _deleteHandler = new DomainObjectDeleteHandler (LocalizedNames);
+    }
+
+    protected override void OnDeleted (EventArgs args)
+    {
+      base.OnDeleted (args);
+
+      //TODO: Rewrite with test
+      _deleteHandler.Delete();
     }
 
     private ArgumentException CreateArgumentException (string argumentName, string format, params object[] args)
