@@ -123,6 +123,9 @@
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering.BocAutoCompleteReferenceValueRenderer.LoadIconFailedErrorMessage" xml:space="preserve">
     <value>Das Symbol für die aktuelle Eingabe konnte nicht geladen werden.</value>
   </data>
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering.BocAutoCompleteReferenceValueRenderer.NoDataFoundMessage" xml:space="preserve">
+    <value>Für die aktuelle Eingabe wurden keine Daten gefunden.</value>
+  </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering.BocAutoCompleteReferenceValueRenderer.SearchStringForDropDownDoesNotMatchRegexMessage" xml:space="preserve">
     <value>Die aktuellen Eingabe entspricht nicht dem vorgegebenen Format.</value>
   </data>

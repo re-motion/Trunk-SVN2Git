@@ -53,6 +53,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       LoadDataFailedErrorMessage,
       /// <summary> The message displayed when the user input does not match the regex required for triggering the drop-down list to open.</summary>
       SearchStringForDropDownDoesNotMatchRegexMessage,
+      /// <summary> The message displayed when the user input does not result in a result.</summary>
+      NoDataFoundMessage,
     }
 
     private readonly Func<TextBox> _textBoxFactory;
@@ -246,6 +248,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       jsonBuilder.Append (", ");
       jsonBuilder.Append ("LoadDataFailedErrorMessage : ");
       AppendStringValueOrNullToScript (jsonBuilder, resourceManager.GetString (ResourceIdentifier.LoadDataFailedErrorMessage));
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("NoDataFoundMessage : ");
+      AppendStringValueOrNullToScript (jsonBuilder, resourceManager.GetString (ResourceIdentifier.NoDataFoundMessage));
       jsonBuilder.Append (" }");
 
       return jsonBuilder.ToString();

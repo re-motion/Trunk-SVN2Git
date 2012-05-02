@@ -72,6 +72,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
           dropDownRefreshDelay: dropDownRefreshDelay,
           selectionUpdateDelay: selectionUpdateDelay,
 
+          noDataFoundMessage: resources.NoDataFoundMessage,
           autoFill: true,
           mustMatch: false, // set true if should clear input on no results
           matchContains: true,

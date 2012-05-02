@@ -503,7 +503,12 @@
                 if (dropDownTriggered)
                     searchString = options.searchStringValidationParams.getDropDownSearchString(searchString);
 
-                var successHandler = receiveData;
+                var successHandler = function (q, data) {
+                    receiveData (q, data);
+                    if (dropDownTriggered && !select.visible() && options.noDataFoundMessage) {
+                        informationPopUp.show (options.noDataFoundMessage);
+                    }
+                };
                 var failureHandler = function() { closeDropDownListAndSetValue(previousValidValue); };
 
                 requestData(searchString, successHandler, failureHandler);
@@ -785,6 +790,7 @@
         dropDownDisplayDelay: 400,
         dropDownRefreshDelay: 400,
         selectionUpdateDelay: 400,
+        noDataFoundMessage: '',
         matchCase: false,
         matchContains: false,
         cacheLength: 10,
