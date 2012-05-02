@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      if (query.QueryType == QueryType.Collection)
+      if (query.QueryType != QueryType.Scalar)
         throw new ArgumentException ("A collection query cannot be used with GetScalar.", "query");
 
       return _persistenceStrategy.ExecuteScalarQuery (query);
@@ -145,7 +145,7 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      if (query.QueryType == QueryType.Scalar)
+      if (query.QueryType != QueryType.Collection)
         throw new ArgumentException ("A scalar query cannot be used with GetCollection.", "query");
 
       var resultArray = _objectLoader
