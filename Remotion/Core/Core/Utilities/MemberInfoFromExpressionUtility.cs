@@ -79,6 +79,18 @@ namespace Remotion.Utilities
       return GetMethodInfoFromMethodCallExpression (expression.Body);
     }
 
+    public static MethodInfo GetBaseDefinition<TSourceObject> (Expression<Action<TSourceObject>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetBaseDefinitionMethodInfoFromMethodCallExpression (expression.Body);
+    }
+
+    public static MethodInfo GetBaseDefinition<TSourceObject, TReturnType> (Expression<Func<TSourceObject, TReturnType>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetBaseDefinitionMethodInfoFromMethodCallExpression (expression.Body);
+    }
+
     public static MethodInfo GetGenericMethodDefinition (Expression<Action> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -154,6 +166,15 @@ namespace Remotion.Utilities
     }
 
     private static MethodInfo GetMethodInfoFromMethodCallExpression (Expression expression)
+    {
+      var method = GetBaseDefinitionMethodInfoFromMethodCallExpression(expression);
+      if (method.IsVirtual)
+        throw new NotSupportedException ("Virtual methods cannot be reliably extracted from expressions.");
+
+      return method;
+    }
+
+    private static MethodInfo GetBaseDefinitionMethodInfoFromMethodCallExpression (Expression expression)
     {
       var methodCallExpression = expression as MethodCallExpression;
       if (methodCallExpression == null)

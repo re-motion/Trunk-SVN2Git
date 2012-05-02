@@ -201,6 +201,38 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Virtual methods cannot be reliably extracted from expressions.")]
+    public void GetMethod_OverridingVoid ()
+    {
+      MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingVoidMethod ());
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Virtual methods cannot be reliably extracted from expressions.")]
+    public void GetMethod_Overriding ()
+    {
+      MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingMethod ());
+    }
+
+    [Test]
+    public void GetBaseDefinition_OverridingVoid ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetBaseDefinition ((DomainType obj) => obj.OverridingVoidMethod ());
+
+      var expected = typeof (DomainTypeBase).GetMethod ("OverridingVoidMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetBaseDefinition_Overriding ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetBaseDefinition ((DomainType obj) => obj.OverridingMethod ());
+
+      var expected = typeof (DomainTypeBase).GetMethod ("OverridingMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must be a MethodCallExpression.\r\nParameter name: expression")]
     public void GetMethod_Instance_NonMethodCallExpression ()
     {
@@ -331,7 +363,13 @@ namespace Remotion.UnitTests.Utilities
       MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.InstanceField);
     }
 
-    public class DomainType
+    public class DomainTypeBase
+    {
+      public virtual void OverridingVoidMethod () { }
+      public virtual int OverridingMethod () { return 0; }
+    }
+
+    public class DomainType : DomainTypeBase
     {
       public static int StaticField;
       public int InstanceField;
@@ -351,12 +389,12 @@ namespace Remotion.UnitTests.Utilities
       public static int StaticGenericMethod<T> (T t) { return 0; }
       public void InstanceVoidGenericMethod<T> (T t) { }
       public int InstanceGenericMethod<T> (T t) { return 0; }
+      public override void OverridingVoidMethod () { }
+      public override int OverridingMethod () { return 0; }
 
       public static int StaticProperty { get; set; }
       public int InstanceProperty { get; set; }
 
-      public static event Action SaticEvent;
-      public event Action InstanceEvent;
     }
   }
 }
