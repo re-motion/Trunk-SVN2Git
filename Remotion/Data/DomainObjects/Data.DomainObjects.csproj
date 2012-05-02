@@ -233,6 +233,7 @@
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
+    <Compile Include="Queries\IQueryResultRow.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\PersistableData.cs" />

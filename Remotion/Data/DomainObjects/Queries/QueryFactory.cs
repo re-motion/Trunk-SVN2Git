@@ -231,7 +231,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </summary>
     /// <param name="id">A string identifying the query.</param>
     /// <param name="storageProviderDefinition">The <see cref="StorageProviderDefinition"/> of the storage provider used to execute the query.</param>
-    /// <param name="statement">The scalar query statement.</param>
+    /// <param name="statement">The collection query statement.</param>
     /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
     /// <param name="collectionType">The collection type to be returned from the query. Pass <see cref="DomainObjectCollection"/> if you don't care
     /// about the collection type. The type passed here is used by <see cref="QueryResult{T}.ToCustomCollection"/>.</param>
@@ -246,6 +246,25 @@ namespace Remotion.Data.DomainObjects.Queries
       ArgumentUtility.CheckNotNull ("collectionType", collectionType);
 
       var definition = new QueryDefinition (id, storageProviderDefinition, statement, QueryType.Collection, collectionType);
+      return new Query (definition, queryParameterCollection);
+    }
+
+    /// <summary>
+    /// Creates a new custom collection query with the given statement, parameters, and metadata.
+    /// Note that creating queries with a hard-coded SQL statement is not very flexible and not portable at all.
+    /// Therefore, the <see cref="CreateLinqQuery{T}()"/> and <see cref="CreateQueryFromConfiguration(string)"/>
+    /// methods should usually be preferred to this method.
+    /// </summary>
+    /// <param name="id">A string identifying the query.</param>
+    /// <param name="storageProviderDefinition">The <see cref="StorageProviderDefinition"/> of the storage provider used to execute the query.</param>
+    /// <param name="statement">The custom query statement.</param>
+    /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
+    /// <param name="collectionType">The collection type to be returned from the query.</param>
+    /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
+    public static IQuery CreateCustomQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement,
+                                           QueryParameterCollection queryParameterCollection, Type collectionType)
+    {
+      var definition = new QueryDefinition (id, storageProviderDefinition, statement, QueryType.Custom, collectionType);
       return new Query (definition, queryParameterCollection);
     }
 

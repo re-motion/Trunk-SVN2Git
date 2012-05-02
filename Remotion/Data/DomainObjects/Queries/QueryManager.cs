@@ -15,8 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 using System.Linq;
@@ -154,6 +156,27 @@ namespace Remotion.Data.DomainObjects.Queries
       var queryResult = new QueryResult<T> (query, resultArray);
       _transactionEventSink.RaiseEvent ((tx, l) => queryResult = l.FilterQueryResult (tx, queryResult));
       return queryResult;
+    }
+
+    /// <summary>
+    /// Executes a given <see cref="IQuery"/> and uses a delegate to convert the results into arbitrary objects. The result sequence may be lazy and 
+    /// streamed, i.e., the query results may be gathered while the sequence is enumerated. The underlying <see cref="StorageProvider" /> may keep 
+    /// resources (such as a database connection) open while the sequence is enumerated, see remarks. 
+    /// </summary>
+    /// <typeparam name="T">The type of values to be returned by the query.</typeparam>
+    /// <param name="query">The query to execute. Must not be <see langword="null"/>.</param>
+    /// <param name="rowReader">A delegate that is used to convert the query result, represented as an <see cref="IQueryResultRow"/>, 
+    /// into the query result type, <typeparamref name="T"/>.</param>
+    /// <returns>A collection containing the objects produced by the <paramref name="rowReader"/>-delegate.</returns>
+    /// <remarks>
+    /// The underlying <see cref="StorageProvider" /> may implement this method in such a way that the query is only executed when the returned 
+    /// <see cref="IEnumerable{T}"/> is enumerated. Resources, such as a database connection or transaction, may be kept open during that 
+    /// enumeration until the <see cref="IEnumerator{T}"/> is disposed. Use "<see cref="Enumerable"/>.ToArray()" or iterate immediately if you require 
+    /// those resources to be freed as quickly as possible.
+    /// </remarks>
+    public IEnumerable<T> GetCustom<T> (IQuery query, Func<IQueryResultRow, T> rowReader)
+    {
+      throw new NotImplementedException("TODO 4731");
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject
