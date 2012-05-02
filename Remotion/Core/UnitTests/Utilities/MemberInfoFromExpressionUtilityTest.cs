@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -201,32 +202,64 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Virtual methods cannot be reliably extracted from expressions.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "Virtual methods cannot be reliably extracted from expressions because compilers often emit virtual calls to the base definitions "
+        + "instead. Use GetMethodBaseDefinition instead.")]
     public void GetMethod_OverridingVoid ()
     {
       MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingVoidMethod ());
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Virtual methods cannot be reliably extracted from expressions.")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+        "Virtual methods cannot be reliably extracted from expressions because compilers often emit virtual calls to the base definitions "
+        + "instead. Use GetMethodBaseDefinition instead.")]
     public void GetMethod_Overriding ()
     {
       MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingMethod ());
     }
 
     [Test]
-    public void GetBaseDefinition_OverridingVoid ()
+    public void GetMethodBaseDefinition_OverridingVoid ()
     {
-      var member = MemberInfoFromExpressionUtility.GetBaseDefinition ((DomainType obj) => obj.OverridingVoidMethod ());
+      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition ((DomainType obj) => obj.OverridingVoidMethod ());
 
       var expected = typeof (DomainTypeBase).GetMethod ("OverridingVoidMethod");
       Assert.That (member, Is.EqualTo (expected));
     }
 
     [Test]
-    public void GetBaseDefinition_Overriding ()
+    public void GetMethodBaseDefinition_OverridingVoid_ReallyTakesBaseDefinition ()
     {
-      var member = MemberInfoFromExpressionUtility.GetBaseDefinition ((DomainType obj) => obj.OverridingMethod ());
+      var parameter = Expression.Parameter (typeof (DomainType), "dt");
+      var derivedMethod = typeof (DomainType).GetMethod ("OverridingVoidMethod");
+      Assert.That (derivedMethod.DeclaringType, Is.SameAs (typeof (DomainType)));
+      var expression = Expression.Lambda<Action<DomainType>> (Expression.Call (parameter, derivedMethod), parameter);
+      
+      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition (expression);
+
+      var expected = typeof (DomainTypeBase).GetMethod ("OverridingVoidMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethodBaseDefinition_Overriding ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition ((DomainType obj) => obj.OverridingMethod ());
+
+      var expected = typeof (DomainTypeBase).GetMethod ("OverridingMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethodBaseDefinition_Overriding_ReallyTakesBaseDefinition ()
+    {
+      var parameter = Expression.Parameter (typeof (DomainType), "dt");
+      var derivedMethod = typeof (DomainType).GetMethod ("OverridingMethod");
+      Assert.That (derivedMethod.DeclaringType, Is.SameAs (typeof (DomainType)));
+      var expression = Expression.Lambda<Func<DomainType, int>> (Expression.Call (parameter, derivedMethod), parameter);
+
+      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition (expression);
 
       var expected = typeof (DomainTypeBase).GetMethod ("OverridingMethod");
       Assert.That (member, Is.EqualTo (expected));
