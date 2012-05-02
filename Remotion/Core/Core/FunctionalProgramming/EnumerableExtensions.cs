@@ -350,19 +350,11 @@ namespace Remotion.FunctionalProgramming
         this IEnumerable<TSource> source, Func<TSource, bool> predicate, Func<TException> createMultipleMatchingElementsException)
         where TException : Exception
     {
-      var element = default (TSource);
-      var isElementFound = false;
-
-      foreach (var item in source.Where (predicate))
-      {
-        if (isElementFound)
-          throw createMultipleMatchingElementsException();
-        isElementFound = true;
-
-        element = item;
-      }
-
-      return element;
+      ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull ("predicate", predicate);
+      ArgumentUtility.CheckNotNull ("createMultipleMatchingElementsException", createMultipleMatchingElementsException);
+      
+      return source.Where (predicate).SingleOrDefault (createMultipleMatchingElementsException);
     }
   }
 }
