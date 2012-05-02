@@ -1434,7 +1434,8 @@
         bottom : bottomPosition,
         left : 'auto',
         right : rightPosition,
-        width: elementWidth
+        width : elementWidth,
+        'max-width' : 'none'
       });
 
       if ($.Autocompleter.getIEVersion() == 8)
