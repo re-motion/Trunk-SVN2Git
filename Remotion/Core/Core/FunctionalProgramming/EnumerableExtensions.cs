@@ -306,5 +306,63 @@ namespace Remotion.FunctionalProgramming
 
       return source.Concat (EnumerableUtility.Singleton (item));
     }
+
+    /// <summary>
+    /// Works like <see cref="Enumerable.SingleOrDefault{TSource}(System.Collections.Generic.IEnumerable{TSource})"/> but throws a custom
+    /// exception if the sequence contains more than one element.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the source.</typeparam>
+    /// <typeparam name="TException">The type of the exception.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="createMultipleElementsException">The exception provider.</param>
+    /// <returns></returns>
+    public static TSource SingleOrDefault<TSource, TException> (this IEnumerable<TSource> source, Func<TException> createMultipleElementsException)
+        where TException : Exception
+    {
+      ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull ("createMultipleElementsException", createMultipleElementsException);
+
+      using (var enumerator = source.GetEnumerator())
+      {
+        if (!enumerator.MoveNext())
+          return default (TSource);
+
+        var element = enumerator.Current;
+        if (enumerator.MoveNext())
+          throw createMultipleElementsException();
+
+        return element;
+      }
+    }
+
+
+    /// <summary>
+    /// Works like <see cref="Enumerable.SingleOrDefault{TSource}(System.Collections.Generic.IEnumerable{TSource},System.Func{TSource,bool})"/>
+    /// but throws a custom exception if the sequence contains more than one matching element.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the source.</typeparam>
+    /// <typeparam name="TException">The type of the exception.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="predicate">The predicate applied to the sequence.</param>
+    /// <param name="createMultipleMatchingElementsException">The exception provider.</param>
+    /// <returns></returns>
+    public static TSource SingleOrDefault<TSource, TException> (
+        this IEnumerable<TSource> source, Func<TSource, bool> predicate, Func<TException> createMultipleMatchingElementsException)
+        where TException : Exception
+    {
+      var element = default (TSource);
+      var isElementFound = false;
+
+      foreach (var item in source.Where (predicate))
+      {
+        if (isElementFound)
+          throw createMultipleMatchingElementsException();
+        isElementFound = true;
+
+        element = item;
+      }
+
+      return element;
+    }
   }
 }

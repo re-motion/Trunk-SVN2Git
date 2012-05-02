@@ -367,5 +367,65 @@ namespace Remotion.UnitTests.FunctionalProgramming
       var result = new[] { "test" }.Concat ((string) null);
       Assert.That (result, Is.EqualTo (new[] { "test", null }));
     }
+
+    [Test]
+    public void SingleOrDefault_CustomException ()
+    {
+      var referenceTypeInput = new[] { "a" };
+      var valuTypeInput = new[] { 1 };
+
+      var referenceTypeResult = referenceTypeInput.SingleOrDefault (() => new Exception());
+      var valueTypeResult = valuTypeInput.SingleOrDefault (() => new Exception());
+
+      Assert.That (referenceTypeResult, Is.EqualTo ("a"));
+      Assert.That (valueTypeResult, Is.EqualTo (1));
+    }
+
+    [Test]
+    public void SingleOrDefault_CustomException_Empty ()
+    {
+      var result = new string[0].SingleOrDefault (() => new Exception ());
+
+      Assert.That (result, Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ApplicationException), ExpectedMessage = "ExpectedText")]
+    public void SingleOrDefault_CustomException_MultipleElements ()
+    {
+      var input = new[] { "a", "b" };
+
+      input.SingleOrDefault (() => new ApplicationException ("ExpectedText"));
+    }
+
+    [Test]
+    public void SingleOrDefault_WithPredicate_CustomException ()
+    {
+      var input = new[] { 1, 2 };
+
+      var result = input.SingleOrDefault (x => x == 2, () => new Exception ());
+
+      Assert.That (result, Is.EqualTo (2));
+    }
+
+    [Test]
+    public void SingleOrDefault_WithPredicate_CustomException_Empty ()
+    {
+      var input = new[] { 1, 2 };
+
+      var result = input.SingleOrDefault (x => false, () => new Exception ());
+
+      Assert.That (result, Is.EqualTo(0));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ApplicationException), ExpectedMessage = "ExpectedText")]
+    public void SingleOrDefault_WithPredicate_CustomException_MultipleElements ()
+    {
+      var input = new[] { 2, 1, 2 };
+
+      input.SingleOrDefault (x => x == 2, () => new ApplicationException ("ExpectedText"));
+    }
+
   }
 }
