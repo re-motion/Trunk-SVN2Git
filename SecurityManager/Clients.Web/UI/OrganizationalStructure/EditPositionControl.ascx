@@ -30,7 +30,6 @@
     <td>
       <remotion:BocTextValue ID="NameField" runat="server" DataSourceControl="CurrentObject"
         PropertyIdentifier="Name">
-        <TextBoxStyle MaxLength="100" />
       </remotion:BocTextValue>
     </td>
   </tr>

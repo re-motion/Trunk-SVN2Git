@@ -37,7 +37,6 @@
     <td>
       <remotion:BocTextValue ID="TitleField" runat="server" DataSourceControl="CurrentObject"
         PropertyIdentifier="Title">
-        <TextBoxStyle MaxLength="100" />
       </remotion:BocTextValue>
     </td>
   </tr>
@@ -46,7 +45,6 @@
     <td>
       <remotion:BocTextValue ID="FirstNameField" runat="server" DataSourceControl="CurrentObject"
         PropertyIdentifier="FirstName">
-        <TextBoxStyle MaxLength="100" />
       </remotion:BocTextValue>
     </td>
   </tr>
@@ -55,7 +53,6 @@
     <td>
       <remotion:BocTextValue ID="LastNameField" runat="server" DataSourceControl="CurrentObject"
         PropertyIdentifier="LastName">
-        <TextBoxStyle MaxLength="100" />
       </remotion:BocTextValue>
     </td>
   </tr>
