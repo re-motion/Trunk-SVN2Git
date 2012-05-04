@@ -240,10 +240,13 @@
             };
 
             if (event.type == 'keyup') {
-              var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER
-                && event.keyCode != KEY.BACKSPACE
-                  && event.keyCode != KEY.DEL
-                    && event.keyCode != KEY.SPACE;
+              var isControlKey = 
+                       event.altKey 
+                    || event.ctrlKey
+                    || event.keyCode < KEY.FIRSTTEXTCHARACTER
+                    || event.keyCode == KEY.BACKSPACE
+                    || event.keyCode == KEY.DEL
+                    || event.keyCode == KEY.SPACE;
                 var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
                 if (!isControlKey && !isValueSeparatorKey) {
                     handleInput();
