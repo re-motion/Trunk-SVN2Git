@@ -254,6 +254,13 @@ div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody,
 div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody,
 div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
 {
+  height: 1.15em;
+}
+
+body.webkit div.tabbedMultiViewTabStrip span.tabStripTab span.anchorBody,
+body.webkit div.tabbedMultiViewTabStrip span.tabStripTabSelected span.anchorBody,
+body.webkit div.tabbedMultiViewTabStrip span.tabStripTabSeparator span
+{
   height: 1.2em;
 }
 
