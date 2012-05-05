@@ -495,6 +495,7 @@
     <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownButtonFace.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownButtonFaceDisabled.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueDropDownButtonFaceHover.gif" />
+    <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueErrorIndicator.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\AutoCompleteReferenceValueRequestInProgressIndicator.gif" />
     <Content Include="Res\Themes\ClassicBlue\Image\ReferenceValueErrorIndicator.gif" />
     <Content Include="Res\Themes\NovaBlue\Html\BocAutoCompleteReferenceValue.css" />
@@ -524,6 +525,7 @@
     <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueDropDownButtonFace.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueDropDownButtonFaceDisabled.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueDropDownButtonFaceHover.gif" />
+    <Content Include="Res\Themes\NovaBlue\Image\AutoCompleteReferenceValueErrorIndicator.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxTrue.gif" />
