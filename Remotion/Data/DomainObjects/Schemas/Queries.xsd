@@ -38,6 +38,7 @@
         <xs:restriction base="xs:string">
           <xs:enumeration value="collection" />
           <xs:enumeration value="scalar" />
+          <xs:enumeration value="custom" />
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
