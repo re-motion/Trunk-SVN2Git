@@ -100,12 +100,12 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="query">The query to execute. Must not be <see langword="null"/>.</param>
     /// <param name="rowReader">A delegate that is used to convert the query result, represented as an <see cref="IQueryResultRow"/>, 
     /// into the query result type, <typeparamref name="T"/>.</param>
-    /// <returns>A collection containing the objects produced by the <paramref name="rowReader"/>-delegate.</returns>
+    /// <returns>A collection containing the objects produced by the <paramref name="rowReader"/> delegate.</returns>
     /// <remarks>
     /// The underlying <see cref="StorageProvider" /> may implement this method in such a way that the query is only executed when the returned 
     /// <see cref="IEnumerable{T}"/> is enumerated. Resources, such as a database connection or transaction, may be kept open during that 
-    /// enumeration until the <see cref="IEnumerator{T}"/> is disposed. Use "<see cref="Enumerable"/>.ToArray()" or iterate immediately if you require 
-    /// those resources to be freed as quickly as possible.
+    /// enumeration until the <see cref="IEnumerator{T}"/> is disposed. Use "<see cref="Enumerable.ToArray{TSource}"/> or iterate immediately if you 
+    /// require those resources to be freed as quickly as possible.
     /// </remarks>
     IEnumerable<T> GetCustom<T> (IQuery query, Func<IQueryResultRow, T> rowReader);
   }
