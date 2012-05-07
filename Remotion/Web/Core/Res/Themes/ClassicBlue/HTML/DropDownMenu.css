@@ -89,6 +89,7 @@ span.DropDownMenuSelect a.DropDownMenuButton
   margin-right: 0;
   background-position: center center;
   background-repeat: no-repeat;
+  background-image: url('../Image/DropDownMenuArrow.gif');
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton:first-child
@@ -101,12 +102,13 @@ span.DropDownMenuSelect.disabled a.DropDownMenuButton
 {
   cursor: default;
   background-color: #E8E8E8;
+  background-image: url('../Image/DropDownMenuArrow_disabled.gif');
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton img
 {
-  height: 12pt;
-  width: 16px;
+  height: 100%;
+  width: 15px;
 }
 
 span.DropDownMenuSelect img

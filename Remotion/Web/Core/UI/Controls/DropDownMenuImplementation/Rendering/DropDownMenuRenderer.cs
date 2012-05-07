@@ -29,8 +29,6 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
   public class DropDownMenuRenderer : RendererBase<IDropDownMenu>, IDropDownMenuRenderer
   {
     private const string c_whiteSpace = "&nbsp;";
-    private const string c_dropDownIcon = "DropDownMenuArrow.gif";
-    private const string c_dropDownIconDisabled = "DropDownMenuArrow_disabled.gif";
 
     public DropDownMenuRenderer (IResourceUrlFactory resourceUrlFactory)
       : base (resourceUrlFactory)
@@ -136,10 +134,6 @@ namespace Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering
       if (HasCustomTitle (renderingContext) && HasTitleText (renderingContext))
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Title, renderingContext.Control.TitleText);
 
-      var imageUrl = ResourceUrlFactory.CreateThemedResourceUrl (
-          typeof (DropDownMenuRenderer), ResourceType.Image, renderingContext.Control.Enabled ? c_dropDownIcon : c_dropDownIconDisabled);
-
-      renderingContext.Writer.AddStyleAttribute (HtmlTextWriterStyle.BackgroundImage, string.Format ("url({0})", imageUrl.GetUrl()));
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A);
 
       IconInfo.Spacer.Render (renderingContext.Writer, renderingContext.Control);
