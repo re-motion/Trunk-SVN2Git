@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         .Where (n => !_neverThrowingMethods.Contains (n.Name))
         .Where (n => !_methodsExpectingReadOnly.Contains (n.Name)).ToList();
 
-      Assert.That (result.Count (), Is.EqualTo (24));
+      Assert.That (result.Count (), Is.EqualTo (25));
       
       foreach (var method in result)
       {
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         .Where (n => !_neverThrowingMethods.Contains (n.Name))
         .Where (n => !_methodsExpectingReadOnly.Contains (n.Name));
       
-      Assert.That (result.Count (), Is.EqualTo (24));
+      Assert.That (result.Count (), Is.EqualTo (25));
 
       foreach (var method in result)
       {
@@ -131,6 +131,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       try
       {
+        if (method.ContainsGenericParameters)
+          method = method.MakeGenericMethod (typeof (object));
+
         method.Invoke (_listener, arguments);
       }
       catch (Exception ex)
@@ -142,6 +145,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private void ExpectNoException (MethodInfo method, object[] arguments)
     {
+      if (method.ContainsGenericParameters)
+        method = method.MakeGenericMethod (typeof (object));
       method.Invoke (_listener, arguments);
     }
 

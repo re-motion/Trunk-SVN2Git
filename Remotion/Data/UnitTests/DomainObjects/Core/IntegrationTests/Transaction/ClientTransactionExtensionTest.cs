@@ -1212,6 +1212,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Ignore ("TODO 4731: adapt and enable")]
+    public void FilterCustomQueryResult ()
+    {
+      IQuery query = QueryFactory.CreateQueryFromConfiguration ("OrderQuery");
+      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
+
+      using (_newTransaction.EnterNonDiscardingScope ())
+      {
+        ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, (rr) => new object ());
+      }
+
+      _mockRepository.BackToRecord (_extensionMock);
+
+      var newQueryResult = new[] { new object() };
+      _extensionMock
+          .Expect (
+          mock => mock.FilterCustomQueryResult (Arg.Is (_newTransaction), Arg.Is(query), newQueryResult))
+          .Return (newQueryResult);
+
+      _mockRepository.ReplayAll ();
+
+      using (_newTransaction.EnterNonDiscardingScope ())
+      {
+        var finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, (rr) => new object());
+        Assert.That (finalResult, NUnit.Framework.Is.SameAs (newQueryResult));
+      }
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
     public void CommitWithChangedPropertyValue ()
     {
       Computer computer;

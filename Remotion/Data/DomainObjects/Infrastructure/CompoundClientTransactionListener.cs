@@ -185,6 +185,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return _listeners.Aggregate (queryResult, (current, listener) => listener.FilterQueryResult (clientTransaction, current));
     }
 
+    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
+    {
+      return _listeners.Aggregate (results, (current, listener) => listener.FilterCustomQueryResult (clientTransaction, query, current));
+    }
+
     public virtual void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       foreach (var listener in _listeners)

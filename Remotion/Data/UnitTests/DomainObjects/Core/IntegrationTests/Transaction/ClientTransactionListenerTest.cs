@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -353,6 +354,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _mockRepository.ReplayAll ();
 
       var result = TestableClientTransaction.QueryManager.GetCollection (query);
+      Assert.That (result, Is.SameAs (newQueryResult));
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [Ignore ("TODO 4731: Adapt + Enable")]
+    public void FilterCUstomQueryResult ()
+    {
+      var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
+      
+      TestableClientTransaction.AddListener (_strictListenerMock);
+
+      var newQueryResult = new[] {new object(), new object() };
+      _strictListenerMock
+          .Expect (mock => mock.FilterCustomQueryResult (
+              Arg.Is (TestableClientTransaction),
+              Arg.Is (query),
+              Arg<IEnumerable<object>>.Is.Anything))
+          .Return (newQueryResult);
+
+      _mockRepository.ReplayAll ();
+
+      var result = TestableClientTransaction.QueryManager.GetCustom (query, (rr) => new object());
       Assert.That (result, Is.SameAs (newQueryResult));
 
       _mockRepository.VerifyAll ();

@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var listener = new InvalidatedTransactionListener();
       MethodInfo[] methods =
           typeof (InvalidatedTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-      Assert.AreEqual (36, methods.Length);
+      Assert.AreEqual (37, methods.Length);
 
       foreach (var method in methods)
       {
@@ -67,6 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       try
       {
+        if (method.ContainsGenericParameters)
+          method = method.MakeGenericMethod (typeof (object));
         method.Invoke (listener, arguments);
         Assert.Fail (BuildErrorMessage (expectedExceptionType, method, arguments, "the call succeeded."));
       }

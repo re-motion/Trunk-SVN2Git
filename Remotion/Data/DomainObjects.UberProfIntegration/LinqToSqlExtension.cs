@@ -120,6 +120,11 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       return queryResult;
     }
 
+    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
+    {
+      return results;
+    }
+
     public void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }

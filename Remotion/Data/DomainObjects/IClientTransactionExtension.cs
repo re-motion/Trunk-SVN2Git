@@ -440,6 +440,23 @@ namespace Remotion.Data.DomainObjects
     QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject;
 
     /// <summary>
+    /// Invoked after a custom query was executed by <see cref="QueryManager.GetCustom{T}"/>.
+    /// The <see cref="IClientTransactionExtension"/> may change the result at this point.
+    /// </summary>
+    /// <typeparam name="T">The object type in the result collection.</typeparam>
+    /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
+    /// <param name="query">The query executed query.</param>
+    /// <param name="results">The object collection returned by the query</param>
+    /// <returns>
+    /// The value of the parameter <paramref name="results"/> if the result should not be changed, or a different instance of 
+    /// <see cref="IEnumerable{T}"/> if the result should be changed.
+    /// </returns>
+    /// <remarks>
+    /// <note type="inotes">The implementation of this method must not throw an exception.</note>
+    /// </remarks>
+    IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results);
+
+    /// <summary>
     /// Invoked before a <see cref="ClientTransaction"/> is committed.
     /// The operation may be cancelled at this point.
     /// </summary>

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -187,6 +188,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var querResult = new QueryResult<DomainObject> (MockRepository.GenerateStub<IQuery>(), new DomainObject[0]);
       Assert.That (_listener.FilterQueryResult (TestableClientTransaction, querResult), Is.SameAs (querResult));
+    }
+
+    [Test]
+    public void FilterCustomQueryResult ()
+    {
+      var querResult = new List<object>();  
+      Assert.That (_listener.FilterCustomQueryResult (TestableClientTransaction, MockRepository.GenerateStub<IQuery>(), querResult), Is.SameAs (querResult));
     }
 
     [Test]

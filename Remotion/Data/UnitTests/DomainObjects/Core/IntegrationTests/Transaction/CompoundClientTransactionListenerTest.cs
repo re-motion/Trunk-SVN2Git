@@ -196,6 +196,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (finalResult, Is.SameAs (newResult2));
     }
 
+    [Test]
+    public void FilterCustomQueryResult ()
+    {
+      _compoundListener.AddListener (_listener1);
+      _compoundListener.AddListener (_listener2);
+
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+
+      var listenerMock1 = MockRepository.GenerateMock<IClientTransactionListener> ();
+      var listenerMock2 = MockRepository.GenerateMock<IClientTransactionListener> ();
+
+      var compoundListener = new CompoundClientTransactionListener ();
+      compoundListener.AddListener (listenerMock1);
+      compoundListener.AddListener (listenerMock2);
+
+      var object1 = new object();
+      var object2 = new object();
+      var originalResult = new object[0];
+      var newResult1 = new[] { object1 };
+      var newResult2 = new[] { object2 };
+
+      listenerMock1.Expect (mock => mock.FilterCustomQueryResult (TestableClientTransaction, queryStub, originalResult)).Return (newResult1);
+      listenerMock2.Expect (mock => mock.FilterCustomQueryResult (TestableClientTransaction, queryStub, newResult1)).Return (newResult2);
+
+      var finalResult = compoundListener.FilterCustomQueryResult (TestableClientTransaction, queryStub, originalResult);
+      Assert.That (finalResult, Is.SameAs (newResult2));
+    }
+
     private void CheckNotification (Action<IClientTransactionListener> notificationCall)
     {
       using (_mockRepository.Ordered ())
