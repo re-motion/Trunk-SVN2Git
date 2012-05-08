@@ -176,7 +176,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// </remarks>
     public IEnumerable<T> GetCustom<T> (IQuery query, Func<IQueryResultRow, T> rowReader)
     {
-      throw new NotImplementedException("TODO 4731");
+      throw new NotImplementedException("TODO 4752");
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject

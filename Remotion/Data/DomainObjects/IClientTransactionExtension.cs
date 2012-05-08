@@ -445,14 +445,24 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <typeparam name="T">The object type in the result collection.</typeparam>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="query">The query executed query.</param>
-    /// <param name="results">The object collection returned by the query</param>
+    /// <param name="query">The executed query.</param>
+    /// <param name="results">The object sequence returned by the query. Note that the sequence may be lazy, so if the extension inspects the results,
+    /// it may actually trigger the query execution. The extension must avoid iterating the sequence more than once; otherwise, the query might
+    /// be executed multiple times.</param>
     /// <returns>
     /// The value of the parameter <paramref name="results"/> if the result should not be changed, or a different instance of 
     /// <see cref="IEnumerable{T}"/> if the result should be changed.
     /// </returns>
     /// <remarks>
+    /// <para>
     /// <note type="inotes">The implementation of this method must not throw an exception.</note>
+    /// </para>
+    /// <para>
+    /// The <paramref name="results"/> sequence might be lazy; therefore it is recommended to also implement the 
+    /// <see cref="FilterCustomQueryResult{T}"/> to return a lazy sequence (e.g., via "yield return", or via lazy LINQ methods).
+    /// If the extension needs to iterate the <paramref name="results"/> sequence, it should not return the same sequence again; otherwise, 
+    /// the query might be executed twice.
+    /// </para>
     /// </remarks>
     IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results);
 

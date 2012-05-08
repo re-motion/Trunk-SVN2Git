@@ -45,7 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       foreach (var method in methods)
       {
-        var concreteMethod = method.Name == "FilterQueryResult" ? method.MakeGenericMethod (typeof (Order)) : method;
+        var concreteMethod = 
+            method.Name == "FilterQueryResult" || method.Name == "FilterCustomQueryResult" 
+            ? method.MakeGenericMethod (typeof (Order)) 
+            : method;
 
         object[] arguments = Array.ConvertAll (concreteMethod.GetParameters(), p => GetDefaultValue (p.ParameterType));
 
@@ -67,8 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       try
       {
-        if (method.ContainsGenericParameters)
-          method = method.MakeGenericMethod (typeof (object));
         method.Invoke (listener, arguments);
         Assert.Fail (BuildErrorMessage (expectedExceptionType, method, arguments, "the call succeeded."));
       }

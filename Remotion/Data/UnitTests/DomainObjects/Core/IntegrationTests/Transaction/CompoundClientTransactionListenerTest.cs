@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -185,14 +184,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       compoundListener.AddListener (listenerMock1);
       compoundListener.AddListener (listenerMock2);
 
-      var originalResult = new QueryResult<Order> (QueryFactory.CreateQuery(TestQueryFactory.CreateOrderQueryWithCustomCollectionType()), new Order[0]);
-      var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1)});
-      var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2)});
+      var queryStub = MockRepository.GenerateStub<IQuery>();
+      var originalResult = new QueryResult<Order> (queryStub, new Order[0]);
+      var newResult1 = new QueryResult<Order> (queryStub, new[] { Order.GetObject (DomainObjectIDs.Order1)});
+      var newResult2 = new QueryResult<Order> (queryStub, new[] { Order.GetObject (DomainObjectIDs.Order2)});
 
       listenerMock1.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, originalResult)).Return (newResult1);
       listenerMock2.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, newResult1)).Return (newResult2);
 
       var finalResult = compoundListener.FilterQueryResult (TestableClientTransaction, originalResult);
+
       Assert.That (finalResult, Is.SameAs (newResult2));
     }
 
@@ -211,16 +212,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       compoundListener.AddListener (listenerMock1);
       compoundListener.AddListener (listenerMock2);
 
-      var object1 = new object();
-      var object2 = new object();
       var originalResult = new object[0];
-      var newResult1 = new[] { object1 };
-      var newResult2 = new[] { object2 };
+      var newResult1 = new[] { new object() };
+      var newResult2 = new[] { new object() };
 
       listenerMock1.Expect (mock => mock.FilterCustomQueryResult (TestableClientTransaction, queryStub, originalResult)).Return (newResult1);
       listenerMock2.Expect (mock => mock.FilterCustomQueryResult (TestableClientTransaction, queryStub, newResult1)).Return (newResult2);
 
       var finalResult = compoundListener.FilterCustomQueryResult (TestableClientTransaction, queryStub, originalResult);
+
       Assert.That (finalResult, Is.SameAs (newResult2));
     }
 

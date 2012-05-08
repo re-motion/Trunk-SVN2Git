@@ -360,10 +360,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4731: Adapt + Enable")]
-    public void FilterCUstomQueryResult ()
+    [Ignore ("TODO 4752: Adapt + Enable")]
+    public void FilterCustomQueryResult ()
     {
-      var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery");
+      var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
       
       TestableClientTransaction.AddListener (_strictListenerMock);
 
@@ -372,12 +372,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           .Expect (mock => mock.FilterCustomQueryResult (
               Arg.Is (TestableClientTransaction),
               Arg.Is (query),
-              Arg<IEnumerable<object>>.Is.Anything))
+              Arg<IEnumerable<object>>.List.Equal (new[] { "expectedItem1", "expectedItem2" })))
           .Return (newQueryResult);
 
       _mockRepository.ReplayAll ();
 
-      var result = TestableClientTransaction.QueryManager.GetCustom (query, (rr) => new object());
+      var result = TestableClientTransaction.QueryManager.GetCustom (query, rr => rr.GetRawValue (0));
       Assert.That (result, Is.SameAs (newQueryResult));
 
       _mockRepository.VerifyAll ();

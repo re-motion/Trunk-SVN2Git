@@ -281,13 +281,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (s_log.IsDebugEnabled)
       {
         s_log.DebugFormat (
-            "{0} FilterQueryResult: {1}: {2} ({3})",
+            "{0} FilterQueryResult: {1} ({2}): {3}",
             clientTransaction.ID,
             queryResult.Query.ID,
-            GetDomainObjectsString (queryResult.AsEnumerable().Cast<DomainObject>()),
-            queryResult.Query.Statement);
+            queryResult.Query.Statement,
+            GetDomainObjectsString (queryResult.AsEnumerable().Cast<DomainObject>()));
       }
       return queryResult;
+    }
+
+    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
+    {
+      if (s_log.IsDebugEnabled)
+      {
+        s_log.DebugFormat (
+            "{0} FilterCustomQueryResult: {1} ({2}): lazy results of custom query cannot be logged",
+            clientTransaction.ID,
+            query.ID,
+            query.Statement);
+      }
+      return results;
     }
 
     public void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
@@ -374,20 +387,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} VirtualRelationEndPointStateUpdated: {1} {2}", clientTransaction.ID, endPointID, newEndPointChangeState);
     }
 
-    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
-    {
-      if (s_log.IsDebugEnabled)
-      {
-        s_log.DebugFormat (
-            "{0} FilterCustomQueryResult: {1}: {2} ({3})",
-            clientTransaction.ID,
-            query.ID,
-            GetCustomObjectsString (results),
-            query.Statement);
-      }
-      return results;
-    }
-
     private string GetObjectIDString (IEnumerable<ObjectID> objectIDs)
     {
       return SeparatedStringBuilder.Build (", ", ConvertToStringAndCount (objectIDs, 10, GetObjectIDString));
@@ -401,11 +400,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private string GetDomainObjectsString (IEnumerable<DomainObject> domainObjects)
     {
       return SeparatedStringBuilder.Build (", ", ConvertToStringAndCount (domainObjects, 10, GetDomainObjectString));
-    }
-
-    private string GetCustomObjectsString<T> (IEnumerable<T> objects)
-    {
-      return SeparatedStringBuilder.Build (", ", objects);
     }
 
     private string GetDomainObjectString (DomainObject domainObject)

@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -82,7 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void TrahsactionCommitEvents_Delegated ()
+    public void TransactionCommitEvents_Delegated ()
     {
       var domainObjects = Array.AsReadOnly (new DomainObject[0]);
       var persistableData = Array.AsReadOnly (new PersistableData[0]);
@@ -90,6 +91,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       ExpectDelegation (l => l.TransactionCommitting (_clientTransaction, domainObjects), e => e.Committing (_clientTransaction, domainObjects));
       ExpectDelegation (l => l.TransactionCommitValidate (_clientTransaction, persistableData), e => e.CommitValidate (_clientTransaction, persistableData));
       ExpectDelegation (l => l.TransactionCommitted (_clientTransaction, domainObjects), e => e.Committed (_clientTransaction, domainObjects));
+    }
+
+    [Test]
+    public void FilterQueryResultEvents_Delegated ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery>();
+      var queryResult = new QueryResult<Order> (queryStub, new Order[0]);
+      var fakeQueryResult = new QueryResult<Order> (queryStub, new[] { DomainObjectMother.CreateFakeObject<Order>() });
+      ExpectDelegation (l => l.FilterQueryResult (_clientTransaction, queryResult), e => e.FilterQueryResult (_clientTransaction, queryResult), fakeQueryResult);
+
+      var customResult = new[] { new object() };
+      var fakeCustomResult = new[] { new object (), new object() };
+      ExpectDelegation (
+          l => l.FilterCustomQueryResult (_clientTransaction, queryStub, customResult),
+          e => e.FilterCustomQueryResult (_clientTransaction, queryStub, customResult),
+          fakeCustomResult);
     }
 
     private void ExpectDelegation (Action<IClientTransactionListener> listenerAction, Action<IClientTransactionExtension> expectedExtensionAction)
@@ -100,6 +117,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       listenerAction (_listener);
 
       _extensionMock.VerifyAllExpectations();
+    }
+
+    private void ExpectDelegation<TR> (
+        Function<IClientTransactionListener, TR> listenerFunc, Function<IClientTransactionExtension, TR> expectedExtensionFunc, TR fakeResult)
+    {
+      _extensionMock.Expect (expectedExtensionFunc).Return (fakeResult);
+      _extensionMock.Replay ();
+
+      var result = listenerFunc (_listener);
+
+      _extensionMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
   }
 }

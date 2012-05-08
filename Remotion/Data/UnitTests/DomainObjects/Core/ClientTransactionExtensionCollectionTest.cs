@@ -19,7 +19,6 @@ using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -573,15 +572,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void FilterQueryResult ()
     {
-      var originalResult = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new Order[0]);
-      var newResult1 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order1) });
-      var newResult2 = new QueryResult<Order> (QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ()), new[] { Order.GetObject (DomainObjectIDs.Order2) });
+      var queryStub = QueryFactory.CreateQuery (TestQueryFactory.CreateOrderQueryWithCustomCollectionType ());
+
+      var originalResult = new QueryResult<Order> (queryStub, new Order[0]);
+      var newResult1 = new QueryResult<Order> (queryStub, new[] { Order.GetObject (DomainObjectIDs.Order1) });
+      var newResult2 = new QueryResult<Order> (queryStub, new[] { Order.GetObject (DomainObjectIDs.Order2) });
 
       _extension1.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, originalResult)).Return (newResult1);
       _extension2.Expect (mock => mock.FilterQueryResult (TestableClientTransaction, newResult1)).Return (newResult2);
-
-      _extension1.Replay ();
-      _extension2.Replay ();
 
       var finalResult = _collectionWithExtensions.FilterQueryResult (TestableClientTransaction, originalResult);
       Assert.That (finalResult, Is.SameAs (newResult2));
@@ -601,9 +599,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _extension1.Expect (mock => mock.FilterCustomQueryResult (TestableClientTransaction, queryStub, originalResult)).Return (newResult1);
       _extension2.Expect (mock => mock.FilterCustomQueryResult (TestableClientTransaction, queryStub, newResult1)).Return (newResult2);
-
-      _extension1.Replay ();
-      _extension2.Replay ();
 
       var finalResult = _collectionWithExtensions.FilterCustomQueryResult (TestableClientTransaction, queryStub, originalResult);
       Assert.That (finalResult, Is.SameAs (newResult2));

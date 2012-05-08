@@ -117,6 +117,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return queryResult;
     }
 
+    public virtual IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
+    {
+      return results;
+    }
+
     public virtual void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
     }
@@ -171,11 +176,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
-    }
-
-    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
-    {
-      return results;
     }
 
     public virtual bool IsNull

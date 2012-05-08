@@ -29,6 +29,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
@@ -304,6 +305,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
               _domainObject2.ID,
               _domainObject3.ID,
               _domainObject.ID));
+    }
+
+    [Test]
+    public void FilterQueryResult ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery>();
+      queryStub.Stub (stub => stub.ID).Return ("a_query");
+      queryStub.Stub (stub => stub.Statement).Return ("SELECT SMTH");
+
+      var queryResult = new QueryResult<Order> (queryStub, new[] { DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1) });
+      CheckLoggingMethod (
+          () => _listener.FilterQueryResult (_clientTransaction, queryResult),
+          string.Format ("{0} FilterQueryResult: a_query (SELECT SMTH): Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid", _clientTransaction.ID));
+    }
+
+    [Test]
+    public void FilterCustomQueryResult ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.ID).Return ("a_query");
+      queryStub.Stub (stub => stub.Statement).Return ("SELECT SMTH");
+
+      var results = new[] { "item" };
+      CheckLoggingMethod (
+          () => _listener.FilterCustomQueryResult (_clientTransaction, queryStub, results),
+          string.Format ("{0} FilterCustomQueryResult: a_query (SELECT SMTH): lazy results of custom query cannot be logged", _clientTransaction.ID));
     }
 
     [Test]

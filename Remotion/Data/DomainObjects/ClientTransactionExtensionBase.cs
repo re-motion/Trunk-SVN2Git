@@ -161,7 +161,7 @@ namespace Remotion.Data.DomainObjects
       return queryResult;
     }
 
-    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
+    public virtual IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
     {
       return results;
     }
