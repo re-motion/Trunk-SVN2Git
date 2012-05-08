@@ -232,6 +232,7 @@
     <Compile Include="Linq\SqlQueryGeneratorResult.cs" />
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
+    <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRow.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
     <Compile Include="Queries\IQueryResultRow.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />

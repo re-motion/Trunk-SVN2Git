@@ -204,6 +204,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\LinqQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\QueryTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\ScalarQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\QueryResultRowTest.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificQueryManager.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\VirtualEndPointStateUpdatedRaisingCommandDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadAllCommandTest.cs" />
