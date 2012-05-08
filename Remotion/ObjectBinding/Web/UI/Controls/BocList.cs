@@ -4071,7 +4071,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                  : "function(){{}}";
     }
 
-    private string GetSelectionCountScript ()
+    protected string GetSelectionCountScript ()
     {
       return "function() { return BocList_GetSelectionCount ('" + ClientID + "'); }";
     }
