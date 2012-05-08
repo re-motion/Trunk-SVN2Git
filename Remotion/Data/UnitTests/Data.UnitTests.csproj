@@ -198,6 +198,12 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CollectionQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CustomQueryDatabaseBehaviorTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CustomQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Queries\LinqQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Queries\QueryTestBase.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Queries\ScalarQueryTest.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificQueryManager.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\VirtualEndPointStateUpdatedRaisingCommandDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadAllCommandTest.cs" />
@@ -1212,7 +1218,6 @@
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StubStorageGroup1Attribute.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\ConstructionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\MixedDomainTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\QueryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\ClassWithExplicitInterfaceProperty.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\ClassWithWrongConstructor.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\DOOverridingVirtualStorageClassNoneProperties.cs" />

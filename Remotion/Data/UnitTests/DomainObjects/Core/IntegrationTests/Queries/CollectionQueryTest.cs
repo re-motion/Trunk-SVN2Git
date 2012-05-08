@@ -18,7 +18,6 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
@@ -26,27 +25,18 @@ using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
 {
   [TestFixture]
-  public class QueryTest : ClientTransactionBaseTest
+  public class CollectionQueryTest : QueryTestBase
   {
-    private IQueryManager _queryManager;
-
-    public override void SetUp ()
-    {
-      base.SetUp ();
-
-      _queryManager = TestableClientTransaction.QueryManager;
-    }
-
     [Test]
     public void GetCollectionWithExistingObjects ()
     {
       var computer2 = Computer.GetObject (DomainObjectIDs.Computer2);
       var computer1 = Computer.GetObject (DomainObjectIDs.Computer1);
 
-      IQueryManager queryManager = _queryManager;
+      IQueryManager queryManager = QueryManager;
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
           "SELECT [Computer].* FROM [Computer] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
@@ -57,58 +47,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       query.Parameters.Add ("@2", DomainObjectIDs.Computer3);
       query.Parameters.Add ("@3", DomainObjectIDs.Computer1); // preloaded
 
-      var resultArray = queryManager.GetCollection (query).ToArray();
-      Assert.That (resultArray, Is.EqualTo (new[] {computer2, Computer.GetObject (DomainObjectIDs.Computer3), computer1}));
+      var resultArray = queryManager.GetCollection (query).ToArray ();
+      Assert.That (resultArray, Is.EqualTo (new[] { computer2, Computer.GetObject (DomainObjectIDs.Computer3), computer1 }));
     }
 
     [Test]
     public void GetCollectionWithNullValues ()
     {
-      IQueryManager queryManager = _queryManager;
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
           "SELECT [Employee].* FROM [Computer] LEFT OUTER JOIN [Employee] ON [Computer].[EmployeeID] = [Employee].[ID] "
           + "WHERE [Computer].[ID] IN (@1, @2, @3) "
           + "ORDER BY [Computer].[ID] asc",
-          new QueryParameterCollection(), typeof (DomainObjectCollection));
-      
+          new QueryParameterCollection (), typeof (DomainObjectCollection));
+
       query.Parameters.Add ("@1", DomainObjectIDs.Computer5); // no employee
       query.Parameters.Add ("@3", DomainObjectIDs.Computer4); // no employee
       query.Parameters.Add ("@2", DomainObjectIDs.Computer1); // employee 3
-      
-      var result = queryManager.GetCollection (query);
+
+      var result = QueryManager.GetCollection (query);
       Assert.That (result.ContainsNulls (), Is.True);
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { null, null, Employee.GetObject (DomainObjectIDs.Employee3)}));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { null, null, Employee.GetObject (DomainObjectIDs.Employee3) }));
     }
 
     [Test]
-    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage = 
+    [ExpectedException (typeof (RdbmsProviderException), ExpectedMessage =
         "A database query returned duplicates of object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid', which is not allowed.")]
     public void GetCollectionWithDuplicates ()
     {
       var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.Computer1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
           "SELECT [Order].* FROM [OrderItem] INNER JOIN [Order] ON [OrderItem].[OrderID] = [Order].[ID] WHERE [Order].[OrderNo] = 1",
           new QueryParameterCollection (), typeof (DomainObjectCollection));
-      _queryManager.GetCollection (query);
-    }
-
-    [Test]
-    public void QueryWithExtensibleEnums ()
-    {
-      IQueryManager queryManager = _queryManager;
-      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
-          "SELECT [TableWithAllDataTypes].* FROM [TableWithAllDataTypes] WHERE ([TableWithAllDataTypes].[ExtensibleEnum] = @1)",
-          new QueryParameterCollection (), typeof (DomainObjectCollection));
-
-      query.Parameters.Add ("@1", Color.Values.Blue());
-
-      var result = queryManager.GetCollection (query);
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) }));
-    }
-
-    [Test]
-    public void ScalarQueryWithoutParameter ()
-    {
-      Assert.AreEqual (42, _queryManager.GetScalar (QueryFactory.CreateQueryFromConfiguration ("QueryWithoutParameter")));
+      QueryManager.GetCollection (query);
     }
 
     [Test]
@@ -117,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-      var customers = _queryManager.GetCollection (query);
+      var customers = QueryManager.GetCollection (query);
 
       Assert.IsNotNull (customers);
       Assert.AreEqual (1, customers.Count);
@@ -131,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-      var customers = _queryManager.GetCollection<Customer> (query).ToObjectList ();
+      var customers = QueryManager.GetCollection<Customer> (query).ToObjectList ();
       Assert.IsNotNull (customers);
       Assert.AreEqual (1, customers.Count);
       Assert.AreEqual (DomainObjectIDs.Customer1, customers[0].ID);
@@ -144,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var query = QueryFactory.CreateQueryFromConfiguration ("OrderByOfficialQuery");
       query.Parameters.Add ("@officialID", DomainObjectIDs.Official1);
 
-      var orders = _queryManager.GetCollection<Order> (query).ToCustomCollection ();
+      var orders = QueryManager.GetCollection<Order> (query).ToCustomCollection ();
       Assert.AreEqual (5, orders.Count);
       Assert.That (orders, Is.EquivalentTo (new object[]
       {
@@ -166,7 +135,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomerTypeQuery");
       query.Parameters.Add ("@customerType", Customer.CustomerType.Standard);
 
-      _queryManager.GetCollection<Order> (query);
+      QueryManager.GetCollection<Order> (query);
     }
 
     [Test]
@@ -174,14 +143,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("QueryWithSpecificCollectionType");
 
-      var result = _queryManager.GetCollection<Order> (query);
+      var result = QueryManager.GetCollection<Order> (query);
       Assert.That (result.Count, Is.GreaterThan (0));
     }
+
 
     [Test]
     public void GetStoredProcedureResult ()
     {
-      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection ();
+      var orders = (OrderCollection) QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection ();
 
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -194,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQueryWithParameter");
       query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1.Value);
-      var orders = (OrderCollection) _queryManager.GetCollection (query).ToCustomCollection ();
+      var orders = (OrderCollection) QueryManager.GetCollection (query).ToCustomCollection ();
 
       Assert.IsNotNull (orders, "OrderCollection is null");
       Assert.AreEqual (2, orders.Count, "Order count");
@@ -207,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       Order.GetObject (DomainObjectIDs.Order1); // ensure Order1 already exists in transaction
 
-      var orders = (OrderCollection) _queryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection ();
+      var orders = (OrderCollection) QueryManager.GetCollection (QueryFactory.CreateQueryFromConfiguration ("StoredProcedureQuery")).ToCustomCollection ();
       Assert.AreEqual (2, orders.Count, "Order count");
 
       foreach (Order order in orders)
@@ -244,7 +214,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.Delete ();
-      TestableClientTransaction.DataManager.Commit();
+      TestableClientTransaction.DataManager.Commit ();
 
       var query = QueryFactory.CreateCollectionQuery (
           "test",
@@ -252,9 +222,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           "SELECT * FROM [Order] WHERE OrderNo=1",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));
-      
+
       var result = ClientTransaction.Current.QueryManager.GetCollection (query);
-      Assert.That (result.ToArray(), Is.EqualTo (new[] { order1 }));
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { order1 }));
     }
 
     [Test]
@@ -276,22 +246,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void LinqQuery_CallsFilterQueryResult ()
+    public void QueryWithExtensibleEnums ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      listenerMock
-          .Expect (mock => mock.FilterQueryResult (Arg.Is (TestableClientTransaction), Arg<QueryResult<DomainObject>>.Is.Anything))
-          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ());
-      TestableClientTransaction.AddListener (listenerMock);
+      var query = QueryFactory.CreateCollectionQuery ("test", DomainObjectIDs.ClassWithAllDataTypes1.ClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
+          "SELECT [TableWithAllDataTypes].* FROM [TableWithAllDataTypes] WHERE ([TableWithAllDataTypes].[ExtensibleEnum] = @1)",
+          new QueryParameterCollection (), typeof (DomainObjectCollection));
 
-      using (TestableClientTransaction.EnterNonDiscardingScope ())
-      {
-        var query = from o in QueryFactory.CreateLinqQuery<Order> () where o.Customer.ID == DomainObjectIDs.Customer1 select o;
-        query.ToArray ();
-      }
+      query.Parameters.Add ("@1", Color.Values.Blue ());
 
-      listenerMock.VerifyAllExpectations ();
-      listenerMock.BackToRecord (); // For Discarding
+      var result = QueryManager.GetCollection (query);
+      Assert.That (result.ToArray (), Is.EqualTo (new[] { ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes2) }));
     }
+
   }
 }

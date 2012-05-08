@@ -155,6 +155,12 @@
     <collectionType>Remotion.Data.DomainObjects::DomainObjectCollection</collectionType>
   </query>
 
+  <query id="CustomQuery" type="collection">
+    <storageGroupType>Remotion.Data.UnitTests::DomainObjects.TestDomain.TestDomainAttribute</storageGroupType>
+    <statement>SELECT String, Int16, Boolean, Enum, ExtensibleEnum  FROM [TableWithAllDataTypes]</statement>
+    <collectionType>Remotion.Data.DomainObjects::DomainObjectCollection</collectionType>
+  </query>
+
   <query id="OrderQueryWithDomainObjectCollectionType" type="collection">
     <storageGroupType>Remotion.Data.UnitTests::DomainObjects.TestDomain.TestDomainAttribute</storageGroupType>
     <statement>select * from [Order];</statement>
