@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,46 +14,24 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Scripting.Ast;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.BodyBuilding;
 
-namespace Remotion.TypePipe.MutableReflection.BodyBuilding
+namespace Remotion.TypePipe.UnitTests.MutableReflection.BodyBuilding
 {
-  /// <summary>
-  /// Base class for method body context classes.
-  /// </summary>
-  public abstract class MethodBodyContextBase : BodyContextBase
+  public class TestableMethodBodyContextBase : MethodBodyContextBase
   {
-    private readonly MethodInfo _baseMethod;
-
-    protected MethodBodyContextBase (
+    public TestableMethodBodyContextBase (
         MutableType declaringType,
         IEnumerable<ParameterExpression> parameterExpressions,
         bool isStatic,
         MethodInfo baseMethod,
         IMemberSelector memberSelector)
-        : base (declaringType, parameterExpressions, isStatic, memberSelector)
+        : base (declaringType, parameterExpressions, isStatic, baseMethod, memberSelector)
     {
-      // Base method may be null
-      _baseMethod = baseMethod;
-    }
-
-    public bool HasBaseMethod
-    {
-      get { return _baseMethod != null; }
-    }
-
-    public MethodInfo BaseMethod
-    {
-      get
-      {
-        if (!HasBaseMethod)
-          throw new InvalidOperationException ("This method does not override an base method.");
-
-        return _baseMethod;
-      }
     }
   }
 }

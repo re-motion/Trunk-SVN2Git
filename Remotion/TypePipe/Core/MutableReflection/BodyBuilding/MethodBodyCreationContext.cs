@@ -15,6 +15,7 @@
 // under the License.
 // 
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Scripting.Ast;
 
 namespace Remotion.TypePipe.MutableReflection.BodyBuilding
@@ -26,8 +27,12 @@ namespace Remotion.TypePipe.MutableReflection.BodyBuilding
   public class MethodBodyCreationContext : MethodBodyContextBase
   {
     public MethodBodyCreationContext (
-        MutableType declaringType, IEnumerable<ParameterExpression> parameterExpressions, bool isStatic, IMemberSelector memberSelector)
-      : base (declaringType, parameterExpressions, isStatic, memberSelector)
+        MutableType declaringType,
+        IEnumerable<ParameterExpression> parameterExpressions,
+        bool isStatic,
+        MethodInfo baseMethod,
+        IMemberSelector memberSelector)
+        : base (declaringType, parameterExpressions, isStatic, baseMethod, memberSelector)
     {
     }
   }
