@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4735")]
+    [Ignore ("TODO 4752")]
     public void WithRawValues ()
     {
       var result = QueryManager.GetCustom (_query, QueryResultRowTestHelper.ExtractRawValues).ToList();
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4735")]
+    [Ignore ("TODO 4752")]
     public void WithConvertedValues ()
     {
       var result = QueryManager.GetCustom (
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4735")]
+    [Ignore ("TODO 4752")]
     public void InvokesFilterQueryResultEvent ()
     {
       var transactionExtensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4735")]
+    [Ignore ("TODO 4752")]
     public void FromXmlFile ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
