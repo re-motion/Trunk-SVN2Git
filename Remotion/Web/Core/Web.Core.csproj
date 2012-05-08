@@ -853,8 +853,7 @@
     <Content Include="Res\Themes\NovaBlue\Image\CornerBackgroundWhiteTransparentBlueBorder.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CornerBackgroundWhiteTransparentNoBorder.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\DatePicker.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuArrow.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuArrow_disabled.gif" />
+    <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuEllipsis.png" />
     <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuItemIconPane.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\DropDownMenuSeparator.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\Help.gif" />

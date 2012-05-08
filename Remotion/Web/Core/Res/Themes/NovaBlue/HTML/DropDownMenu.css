@@ -82,9 +82,9 @@ span.DropDownMenuSelect a.DropDownMenuButton
   border-left: solid 1px #083779;
   background-color: #083779;
   margin-right: 0;
-  background-position: center center;
+  background-position: 0px bottom;
   background-repeat: no-repeat;
-  background-image: url('../Image/DropDownMenuArrow.gif');
+  background-image: url('../Image/DropDownMenuEllipsis.png');
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton:first-child
@@ -98,7 +98,7 @@ span.DropDownMenuSelect.disabled a.DropDownMenuButton
   cursor: default;
   border-left: solid 1px Gray;
   background-color: #E8E8E8;
-  background-image: url('../Image/DropDownMenuArrow_disabled.gif');
+  background-position: -15px bottom;
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton img
