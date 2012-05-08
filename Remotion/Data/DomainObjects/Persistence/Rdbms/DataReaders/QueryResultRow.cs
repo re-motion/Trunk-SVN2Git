@@ -32,8 +32,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       ArgumentUtility.CheckNotNull ("dataReader", dataReader);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      _storageTypeInformationProvider = storageTypeInformationProvider;
       _dataReader = dataReader;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     public IDataReader DataReader
@@ -65,7 +65,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
       }
       catch (NotSupportedException)
       {
-        if (type == typeof (ObjectID))
+        if (typeof (ObjectID).IsAssignableFrom (type))
         {
           throw new NotSupportedException (
               "Type 'ObjectID' ist not supported by this storage provider.\n" +

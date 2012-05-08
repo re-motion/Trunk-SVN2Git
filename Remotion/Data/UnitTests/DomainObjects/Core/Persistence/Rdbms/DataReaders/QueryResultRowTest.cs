@@ -21,14 +21,12 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
-using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class QueryResultRowTest :  StandardMappingTest
+  public class QueryResultRowTest : StandardMappingTest
   {
     private IDataReader _dataReaderStub;
     private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
@@ -57,7 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     public void ValueCount ()
     {
       int fakeFieldCount = 10;
-
       _dataReaderStub.Stub (stub => stub.FieldCount).Return (fakeFieldCount);
 
       var result = _queryResultRow.ValueCount;
@@ -72,7 +69,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       var value2 = true;
       var value3 = 45;
 
-      _dataReaderStub.Stub (stub => stub.GetValue(0)).Return (value1);
+      _dataReaderStub.Stub (stub => stub.GetValue (0)).Return (value1);
       _dataReaderStub.Stub (stub => stub.GetValue (1)).Return (value2);
       _dataReaderStub.Stub (stub => stub.GetValue (2)).Return (value3);
 
@@ -84,16 +81,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void GetConvertedValue_ValidType ()
     {
+      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageType (typeof (string))).Return (_storageTypeInformationMock);
+
       var fakeResult = "fake";
-
-      _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageType (typeof (int))).Return (_storageTypeInformationMock);
-
       _storageTypeInformationMock.Expect (mock => mock.Read (_dataReaderStub, 1)).Return (fakeResult);
-      _storageTypeInformationMock.Replay();
 
-      var result = _queryResultRow.GetConvertedValue (1, typeof (int));
+      var result = _queryResultRow.GetConvertedValue (1, typeof (string));
 
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.EqualTo (fakeResult));
       _storageTypeInformationMock.VerifyAllExpectations();
     }
 
@@ -124,16 +119,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     [Test]
     public void GetConvertedValue_GenericOverload_DelegatesToNoGenericOverload ()
     {
-      var fakeResult = "fake";
-
       _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageType (typeof (string))).Return (_storageTypeInformationMock);
 
+      var fakeResult = "fake";
       _storageTypeInformationMock.Expect (mock => mock.Read (_dataReaderStub, 1)).Return (fakeResult);
       _storageTypeInformationMock.Replay ();
 
       var result = _queryResultRow.GetConvertedValue<string> (1);
 
-      Assert.That (result, Is.SameAs (fakeResult));
+      Assert.That (result, Is.EqualTo (fakeResult));
       _storageTypeInformationMock.VerifyAllExpectations ();
     }
   }
