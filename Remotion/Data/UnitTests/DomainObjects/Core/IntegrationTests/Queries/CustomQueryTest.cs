@@ -30,101 +30,103 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
   {
     private IQuery _query;
 
-    [SetUp]
-    public new void SetUp ()
+    public override void SetUp ()
     {
       base.SetUp();
 
       _query = QueryFactory.CreateCustomQuery (
           "CustomQuery",
           TestDomainStorageProviderDefinition,
-          "SELECT String, Int16, Boolean, Enum, ExtensibleEnum  FROM [TableWithAllDataTypes]",
-          new QueryParameterCollection(),
-          null);
+          "SELECT String, Int16, Boolean, Enum, ExtensibleEnum FROM [TableWithAllDataTypes]",
+          new QueryParameterCollection());
     }
 
-
     [Test]
-    [Ignore ("TODO 4731")]
+    [Ignore ("TODO 4735")]
     public void WithRawValues ()
     {
-      var result = ClientTransaction.Current.QueryManager.GetCustom (_query, ExtractCustomObject_RawValues).ToList();
+      var result = QueryManager.GetCustom (_query, QueryResultRowTestHelper.ExtractRawValues).ToList();
 
-      var exptectedResult = new object[]
+      var expected = new object[]
                             {
                                 new object[] { "üäöfedcba", -32767, 1, 0, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue" },
                                 new object[] { "abcdeföäü", -32767, 0, 1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red" }
                             };
 
-      Assert.That (result.Count, Is.EqualTo (2));
-      CollectionAssert.AreEquivalent (exptectedResult, result);
+      Assert.That (result, Is.EquivalentTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 4731")]
+    [Ignore ("TODO 4735")]
     public void WithConvertedValues ()
     {
-      var result = ClientTransaction.Current.QueryManager.GetCustom (_query, ExtractCustomObject_ConvertedValues).ToList();
-
-      var exptectedResult = new object[]
+      var result = QueryManager.GetCustom (
+          _query,
+          queryResultRow => new
                             {
-                                new object[] { "üäöfedcba", -32767, true, ClassWithAllDataTypes.EnumType.Value0, Color.Values.Blue() },
-                                new object[] { "abcdeföäü", -32767, false, ClassWithAllDataTypes.EnumType.Value1, Color.Values.Red() }
-                            };
+                                StringValue = queryResultRow.GetConvertedValue<string> (0),
+                                Int16Value = queryResultRow.GetConvertedValue<Int16> (1),
+                                BoolValue = queryResultRow.GetConvertedValue<bool> (2),
+                                EnumValue = queryResultRow.GetConvertedValue<ClassWithAllDataTypes.EnumType> (3),
+                                ExtensibleEnumValue = queryResultRow.GetConvertedValue<Color> (4)
+                            }).ToList();
 
-      Assert.That (result.Count, Is.EqualTo (2));
-      CollectionAssert.AreEquivalent (exptectedResult, result);
+      var expected =
+          new[]
+          {
+              new
+              {
+                  StringValue = "üäöfedcba",
+                  Int16Value = -32767,
+                  BoolValue = true,
+                  EnumValue = ClassWithAllDataTypes.EnumType.Value0,
+                  ExtensibleEnumValue = Color.Values.Blue()
+              },
+              new
+              {
+                  StringValue = "abcdeföäü",
+                  Int16Value = -32767,
+                  BoolValue = false,
+                  EnumValue = ClassWithAllDataTypes.EnumType.Value1,
+                  ExtensibleEnumValue = Color.Values.Red()
+              },
+          };
+
+      Assert.That (result, Is.EquivalentTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 4731")]
+    [Ignore ("TODO 4735")]
     public void InvokesFilterQueryResultEvent ()
     {
       var transactionExtensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
       
       var fakeResult = new[] { new object () };
-      transactionExtensionMock.Stub (stub => stub.Key).Return ("CustomQuery");
+      transactionExtensionMock.Stub (stub => stub.Key).Return ("CustomQueryExtension");
       transactionExtensionMock
-        .Expect (mock => mock.FilterCustomQueryResult (Arg.Is(TestableClientTransaction), Arg.Is(_query), Arg<IEnumerable<object>>.Matches (arg => arg.Count () == 2)))
-        .Return (fakeResult);
+          .Expect (
+              mock => mock.FilterCustomQueryResult (
+                  Arg.Is (TestableClientTransaction), Arg.Is (_query), Arg<IEnumerable<object>>.Matches (arg => arg.Count() == 2)))
+          .Return (fakeResult);
       transactionExtensionMock.Replay ();
 
       TestableClientTransaction.Extensions.Add (transactionExtensionMock);
+      
+      var result = QueryManager.GetCustom (_query, QueryResultRowTestHelper.ExtractRawValues);
 
-
-      var result = ClientTransaction.Current.QueryManager.GetCustom (_query, ExtractCustomObject_RawValues);
-
+      transactionExtensionMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
-      transactionExtensionMock.VerifyAllExpectations();
     }
 
     [Test]
-    [Ignore ("TODO 4731")]
+    [Ignore ("TODO 4735")]
     public void FromXmlFile ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
 
-      var result = QueryManager.GetCustom (query, ExtractCustomObject_RawValues);
+      var result = QueryManager.GetCustom (query, QueryResultRowTestHelper.ExtractRawValues);
 
-      Assert.That (result.Count(), Is.GreaterThan (0));
-    }
-
-    private object ExtractCustomObject_ConvertedValues (IQueryResultRow queryResultRow)
-    {
-      return new object[]
-             {
-                 queryResultRow.GetConvertedValue<string> (0), queryResultRow.GetConvertedValue<Int16> (1), queryResultRow.GetConvertedValue<bool> (2), 
-                 queryResultRow.GetConvertedValue<ClassWithAllDataTypes.EnumType> (3), queryResultRow.GetConvertedValue<Color> (4)
-             };
-    }
-
-    private object ExtractCustomObject_RawValues (IQueryResultRow queryResultRow)
-    {
-      return new[]
-             {
-                 queryResultRow.GetRawValue (0), queryResultRow.GetRawValue (1), queryResultRow.GetRawValue (2), queryResultRow.GetRawValue (3),
-                 queryResultRow.GetRawValue (4)
-             };
+      Assert.That (result.Count(), Is.EqualTo (2));
     }
   }
 }

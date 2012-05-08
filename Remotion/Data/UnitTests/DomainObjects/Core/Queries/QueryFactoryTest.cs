@@ -144,11 +144,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var id = "id";
       var statement = "stmt";
       var parameterCollection = new QueryParameterCollection ();
-      var collectionType = typeof (OrderCollection);
 
-      IQuery query = QueryFactory.CreateCustomQuery (id, TestDomainStorageProviderDefinition, statement, parameterCollection, collectionType);
+      IQuery query = QueryFactory.CreateCustomQuery (id, TestDomainStorageProviderDefinition, statement, parameterCollection);
       Assert.That (query.ID, Is.EqualTo (id));
-      Assert.That (query.CollectionType, Is.SameAs (collectionType));
+      Assert.That (query.CollectionType, Is.Null);
       Assert.That (query.Parameters, Is.SameAs (parameterCollection));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Custom));
       Assert.That (query.Statement, Is.EqualTo (statement));

@@ -259,12 +259,14 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="storageProviderDefinition">The <see cref="StorageProviderDefinition"/> of the storage provider used to execute the query.</param>
     /// <param name="statement">The custom query statement.</param>
     /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
-    /// <param name="collectionType">The collection type to be returned from the query.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
-    public static IQuery CreateCustomQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement,
-                                           QueryParameterCollection queryParameterCollection, Type collectionType)
+    public static IQuery CreateCustomQuery (
+        string id,
+        StorageProviderDefinition storageProviderDefinition,
+        string statement, 
+      QueryParameterCollection queryParameterCollection)
     {
-      var definition = new QueryDefinition (id, storageProviderDefinition, statement, QueryType.Custom, collectionType);
+      var definition = new QueryDefinition (id, storageProviderDefinition, statement, QueryType.Custom, null);
       return new Query (definition, queryParameterCollection);
     }
 

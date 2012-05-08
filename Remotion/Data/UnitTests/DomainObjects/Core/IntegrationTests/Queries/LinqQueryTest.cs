@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -31,20 +32,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     [Test]
     public void LinqQuery_CallsFilterQueryResult ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
       listenerMock
           .Expect (mock => mock.FilterQueryResult (Arg.Is (TestableClientTransaction), Arg<QueryResult<DomainObject>>.Is.Anything))
-          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject> ());
+          .Return (TestQueryFactory.CreateTestQueryResult<DomainObject>());
+      
       TestableClientTransaction.AddListener (listenerMock);
-
-      using (TestableClientTransaction.EnterNonDiscardingScope ())
+      try
       {
-        var query = from o in QueryFactory.CreateLinqQuery<Order> () where o.Customer.ID == DomainObjectIDs.Customer1 select o;
-        query.ToArray ();
-      }
+        var query = from o in QueryFactory.CreateLinqQuery<Order>() where o.Customer.ID == DomainObjectIDs.Customer1 select o;
+        query.ToArray();
 
-      listenerMock.VerifyAllExpectations ();
-      listenerMock.BackToRecord (); // For Discarding
+        listenerMock.VerifyAllExpectations();
+      }
+      finally
+      {
+        TestableClientTransaction.RemoveListener (listenerMock);
+      }
     }
   }
 }

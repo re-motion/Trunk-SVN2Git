@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Linq;
 using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
 {
-  public abstract class QueryTestBase : ClientTransactionBaseTest
+  public static class QueryResultRowTestHelper
   {
-    public IQueryManager QueryManager
+    public static object[] ExtractRawValues (IQueryResultRow row)
     {
-      get { return TestableClientTransaction.QueryManager; }
+      return Enumerable.Range (0, row.ValueCount).Select (row.GetRawValue).ToArray();
     }
-
   }
 }

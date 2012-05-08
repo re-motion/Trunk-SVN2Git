@@ -202,6 +202,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CustomQueryDatabaseBehaviorTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CustomQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\LinqQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Queries\QueryResultRowTestHelper.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\QueryTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\ScalarQueryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\QueryResultRowTest.cs" />
