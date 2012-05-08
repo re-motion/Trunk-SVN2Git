@@ -56,19 +56,19 @@ span.bocTimeInputWrapper
 span.bocDateTimeValue span.bocDate24HoursWithSeconds,
 span.bocDateTimeValue span.bocDate12HoursWithSeconds
 {
-  right: 9.6em;
+  right: 9.0em;
 }
 
 span.bocDateTimeValue span.bocDate24Hours,
 span.bocDateTimeValue span.bocDate12Hours
 {
-  right: 8.1em;
+  right: 7.4em;
 }
 
 span.bocDateValue span.bocDate24Hours,
 span.bocDateValue span.bocDate12Hours
 {
-  right: 2.9em;
+  right: 2.2em;
 }
 
 span.bocDateInputWrapper input
