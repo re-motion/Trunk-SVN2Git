@@ -16,12 +16,16 @@
 // 
 using System;
 using System.Data;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
+  /// <summary>
+  /// <see cref="QueryResultRow"/> represents a data row for a (custom) query in a relational database.
+  /// </summary>
   public class QueryResultRow : IQueryResultRow
   {
     private readonly IDataReader _dataReader;
@@ -58,22 +62,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 
     public object GetConvertedValue (int position, Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      IStorageTypeInformation storageTypeInformation;
       try
       {
-        var storageTypeInformation = _storageTypeInformationProvider.GetStorageType (type);
-        return storageTypeInformation.Read (_dataReader, position);
+        storageTypeInformation = _storageTypeInformationProvider.GetStorageType (type);
       }
-      catch (NotSupportedException)
+      catch (NotSupportedException ex)
       {
         if (typeof (ObjectID).IsAssignableFrom (type))
         {
           throw new NotSupportedException (
-              "Type 'ObjectID' ist not supported by this storage provider.\n" +
-              "Please select the ID and ClassID values separately (ID.Value, ID.ClassID), then create an ObjectID with it in memory.");
+              "Type 'ObjectID' ist not supported by this storage provider.\n"+
+              "Please select the ID and ClassID values separately (ID.Value, ID.ClassID), then create an ObjectID with it in memory.", ex);
         }
 
         throw;
       }
+      return storageTypeInformation.Read (_dataReader, position);
     }
 
     public T GetConvertedValue<T> (int position)

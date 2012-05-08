@@ -26,7 +26,7 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReaders
 {
   [TestFixture]
-  public class QueryResultRowTest : StandardMappingTest
+  public class QueryResultRowTest
   {
     private IDataReader _dataReaderStub;
     private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
@@ -34,9 +34,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     private IStorageTypeInformation _storageTypeInformationMock;
 
     [SetUp]
-    public new void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp();
       _dataReaderStub = MockRepository.GenerateStub<IDataReader>();
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
       _queryResultRow = new QueryResultRow (_dataReaderStub, _storageTypeInformationProviderStub);
