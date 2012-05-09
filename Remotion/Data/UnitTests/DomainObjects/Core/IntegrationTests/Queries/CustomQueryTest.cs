@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       var expected = new object[]
                             {
                                 new object[] { "üäöfedcba", -32767, 1, 0, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue" },
-                                new object[] { "abcdeföäü", -32767, 0, 1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red" }
+                                new object[] { "abcdeföäü", 32767, 0, 1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red" }
                             };
 
       Assert.That (result, Is.EquivalentTo (expected));
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
               new
               {
                   StringValue = "abcdeföäü",
-                  Int16Value = -32767,
+                  Int16Value = 32767,
                   BoolValue = false,
                   EnumValue = ClassWithAllDataTypes.EnumType.Value1,
                   ExtensibleEnumValue = Color.Values.Red()
