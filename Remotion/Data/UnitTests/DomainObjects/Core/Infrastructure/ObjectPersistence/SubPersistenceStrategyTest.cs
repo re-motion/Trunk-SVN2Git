@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.DomainObjects;
 using Rhino.Mocks;
@@ -30,6 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
   {
     private IParentTransactionOperations _parentTransactionOperationsMock;
     private SubPersistenceStrategy _persistenceStrategy;
+    private IQuery _queryStub;
 
     public override void SetUp ()
     {
@@ -39,6 +42,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       var parentTransactionContextStub = MockRepository.GenerateStub<IParentTransactionContext> ();
       parentTransactionContextStub.Stub (stub => stub.AccessParentTransaction()).Return (_parentTransactionOperationsMock);
       _persistenceStrategy = new SubPersistenceStrategy (parentTransactionContextStub);
+
+      _queryStub = MockRepository.GenerateStub<IQuery>();
+    }
+
+    [Test]
+    public void ExecuteCustomQuery ()
+    {
+      var fakeResult = new IQueryResultRow[0];
+      Func<IQueryResultRow, object> rowConversion = qrr => new object();
+      
+      _parentTransactionOperationsMock
+          .Expect (mock => mock.ExecuteCustomQuery (_queryStub, rowConversion))
+          .Return (fakeResult);
+      _parentTransactionOperationsMock.Expect (mock => mock.Dispose ());
+
+      var result = _persistenceStrategy.ExecuteCustomQuery (_queryStub, rowConversion);
+
+      _parentTransactionOperationsMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeResult));
+    }
+
+    [Test]
+    public void ExecuteScalarQuery ()
+    {
+      var fakeResult = new object();
+
+      _parentTransactionOperationsMock
+          .Expect (mock => mock.ExecuteScalarQuery (_queryStub))
+          .Return (fakeResult);
+      _parentTransactionOperationsMock.Expect (mock => mock.Dispose ());
+
+      var result = _persistenceStrategy.ExecuteScalarQuery (_queryStub);
+
+      _parentTransactionOperationsMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]

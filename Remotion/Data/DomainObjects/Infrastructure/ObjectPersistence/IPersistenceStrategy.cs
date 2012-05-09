@@ -187,6 +187,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     IEnumerable<ILoadedObjectData> ExecuteCollectionQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider);
 
     /// <summary>
+    /// Executes the given custom <see cref="IQuery"/>.
+    /// </summary>
+    /// <param name="query">The <see cref="IQuery"/> to be executed.</param>
+    /// <param name="rowReader">A delegate to convert the data from the database into custom objects.</param>
+    /// <returns>A collection of <see cref="IQueryResultRow"/> instances representing the result of the query.</returns>
+    IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowReader);
+
+    /// <summary>
     /// Executes the given <see cref="IQuery"/> and returns its result as a scalar value.
     /// </summary>
     /// <param name="query">The query to be executed.</param>

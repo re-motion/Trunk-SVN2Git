@@ -122,6 +122,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
     }
 
+    public IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowReader)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      if (query.QueryType != QueryType.Custom)
+        throw new ArgumentException("Only custom queries can be used to load custom results", "query");
+
+      using (var storageProviderManager = CreateStorageProviderManager())
+      {
+        var provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
+        foreach (var queryResultRow in provider.ExecuteCustomQuery (query))
+        {
+          yield return queryResultRow;
+        }  
+      }
+    }
+
     private IEnumerable<DataContainer> ExecuteDataContainerQuery (IQuery query)
     {
       IEnumerable<DataContainer> dataContainers;

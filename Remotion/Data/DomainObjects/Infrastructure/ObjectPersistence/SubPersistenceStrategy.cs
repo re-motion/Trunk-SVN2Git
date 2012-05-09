@@ -152,6 +152,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
 
+    public IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowReader)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
+      {
+        return parentTransactionOperations.ExecuteCustomQuery (query, rowReader);
+      }
+    }
+
     public virtual object ExecuteScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);

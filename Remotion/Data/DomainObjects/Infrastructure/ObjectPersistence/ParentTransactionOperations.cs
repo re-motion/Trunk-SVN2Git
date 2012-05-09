@@ -101,6 +101,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _parentTransaction.QueryManager.GetCollection (query);
     }
 
+    public IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowConversion)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      CheckDisposed ();
+
+      return _parentTransaction.QueryManager.GetCustom (query, rowConversion).Cast<IQueryResultRow>();
+    }
+
     public object ExecuteScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
