@@ -1212,22 +1212,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4752: adapt and enable")]
     public void FilterCustomQueryResult ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
-      query.Parameters.Add ("@customerID", DomainObjectIDs.Customer1);
+      Func<IQueryResultRow, object> rowConversion = rr => rr.GetRawValue (0);
 
+      using (_newTransaction.EnterNonDiscardingScope ())
+      {
+        ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, rowConversion);
+      }
+
+      _mockRepository.BackToRecord (_extensionMock);
+      
       var newQueryResult = new[] { new object() };
       _extensionMock
-          .Expect (mock => mock.FilterCustomQueryResult (Arg.Is (_newTransaction), Arg.Is(query), Arg<IEnumerable<object>>.List.Equal (new[] { "expectedItem1", "expectedItem2" })))
+          .Expect (mock => mock.FilterCustomQueryResult (Arg.Is (_newTransaction), Arg.Is(query), Arg<IEnumerable<object>>.Matches(qr=>qr.Count()==2)))
           .Return (newQueryResult);
 
       _mockRepository.ReplayAll ();
 
       using (_newTransaction.EnterNonDiscardingScope ())
       {
-        var finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, rr => rr.GetRawValue (0));
+        var finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, rowConversion);
         Assert.That (finalResult, Is.SameAs (newQueryResult));
       }
 

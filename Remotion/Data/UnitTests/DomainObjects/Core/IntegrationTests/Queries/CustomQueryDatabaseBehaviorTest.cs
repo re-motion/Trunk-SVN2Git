@@ -55,7 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4752")]
     public void CompleteIteration_CompletelyExecutesQuery ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
@@ -76,7 +75,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4752")]
     public void NoIteration_DoesNotOpenConnection ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
@@ -98,7 +96,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4752")]
     public void DuringIteration_QueryStaysActive ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");

@@ -42,53 +42,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4752")]
     public void WithRawValues ()
     {
       var result = QueryManager.GetCustom (_query, QueryResultRowTestHelper.ExtractRawValues).ToList();
 
       var expected = new object[]
                             {
-                                new object[] { "üäöfedcba", -32767, 1, 0, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue" },
-                                new object[] { "abcdeföäü", 32767, 0, 1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red" }
+                                new object[] { "üäöfedcba", -32767, true, 0, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue" },
+                                new object[] { "abcdeföäü", 32767, false, 1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red" }
                             };
 
       Assert.That (result, Is.EquivalentTo (expected));
     }
 
     [Test]
-    [Ignore ("TODO 4752")]
     public void WithConvertedValues ()
     {
       var result = QueryManager.GetCustom (
           _query,
-          queryResultRow => new
+          queryResultRow => new object[]
                             {
-                                StringValue = queryResultRow.GetConvertedValue<string> (0),
-                                Int16Value = queryResultRow.GetConvertedValue<Int16> (1),
-                                BoolValue = queryResultRow.GetConvertedValue<bool> (2),
-                                EnumValue = queryResultRow.GetConvertedValue<ClassWithAllDataTypes.EnumType> (3),
-                                ExtensibleEnumValue = queryResultRow.GetConvertedValue<Color> (4)
+                                queryResultRow.GetConvertedValue<string> (0),
+                                queryResultRow.GetConvertedValue<Int16> (1),
+                                queryResultRow.GetConvertedValue<bool> (2),
+                                queryResultRow.GetConvertedValue<ClassWithAllDataTypes.EnumType> (3),
+                                queryResultRow.GetConvertedValue<Color> (4)
                             }).ToList();
 
       var expected =
           new[]
           {
-              new
+              new object[]
               {
-                  StringValue = "üäöfedcba",
-                  Int16Value = -32767,
-                  BoolValue = true,
-                  EnumValue = ClassWithAllDataTypes.EnumType.Value0,
-                  ExtensibleEnumValue = Color.Values.Blue()
+                  "üäöfedcba",
+                  -32767,
+                  true,
+                  ClassWithAllDataTypes.EnumType.Value0,
+                  Color.Values.Blue()
               },
-              new
+              new object[]
               {
-                  StringValue = "abcdeföäü",
-                  Int16Value = 32767,
-                  BoolValue = false,
-                  EnumValue = ClassWithAllDataTypes.EnumType.Value1,
-                  ExtensibleEnumValue = Color.Values.Red()
+                  "abcdeföäü",
+                  32767,
+                  false,
+                  ClassWithAllDataTypes.EnumType.Value1,
+                  Color.Values.Red()
               },
           };
 
@@ -96,17 +94,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    [Ignore ("TODO 4752")]
     public void InvokesFilterQueryResultEvent ()
     {
       var transactionExtensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
       
-      var fakeResult = new[] { new object () };
+      var fakeResult = new[] { new object[0] };
       transactionExtensionMock.Stub (stub => stub.Key).Return ("CustomQueryExtension");
       transactionExtensionMock
           .Expect (
               mock => mock.FilterCustomQueryResult (
-                  Arg.Is (TestableClientTransaction), Arg.Is (_query), Arg<IEnumerable<object>>.Matches (arg => arg.Count() == 2)))
+                  Arg.Is (TestableClientTransaction), Arg.Is(_query), Arg<IEnumerable<object[]>>.Matches(e=>e.Count()==2)))
           .Return (fakeResult);
       transactionExtensionMock.Replay ();
 
@@ -114,12 +111,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       
       var result = QueryManager.GetCustom (_query, QueryResultRowTestHelper.ExtractRawValues);
 
-      transactionExtensionMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
     }
 
     [Test]
-    [Ignore ("TODO 4752")]
     public void FromXmlFile ()
     {
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
