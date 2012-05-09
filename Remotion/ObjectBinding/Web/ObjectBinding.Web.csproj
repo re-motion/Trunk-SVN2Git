@@ -525,7 +525,6 @@
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxFalse.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxNull.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\CheckBoxTrue.gif" />
-    <Content Include="Res\Themes\NovaBlue\Image\DatePicker.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MoveFirst.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MoveFirstInactive.gif" />
     <Content Include="Res\Themes\NovaBlue\Image\MoveLast.gif" />
