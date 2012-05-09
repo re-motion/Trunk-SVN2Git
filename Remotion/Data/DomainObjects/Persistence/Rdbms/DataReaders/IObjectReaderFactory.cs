@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
+using Remotion.Data.DomainObjects.Queries;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 {
@@ -31,5 +32,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
     IObjectReader<DataContainer> CreateDataContainerReader (IRdbmsStorageEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns);
     IObjectReader<ObjectID> CreateObjectIDReader (IRdbmsStorageEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns);
     IObjectReader<Tuple<ObjectID, object>> CreateTimestampReader (IRdbmsStorageEntityDefinition entityDefinition, IEnumerable<ColumnDefinition> selectedColumns);
+    IObjectReader<IQueryResultRow> CreateResultRowReader ();
   }
 }

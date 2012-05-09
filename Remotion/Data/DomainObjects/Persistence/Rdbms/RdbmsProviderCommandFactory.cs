@@ -157,6 +157,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return _queryCommandFactory.CreateForDataContainerQuery (query);
     }
 
+    public IStorageProviderCommand<IEnumerable<IQueryResultRow>, IRdbmsProviderCommandExecutionContext> CreateForCustomQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      return _queryCommandFactory.CreateForCustomQuery (query);
+    }
+
     public IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext> CreateForScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);

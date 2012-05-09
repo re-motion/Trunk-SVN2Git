@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -226,6 +227,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.EqualTo (new DataContainer[] { null, null }));
+    }
+
+    [Test]
+    public void ExecuteCustomQuery ()
+    {
+      var queryResultRowStub1 = MockRepository.GenerateStub<IQueryResultRow>();
+      var queryResultRowStub2 = MockRepository.GenerateStub<IQueryResultRow> ();
+      var fakeResult = new[] { queryResultRowStub1, queryResultRowStub2 };
+
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
+      queryStub.Stub (stub => stub.QueryType).Return (QueryType.Custom);
+      var commandMock = _mockRepository.StrictMock<IStorageProviderCommand<IEnumerable<IQueryResultRow>, IRdbmsProviderCommandExecutionContext>> ();
+
+      using (_mockRepository.Ordered ())
+      {
+        _connectionCreatorMock.Expect (mock => mock.CreateConnection ()).Return (_connectionStub);
+        _commandFactoryMock
+            .Expect (mock => mock.CreateForCustomQuery (queryStub))
+            .Return (commandMock);
+        commandMock.Expect (mock => mock.Execute (_provider)).Return (fakeResult);
+      }
+      _mockRepository.ReplayAll ();
+
+      var result = _provider.ExecuteCustomQuery (queryStub);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.SameAs(fakeResult));
     }
 
     [Test]

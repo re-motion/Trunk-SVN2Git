@@ -65,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
                                                   new SqlDbCommandBuilderFactory (SqlDialect.Instance),
                                                   rdbmsPersistenceModelProvider,
                                                   new ObjectReaderFactory (
-                                                      rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider),
+                                                      rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
                                                   new TableDefinitionFinder (rdbmsPersistenceModelProvider),
                                                   dataStoragePropertyDefinitionFactory);
 
@@ -108,6 +108,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection());
 
       var result = _factory.CreateForDataContainerQuery (queryStub);
+
+      Assert.That (result, Is.Not.Null);
+    }
+
+    [Test]
+    public void CreateForCustomQuery ()
+    {
+      var queryStub = MockRepository.GenerateStub<IQuery> ();
+      queryStub.Stub (stub => stub.Statement).Return ("Statement");
+      queryStub.Stub (stub => stub.Parameters).Return (new QueryParameterCollection ());
+
+      var result = _factory.CreateForCustomQuery (queryStub);
 
       Assert.That (result, Is.Not.Null);
     }

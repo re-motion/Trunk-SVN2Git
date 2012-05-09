@@ -33,6 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     private ObjectIDStoragePropertyDefinition _property1;
     private SimpleStoragePropertyDefinition _property2;
     private SerializedObjectIDStoragePropertyDefinition _property3;
+    private IObjectReader<IQueryResultRow> _resultRowReaderStub;
 
     public override void SetUp ()
     {
@@ -49,6 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
           _dataStoragePropertyDefinitionFactoryStrictMock);
 
       _dataContainerReader1Stub = MockRepository.GenerateStub<IObjectReader<DataContainer>>();
+      _resultRowReaderStub = MockRepository.GenerateStub<IObjectReader<IQueryResultRow>>();
 
       _queryParameter1 = new QueryParameter ("first", DomainObjectIDs.Order1);
       _queryParameter2 = new QueryParameter ("second", DomainObjectIDs.Order2.Value);
@@ -150,6 +152,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
                   "The query parameter 'p1' cannot be converted to a database value: This operation is not supported because the storage property is "
                   + "invalid. Reason: X.")
               .And.InnerException.TypeOf<NotSupportedException>());
+    }
+
+    [Test]
+    public void CreateForCustomQuery ()
+    {
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order1))
+          .Return (_property1);
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Order2.Value))
+          .Return (_property2);
+      _dataStoragePropertyDefinitionFactoryStrictMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))
+          .Return (_property3);
+      _dataStoragePropertyDefinitionFactoryStrictMock.Replay ();
+
+      var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder> ();
+
+      var expectedParametersWithType =
+          new[]
+          {
+              new QueryParameterWithType (
+                  new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType),
+                  StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_property1).StorageTypeInfo),
+              new QueryParameterWithType (_queryParameter2, _property2.ColumnDefinition.StorageTypeInfo),
+              new QueryParameterWithType (
+                  new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
+                  StoragePropertyDefinitionTestHelper.GetSingleColumn (_property3.SerializedIDProperty).StorageTypeInfo)
+          };
+      _dbCommandBuilderFactoryStrictMock
+          .Expect (
+              stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.List.Equal (expectedParametersWithType)))
+          .Return (commandBuilderStub);
+      _dbCommandBuilderFactoryStrictMock.Replay ();
+
+      _objectReaderFactoryStrictMock.Expect (mock => mock.CreateResultRowReader ()).Return (_resultRowReaderStub);
+      _objectReaderFactoryStrictMock.Replay ();
+
+      var result = _factory.CreateForCustomQuery (_queryStub);
+
+      Assert.That (result, Is.TypeOf (typeof (MultiObjectLoadCommand<IQueryResultRow>)));
+      var command = ((MultiObjectLoadCommand<IQueryResultRow>) result);
+      Assert.That (command.DbCommandBuildersAndReaders.Length, Is.EqualTo (1));
+      Assert.That (command.DbCommandBuildersAndReaders[0].Item1, Is.SameAs (commandBuilderStub));
+      Assert.That (command.DbCommandBuildersAndReaders[0].Item2, Is.SameAs (_resultRowReaderStub));
     }
 
     [Test]

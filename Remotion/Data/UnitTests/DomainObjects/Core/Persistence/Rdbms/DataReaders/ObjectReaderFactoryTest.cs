@@ -36,6 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     private ObjectIDStoragePropertyDefinition _objectIDProperty;
     private SimpleStoragePropertyDefinition _timestampProperty;
     private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProviderStub;
+    private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
 
     public override void SetUp ()
     {
@@ -43,6 +44,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
       _rdbmsPersistenceModelProviderStub = MockRepository.GenerateStub<IRdbmsPersistenceModelProvider>();
       _entityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
+      _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
+
       _objectIDProperty = ObjectIDStoragePropertyDefinitionObjectMother.ObjectIDProperty;
       _timestampProperty = SimpleStoragePropertyDefinitionObjectMother.TimestampProperty;
       _entityDefinitionStub.Stub (stub => stub.ObjectIDProperty).Return (_objectIDProperty);
@@ -54,7 +57,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       _infrastructureStoragePropertyDefinitionProviderStub = MockRepository.GenerateStrictMock<IInfrastructureStoragePropertyDefinitionProvider> ();
       _factory = new ObjectReaderFactory (
           _rdbmsPersistenceModelProviderStub,
-          _infrastructureStoragePropertyDefinitionProviderStub);
+          _infrastructureStoragePropertyDefinitionProviderStub,
+          _storageTypeInformationProviderStub);
     }
 
     [Test]
@@ -105,6 +109,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       CheckOrdinalProvider (timestampReader.ColumnOrdinalProvider);
       Assert.That (timestampReader.IDProperty, Is.SameAs (_objectIDProperty));
       Assert.That (timestampReader.TimestampProperty, Is.SameAs (_timestampProperty));
+    }
+
+    [Test]
+    public void CreateResultRowReader ()
+    {
+      var result = _factory.CreateResultRowReader();
+
+      Assert.That (result, Is.TypeOf (typeof (QueryResultRowReader)));
+      var queryResultRowReader = (QueryResultRowReader) result;
+      Assert.That (queryResultRowReader.StorageTypeInformationProvider, Is.SameAs (_storageTypeInformationProviderStub));
     }
 
     private void CheckOrdinalProvider (IColumnOrdinalProvider ordinalProvider)

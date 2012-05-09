@@ -89,6 +89,7 @@ namespace Remotion.Data.DomainObjects.Persistence
     public abstract void Rollback ();
     public abstract ObjectID CreateNewObjectID (ClassDefinition classDefinition);
     public abstract IEnumerable<DataContainer> ExecuteCollectionQuery (IQuery query);
+    public abstract IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query);
     public abstract object ExecuteScalarQuery (IQuery query);
 
     public StorageProviderDefinition StorageProviderDefinition

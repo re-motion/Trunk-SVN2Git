@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Utilities;
@@ -54,6 +55,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
         collection.Add (DataContainer.CreateNew (CreateNewObjectID (MappingConfiguration.Current.GetTypeDefinition (typeof (SecurableObject)))));
 
       return collection.ToArray ();
+    }
+
+    public override IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      return new QueryResultRow[0];
     }
 
     public override object ExecuteScalarQuery (IQuery query)

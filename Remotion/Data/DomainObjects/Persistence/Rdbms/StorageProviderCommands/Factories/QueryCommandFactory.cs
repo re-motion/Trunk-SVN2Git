@@ -75,6 +75,16 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       return new MultiObjectLoadCommand<DataContainer> (new[] { Tuple.Create (dbCommandBuilder, dataContainerReader) });
     }
 
+    public virtual IStorageProviderCommand<IEnumerable<IQueryResultRow>, IRdbmsProviderCommandExecutionContext> CreateForCustomQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+
+      var dbCommandBuilder = CreateDbCommandBuilder (query);
+      var resultRowReader = _objectReaderFactory.CreateResultRowReader();
+
+      return new MultiObjectLoadCommand<IQueryResultRow> (new[] { Tuple.Create (dbCommandBuilder, resultRowReader) });
+    }
+
     public virtual IStorageProviderCommand<object, IRdbmsProviderCommandExecutionContext> CreateForScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);

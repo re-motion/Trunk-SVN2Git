@@ -21,6 +21,7 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
@@ -32,16 +33,20 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
   {
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
 
     public ObjectReaderFactory (
         IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
     {
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
-      
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     public IObjectReader<DataContainer> CreateDataContainerReader ()
@@ -83,6 +88,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
 
       var ordinalProvider = CreateOrdinalProviderForKnownProjection (selectedColumns);
       return new TimestampReader (entityDefinition.ObjectIDProperty, entityDefinition.TimestampProperty, ordinalProvider);
+    }
+
+    public IObjectReader<IQueryResultRow> CreateResultRowReader ()
+    {
+      return new QueryResultRowReader (_storageTypeInformationProvider);
     }
 
     private IColumnOrdinalProvider CreateOrdinalProviderForKnownProjection (IEnumerable<ColumnDefinition> selectedColumns)

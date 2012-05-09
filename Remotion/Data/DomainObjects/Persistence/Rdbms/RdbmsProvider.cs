@@ -221,6 +221,18 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
       return checkedSequence.ToArray();
     }
 
+    public override IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
+    {
+      CheckDisposed ();
+      ArgumentUtility.CheckNotNull ("query", query);
+      CheckQuery (query, QueryType.Custom, "query");
+
+      Connect();
+
+      var command = _storageProviderCommandFactory.CreateForCustomQuery (query);
+      return command.Execute (this);
+    }
+
     public override object ExecuteScalarQuery (IQuery query)
     {
       CheckDisposed();

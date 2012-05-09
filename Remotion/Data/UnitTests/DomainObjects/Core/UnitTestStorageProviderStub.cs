@@ -132,6 +132,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         return null;
     }
 
+    public override IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
+    {
+      if (InnerProvider != null)
+        return InnerProvider.ExecuteCustomQuery (query);
+      else
+        return null;
+    }
+
     public override object ExecuteScalarQuery (IQuery query)
     {
       if (InnerProvider != null)
