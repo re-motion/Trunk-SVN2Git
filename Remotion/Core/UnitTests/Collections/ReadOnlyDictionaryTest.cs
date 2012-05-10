@@ -15,10 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
-using System.Linq;
+using Remotion.Development.UnitTesting;
 
 namespace Remotion.UnitTests.Collections
 {
@@ -38,17 +39,19 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void GetEnumerator ()
+    public void GetEnumerator_NonGeneric ()
     {
-      Assert.That (_readOnlyDictionary.GetEnumerator(), Is.EqualTo (_dictionary.GetEnumerator()));
+      var readOnlyDictionaryAsNonGenericEnumerable = _readOnlyDictionary;
+      IEnumerator enumerator = readOnlyDictionaryAsNonGenericEnumerable.GetEnumerator();
+      Assert.That (enumerator, Is.EqualTo (_dictionary.GetEnumerator()));
     }
 
     [Test]
     public void GetEnumerator_Generic ()
     {
-      var readOnlyDictionaryAsGenericIEnumerable = (IEnumerable<KeyValuePair<string, string>>) (_readOnlyDictionary);
-      var dictionaryAsGenericIEnumerable = (IEnumerable<KeyValuePair<string, string>>) (_dictionary);
-      Assert.That (readOnlyDictionaryAsGenericIEnumerable.GetEnumerator(), Is.EqualTo (dictionaryAsGenericIEnumerable.GetEnumerator()));
+      var readOnlyDictionaryAsGenericIEnumerable = _readOnlyDictionary;
+      IEnumerator<KeyValuePair<string, string>> enumerator = readOnlyDictionaryAsGenericIEnumerable.GetEnumerator();
+      Assert.That (enumerator, Is.EqualTo (_dictionary.GetEnumerator()));
     }
 
 
@@ -97,10 +100,9 @@ namespace Remotion.UnitTests.Collections
     [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage = "The given key was not present in the dictionary.")]
     public void Indexer_Get_Failure ()
     {
-      var dummy = _readOnlyDictionary["non existing key"];
+      Dev.Null = _readOnlyDictionary["non existing key"];
     }
-
-
+    
     private void AssertTryGetValue (string key, string expectedValue, bool expectedHasValue)
     {
       string value;

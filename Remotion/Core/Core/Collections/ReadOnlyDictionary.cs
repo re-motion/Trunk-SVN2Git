@@ -39,14 +39,14 @@ namespace Remotion.Collections
       _dictionary = dictionary;
     }
 
-    IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator ()
+    public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator ()
     {
       return _dictionary.GetEnumerator();
     }
 
-    public IEnumerator GetEnumerator ()
+    IEnumerator IEnumerable.GetEnumerator ()
     {
-      return ((IEnumerable) _dictionary).GetEnumerator();
+      return _dictionary.GetEnumerator();
     }
 
 
