@@ -51,7 +51,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public bool IsBrowserCapableOfScripting { get; set; }
     public bool IsClientSideSortingEnabled { get; set; }
     public bool HasSortingKeys { get; set; }
-    public List<BocListSortingOrderEntry> SortingOrder { get; set; }
+    public ICollection<BocListSortingOrderEntry> SortingOrder { get; set; }
     
     public BocColumnRenderer[] CreateColumnRenderers ()
     {
