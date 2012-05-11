@@ -53,7 +53,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   [Designer (typeof (BocListDesigner))]
   [DefaultEvent ("CommandClick")]
   [ToolboxItemFilter ("System.Web.UI")]
-  public class BocList : BusinessObjectBoundEditableWebControl, IBocList
+  public class BocList : 
+      BusinessObjectBoundEditableWebControl, 
+      IBocList,
+      IPostBackEventHandler,
+      IPostBackDataHandler,
+      IBocListSortingOrderProvider,
+      IResourceDispatchTarget
   {
     //  constants
     private const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
