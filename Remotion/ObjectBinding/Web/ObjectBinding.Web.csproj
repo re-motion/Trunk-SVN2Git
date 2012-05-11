@@ -198,6 +198,7 @@
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocRowEditModeColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocSimpleColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\NullColumnRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Sorting\DefaultBocListRowComparer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\BocAutoCompleteReferenceValueInvalidDisplayNameValidator.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderingContext.cs" />
@@ -606,6 +607,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

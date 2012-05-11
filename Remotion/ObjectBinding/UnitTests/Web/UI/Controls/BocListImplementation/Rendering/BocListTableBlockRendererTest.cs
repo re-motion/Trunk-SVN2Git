@@ -154,13 +154,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       Initialize (true);
 
-      var sortingProvider = MockRepository.GenerateStub<IBocListSortingOrderProvider>();
       IBusinessObject firstObject = (IBusinessObject) ((TypeWithReference) BusinessObject).FirstValue;
       IBusinessObject secondObject = (IBusinessObject) ((TypeWithReference) BusinessObject).SecondValue;
       BocListRow[] rows = new[]
                           {
-                              new BocListRow (sortingProvider, 0, firstObject),
-                              new BocListRow (sortingProvider, 1, secondObject)
+                              new BocListRow (0, firstObject),
+                              new BocListRow (1, secondObject)
                           };
       int firstRow;
       List.Stub (list => list.GetRowsToDisplay (out firstRow)).Return (rows);

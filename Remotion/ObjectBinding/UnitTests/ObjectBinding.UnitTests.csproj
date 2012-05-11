@@ -401,7 +401,6 @@
     <Compile Include="Web\UI\Controls\BocListMock.cs" />
     <Compile Include="Web\UI\Controls\BocListRowCompareReferenceValuesTest.cs" />
     <Compile Include="Web\UI\Controls\BocListRowsCompareStringValuesTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListSortingOrderProviderMock.cs" />
     <Compile Include="Web\UI\Controls\BocListTest.cs" />
     <Compile Include="Web\UI\Controls\BocListWcagTest.cs" />
     <Compile Include="Web\UI\Controls\BocLiteralTest.cs" />

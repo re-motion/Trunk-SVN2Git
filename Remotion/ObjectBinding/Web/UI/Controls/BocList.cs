@@ -29,6 +29,7 @@ using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
 using Remotion.Web;
@@ -58,7 +59,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       IBocList,
       IPostBackEventHandler,
       IPostBackDataHandler,
-      IBocListSortingOrderProvider,
       IResourceDispatchTarget
   {
     //  constants
@@ -2299,18 +2299,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!HasValue)
         return new BocListRow[0];
 
-      IBocListSortingOrderProvider sortingOrderProvider = this;
-      var rows = Value.Cast<IBusinessObject>().Select ((row, rowIndex) => new BocListRow (sortingOrderProvider, rowIndex, row));
+      var rows = Value.Cast<IBusinessObject>().Select ((row, rowIndex) => new BocListRow (rowIndex, row));
 
       if (sorted && HasSortingKeys)
       {
-        IComparer<BocListRow> comparer = null;
+        var comparer = CreateBocListRowComparer();
         return rows.OrderBy (row => row, comparer);
       }
       else
       {
         return rows;
       }
+    }
+
+    protected virtual DefaultBocListRowComparer CreateBocListRowComparer ()
+    {
+      return new DefaultBocListRowComparer (GetSortingOrder());
     }
 
     protected BocListRow[] EnsureGotIndexedRowsSorted ()

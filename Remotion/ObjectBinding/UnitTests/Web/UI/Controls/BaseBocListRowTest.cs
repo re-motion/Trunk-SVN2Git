@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
@@ -27,14 +28,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
       sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Ascending);
 
-      BocListSortingOrderProviderMock provider = new BocListSortingOrderProviderMock();
-      provider.SetSortingOrder (sortingOrder);
+      BocListRow rowLeft = new BocListRow (0, left);
+      BocListRow rowRight = new BocListRow (0, right);
 
-      BocListRow rowLeft = new BocListRow (provider, 0, left);
-      BocListRow rowRight = new BocListRow (provider, 0, right);
-
-      int compareResultLeftRight = rowLeft.CompareTo (rowRight);
-      int compareResultRightLeft = rowRight.CompareTo (rowLeft);
+      var comparer = new DefaultBocListRowComparer (sortingOrder);
+      int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
+      int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
 
       Assert.IsTrue (compareResultLeftRight == 0, "Left - Right != zero");
       Assert.IsTrue (compareResultRightLeft == 0, "Right - Left != zero");
@@ -45,14 +44,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
       sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Descending);
 
-      BocListSortingOrderProviderMock provider = new BocListSortingOrderProviderMock();
-      provider.SetSortingOrder (sortingOrder);
+      BocListRow rowLeft = new BocListRow (0, left);
+      BocListRow rowRight = new BocListRow (0, right);
 
-      BocListRow rowLeft = new BocListRow (provider, 0, left);
-      BocListRow rowRight = new BocListRow (provider, 0, right);
-
-      int compareResultLeftRight = rowLeft.CompareTo (rowRight);
-      int compareResultRightLeft = rowRight.CompareTo (rowLeft);
+      var comparer = new DefaultBocListRowComparer (sortingOrder);
+      int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
+      int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
 
       Assert.IsTrue (compareResultLeftRight == 0, "Left - Right != zero");
       Assert.IsTrue (compareResultRightLeft == 0, "Right - Left != zero");
@@ -63,14 +60,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
       sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Ascending);
 
-      BocListSortingOrderProviderMock provider = new BocListSortingOrderProviderMock();
-      provider.SetSortingOrder (sortingOrder);
+      BocListRow rowLeft = new BocListRow (0, left);
+      BocListRow rowRight = new BocListRow (0, right);
 
-      BocListRow rowLeft = new BocListRow (provider, 0, left);
-      BocListRow rowRight = new BocListRow (provider, 0, right);
-
-      int compareResultLeftRight = rowLeft.CompareTo (rowRight);
-      int compareResultRightLeft = rowRight.CompareTo (rowLeft);
+      var comparer = new DefaultBocListRowComparer (sortingOrder);
+      int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
+      int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
 
       Assert.IsTrue (compareResultLeftRight < 0, "Left - Right <= zero.");
       Assert.IsTrue (compareResultRightLeft > 0, "Right - Left >= zero.");
@@ -81,14 +76,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
       sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Descending);
 
-      BocListSortingOrderProviderMock provider = new BocListSortingOrderProviderMock();
-      provider.SetSortingOrder (sortingOrder);
+      BocListRow rowLeft = new BocListRow (0, left);
+      BocListRow rowRight = new BocListRow (0, right);
 
-      BocListRow rowLeft = new BocListRow (provider, 0, left);
-      BocListRow rowRight = new BocListRow (provider, 0, right);
-
-      int compareResultLeftRight = rowLeft.CompareTo (rowRight);
-      int compareResultRightLeft = rowRight.CompareTo (rowLeft);
+      var comparer = new DefaultBocListRowComparer (sortingOrder);
+      int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
+      int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
 
       Assert.IsTrue (compareResultLeftRight > 0, "Right - Left >= zero.");
       Assert.IsTrue (compareResultRightLeft < 0, "Left - Right <= zero.");
