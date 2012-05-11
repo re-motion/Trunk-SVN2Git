@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -28,13 +29,13 @@ namespace Remotion.Utilities
     public static MemberInfo GetMember<TMemberType> (Expression<Func<TMemberType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMemberInfoFromExpression (expression.Body);
+      return GetMemberInfoFromExpression (null, expression.Body);
     }
 
     public static MemberInfo GetMember<TSourceObject, TMemberType> (Expression<Func<TSourceObject, TMemberType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMemberInfoFromExpression (expression.Body);
+      return GetMemberInfoFromExpression (typeof (TSourceObject), expression.Body);
     }
 
     public static FieldInfo GetField<TFieldType> (Expression<Func<TFieldType>> expression)
@@ -58,61 +59,49 @@ namespace Remotion.Utilities
     public static MethodInfo GetMethod (Expression<Action> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMethodInfoFromMethodCallExpression (expression.Body);
+      return GetMethodInfoFromMethodCallExpression (null, expression.Body);
     }
 
     public static MethodInfo GetMethod<TReturnType> (Expression<Func<TReturnType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMethodInfoFromMethodCallExpression (expression.Body);
+      return GetMethodInfoFromMethodCallExpression (null, expression.Body);
     }
 
     public static MethodInfo GetMethod<TSourceObject> (Expression<Action<TSourceObject>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMethodInfoFromMethodCallExpression (expression.Body);
+      return GetMethodInfoFromMethodCallExpression (typeof (TSourceObject), expression.Body);
     }
 
     public static MethodInfo GetMethod<TSourceObject, TReturnType> (Expression<Func<TSourceObject, TReturnType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMethodInfoFromMethodCallExpression (expression.Body);
-    }
-
-    public static MethodInfo GetMethodBaseDefinition<TSourceObject> (Expression<Action<TSourceObject>> expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetBaseDefinitionMethodInfoFromMethodCallExpression (expression.Body);
-    }
-
-    public static MethodInfo GetMethodBaseDefinition<TSourceObject, TReturnType> (Expression<Func<TSourceObject, TReturnType>> expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetBaseDefinitionMethodInfoFromMethodCallExpression (expression.Body);
+      return GetMethodInfoFromMethodCallExpression (typeof (TSourceObject), expression.Body);
     }
 
     public static MethodInfo GetGenericMethodDefinition (Expression<Action> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetGenericMethodDefinition(expression.Body);
+      return GetGenericMethodDefinition(null, expression.Body);
     }
 
     public static MethodInfo GetGenericMethodDefinition<TReturnType> (Expression<Func<TReturnType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetGenericMethodDefinition (expression.Body);
+      return GetGenericMethodDefinition (null, expression.Body);
     }
 
     public static MethodInfo GetGenericMethodDefinition<TSourceObject> (Expression<Action<TSourceObject>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetGenericMethodDefinition (expression.Body);
+      return GetGenericMethodDefinition (typeof (TSourceObject), expression.Body);
     }
 
     public static MethodInfo GetGenericMethodDefinition<TSourceObject, TReturnType> (Expression<Func<TSourceObject, TReturnType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetGenericMethodDefinition (expression.Body);
+      return GetGenericMethodDefinition (typeof(TSourceObject), expression.Body);
     }
 
     public static PropertyInfo GetProperty<TPropertyType> (Expression<Func<TPropertyType>> expression)
@@ -127,12 +116,12 @@ namespace Remotion.Utilities
       return GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression.Body, "property");
     }
 
-    private static MemberInfo GetMemberInfoFromExpression (Expression expression)
+    private static MemberInfo GetMemberInfoFromExpression (Type sourceObjectType, Expression expression)
     {
       if (expression is MemberExpression)
         return GetTypedMemberInfoFromMemberExpression<MemberInfo> (expression, "member");
       if (expression is MethodCallExpression)
-        return GetMethodInfoFromMethodCallExpression (expression);
+        return GetMethodInfoFromMethodCallExpression (sourceObjectType, expression);
       if (expression is NewExpression)
         return GetConstructorInfoFromNewExpression (expression);
 
@@ -165,31 +154,36 @@ namespace Remotion.Utilities
       return newExpression.Constructor;
     }
 
-    private static MethodInfo GetMethodInfoFromMethodCallExpression (Expression expression)
-    {
-      var method = GetBaseDefinitionMethodInfoFromMethodCallExpression(expression);
-      if (method.IsVirtual)
-      {
-        throw new NotSupportedException (
-            "Virtual methods cannot be reliably extracted from expressions because compilers often emit virtual calls to the base definitions " 
-            + "instead. Use GetMethodBaseDefinition instead.");
-      }
-
-      return method;
-    }
-
-    private static MethodInfo GetBaseDefinitionMethodInfoFromMethodCallExpression (Expression expression)
+    private static MethodInfo GetMethodInfoFromMethodCallExpression (Type sourceObjectType, Expression expression)
     {
       var methodCallExpression = expression as MethodCallExpression;
       if (methodCallExpression == null)
         throw new ArgumentException ("Must be a MethodCallExpression.", "expression");
 
-      return methodCallExpression.Method.GetBaseDefinition();
+      var bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+      // For virtual methods the MethodCallExpression containts the root definition
+      var method = methodCallExpression.Method;
+
+      if (sourceObjectType == null)
+        return method;
+
+      Type[] genericMethodArguments = null;
+      if (method.IsGenericMethod && !method.IsGenericMethodDefinition)
+      {
+        genericMethodArguments = method.GetGenericArguments();
+        method = method.GetGenericMethodDefinition();
+      }
+
+      var methodOnSourceType = sourceObjectType.GetMethods (bindingFlags).Single (m => m.GetBaseDefinition().Equals (method.GetBaseDefinition()));
+      if (genericMethodArguments != null)
+        return methodOnSourceType.MakeGenericMethod (genericMethodArguments);
+
+      return methodOnSourceType;
     }
 
-    private static MethodInfo GetGenericMethodDefinition (Expression expression)
+    private static MethodInfo GetGenericMethodDefinition (Type sourceObjectType, Expression expression)
     {
-      var methodInfo = GetMethodInfoFromMethodCallExpression (expression);
+      var methodInfo = GetMethodInfoFromMethodCallExpression (sourceObjectType, expression);
       if (!methodInfo.IsGenericMethod)
         throw new ArgumentException ("Must hold a generic method access expression.", "expression");
 

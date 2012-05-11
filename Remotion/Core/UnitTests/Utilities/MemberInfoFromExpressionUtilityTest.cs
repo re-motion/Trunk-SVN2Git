@@ -177,6 +177,24 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void GetMethod_Static_VoidGeneric ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod (() => DomainType.StaticVoidGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("StaticVoidGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethod_Static_Generic ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod (() => DomainType.StaticGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("StaticGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must be a MethodCallExpression.\r\nParameter name: expression")]
     public void GetMethod_Static_NonMethodCallExpression ()
     {
@@ -202,67 +220,49 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "Virtual methods cannot be reliably extracted from expressions because compilers often emit virtual calls to the base definitions "
-        + "instead. Use GetMethodBaseDefinition instead.")]
-    public void GetMethod_OverridingVoid ()
+    public void GetMethod_Instance_OverridingVoid ()
     {
-      MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingVoidMethod ());
-    }
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingVoidMethod ());
 
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-        "Virtual methods cannot be reliably extracted from expressions because compilers often emit virtual calls to the base definitions "
-        + "instead. Use GetMethodBaseDefinition instead.")]
-    public void GetMethod_Overriding ()
-    {
-      MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingMethod ());
-    }
-
-    [Test]
-    public void GetMethodBaseDefinition_OverridingVoid ()
-    {
-      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition ((DomainType obj) => obj.OverridingVoidMethod ());
-
-      var expected = typeof (DomainTypeBase).GetMethod ("OverridingVoidMethod");
+      var expected = typeof (DomainType).GetMethod ("OverridingVoidMethod");
       Assert.That (member, Is.EqualTo (expected));
     }
 
     [Test]
-    public void GetMethodBaseDefinition_OverridingVoid_ReallyTakesBaseDefinition ()
+    public void GetMethod_Instance_Overriding ()
     {
-      var parameter = Expression.Parameter (typeof (DomainType), "dt");
-      var derivedMethod = typeof (DomainType).GetMethod ("OverridingVoidMethod");
-      Assert.That (derivedMethod.DeclaringType, Is.SameAs (typeof (DomainType)));
-      var expression = Expression.Lambda<Action<DomainType>> (Expression.Call (parameter, derivedMethod), parameter);
-      
-      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition (expression);
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingMethod ());
 
-      var expected = typeof (DomainTypeBase).GetMethod ("OverridingVoidMethod");
+      var expected = typeof (DomainType).GetMethod ("OverridingMethod");
       Assert.That (member, Is.EqualTo (expected));
     }
 
     [Test]
-    public void GetMethodBaseDefinition_Overriding ()
+    public void GetMethod_Instance_OverridingVoid_WithNonBaseMethodInExpressionTree ()
     {
-      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition ((DomainType obj) => obj.OverridingMethod ());
+      // The C# compiler always inserts the root method definition for virtual methods into expression trees.
+      // To test behavior with non-root definitions, we need to construct an expression tree manually.
+      var parameter = Expression.Parameter (typeof (DomainType), "obj");
+      var method = typeof (DomainType).GetMethod ("OverridingVoidMethod");
+      var expression = Expression.Lambda<Action<DomainType>> (Expression.Call (parameter, method), parameter);
 
-      var expected = typeof (DomainTypeBase).GetMethod ("OverridingMethod");
-      Assert.That (member, Is.EqualTo (expected));
+      var member = MemberInfoFromExpressionUtility.GetMethod (expression);
+
+      Assert.That (member, Is.EqualTo (method));
     }
 
     [Test]
-    public void GetMethodBaseDefinition_Overriding_ReallyTakesBaseDefinition ()
+    public void GetMethod_Instance_Overriding_WithNonBaseMethodInExpressionTree ()
     {
-      var parameter = Expression.Parameter (typeof (DomainType), "dt");
-      var derivedMethod = typeof (DomainType).GetMethod ("OverridingMethod");
-      Assert.That (derivedMethod.DeclaringType, Is.SameAs (typeof (DomainType)));
-      var expression = Expression.Lambda<Func<DomainType, int>> (Expression.Call (parameter, derivedMethod), parameter);
+      // The C# compiler always inserts the root method definition for virtual methods into expression trees.
+      // To test behavior with non-root definitions, we need to construct an expression tree manually.
+      var parameter = Expression.Parameter (typeof (DomainType), "obj");
+      var method = typeof (DomainType).GetMethod ("OverridingMethod");
+      var expression = Expression.Lambda<Func<DomainType, int>> (Expression.Call (parameter, method), parameter);
 
-      var member = MemberInfoFromExpressionUtility.GetMethodBaseDefinition (expression);
+      var member = MemberInfoFromExpressionUtility.GetMethod (expression);
 
-      var expected = typeof (DomainTypeBase).GetMethod ("OverridingMethod");
-      Assert.That (member, Is.EqualTo (expected));
+      Assert.That (member, Is.EqualTo (method));
     }
 
     [Test]
@@ -270,6 +270,72 @@ namespace Remotion.UnitTests.Utilities
     public void GetMethod_Instance_NonMethodCallExpression ()
     {
       MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.InstanceProperty);
+    }
+
+    [Test]
+    public void GetMethod_Instance_VoidGenericMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.InstanceVoidGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("InstanceVoidGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethod_Instance_GenericMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.InstanceGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("InstanceGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethod_Instance_OverridingVoidGenericMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingVoidGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("OverridingVoidGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethod_Instance_OverridingGenericMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.OverridingGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("OverridingGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethod_Instance_OverridingVoidGeneric_WithNonBaseMethodInExpressionTree ()
+    {
+      // The C# compiler always inserts the root method definition for virtual methods into expression trees.
+      // To test behavior with non-root definitions, we need to construct an expression tree manually.
+      var parameter = Expression.Parameter (typeof (DomainType), "obj");
+      var method = typeof (DomainType).GetMethod ("OverridingVoidGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      var expression = Expression.Lambda<Action<DomainType>> (
+          Expression.Call (parameter, method, Expression.Constant (null, typeof (Dev.T))), parameter);
+
+      var member = MemberInfoFromExpressionUtility.GetMethod (expression);
+
+      Assert.That (member, Is.EqualTo (method));
+    }
+
+    [Test]
+    public void GetMethod_Instance_OverridingGeneric_WithNonBaseMethodInExpressionTree ()
+    {
+      // The C# compiler always inserts the root method definition for virtual methods into expression trees.
+      // To test behavior with non-root definitions, we need to construct an expression tree manually.
+      var parameter = Expression.Parameter (typeof (DomainType), "obj");
+      var method = typeof (DomainType).GetMethod ("OverridingGenericMethod").MakeGenericMethod (typeof (Dev.T));
+      var expression = Expression.Lambda<Func<DomainType, int>> (
+          Expression.Call (parameter, method, Expression.Constant (null, typeof (Dev.T))), parameter);
+
+      var member = MemberInfoFromExpressionUtility.GetMethod (expression);
+
+      Assert.That (member, Is.EqualTo (method));
     }
 
     [Test]
@@ -312,19 +378,12 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    public void GetGenericMethodDefinition_InstanceVoid ()
+    public void GetGenericMethodDefinition_Instance_Void ()
     {
       var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceVoidGenericMethod<Dev.T> (null));
 
       var expected = typeof (DomainType).GetMethod ("InstanceVoidGenericMethod");
       Assert.That (member, Is.EqualTo (expected));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must hold a generic method access expression.\r\nParameter name: expression")]
-    public void GetGenericMethodDefinition_InstanceVoid_NonGenericMethod ()
-    {
-      MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceVoidMethod ());
     }
 
     [Test]
@@ -337,10 +396,35 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void GetGenericMethodDefinition_Instance_OverridingVoidMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.OverridingVoidGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("OverridingVoidGenericMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetGenericMethodDefinition_Instance_OverridingMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.OverridingGenericMethod<Dev.T> (null));
+
+      var expected = typeof (DomainType).GetMethod ("OverridingGenericMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must be a MethodCallExpression.\r\nParameter name: expression")]
     public void GetGenericMethodDefinition_Instance_NonMethodCallExpression ()
     {
       MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceProperty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Must hold a generic method access expression.\r\nParameter name: expression")]
+    public void GetGenericMethodDefinition_Instance_VoidNonGenericMethod ()
+    {
+      MemberInfoFromExpressionUtility.GetGenericMethodDefinition ((DomainType obj) => obj.InstanceVoidMethod ());
     }
 
     [Test]
@@ -400,12 +484,14 @@ namespace Remotion.UnitTests.Utilities
     {
       public virtual void OverridingVoidMethod () { }
       public virtual int OverridingMethod () { return 0; }
+      public virtual void OverridingVoidGenericMethod<T> (T t) { }
+      public virtual int OverridingGenericMethod<T> (T t) { return 0; }
     }
 
     public class DomainType : DomainTypeBase
     {
       public static int StaticField;
-      public int InstanceField;
+      public readonly int InstanceField;
 
       public DomainType ()
       {
@@ -422,8 +508,11 @@ namespace Remotion.UnitTests.Utilities
       public static int StaticGenericMethod<T> (T t) { return 0; }
       public void InstanceVoidGenericMethod<T> (T t) { }
       public int InstanceGenericMethod<T> (T t) { return 0; }
+
       public override void OverridingVoidMethod () { }
       public override int OverridingMethod () { return 0; }
+      public override void OverridingVoidGenericMethod<T> (T t) { }
+      public override int OverridingGenericMethod<T> (T t) { return 0; }
 
       public static int StaticProperty { get; set; }
       public int InstanceProperty { get; set; }
