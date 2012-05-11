@@ -79,7 +79,7 @@
 <remotion:BocListItemCommand></remotion:BocListItemCommand>
 </PersistedCommand>
 </remotion:BocSimpleColumnDefinition>
-<remotion:BocDropDownMenuColumnDefinition ItemID="RowMenu" MenuTitleText="Context" Width="15px" ColumnTitle="Menu"></remotion:BocDropDownMenuColumnDefinition>
+<remotion:BocDropDownMenuColumnDefinition ItemID="RowMenu" MenuTitleText="Context" Width="16px" ColumnTitle="Menu"></remotion:BocDropDownMenuColumnDefinition>
 </FixedColumns>
 </ros:TestBocList></td></tr>
 <%--  <tr>

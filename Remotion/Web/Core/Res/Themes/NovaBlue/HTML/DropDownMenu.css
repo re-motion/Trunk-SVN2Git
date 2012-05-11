@@ -8,7 +8,7 @@ span.DropDownMenuContainer
   position: relative;
   font-family: sans-serif;
   width: 100%;
-  min-width: 17px;
+  min-width: 18px;
 }
 
 tr.bocListDataRow span.DropDownMenuContainer,
@@ -78,19 +78,15 @@ span.DropDownMenuSelect a.DropDownMenuButton
   top: 0px;
   bottom: 0;
   right: 0px;
-  width: 15px;
   border-left: solid 1px #083779;
   background-color: #083779;
   margin-right: 0;
-  background-position: 0px bottom;
-  background-repeat: no-repeat;
-  background-image: url('../Image/DropDownMenuEllipsis.png');
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton:first-child
 {
-  left: 0px;
-  width: auto;
+  width: 100%;
+  text-align: center;
 }
 
 span.DropDownMenuSelect.disabled a.DropDownMenuButton
@@ -98,13 +94,25 @@ span.DropDownMenuSelect.disabled a.DropDownMenuButton
   cursor: default;
   border-left: solid 1px Gray;
   background-color: #E8E8E8;
-  background-position: -15px bottom;
 }
 
 span.DropDownMenuSelect a.DropDownMenuButton img
 {
   height: 100%;
-  width: 15px;
+  width: 16px;
+  background-position: 0px center;
+  background-repeat: no-repeat;
+  background-image: url('../Image/DropDownMenuButton.gif');
+}
+
+span.DropDownMenuSelect.disabled a.DropDownMenuButton img
+{
+  background-position: -16px center;
+}
+
+body.msie7 span.DropDownMenuSelect a.DropDownMenuButton img
+{
+  height: 1.6em;
 }
 
 span.DropDownMenuSelect img
