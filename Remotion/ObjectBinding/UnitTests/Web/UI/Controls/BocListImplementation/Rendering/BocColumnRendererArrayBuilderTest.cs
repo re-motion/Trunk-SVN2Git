@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabled_False_And_HasSortingKeys_False ()
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
+      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntry (_stubColumnDefinition, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = false;
 
@@ -76,7 +76,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabledTrue_And_HasSortingKeys_False ()
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
+      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntry (_stubColumnDefinition, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = false;
 
@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void GetColumnRenderers_PrepareSorting_IsClientSideSortingEnabled_False_And_HasSortingKeys_True ()
     {
       var builder = new BocColumnRendererArrayBuilder (new[] { _stubColumnDefinition }, _serviceLocator, _wcagHelperStub);
-      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntryMock (0, SortingDirection.Ascending) });
+      builder.SortingOrder = new List<BocListSortingOrderEntry> (new[] { new BocListSortingOrderEntry (_stubColumnDefinition, SortingDirection.Ascending) });
       builder.IsClientSideSortingEnabled = false;
       builder.HasSortingKeys = true;
 
@@ -105,18 +105,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void GetColumnRenderers_PrepareSorting_SeveralColumns ()
     {
-      var builder =
-          new BocColumnRendererArrayBuilder (
-              new[] { _stubColumnDefinition, new StubColumnDefinition(), new StubColumnDefinition(), new StubColumnDefinition() },
-              _serviceLocator,
-              _wcagHelperStub);
+      var columns = new[] { _stubColumnDefinition, new StubColumnDefinition(), new StubColumnDefinition(), new StubColumnDefinition() };
+      var builder = new BocColumnRendererArrayBuilder (columns, _serviceLocator, _wcagHelperStub);
       builder.SortingOrder =
           new List<BocListSortingOrderEntry> (
               new[]
               {
-                  new BocListSortingOrderEntryMock (0, SortingDirection.Ascending),
-                  new BocListSortingOrderEntryMock (2, SortingDirection.Descending),
-                  new BocListSortingOrderEntryMock (3, SortingDirection.None)
+                  new BocListSortingOrderEntry (columns[0], SortingDirection.Ascending),
+                  new BocListSortingOrderEntry (columns[2], SortingDirection.Descending),
+                  new BocListSortingOrderEntry (columns[3], SortingDirection.None)
               });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = true;
@@ -137,19 +134,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void GetColumnRenderers_PrepareSorting_SeveralMixedColumns ()
     {
-      var builder =
-          new BocColumnRendererArrayBuilder (
-              new BocColumnDefinition[]
-              { _stubColumnDefinition, new StubColumnDefinition(), new StubValueColumnDefinition(), new StubColumnDefinition() },
-              _serviceLocator,
-              _wcagHelperStub);
+      var columns = new BocColumnDefinition[]
+                    { _stubColumnDefinition, new StubColumnDefinition(), new StubValueColumnDefinition(), new StubColumnDefinition() };
+      var builder = new BocColumnRendererArrayBuilder (columns, _serviceLocator, _wcagHelperStub);
       builder.SortingOrder =
           new List<BocListSortingOrderEntry> (
               new[]
               {
-                  new BocListSortingOrderEntryMock (0, SortingDirection.Ascending),
-                  new BocListSortingOrderEntryMock (2, SortingDirection.Descending),
-                  new BocListSortingOrderEntryMock (3, SortingDirection.None)
+                  new BocListSortingOrderEntry ((IBocSortableColumnDefinition) columns[0], SortingDirection.Ascending),
+                  new BocListSortingOrderEntry ((IBocSortableColumnDefinition) columns[2], SortingDirection.Descending),
+                  new BocListSortingOrderEntry ((IBocSortableColumnDefinition) columns[3], SortingDirection.None)
               });
       builder.IsClientSideSortingEnabled = true;
       builder.HasSortingKeys = true;

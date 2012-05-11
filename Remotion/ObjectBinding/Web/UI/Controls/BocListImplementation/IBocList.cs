@@ -159,7 +159,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 
     System.Collections.Generic.IList<int> SelectorControlCheckedState { get; }
     IEditModeController EditModeController { get; }
-    ArrayList SortingOrder { get; }
     ArrayList Validators { get; }
     BocListRowMenuTuple[] RowMenus { get; }
     System.Collections.Generic.IDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }

@@ -41,7 +41,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
       var stubColumnDefinition = new StubColumnDefinition();
       List.Stub (mock => mock.AreDataRowsClickSensitive()).Return (true);
-      List.Stub (mock => mock.SortingOrder).Return (new ArrayList { SortingDirection.Ascending });
 
       _bocColumnRenderers = new[]
                          {

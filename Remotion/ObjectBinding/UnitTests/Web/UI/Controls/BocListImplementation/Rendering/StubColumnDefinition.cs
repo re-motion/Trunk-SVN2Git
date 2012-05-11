@@ -23,11 +23,16 @@ using Remotion.Web.Factories;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class StubColumnDefinition : BocColumnDefinition
+  public class StubColumnDefinition : BocColumnDefinition, IBocSortableColumnDefinition
   {
     protected override IBocColumnRenderer GetRendererInternal (IServiceLocator locator)
     {
       return new StubColumnRenderer (new ResourceUrlFactory (new ResourceTheme.ClassicBlue()));
+    }
+
+    public bool IsSortable
+    {
+      get { return true; }
     }
   }
 }

@@ -279,10 +279,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Undefined interpreted as True. </summary>
     private bool? _enableMultipleSorting;
 
-    /// <summary> 
-    ///   Contains <see cref="BocListSortingOrderEntry"/> objects in the order of the buttons pressed.
-    /// </summary>
-    private ArrayList _sortingOrder = new ArrayList();
+    private List<BocListSortingOrderEntry> _sortingOrder = new List<BocListSortingOrderEntry>();
 
     private BocListRow[] _indexedRowsSorted;
 
@@ -825,24 +822,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
             eventArgument,
             "Column index was out of the range of valid values. Index must be less than the number of displayed columns.'");
       }
-      if (!(columns[columnIndex] is IBocSortableColumnDefinition && ((IBocSortableColumnDefinition) columns[columnIndex]).IsSortable))
+      var column = columns[columnIndex];
+      if (!(column is IBocSortableColumnDefinition && ((IBocSortableColumnDefinition) column).IsSortable))
         throw new ArgumentOutOfRangeException ("The BocList '" + ID + "' does not sortable column at index" + columnIndex + ".");
 
-      ArrayList workingSortingOrder = new ArrayList (_sortingOrder);
+      var workingSortingOrder = new List<BocListSortingOrderEntry> (_sortingOrder);
 
-      BocListSortingOrderEntry oldSortingOrderEntry = BocListSortingOrderEntry.Empty;
+      var oldSortingOrderEntry = workingSortingOrder.FirstOrDefault (entry => entry.Column == column) ?? BocListSortingOrderEntry.Empty;
 
-      for (int i = 0; i < workingSortingOrder.Count; i++)
-      {
-        BocListSortingOrderEntry currentEntry = (BocListSortingOrderEntry) workingSortingOrder[i];
-        if (currentEntry.ColumnIndex == columnIndex)
-        {
-          oldSortingOrderEntry = currentEntry;
-          break;
-        }
-      }
-
-      BocListSortingOrderEntry newSortingOrderEntry = null;
+      BocListSortingOrderEntry newSortingOrderEntry;
       //  Cycle: Ascending -> Descending -> None -> Ascending
       if (! oldSortingOrderEntry.IsEmpty)
       {
@@ -852,33 +840,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           case SortingDirection.Ascending:
           {
             newSortingOrderEntry = new BocListSortingOrderEntry (oldSortingOrderEntry.Column, SortingDirection.Descending);
-            newSortingOrderEntry.SetColumnIndex (oldSortingOrderEntry.ColumnIndex);
             break;
           }
           case SortingDirection.Descending:
           {
-            newSortingOrderEntry = null;
+            newSortingOrderEntry = BocListSortingOrderEntry.Empty;
             break;
           }
           case SortingDirection.None:
           {
             newSortingOrderEntry = new BocListSortingOrderEntry (oldSortingOrderEntry.Column, SortingDirection.Ascending);
-            newSortingOrderEntry.SetColumnIndex (oldSortingOrderEntry.ColumnIndex);
             break;
+          }
+          default:
+          {
+            throw new InvalidOperationException (string.Format ("SortingDirection '{0}' is not valid.", oldSortingOrderEntry.Direction));
           }
         }
       }
       else
       {
-        newSortingOrderEntry = new BocListSortingOrderEntry ((IBocSortableColumnDefinition) columns[columnIndex], SortingDirection.Ascending);
-        newSortingOrderEntry.SetColumnIndex (columnIndex);
+        newSortingOrderEntry = new BocListSortingOrderEntry ((IBocSortableColumnDefinition) column, SortingDirection.Ascending);
       }
 
-      if (newSortingOrderEntry == null)
+      if (newSortingOrderEntry.IsEmpty)
       {
         if (workingSortingOrder.Count > 1 && ! IsMultipleSortingEnabled)
         {
-          BocListSortingOrderEntry entry = (BocListSortingOrderEntry) workingSortingOrder[0];
+          var entry = workingSortingOrder[0];
           workingSortingOrder.Clear();
           workingSortingOrder.Add (entry);
         }
@@ -890,10 +879,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         workingSortingOrder.Add (newSortingOrderEntry);
       }
 
-      BocListSortingOrderEntry[] oldSortingOrder =
-          (BocListSortingOrderEntry[]) _sortingOrder.ToArray (typeof (BocListSortingOrderEntry));
-      BocListSortingOrderEntry[] newSortingOrder =
-          (BocListSortingOrderEntry[]) workingSortingOrder.ToArray (typeof (BocListSortingOrderEntry));
+      BocListSortingOrderEntry[] oldSortingOrder = _sortingOrder.ToArray ();
+      BocListSortingOrderEntry[] newSortingOrder = workingSortingOrder.ToArray();
 
       OnSortingOrderChanging (oldSortingOrder, newSortingOrder);
       _sortingOrder.Clear();
@@ -1406,12 +1393,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _selectedViewIndex = (int?) values[1];
       _availableViewsListSelectedValue = (string) values[2];
       _currentRow = (int) values[3];
-      _sortingOrder = (ArrayList) values[4];
+      _sortingOrder = (List<BocListSortingOrderEntry>) values[4];
       _selectorControlCheckedState = (IList<int>) values[5];
     }
 
     protected override object SaveControlState ()
     {
+      var columns = EnsureColumnsGot();
+      foreach (var sortingOrderEntry in _sortingOrder)
+        sortingOrderEntry.SetColumnIndex (Array.IndexOf (columns, sortingOrderEntry.Column));
+
       object[] values = new object[6];
 
       values[0] = base.SaveControlState();
@@ -2060,7 +2051,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private BocColumnDefinition[] EnsureColumnsForPreviousLifeCycleGot ()
     {
       if (_columnDefinitionsPostBackEventHandlingPhase == null)
-        _columnDefinitionsPostBackEventHandlingPhase = GetColumnsInternal (true);
+        _columnDefinitionsPostBackEventHandlingPhase = ControlExistedInPreviousRequest ? GetColumnsInternal (true) : EnsureColumnsGot();
       return _columnDefinitionsPostBackEventHandlingPhase;
     }
 
@@ -2100,7 +2091,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       _hasAppendedAllPropertyColumnDefinitions = false;
 
-      ArrayList columnDefinitionList = new ArrayList();
+      List<BocColumnDefinition> columnDefinitionList = new List<BocColumnDefinition>();
 
       AppendFixedColumns (columnDefinitionList);
       if (_showAllProperties)
@@ -2108,26 +2099,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       AppendRowMenuColumn (columnDefinitionList);
       AppendSelectedViewColumns (columnDefinitionList);
 
-      BocColumnDefinition[] columnDefinitions =
-          (BocColumnDefinition[]) columnDefinitionList.ToArray (typeof (BocColumnDefinition));
+      var columnDefinitions = GetColumns (columnDefinitionList.ToArray ());
 
       if (isPostBackEventPhase)
-      {
-        columnDefinitions = EnsureColumnsGot();
         RestoreSortingOrderColumns (_sortingOrder, columnDefinitions);
-      }
-      else
-      {
-        columnDefinitions = GetColumns (columnDefinitions);
-        SynchronizeSortingOrderColumns (_sortingOrder, columnDefinitions);
-      }
 
       CheckRowMenuColumns (columnDefinitions);
 
       return columnDefinitions;
     }
 
-    private void AppendFixedColumns (ArrayList columnDefinitionList)
+    private void AppendFixedColumns (List<BocColumnDefinition> columnDefinitionList)
     {
       foreach (BocColumnDefinition columnDefinition in _fixedColumns)
       {
@@ -2141,14 +2123,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    private void AppendRowMenuColumn (ArrayList columnDefinitionList)
+    private void AppendRowMenuColumn (List<BocColumnDefinition> columnDefinitionList)
     {
       BocDropDownMenuColumnDefinition dropDownMenuColumn = GetRowMenuColumn();
       if (dropDownMenuColumn != null)
         columnDefinitionList.Add (dropDownMenuColumn);
     }
 
-    private void AppendSelectedViewColumns (ArrayList columnDefinitionList)
+    private void AppendSelectedViewColumns (List<BocColumnDefinition> columnDefinitionList)
     {
       EnsureSelectedViewIndexSet();
       if (_selectedView == null)
@@ -2167,7 +2149,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     private void EnsureAllPropertyColumnsDefinitionsAppended (
-        BocAllPropertiesPlaceholderColumnDefinition placeholderColumnDefinition, ArrayList columnDefinitionList)
+        BocAllPropertiesPlaceholderColumnDefinition placeholderColumnDefinition, List<BocColumnDefinition> columnDefinitionList)
     {
       if (_hasAppendedAllPropertyColumnDefinitions)
         return;
@@ -2197,48 +2179,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _hasAppendedAllPropertyColumnDefinitions = true;
     }
 
-    private void RestoreSortingOrderColumns (ArrayList sortingOrder, BocColumnDefinition[] columnDefinitions)
+    private void RestoreSortingOrderColumns (List<BocListSortingOrderEntry> sortingOrder, BocColumnDefinition[] columnDefinitions)
     {
-      ArrayList entriesToBeRemoved = new ArrayList();
-      for (int i = 0; i < sortingOrder.Count; i++)
+      foreach (var entry in sortingOrder)
       {
-        BocListSortingOrderEntry entry = (BocListSortingOrderEntry) sortingOrder[i];
-        if (entry.IsEmpty)
-        {
-          entriesToBeRemoved.Add (entry);
-          continue;
-        }
-        if (entry.ColumnIndex != Int32.MinValue)
+        if (!entry.IsEmpty)
           entry.SetColumn ((IBocSortableColumnDefinition) columnDefinitions[entry.ColumnIndex]);
       }
-      for (int i = 0; i < entriesToBeRemoved.Count; i++)
-        sortingOrder.Remove (entriesToBeRemoved[i]);
-    }
-
-    private void SynchronizeSortingOrderColumns (ArrayList sortingOrder, BocColumnDefinition[] columnDefinitions)
-    {
-      ArrayList columnDefinitionList = new ArrayList (columnDefinitions);
-
-      ArrayList entriesToBeRemoved = new ArrayList();
-      for (int i = 0; i < sortingOrder.Count; i++)
-      {
-        BocListSortingOrderEntry entry = (BocListSortingOrderEntry) sortingOrder[i];
-        if (entry.IsEmpty)
-          continue;
-        if (entry.Column == null)
-          entry.SetColumn ((IBocSortableColumnDefinition) columnDefinitions[entry.ColumnIndex]);
-        else
-        {
-          entry.SetColumnIndex (columnDefinitionList.IndexOf (entry.Column));
-          if (entry.ColumnIndex < 0)
-          {
-            sortingOrder[i] = BocListSortingOrderEntry.Empty;
-            entriesToBeRemoved.Add (entry);
-          }
-        }
-      }
-      for (int i = 0; i < entriesToBeRemoved.Count; i++)
-        sortingOrder.Remove (entriesToBeRemoved[i]);
+      sortingOrder.RemoveAll (e => e.Direction == SortingDirection.None);
     }
 
     /// <summary>
@@ -2265,16 +2213,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Browsable (false)]
     public bool HasSortingKeys
     {
-      get
-      {
-        for (int i = 0; i < _sortingOrder.Count; i++)
-        {
-          BocListSortingOrderEntry sortingOrderEntry = (BocListSortingOrderEntry) _sortingOrder[i];
-          if (! sortingOrderEntry.IsEmpty)
-            return true;
-        }
-        return false;
-      }
+      get { return _sortingOrder.Any (entry => !entry.IsEmpty); }
     }
 
     /// <summary> Sets the sorting order for the <see cref="BocList"/>. </summary>
@@ -2298,19 +2237,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("newSortingOrder", newSortingOrder);
 
-      //BocListSortingOrderEntry[] oldSortingOrder = 
-      //    (BocListSortingOrderEntry[]) _sortingOrder.ToArray (typeof (BocListSortingOrderEntry));
-
-      //OnSortingOrderChanging (oldSortingOrder, newSortingOrder);
-
       _sortingOrder.Clear();
       if (! IsMultipleSortingEnabled && newSortingOrder.Length > 1)
         throw new InvalidOperationException ("Attempted to set multiple sorting keys but EnableMultipleSorting is False.");
       else
         _sortingOrder.AddRange (newSortingOrder);
-      SynchronizeSortingOrderColumns (_sortingOrder, EnsureColumnsGot());
-
-      //OnSortingOrderChanged (oldSortingOrder, newSortingOrder);
 
       ResetRows();
     }
@@ -2321,13 +2252,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     public void ClearSortingOrder ()
     {
-      //BocListSortingOrderEntry[] oldSortingOrder = 
-      //    (BocListSortingOrderEntry[]) _sortingOrder.ToArray (typeof (BocListSortingOrderEntry));
-      //BocListSortingOrderEntry[] newSortingOrder = new BocListSortingOrderEntry[0];
-
-      //OnSortingOrderChanging (oldSortingOrder, newSortingOrder);
       _sortingOrder.Clear();
-      //OnSortingOrderChanged (oldSortingOrder, newSortingOrder);
 
       ResetRows();
     }
@@ -2343,7 +2268,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public BocListSortingOrderEntry[] GetSortingOrder ()
     {
       EnsureColumnsGot();
-      return (BocListSortingOrderEntry[]) _sortingOrder.ToArray (typeof (BocListSortingOrderEntry));
+      return _sortingOrder.ToArray ();
     }
 
     /// <summary>
@@ -2426,19 +2351,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (HasSortingKeys)
       {
-        int fixedColumnCount = _fixedColumns.Count;
-        if (_showAllProperties)
-          fixedColumnCount += GetAllPropertyColumns().Length;
-        ArrayList entriesToBeRemoved = new ArrayList();
-        for (int idxSortingKeys = 0; idxSortingKeys < _sortingOrder.Count; idxSortingKeys++)
-        {
-          BocListSortingOrderEntry currentEntry = (BocListSortingOrderEntry) _sortingOrder[idxSortingKeys];
-          if (currentEntry.ColumnIndex >= fixedColumnCount)
-            entriesToBeRemoved.Add (currentEntry);
-        }
-        for (int i = 0; i < entriesToBeRemoved.Count; i++)
-          _sortingOrder.Remove (entriesToBeRemoved[i]);
-        if (entriesToBeRemoved.Count > 0)
+        var staticColumns = new HashSet<BocColumnDefinition> (_fixedColumns.Cast<BocColumnDefinition>().Concat (GetAllPropertyColumns()));
+        var oldCount = _sortingOrder.Count;
+        _sortingOrder.RemoveAll (entry => !staticColumns.Contains ((BocColumnDefinition) entry.Column));
+        if (oldCount != _sortingOrder.Count)
           ResetRows();
       }
     }
@@ -4035,11 +3951,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     IList<int> IBocList.SelectorControlCheckedState
     {
       get { return _selectorControlCheckedState; }
-    }
-
-    ArrayList IBocList.SortingOrder
-    {
-      get { return _sortingOrder; }
     }
 
     IEditModeController IBocList.EditModeController

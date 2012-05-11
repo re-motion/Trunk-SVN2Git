@@ -92,9 +92,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       {
         foreach (var entry in SortingOrder)
         {
-          sortingDirections[entry.ColumnIndex] = entry.Direction;
+          var columnIndex = Array.IndexOf (_columnDefinitions, entry.Column);
           if (entry.Direction != SortingDirection.None)
-            sortingOrder.Add (entry.ColumnIndex);
+          {
+            sortingDirections.Add (columnIndex, entry.Direction);
+            sortingOrder.Add (columnIndex);
+          }
         }
       }
     }

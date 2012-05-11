@@ -22,7 +22,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
 public class BocListSortingOrderProviderMock : IBocListSortingOrderProvider
 {
-  BocListSortingOrderEntry[] _sortingOrder = new BocListSortingOrderEntryMock[0];
+  BocListSortingOrderEntry[] _sortingOrder = new BocListSortingOrderEntry[0];
 
   public void SetSortingOrder (BocListSortingOrderEntry[] sortingOrder)
   {
