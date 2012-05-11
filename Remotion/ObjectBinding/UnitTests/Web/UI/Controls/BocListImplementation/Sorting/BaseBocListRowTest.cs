@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Sorting
 {
-  public abstract class BaseBocListRowCompareValuesTest
+  public abstract class DefaultBocListRowComparerTestBase
   {
     protected void CompareEqualValuesAscending (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
     {

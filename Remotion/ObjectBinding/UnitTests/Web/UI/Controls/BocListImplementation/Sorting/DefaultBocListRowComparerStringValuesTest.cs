@@ -14,17 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 
-namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
+namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Sorting
 {
   [TestFixture]
-  public class BocListRowsCompareStringValuesTest : BaseBocListRowCompareValuesTest
+  public class DefaultBocListRowComparerStringValuesTest : DefaultBocListRowComparerTestBase
   {
     private IBusinessObject _valueAA;
     private IBusinessObject _valueAB;
