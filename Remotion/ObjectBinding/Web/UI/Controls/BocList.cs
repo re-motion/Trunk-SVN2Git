@@ -2051,14 +2051,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private BocColumnDefinition[] EnsureColumnsForPreviousLifeCycleGot ()
     {
       if (_columnDefinitionsPostBackEventHandlingPhase == null)
-        _columnDefinitionsPostBackEventHandlingPhase = ControlExistedInPreviousRequest ? GetColumnsInternal (true) : EnsureColumnsGot();
+        _columnDefinitionsPostBackEventHandlingPhase = ControlExistedInPreviousRequest ? GetColumnsInternal() : EnsureColumnsGot();
       return _columnDefinitionsPostBackEventHandlingPhase;
     }
 
     private BocColumnDefinition[] EnsureColumnsGot (bool forceRefresh)
     {
       if (_columnDefinitionsRenderPhase == null || forceRefresh)
-        _columnDefinitionsRenderPhase = GetColumnsInternal (false);
+        _columnDefinitionsRenderPhase = GetColumnsInternal();
       return _columnDefinitionsRenderPhase;
     }
 
@@ -2087,7 +2087,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   into a single array.
     /// </summary>
     /// <returns> An array of <see cref="BocColumnDefinition"/> objects. </returns>
-    private BocColumnDefinition[] GetColumnsInternal (bool isPostBackEventPhase)
+    private BocColumnDefinition[] GetColumnsInternal ()
     {
       _hasAppendedAllPropertyColumnDefinitions = false;
 
@@ -2099,10 +2099,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       AppendRowMenuColumn (columnDefinitionList);
       AppendSelectedViewColumns (columnDefinitionList);
 
-      var columnDefinitions = GetColumns (columnDefinitionList.ToArray ());
+      var columnDefinitions = GetColumns (columnDefinitionList.ToArray());
 
-      if (isPostBackEventPhase)
-        _sortingOrder = RestoreSortingOrderColumns (_sortingOrder, columnDefinitions);
+      _sortingOrder = RestoreSortingOrderColumns (_sortingOrder, columnDefinitions);
 
       CheckRowMenuColumns (columnDefinitions);
 
@@ -2183,7 +2182,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       return sortingOrder
           .Where (entry => !entry.IsEmpty)
-          .Select (entry => new BocListSortingOrderEntry ((IBocSortableColumnDefinition) columnDefinitions[entry.ColumnIndex], entry.Direction))
+          .Select (
+              entry =>
+              entry.Column == null
+                  ? new BocListSortingOrderEntry ((IBocSortableColumnDefinition) columnDefinitions[entry.ColumnIndex], entry.Direction)
+                  : entry)
           .ToList();
     }
 
