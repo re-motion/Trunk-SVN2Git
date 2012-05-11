@@ -126,7 +126,7 @@ namespace Remotion.Web.UI.Controls
         writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, accessKey);
 
       string tempText = Text;
-      bool hasIcon = _icon != null && !StringUtility.IsNullOrEmpty (_icon.Url);
+      bool hasIcon = _icon != null && _icon.HasRenderingInformation;
       bool hasText = !StringUtility.IsNullOrEmpty (text);
       if (IsLegacyButtonEnabled)
       {
@@ -268,7 +268,7 @@ namespace Remotion.Web.UI.Controls
         base.RenderContents (writer);
       else
       {
-        bool hasIcon = _icon != null && !StringUtility.IsNullOrEmpty (_icon.Url);
+        bool hasIcon = _icon != null && _icon.HasRenderingInformation;
         bool hasText = !StringUtility.IsNullOrEmpty (text);
         if (hasIcon)
         {
