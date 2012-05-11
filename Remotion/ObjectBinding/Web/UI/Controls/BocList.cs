@@ -2368,22 +2368,29 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Creates an array of indexed <see cref="IBusinessObject"/> instances, optionally sorted. </summary>
     /// <param name="sorted"> <see langword="true"/> to sort the rows before returning them. </param>
     /// <returns> Pair &lt;original index, IBusinessObject&gt; </returns>
-    protected BocListRow[] GetIndexedRows (bool sorted)
+    protected IEnumerable<BocListRow> GetIndexedRows (bool sorted)
     {
-      int rowCount = HasValue ? Value.Count : 0;
-      ArrayList rows = new ArrayList (rowCount);
-      for (int idxRows = 0; idxRows < rowCount; idxRows++)
-        rows.Add (new BocListRow (this, idxRows, (IBusinessObject) Value[idxRows]));
+      if (!HasValue)
+        return new BocListRow[0];
+
+      IBocListSortingOrderProvider sortingOrderProvider = this;
+      var rows = Value.Cast<IBusinessObject>().Select ((row, rowIndex) => new BocListRow (sortingOrderProvider, rowIndex, row));
 
       if (sorted && HasSortingKeys)
-        rows.Sort();
-      return (BocListRow[]) rows.ToArray (typeof (BocListRow));
+      {
+        IComparer<BocListRow> comparer = null;
+        return rows.OrderBy (row => row, comparer);
+      }
+      else
+      {
+        return rows;
+      }
     }
 
     protected BocListRow[] EnsureGotIndexedRowsSorted ()
     {
       if (_indexedRowsSorted == null)
-        _indexedRowsSorted = GetIndexedRows (true);
+        _indexedRowsSorted = GetIndexedRows (true).ToArray();
       return _indexedRowsSorted;
     }
 
