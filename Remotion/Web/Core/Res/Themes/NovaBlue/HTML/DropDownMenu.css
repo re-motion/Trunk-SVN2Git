@@ -108,6 +108,8 @@ span.DropDownMenuSelect a.DropDownMenuButton img
 span.DropDownMenuSelect.disabled a.DropDownMenuButton img
 {
   background-position: -16px center;
+  filter: none;
+  opacity: 1;
 }
 
 body.msie7 span.DropDownMenuSelect a.DropDownMenuButton img
