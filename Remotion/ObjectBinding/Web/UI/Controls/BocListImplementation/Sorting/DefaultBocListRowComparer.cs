@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.Utilities;
@@ -27,14 +28,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
   {
     private static readonly ILog s_log = LogManager.GetLogger (System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-    private readonly BocListSortingOrderEntry[] _sortingOrder;
-
     private readonly ICache<Tuple<BocListRow, IBocSortableColumnDefinition, IBusinessObjectPropertyPath>, object> _rowValueCache =
         new Cache<Tuple<BocListRow, IBocSortableColumnDefinition, IBusinessObjectPropertyPath>, object>();
 
+    private readonly Tuple<SortingDirection, IComparer<BocListRow>>[] _sorting;
+
     public DefaultBocListRowComparer (BocListSortingOrderEntry[] sortingOrder)
     {
-      _sortingOrder = sortingOrder;
+      ArgumentUtility.CheckNotNull ("sortingOrder", sortingOrder);
+
+      _sorting = sortingOrder.Select (entry => Tuple.Create (entry.Direction, CreateComparer (entry.Column))).ToArray();
+    }
+
+    private IComparer<BocListRow> CreateComparer (IBocSortableColumnDefinition column)
+    {
+      if (column is BocSimpleColumnDefinition)
+        return new BocSimpleColumnDefinitionCellValueComparer ((BocSimpleColumnDefinition) column);
+      else if (column is BocCustomColumnDefinition)
+        return new BocCustomColumnDefinitionCellValueComparer ((BocCustomColumnDefinition) column);
+      else if (column is BocCompoundColumnDefinition)
+        return new BocCompoundColumnDefinitionCellValueComparer ((BocCompoundColumnDefinition) column);
+      else
+        throw new NotSupportedException (column.GetType().FullName);
     }
 
     /// <summary>
@@ -68,13 +83,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       if (rowA == rowB)
         return 0;
 
-      for (int i = 0; i < _sortingOrder.Length; i++)
+      foreach (var sortingEntry in _sorting)
       {
-        var sortingOrderEntry = _sortingOrder[i];
-        int compareResult = CompareToRowBySortingOrderEntry (rowA, rowB, sortingOrderEntry);
+        int compareResult = sortingEntry.Item2.Compare (rowA, rowB);
         if (compareResult != 0)
         {
-          if (sortingOrderEntry.Direction == SortingDirection.Descending)
+          if (sortingEntry.Item1 == SortingDirection.Descending)
             return compareResult * -1;
           else
             return compareResult;
