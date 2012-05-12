@@ -29,8 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
     private readonly BocListSortingOrderEntry[] _sortingOrder;
 
-    private readonly ICache<Tuple<BocListRow, BocListSortingOrderEntry, IBusinessObjectPropertyPath>, object> _rowValueCache =
-        new Cache<Tuple<BocListRow, BocListSortingOrderEntry, IBusinessObjectPropertyPath>, object>();
+    private readonly ICache<Tuple<BocListRow, IBocSortableColumnDefinition, IBusinessObjectPropertyPath>, object> _rowValueCache =
+        new Cache<Tuple<BocListRow, IBocSortableColumnDefinition, IBusinessObjectPropertyPath>, object>();
 
     public DefaultBocListRowComparer (BocListSortingOrderEntry[] sortingOrder)
     {
@@ -91,23 +91,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
       if (entry.Column is BocSimpleColumnDefinition)
       {
-        return CompareToRowBySimpleColumn (rowA, rowB, entry);
+        return CompareToRowBySimpleColumn (rowA, rowB, entry.Column);
       }
       else if (entry.Column is BocCustomColumnDefinition)
       {
-        return CompareToRowByCustomColumn (rowA, rowB, entry);
+        return CompareToRowByCustomColumn (rowA, rowB, entry.Column);
       }
       else if (entry.Column is BocCompoundColumnDefinition)
       {
-        return CompareToRowByCompundColumn (rowA, rowB, entry);
+        return CompareToRowByCompundColumn (rowA, rowB, entry.Column);
       }
 
       return 0;
     }
 
-    private int CompareToRowBySimpleColumn (BocListRow rowA, BocListRow rowB, BocListSortingOrderEntry entry)
+    private int CompareToRowBySimpleColumn (BocListRow rowA, BocListRow rowB, IBocSortableColumnDefinition column)
     {
-      BocSimpleColumnDefinition simpleColumn = (BocSimpleColumnDefinition) entry.Column;
+      BocSimpleColumnDefinition simpleColumn = (BocSimpleColumnDefinition) column;
 
       IBusinessObjectPropertyPath propertyPathRowA;
       IBusinessObjectPropertyPath propertyPathRowB;
@@ -129,14 +129,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       if (compareResult != 0)
         return compareResult;
 
-      string stringValueA = GetStringValueForSimpleColumnFromCache (rowA, entry);
-      string stringValueB = GetStringValueForSimpleColumnFromCache (rowB, entry);
+      string stringValueA = GetStringValueForSimpleColumnFromCache (rowA, simpleColumn);
+      string stringValueB = GetStringValueForSimpleColumnFromCache (rowB, simpleColumn);
       return CompareStrings (stringValueA, stringValueB);
     }
 
-    private int CompareToRowByCustomColumn (BocListRow rowA, BocListRow rowB, BocListSortingOrderEntry entry)
+    private int CompareToRowByCustomColumn (BocListRow rowA, BocListRow rowB, IBocSortableColumnDefinition column)
     {
-      BocCustomColumnDefinition customColumn = (BocCustomColumnDefinition) entry.Column;
+      BocCustomColumnDefinition customColumn = (BocCustomColumnDefinition) column;
 
       IBusinessObjectPropertyPath propertyPathRowA;
       IBusinessObjectPropertyPath propertyPathRowB;
@@ -158,14 +158,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       if (compareResult != 0)
         return compareResult;
 
-      string stringValueA = GetStringValueForCustomColumnFromCache (rowA, entry);
-      string stringValueB = GetStringValueForCustomColumnFromCache (rowB, entry);
+      string stringValueA = GetStringValueForCustomColumnFromCache (rowA, customColumn);
+      string stringValueB = GetStringValueForCustomColumnFromCache (rowB, customColumn);
       return CompareStrings (stringValueA, stringValueB);
     }
 
-    private int CompareToRowByCompundColumn (BocListRow rowA, BocListRow rowB, BocListSortingOrderEntry entry)
+    private int CompareToRowByCompundColumn (BocListRow rowA, BocListRow rowB, IBocSortableColumnDefinition column)
     {
-      BocCompoundColumnDefinition compoundColumn = (BocCompoundColumnDefinition) entry.Column;
+      BocCompoundColumnDefinition compoundColumn = (BocCompoundColumnDefinition) column;
 
       for (int idxBindings = 0; idxBindings < compoundColumn.PropertyPathBindings.Count; idxBindings++)
       {
@@ -191,8 +191,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
           return compareResult;
       }
 
-      string stringValueA = GetStringValueForCompoundColumnFromCache (rowA, entry);
-      string stringValueB = GetStringValueForCompoundColumnFromCache (rowB, entry);
+      string stringValueA = GetStringValueForCompoundColumnFromCache (rowA, compoundColumn);
+      string stringValueB = GetStringValueForCompoundColumnFromCache (rowB, compoundColumn);
       return CompareStrings (stringValueA, stringValueB);
     }
 
@@ -258,17 +258,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       }
     }
 
-    private string GetStringValueForSimpleColumnFromCache (BocListRow row, BocListSortingOrderEntry entry)
+    private string GetStringValueForSimpleColumnFromCache (BocListRow row, BocSimpleColumnDefinition column)
     {
-      return (string) _rowValueCache.GetOrCreateValue (CreateCacheKey (row, entry), key => GetStringValueForSimpleColumn (key.Item1, key.Item2));
+      return (string) _rowValueCache.GetOrCreateValue (CreateCacheKey (row, column), key => GetStringValueForSimpleColumn (key.Item1, key.Item2));
     }
 
-    private string GetStringValueForSimpleColumn (BocListRow row, BocListSortingOrderEntry entry)
+    private string GetStringValueForSimpleColumn (BocListRow row, IBocSortableColumnDefinition column)
     {
-      var column = (BocSimpleColumnDefinition) entry.Column;
+      var simpleColumn = (BocSimpleColumnDefinition) column;
       try
       {
-        return column.GetStringValue (row.BusinessObject);
+        return simpleColumn.GetStringValue (row.BusinessObject);
       }
       catch (Exception e)
       {
@@ -277,18 +277,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       }
     }
 
-    private string GetStringValueForCustomColumnFromCache (BocListRow row, BocListSortingOrderEntry entry)
+    private string GetStringValueForCustomColumnFromCache (BocListRow row, BocCustomColumnDefinition column)
     {
-      return (string) _rowValueCache.GetOrCreateValue (CreateCacheKey (row, entry), key => GetStringValueForCustomColumn(key.Item1, key.Item2));
+      return (string) _rowValueCache.GetOrCreateValue (CreateCacheKey (row, column), key => GetStringValueForCustomColumn(key.Item1, key.Item2));
     }
 
-    private string GetStringValueForCustomColumn (BocListRow row, BocListSortingOrderEntry entry)
+    private string GetStringValueForCustomColumn (BocListRow row, IBocSortableColumnDefinition column)
     {
-      var column = (BocCustomColumnDefinition) entry.Column;
+      var customColumn = (BocCustomColumnDefinition) column;
       try
       {
         //TODO: Support DynamicPropertyPaths
-        IBusinessObjectPropertyPath propertyPath = column.GetPropertyPath();
+        IBusinessObjectPropertyPath propertyPath = customColumn.GetPropertyPath();
         return propertyPath.GetString (row.BusinessObject, string.Empty);
       }
       catch (Exception e)
@@ -298,17 +298,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       }
     }
 
-    private string GetStringValueForCompoundColumnFromCache (BocListRow row, BocListSortingOrderEntry entry)
+    private string GetStringValueForCompoundColumnFromCache (BocListRow row, BocCompoundColumnDefinition column)
     {
-      return (string) _rowValueCache.GetOrCreateValue (CreateCacheKey (row, entry), key => GetStringValueForCompoundColumn(key.Item1, key.Item2));
+      return (string) _rowValueCache.GetOrCreateValue (CreateCacheKey (row, column), key => GetStringValueForCompoundColumn(key.Item1, key.Item2));
     }
 
-    private string GetStringValueForCompoundColumn (BocListRow row, BocListSortingOrderEntry entry)
+    private string GetStringValueForCompoundColumn (BocListRow row, IBocSortableColumnDefinition column)
     {
-      var column = (BocCompoundColumnDefinition) entry.Column;
+      var compoundColumn = (BocCompoundColumnDefinition) column;
       try
       {
-        return column.GetStringValue (row.BusinessObject);
+        return compoundColumn.GetStringValue (row.BusinessObject);
       }
       catch (Exception e)
       {
@@ -322,14 +322,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       return string.Compare (valueA, valueB);
     }
 
-    private Tuple<BocListRow, BocListSortingOrderEntry, IBusinessObjectPropertyPath> CreateCacheKey (BocListRow row, BocListSortingOrderEntry sortingOrderEntry)
+    private Tuple<BocListRow, IBocSortableColumnDefinition, IBusinessObjectPropertyPath> CreateCacheKey (BocListRow row, IBocSortableColumnDefinition column)
     {
-      return Tuple.Create (row, sortingOrderEntry, (IBusinessObjectPropertyPath) null);
+      return Tuple.Create (row, column, (IBusinessObjectPropertyPath) null);
     }
 
-    private Tuple<BocListRow, BocListSortingOrderEntry, IBusinessObjectPropertyPath> CreateCacheKey (BocListRow row, IBusinessObjectPropertyPath propertyPath)
+    private Tuple<BocListRow, IBocSortableColumnDefinition, IBusinessObjectPropertyPath> CreateCacheKey (BocListRow row, IBusinessObjectPropertyPath propertyPath)
     {
-      return Tuple.Create (row, (BocListSortingOrderEntry) null, propertyPath);
+      return Tuple.Create (row, (IBocSortableColumnDefinition) null, propertyPath);
     }
   }
 }
