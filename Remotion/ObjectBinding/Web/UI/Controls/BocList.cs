@@ -2303,7 +2303,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (sorted && HasSortingKeys)
       {
+#pragma warning disable 612,618
         var comparer = CreateBocListRowComparer();
+#pragma warning restore 612,618
         return rows.OrderBy (row => row, comparer);
       }
       else
@@ -2312,6 +2314,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    [Obsolete ("Override the column-specific comparer instead.")]
     protected virtual DefaultBocListRowComparer CreateBocListRowComparer ()
     {
       return new DefaultBocListRowComparer (GetSortingOrder());
