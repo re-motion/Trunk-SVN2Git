@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -22,5 +23,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public interface IBocSortableColumnDefinition : IControlItem
   {
     bool IsSortable { get; }
+    IComparer<BocListRow> CreateCellValueComparer ();
   }
 }

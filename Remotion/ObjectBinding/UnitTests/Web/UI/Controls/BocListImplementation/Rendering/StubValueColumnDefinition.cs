@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -31,6 +32,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     public override string GetStringValue (IBusinessObject obj)
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override IComparer<BocListRow> CreateCellValueComparer ()
     {
       throw new NotImplementedException();
     }

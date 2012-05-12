@@ -232,7 +232,7 @@
     </Compile>
     <Compile Include="UI\Controls\BocCommandColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocCommandEnabledColumnDefinition.cs" />
-    <Compile Include="UI\Controls\BocCompundColumnDefinition.cs" />
+    <Compile Include="UI\Controls\BocCompoundColumnDefinition.cs" />
     <Compile Include="UI\Controls\BocCustomColumnDefinition.cs">
       <SubType>Code</SubType>
     </Compile>

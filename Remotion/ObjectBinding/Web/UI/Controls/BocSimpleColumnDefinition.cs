@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web.UI;
@@ -22,6 +23,7 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
@@ -245,6 +247,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override string DisplayedTypeName
     {
       get { return "SimpleColumnDefinition"; }
+    }
+
+    protected override IComparer<BocListRow> CreateCellValueComparer ()
+    {
+      return new BocSimpleColumnDefinitionCellValueComparer (this);
     }
 
     IBusinessObjectClass IBusinessObjectClassSource.BusinessObjectClass

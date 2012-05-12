@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -73,5 +74,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       get { return "ValueColumnDefinition"; }
     }
+
+    IComparer<BocListRow> IBocSortableColumnDefinition.CreateCellValueComparer ()
+    {
+      return CreateCellValueComparer();
+    }
+
+    protected abstract IComparer<BocListRow> CreateCellValueComparer ();
   }
 }

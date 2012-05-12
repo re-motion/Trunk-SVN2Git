@@ -15,10 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -130,6 +132,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override string DisplayedTypeName
     {
       get { return "CompoundColumnDefinition"; }
+    }
+
+    protected override IComparer<BocListRow> CreateCellValueComparer ()
+    {
+      return new BocCompoundColumnDefinitionCellValueComparer (this);
     }
   }
 }

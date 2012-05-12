@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
@@ -30,7 +29,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
     {
       ArgumentUtility.CheckNotNull ("sortingOrder", sortingOrder);
 
-      _sorting = sortingOrder.Select (entry => Tuple.Create (entry.Direction, CreateComparer (entry.Column))).ToArray();
+      _sorting = sortingOrder
+          .Where (entry => entry.Direction != SortingDirection.None)
+          .Select (entry => Tuple.Create (entry.Direction, entry.Column.CreateCellValueComparer())).ToArray();
     }
 
     /// <summary>
@@ -77,18 +78,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       }
 
       return rowA.Index - rowB.Index;
-    }
-
-    private IComparer<BocListRow> CreateComparer (IBocSortableColumnDefinition column)
-    {
-      if (column is BocSimpleColumnDefinition)
-        return new BocSimpleColumnDefinitionCellValueComparer ((BocSimpleColumnDefinition) column);
-      else if (column is BocCustomColumnDefinition)
-        return new BocCustomColumnDefinitionCellValueComparer ((BocCustomColumnDefinition) column);
-      else if (column is BocCompoundColumnDefinition)
-        return new BocCompoundColumnDefinitionCellValueComparer ((BocCompoundColumnDefinition) column);
-      else
-        throw new NotSupportedException (column.GetType().FullName);
     }
   }
 }

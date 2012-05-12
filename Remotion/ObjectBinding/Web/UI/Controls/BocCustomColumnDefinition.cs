@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
@@ -25,8 +26,8 @@ using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -226,6 +227,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     IBusinessObjectClass IBusinessObjectClassSource.BusinessObjectClass
     {
       get { return _propertyPathBinding.BusinessObjectClass; }
+    }
+
+    IComparer<BocListRow> IBocSortableColumnDefinition.CreateCellValueComparer ()
+    {
+      return new BocCustomColumnDefinitionCellValueComparer (this);
     }
   }
 
