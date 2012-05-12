@@ -70,9 +70,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
       for (int i = 0; i < _sortingOrder.Length; i++)
       {
-        int compareResult = CompareToRowBySortingOrderEntry (rowA, rowB, _sortingOrder[i]);
+        var sortingOrderEntry = _sortingOrder[i];
+        int compareResult = CompareToRowBySortingOrderEntry (rowA, rowB, sortingOrderEntry);
         if (compareResult != 0)
-          return compareResult;
+        {
+          if (sortingOrderEntry.Direction == SortingDirection.Descending)
+            return compareResult * -1;
+          else
+            return compareResult;
+        }
       }
 
       return rowA.Index - rowB.Index;
@@ -103,99 +109,83 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
     {
       BocSimpleColumnDefinition simpleColumn = (BocSimpleColumnDefinition) entry.Column;
 
-      IBusinessObjectPropertyPath propertyPathThis;
-      IBusinessObjectPropertyPath propertyPathRow;
+      IBusinessObjectPropertyPath propertyPathRowA;
+      IBusinessObjectPropertyPath propertyPathRowB;
 
       if (simpleColumn.IsDynamic)
       {
         // TODO: UnitTests
-        propertyPathThis = simpleColumn.GetDynamicPropertyPath (rowA.BusinessObject.BusinessObjectClass);
-        propertyPathRow = simpleColumn.GetDynamicPropertyPath (rowB.BusinessObject.BusinessObjectClass);
+        propertyPathRowA = simpleColumn.GetDynamicPropertyPath (rowA.BusinessObject.BusinessObjectClass);
+        propertyPathRowB = simpleColumn.GetDynamicPropertyPath (rowB.BusinessObject.BusinessObjectClass);
       }
       else
       {
-        propertyPathThis = simpleColumn.GetPropertyPath();
-        propertyPathRow = simpleColumn.GetPropertyPath();
+        propertyPathRowA = simpleColumn.GetPropertyPath();
+        propertyPathRowB = simpleColumn.GetPropertyPath();
       }
 
-      int compareResult = 0;
-      if (entry.Direction == SortingDirection.Ascending)
-        compareResult = ComparePropertyPathValues (propertyPathThis, rowA, propertyPathRow, rowB);
-      else if (entry.Direction == SortingDirection.Descending)
-        compareResult = ComparePropertyPathValues (propertyPathRow, rowB, propertyPathThis, rowA);
+      int compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
 
       if (compareResult != 0)
         return compareResult;
 
       string stringValueA = GetStringValueForSimpleColumnFromCache (rowA, entry);
       string stringValueB = GetStringValueForSimpleColumnFromCache (rowB, entry);
-      compareResult = CompareStrings (entry.Direction, stringValueA, stringValueB);
-
-      return compareResult;
+      return CompareStrings (stringValueA, stringValueB);
     }
 
     private int CompareToRowByCustomColumn (BocListRow rowA, BocListRow rowB, BocListSortingOrderEntry entry)
     {
       BocCustomColumnDefinition customColumn = (BocCustomColumnDefinition) entry.Column;
 
-      IBusinessObjectPropertyPath propertyPathThis;
-      IBusinessObjectPropertyPath propertyPathRow;
+      IBusinessObjectPropertyPath propertyPathRowA;
+      IBusinessObjectPropertyPath propertyPathRowB;
 
       if (customColumn.IsDynamic)
       {
         // TODO: UnitTests
-        propertyPathThis = customColumn.GetDynamicPropertyPath (rowA.BusinessObject.BusinessObjectClass);
-        propertyPathRow = customColumn.GetDynamicPropertyPath (rowB.BusinessObject.BusinessObjectClass);
+        propertyPathRowA = customColumn.GetDynamicPropertyPath (rowA.BusinessObject.BusinessObjectClass);
+        propertyPathRowB = customColumn.GetDynamicPropertyPath (rowB.BusinessObject.BusinessObjectClass);
       }
       else
       {
-        propertyPathThis = customColumn.GetPropertyPath();
-        propertyPathRow = customColumn.GetPropertyPath();
+        propertyPathRowA = customColumn.GetPropertyPath();
+        propertyPathRowB = customColumn.GetPropertyPath();
       }
 
-      int compareResult = 0;
-      if (entry.Direction == SortingDirection.Ascending)
-        compareResult = ComparePropertyPathValues (propertyPathThis, rowA, propertyPathRow, rowB);
-      else if (entry.Direction == SortingDirection.Descending)
-        compareResult = ComparePropertyPathValues (propertyPathRow, rowB, propertyPathThis, rowA);
-
+      int compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
+     
       if (compareResult != 0)
         return compareResult;
 
       string stringValueA = GetStringValueForCustomColumnFromCache (rowA, entry);
       string stringValueB = GetStringValueForCustomColumnFromCache (rowB, entry);
-      compareResult = CompareStrings (entry.Direction, stringValueA, stringValueB);
-
-      return compareResult;
+      return CompareStrings (stringValueA, stringValueB);
     }
 
     private int CompareToRowByCompundColumn (BocListRow rowA, BocListRow rowB, BocListSortingOrderEntry entry)
     {
       BocCompoundColumnDefinition compoundColumn = (BocCompoundColumnDefinition) entry.Column;
 
-      int compareResult = 0;
       for (int idxBindings = 0; idxBindings < compoundColumn.PropertyPathBindings.Count; idxBindings++)
       {
         PropertyPathBinding propertyPathBinding = compoundColumn.PropertyPathBindings[idxBindings];
-        IBusinessObjectPropertyPath propertyPathThis;
-        IBusinessObjectPropertyPath propertyPathRow;
+        IBusinessObjectPropertyPath propertyPathRowA;
+        IBusinessObjectPropertyPath propertyPathRowB;
 
         if (propertyPathBinding.IsDynamic)
         {
           // TODO: UnitTests
-          propertyPathThis = propertyPathBinding.GetDynamicPropertyPath (rowA.BusinessObject.BusinessObjectClass);
-          propertyPathRow = propertyPathBinding.GetDynamicPropertyPath (rowB.BusinessObject.BusinessObjectClass);
+          propertyPathRowA = propertyPathBinding.GetDynamicPropertyPath (rowA.BusinessObject.BusinessObjectClass);
+          propertyPathRowB = propertyPathBinding.GetDynamicPropertyPath (rowB.BusinessObject.BusinessObjectClass);
         }
         else
         {
-          propertyPathThis = propertyPathBinding.GetPropertyPath();
-          propertyPathRow = propertyPathBinding.GetPropertyPath();
+          propertyPathRowA = propertyPathBinding.GetPropertyPath();
+          propertyPathRowB = propertyPathBinding.GetPropertyPath();
         }
 
-        if (entry.Direction == SortingDirection.Ascending)
-          compareResult = ComparePropertyPathValues (propertyPathThis, rowA, propertyPathRow, rowB);
-        else if (entry.Direction == SortingDirection.Descending)
-          compareResult = ComparePropertyPathValues (propertyPathRow, rowB, propertyPathThis, rowA);
+        int compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
 
         if (compareResult != 0)
           return compareResult;
@@ -203,9 +193,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
       string stringValueA = GetStringValueForCompoundColumnFromCache (rowA, entry);
       string stringValueB = GetStringValueForCompoundColumnFromCache (rowB, entry);
-      compareResult = CompareStrings (entry.Direction, stringValueA, stringValueB);
-
-      return compareResult;
+      return CompareStrings (stringValueA, stringValueB);
     }
 
     private int ComparePropertyPathValues (
@@ -329,16 +317,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       }
     }
 
-    private int CompareStrings (SortingDirection direction, string valueA, string valueB)
+    private int CompareStrings (string valueA, string valueB)
     {
-      int compareResult = 0;
-
-      if (direction == SortingDirection.Ascending)
-        compareResult = string.Compare (valueA, valueB);
-      else if (direction == SortingDirection.Descending)
-        compareResult = string.Compare (valueB, valueA);
-
-      return compareResult;
+      return string.Compare (valueA, valueB);
     }
 
     private Tuple<BocListRow, BocListSortingOrderEntry, IBusinessObjectPropertyPath> CreateCacheKey (BocListRow row, BocListSortingOrderEntry sortingOrderEntry)
