@@ -36,6 +36,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="obj"> The <see cref="IBusinessObject"/> to be displayed in this column. </param>
     /// <returns> A <see cref="string"/> representing the contents of <paramref name="obj"/>. </returns>
     public abstract string GetStringValue (IBusinessObject obj);
+    
+    /// <summary>
+    /// Creates an implementation of <see cref="IComparer{T}"/> that can be used to comparere two <see cref="BocListRow"/> instances based on the this
+    /// column definition.
+    /// </summary>
+    /// <returns>An implementation of <see cref="IComparer{T}"/>, typed to <see cref="BocListRow"/>.</returns>
+    protected abstract IComparer<BocListRow> CreateCellValueComparer ();
 
     /// <summary> 
     ///   Gets or sets a flag that determines whether to hide overflowing contents in the data rows instead of 
@@ -79,7 +86,5 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       return CreateCellValueComparer();
     }
-
-    protected abstract IComparer<BocListRow> CreateCellValueComparer ();
   }
 }

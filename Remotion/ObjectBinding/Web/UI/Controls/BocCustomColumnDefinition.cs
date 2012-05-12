@@ -429,6 +429,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
               BocCustomColumnDefinitionMode.NoControls,
               BocCustomColumnDefinitionMode.ControlInEditedRow));
     }
+    
+    internal IComparer<BocListRow> CreateCellValueComparerInternal (BocCustomCellArguments arguments)
+    {
+      InitArguments (arguments);
+      return CreateCellValueComparer (arguments);
+    }
+
+    /// <summary>
+    /// Override this method to change the implementation of <see cref="IComparer{T}"/> instantiated for comparing the two <see cref="BocListRow"/>
+    /// instances based on this <see cref="BocCustomColumnDefinitionCell"/>.
+    /// </summary>
+    /// <returns>An implementation of <see cref="IComparer{T}"/>, typed to <see cref="BocListRow"/>.</returns>
+    /// <remarks>The default type created is <see cref="BocCustomColumnDefinitionCellValueComparer"/>.</remarks>
+    protected virtual IComparer<BocListRow> CreateCellValueComparer (BocCustomCellArguments arguments)
+    {
+      ArgumentUtility.CheckNotNull ("arguments", arguments);
+      return new BocCustomColumnDefinitionCellValueComparer (arguments.ColumnDefinition);
+    }
 
     private void InitArguments (BocCustomCellArguments arguments)
     {
