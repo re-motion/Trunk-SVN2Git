@@ -56,10 +56,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
           propertyPathRowB = propertyPathBinding.GetPropertyPath();
         }
 
-        int compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
+        var compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
 
-        if (compareResult != 0)
-          return compareResult;
+        if (!compareResult.HasValue)
+          break;
+
+        if (compareResult.Value != 0)
+          return compareResult.Value;
       }
 
       string stringValueA = _stringValueCache.GetOrCreateValue (rowA, GetStringValueForCompoundColumn);

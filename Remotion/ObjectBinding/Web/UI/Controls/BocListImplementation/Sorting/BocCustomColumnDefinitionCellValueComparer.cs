@@ -51,10 +51,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
         propertyPathRowB = _column.GetPropertyPath();
       }
 
-      int compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
+      var compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
      
-      if (compareResult != 0)
-        return compareResult;
+      if (compareResult.HasValue)
+        return compareResult.Value;
 
       string stringValueA = _rowValueCache.GetOrCreateValue (rowA, GetStringValueForCustomColumn);
       string stringValueB = _rowValueCache.GetOrCreateValue (rowB, GetStringValueForCustomColumn);

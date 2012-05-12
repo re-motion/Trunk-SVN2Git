@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
     public abstract int Compare (BocListRow rowA, BocListRow rowB);
 
-    protected int ComparePropertyPathValues (
+    protected int? ComparePropertyPathValues (
         IBusinessObjectPropertyPath propertyPathA,
         BocListRow rowA,
         IBusinessObjectPropertyPath propertyPathB,
@@ -65,10 +65,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
       if (valueA is IComparable && valueB is IComparable)
         return Comparer.Default.Compare (valueA, valueB);
-
-      return 0;
-      //Better leave the comparisson of non-ICompareables to the calling method. ToString is not always the rowB choice.
-      //return Comparer.Default.Compare (valueA.ToString(), valueB.ToString());
+      else
+        return null;
     }
 
     private object GetPropertyPathValueFromCache (BocListRow row, IBusinessObjectPropertyPath propertyPath)
