@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
     }
 
-    public IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowReader)
+    public IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
@@ -132,6 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       using (var storageProviderManager = CreateStorageProviderManager())
       {
         var provider = storageProviderManager.GetMandatory (query.StorageProviderDefinition.Name);
+        // This foreach/yield combination is needed to force the using block to stay open until the whole result set has finished enumeration.
         foreach (var queryResultRow in provider.ExecuteCustomQuery (query))
         {
           yield return queryResultRow;

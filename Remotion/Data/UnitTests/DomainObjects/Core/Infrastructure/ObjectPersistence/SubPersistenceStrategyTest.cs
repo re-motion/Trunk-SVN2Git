@@ -53,11 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       Func<IQueryResultRow, object> rowConversion = qrr => new object();
       
       _parentTransactionOperationsMock
-          .Expect (mock => mock.ExecuteCustomQuery (_queryStub, rowConversion))
+          .Expect (mock => mock.ExecuteCustomQuery (_queryStub))
           .Return (fakeResult);
       _parentTransactionOperationsMock.Expect (mock => mock.Dispose ());
 
-      var result = _persistenceStrategy.ExecuteCustomQuery (_queryStub, rowConversion);
+      var result = _persistenceStrategy.ExecuteCustomQuery (_queryStub);
 
       _parentTransactionOperationsMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (fakeResult));

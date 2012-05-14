@@ -14,7 +14,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -190,9 +189,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// Executes the given custom <see cref="IQuery"/>.
     /// </summary>
     /// <param name="query">The <see cref="IQuery"/> to be executed.</param>
-    /// <param name="rowReader">A delegate to convert the data from the database into custom objects.</param>
     /// <returns>A collection of <see cref="IQueryResultRow"/> instances representing the result of the query.</returns>
-    IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowReader);
+    IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query);
 
     /// <summary>
     /// Executes the given <see cref="IQuery"/> and returns its result as a scalar value.

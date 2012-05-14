@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     IEnumerable<DomainObject> GetRelatedObjects (RelationEndPointID relationEndPointID);
 
     QueryResult<DomainObject> ExecuteCollectionQuery (IQuery query);
-    IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowConversion);
+    IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query);
     object ExecuteScalarQuery (IQuery query);
 
     DataContainer GetDataContainerWithoutLoading (ObjectID objectID);

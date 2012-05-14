@@ -152,13 +152,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
     }
 
-    public IEnumerable<IQueryResultRow> ExecuteCustomQuery<T> (IQuery query, Func<IQueryResultRow, T> rowReader)
+    public IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
       using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
       {
-        return parentTransactionOperations.ExecuteCustomQuery (query, rowReader);
+        return parentTransactionOperations.ExecuteCustomQuery (query);
       }
     }
 

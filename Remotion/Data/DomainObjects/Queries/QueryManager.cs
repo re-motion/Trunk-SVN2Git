@@ -185,7 +185,7 @@ namespace Remotion.Data.DomainObjects.Queries
       if (query.EagerFetchQueries.Count > 0)
         throw new ArgumentException ("A custom query cannot have eager fetch queries defined.", "query");
 
-      var queryResult = _persistenceStrategy.ExecuteCustomQuery (query, rowReader).Select(rowReader);
+      var queryResult = _persistenceStrategy.ExecuteCustomQuery (query).Select(rowReader);
       _transactionEventSink.RaiseEvent ((tx, l) => queryResult = l.FilterCustomQueryResult (tx, query, queryResult));
       return queryResult;
     }

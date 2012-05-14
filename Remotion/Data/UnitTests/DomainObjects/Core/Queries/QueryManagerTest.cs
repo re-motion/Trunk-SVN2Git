@@ -20,7 +20,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -215,16 +214,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (result, Is.SameAs (filteredResult));
     }
 
-
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "A collection or scalar query cannot be used with GetCustom.", MatchType = MessageMatch.Contains)]
-    public void GetCustom_WithCollectionQuery ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "A collection or scalar query cannot be used with GetCustom.\r\nParameter name: query")]
+    public void GetCustom_WithNonCustomQuery ()
     {
       _queryManager.GetCustom (_collectionQuery, _rowConversion);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "A custom query cannot have eager fetch queries defined.", MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+        "A custom query cannot have eager fetch queries defined.\r\nParameter name: query")]
     public void GetCustom_WithEagerFetchQueries ()
     {
       var relationEndPointDefinitionStub = MockRepository.GenerateStub<IRelationEndPointDefinition>();
@@ -244,44 +244,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       var fakeResult = new[] { fakeRow1, fakeRow2 };
 
       _persistenceStrategyMock
-          .Expect (mock => mock.ExecuteCustomQuery (_customQuery, _rowConversion))
+          .Expect (mock => mock.ExecuteCustomQuery (_customQuery))
           .Return (fakeResult);
 
       _transactionEventSinkWithMock
-          .StubMock (stub => stub.FilterCustomQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<IQuery>.Is.Anything,  Arg<IEnumerable<object>>.Is.Anything))
+          .ExpectMock (
+              stub => stub.FilterCustomQueryResult (
+                  Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
+                  Arg.Is (_customQuery),
+                  Arg<IEnumerable<object>>.List.Equal (new[] { "Fake1", "Fake2" })))
           .Return (null)
           .WhenCalled (mi => mi.ReturnValue = mi.Arguments[2]);
 
       var result = _queryManager.GetCustom (_customQuery, _rowConversion);
 
       _persistenceStrategyMock.VerifyAllExpectations();
+      _transactionEventSinkWithMock.VerifyMock();
       Assert.That (result.ToArray(), Is.EqualTo (new[] { "Fake1", "Fake2" }));
     }
-
-    [Test]
-    public void GetCustom_NullValue ()
-    {
-      var fakeRow1 = MockRepository.GenerateStub<IQueryResultRow> ();
-      fakeRow1.Stub (stub => stub.GetRawValue (0)).Return ("Fake1");
-      var fakeRow2 = MockRepository.GenerateStub<IQueryResultRow> ();
-      fakeRow1.Stub (stub => stub.GetRawValue (0)).Return (null);
-
-      var fakeResult = new[] { fakeRow1, fakeRow2 };
-
-      _persistenceStrategyMock
-          .Expect (mock => mock.ExecuteCustomQuery (_customQuery, _rowConversion))
-          .Return (fakeResult);
-
-      _transactionEventSinkWithMock
-          .StubMock (stub => stub.FilterCustomQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<IQuery>.Is.Anything, Arg<IEnumerable<object>>.Is.Anything))
-          .Return (null)
-          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[2]);
-
-      var result = _queryManager.GetCustom (_customQuery, _rowConversion);
-
-      _persistenceStrategyMock.VerifyAllExpectations ();
-      Assert.That (result.ToArray (), Is.EqualTo (new[] { "Fake1", null }));
-    }
-
   }
 }
