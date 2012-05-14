@@ -43,14 +43,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = Provider.ExecuteCustomQuery (_query);
 
-      Assert.That (result.Count(), Is.EqualTo (2));
-      var rawValues = result.Select (
-          qrr => new[] { qrr.GetRawValue (0), qrr.GetRawValue (1), qrr.GetRawValue (2), qrr.GetRawValue (3), qrr.GetRawValue (4) }).ToArray();
-      var expected = new object[]
-                     {
-                         new object[] { "üäöfedcba", -32767, true, 0, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue" },
-                         new object[] { "abcdeföäü", 32767, false, 1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red" }
-                     };
+      var rawValues =
+          result
+            .Select (qrr => new[] { qrr.GetRawValue (0), qrr.GetRawValue (1), qrr.GetRawValue (2), qrr.GetRawValue (3), qrr.GetRawValue (4) })
+            .ToArray ();
+      var expected =
+          new object[]
+          {
+              new object[] { "üäöfedcba", -32767, true, 0, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Blue" },
+              new object[] { "abcdeföäü", 32767, false, 1, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ColorExtensions.Red" }
+          };
 
       Assert.That (rawValues, Is.EquivalentTo (expected));
     }
@@ -60,7 +62,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       var result = Provider.ExecuteCustomQuery (_query);
 
-      Assert.That (result.Count(), Is.EqualTo (2));
       var convertedValues = result.Select (
           qrr =>
           new object[]

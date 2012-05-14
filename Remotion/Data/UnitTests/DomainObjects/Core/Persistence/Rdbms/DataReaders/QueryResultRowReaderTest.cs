@@ -51,26 +51,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     public void Read ()
     {
       _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true);
-      _dataReaderStrictMock.Replay();
 
       var result = _queryResultRowReader.Read (_dataReaderStrictMock);
 
+      _dataReaderStrictMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.TypeOf (typeof (QueryResultRow)));
       CheckQueryResultRow(result);
-      _dataReaderStrictMock.VerifyAllExpectations();
     }
 
     [Test]
     public void Read_NoData ()
     {
       _dataReaderStrictMock.Expect (mock => mock.Read()).Return (false);
-      _dataReaderStrictMock.Replay();
 
       var result = _queryResultRowReader.Read (_dataReaderStrictMock);
 
+      _dataReaderStrictMock.VerifyAllExpectations ();
       Assert.That (result, Is.Null);
-      _dataReaderStrictMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -78,20 +75,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
     {
       _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (true).Repeat.Times (3);
       _dataReaderStrictMock.Expect (mock => mock.Read ()).Return (false).Repeat.Once ();
-      _dataReaderStrictMock.Replay();
 
       var result = _queryResultRowReader.ReadSequence (_dataReaderStrictMock).OfType<QueryResultRow>().ToList();
 
+      _dataReaderStrictMock.VerifyAllExpectations ();
       Assert.That (result, Is.Not.Null);
       Assert.That (result.Count, Is.EqualTo (3));
       CheckQueryResultRow (result[0]);
       CheckQueryResultRow (result[1]);
-      _dataReaderStrictMock.VerifyAllExpectations();
-
+      CheckQueryResultRow (result[2]);
     }
 
     private void CheckQueryResultRow (IQueryResultRow result)
     {
+      Assert.That (result, Is.TypeOf (typeof (QueryResultRow)));
       Assert.That (((QueryResultRow) result).StorageTypeInformationProvider, Is.SameAs (_storageTypeInformationProviderStub));
       Assert.That (((QueryResultRow) result).DataReader, Is.SameAs (_dataReaderStrictMock));
     }

@@ -232,9 +232,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     [Test]
     public void ExecuteCustomQuery ()
     {
-      var queryResultRowStub1 = MockRepository.GenerateStub<IQueryResultRow>();
-      var queryResultRowStub2 = MockRepository.GenerateStub<IQueryResultRow> ();
-      var fakeResult = new[] { queryResultRowStub1, queryResultRowStub2 };
+      var fakeResult = MockRepository.GenerateStrictMock<IEnumerable<IQueryResultRow>>();
 
       var queryStub = MockRepository.GenerateStub<IQuery> ();
       queryStub.Stub (stub => stub.StorageProviderDefinition).Return (TestDomainStorageProviderDefinition);
@@ -255,6 +253,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.SameAs(fakeResult));
+      fakeResult.AssertWasNotCalled (mock => mock.GetEnumerator());
     }
 
     [Test]

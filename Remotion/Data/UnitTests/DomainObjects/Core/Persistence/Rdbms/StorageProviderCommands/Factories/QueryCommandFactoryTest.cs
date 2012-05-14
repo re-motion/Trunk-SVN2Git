@@ -1,3 +1,19 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -78,28 +94,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataStoragePropertyDefinitionFactoryStrictMock
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))
           .Return (_property3);
-      _dataStoragePropertyDefinitionFactoryStrictMock.Replay();
 
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder>();
-      var expectedParametersWithType =
-          new[]
-          {
-              new QueryParameterWithType (
-                  new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType),
-                  StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_property1).StorageTypeInfo),
-              new QueryParameterWithType (_queryParameter2, _property2.ColumnDefinition.StorageTypeInfo),
-              new QueryParameterWithType (
-                  new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
-                  StoragePropertyDefinitionTestHelper.GetSingleColumn (_property3.SerializedIDProperty).StorageTypeInfo)
-          };
+      var expectedParametersWithType = GetExpectedParametersForQueryStub();
       _dbCommandBuilderFactoryStrictMock
           .Expect (
               stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.List.Equal (expectedParametersWithType)))
           .Return (commandBuilderStub);
-      _dbCommandBuilderFactoryStrictMock.Replay();
 
       _objectReaderFactoryStrictMock.Expect (mock => mock.CreateDataContainerReader()).Return (_dataContainerReader1Stub);
-      _objectReaderFactoryStrictMock.Replay();
 
       var result = _factory.CreateForDataContainerQuery (_queryStub);
 
@@ -166,29 +169,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _dataStoragePropertyDefinitionFactoryStrictMock
           .Expect (mock => mock.CreateStoragePropertyDefinition (DomainObjectIDs.Official1))
           .Return (_property3);
-      _dataStoragePropertyDefinitionFactoryStrictMock.Replay ();
 
       var commandBuilderStub = MockRepository.GenerateStub<IDbCommandBuilder> ();
 
-      var expectedParametersWithType =
-          new[]
-          {
-              new QueryParameterWithType (
-                  new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType),
-                  StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_property1).StorageTypeInfo),
-              new QueryParameterWithType (_queryParameter2, _property2.ColumnDefinition.StorageTypeInfo),
-              new QueryParameterWithType (
-                  new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
-                  StoragePropertyDefinitionTestHelper.GetSingleColumn (_property3.SerializedIDProperty).StorageTypeInfo)
-          };
+      var expectedParametersWithType = GetExpectedParametersForQueryStub();
       _dbCommandBuilderFactoryStrictMock
           .Expect (
               stub => stub.CreateForQuery (Arg.Is ("statement"), Arg<IEnumerable<QueryParameterWithType>>.List.Equal (expectedParametersWithType)))
           .Return (commandBuilderStub);
-      _dbCommandBuilderFactoryStrictMock.Replay ();
 
       _objectReaderFactoryStrictMock.Expect (mock => mock.CreateResultRowReader ()).Return (_resultRowReaderStub);
-      _objectReaderFactoryStrictMock.Replay ();
 
       var result = _factory.CreateForCustomQuery (_queryStub);
 
@@ -258,6 +248,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (() => _factory.CreateForScalarQuery (queryStub), Throws.InvalidOperationException.With.Message.EqualTo (
           "The query parameter 'p1' is mapped to 2 database-level values. Only values that map to a single database-level value can be used as query "
           + "parameters."));
+    }
+
+    private QueryParameterWithType[] GetExpectedParametersForQueryStub ()
+    {
+      return new[]
+             {
+                 new QueryParameterWithType (
+                     new QueryParameter (_queryParameter1.Name, DomainObjectIDs.Order1.Value, _queryParameter1.ParameterType),
+                     StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (_property1).StorageTypeInfo),
+                 new QueryParameterWithType (_queryParameter2, _property2.ColumnDefinition.StorageTypeInfo),
+                 new QueryParameterWithType (
+                     new QueryParameter (_queryParameter3.Name, DomainObjectIDs.Official1.ToString(), _queryParameter3.ParameterType),
+                     StoragePropertyDefinitionTestHelper.GetSingleColumn (_property3.SerializedIDProperty).StorageTypeInfo)
+             };
     }
   }
 }

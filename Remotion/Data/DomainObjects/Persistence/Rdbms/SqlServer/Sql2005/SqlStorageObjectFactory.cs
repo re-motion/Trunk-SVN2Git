@@ -67,7 +67,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           rdbmsProviderDefinition,
           storageNameProvider,
           infrastructureStoragePropertyDefinitionFactory, 
-          dataStoragePropertyDefinitionFactory, storageTypeInformationProvider);
+          dataStoragePropertyDefinitionFactory, 
+          storageTypeInformationProvider);
       return CreateStorageProvider (persistenceExtension, rdbmsProviderDefinition, commandFactory);
     }
 
@@ -261,7 +262,12 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlCommentScriptElementFactory());
     }
 
-    protected virtual IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider, IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory, IStorageTypeInformationProvider storageTypeInformationProvider)
+    protected virtual IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (
+        RdbmsProviderDefinition storageProviderDefinition,
+        IStorageNameProvider storageNameProvider,
+        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
+        IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
