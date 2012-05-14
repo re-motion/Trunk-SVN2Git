@@ -14,23 +14,28 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using NUnit.Framework;
-using Remotion.TypePipe.MutableReflection;
+using System.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.TypePipe.UnitTests.MutableReflection
+namespace Remotion.TypePipe.MutableReflection
 {
-  [TestFixture]
-  public class MethodNameUtilityTest
+  /// <summary>
+  /// Provides utility functions for working with explicit method overrides.
+  /// </summary>
+  public static class ExplicitMethodOverrideUtility
   {
-    [Test]
-    public void GetExplicitOverrideMethodName ()
+    public static string GetMethodName (MethodInfo overriddenMethod)
     {
-      var method = MemberInfoFromExpressionUtility.GetMethod ((MethodNameUtilityTest obj) => obj.GetExplicitOverrideMethodName());
+      ArgumentUtility.CheckNotNull ("overriddenMethod", overriddenMethod);
 
-      var result = MethodNameUtility.GetExplicitOverrideMethodName (method);
+      return overriddenMethod.DeclaringType.FullName + "_" + overriddenMethod.Name;
+    }
 
-      Assert.That (result, Is.EqualTo ("Remotion.TypePipe.UnitTests.MutableReflection.MethodNameUtilityTest_GetExplicitOverrideMethodName"));
+    public static MethodAttributes GetMethodAttributes (MethodInfo overriddenMethod)
+    {
+      ArgumentUtility.CheckNotNull ("overriddenMethod", overriddenMethod);
+
+      return MethodAttributeUtility.ChangeVisibility (overriddenMethod.Attributes, MethodAttributes.Private);
     }
   }
 }
