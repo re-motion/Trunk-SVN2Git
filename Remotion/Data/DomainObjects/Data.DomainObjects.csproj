@@ -225,9 +225,14 @@
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionOperations.cs" />
     <Compile Include="Infrastructure\TopClientTransactionListener.cs" />
+    <Compile Include="Linq\CustomSequenceQueryAdapter.cs" />
     <Compile Include="Linq\DomainObjectQueryGenerator.cs" />
+    <Compile Include="Linq\DomainObjectSequenceQueryAdapter.cs" />
     <Compile Include="Linq\IDomainObjectQueryGenerator.cs" />
+    <Compile Include="Linq\IExecutableQuery.cs" />
     <Compile Include="Linq\ISqlQueryGenerator.cs" />
+    <Compile Include="Linq\QueryAdapterBase.cs" />
+    <Compile Include="Linq\ScalarQueryAdapter.cs" />
     <Compile Include="Linq\SqlQueryGenerator.cs" />
     <Compile Include="Linq\SqlQueryGeneratorResult.cs" />
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
