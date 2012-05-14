@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
@@ -41,14 +42,17 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     private readonly ISqlQueryGenerator _sqlQueryGenerator;
     private readonly TypeConversionProvider _typeConversionProvider;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
 
-    public DomainObjectQueryGenerator (ISqlQueryGenerator sqlQueryGenerator, TypeConversionProvider typeConversionProvider)
+    public DomainObjectQueryGenerator (ISqlQueryGenerator sqlQueryGenerator, TypeConversionProvider typeConversionProvider, IStorageTypeInformationProvider storageTypeInformationProvider)
     {
       ArgumentUtility.CheckNotNull ("sqlQueryGenerator", sqlQueryGenerator);
       ArgumentUtility.CheckNotNull ("typeConversionProvider", typeConversionProvider);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       _sqlQueryGenerator = sqlQueryGenerator;
       _typeConversionProvider = typeConversionProvider;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     public ISqlQueryGenerator SqlQueryGenerator
@@ -60,7 +64,12 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       get { return _typeConversionProvider; }
     }
-    
+
+    public IStorageTypeInformationProvider StorageTypeInformationProvider
+    {
+      get { return _storageTypeInformationProvider; }
+    }
+
     /// <summary>
     /// Creates an <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
     /// </summary>
@@ -97,6 +106,52 @@ namespace Remotion.Data.DomainObjects.Linq
       return query;
     }
 
+    public IExecutableQuery<T> CreateScalarQuery<T> (string id, StorageProviderDefinition storageProviderDefinition, QueryModel queryModel)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+
+      var sqlQuery = _sqlQueryGenerator.CreateSqlQuery (queryModel);
+      var command = sqlQuery.SqlCommand;
+      var statement = command.CommandText;
+
+      var query = CreateQuery (id, storageProviderDefinition, statement, command.Parameters, QueryType.Scalar);
+
+      var storageTypeInformation = _storageTypeInformationProvider.GetStorageType (typeof (T));
+      return new ScalarQueryAdapter<T> (query, o=> (T)storageTypeInformation.ConvertFromStorageType(o));
+    }
+
+    public IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T> (
+        string id,
+        ClassDefinition classDefinition,
+        QueryModel queryModel,
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
+      ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+
+      var sqlQuery = _sqlQueryGenerator.CreateSqlQuery (queryModel);
+      var command = sqlQuery.SqlCommand;
+      var statement = command.CommandText;
+
+      var queryType = sqlQuery.Kind == SqlQueryGeneratorResult.QueryKind.EntityQuery ? QueryType.Collection : QueryType.Custom;
+      var query = CreateQuery (id, classDefinition.StorageEntityDefinition.StorageProviderDefinition, statement, command.Parameters , queryType);
+      CreateEagerFetchQueries (query, classDefinition, fetchQueryModelBuilders);
+      
+      if (sqlQuery.Kind == SqlQueryGeneratorResult.QueryKind.EntityQuery)
+      {
+        return new DomainObjectSequenceQueryAdapter<T> (query);
+      }
+      else
+      {
+        var projectionProvider = sqlQuery.SqlCommand.GetInMemoryProjection<T>().Compile();
+        return new CustomSequenceQueryAdapter<T> (query, qrr=> projectionProvider(new QueryResultRowAdapter(qrr)));
+      }
+    }
+
     protected virtual IQuery CreateQuery (
         string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType)
     {
@@ -105,14 +160,16 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("statement", statement);
       ArgumentUtility.CheckNotNull ("commandParameters", commandParameters);
 
-      var queryParameters = new QueryParameterCollection ();
+      var queryParameters = new QueryParameterCollection();
       foreach (CommandParameter commandParameter in commandParameters)
         queryParameters.Add (commandParameter.Name, commandParameter.Value, QueryParameterType.Value);
 
       if (queryType == QueryType.Scalar)
         return QueryFactory.CreateScalarQuery (id, storageProviderDefinition, statement, queryParameters);
-      else
+      else if (queryType == QueryType.Collection)
         return QueryFactory.CreateCollectionQuery (id, storageProviderDefinition, statement, queryParameters, typeof (DomainObjectCollection));
+      else
+        return QueryFactory.CreateCustomQuery (id, storageProviderDefinition, statement, queryParameters);
     }
 
     private void CreateEagerFetchQueries (IQuery query, ClassDefinition classDefinition, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
@@ -122,12 +179,12 @@ namespace Remotion.Data.DomainObjects.Linq
         var relationEndPointDefinition = GetEagerFetchRelationEndPointDefinition (fetchQueryModelBuilder.FetchRequest, classDefinition);
 
         // clone the fetch query model because we don't want to modify the source model of all inner requests
-        var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ().Clone ();
+        var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel().Clone();
 
         // for re-store, fetch queries must always be distinct even when the query would return duplicates
         // e.g., for (from o in Orders select o).FetchOne (o => o.Customer)
         // when two orders have the same customer, re-store gives an error, unless we add a DISTINCT clause
-        fetchQueryModel.ResultOperators.Add (new DistinctResultOperator ());
+        fetchQueryModel.ResultOperators.Add (new DistinctResultOperator());
 
         var sortExpression = GetSortExpressionForRelation (relationEndPointDefinition);
         if (sortExpression != null)
@@ -136,7 +193,7 @@ namespace Remotion.Data.DomainObjects.Linq
           // seeing a DISTINCT operator); therefore, we put the DISTINCT query into a sub-query, then append the ORDER BY clause
           fetchQueryModel = fetchQueryModel.ConvertToSubQuery ("#fetch");
 
-          var orderByClause = new OrderByClause ();
+          var orderByClause = new OrderByClause();
           foreach (var sortedPropertySpecification in sortExpression.SortedProperties)
             orderByClause.Orderings.Add (GetOrdering (fetchQueryModel, sortedPropertySpecification));
 
@@ -145,9 +202,9 @@ namespace Remotion.Data.DomainObjects.Linq
 
         var fetchQuery = CreateQuery (
             "<fetch query for " + fetchQueryModelBuilder.FetchRequest.RelationMember.Name + ">",
-            relationEndPointDefinition.GetOppositeClassDefinition (),
+            relationEndPointDefinition.GetOppositeClassDefinition(),
             fetchQueryModel,
-            fetchQueryModelBuilder.CreateInnerBuilders (),
+            fetchQueryModelBuilder.CreateInnerBuilders(),
             QueryType.Collection);
 
         query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
@@ -158,7 +215,7 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       var virtualEndPointDefinition = relationEndPointDefinition as VirtualRelationEndPointDefinition;
       if (virtualEndPointDefinition != null)
-        return virtualEndPointDefinition.GetSortExpression ();
+        return virtualEndPointDefinition.GetSortExpression();
       else
         return null;
     }
@@ -212,7 +269,7 @@ namespace Remotion.Data.DomainObjects.Linq
     private Ordering GetOrdering (QueryModel queryModel, SortedPropertySpecification sortedPropertySpecification)
     {
       var propertyInfo = (PropertyInfo) _typeConversionProvider.Convert (
-          sortedPropertySpecification.PropertyDefinition.PropertyInfo.GetType (),
+          sortedPropertySpecification.PropertyDefinition.PropertyInfo.GetType(),
           typeof (PropertyInfo),
           sortedPropertySpecification.PropertyDefinition.PropertyInfo);
 

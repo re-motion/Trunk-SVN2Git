@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
 
       var sqlQueryGenerator = new SqlQueryGenerator (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
-      var domainObjectQueryGenerator = new DomainObjectQueryGenerator (sqlQueryGenerator, TypeConversionProvider.Create());
+      var domainObjectQueryGenerator = new DomainObjectQueryGenerator (sqlQueryGenerator, TypeConversionProvider.Create (), new SqlStorageTypeInformationProvider ());
       
       var sqlStorageTypeInformationProvider = ObjectFactory.Create<SqlStorageTypeInformationProvider> (ParamList.Empty);
       return new DomainObjectQueryExecutor (startingClassDefinition, sqlStorageTypeInformationProvider, domainObjectQueryGenerator);

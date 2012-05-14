@@ -310,7 +310,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var sqlQueryGenerator = CreateSqlQueryGenerator(methodCallTransformerProvider, resultOperatorHandlerRegistry);
 
       var typeConversionProvider = TypeConversionProvider.Create ();
-      return ObjectFactory.Create<DomainObjectQueryGenerator> (ParamList.Create (sqlQueryGenerator, typeConversionProvider));
+      return ObjectFactory.Create<DomainObjectQueryGenerator> (ParamList.Create (sqlQueryGenerator, typeConversionProvider, CreateStorageTypeInformationProvider()));
     }
 
     protected virtual ISqlQueryGenerator CreateSqlQueryGenerator (

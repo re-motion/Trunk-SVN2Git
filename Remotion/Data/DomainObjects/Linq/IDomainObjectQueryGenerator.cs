@@ -17,6 +17,7 @@
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
@@ -49,5 +50,37 @@ namespace Remotion.Data.DomainObjects.Linq
         QueryModel queryModel, 
         IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, 
         QueryType queryType);
+
+    /// <summary>
+    /// Creates an <see cref="IExecutableQuery{T}"/> object for a given <see cref="ClassDefinition"/> based on the given <see cref="QueryModel"/>.
+    /// </summary>
+    /// <param name="id">The identifier for the resulting query.</param>
+    /// <param name="storageProviderDefinition">The <see cref="StorageProvider"/> for the query</param>
+    /// <param name="queryModel">The <see cref="QueryModel"/> describing the query.</param>
+    /// <returns>
+    /// An <see cref="IExecutableQuery{T}"/> object corresponding to the given <paramref name="queryModel"/> that returns a scalar value when it is executed.
+    /// </returns>
+    IExecutableQuery<T> CreateScalarQuery<T> (string id, StorageProviderDefinition storageProviderDefinition, QueryModel queryModel);
+
+    /// <summary>
+    /// Creates an <see cref="IExecutableQuery{T}"/> collection for a given <see cref="ClassDefinition"/> based on the given <see cref="QueryModel"/>.
+    /// </summary>
+    /// <param name="id">The identifier for the resulting query.</param>
+    /// <param name="classDefinition">The <see cref="ClassDefinition"/> to use for creating the query. This is used to obtain the 
+    /// <see cref="StorageProvider"/> for the query, and it is used to analyze the relation properties for eager fetching.</param>
+    /// <param name="queryModel">The <see cref="QueryModel"/> describing the query.</param>
+    /// <param name="fetchQueryModelBuilders">
+    /// A number of <see cref="FetchQueryModelBuilder"/> instances for the fetch requests to be executed together with the query.</param>
+    /// <returns>
+    /// An <see cref="IExecutableQuery{T}"/> collection corresponding to the given <paramref name="queryModel"/>.
+    /// </returns>
+    IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T>
+        (
+        string id,
+        ClassDefinition classDefinition,
+        QueryModel queryModel,
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders);
+
+
   }
 }

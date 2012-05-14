@@ -40,6 +40,11 @@ namespace Remotion.Data.DomainObjects.Linq
       _resultConversion = resultConversion;
     }
 
+    public Func<IQueryResultRow, TResultItem> ResultConversion
+    {
+      get { return _resultConversion; }
+    }
+
     public override IEnumerable<TResultItem> Execute (IQueryManager queryManager)
     {
       ArgumentUtility.CheckNotNull ("queryManager", queryManager);
