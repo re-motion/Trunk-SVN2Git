@@ -59,34 +59,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     public void WithConvertedValues ()
     {
       var result = QueryManager.GetCustom (
-          _query,
-          queryResultRow => new object[]
-                            {
-                                queryResultRow.GetConvertedValue<string> (0),
-                                queryResultRow.GetConvertedValue<Int16> (1),
-                                queryResultRow.GetConvertedValue<bool> (2),
-                                queryResultRow.GetConvertedValue<ClassWithAllDataTypes.EnumType> (3),
-                                queryResultRow.GetConvertedValue<Color> (4)
-                            }).ToList();
+         _query,
+         queryResultRow => new
+         {
+           StringValue = queryResultRow.GetConvertedValue<string> (0),
+           Int16Value = queryResultRow.GetConvertedValue<Int16> (1),
+           BoolValue = queryResultRow.GetConvertedValue<bool> (2),
+           EnumValue = queryResultRow.GetConvertedValue<ClassWithAllDataTypes.EnumType> (3),
+           ExtensibleEnumValue = queryResultRow.GetConvertedValue<Color> (4)
+         }).ToList ();
 
       var expected =
           new[]
           {
-              new object[]
+              new
               {
-                  "üäöfedcba",
-                  -32767,
-                  true,
-                  ClassWithAllDataTypes.EnumType.Value0,
-                  Color.Values.Blue()
+                  StringValue = "üäöfedcba",
+                  Int16Value = (Int16) (-32767),
+                  BoolValue = true,
+                  EnumValue = ClassWithAllDataTypes.EnumType.Value0,
+                  ExtensibleEnumValue = Color.Values.Blue()
               },
-              new object[]
+              new
               {
-                  "abcdeföäü",
-                  32767,
-                  false,
-                  ClassWithAllDataTypes.EnumType.Value1,
-                  Color.Values.Red()
+                  StringValue = "abcdeföäü",
+                  Int16Value = (Int16) 32767,
+                  BoolValue = false,
+                  EnumValue = ClassWithAllDataTypes.EnumType.Value1,
+                  ExtensibleEnumValue = Color.Values.Red()
               },
           };
 
