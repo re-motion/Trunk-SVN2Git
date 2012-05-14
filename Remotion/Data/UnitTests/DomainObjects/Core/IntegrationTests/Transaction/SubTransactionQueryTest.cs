@@ -39,6 +39,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    public void CustomQueryInSubTransaction ()
+    {
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
+
+        var result = ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, qrr => qrr.GetRawValue (0));
+
+        CollectionAssert.AreEquivalent (new[] { "üäöfedcba", "abcdeföäü" }, result);
+      }
+    }
+
+    [Test]
     public void ObjectQueryInSubTransaction ()
     {
       using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
