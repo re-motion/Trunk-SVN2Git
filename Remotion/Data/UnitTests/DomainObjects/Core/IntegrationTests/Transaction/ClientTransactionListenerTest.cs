@@ -371,7 +371,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           .Expect (mock => mock.FilterCustomQueryResult (
               Arg.Is (TestableClientTransaction),
               Arg.Is (query),
-              Arg<IEnumerable<object>>.Matches(e=>e.Count()==2)))
+              Arg<IEnumerable<object>>.Matches (qr => qr.SetEquals (new[] { "abcdeföäü", "üäöfedcba" }))))
           .Return (newQueryResult);
 
       _mockRepository.ReplayAll ();

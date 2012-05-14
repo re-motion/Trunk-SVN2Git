@@ -1217,27 +1217,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var query = QueryFactory.CreateQueryFromConfiguration ("CustomQuery");
       Func<IQueryResultRow, object> rowConversion = rr => rr.GetRawValue (0);
 
-      using (_newTransaction.EnterNonDiscardingScope ())
-      {
-        ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, rowConversion);
-      }
-
-      _mockRepository.BackToRecord (_extensionMock);
-      
       var newQueryResult = new[] { new object() };
       _extensionMock
-          .Expect (mock => mock.FilterCustomQueryResult (Arg.Is (_newTransaction), Arg.Is(query), Arg<IEnumerable<object>>.Matches(qr=>qr.Count()==2)))
+          .Expect (
+              mock => mock.FilterCustomQueryResult (
+                  Arg.Is (_newTransaction), Arg.Is (query), Arg<IEnumerable<object>>.Matches (qr => qr.SetEquals (new[] { "abcdeföäü", "üäöfedcba" }))))
           .Return (newQueryResult);
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
 
-      using (_newTransaction.EnterNonDiscardingScope ())
+      using (_newTransaction.EnterNonDiscardingScope())
       {
         var finalResult = ClientTransactionScope.CurrentTransaction.QueryManager.GetCustom (query, rowConversion);
         Assert.That (finalResult, Is.SameAs (newQueryResult));
       }
 
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
