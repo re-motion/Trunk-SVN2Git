@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -32,23 +33,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     [Test]
     public void LinqQuery_CallsFilterQueryResult ()
     {
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      listenerMock
+      var extensionKey = "LinqQuery_CallsFilterQueryResult_Key";
+      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
+      extensionMock.Stub (stub => stub.Key).Return (extensionKey);
+      extensionMock
           .Expect (mock => mock.FilterQueryResult (Arg.Is (TestableClientTransaction), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject>());
       
-      TestableClientTransaction.AddListener (listenerMock);
+      TestableClientTransaction.Extensions.Add (extensionMock);
       try
       {
         var query = from o in QueryFactory.CreateLinqQuery<Order>() where o.Customer.ID == DomainObjectIDs.Customer1 select o;
         query.ToArray();
 
-        listenerMock.VerifyAllExpectations();
+        extensionMock.VerifyAllExpectations();
       }
       finally
       {
-        TestableClientTransaction.RemoveListener (listenerMock);
+        TestableClientTransaction.Extensions.Remove (extensionKey);
       }
     }
+
+    [Ignore ("TODO RM-4855: enable")]
+    [Test]
+    public void LinqCustomQuery_CallsFilterQueryResult ()
+    {
+      var extensionKey = "LinqCustomQuery_CallsFilterQueryResult_Key";
+      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
+      extensionMock.Stub (stub => stub.Key).Return (extensionKey);
+      extensionMock
+          .Expect (mock => mock.FilterCustomQueryResult (Arg.Is (TestableClientTransaction), Arg<IQuery>.Is.Anything, Arg<IEnumerable<int>>.Is.Anything))
+          .Return (new[]{1, 2, 3});
+
+      TestableClientTransaction.Extensions.Add (extensionMock);
+      try
+      {
+        var query = from o in QueryFactory.CreateLinqQuery<Order> () select o.OrderNumber;
+        query.ToArray ();
+
+        extensionMock.VerifyAllExpectations ();
+      }
+      finally
+      {
+        TestableClientTransaction.Extensions.Remove (extensionKey);
+      }
+    }
+
   }
 }
