@@ -20,8 +20,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
@@ -70,43 +70,7 @@ namespace Remotion.Data.DomainObjects.Linq
       get { return _storageTypeInformationProvider; }
     }
 
-    /// <summary>
-    /// Creates an <see cref="IQuery"/> object based on the given <see cref="QueryModel"/>.
-    /// </summary>
-    /// <param name="id">The identifier for the linq query.</param>
-    /// <param name="classDefinition">The <see cref="ClassDefinition"/> to use for creating the query. This is used to obtain the 
-    /// <see cref="StorageProvider"/> for the query, and it is used to analyze the relation properties for eager fetching.</param>
-    /// <param name="queryModel">The <see cref="QueryModel"/> for the given query.</param>
-    /// <param name="fetchQueryModelBuilders">The <see cref="FetchQueryModelBuilder"/> instances for the fetch requests to be executed together with 
-    /// the query.</param>
-    /// <param name="queryType">The type of query to create.</param>
-    /// <returns>
-    /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
-    /// </returns>
-    public virtual IQuery CreateQuery (
-        string id,
-        ClassDefinition classDefinition,
-        QueryModel queryModel,
-        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
-        QueryType queryType)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNull ("queryModel", queryModel);
-      ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
-
-      var sqlQuery = _sqlQueryGenerator.CreateSqlQuery (queryModel);
-      CheckQueryKind (sqlQuery.Kind, queryType, queryModel);
-
-      var command = sqlQuery.SqlCommand;
-      var statement = command.CommandText;
-
-      var query = CreateQuery (id, classDefinition.StorageEntityDefinition.StorageProviderDefinition, statement, command.Parameters, queryType);
-      CreateEagerFetchQueries (query, classDefinition, fetchQueryModelBuilders);
-      return query;
-    }
-
-    public IExecutableQuery<T> CreateScalarQuery<T> (string id, StorageProviderDefinition storageProviderDefinition, QueryModel queryModel)
+    public virtual IExecutableQuery<T> CreateScalarQuery<T> (string id, StorageProviderDefinition storageProviderDefinition, QueryModel queryModel)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -118,11 +82,11 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var query = CreateQuery (id, storageProviderDefinition, statement, command.Parameters, QueryType.Scalar);
 
-      var storageTypeInformation = _storageTypeInformationProvider.GetStorageType (typeof (T));
-      return new ScalarQueryAdapter<T> (query, o=> (T)storageTypeInformation.ConvertFromStorageType(o));
+      var projection = sqlQuery.SqlCommand.GetInMemoryProjection<T>().Compile();
+      return new ScalarQueryAdapter<T> (query, o => projection (new ScalarResultRowAdapter (o, _storageTypeInformationProvider)));
     }
 
-    public IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T> (
+    public virtual IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T> (
         string id,
         ClassDefinition classDefinition,
         QueryModel queryModel,
@@ -139,7 +103,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var queryType = sqlQuery.Kind == SqlQueryGeneratorResult.QueryKind.EntityQuery ? QueryType.Collection : QueryType.Custom;
       var query = CreateQuery (id, classDefinition.StorageEntityDefinition.StorageProviderDefinition, statement, command.Parameters , queryType);
-      CreateEagerFetchQueries (query, classDefinition, fetchQueryModelBuilders);
+      CreateEagerFetchQueries<T> (query, classDefinition, fetchQueryModelBuilders);
       
       if (sqlQuery.Kind == SqlQueryGeneratorResult.QueryKind.EntityQuery)
       {
@@ -147,8 +111,8 @@ namespace Remotion.Data.DomainObjects.Linq
       }
       else
       {
-        var projectionProvider = sqlQuery.SqlCommand.GetInMemoryProjection<T>().Compile();
-        return new CustomSequenceQueryAdapter<T> (query, qrr=> projectionProvider(new QueryResultRowAdapter(qrr)));
+        var projection = sqlQuery.SqlCommand.GetInMemoryProjection<T>().Compile();
+        return new CustomSequenceQueryAdapter<T> (query, qrr=> projection(new QueryResultRowAdapter(qrr)));
       }
     }
 
@@ -172,7 +136,7 @@ namespace Remotion.Data.DomainObjects.Linq
         return QueryFactory.CreateCustomQuery (id, storageProviderDefinition, statement, queryParameters);
     }
 
-    private void CreateEagerFetchQueries (IQuery query, ClassDefinition classDefinition, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
+    private void CreateEagerFetchQueries<T> (IQuery query, ClassDefinition classDefinition, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
     {
       foreach (var fetchQueryModelBuilder in fetchQueryModelBuilders)
       {
@@ -200,12 +164,12 @@ namespace Remotion.Data.DomainObjects.Linq
           fetchQueryModel.BodyClauses.Add (orderByClause);
         }
 
-        var fetchQuery = CreateQuery (
+        var fetchQuery = CreateSequenceQuery<T> (
             "<fetch query for " + fetchQueryModelBuilder.FetchRequest.RelationMember.Name + ">",
             relationEndPointDefinition.GetOppositeClassDefinition(),
             fetchQueryModel,
-            fetchQueryModelBuilder.CreateInnerBuilders(),
-            QueryType.Collection);
+            fetchQueryModelBuilder.CreateInnerBuilders()
+           );
 
         query.EagerFetchQueries.Add (relationEndPointDefinition, fetchQuery);
       }
@@ -244,26 +208,6 @@ namespace Remotion.Data.DomainObjects.Linq
             propertyName);
         throw new NotSupportedException (message, ex);
       }
-    }
-
-    private void CheckQueryKind (SqlQueryGeneratorResult.QueryKind actualQueryKind, QueryType expectedQueryType, QueryModel queryModel)
-    {
-      // check result for DomainObjects unless it's a scalar query
-      if (expectedQueryType != QueryType.Collection)
-        return;
-
-      if (actualQueryKind == SqlQueryGeneratorResult.QueryKind.EntityQuery)
-        return;
-
-      string message = string.Format (
-          "This query provider does not support the given query ('{0}'). "
-          + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.",
-          queryModel);
-
-      if (actualQueryKind == SqlQueryGeneratorResult.QueryKind.GroupQuery)
-        message += " GroupBy must be executed in memory, for example by issuing AsEnumerable() before performing the grouping operation.";
-
-      throw new NotSupportedException (message);
     }
 
     private Ordering GetOrdering (QueryModel queryModel, SortedPropertySpecification sortedPropertySpecification)

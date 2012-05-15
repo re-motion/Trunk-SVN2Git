@@ -33,21 +33,14 @@ namespace Remotion.Data.DomainObjects.Linq
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
     private readonly ClassDefinition _startingClassDefinition;
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
-
     private readonly IDomainObjectQueryGenerator _queryGenerator;
 
-    public DomainObjectQueryExecutor (
-        ClassDefinition startingClassDefinition,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
-        IDomainObjectQueryGenerator queryGenerator)
+    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition, IDomainObjectQueryGenerator queryGenerator)
     {
       ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
 
       _startingClassDefinition = startingClassDefinition;
-      _storageTypeInformationProvider = storageTypeInformationProvider;
 
       _queryGenerator = queryGenerator;
     }
@@ -55,11 +48,6 @@ namespace Remotion.Data.DomainObjects.Linq
     public ClassDefinition StartingClassDefinition
     {
       get { return _startingClassDefinition; }
-    }
-
-    public IStorageTypeInformationProvider StorageTypeInformationProvider
-    {
-      get { return _storageTypeInformationProvider; }
     }
 
     public IDomainObjectQueryGenerator QueryGenerator
@@ -83,19 +71,11 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
 
       var fetchQueryModelBuilders = RemoveTrailingFetchRequests (queryModel);
+      if (fetchQueryModelBuilders.Any ())
+        throw new NotSupportedException ("Scalar queries cannot perform eager fetching.");
 
-      var query = _queryGenerator.CreateQuery ("<dynamic query>", _startingClassDefinition, queryModel, fetchQueryModelBuilders, QueryType.Scalar);
-      object scalarValue = ClientTransaction.Current.QueryManager.GetScalar (query);
-
-      if (scalarValue == null || scalarValue == DBNull.Value)
-        return (T) (object) null;
-
-      if (scalarValue is T)
-        return (T) scalarValue;
-
-      // If we can't cast, there's still the chance that we can convert. This is especially needed for booleans, which will be integers when coming 
-      // from the database.
-      return (T) Convert.ChangeType (scalarValue, typeof (T));
+      var query = _queryGenerator.CreateScalarQuery<T> ("<dynamic query>", _startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition, queryModel);
+      return query.Execute(ClientTransaction.Current.QueryManager);
     }
 
     /// <summary>
@@ -114,10 +94,6 @@ namespace Remotion.Data.DomainObjects.Linq
 
       if (ClientTransaction.Current == null)
         throw new InvalidOperationException ("No ClientTransaction has been associated with the current thread.");
-
-      // Natively supported types can be executed as scalar queries
-      if (_storageTypeInformationProvider.IsTypeSupported (typeof (T)))
-        return ExecuteScalar<T> (queryModel);
 
       var sequence = ExecuteCollection<T> (queryModel);
 
@@ -144,8 +120,8 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var fetchQueryModelBuilders = RemoveTrailingFetchRequests (queryModel);
 
-      IQuery query = _queryGenerator.CreateQuery ("<dynamic query>", _startingClassDefinition, queryModel, fetchQueryModelBuilders, QueryType.Collection);
-      return ClientTransaction.Current.QueryManager.GetCollection (query).AsEnumerable().Cast<T>();
+      var query = _queryGenerator.CreateSequenceQuery<T> ("<dynamic query>", _startingClassDefinition, queryModel, fetchQueryModelBuilders);
+      return query.Execute (ClientTransaction.Current.QueryManager); 
     }
 
     private ICollection<FetchQueryModelBuilder> RemoveTrailingFetchRequests (QueryModel queryModel)

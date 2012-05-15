@@ -211,6 +211,7 @@
     <Compile Include="DomainObjects\Core\Linq\QueryAdapterBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryResultRowAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ScalarQueryAdapterTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ScalarResultRowAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\QueryResultRowReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\QueryResultRowTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RelationStoragePropertyDefinitionFactoryTest.cs" />

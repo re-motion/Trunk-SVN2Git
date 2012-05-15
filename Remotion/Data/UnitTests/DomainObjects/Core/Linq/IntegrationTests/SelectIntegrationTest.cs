@@ -19,10 +19,8 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.Linq.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
-using Remotion.Mixins;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 {
@@ -120,24 +118,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This query provider does not support the given query ('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select 1'). "
-        + "re-store only supports queries selecting a scalar value, a single DomainObject, or a collection of DomainObjects.")]
-    public void Query_WithUnsupportedType_Constant ()
+    public void Query_WithConstant ()
     {
-      var query =
-          from o in QueryFactory.CreateLinqQuery<Order> ()
+      var result =
+          (from o in QueryFactory.CreateLinqQuery<Order> ()
           where o.OrderNumber == 1
-          select 1;
+          select 1).Single();
 
-      query.ToArray ();
+      Assert.That (result, Is.EqualTo (1));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This query provider does not support the given query "
-        + "('from Order o in DomainObjectQueryable<Order> where ([o].OrderNumber = 1) select [o].ID'). re-store only supports queries selecting a "
-        + "scalar value, a single DomainObject, or a collection of DomainObjects.")]
+        "Type 'ObjectID' ist not supported by this storage provider.\n"+
+        "Please select the ID and ClassID values separately (ID.Value, ID.ClassID), then create an ObjectID with it in memory.")]
     public void Query_WithUnsupportedType_NonDomainObjectColumn ()
     {
       var query =

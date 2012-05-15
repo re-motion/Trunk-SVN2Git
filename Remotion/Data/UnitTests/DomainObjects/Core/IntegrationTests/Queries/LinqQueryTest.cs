@@ -54,7 +54,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       }
     }
 
-    [Ignore ("TODO RM-4855: enable")]
     [Test]
     public void LinqCustomQuery_CallsFilterQueryResult ()
     {

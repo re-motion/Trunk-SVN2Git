@@ -26,7 +26,6 @@ namespace Remotion.Data.DomainObjects.Linq
     public enum QueryKind
     {
       EntityQuery,
-      GroupQuery,
       Other
     } ;
 

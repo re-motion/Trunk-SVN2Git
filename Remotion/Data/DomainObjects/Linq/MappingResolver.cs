@@ -129,6 +129,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
+      // TODO 4871: Add support for ObjectID.Value property
+
       if (memberInfo == s_classIDPropertyInfo)
         return _storageSpecificExpressionResolver.ResolveClassIDColumn(sqlColumnExpression);
 

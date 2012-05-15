@@ -21,9 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
@@ -38,7 +36,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   public class DomainObjectQueryExecutorTest : StandardMappingTest
   {
     private ClassDefinition _orderClassDefinition;
-    private IStorageTypeInformationProvider _storageTypeInformationProviderStub;
     private IDomainObjectQueryGenerator _queryGeneratorMock;
     private DomainObjectQueryExecutor _queryExecutor;
 
@@ -46,25 +43,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private ClientTransactionScope _transactionScope;
 
     private QueryModel _someQueryModel;
-    private IQuery _someQueryStub;
     private Order _someOrder;
+    private IExecutableQuery<int> _scalarExecutableQueryMock;
+    private IExecutableQuery<IEnumerable<Order>> _collectionExecutableQueryMock;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
-      _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
       _queryGeneratorMock = MockRepository.GenerateStrictMock<IDomainObjectQueryGenerator>();
-      _queryExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _storageTypeInformationProviderStub, _queryGeneratorMock);
+      _queryExecutor = new DomainObjectQueryExecutor (_orderClassDefinition, _queryGeneratorMock);
 
       _queryManagerMock = MockRepository.GenerateStrictMock<IQueryManager> ();
       var transaction = ClientTransactionObjectMother.CreateTransactionWithQueryManager<ClientTransaction> (_queryManagerMock);
       _transactionScope = transaction.EnterDiscardingScope ();
 
       _someQueryModel = QueryModelObjectMother.Create();
-      _someQueryStub = MockRepository.GenerateStub<IQuery>();
+      MockRepository.GenerateStub<IQuery>();
       _someOrder = DomainObjectMother.CreateFakeObject<Order>();
+
+      _scalarExecutableQueryMock = MockRepository.GenerateStrictMock<IExecutableQuery<int>>();
+      _collectionExecutableQueryMock = MockRepository.GenerateStrictMock<IExecutableQuery<IEnumerable<Order>>> ();
     }
 
     public override void TearDown ()
@@ -77,117 +77,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteScalar ()
     {
       _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder>(), QueryType.Scalar))
-          .Return (_someQueryStub);
-      
+          .Expect (mock => mock.CreateScalarQuery<int> (
+              "<dynamic query>", _orderClassDefinition.StorageEntityDefinition.StorageProviderDefinition, _someQueryModel))
+          .Return (_scalarExecutableQueryMock);
+
       var fakeResult = 7;
-      _queryManagerMock
-          .Expect (mock => mock.GetScalar (_someQueryStub))
-          .Return (fakeResult);
+      _scalarExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
 
       var result = _queryExecutor.ExecuteScalar<int> (_someQueryModel);
 
       _queryGeneratorMock.VerifyAllExpectations();
-      _queryManagerMock.VerifyAllExpectations();
+      _scalarExecutableQueryMock.VerifyAllExpectations();
       Assert.That (result, Is.EqualTo (fakeResult));
     }
 
     [Test]
+    [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Scalar queries cannot perform eager fetching.")]
     public void ExecuteScalar_WithFetchRequests ()
     {
-      ExpectCreateQueryWithFetchQueryModelBuilders (_someQueryModel, _someQueryStub);
+      ExpectCreateQueryWithFetchQueryModelBuilders (_someQueryModel, _collectionExecutableQueryMock);
 
-      var fakeResult = 7;
-      _queryManagerMock
-          .Expect (mock => mock.GetScalar (_someQueryStub))
-          .Return (fakeResult);
-
-      var result = _queryExecutor.ExecuteScalar<int> (_someQueryModel);
-
-      _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (fakeResult));
-    }
-
-    [Test]
-    public void ExecuteScalar_WithDBNull ()
-    {
-      _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Scalar))
-          .Return (_someQueryStub);
-
-      var fakeResult = DBNull.Value;
-      _queryManagerMock
-          .Expect (mock => mock.GetScalar (_someQueryStub))
-          .Return (fakeResult);
-
-      var result = _queryExecutor.ExecuteScalar<int?> (_someQueryModel);
-
-      _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void ExecuteScalar_WithConvertibleResult ()
-    {
-      _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Scalar))
-          .Return (_someQueryStub);
-
-      var fakeResult = 0;
-      _queryManagerMock
-          .Expect (mock => mock.GetScalar (_someQueryStub))
-          .Return (fakeResult);
-
-      var result = _queryExecutor.ExecuteScalar<bool> (_someQueryModel);
-
-      _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.False);
-    }
-
-    [Test]
-    public void ExecuteScalar_WithNonNullResult_NullableType ()
-    {
-      _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Scalar))
-          .Return (_someQueryStub);
-
-      var fakeResult = 0;
-      _queryManagerMock
-          .Expect (mock => mock.GetScalar (_someQueryStub))
-          .Return (fakeResult);
-
-      var result = _queryExecutor.ExecuteScalar<int?> (_someQueryModel);
-
-      _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (0));
-    }
-
-    [Test]
-    public void ExecuteScalar_WithNullResult_NullableType ()
-    {
-      _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Scalar))
-          .Return (_someQueryStub);
-
-      object fakeResult = null;
-      _queryManagerMock
-          .Expect (mock => mock.GetScalar (_someQueryStub))
-          .Return (fakeResult);
-
-      var result = _queryExecutor.ExecuteScalar<int?> (_someQueryModel);
-
-      _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.Null);
+      _queryExecutor.ExecuteScalar<int> (_someQueryModel);
     }
 
     [Test]
@@ -204,37 +114,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteCollection ()
     {
       _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Collection))
-          .Return (_someQueryStub);
+          .Expect (mock => mock.CreateSequenceQuery<Order> (
+              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+          .Return (_collectionExecutableQueryMock);
 
-      var fakeResult = new QueryResult<DomainObject> (_someQueryStub, new DomainObject[] { _someOrder });
-      _queryManagerMock
-          .Expect (mock => mock.GetCollection (_someQueryStub))
-          .Return (fakeResult);
+      var fakeResult = new[] { _someOrder };
+      _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return(fakeResult);
 
       var result = _queryExecutor.ExecuteCollection<Order> (_someQueryModel);
 
       _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (new[] { _someOrder }));
+      _collectionExecutableQueryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs(fakeResult));
     }
 
     [Test]
     public void ExecuteCollection_WithFetchRequests ()
     {
-      ExpectCreateQueryWithFetchQueryModelBuilders (_someQueryModel, _someQueryStub);
+      ExpectCreateQueryWithFetchQueryModelBuilders (_someQueryModel, _collectionExecutableQueryMock);
 
-      var fakeResult = new QueryResult<DomainObject> (_someQueryStub, new DomainObject[] { _someOrder });
-      _queryManagerMock
-          .Expect (mock => mock.GetCollection (_someQueryStub))
-          .Return (fakeResult);
+      var fakeResult = new[] { _someOrder };
+      _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
 
       var result = _queryExecutor.ExecuteCollection<Order> (_someQueryModel);
 
       _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.EqualTo (new[] { _someOrder }));
+      _collectionExecutableQueryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs(fakeResult));
     }
 
     [Test]
@@ -248,82 +154,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void ExecuteSingle_WithNativelySupportedType ()
+    public void ExecuteSingle()
     {
-      _storageTypeInformationProviderStub.Stub (stub => stub.IsTypeSupported (typeof (Order))).Return (true);
-
       _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Scalar))
-          .Return (_someQueryStub);
+          .Expect (mock => mock.CreateSequenceQuery<Order> ("<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+          .Return (_collectionExecutableQueryMock);
 
-      var fakeResult = _someOrder;
-      _queryManagerMock
-          .Expect (mock => mock.GetScalar (_someQueryStub))
-          .Return (fakeResult);
+      var fakeResult = new[] { _someOrder };
+      _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
 
       var result = _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false);
 
       _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
-      Assert.That (result, Is.SameAs (_someOrder));
-    }
-
-    [Test]
-    public void ExecuteSingle_WithNonNativelySupportedType ()
-    {
-      _storageTypeInformationProviderStub.Stub (stub => stub.IsTypeSupported (typeof (Order))).Return (false);
-
-      _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Collection))
-          .Return (_someQueryStub);
-
-      var fakeResult = new QueryResult<DomainObject> (_someQueryStub, new DomainObject[] { _someOrder });
-      _queryManagerMock
-          .Expect (mock => mock.GetCollection (_someQueryStub))
-          .Return (fakeResult);
-
-      var result = _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false);
-
-      _queryGeneratorMock.VerifyAllExpectations ();
-      _queryManagerMock.VerifyAllExpectations ();
+      _collectionExecutableQueryMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (_someOrder));
     }
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains more than one element")]
-    public void ExecuteSingle_WithNonNativelySupportedType_MoreThanOneItem ()
+    public void ExecuteSingle_MoreThanOneItem ()
     {
-      _storageTypeInformationProviderStub.Stub (stub => stub.IsTypeSupported (typeof (Order))).Return (false);
-
       _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Collection))
-          .Return (_someQueryStub);
+          .Expect (mock => mock.CreateSequenceQuery<Order> (
+              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+          .Return (_collectionExecutableQueryMock);
 
-      var fakeResult = new QueryResult<DomainObject> (_someQueryStub, new DomainObject[] { _someOrder, DomainObjectMother.CreateFakeObject<Order>() });
-      _queryManagerMock
-          .Stub (stub => stub.GetCollection (_someQueryStub))
-          .Return (fakeResult);
+      var fakeResult = new[] { _someOrder, DomainObjectMother.CreateFakeObject<Order>() };
+      _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
 
       _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false);
     }
 
     [Test]
-    public void ExecuteSingle_WithNonNativelySupportedType_ZeroItems_ReturnDefaultTrue ()
+    public void ExecuteSingle_ZeroItems_ReturnDefaultTrue ()
     {
-      _storageTypeInformationProviderStub.Stub (stub => stub.IsTypeSupported (typeof (Order))).Return (false);
-
       _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Collection))
-          .Return (_someQueryStub);
+          .Expect (mock => mock.CreateSequenceQuery<Order> (
+              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+          .Return (_collectionExecutableQueryMock);
 
-      var fakeResult = new QueryResult<DomainObject> (_someQueryStub, new DomainObject[0]);
-      _queryManagerMock
-          .Stub (stub => stub.GetCollection (_someQueryStub))
-          .Return (fakeResult);
+      var fakeResult = new Order[0];
+      _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
 
       var result = _queryExecutor.ExecuteSingle<Order> (_someQueryModel, true);
 
@@ -332,19 +203,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Sequence contains no elements")]
-    public void ExecuteSingle_WithNonNativelySupportedType_ZeroItems_ReturnDefaultFalse ()
+    public void ExecuteSingle_ZeroItems_ReturnDefaultFalse ()
     {
-      _storageTypeInformationProviderStub.Stub (stub => stub.IsTypeSupported (typeof (Order))).Return (false);
+       _queryGeneratorMock
+          .Expect (mock => mock.CreateSequenceQuery<Order> (
+              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+          .Return (_collectionExecutableQueryMock);
 
-      _queryGeneratorMock
-          .Expect (mock => mock.CreateQuery (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> (), QueryType.Collection))
-          .Return (_someQueryStub);
-
-      var fakeResult = new QueryResult<DomainObject> (_someQueryStub, new DomainObject[0]);
-      _queryManagerMock
-          .Stub (stub => stub.GetCollection (_someQueryStub))
-          .Return (fakeResult);
+      var fakeResult = new Order[0];
+      _collectionExecutableQueryMock.Expect (mock => mock.Execute (_queryManagerMock)).Return (fakeResult);
 
       _queryExecutor.ExecuteSingle<Order> (_someQueryModel, false);
     }
@@ -382,7 +249,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       return someResultOperator;
     }
 
-    private void ExpectCreateQueryWithFetchQueryModelBuilders (QueryModel expectedQueryModel, IQuery fakeResult)
+    private void ExpectCreateQueryWithFetchQueryModelBuilders<T> (QueryModel expectedQueryModel, IExecutableQuery<IEnumerable<T>> executableQuery)
     {
       var nonTrailingFetchRequest = AddFetchRequest();
       var someResultOperator = AddSomeResultOperator ();
@@ -394,13 +261,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _queryGeneratorMock
           .Expect (
-              mock => mock.CreateQuery (
+              mock => mock.CreateSequenceQuery<T> (
                   Arg<string>.Is.Anything,
                   Arg<ClassDefinition>.Is.Anything,
                   Arg.Is (expectedQueryModel),
-                  Arg<IEnumerable<FetchQueryModelBuilder>>.Is.Anything,
-                  Arg<QueryType>.Is.Anything))
-          .Return (fakeResult)
+                  Arg<IEnumerable<FetchQueryModelBuilder>>.Is.Anything))
+          .Return (executableQuery)
           .WhenCalled (mi =>
           {
             Assert.That (expectedQueryModel.ResultOperators, Is.EqualTo (new[] { nonTrailingFetchRequest, someResultOperator }));

@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
                       where o.OrderNumber > 1
                       select o;
 
-      IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
+      IQuery query = QueryFactory.CreateQuery<Order> ("<dynamico queryo>", queryable);
       Assert.That (query.Statement, Is.EqualTo (
         "SELECT [t0].[ID],[t0].[ClassID],[t0].[Timestamp],[t0].[OrderNo],[t0].[DeliveryDate],[t0].[OfficialID],[t0].[CustomerID],[t0].[CustomerIDClassID] "
         +"FROM [OrderView] AS [t0] WHERE ([t0].[OrderNo] > @1)"));
@@ -177,7 +177,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
                        where o.OrderNumber > 1
                        select o).FetchMany (o => o.OrderItems);
 
-      IQuery query = QueryFactory.CreateQuery ("<dynamico queryo>", queryable);
+      IQuery query = QueryFactory.CreateQuery<Order> ("<dynamico queryo>", queryable);
       Assert.That (query.EagerFetchQueries.Count, Is.EqualTo (1));
       Assert.That (query.EagerFetchQueries.Single().Key.PropertyName, Is.EqualTo (typeof (Order).FullName + ".OrderItems"));
     }
@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     public void CreateQuery_FromLinqQuery_InvalidQueryable ()
     {
       var queryable = new int[0].AsQueryable();
-      QueryFactory.CreateQuery ("<dynamic query>", queryable);
+      QueryFactory.CreateQuery<int> ("<dynamic query>", queryable);
     }
 
     [Test]

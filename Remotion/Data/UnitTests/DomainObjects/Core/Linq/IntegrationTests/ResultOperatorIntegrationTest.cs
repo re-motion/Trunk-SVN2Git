@@ -498,6 +498,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
+    [Ignore ("TODO 4870")]
     public void Avaerage_OnTopLevel ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Average(o=>o.OrderNumber);

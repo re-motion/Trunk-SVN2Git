@@ -99,13 +99,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    public void CreateSqlQuery_QueryKindGroup ()
-    {
-      var selectProjection = new SqlGroupingSelectExpression (Expression.Constant (null), Expression.Constant (null));
-      CheckCreateSqlQuery_QueryKind (SqlQueryGeneratorResult.QueryKind.GroupQuery, selectProjection);
-    }
-
-    [Test]
     public void CreateSqlQuery_QueryKindOther ()
     {
       var selectProjection = Expression.Constant (null);

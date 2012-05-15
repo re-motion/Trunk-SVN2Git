@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
@@ -31,28 +32,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
   {
     public interface IBaseCallRequirements
     {
-      IQuery CreateQuery (
-          string id,
-          ClassDefinition classDefinition,
-          QueryModel queryModel,
-          IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
-          QueryType queryType);
+      IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T> (
+        string id,
+        ClassDefinition classDefinition,
+        QueryModel queryModel,
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders);
+      IExecutableQuery<T> CreateScalarQuery<T> (string id, StorageProviderDefinition storageProviderDefinition, QueryModel queryModel);
       IQuery CreateQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, CommandParameter[] commandParameters, QueryType queryType);
     }
 
     public bool CreateQueryFromStatementCalled;
-    public bool CreateQueryFromModelCalled;
+    public bool CreateSequenceQueryFromModelCalled;
+    public bool CreateScalarQueryFromModelCalled;
 
     [OverrideTarget]
-    public IQuery CreateQuery (
+    public IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T> (
         string id,
         ClassDefinition classDefinition,
         QueryModel queryModel,
-        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders,
-        QueryType queryType)
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
     {
-      CreateQueryFromModelCalled = true;
-      return Next.CreateQuery (id, classDefinition, queryModel, fetchQueryModelBuilders, queryType);
+      CreateSequenceQueryFromModelCalled = true;
+      return Next.CreateSequenceQuery<T> (id, classDefinition, queryModel, fetchQueryModelBuilders);
+    }
+
+    [OverrideTarget]
+    public IExecutableQuery<T> CreateScalarQuery<T> (string id, StorageProviderDefinition storageProviderDefinition, QueryModel queryModel)
+    {
+      CreateScalarQueryFromModelCalled = true;
+      return Next.CreateScalarQuery<T> (id, storageProviderDefinition, queryModel);
     }
 
     [OverrideTarget]

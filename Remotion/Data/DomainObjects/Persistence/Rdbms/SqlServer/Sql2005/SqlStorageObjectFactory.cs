@@ -131,9 +131,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
       var queryGenerator = CreateDomainObjectQueryGenerator(methodCallTransformerProvider, resultOperatorHandlerRegistry);
-
-      var storageTypeInformationProvider = CreateStorageTypeInformationProvider ();
-      return new DomainObjectQueryExecutor (startingClassDefinition, storageTypeInformationProvider, queryGenerator);
+      return new DomainObjectQueryExecutor (startingClassDefinition, queryGenerator);
     }
 
     public virtual IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)

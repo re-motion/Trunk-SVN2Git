@@ -234,6 +234,7 @@
     <Compile Include="Linq\QueryAdapterBase.cs" />
     <Compile Include="Linq\QueryResultRowAdapter.cs" />
     <Compile Include="Linq\ScalarQueryAdapter.cs" />
+    <Compile Include="Linq\ScalarResultRowAdapter.cs" />
     <Compile Include="Linq\SqlQueryGenerator.cs" />
     <Compile Include="Linq\SqlQueryGeneratorResult.cs" />
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />

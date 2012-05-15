@@ -55,7 +55,7 @@ namespace Remotion.Development.Data.UnitTesting.DomainObjects.Linq
 
     private IQuery GetQuery<T> (IQueryable<T> queryable)
     {
-      return QueryFactory.CreateQuery ("<dynamic data>", queryable);
+      return QueryFactory.CreateQuery<T> ("<dynamic data>", queryable);
     }
   }
 }

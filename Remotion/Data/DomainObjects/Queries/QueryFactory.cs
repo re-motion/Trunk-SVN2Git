@@ -147,7 +147,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// execute the query immediately instead of returning an <see cref="IQueryable"/>.)
     /// </para>
     /// </remarks>
-    public static IQuery CreateQuery (string id, IQueryable queryable)
+    public static IQuery CreateQuery<T> (string id, IQueryable queryable)
     {
       ArgumentUtility.CheckNotNull ("queryable", queryable);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
@@ -170,8 +170,8 @@ namespace Remotion.Data.DomainObjects.Queries
       var queryModel = provider.GenerateQueryModel (expression);
       var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
 
-      return queryExecutor.QueryGenerator.CreateQuery (
-          id, queryExecutor.StartingClassDefinition, queryModel, fetchQueryModelBuilders, QueryType.Collection);
+      return queryExecutor.QueryGenerator.CreateSequenceQuery<T> (
+          id, queryExecutor.StartingClassDefinition, queryModel, fetchQueryModelBuilders);
     }
 
 

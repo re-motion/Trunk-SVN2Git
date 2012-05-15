@@ -75,11 +75,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var query = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
                   where cwadt.ID == DomainObjectIDs.ClassWithAllDataTypes1
-                  select (string) (object) cwadt.ExtensibleEnumProperty;
+                  select  (object) cwadt.ExtensibleEnumProperty;
 
       var result = query.Single ();
 
-      Assert.That (result, Is.EqualTo (Color.Values.Red ().ID));
+      Assert.That (result.ToString(), Is.EqualTo (Color.Values.Red ().ID));
     }
 
     [Test]

@@ -32,26 +32,6 @@ namespace Remotion.Data.DomainObjects.Linq
   public interface IDomainObjectQueryGenerator
   {
     /// <summary>
-    /// Creates an <see cref="IQuery"/> object for a given <see cref="ClassDefinition"/> based on the given <see cref="QueryModel"/>.
-    /// </summary>
-    /// <param name="id">The identifier for the resulting query.</param>
-    /// <param name="classDefinition">The <see cref="ClassDefinition"/> to use for creating the query. This is used to obtain the 
-    /// <see cref="StorageProvider"/> for the query, and it is used to analyze the relation properties for eager fetching.</param>
-    /// <param name="queryModel">The <see cref="QueryModel"/> describing the query.</param>
-    /// <param name="fetchQueryModelBuilders">
-    /// A number of <see cref="FetchQueryModelBuilder"/> instances for the fetch requests to be executed together with the query.</param>
-    /// <param name="queryType">The type of query to create.</param>
-    /// <returns>
-    /// An <see cref="IQuery"/> object corresponding to the given <paramref name="queryModel"/>.
-    /// </returns>
-    IQuery CreateQuery (
-        string id, 
-        ClassDefinition classDefinition, 
-        QueryModel queryModel, 
-        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders, 
-        QueryType queryType);
-
-    /// <summary>
     /// Creates an <see cref="IExecutableQuery{T}"/> object for a given <see cref="ClassDefinition"/> based on the given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="id">The identifier for the resulting query.</param>

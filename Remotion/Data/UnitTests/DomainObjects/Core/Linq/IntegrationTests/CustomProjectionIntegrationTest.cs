@@ -26,7 +26,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
   [TestFixture]
   public class CustomProjectionIntegrationTest : IntegrationTestBase
   {
-    [Ignore ("TODO RM-4855: enable")]
     [Test]
     public void SequenceOfDomainObjectProperties ()
     {
@@ -35,9 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       Assert.That (result, Is.EquivalentTo (new[] { 1, 2, 3, 4, 5, 6 }));
     }
 
-    [Ignore ("TODO RM-4855: enable")]
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "ObjectID should be created in memory. TODO RM-4855: adapt message")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Type 'ObjectID' ist not supported by this storage provider.\n"+
+      "Please select the ID and ClassID values separately (ID.Value, ID.ClassID), then create an ObjectID with it in memory.")]
     public void SequenceOfDomainObjectIDs ()
     {
       var result = from o in QueryFactory.CreateLinqQuery<Order>() select o.ID;
@@ -45,33 +44,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       result.ToArray();
     }
 
-    [Ignore ("TODO RM-4855: enable")]
     [Test]
+    [Ignore("TODO 4871: enable")]
     public void SequenceOfObjectIDs_ConstructedInMemory ()
     {
       var result =
-          (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber < 3 select new ObjectID (o.ID.ClassDefinition, o.ID.Value)).ToArray();
+          (from o in QueryFactory.CreateLinqQuery<Order>() where o.OrderNumber < 3 select new ObjectID (o.ID.ClassID, o.ID.Value)).ToArray();
 
       Assert.That (result.Length, Is.EqualTo (2));
       Assert.That (result, Is.EquivalentTo (new[] { DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem }));
     }
 
-    [Ignore ("TODO RM-4855: enable")]
     [Test]
     public void ComplexProjection ()
     {
       var result = (from o in QueryFactory.CreateLinqQuery<Order>()
                     where o.OrderNumber == 1
-                    select new { o.OrderNumber, Property = new { o.OrderTicket.FileName, o.OrderItems.Count } }).Single();
+                    select new { o.OrderNumber, Property = new { o.OrderTicket.FileName, Count = o.OrderItems.Count() } }).Single();
 
       Assert.That (result.OrderNumber, Is.EqualTo (1));
       Assert.That (result.Property.FileName, Is.EqualTo (@"C:\order1.png")); 
       Assert.That (result.Property.Count, Is.EqualTo (2));
     }
 
-    [Ignore ("TODO RM-4855: enable")]
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "A Domain Object cannot be included in a complex projection. TODO RM-4855: adapt message")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
+      "This LINQ provider does not support queries with complex projections that include DomainObjects."+
+      "Either change the query to return just a sequence of DomainObjects ('from o in QueryFactory.CreateLinqQuery<Order>() select o') "
+      +"or change the complex projection to contain no DomainObjects ('from o in QueryFactory.CreateLinqQuery<Order>() select new { o.OrderNumber, o.OrderDate }').")]
     public void ComplexProjection_ContainingDomainObject ()
     {
       var result = (from o in QueryFactory.CreateLinqQuery<Order> () select new { o.OrderNumber, o });

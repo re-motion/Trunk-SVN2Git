@@ -134,9 +134,6 @@ namespace Remotion.Data.DomainObjects.Linq
         expression = ((UnaryExpression) expression).Operand;
       if (expression is SqlEntityExpression)
         return SqlQueryGeneratorResult.QueryKind.EntityQuery;
-      
-      if (expression is SqlGroupingSelectExpression)
-        return SqlQueryGeneratorResult.QueryKind.GroupQuery;
 
       return SqlQueryGeneratorResult.QueryKind.Other;
     }

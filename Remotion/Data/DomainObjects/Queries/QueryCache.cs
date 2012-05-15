@@ -55,7 +55,7 @@ namespace Remotion.Data.DomainObjects.Queries
                                           {
                                             var querySource = QueryFactory.CreateLinqQuery<T> ();
                                             var query = queryGenerator (querySource);
-                                            return QueryFactory.CreateQuery (id, query);
+                                            return QueryFactory.CreateQuery<T> (id, query);
                                           });
     }
 
