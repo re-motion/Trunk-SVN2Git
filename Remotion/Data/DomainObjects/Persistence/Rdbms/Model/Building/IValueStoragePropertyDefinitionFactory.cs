@@ -15,37 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Data.SqlClient;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.DomainObjects.Mapping;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.IntegrationTests
+namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
-  public class SqlProviderBaseTest : ClientTransactionBaseTest
+  /// <summary>
+  /// Defines an interface for classes creating <see cref="IRdbmsStoragePropertyDefinition"/> instances for value properties (as opposed to relation 
+  /// properties).
+  /// </summary>
+  public interface IValueStoragePropertyDefinitionFactory
   {
-    private RdbmsProvider _provider;
-
-    public override void SetUp ()
-    {
-      base.SetUp();
-
-      _provider = CreateRdbmsProvider();
-    }
-
-    public override void TearDown ()
-    {
-      _provider.Dispose();
-      base.TearDown();
-    }
-
-    protected RdbmsProvider Provider
-    {
-      get { return _provider; }
-    }
-
-    protected RdbmsProvider CreateRdbmsProvider ()
-    {
-      return RdbmsProviderObjectMother.CreateForIntegrationTest (TestDomainStorageProviderDefinition);
-    }
+    IRdbmsStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition);
+    IRdbmsStoragePropertyDefinition CreateStoragePropertyDefinition (object value, string columnName);
   }
 }

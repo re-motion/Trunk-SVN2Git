@@ -22,9 +22,6 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Text;
 using Rhino.Mocks;
@@ -44,8 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _executionListenerStrictMock = MockRepository.GenerateStrictMock<ObservableRdbmsProvider.ICommandExecutionListener>();
       _provider = RdbmsProviderObjectMother.CreateForIntegrationTest (
           rdbmsProviderDefinition,
-          new SqlStorageTypeInformationProvider(),
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
           (providerDefinition, persistenceListener, commandFactory) =>
           new ObservableRdbmsProvider (
               providerDefinition,
@@ -175,16 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
     public DataContainer LoadDataContainerInSeparateProvider (ObjectID objectID)
     {
-      using (var provider = RdbmsProviderObjectMother.CreateForIntegrationTest (
-          _rdbmsProviderDefinition,
-          new SqlStorageTypeInformationProvider (),
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          (providerDefinition, persistenceListener, commandFactory) =>
-          new RdbmsProvider (
-              providerDefinition,
-              NullPersistenceExtension.Instance,
-              commandFactory,
-              () => new SqlConnection ())))
+      using (var provider = RdbmsProviderObjectMother.CreateForIntegrationTest (_rdbmsProviderDefinition))
       {
         return provider.LoadDataContainer (objectID).LocatedObject;
       }

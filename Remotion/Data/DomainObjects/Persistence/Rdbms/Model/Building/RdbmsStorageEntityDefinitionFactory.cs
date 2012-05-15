@@ -54,6 +54,31 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _storageProviderDefinition = storageProviderDefinition;
     }
 
+    public IInfrastructureStoragePropertyDefinitionProvider InfrastructureStoragePropertyDefinitionProvider
+    {
+      get { return _infrastructureStoragePropertyDefinitionProvider; }
+    }
+
+    public StorageProviderDefinition StorageProviderDefinition
+    {
+      get { return _storageProviderDefinition; }
+    }
+
+    public IStoragePropertyDefinitionResolver StoragePropertyDefinitionResolver
+    {
+      get { return _storagePropertyDefinitionResolver; }
+    }
+
+    public IForeignKeyConstraintDefinitionFactory ForeignKeyConstraintDefinitionFactory
+    {
+      get { return _foreignKeyConstraintDefinitionFactory; }
+    }
+
+    public IStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
+    }
+
     public virtual IRdbmsStorageEntityDefinition CreateTableDefinition (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

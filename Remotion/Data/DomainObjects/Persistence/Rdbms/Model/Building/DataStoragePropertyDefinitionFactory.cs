@@ -15,40 +15,40 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
 {
   /// <summary>
-  /// The <see cref="DataStoragePropertyDefinitionFactory"/> is responsible to create <see cref="IRdbmsStoragePropertyDefinition"/> objects for 
-  /// <see cref="PropertyDefinition"/> instances.
+  /// The <see cref="DataStoragePropertyDefinitionFactory"/> creates <see cref="IRdbmsStoragePropertyDefinition"/> objects for 
+  /// <see cref="PropertyDefinition"/> instances, delegating to <see cref="IValueStoragePropertyDefinitionFactory"/> and 
+  /// <see cref="IRelationStoragePropertyDefinitionFactory"/>.
   /// </summary>
   public class DataStoragePropertyDefinitionFactory : IDataStoragePropertyDefinitionFactory
   {
-    private readonly StorageProviderDefinition _storageProviderDefinition;
-    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
-    private readonly IStorageProviderDefinitionFinder _providerDefinitionFinder;
-    private readonly IStorageNameProvider _storageNameProvider;
+    private readonly IValueStoragePropertyDefinitionFactory _valueStoragePropertyDefinitionFactory;
+    private readonly IRelationStoragePropertyDefinitionFactory _relationStoragePropertyDefinitionFactory;
 
     public DataStoragePropertyDefinitionFactory (
-        StorageProviderDefinition storageProviderDefinition,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
-        IStorageNameProvider storageNameProvider,
-        IStorageProviderDefinitionFinder providerDefinitionFinder)
+        IValueStoragePropertyDefinitionFactory valueStoragePropertyDefinitionFactory,
+        IRelationStoragePropertyDefinitionFactory relationStoragePropertyDefinitionFactory)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("valueStoragePropertyDefinitionFactory", valueStoragePropertyDefinitionFactory);
+      ArgumentUtility.CheckNotNull ("relationStoragePropertyDefinitionFactory", relationStoragePropertyDefinitionFactory);
 
-      _storageProviderDefinition = storageProviderDefinition;
-      _storageTypeInformationProvider = storageTypeInformationProvider;
-      _storageNameProvider = storageNameProvider;
-      _providerDefinitionFinder = providerDefinitionFinder;
+      _valueStoragePropertyDefinitionFactory = valueStoragePropertyDefinitionFactory;
+      _relationStoragePropertyDefinitionFactory = relationStoragePropertyDefinitionFactory;
+    }
+
+    public IValueStoragePropertyDefinitionFactory ValueStoragePropertyDefinitionFactory
+    {
+      get { return _valueStoragePropertyDefinitionFactory; }
+    }
+
+    public IRelationStoragePropertyDefinitionFactory RelationStoragePropertyDefinitionFactory
+    {
+      get { return _relationStoragePropertyDefinitionFactory; }
     }
 
     public virtual IRdbmsStoragePropertyDefinition CreateStoragePropertyDefinition (PropertyDefinition propertyDefinition)
@@ -60,29 +60,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       if (relationEndPointDefinition != null)
       {
         Assertion.IsTrue (propertyDefinition.PropertyType == typeof (ObjectID));
-        var oppositeEndPointDefinition = relationEndPointDefinition.GetOppositeEndPointDefinition ();
-        var relationColumnName = _storageNameProvider.GetRelationColumnName (relationEndPointDefinition);
-        var relationClassIDColumnName = _storageNameProvider.GetRelationClassIDColumnName (relationEndPointDefinition);
-        return CreateRelationStoragePropertyDefinition (oppositeEndPointDefinition.ClassDefinition, relationColumnName, relationClassIDColumnName);
+        return _relationStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition);
       }
       else
       {
-        IStorageTypeInformation storageType;
-        try
-        {
-          storageType = _storageTypeInformationProvider.GetStorageType (propertyDefinition, MustBeNullable (propertyDefinition));
-        }
-        catch (NotSupportedException ex)
-        {
-          var message = string.Format (
-              "There was an error when retrieving storage type for property '{0}' (declaring class: '{1}'): {2}",
-              propertyDefinition.PropertyName,
-              propertyDefinition.ClassDefinition.ID,
-              ex.Message);
-          return new UnsupportedStoragePropertyDefinition (propertyDefinition.PropertyType, message, ex);
-        }
-        var columnName = _storageNameProvider.GetColumnName (propertyDefinition);
-        return CreateValueStoragePropertyDefinition (columnName, storageType, propertyDefinition.PropertyType);
+        return _valueStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
       }
     }
 
@@ -90,88 +72,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
     {
       var objectID = value as ObjectID;
       if (objectID != null)
-      {
-        return CreateRelationStoragePropertyDefinition (objectID.ClassDefinition, "Value", "ValueClassID");
-      }
-      else
-      {
-        var propertyType = value != null ? value.GetType() : typeof (object);
-        IStorageTypeInformation storageType;
-        try
-        {
-          storageType = _storageTypeInformationProvider.GetStorageType (value);
-        }
-        catch (NotSupportedException ex)
-        {
-          var message = string.Format (
-              "There was an error when retrieving storage type for value of type '{0}': {1}",
-              propertyType.Name,
-              ex.Message);
-          return new UnsupportedStoragePropertyDefinition (propertyType, message, ex);
-        }
-        return CreateValueStoragePropertyDefinition ("Value", storageType, propertyType);
-      }
-    }
+        return _relationStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (objectID.ClassDefinition, "Value", "ValueClassID");
 
-    private IRdbmsStoragePropertyDefinition CreateValueStoragePropertyDefinition (string columnName, IStorageTypeInformation storageType, Type propertyType)
-    {
-      var columnDefinition = new ColumnDefinition (columnName, storageType, false);
-      return new SimpleStoragePropertyDefinition (propertyType, columnDefinition);
-    }
-
-    protected virtual IRdbmsStoragePropertyDefinition CreateRelationStoragePropertyDefinition (
-        ClassDefinition relatedClassDefinition, 
-        string relationColumnName, 
-        string relationClassIDColumnName)
-    {
-      ArgumentUtility.CheckNotNull ("relatedClassDefinition", relatedClassDefinition);
-      ArgumentUtility.CheckNotNullOrEmpty ("relationColumnName", relationColumnName);
-      ArgumentUtility.CheckNotNullOrEmpty ("relationClassIDColumnName", relationClassIDColumnName);
-
-      var relatedStorageProviderDefinition = _providerDefinitionFinder.GetStorageProviderDefinition (relatedClassDefinition, null);
-
-      if (_storageProviderDefinition != relatedStorageProviderDefinition)
-        return CreateCrossProviderRelationStoragePropertyDefinition (relationColumnName);
-      else
-        return CreateSameProviderRelationStoragePropertyDefinition (relatedClassDefinition, relationColumnName, relationClassIDColumnName);
-    }
-
-    protected virtual bool MustBeNullable (PropertyDefinition propertyDefinition)
-    {
-      // CreateSequence can deal with null source objects
-      var baseClasses = propertyDefinition.ClassDefinition.BaseClass.CreateSequence (cd => cd.BaseClass);
-      return baseClasses.Any (cd => _storageNameProvider.GetTableName (cd) != null);
-    }
-
-    private IRdbmsStoragePropertyDefinition CreateCrossProviderRelationStoragePropertyDefinition (string relationColumnName)
-    {
-      var storageTypeInfo = _storageTypeInformationProvider.GetStorageTypeForSerializedObjectID (true);
-      var columnDefinition = new ColumnDefinition (relationColumnName, storageTypeInfo, false);
-      return new SerializedObjectIDStoragePropertyDefinition (new SimpleStoragePropertyDefinition (typeof (ObjectID), columnDefinition));
-    }
-
-    private IRdbmsStoragePropertyDefinition CreateSameProviderRelationStoragePropertyDefinition (
-        ClassDefinition relatedClassDefinition, 
-        string relationColumnName, 
-        string relationClassIDColumnName)
-    {
-      // Relation properties are always nullable within the same storage provider
-      var storageTypeInfo = _storageTypeInformationProvider.GetStorageTypeForID (true);
-      var valueColumnDefinition = new ColumnDefinition (relationColumnName, storageTypeInfo, false);
-
-      if (!relatedClassDefinition.IsPartOfInheritanceHierarchy)
-      {
-        // For ClassDefinitions without inheritance hierarchy, we don't include a ClassID relation column - the ClassID is known anyway
-        return new ObjectIDWithoutClassIDStoragePropertyDefinition (
-            new SimpleStoragePropertyDefinition (typeof (object), valueColumnDefinition),
-            relatedClassDefinition);
-      }
-
-      var storageTypeForClassID = _storageTypeInformationProvider.GetStorageTypeForClassID (true);
-      var classIDColumnDefinition = new ColumnDefinition (relationClassIDColumnName, storageTypeForClassID, false);
-      return new ObjectIDStoragePropertyDefinition (
-          new SimpleStoragePropertyDefinition (typeof (object), valueColumnDefinition), 
-          new SimpleStoragePropertyDefinition (typeof (string), classIDColumnDefinition));
+      return _valueStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (value, "Value");
     }
   }
 }

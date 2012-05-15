@@ -203,11 +203,36 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      return new DataStoragePropertyDefinitionFactory (
-          storageProviderDefinition,
-          storageTypeInformationProvider,
-          storageNameProvider,
-          providerDefinitionFinder);
+      var valueStoragePropertyDefinitionFactory = CreateValueStoragePropertyDefinitionFactory(storageNameProvider, storageTypeInformationProvider);
+      var relationStoragePropertyDefinitionFactory = CreateRelationStoragePropertyDefinitionFactory (
+          storageProviderDefinition, storageNameProvider, providerDefinitionFinder, storageTypeInformationProvider);
+
+      return new DataStoragePropertyDefinitionFactory (valueStoragePropertyDefinitionFactory, relationStoragePropertyDefinitionFactory);
+    }
+
+    protected virtual IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (
+        IStorageNameProvider storageNameProvider, 
+        IStorageTypeInformationProvider storageTypeInformationProvider)
+    {
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+
+      return new ValueStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
+    }
+
+    protected virtual RelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
+        StorageProviderDefinition storageProviderDefinition,
+        IStorageNameProvider storageNameProvider,
+        IStorageProviderDefinitionFinder providerDefinitionFinder,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+
+      return new RelationStoragePropertyDefinitionFactory (
+          storageProviderDefinition, false, storageNameProvider, storageTypeInformationProvider, providerDefinitionFinder);
     }
 
     protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (

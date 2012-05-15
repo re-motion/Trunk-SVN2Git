@@ -16,507 +16,94 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain.ReflectionBasedMappingSample;
 using Rhino.Mocks;
-using Remotion.Data.UnitTests.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
   [TestFixture]
   public class DataStoragePropertyDefinitionFactoryTest : StandardMappingTest
   {
-    private StorageTypeInformation _fakeStorageTypeInformation1;
-    private StorageTypeInformation _fakeStorageTypeInformation2;
+    private IValueStoragePropertyDefinitionFactory _valuePropertyFactoryMock;
+    private IRelationStoragePropertyDefinitionFactory _relationPropertyFactoryMock;
 
-    private StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
-    private IStorageNameProvider _storageNameProviderStub;
-    private IStorageTypeInformationProvider _storageTypeInformationProviderStrictMock;
+    private DataStoragePropertyDefinitionFactory _factory;
 
-    private ClassDefinition _classWithAllDataTypesDefinition;
-    private ClassDefinition _fileSystemItemClassDefinition;
-    private ClassDefinition _classAboveDbTableAttribute;
-    private ClassDefinition _classWithDbTableAttribute;
-    private ClassDefinition _classBelowDbTableAttribute;
-    private ClassDefinition _classBelowBelowDbTableAttribute;
+    private IRdbmsStoragePropertyDefinition _fakeStoragePropertyDefinition;
 
-    private DataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
-
-    [SetUp]
     public override void SetUp ()
     {
       base.SetUp();
 
-      _fakeStorageTypeInformation1 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
-      _fakeStorageTypeInformation2 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
+      _valuePropertyFactoryMock = MockRepository.GenerateStrictMock<IValueStoragePropertyDefinitionFactory> ();
+      _relationPropertyFactoryMock = MockRepository.GenerateStrictMock<IRelationStoragePropertyDefinitionFactory> ();
 
-      _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
-      _storageTypeInformationProviderStrictMock = MockRepository.GenerateStrictMock<IStorageTypeInformationProvider> ();
+      _factory = new DataStoragePropertyDefinitionFactory (_valuePropertyFactoryMock, _relationPropertyFactoryMock);
 
-      _storageNameProviderStub = MockRepository.GenerateStub<IStorageNameProvider>();
-
-      _classWithAllDataTypesDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassWithAllDataTypes));
-      _classWithAllDataTypesDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _fileSystemItemClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (FileSystemItem));
-      _fileSystemItemClassDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classAboveDbTableAttribute = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (ClassNotInMapping));
-      _classAboveDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classWithDbTableAttribute = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company), _classAboveDbTableAttribute);
-      _classWithDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classBelowDbTableAttribute = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), _classWithDbTableAttribute);
-      _classBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      _classBelowBelowDbTableAttribute = ClassDefinitionObjectMother.CreateClassDefinition (
-          typeof (Distributor), _classBelowDbTableAttribute);
-      _classBelowBelowDbTableAttribute.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-
-      _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          TestDomainStorageProviderDefinition,
-          _storageTypeInformationProviderStrictMock,
-          _storageNameProviderStub,
-          _storageProviderDefinitionFinder);
+      _fakeStoragePropertyDefinition = MockRepository.GenerateStub<IRdbmsStoragePropertyDefinition>();
     }
 
     [Test]
-    public void CreateStoragePropertyDefinition_NotSupportedType ()
+    public void CreateStoragePropertyDefinition_PropertyDefinition_RelationEndPoint ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition, "Test");
-      var exception = new NotSupportedException ("Msg.");
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (Arg.Is (propertyDefinition), Arg<bool>.Is.Anything))
-          .Throw (exception);
-      _storageTypeInformationProviderStrictMock.Replay();
+      var endPointDefinition = GetNonVirtualEndPointDefinition (typeof (OrderItem), "Order");
+      var propertyDefinition = endPointDefinition.PropertyDefinition;
+      _relationPropertyFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (endPointDefinition)).Return (_fakeStoragePropertyDefinition);
 
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
+      var result = _factory.CreateStoragePropertyDefinition (propertyDefinition);
 
-      Assert.That (result, Is.TypeOf<UnsupportedStoragePropertyDefinition> ()
-          .With.Property<UnsupportedStoragePropertyDefinition> (pd => pd.Message).EqualTo (
-            "There was an error when retrieving storage type for property 'Test' (declaring class: 'ClassWithAllDataTypes'): Msg.")
-          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.PropertyType).EqualTo (typeof (string))
-          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.InnerException).SameAs (exception));
+      _relationPropertyFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_fakeStoragePropertyDefinition));
     }
 
     [Test]
-    public void CreateStoragePropertyDefinition_ValueProperty ()
+    public void CreateStoragePropertyDefinition_PropertyDefinition_NoRelationEndPoint ()
     {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition);
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinition, false))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock.Replay();
+      var propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
+      _valuePropertyFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (propertyDefinition)).Return (_fakeStoragePropertyDefinition);
 
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinition))
-        .Return ("FakeColumnName");
+      var result = _factory.CreateStoragePropertyDefinition (propertyDefinition);
 
-      var result = (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinition);
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result.PropertyType, Is.SameAs (typeof (string)));
-      Assert.That (result.ColumnDefinition.Name, Is.EqualTo ("FakeColumnName"));
-      Assert.That (result.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
+      _valuePropertyFactoryMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_fakeStoragePropertyDefinition));
     }
 
     [Test]
-    public void CreateStoragePropertyDefinition_ValueProperty_RespectsNullability_ForClassAboveDbTableAttribute ()
+    public void CreateStoragePropertyDefinition_Value_Null ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithAllDataTypesDefinition, true);
-      Assert.That (_classAboveDbTableAttribute.BaseClass, Is.Null);
+      _valuePropertyFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition (null, "Value")).Return (_fakeStoragePropertyDefinition);
 
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNotNullable, false))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNullable, false))
-          .Return (_fakeStorageTypeInformation2);
-      _storageTypeInformationProviderStrictMock.Replay();
+      var result = _factory.CreateStoragePropertyDefinition ((object) null);
 
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNotNullable))
-        .Return ("FakeColumnName");
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNullable))
-        .Return ("FakeColumnName");
-
-      var resultNotNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNotNullable);
-      var resultNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNullable);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (resultNotNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (resultNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation2));
+      _valuePropertyFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_fakeStoragePropertyDefinition));
     }
 
     [Test]
-    public void CreateStoragePropertyDefinition_ValueProperty_RespectsNullability_ForClassWithDbTableAttribute ()
+    public void CreateStoragePropertyDefinition_Value_NonObjectID ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo(_classWithDbTableAttribute, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classWithDbTableAttribute, true);
+      _valuePropertyFactoryMock.Expect (mock => mock.CreateStoragePropertyDefinition ("test", "Value")).Return (_fakeStoragePropertyDefinition);
 
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNotNullable, false))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNullable, false))
-          .Return (_fakeStorageTypeInformation2);
-      _storageTypeInformationProviderStrictMock.Replay ();
+      var result = _factory.CreateStoragePropertyDefinition ("test");
 
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNotNullable))
-        .Return ("FakeColumnName");
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNullable))
-        .Return ("FakeColumnName");
-
-      var resultNotNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNotNullable);
-      var resultNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNullable);
-
-      _storageTypeInformationProviderStrictMock.Replay();
-
-      Assert.That (resultNotNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (resultNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation2));
+      _valuePropertyFactoryMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_fakeStoragePropertyDefinition));
     }
 
     [Test]
-    public void CreateStoragePropertyDefinition_ValueProperty_OverridesNullability_ForClassBelowDbTableAttribute ()
+    public void CreateStoragePropertyDefinition_Value_ObjectID ()
     {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowDbTableAttribute, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowDbTableAttribute, true);
+      var expectedClassDefinition = GetTypeDefinition (typeof (Order));
+      _relationPropertyFactoryMock
+          .Expect (mock => mock.CreateStoragePropertyDefinition (expectedClassDefinition, "Value", "ValueClassID"))
+          .Return (_fakeStoragePropertyDefinition);
 
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNotNullable, true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNullable, true))
-          .Return (_fakeStorageTypeInformation2);
-      _storageTypeInformationProviderStrictMock.Replay();
+      var result = _factory.CreateStoragePropertyDefinition (DomainObjectIDs.Order1);
 
-      _storageNameProviderStub
-          .Stub (stub => stub.GetTableName (_classWithDbTableAttribute))
-          .Return (new EntityNameDefinition (null, _classWithDbTableAttribute.ID));
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNotNullable))
-        .Return ("FakeColumnName");
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNullable))
-        .Return ("FakeColumnName");
-
-      var resultNotNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNotNullable);
-      var resultNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNullable);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
-
-      Assert.That (resultNotNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (resultNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation2));
+      _relationPropertyFactoryMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_fakeStoragePropertyDefinition));
     }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_ValueProperty_OverridesNullability_ForClassBelowBelowDbTableAttribute ()
-    {
-      var propertyDefinitionNotNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowBelowDbTableAttribute, false);
-      var propertyDefinitionNullable = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (_classBelowBelowDbTableAttribute, true);
-
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNotNullable, true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType (propertyDefinitionNullable, true))
-          .Return (_fakeStorageTypeInformation2);
-      _storageTypeInformationProviderStrictMock.Replay ();     
-
-      _storageNameProviderStub
-          .Stub (stub => stub.GetTableName (_classWithDbTableAttribute))
-          .Return (new EntityNameDefinition (null, _classWithDbTableAttribute.ID));
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNotNullable))
-        .Return ("FakeColumnName");
-      _storageNameProviderStub
-        .Stub (stub => stub.GetColumnName (propertyDefinitionNullable))
-        .Return ("FakeColumnName");
-
-      var resultNotNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNotNullable);
-      var resultNullable =
-          (SimpleStoragePropertyDefinition) _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (propertyDefinitionNullable);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
-
-      Assert.That (resultNotNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (resultNullable.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation2));
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_RelationProperty_ToAClassDefinitionWithoutHierarchy ()
-    {
-      var relationEndPointDefinition =
-          (RelationEndPointDefinition) GetEndPointDefinition (typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForID (true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      _storageNameProviderStub
-          .Stub (stub => stub.GetRelationColumnName (relationEndPointDefinition))
-          .Return ("FakeRelationColumnName");
-      _storageNameProviderStub
-          .Stub (stub => stub.GetRelationClassIDColumnName (relationEndPointDefinition))
-          .Return ("FakeRelationClassIDColumnName");
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
-
-      Assert.That (result, Is.TypeOf (typeof (ObjectIDWithoutClassIDStoragePropertyDefinition)));
-
-      var objectIDWithoutClassIDStorageProperty = ((ObjectIDWithoutClassIDStoragePropertyDefinition) result);
-      Assert.That (objectIDWithoutClassIDStorageProperty.ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      
-      var valueStoragePropertyDefinition = ((SimpleStoragePropertyDefinition) objectIDWithoutClassIDStorageProperty.ValueProperty);
-      Assert.That (valueStoragePropertyDefinition.PropertyType, Is.SameAs (typeof (object)));
-      Assert.That (valueStoragePropertyDefinition.ColumnDefinition.Name, Is.EqualTo ("FakeRelationColumnName"));
-      Assert.That (valueStoragePropertyDefinition.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (valueStoragePropertyDefinition.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
-
-      Assert.That (
-          objectIDWithoutClassIDStorageProperty.ClassDefinition,
-          Is.SameAs (Configuration.GetTypeDefinition (typeof (ClassWithOneSideRelationProperties))));
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_RelationProperty_ToAClassWithInheritanceHierarchy ()
-    {
-      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Ceo), "Company");
-
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForID (true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForClassID (true))
-          .Return (_fakeStorageTypeInformation2);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      _storageNameProviderStub
-          .Stub (stub => stub.GetRelationColumnName (relationEndPointDefinition))
-          .Return ("FakeRelationColumnName");
-      _storageNameProviderStub
-          .Stub (stub => stub.GetRelationClassIDColumnName (relationEndPointDefinition))
-          .Return ("FakeRelationClassIDColumnName");
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
-
-      Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
-      var valueProperty = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
-      var classIDValueProperty = ((ObjectIDStoragePropertyDefinition) result).ClassIDProperty;
-
-      Assert.That (valueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (valueProperty.PropertyType, Is.SameAs (typeof (object)));
-
-      Assert.That (classIDValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (classIDValueProperty.PropertyType, Is.SameAs (typeof (string)));
-
-      var valueIDColumn = ((SimpleStoragePropertyDefinition) valueProperty).ColumnDefinition;
-      var classIDColumn = ((SimpleStoragePropertyDefinition) classIDValueProperty).ColumnDefinition;
-
-      Assert.That (valueIDColumn.Name, Is.EqualTo ("FakeRelationColumnName"));
-      Assert.That (valueIDColumn.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (valueIDColumn.IsPartOfPrimaryKey, Is.False);
-
-      Assert.That (classIDColumn.Name, Is.EqualTo ("FakeRelationClassIDColumnName"));
-      Assert.That (classIDColumn.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation2));
-      Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_RelationProperty_ToAClassDefinitionWithDifferentStorageProvider ()
-    {
-      var relationEndPointDefinition = (RelationEndPointDefinition) GetEndPointDefinition (typeof (Order), "Official");
-
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForSerializedObjectID (true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      _storageNameProviderStub
-          .Stub (stub => stub.GetRelationColumnName (relationEndPointDefinition))
-          .Return ("FakeRelationColumnName");
-      _storageNameProviderStub
-          .Stub (stub => stub.GetRelationClassIDColumnName (relationEndPointDefinition))
-          .Return ("FakeRelationClassIDColumnName");
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (relationEndPointDefinition.PropertyDefinition);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations();
-
-      Assert.That (result, Is.TypeOf (typeof (SerializedObjectIDStoragePropertyDefinition)));
-      Assert.That (((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty, Is.TypeOf<SimpleStoragePropertyDefinition>());
-      var serializedIDProperty = ((SimpleStoragePropertyDefinition) ((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty);
-
-      Assert.That (serializedIDProperty.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (serializedIDProperty.ColumnDefinition.Name, Is.EqualTo ("FakeRelationColumnName"));
-      Assert.That (serializedIDProperty.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (serializedIDProperty.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_ForValue_NotSupportedType ()
-    {
-      var exception = new NotSupportedException ("Msg.");
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType ("Test"))
-          .Throw (exception);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition ("Test");
-      
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-      Assert.That (result, Is.TypeOf<UnsupportedStoragePropertyDefinition>()
-          .With.Property<UnsupportedStoragePropertyDefinition> (pd => pd.Message).EqualTo (
-            "There was an error when retrieving storage type for value of type 'String': Msg.")
-          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.PropertyType).EqualTo (typeof (string))
-          .And.Property<UnsupportedStoragePropertyDefinition> (pd => pd.InnerException).SameAs (exception));
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_ForValue_Null ()
-    {
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType ((object) null))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition ((object) null);
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (result.PropertyType, Is.SameAs (typeof (object)));
-      var column = StoragePropertyDefinitionTestHelper.GetSingleColumn (result);
-      Assert.That (column.Name, Is.EqualTo ("Value"));
-      Assert.That (column.IsPartOfPrimaryKey, Is.False);
-      Assert.That (column.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_ForValue_SimpleValue ()
-    {
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageType ("Test"))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition ("Test");
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (result.PropertyType, Is.SameAs (typeof (string)));
-      var column = StoragePropertyDefinitionTestHelper.GetSingleColumn (result);
-      Assert.That (column.Name, Is.EqualTo ("Value"));
-      Assert.That (column.IsPartOfPrimaryKey, Is.False);
-      Assert.That (column.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_ForValue_ObjectID_ToAClassDefinitionWithoutHierarchy ()
-    {
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForID (true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (DomainObjectIDs.ClassWithAllDataTypes1);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result, Is.TypeOf (typeof (ObjectIDWithoutClassIDStoragePropertyDefinition)));
-
-      var objectIDWithoutClassIDStorageProperty = ((ObjectIDWithoutClassIDStoragePropertyDefinition) result);
-      Assert.That (objectIDWithoutClassIDStorageProperty.ValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-
-      var valueStoragePropertyDefinition = ((SimpleStoragePropertyDefinition) objectIDWithoutClassIDStorageProperty.ValueProperty);
-      Assert.That (valueStoragePropertyDefinition.PropertyType, Is.SameAs (typeof (object)));
-      Assert.That (valueStoragePropertyDefinition.ColumnDefinition.Name, Is.EqualTo ("Value"));
-      Assert.That (valueStoragePropertyDefinition.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (valueStoragePropertyDefinition.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
-
-      Assert.That (
-          objectIDWithoutClassIDStorageProperty.ClassDefinition,
-          Is.SameAs (Configuration.GetTypeDefinition (typeof (ClassWithAllDataTypes))));
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_ForValue_ObjectID_ToAClassWithInheritanceHierarchy()
-    {
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForID (true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForClassID (true))
-          .Return (_fakeStorageTypeInformation2);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (DomainObjectIDs.Company1);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result, Is.TypeOf (typeof (ObjectIDStoragePropertyDefinition)));
-      var valueProperty = ((ObjectIDStoragePropertyDefinition) result).ValueProperty;
-      var classIDValueProperty = ((ObjectIDStoragePropertyDefinition) result).ClassIDProperty;
-
-      Assert.That (valueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (valueProperty.PropertyType, Is.SameAs (typeof (object)));
-
-      Assert.That (classIDValueProperty, Is.TypeOf (typeof (SimpleStoragePropertyDefinition)));
-      Assert.That (classIDValueProperty.PropertyType, Is.SameAs (typeof (string)));
-
-      var valueIDColumn = ((SimpleStoragePropertyDefinition) valueProperty).ColumnDefinition;
-      var classIDColumn = ((SimpleStoragePropertyDefinition) classIDValueProperty).ColumnDefinition;
-
-      Assert.That (valueIDColumn.Name, Is.EqualTo ("Value"));
-      Assert.That (valueIDColumn.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (valueIDColumn.IsPartOfPrimaryKey, Is.False);
-
-      Assert.That (classIDColumn.Name, Is.EqualTo ("ValueClassID"));
-      Assert.That (classIDColumn.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation2));
-      Assert.That (classIDColumn.IsPartOfPrimaryKey, Is.False);
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinition_ForValue_ObjectID_ClassDefinitionWithDifferentStorageProvider ()
-    {
-      _storageTypeInformationProviderStrictMock
-          .Expect (mock => mock.GetStorageTypeForSerializedObjectID (true))
-          .Return (_fakeStorageTypeInformation1);
-      _storageTypeInformationProviderStrictMock.Replay ();
-
-      var result = _dataStoragePropertyDefinitionFactory.CreateStoragePropertyDefinition (DomainObjectIDs.Official1);
-
-      _storageTypeInformationProviderStrictMock.VerifyAllExpectations ();
-
-      Assert.That (result, Is.TypeOf (typeof (SerializedObjectIDStoragePropertyDefinition)));
-      Assert.That (((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty, Is.TypeOf<SimpleStoragePropertyDefinition> ());
-      var serializedIDProperty = ((SimpleStoragePropertyDefinition) ((SerializedObjectIDStoragePropertyDefinition) result).SerializedIDProperty);
-
-      Assert.That (serializedIDProperty.PropertyType, Is.SameAs (typeof (ObjectID)));
-      Assert.That (serializedIDProperty.ColumnDefinition.Name, Is.EqualTo ("Value"));
-      Assert.That (serializedIDProperty.ColumnDefinition.StorageTypeInfo, Is.SameAs (_fakeStorageTypeInformation1));
-      Assert.That (serializedIDProperty.ColumnDefinition.IsPartOfPrimaryKey, Is.False);
-    }
-
   }
 }

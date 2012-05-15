@@ -14,20 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System.Data.SqlClient;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.SortExpressions;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
-using Remotion.Data.DomainObjects.Tracing;
 using System.Linq;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using SortOrder = Remotion.Data.DomainObjects.Mapping.SortExpressions.SortOrder;
@@ -43,31 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       base.SetUp ();
 
-      var storageNameProvider = new ReflectionBasedStorageNameProvider ();
-      var storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
-
-      var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider ();
-      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
-          storageTypeInformationProvider, storageNameProvider);
-      var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          TableInheritanceTestDomainStorageProviderDefinition,
-          storageTypeInformationProvider,
-          storageNameProvider,
-          new StorageEntityBasedStorageProviderDefinitionFinder ());
-
-      var commandFactory = new RdbmsProviderCommandFactory (
-          TableInheritanceTestDomainStorageProviderDefinition,
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-          rdbmsPersistenceModelProvider,
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
-          dataStoragePropertyDefinitionFactory);
-
-      _provider = new RdbmsProvider (
-          TableInheritanceTestDomainStorageProviderDefinition,
-          NullPersistenceExtension.Instance,
-          commandFactory,
-          () => new SqlConnection ());
+      _provider = RdbmsProviderObjectMother.CreateForIntegrationTest (TableInheritanceTestDomainStorageProviderDefinition);
     }
 
     public override void TearDown ()

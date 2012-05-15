@@ -124,6 +124,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return endPointDefinition;
     }
 
+    protected RelationEndPointDefinition GetNonVirtualEndPointDefinition (Type declaringType, string shortPropertyName)
+    {
+      return (RelationEndPointDefinition) GetEndPointDefinition (declaringType, shortPropertyName);
+    }
+
     protected RelationDefinition GetRelationDefinition (Type declaringType, string shortPropertyName)
     {
       var endPointDefinition = GetEndPointDefinition (declaringType, shortPropertyName);

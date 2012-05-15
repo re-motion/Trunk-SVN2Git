@@ -37,6 +37,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model
       ArgumentUtility.CheckNotNull ("valueProperty", valueProperty);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
+      if (classDefinition.IsAbstract)
+        throw new ArgumentException ("ObjectIDs without ClassIDs cannot have abstract ClassDefinitions.", "classDefinition");
+
       _valueProperty = valueProperty;
       _classDefinition = classDefinition;
     }

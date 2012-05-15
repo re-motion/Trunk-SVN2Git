@@ -14,14 +14,12 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
@@ -30,7 +28,6 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -51,23 +48,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 
       var rdbmsPersistenceModelProvider = new RdbmsPersistenceModelProvider();
       var storageTypeInformationProvider = new SqlStorageTypeInformationProvider ();
+      
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
-
       var infrastructureStoragePropertyDefinitionProvider = 
           new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
       var storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder(DomainObjectsConfiguration.Current.Storage);
       var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
+          new ValueStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider),
+          new RelationStoragePropertyDefinitionFactory (
+              TestDomainStorageProviderDefinition, false, storageNameProvider, storageTypeInformationProvider, storageProviderDefinitionFinder));
+      _factory = new RdbmsProviderCommandFactory (
           TestDomainStorageProviderDefinition,
-          storageTypeInformationProvider,
-          storageNameProvider,
-          storageProviderDefinitionFinder);
-      _factory = new RdbmsProviderCommandFactory (TestDomainStorageProviderDefinition,
-                                                  new SqlDbCommandBuilderFactory (SqlDialect.Instance),
-                                                  rdbmsPersistenceModelProvider,
-                                                  new ObjectReaderFactory (
-                                                      rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
-                                                  new TableDefinitionFinder (rdbmsPersistenceModelProvider),
-                                                  dataStoragePropertyDefinitionFactory);
+          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
+          rdbmsPersistenceModelProvider,
+          new ObjectReaderFactory (
+              rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          dataStoragePropertyDefinitionFactory);
 
       _objectID1 = DomainObjectIDs.Order1;
       _objectID2 = DomainObjectIDs.Order2;
@@ -152,14 +149,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       var result = _factory.CreateForSave (new[] { dataContainer });
 
       Assert.That (result, Is.Not.Null);
-    }
-
-    private ObjectID CreateObjectID (IStorageEntityDefinition entityDefinition)
-    {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
-      classDefinition.SetStorageEntity (entityDefinition);
-
-      return new ObjectID (classDefinition, Guid.NewGuid());
     }
   }
 }

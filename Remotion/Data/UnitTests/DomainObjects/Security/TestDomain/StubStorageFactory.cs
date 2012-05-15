@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
@@ -23,15 +22,11 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Linq;
-using Remotion.Linq.SqlBackend.MappingResolution;
-using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
-using Remotion.Mixins;
-using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
@@ -53,32 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
-          new SqlStorageTypeInformationProvider(), storageNameProvider);
-      var dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          storageProviderDefinition,
-          new SqlStorageTypeInformationProvider(), 
-          storageNameProvider, 
-          storageProviderDefinitionFinder);
-      var persistenceModelProvider = new RdbmsPersistenceModelProvider ();
-      var storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver (persistenceModelProvider);
-      var foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          storageNameProvider,
-          persistenceModelProvider,
-          infrastructureStoragePropertyDefinitionProvider);
-      var entityDefinitionFactory = new RdbmsStorageEntityDefinitionFactory (
-          infrastructureStoragePropertyDefinitionProvider,
-          foreignKeyConstraintDefinitionFactory,
-          storagePropertyDefinitionResolver,
-          storageNameProvider,
-          storageProviderDefinition);
-
-      return new RdbmsPersistenceModelLoader (
-          entityDefinitionFactory,
-          dataStoragePropertyDefinitionFactory,
-          storageNameProvider,
-          persistenceModelProvider);
+      return new SqlStorageObjectFactory ().CreatePersistenceModelLoader (storageProviderDefinition, storageProviderDefinitionFinder);
     }
 
     public IQueryExecutor CreateLinqQueryExecutor (
@@ -86,25 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
         IMethodCallTransformerProvider methodCallTransformerProvider,
         ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
-      ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
-      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-
-      var generator = new UniqueIdentifierGenerator();
-      var storageNameProvider = new ReflectionBasedStorageNameProvider();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider(), storageNameProvider));
-      var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
-          ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
-      var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
-      var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
-      var sqlQueryGenerator = new SqlQueryGenerator (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
-      var domainObjectQueryGenerator = new DomainObjectQueryGenerator (sqlQueryGenerator, TypeConversionProvider.Create (), new SqlStorageTypeInformationProvider ());
-      
-      var sqlStorageTypeCalculator = ObjectFactory.Create<SqlStorageTypeInformationProvider> (ParamList.Empty);
-      return new DomainObjectQueryExecutor (
-          startingClassDefinition,
-          sqlStorageTypeCalculator,
-          domainObjectQueryGenerator);
+      throw new NotSupportedException ("Linq queries are not supported by the stub storage provider.");
     }
 
     public IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)

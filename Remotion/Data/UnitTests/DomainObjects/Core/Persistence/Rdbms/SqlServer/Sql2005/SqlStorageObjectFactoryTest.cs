@@ -71,6 +71,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.That (commandFactory.DbCommandBuilderFactory, Is.TypeOf (typeof (SqlDbCommandBuilderFactory)));
       Assert.That (commandFactory.RdbmsPersistenceModelProvider, Is.TypeOf (typeof (RdbmsPersistenceModelProvider)));
       Assert.That (commandFactory.ObjectReaderFactory, Is.TypeOf (typeof (ObjectReaderFactory)));
+      Assert.That (commandFactory.DataStoragePropertyDefinitionFactory, Is.TypeOf (typeof (DataStoragePropertyDefinitionFactory)));
+      var dataStoragePropertyDefinitionFactory = (DataStoragePropertyDefinitionFactory) commandFactory.DataStoragePropertyDefinitionFactory;
+      var relationStoragePropertyDefinitionFactory =
+          (RelationStoragePropertyDefinitionFactory) dataStoragePropertyDefinitionFactory.RelationStoragePropertyDefinitionFactory;
+      Assert.That (relationStoragePropertyDefinitionFactory.ForceClassIDColumnInForeignKeyProperties, Is.False);
     }
 
     [Test]
@@ -90,10 +95,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = _sqlProviderFactory.CreatePersistenceModelLoader (_rdbmsProviderDefinition, _storageProviderDefinitionFinder);
 
       Assert.That (result, Is.TypeOf (typeof (RdbmsPersistenceModelLoader)));
-      Assert.That (((RdbmsPersistenceModelLoader) result).DataStoragePropertyDefinitionFactory, Is.TypeOf (typeof (DataStoragePropertyDefinitionFactory)));
-      Assert.That (((RdbmsPersistenceModelLoader) result).EntityDefinitionFactory, Is.TypeOf(typeof(RdbmsStorageEntityDefinitionFactory)));
-      Assert.That (((RdbmsPersistenceModelLoader) result).RdbmsPersistenceModelProvider, Is.TypeOf (typeof (RdbmsPersistenceModelProvider)));
-      Assert.That (((RdbmsPersistenceModelLoader) result).StorageNameProvider, Is.TypeOf (typeof (ReflectionBasedStorageNameProvider)));
+      var rdbmsPersistenceModelLoader = (RdbmsPersistenceModelLoader) result;
+      
+      Assert.That (rdbmsPersistenceModelLoader.DataStoragePropertyDefinitionFactory, Is.TypeOf (typeof (DataStoragePropertyDefinitionFactory)));
+      var dataStoragePropertyDefinitionFactory =
+          (DataStoragePropertyDefinitionFactory) rdbmsPersistenceModelLoader.DataStoragePropertyDefinitionFactory;
+      var relationStoragePropertyDefinitionFactory =
+          (RelationStoragePropertyDefinitionFactory) dataStoragePropertyDefinitionFactory.RelationStoragePropertyDefinitionFactory;
+      Assert.That (relationStoragePropertyDefinitionFactory.ForceClassIDColumnInForeignKeyProperties, Is.False);
+      
+      Assert.That (rdbmsPersistenceModelLoader.EntityDefinitionFactory, Is.TypeOf(typeof(RdbmsStorageEntityDefinitionFactory)));
+      Assert.That (rdbmsPersistenceModelLoader.RdbmsPersistenceModelProvider, Is.TypeOf (typeof (RdbmsPersistenceModelProvider)));
+      Assert.That (rdbmsPersistenceModelLoader.StorageNameProvider, Is.TypeOf (typeof (ReflectionBasedStorageNameProvider)));
     }
 
     [Test]

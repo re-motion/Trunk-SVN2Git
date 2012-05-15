@@ -23,24 +23,16 @@ using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Building
 {
   [TestFixture]
-  public class RdbmsPersistenceModelLoaderIntegrationTest
+  public class RdbmsPersistenceModelLoaderIntegrationTest : StandardMappingTest
   {
-    private string _storageProviderID;
-    private UnitTestStorageProviderStubDefinition _storageProviderDefinition;
+    private RdbmsProviderDefinition _storageProviderDefinition;
     private StorageGroupBasedStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
 
-    private ReflectionBasedStorageNameProvider _storageNameProvider;
-    private IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
-    private IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
-    private StoragePropertyDefinitionResolver _storagePropertyDefinitionResolver;
-    private ForeignKeyConstraintDefinitionFactory _foreignKeyConstraintDefinitionFactory;
-    private RdbmsStorageEntityDefinitionFactory _entityDefinitionFactory;
     private RdbmsPersistenceModelLoader _rdbmsPersistenceModelLoader;
 
     private RdbmsPersistenceModelLoaderTestHelper _testModel;
@@ -56,44 +48,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     private SimpleStoragePropertyDefinition _infrastructureClassIDStoragePropertyDefinition;
     private SimpleStoragePropertyDefinition _infrastructureTimestampStoragePropertyDefinition;
 
-
-    [SetUp]
-    public void SetUp ()
+    public override void SetUp ()
     {
-      _storageProviderID = "DefaultStorageProvider";
-      _storageProviderDefinition = new UnitTestStorageProviderStubDefinition (_storageProviderID);
-      _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      base.SetUp();
 
-      _storageNameProvider = new ReflectionBasedStorageNameProvider();
-      _infrastructureStoragePropertyDefinitionProvider = new InfrastructureStoragePropertyDefinitionProvider (
-          new SqlStorageTypeInformationProvider(), _storageNameProvider);
-      _dataStoragePropertyDefinitionFactory = new DataStoragePropertyDefinitionFactory (
-          _storageProviderDefinition, new SqlStorageTypeInformationProvider(), _storageNameProvider, _storageProviderDefinitionFinder);
-      var persistenceModelProvider = new RdbmsPersistenceModelProvider();
-      _storagePropertyDefinitionResolver = new StoragePropertyDefinitionResolver (persistenceModelProvider);
-      _foreignKeyConstraintDefinitionFactory = new ForeignKeyConstraintDefinitionFactory (
-          _storageNameProvider, 
-          persistenceModelProvider, 
-          _infrastructureStoragePropertyDefinitionProvider);
-      _entityDefinitionFactory = new RdbmsStorageEntityDefinitionFactory (
-          _infrastructureStoragePropertyDefinitionProvider,
-          _foreignKeyConstraintDefinitionFactory,
-          _storagePropertyDefinitionResolver,
-          _storageNameProvider,
-          _storageProviderDefinition);
-      _rdbmsPersistenceModelLoader = new RdbmsPersistenceModelLoader (
-          _entityDefinitionFactory,
-          _dataStoragePropertyDefinitionFactory,
-          _storageNameProvider,
-          new RdbmsPersistenceModelProvider());
+      _storageProviderDefinitionFinder = new StorageGroupBasedStorageProviderDefinitionFinder (DomainObjectsConfiguration.Current.Storage);
+      _storageProviderDefinition = (RdbmsProviderDefinition) _storageProviderDefinitionFinder.GetStorageProviderDefinition (
+          storageGroupTypeOrNull: null, errorMessageContext: "SetUp");
+
+      var factory = _storageProviderDefinition.Factory;
+      _rdbmsPersistenceModelLoader =
+          (RdbmsPersistenceModelLoader) factory.CreatePersistenceModelLoader (_storageProviderDefinition, _storageProviderDefinitionFinder);
 
       _testModel = new RdbmsPersistenceModelLoaderTestHelper();
 
-      _infrastructureObjectIDStoragePropertyDefinition = _infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
+      var infrastructureStoragePropertyDefinitionProvider =
+          ((RdbmsStorageEntityDefinitionFactory) _rdbmsPersistenceModelLoader.EntityDefinitionFactory).InfrastructureStoragePropertyDefinitionProvider;
+      _infrastructureObjectIDStoragePropertyDefinition = infrastructureStoragePropertyDefinitionProvider.GetObjectIDStoragePropertyDefinition ();
       _infrastructureIDStoragePropertyDefinition = (SimpleStoragePropertyDefinition) _infrastructureObjectIDStoragePropertyDefinition.ValueProperty;
       _infrastructureClassIDStoragePropertyDefinition = (SimpleStoragePropertyDefinition) _infrastructureObjectIDStoragePropertyDefinition.ClassIDProperty;
       _infrastructureTimestampStoragePropertyDefinition =
-          (SimpleStoragePropertyDefinition) _infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition ();
+          (SimpleStoragePropertyDefinition) infrastructureStoragePropertyDefinitionProvider.GetTimestampStoragePropertyDefinition ();
 
       _fakeBaseBaseStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseBaseProperty");
       _fakeBaseStoragePropertyDefinition = SimpleStoragePropertyDefinitionObjectMother.CreateStorageProperty ("BaseProperty");
@@ -119,7 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       AssertUnionViewDefinition (
           _testModel.BaseBaseClassDefinition,
-          _storageProviderID,
           "BaseBaseClassView",
           new[] { _testModel.BaseClassDefinition.StorageEntityDefinition },
           new[]
@@ -144,7 +118,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       AssertUnionViewDefinition (
           _testModel.BaseClassDefinition,
-          _storageProviderID,
           "BaseClassView",
           new[] { _testModel.TableClassDefinition1.StorageEntityDefinition, _testModel.TableClassDefinition2.StorageEntityDefinition },
           new[]
@@ -169,7 +142,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       AssertTableDefinition (
           _testModel.TableClassDefinition1,
-          _storageProviderID,
           "Table1Class",
           "Table1ClassView",
           new[]
@@ -192,7 +164,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       AssertTableDefinition (
           _testModel.TableClassDefinition2,
-          _storageProviderID,
           "Table2Class",
           "Table2ClassView",
           new[]
@@ -218,7 +189,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       AssertFilterViewDefinition (
           _testModel.DerivedClassDefinition1,
-          _storageProviderID,
           "Derived1ClassView",
           _testModel.TableClassDefinition2.StorageEntityDefinition,
           new[] { "Derived1Class" },
@@ -241,7 +211,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       AssertFilterViewDefinition (
           _testModel.DerivedClassDefinition2,
-          _storageProviderID,
           "Derived2ClassView",
           _testModel.TableClassDefinition2.StorageEntityDefinition,
           new[] { "Derived2Class", "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
@@ -265,7 +234,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       AssertFilterViewDefinition (
           _testModel.DerivedDerivedClassDefinition,
-          _storageProviderID,
           "DerivedDerivedClassView",
           _testModel.DerivedClassDefinition2.StorageEntityDefinition,
           new[] { "DerivedDerivedClass", "DerivedDerivedDerivedClass" },
@@ -284,14 +252,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
     private void AssertTableDefinition (
         ClassDefinition classDefinition,
-        string storageProviderID,
         string tableName,
         string viewName,
         ColumnDefinition[] columnDefinitions,
         PrimaryKeyConstraintDefinition primaryKeyConstraintDefinition)
     {
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (TableDefinition)));
-      Assert.That (classDefinition.StorageEntityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
+      Assert.That (classDefinition.StorageEntityDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName.EntityName, Is.EqualTo (tableName));
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).TableName.SchemaName, Is.Null);
       Assert.That (((TableDefinition) classDefinition.StorageEntityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
@@ -305,14 +272,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
     private void AssertFilterViewDefinition (
         ClassDefinition classDefinition,
-        string storageProviderID,
         string viewName,
         IStorageEntityDefinition baseEntity,
         string[] classIDs,
         ColumnDefinition[] columnDefinitions)
     {
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (FilterViewDefinition)));
-      Assert.That (classDefinition.StorageEntityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
+      Assert.That (classDefinition.StorageEntityDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
       Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
       Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((FilterViewDefinition) classDefinition.StorageEntityDefinition).BaseEntity, Is.SameAs (baseEntity));
@@ -322,13 +288,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
     private void AssertUnionViewDefinition (
         ClassDefinition classDefinition,
-        string storageProviderID,
         string viewName,
         IStorageEntityDefinition[] storageEntityDefinitions,
         ColumnDefinition[] columnDefinitions)
     {
       Assert.That (classDefinition.StorageEntityDefinition, Is.TypeOf (typeof (UnionViewDefinition)));
-      Assert.That (classDefinition.StorageEntityDefinition.StorageProviderID, Is.EqualTo (storageProviderID));
+      Assert.That (classDefinition.StorageEntityDefinition.StorageProviderDefinition, Is.SameAs (_storageProviderDefinition));
       Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).ViewName.EntityName, Is.EqualTo (viewName));
       Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).ViewName.SchemaName, Is.Null);
       Assert.That (((UnionViewDefinition) classDefinition.StorageEntityDefinition).UnionedEntities, Is.EqualTo (storageEntityDefinitions));

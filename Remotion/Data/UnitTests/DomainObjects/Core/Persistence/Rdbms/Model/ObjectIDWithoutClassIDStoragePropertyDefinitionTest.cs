@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain.TableInheritance;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
@@ -63,6 +64,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model
     {
       Assert.That (_objectIDWithoutClassIDStorageDefinition.ValueProperty, Is.SameAs (_valuePropertyStub));
       Assert.That (_objectIDWithoutClassIDStorageDefinition.ClassDefinition, Is.SameAs (_classDefinition));
+    }
+
+    [Test]
+    public void Initialization_WithAbstractClassDefinition ()
+    {
+      var abstractClassDefinition = GetTypeDefinition (typeof (TIFileSystemItem));
+      Assert.That (abstractClassDefinition.IsAbstract, Is.True);
+
+      Assert.That (
+          () => new ObjectIDWithoutClassIDStoragePropertyDefinition (_valuePropertyStub, abstractClassDefinition),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "ObjectIDs without ClassIDs cannot have abstract ClassDefinitions.\r\nParameter name: classDefinition"));
     }
 
     [Test]
