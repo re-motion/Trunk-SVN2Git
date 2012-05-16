@@ -27,6 +27,7 @@ using Remotion.Linq.EagerFetching;
 using Remotion.Linq.EagerFetching.Parsing;
 using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Linq.Parsing.Structure;
+using Remotion.Linq.Parsing.Structure.IntermediateModel;
 using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.ServiceLocation;
@@ -274,7 +275,12 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       var customNodeTypeRegistry = new MethodInfoBasedNodeTypeRegistry();
 
-      customNodeTypeRegistry.Register (ContainsObjectExpressionNode.SupportedMethods, typeof (ContainsObjectExpressionNode));
+      customNodeTypeRegistry.Register (
+          new[] { MemberInfoFromExpressionUtility.GetMethod ((DomainObjectCollection obj) => obj.ContainsObject (null)) },
+          typeof (ContainsExpressionNode));
+      customNodeTypeRegistry.Register (
+          new[] { MemberInfoFromExpressionUtility.GetProperty ((DomainObjectCollection obj) => obj.Count).GetGetMethod () },
+          typeof (CountExpressionNode));
 
       customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
       customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));

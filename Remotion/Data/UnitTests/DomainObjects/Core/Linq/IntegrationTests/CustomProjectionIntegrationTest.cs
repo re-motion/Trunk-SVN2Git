@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     {
       var result = (from o in QueryFactory.CreateLinqQuery<Order>()
                     where o.OrderNumber == 1
-                    select new { o.OrderNumber, Property = new { o.OrderTicket.FileName, Count = o.OrderItems.Count() } }).Single();
+                    select new { o.OrderNumber, Property = new { o.OrderTicket.FileName, o.OrderItems.Count } }).Single();
 
       Assert.That (result.OrderNumber, Is.EqualTo (1));
       Assert.That (result.Property.FileName, Is.EqualTo (@"C:\order1.png")); 

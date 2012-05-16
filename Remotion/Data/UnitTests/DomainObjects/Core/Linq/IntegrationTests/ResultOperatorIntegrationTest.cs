@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
   public class ResultOperatorIntegrationTest : IntegrationTestBase
   {
     [Test]
-    public void QueryWithDistinct ()
+    public void Query_WithDistinct ()
     {
       var ceos =
           (from o in QueryFactory.CreateLinqQuery<Order>()
@@ -37,12 +37,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    public void QueryWithContainsObject ()
+    public void Query_WithDomainObjectCollectionContainsObject ()
     {
       OrderItem item = OrderItem.GetObject (DomainObjectIDs.OrderItem1);
       var orders =
           from o in QueryFactory.CreateLinqQuery<Order>()
           where o.OrderItems.ContainsObject (item)
+          select o;
+
+      CheckQueryResult (orders, DomainObjectIDs.Order1);
+    }
+
+    [Test]
+    public void Query_WithDomainObjectCollectionCount ()
+    {
+      var orders =
+          from o in QueryFactory.CreateLinqQuery<Order> ()
+          where o.OrderItems.Count == 2
           select o;
 
       CheckQueryResult (orders, DomainObjectIDs.Order1);

@@ -255,12 +255,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
-    public void CreateQueryParser_RegistersContainsObject ()
+    public void CreateQueryParser_RegistersDomainObjectCollectionContainsObject ()
     {
       var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("ContainsObject");
       var queryParser = CallCreateQueryParser ();
 
-      Assert.That (queryParser.NodeTypeProvider.GetNodeType (containsObjectMethod), Is.SameAs (typeof (ContainsObjectExpressionNode)));
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (containsObjectMethod), Is.SameAs (typeof (ContainsExpressionNode)));
+    }
+
+    [Test]
+    public void CreateQueryParser_RegistersDomainObjectCollectionCount ()
+    {
+      var containsObjectMethod = typeof (DomainObjectCollection).GetMethod ("get_Count");
+      var queryParser = CallCreateQueryParser ();
+
+      Assert.That (queryParser.NodeTypeProvider.GetNodeType (containsObjectMethod), Is.SameAs (typeof (CountExpressionNode)));
     }
 
     [Test]

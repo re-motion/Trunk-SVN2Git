@@ -635,7 +635,6 @@
     <Compile Include="Infrastructure\Serialization\IFlattenedSerializable.cs" />
     <Compile Include="DomainImplementation\LifetimeService.cs" />
     <Compile Include="IGraphTraversalStrategy.cs" />
-    <Compile Include="Linq\ContainsObjectExpressionNode.cs" />
     <Compile Include="Linq\EagerFetchingExtensionMethods.cs" />
     <Compile Include="Linq\ExtensionMethods.cs" />
     <Compile Include="Mapping\IMappingNameResolver.cs" />

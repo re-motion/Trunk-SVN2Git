@@ -1112,7 +1112,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\SerializableClassImplementingISerializableNotCallingBaseGetObjectData.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\DirectlyInstantiableDO.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\SpecificDerivedDO.cs" />
-    <Compile Include="DomainObjects\Core\Linq\ContainsObjectExpressionNodeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExpressionHelper.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\EagerFetchingIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\ImplicitJoinIntegrationTest.cs" />
