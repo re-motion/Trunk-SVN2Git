@@ -37,6 +37,7 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     private readonly IStorageSpecificExpressionResolver _storageSpecificExpressionResolver;
     private static readonly PropertyInfo s_classIDPropertyInfo = typeof (ObjectID).GetProperty ("ClassID");
+    private static readonly PropertyInfo s_valuePropertyInfo = typeof (ObjectID).GetProperty ("Value");
     private static readonly PropertyInfo s_idPropertyInfo = typeof (DomainObject).GetProperty ("ID");
 
     public MappingResolver (IStorageSpecificExpressionResolver storageSpecificExpressionResolver)
@@ -129,7 +130,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("sqlColumnExpression", sqlColumnExpression);
       ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
 
-      // TODO 4871: Add support for ObjectID.Value property
+      if (memberInfo == s_valuePropertyInfo)
+        return _storageSpecificExpressionResolver.ResolveValueColumn (sqlColumnExpression);
 
       if (memberInfo == s_classIDPropertyInfo)
         return _storageSpecificExpressionResolver.ResolveClassIDColumn(sqlColumnExpression);

@@ -349,6 +349,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
+    public void ResolveMemberExpression_OnColumnDefinition_WithValueProperty ()
+    {
+      var property = typeof (ObjectID).GetProperty ("Value");
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
+      var fakeColumnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "Name", false);
+
+      _storageSpecificExpressionResolverStub.Stub (stub => stub.ResolveValueColumn (columnExpression)).Return (fakeColumnExpression);
+
+      var result = _resolver.ResolveMemberExpression (columnExpression, property);
+
+      Assert.That (result, Is.SameAs (fakeColumnExpression));
+    }
+
+    [Test]
     public void ResolveMemberExpression_OnColumnDefinition_WithClassIDProperty ()
     {
       var property = typeof (ObjectID).GetProperty ("ClassID");

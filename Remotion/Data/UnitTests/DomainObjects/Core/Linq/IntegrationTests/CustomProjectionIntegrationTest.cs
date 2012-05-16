@@ -45,7 +45,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore("TODO 4871: enable")]
     public void SequenceOfObjectIDs_ConstructedInMemory ()
     {
       var result =

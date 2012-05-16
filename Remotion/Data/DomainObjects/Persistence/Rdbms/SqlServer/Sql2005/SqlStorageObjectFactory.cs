@@ -55,19 +55,19 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
       var storageNameProvider = CreateStorageNameProvider();
       var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (
-          storageTypeInformationProvider, 
+          storageTypeInformationProvider,
           storageNameProvider);
       var storageProviderDefinitionFinder = new StorageEntityBasedStorageProviderDefinitionFinder();
       var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (
-          storageProviderDefinition, 
-          storageTypeInformationProvider, 
-          storageNameProvider, 
+          storageProviderDefinition,
+          storageTypeInformationProvider,
+          storageNameProvider,
           storageProviderDefinitionFinder);
       var commandFactory = CreateStorageProviderCommandFactory (
           rdbmsProviderDefinition,
           storageNameProvider,
-          infrastructureStoragePropertyDefinitionFactory, 
-          dataStoragePropertyDefinitionFactory, 
+          infrastructureStoragePropertyDefinitionFactory,
+          dataStoragePropertyDefinitionFactory,
           storageTypeInformationProvider);
       return CreateStorageProvider (persistenceExtension, rdbmsProviderDefinition, commandFactory);
     }
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     }
 
     public virtual IPersistenceModelLoader CreatePersistenceModelLoader (
-        StorageProviderDefinition storageProviderDefinition, 
+        StorageProviderDefinition storageProviderDefinition,
         IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (
           storageProviderDefinition, storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
       var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
-          storageNameProvider, 
+          storageNameProvider,
           infrastructureStoragePropertyDefinitionFactory);
       var entityDefinitionFactory = CreateEntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionFactory,
@@ -130,7 +130,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      var queryGenerator = CreateDomainObjectQueryGenerator(methodCallTransformerProvider, resultOperatorHandlerRegistry);
+      var queryGenerator = CreateDomainObjectQueryGenerator (methodCallTransformerProvider, resultOperatorHandlerRegistry);
       return new DomainObjectQueryExecutor (startingClassDefinition, queryGenerator);
     }
 
@@ -201,7 +201,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      var valueStoragePropertyDefinitionFactory = CreateValueStoragePropertyDefinitionFactory(storageNameProvider, storageTypeInformationProvider);
+      var valueStoragePropertyDefinitionFactory = CreateValueStoragePropertyDefinitionFactory (storageNameProvider, storageTypeInformationProvider);
       var relationStoragePropertyDefinitionFactory = CreateRelationStoragePropertyDefinitionFactory (
           storageProviderDefinition, storageNameProvider, providerDefinitionFinder, storageTypeInformationProvider);
 
@@ -209,7 +209,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     }
 
     protected virtual IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (
-        IStorageNameProvider storageNameProvider, 
+        IStorageNameProvider storageNameProvider,
         IStorageTypeInformationProvider storageTypeInformationProvider)
     {
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
@@ -241,7 +241,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
 
       var persistenceModelProvider = CreateRdbmsPersistenceModelProvider();
-      return new ForeignKeyConstraintDefinitionFactory (storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider);
+      return new ForeignKeyConstraintDefinitionFactory (
+          storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider);
     }
 
     protected virtual TableScriptBuilder CreateTableBuilder ()
@@ -298,7 +299,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
       ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory ();
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory();
       var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider();
       return new RdbmsProviderCommandFactory (
           storageProviderDefinition,
@@ -325,24 +326,28 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     }
 
     protected virtual IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (
-    IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+        IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      var sqlQueryGenerator = CreateSqlQueryGenerator(methodCallTransformerProvider, resultOperatorHandlerRegistry);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
+      var sqlQueryGenerator = CreateSqlQueryGenerator (methodCallTransformerProvider, resultOperatorHandlerRegistry, storageTypeInformationProvider);
 
-      var typeConversionProvider = TypeConversionProvider.Create ();
-      return ObjectFactory.Create<DomainObjectQueryGenerator> (ParamList.Create (sqlQueryGenerator, typeConversionProvider, CreateStorageTypeInformationProvider()));
+      var typeConversionProvider = TypeConversionProvider.Create();
+      return
+          ObjectFactory.Create<DomainObjectQueryGenerator> (
+              ParamList.Create (sqlQueryGenerator, typeConversionProvider, storageTypeInformationProvider));
     }
 
     protected virtual ISqlQueryGenerator CreateSqlQueryGenerator (
-        IMethodCallTransformerProvider methodCallTransformerProvider, 
-        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+        IMethodCallTransformerProvider methodCallTransformerProvider,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
     {
-      var generator = new UniqueIdentifierGenerator ();
-      var storageNameProvider = CreateStorageNameProvider ();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (CreateRdbmsPersistenceModelProvider (), storageNameProvider));
+      var generator = new UniqueIdentifierGenerator();
+      var storageNameProvider = CreateStorageNameProvider();
+      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (CreateRdbmsPersistenceModelProvider(), storageNameProvider, storageTypeInformationProvider));
       var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
           ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
       var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));

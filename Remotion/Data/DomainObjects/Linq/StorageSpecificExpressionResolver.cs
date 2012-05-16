@@ -34,14 +34,20 @@ namespace Remotion.Data.DomainObjects.Linq
   {
     private readonly IRdbmsPersistenceModelProvider _rdbmsPersistenceModelProvider;
     private readonly IStorageNameProvider _storageNameProvider;
+    private readonly IStorageTypeInformationProvider _storageTypeInformationProvider;
 
-    public StorageSpecificExpressionResolver (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider, IStorageNameProvider storageNameProvider)
+    public StorageSpecificExpressionResolver (
+        IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider,
+        IStorageNameProvider storageNameProvider,
+        IStorageTypeInformationProvider storageTypeInformationProvider)
     {
       ArgumentUtility.CheckNotNull ("rdbmsPersistenceModelProvider", rdbmsPersistenceModelProvider);
       ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
+      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
       _storageNameProvider = storageNameProvider;
+      _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
     public SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias)
@@ -90,11 +96,20 @@ namespace Remotion.Data.DomainObjects.Linq
       return GetColumnFromEntity (entityDefinition.ObjectIDProperty.PropertyType, idColumn, originatingEntity);
     }
 
-    public SqlColumnExpression ResolveClassIDColumn (SqlColumnExpression idColumn)
+    public Expression ResolveValueColumn (SqlColumnExpression idColumn)
     {
       ArgumentUtility.CheckNotNull ("idColumn", idColumn);
 
-      return idColumn.Update (typeof (string), idColumn.OwningTableAlias, _storageNameProvider.GetClassIDColumnName (), false);
+      var storageTypeInfo = _storageTypeInformationProvider.GetStorageTypeForID (true);
+      var sqlColumnExpression = idColumn.Update (storageTypeInfo.DotNetType, idColumn.OwningTableAlias, _storageNameProvider.GetIDColumnName (), false);
+      return Expression.Convert (sqlColumnExpression, typeof (object));
+    }
+
+    public Expression ResolveClassIDColumn (SqlColumnExpression idColumn)
+    {
+      ArgumentUtility.CheckNotNull ("idColumn", idColumn);
+
+      return idColumn.Update (typeof (string), idColumn.OwningTableAlias, _storageNameProvider.GetClassIDColumnName(), false);
     }
 
     public IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias)
@@ -104,9 +119,9 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var viewName = InlineRdbmsStorageEntityDefinitionVisitor.Visit<string> (
           _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition),
-          (table, continuation) => GetFullyQualifiedEntityName(table.ViewName),
-          (filterView, continuation) => GetFullyQualifiedEntityName(filterView.ViewName),
-          (unionView, continuation) => GetFullyQualifiedEntityName(unionView.ViewName),
+          (table, continuation) => GetFullyQualifiedEntityName (table.ViewName),
+          (filterView, continuation) => GetFullyQualifiedEntityName (filterView.ViewName),
+          (unionView, continuation) => GetFullyQualifiedEntityName (unionView.ViewName),
           (emptyView, continuation) => GetFullyQualifiedEntityName (emptyView.ViewName));
 
       return new ResolvedSimpleTableInfo (classDefinition.ClassType, viewName, tableAlias);
@@ -173,7 +188,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
     private ColumnDefinition GetSingleColumnForLookup (IRdbmsStoragePropertyDefinition storagePropertyDefinition)
     {
-      var columns = storagePropertyDefinition.GetColumnsForComparison ().ToList();
+      var columns = storagePropertyDefinition.GetColumnsForComparison().ToList();
       if (columns.Count > 1)
         throw new NotSupportedException ("Compound-column IDs are not supported by this LINQ provider.");
 

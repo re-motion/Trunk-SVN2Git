@@ -30,7 +30,8 @@ namespace Remotion.Data.DomainObjects.Linq
     SqlEntityDefinitionExpression ResolveEntity (ClassDefinition classDefinition, string tableAlias);
     Expression ResolveColumn (SqlEntityExpression originatingEntity, PropertyDefinition propertyDefinition);
     SqlColumnExpression ResolveIDColumn (SqlEntityExpression originatingEntity, ClassDefinition classDefinition);
-    SqlColumnExpression ResolveClassIDColumn (SqlColumnExpression idColumn);
+    Expression ResolveValueColumn (SqlColumnExpression idColumn);
+    Expression ResolveClassIDColumn (SqlColumnExpression idColumn);
 
     IResolvedTableInfo ResolveTable (ClassDefinition classDefinition, string tableAlias);
 
