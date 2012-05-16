@@ -198,6 +198,10 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ClassIDsInAllForeignKeysBehaviorTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\ClassWithRelations.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\DefaultBehaviorTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ExtendedStorageObjectFactory.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CollectionQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CustomQueryDatabaseBehaviorTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\CustomQueryTest.cs" />
@@ -217,6 +221,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\QueryResultRowTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\RelationStoragePropertyDefinitionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\Model\Building\ValueStoragePropertyDefinitionFactoryTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\CustomStorageObjectFactoryTestBase.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\RelationTargetWithInheritanceHierarchy.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\RelationTargetWithoutInheritanceHierarchy.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\SubclassOfRelationTargetWithInheritanceHierarchy.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderExecuteCustomQueryTest.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificQueryManager.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\VirtualEndPointStateUpdatedRaisingCommandDecoratorTest.cs" />
