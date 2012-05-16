@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Tracing;
 using Remotion.Linq;
@@ -58,10 +59,11 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var generator = new UniqueIdentifierGenerator();
       var storageNameProvider = new ReflectionBasedStorageNameProvider();
       var sqlPreparationStage = new DefaultSqlPreparationStage (_methodCallTransformerProvider, _resultOperatorHandlerRegistry, generator);
+      var storageTypeInformationProvider = new SqlStorageTypeInformationProvider();
       var mappingResolutionStage =
           new DefaultMappingResolutionStage (
               new MappingResolver (
-                  new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider(), storageNameProvider)),
+                  new StorageSpecificExpressionResolver (new RdbmsPersistenceModelProvider (), storageNameProvider, storageTypeInformationProvider)),
               generator);
       var sqlGenerationStage = new DefaultSqlGenerationStage();
       var mappingResolutionContext = new MappingResolutionContext();
@@ -82,13 +84,13 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public bool GenerateQueryModelAndSQLAndIQuery ()
     {
       var query = _queryGenerator();
-      return QueryFactory.CreateQuery ("perftest", query) != null;
+      return QueryFactory.CreateQuery<T> ("perftest", query) != null;
     }
 
     public bool GenerateAndExecuteQueryDBOnly ()
     {
       var query = _queryGenerator();
-      var restoreQuery = QueryFactory.CreateQuery ("perftest", query);
+      var restoreQuery = QueryFactory.CreateQuery<T> ("perftest", query);
 
       using (var manager = new StorageProviderManager (NullPersistenceExtension.Instance))
       {
