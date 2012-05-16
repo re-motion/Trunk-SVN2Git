@@ -218,7 +218,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ValueStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
     }
 
-    protected virtual RelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
+    protected virtual IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
         StorageProviderDefinition storageProviderDefinition,
         IStorageNameProvider storageNameProvider,
         IStorageProviderDefinitionFinder providerDefinitionFinder,
