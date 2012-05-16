@@ -208,6 +208,7 @@
     <Compile Include="DomainObjects\Core\Linq\CustomSequenceQueryAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\DomainObjectSequenceQueryAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\CustomProjectionIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\IntegrationTests\GroupByIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryAdapterBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryResultRowAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ScalarQueryAdapterTest.cs" />
