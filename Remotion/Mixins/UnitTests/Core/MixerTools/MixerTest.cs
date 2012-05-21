@@ -166,6 +166,8 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _mixer.Execute (_configuration);
 
       concreteTypeBuilderMock.VerifyAllExpectations ();
+      Assert.That (_mixer.FinishedTypes.Count, Is.EqualTo (1));
+      Assert.That (_mixer.FinishedTypes[_context.Type], Is.SameAs (typeof (FakeConcreteMixedType)));
     }
 
     [Test]
@@ -229,6 +231,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       _mixer.Execute (_configuration);
 
       concreteTypeBuilderMock.VerifyAllExpectations ();
+      Assert.That (_mixer.GeneratedFiles, Is.EqualTo (new[] { "a", "b" }));
     }
 
     [Test]

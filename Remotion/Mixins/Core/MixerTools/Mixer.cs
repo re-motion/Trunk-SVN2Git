@@ -65,6 +65,7 @@ namespace Remotion.Mixins.MixerTools
     private readonly List<Tuple<ClassContext, Exception>> _errors = new List<Tuple<ClassContext, Exception>> ();
     private readonly Dictionary<Type, ClassContext> _processedContexts = new Dictionary<Type, ClassContext> ();
     private readonly Dictionary<Type, Type> _finishedTypes = new Dictionary<Type, Type> ();
+    private readonly List<string> _generatedFiles = new List<string>();
 
     public Mixer (IClassContextFinder classContextFinder, IConcreteTypeBuilderFactory concreteTypeBuilderFactory, string assemblyOutputDirectory)
     {
@@ -96,6 +97,11 @@ namespace Remotion.Mixins.MixerTools
       get { return _finishedTypes; }
     }
 
+    public List<string> GeneratedFiles
+    {
+      get { return _generatedFiles; }
+    }
+
     public void PrepareOutputDirectory ()
     {
       if (!Directory.Exists (AssemblyOutputDirectory))
@@ -119,6 +125,7 @@ namespace Remotion.Mixins.MixerTools
         _errors.Clear();
         _processedContexts.Clear();
         _finishedTypes.Clear();
+        _generatedFiles.Clear();
 
         s_log.InfoFormat ("The base directory is '{0}'.", AppDomain.CurrentDomain.BaseDirectory);
 
@@ -161,7 +168,9 @@ namespace Remotion.Mixins.MixerTools
 
     private void Save (IConcreteTypeBuilder builder)
     {
-      string[] paths = builder.SaveGeneratedConcreteTypes ();
+      var paths = builder.SaveGeneratedConcreteTypes ();
+      _generatedFiles.AddRange (paths);
+
       if (paths.Length == 0)
         s_log.Info ("No assemblies generated.");
       else
