@@ -38,6 +38,16 @@ namespace Remotion.Data.DomainObjects.Linq
       _storageTypeInformationProvider = storageTypeInformationProvider;
     }
 
+    public object ScalarValue
+    {
+      get { return _scalarValue; }
+    }
+
+    public IStorageTypeInformationProvider StorageTypeInformationProvider
+    {
+      get { return _storageTypeInformationProvider; }
+    }
+
     public T GetValue<T> (ColumnID columnID)
     {
       ArgumentUtility.CheckNotNull ("columnID", columnID);

@@ -278,5 +278,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       CheckDataContainersRegistered (DomainObjectIDs.OrderWithoutOrderItem);
       CheckCollectionRelationRegistered (DomainObjectIDs.OrderWithoutOrderItem, "OrderItems", false);
     }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Only queries returning DomainObjects can perform eager fetching.")]
+    public void EagerFetching_WithCustomQuery ()
+    {
+      QueryFactory
+          .CreateLinqQuery<Customer>()
+          .Select (c => new { c.Name })
+          .FetchOne (x => x.Name)
+          .ToArray();
+    }
   }
 }

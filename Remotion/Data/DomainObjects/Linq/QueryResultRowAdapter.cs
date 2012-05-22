@@ -35,6 +35,11 @@ namespace Remotion.Data.DomainObjects.Linq
       _queryResultRow = queryResultRow;
     }
 
+    public IQueryResultRow QueryResultRow
+    {
+      get { return _queryResultRow; }
+    }
+
     public T GetValue<T> (ColumnID columnID)
     {
       ArgumentUtility.CheckNotNull ("columnID", columnID);
