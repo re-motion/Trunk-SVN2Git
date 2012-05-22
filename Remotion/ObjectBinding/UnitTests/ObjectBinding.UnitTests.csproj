@@ -358,7 +358,7 @@
     <Compile Include="Web\Domain\TypeWithNumber.cs" />
     <Compile Include="Web\Domain\TypeWithReference.cs" />
     <Compile Include="Web\Domain\TypeWithString.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Sorting\DefaultBocListRowComparerTestBase.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Sorting\CellValueComparerTestBase.cs" />
     <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueTest.cs" />
     <Compile Include="Web\UI\Controls\BocBooleanValueImplementation\Rendering\IBocBooleanValueRendererTest.cs" />
@@ -399,8 +399,8 @@
     <Compile Include="Web\UI\Controls\BocListManageRowsInListEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInUnboundListTest.cs" />
     <Compile Include="Web\UI\Controls\BocListMock.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Sorting\DefaultBocListRowComparerReferenceValuesTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\Sorting\DefaultBocListRowComparerStringValuesTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Sorting\CellValueComparerReferenceValuesTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\Sorting\CellValueComparerStringValuesTest.cs" />
     <Compile Include="Web\UI\Controls\BocListTest.cs" />
     <Compile Include="Web\UI\Controls\BocListWcagTest.cs" />
     <Compile Include="Web\UI\Controls\BocLiteralTest.cs" />

@@ -23,7 +23,7 @@ using Remotion.ObjectBinding.UnitTests.Web.Domain;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Sorting
 {
   [TestFixture]
-  public class DefaultBocListRowComparerStringValuesTest : DefaultBocListRowComparerTestBase
+  public class CellValueComparerReferenceValuesTest : CellValueComparerTestBase
   {
     private IBusinessObject _valueAA;
     private IBusinessObject _valueAB;
@@ -50,15 +50,16 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [SetUp]
     public virtual void SetUp ()
     {
-      _valueAA = (IBusinessObject) TypeWithString.Create ("A", "A");
-      _valueAB = (IBusinessObject) TypeWithString.Create ("A", "B");
-      _valueBA = (IBusinessObject) TypeWithString.Create ("B", "A");
+      _valueAA = (IBusinessObject) TypeWithReference.Create (TypeWithReference.Create ("A"), TypeWithReference.Create ("A"));
+      _valueAB = (IBusinessObject) TypeWithReference.Create (TypeWithReference.Create ("A"), TypeWithReference.Create ("B"));
+      _valueBA = (IBusinessObject) TypeWithReference.Create (TypeWithReference.Create ("B"), TypeWithReference.Create ("A"));
 
-      _valueNullA = (IBusinessObject) TypeWithString.Create (null, "A");
-      _valueNullB = (IBusinessObject) TypeWithString.Create (null, "B");
-      _valueBNull = (IBusinessObject) TypeWithString.Create ("B", null);
+      _valueNullA = (IBusinessObject) TypeWithReference.Create (null, TypeWithReference.Create ("A"));
+      _valueNullB = (IBusinessObject) TypeWithReference.Create (null, TypeWithReference.Create ("B"));
+      _valueBNull = (IBusinessObject) TypeWithReference.Create (TypeWithReference.Create ("B"), null);
 
-      _class = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithString));
+
+      _class = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithReference));
 
 
       _firstValuePath = BusinessObjectPropertyPath.Parse (_class, "FirstValue");
@@ -92,57 +93,49 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _secondValueCustomColumn.IsSortable = true;
     }
 
+
     [Test]
     public void CompareRowsWithSimpleColumns ()
     {
-      CompareEqualValuesAscending (_firstValueSimpleColumn, _valueAA, _valueAB);
-      CompareEqualValuesAscending (_firstValueSimpleColumn, _valueNullA, _valueNullB);
+      CompareEqualValues (_firstValueSimpleColumn, _valueAA, _valueAB);
+      CompareEqualValues (_firstValueSimpleColumn, _valueNullA, _valueNullB);
 
-      CompareEqualValuesDescending (_firstValueSimpleColumn, _valueAA, _valueAB);
-      CompareEqualValuesDescending (_firstValueSimpleColumn, _valueNullA, _valueNullB);
+      CompareAscendingValues (_firstValueSimpleColumn, _valueAA, _valueBA);
+      CompareAscendingValues (_firstValueSimpleColumn, _valueNullA, _valueAA);
 
-      CompareAscendingValuesAscending (_firstValueSimpleColumn, _valueAA, _valueBA);
-      CompareAscendingValuesAscending (_firstValueSimpleColumn, _valueNullA, _valueAA);
-
-      CompareAscendingValuesDescending (_firstValueSimpleColumn, _valueAA, _valueBA);
-      CompareAscendingValuesDescending (_firstValueSimpleColumn, _valueNullA, _valueAA);
+      CompareDescendingValues (_firstValueSimpleColumn, _valueBA, _valueAA);
+      CompareDescendingValues (_firstValueSimpleColumn, _valueAA, _valueNullA);
     }
 
     [Test]
     public void CompareRowsWithCompoundColumns ()
     {
-      CompareEqualValuesAscending (_firstValueFirstValueCompoundColumn, _valueAA, _valueAB);
-      CompareEqualValuesAscending (_firstValueFirstValueCompoundColumn, _valueNullA, _valueNullB);
+      CompareEqualValues (_firstValueFirstValueCompoundColumn, _valueAA, _valueAB);
+      CompareEqualValues (_firstValueFirstValueCompoundColumn, _valueNullA, _valueNullB);
 
-      CompareEqualValuesDescending (_firstValueFirstValueCompoundColumn, _valueAA, _valueAB);
-      CompareEqualValuesDescending (_firstValueFirstValueCompoundColumn, _valueNullA, _valueNullB);
+      CompareAscendingValues (_firstValueSecondValueCompoundColumn, _valueAA, _valueBA);
+      CompareAscendingValues (_firstValueSecondValueCompoundColumn, _valueAA, _valueAB);
+      CompareAscendingValues (_firstValueSecondValueCompoundColumn, _valueNullA, _valueBNull);
+      CompareAscendingValues (_firstValueSecondValueCompoundColumn, _valueNullA, _valueNullB);
 
-      CompareAscendingValuesAscending (_firstValueSecondValueCompoundColumn, _valueAA, _valueBA);
-      CompareAscendingValuesAscending (_firstValueSecondValueCompoundColumn, _valueAA, _valueAB);
-      CompareAscendingValuesAscending (_firstValueSecondValueCompoundColumn, _valueNullA, _valueBNull);
-      CompareAscendingValuesAscending (_firstValueSecondValueCompoundColumn, _valueNullA, _valueNullB);
-
-      CompareAscendingValuesDescending (_firstValueSecondValueCompoundColumn, _valueAA, _valueBA);
-      CompareAscendingValuesDescending (_firstValueSecondValueCompoundColumn, _valueAA, _valueAB);
-      CompareAscendingValuesDescending (_firstValueSecondValueCompoundColumn, _valueNullA, _valueBNull);
-      CompareAscendingValuesDescending (_firstValueSecondValueCompoundColumn, _valueNullA, _valueNullB);
+      CompareDescendingValues (_firstValueSecondValueCompoundColumn, _valueBA, _valueAA);
+      CompareDescendingValues (_firstValueSecondValueCompoundColumn, _valueAB, _valueAA);
+      CompareDescendingValues (_firstValueSecondValueCompoundColumn, _valueBNull, _valueNullA);
+      CompareDescendingValues (_firstValueSecondValueCompoundColumn, _valueNullB, _valueNullA);
     }
 
 
     [Test]
     public void CompareRowsWithCustomColumns ()
     {
-      CompareEqualValuesAscending (_firstValueCustomColumn, _valueAA, _valueAB);
-      CompareEqualValuesAscending (_firstValueCustomColumn, _valueNullA, _valueNullB);
+      CompareEqualValues (_firstValueCustomColumn, _valueAA, _valueAB);
+      CompareEqualValues (_firstValueCustomColumn, _valueNullA, _valueNullB);
 
-      CompareEqualValuesDescending (_firstValueCustomColumn, _valueAA, _valueAB);
-      CompareEqualValuesDescending (_firstValueCustomColumn, _valueNullA, _valueNullB);
+      CompareAscendingValues (_firstValueCustomColumn, _valueAA, _valueBA);
+      CompareAscendingValues (_firstValueCustomColumn, _valueNullA, _valueBA);
 
-      CompareAscendingValuesAscending (_firstValueCustomColumn, _valueAA, _valueBA);
-      CompareAscendingValuesAscending (_firstValueCustomColumn, _valueNullA, _valueBA);
-
-      CompareAscendingValuesDescending (_firstValueCustomColumn, _valueAA, _valueBA);
-      CompareAscendingValuesDescending (_firstValueCustomColumn, _valueNullA, _valueBA);
+      CompareDescendingValues (_firstValueCustomColumn, _valueBA, _valueAA);
+      CompareDescendingValues (_firstValueCustomColumn, _valueBA, _valueNullA);
     }
   }
 }

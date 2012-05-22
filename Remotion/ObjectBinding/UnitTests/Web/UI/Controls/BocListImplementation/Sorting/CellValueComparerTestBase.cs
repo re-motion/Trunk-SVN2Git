@@ -16,13 +16,12 @@
 // 
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Sorting
 {
-  public abstract class DefaultBocListRowComparerTestBase
+  public abstract class CellValueComparerTestBase
   {
-    protected void CompareEqualValuesAscending (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
+    protected void CompareEqualValues (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
     {
       BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
       sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Ascending);
@@ -30,7 +29,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       BocListRow rowLeft = new BocListRow (0, left);
       BocListRow rowRight = new BocListRow (0, right);
 
-      var comparer = new DefaultBocListRowComparer (sortingOrder);
+      var comparer = column.CreateCellValueComparer();
       int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
       int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
 
@@ -38,23 +37,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Assert.IsTrue (compareResultRightLeft == 0, "Right - Left != zero");
     }
 
-    protected void CompareEqualValuesDescending (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
-    {
-      BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
-      sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Descending);
-
-      BocListRow rowLeft = new BocListRow (0, left);
-      BocListRow rowRight = new BocListRow (0, right);
-
-      var comparer = new DefaultBocListRowComparer (sortingOrder);
-      int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
-      int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
-
-      Assert.IsTrue (compareResultLeftRight == 0, "Left - Right != zero");
-      Assert.IsTrue (compareResultRightLeft == 0, "Right - Left != zero");
-    }
-
-    protected void CompareAscendingValuesAscending (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
+    protected void CompareAscendingValues (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
     {
       BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
       sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Ascending);
@@ -62,7 +45,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       BocListRow rowLeft = new BocListRow (0, left);
       BocListRow rowRight = new BocListRow (0, right);
 
-      var comparer = new DefaultBocListRowComparer (sortingOrder);
+      var comparer = column.CreateCellValueComparer();
       int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
       int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
 
@@ -70,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Assert.IsTrue (compareResultRightLeft > 0, "Right - Left >= zero.");
     }
 
-    protected void CompareAscendingValuesDescending (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
+    protected void CompareDescendingValues (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
     {
       BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
       sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Descending);
@@ -78,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       BocListRow rowLeft = new BocListRow (0, left);
       BocListRow rowRight = new BocListRow (0, right);
 
-      var comparer = new DefaultBocListRowComparer (sortingOrder);
+      var comparer = column.CreateCellValueComparer();
       int compareResultLeftRight = comparer.Compare (rowLeft, rowRight);
       int compareResultRightLeft = comparer.Compare (rowRight, rowLeft);
 
