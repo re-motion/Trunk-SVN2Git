@@ -50,9 +50,10 @@ namespace Remotion.Data.DomainObjects.Linq
     public T GetEntity<T> (params ColumnID[] columnIDs)
     {
       throw new NotSupportedException (
-        "This LINQ provider does not support queries with complex projections that include DomainObjects."+
-        "Either change the query to return just a sequence of DomainObjects ('from o in QueryFactory.CreateLinqQuery<Order>() select o') "+
-        "or change the complex projection to contain no DomainObjects ('from o in QueryFactory.CreateLinqQuery<Order>() select new { o.OrderNumber, o.OrderDate }').");
+          "This LINQ provider does not support queries with complex projections that include DomainObjects. "
+          + "Either change the query to return just a sequence of DomainObjects (e.g., 'from o in QueryFactory.CreateLinqQuery<Order>() select o') "
+          + "or change the complex projection to contain no DomainObjects "
+          + "(e.g., 'from o in QueryFactory.CreateLinqQuery<Order>() select new { o.OrderNumber, o.OrderDate }').");
     }
   }
 }

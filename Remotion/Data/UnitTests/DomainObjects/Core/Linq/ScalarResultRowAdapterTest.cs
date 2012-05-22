@@ -19,7 +19,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
-using Remotion.Data.DomainObjects.Queries;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 using Rhino.Mocks;
 
@@ -47,11 +46,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void GetValue ()
     {
       _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageType (typeof(int))).Return (_storageTypeInformationStub);
-      _storageTypeInformationStub.Stub (stub => stub.ConvertFromStorageType (_scalarValue)).Return((object)1);
+      _storageTypeInformationStub.Stub (stub => stub.ConvertFromStorageType (_scalarValue)).Return (1);
 
       var result = _queryResultRowAdapter.GetValue<int> (new ColumnID ("column1", 0));
 
-      Assert.That (result, Is.EqualTo(1));
+      Assert.That (result, Is.EqualTo (1));
     }
 
     [Test]

@@ -48,10 +48,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     }
 
     [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = 
-      "This LINQ provider does not support queries with complex projections that include DomainObjects.Either change the query to return just a sequence of DomainObjects "+
-      "('from o in QueryFactory.CreateLinqQuery<Order>() select o') or change the complex projection to contain no DomainObjects "+
-      "('from o in QueryFactory.CreateLinqQuery<Order>() select new { o.OrderNumber, o.OrderDate }').")]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "This LINQ provider does not support queries with complex projections that include DomainObjects. "
+        + "Either change the query to return just a sequence of DomainObjects " 
+        + "(e.g., 'from o in QueryFactory.CreateLinqQuery<Order>() select o') or change the complex projection to contain no DomainObjects " 
+        + "(e.g., 'from o in QueryFactory.CreateLinqQuery<Order>() select new { o.OrderNumber, o.OrderDate }').")]
     public void GetEntity ()
     {
       _queryResultRowAdapter.GetEntity<int>();
