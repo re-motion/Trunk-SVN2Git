@@ -19,17 +19,19 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Linq
+namespace Remotion.Data.DomainObjects.Linq.ExecutableQueries
 {
   /// <summary>
   /// Adapts a query with a scalar projection to implement the <see cref="IExecutableQuery{T}"/> interface.
   /// </summary>
+  /// <typeparam name="T">The type of scalar value to return. The <see cref="object"/> values returned by the query
+  /// are converted to this type via the <see cref="ResultConversion"/> delegate.</typeparam>
   public class ScalarQueryAdapter<T> : QueryAdapterBase<T>
   {
     private readonly Func<object, T> _resultConversion;
 
     public ScalarQueryAdapter (IQuery query, Func<object, T> resultConversion)
-        : base(query)
+      : base (ArgumentUtility.CheckNotNull ("query", query))
     {
       ArgumentUtility.CheckNotNull ("resultConversion", resultConversion);
 
@@ -37,6 +39,11 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new ArgumentException ("Only scalar queries can be used to load scalar results.", "query");
 
       _resultConversion = resultConversion;
+    }
+
+    public Func<object, T> ResultConversion
+    {
+      get { return _resultConversion; }
     }
 
     public override T Execute (IQueryManager queryManager)

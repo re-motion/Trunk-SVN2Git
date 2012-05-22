@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,16 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Queries;
 
-namespace Remotion.Data.DomainObjects.Linq
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.ExecutableQueries
 {
-  /// <summary>
-  /// Represents a query that can be executed using an <see cref="IQueryManager"/>.
-  /// </summary>
-  /// <typeparam name="T">The type of the query result.</typeparam>
-  public interface IExecutableQuery<out T> : IQuery
+  public class TestableQueryAdapterBase<T> : QueryAdapterBase<T>
   {
-    T Execute (IQueryManager queryManager);
+    public TestableQueryAdapterBase (IQuery query)
+        : base (query)
+    {
+    }
+
+    public override T Execute (IQueryManager queryManager)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

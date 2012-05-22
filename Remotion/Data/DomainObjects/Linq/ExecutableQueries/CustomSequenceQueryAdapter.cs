@@ -20,11 +20,13 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Linq
+namespace Remotion.Data.DomainObjects.Linq.ExecutableQueries
 {
   /// <summary>
   /// Adapts a query with a custom projection to implement the <see cref="IExecutableQuery{T}"/> interface.
   /// </summary>
+  /// <typeparam name="TResultItem">The item type to return a sequence of. The <see cref="IQueryResultRow"/> instances returned by the query
+  /// are converted to this type via the <see cref="ResultConversion"/> delegate.</typeparam>
   public class CustomSequenceQueryAdapter<TResultItem> : QueryAdapterBase<IEnumerable<TResultItem>>
   {
     private readonly Func<IQueryResultRow, TResultItem> _resultConversion;

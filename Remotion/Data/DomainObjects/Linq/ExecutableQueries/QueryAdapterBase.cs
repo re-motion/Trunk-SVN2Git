@@ -21,7 +21,7 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Linq
+namespace Remotion.Data.DomainObjects.Linq.ExecutableQueries
 {
   /// <summary>
   /// Represents the base class for all query classes that can be executed using an <see cref="IQueryManager"/>.

@@ -16,54 +16,50 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.ExecutableQueries
 {
   [TestFixture]
-  public class DomainObjectSequenceQueryAdapterTest : StandardMappingTest
+  public class CustomSequenceQueryAdapterTest
   {
     private IQuery _queryStub;
+    private Func<IQueryResultRow, string> _resultConversion;
 
     [SetUp]
-    public new void SetUp ()
+    public void SetUp ()
     {
-      base.SetUp();
-
-      _queryStub = MockRepository.GenerateStub<IQuery> ();
+      _queryStub = MockRepository.GenerateStub<IQuery>();
+      _resultConversion = qrr => "string";
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Only collection queries can be used to load data containers.", MatchType = MessageMatch.Contains)]
-    public void Execute_QueryTypeNotCollection ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Only custom queries can be used to load custom results.\r\nParameter name: query")]
+    public void Initialization_QueryTypeNotCustom ()
     {
-      _queryStub.Stub (stub => stub.QueryType).Return (QueryType.Scalar);
+      _queryStub.Stub (stub => stub.QueryType).Return (QueryType.Collection);
 
-      new DomainObjectSequenceQueryAdapter<string> (_queryStub);
+      new CustomSequenceQueryAdapter<string> (_queryStub, _resultConversion);
     }
 
     [Test]
     public void Execute ()
     {
-      _queryStub.Stub (stub => stub.QueryType).Return (QueryType.Collection);
+      _queryStub.Stub (stub => stub.QueryType).Return (QueryType.Custom);
+      var queryAdapter = new CustomSequenceQueryAdapter<string> (_queryStub, _resultConversion);
 
-      var order1 = DomainObjectMother.CreateFakeObject<Order>();
-      var order2 = DomainObjectMother.CreateFakeObject<Order>();
-      var fakeResult = new QueryResult<DomainObject> (_queryStub, new[] {  order1, order2 });
-
-      var queryAdapter = new DomainObjectSequenceQueryAdapter<object> (_queryStub);
+      var fakeResult = new[] { "t1", "t2" };
       var queryManagerMock = MockRepository.GenerateStrictMock<IQueryManager>();
-      queryManagerMock.Expect (mock => mock.GetCollection (queryAdapter)).Return (fakeResult);
+      queryManagerMock.Expect (mock => mock.GetCustom (queryAdapter, _resultConversion)).Return (fakeResult);
 
       var result = queryAdapter.Execute (queryManagerMock);
 
-      CollectionAssert.AreEquivalent (new[] { order1, order2 }, result);
+      queryManagerMock.VerifyAllExpectations();
+      Assert.That (result, Is.EqualTo (fakeResult));
     }
-
   }
 }

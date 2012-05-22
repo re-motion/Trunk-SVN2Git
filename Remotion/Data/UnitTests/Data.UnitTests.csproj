@@ -198,6 +198,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ClassIDsInAllForeignKeysBehaviorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\ClassWithRelations.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\DefaultBehaviorTest.cs" />
@@ -209,13 +210,13 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\QueryResultRowTestHelper.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\QueryTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Queries\ScalarQueryTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\CustomSequenceQueryAdapterTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\DomainObjectSequenceQueryAdapterTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\CustomSequenceQueryAdapterTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\DomainObjectSequenceQueryAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\CustomProjectionIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\GroupByIntegrationTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\QueryAdapterBaseTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\QueryAdapterBaseTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\QueryResultRowAdapterTest.cs" />
-    <Compile Include="DomainObjects\Core\Linq\ScalarQueryAdapterTest.cs" />
+    <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\ScalarQueryAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ScalarResultRowAdapterTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\QueryResultRowReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\QueryResultRowTest.cs" />

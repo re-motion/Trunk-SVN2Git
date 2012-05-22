@@ -20,6 +20,7 @@ using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -29,6 +30,7 @@ using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.EagerFetching;
 using Remotion.Utilities;
 using Rhino.Mocks;
+using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -50,6 +52,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public override void SetUp ()
     {
       base.SetUp ();
+
+      
 
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
       _queryGeneratorMock = MockRepository.GenerateStrictMock<IDomainObjectQueryGenerator>();

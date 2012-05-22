@@ -21,15 +21,19 @@ using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.Linq
+namespace Remotion.Data.DomainObjects.Linq.ExecutableQueries
 {
   /// <summary>
-  /// Adapts a query with a domain object sequence projection to implement the <see cref="IExecutableQuery{T}"/> interface.
+  /// Adapts a query with a <see cref="DomainObject"/> sequence projection to implement the <see cref="IExecutableQuery{T}"/> interface.
   /// </summary>
+  /// <typeparam name="TItem">
+  /// The type of items a sequence of which is to be returned. This needs not be a <see cref="DomainObject"/> type, it can be any type the result
+  /// items are assignable to, e.g., an interface. The <see cref="DomainObject"/> instances returned from the query are cast to this type.
+  /// </typeparam>
   public class DomainObjectSequenceQueryAdapter<TItem> : QueryAdapterBase<IEnumerable<TItem>>
   {
     public DomainObjectSequenceQueryAdapter (IQuery query)
-        : base(query)
+        : base (ArgumentUtility.CheckNotNull ("query", query))
     {
       if (query.QueryType != QueryType.Collection)
         throw new ArgumentException ("Only collection queries can be used to load data containers.", "query");

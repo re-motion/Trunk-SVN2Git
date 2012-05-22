@@ -16,49 +16,49 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.ExecutableQueries
 {
   [TestFixture]
-  public class CustomSequenceQueryAdapterTest
+  public class ScalarQueryAdapterTest
   {
     private IQuery _queryStub;
-    private Func<IQueryResultRow, string > _resultConversion;
+    private Func<object, string> _resultConversion;
 
     [SetUp]
     public void SetUp ()
     {
-      _queryStub = MockRepository.GenerateStub<IQuery> ();
-      _resultConversion = qrr => "string";
+      _queryStub = MockRepository.GenerateStub<IQuery>();
+      _resultConversion = o => o.ToString();
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Only custom queries can be used to load custom results.", MatchType = MessageMatch.Contains)]
-    public void Execute_QueryTypeNotCustom ()
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Only scalar queries can be used to load scalar results.\r\nParameter name: query")]
+    public void Initialization_QueryTypeNotScalar ()
     {
       _queryStub.Stub (stub => stub.QueryType).Return (QueryType.Collection);
 
-      new CustomSequenceQueryAdapter<string> (_queryStub, _resultConversion);
+      new ScalarQueryAdapter<string> (_queryStub, _resultConversion);
     }
 
     [Test]
     public void Execute ()
     {
-      _queryStub.Stub (stub => stub.QueryType).Return (QueryType.Custom);
+      _queryStub.Stub (stub => stub.QueryType).Return (QueryType.Scalar);
+      var scalarQueryAdapter = new ScalarQueryAdapter<string> (_queryStub, _resultConversion);
 
-      var fakeResult = new[]{ "t1", "t2" };
-      var queryAdapter = new CustomSequenceQueryAdapter<string> (_queryStub, _resultConversion);
-      var queryManagerMock = MockRepository.GenerateStrictMock<IQueryManager> ();
-      queryManagerMock.Expect (mock => mock.GetCustom (queryAdapter, _resultConversion)).Return (fakeResult);
+      var queryManagerMock = MockRepository.GenerateStrictMock<IQueryManager>();
+      queryManagerMock.Expect (mock => mock.GetScalar (scalarQueryAdapter)).Return (5);
 
-      var result = queryAdapter.Execute (queryManagerMock);
+      var result = scalarQueryAdapter.Execute (queryManagerMock);
 
-      queryManagerMock.VerifyAllExpectations ();
-      CollectionAssert.AreEquivalent (fakeResult, result);
+      queryManagerMock.VerifyAllExpectations();
+      Assert.That (result, Is.EqualTo ("5"));
     }
   }
 }
