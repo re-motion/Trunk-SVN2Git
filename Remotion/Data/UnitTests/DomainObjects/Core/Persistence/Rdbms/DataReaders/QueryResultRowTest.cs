@@ -104,8 +104,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
 
     [Test]
     [ExpectedException(typeof(NotSupportedException), ExpectedMessage = 
-      "Type 'ObjectID' ist not supported by this storage provider.\n"+
-      "Please select the ID and ClassID values separately (ID.Value, ID.ClassID), then create an ObjectID with it in memory.")]
+      "Type 'ObjectID' ist not supported by this storage provider.\r\n"
+      + "Please select the ID and ClassID values separately, then create an ObjectID with it in memory "
+      + "(e.g., 'select new ObjectID (o.ID.ClassID, o.ID.Value)').")]
     public void GetConvertedValue_ThrowsNotSupportedException_TypeObjectID ()
     {
       _storageTypeInformationProviderStub

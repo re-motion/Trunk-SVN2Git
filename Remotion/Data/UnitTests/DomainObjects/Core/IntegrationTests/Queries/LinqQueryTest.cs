@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -39,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
       extensionMock
           .Expect (mock => mock.FilterQueryResult (Arg.Is (TestableClientTransaction), Arg<QueryResult<DomainObject>>.Is.Anything))
           .Return (TestQueryFactory.CreateTestQueryResult<DomainObject>());
-      
+
       TestableClientTransaction.Extensions.Add (extensionMock);
       try
       {
@@ -55,28 +54,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     }
 
     [Test]
-    public void LinqCustomQuery_CallsFilterQueryResult ()
+    public void LinqCustomQuery_CallsFilterCustomQueryResult ()
     {
       var extensionKey = "LinqCustomQuery_CallsFilterQueryResult_Key";
-      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension> ();
+      var extensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
       extensionMock.Stub (stub => stub.Key).Return (extensionKey);
       extensionMock
-          .Expect (mock => mock.FilterCustomQueryResult (Arg.Is (TestableClientTransaction), Arg<IQuery>.Is.Anything, Arg<IEnumerable<int>>.Is.Anything))
-          .Return (new[]{1, 2, 3});
+          .Expect (
+              mock => mock.FilterCustomQueryResult (
+                  Arg.Is (TestableClientTransaction),
+                  Arg<IQuery>.Is.Anything,
+                  Arg<IEnumerable<int>>.List.Equal (new[] { 1, 2, 3, 4, 5, 6 })))
+          .Return (new[] { 1, 2, 3 });
 
       TestableClientTransaction.Extensions.Add (extensionMock);
       try
       {
-        var query = from o in QueryFactory.CreateLinqQuery<Order> () select o.OrderNumber;
-        query.ToArray ();
+        var query = from o in QueryFactory.CreateLinqQuery<Order>() orderby o.OrderNumber select o.OrderNumber;
+        var result = query.ToArray();
 
-        extensionMock.VerifyAllExpectations ();
+        extensionMock.VerifyAllExpectations();
+        Assert.That (result, Is.EqualTo (new[] { 1, 2, 3 }));
       }
       finally
       {
         TestableClientTransaction.Extensions.Remove (extensionKey);
       }
     }
-
   }
 }

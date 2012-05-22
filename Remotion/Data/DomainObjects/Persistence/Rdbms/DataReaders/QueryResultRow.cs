@@ -74,8 +74,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders
         if (typeof (ObjectID).IsAssignableFrom (type))
         {
           throw new NotSupportedException (
-              "Type 'ObjectID' ist not supported by this storage provider.\n"+
-              "Please select the ID and ClassID values separately (ID.Value, ID.ClassID), then create an ObjectID with it in memory.", ex);
+              "Type 'ObjectID' ist not supported by this storage provider." 
+              + Environment.NewLine 
+              + "Please select the ID and ClassID values separately, then create an ObjectID with it in memory "
+              + "(e.g., 'select new ObjectID (o.ID.ClassID, o.ID.Value)').", ex);
         }
 
         throw;
