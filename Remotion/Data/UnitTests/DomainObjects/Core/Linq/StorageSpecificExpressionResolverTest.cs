@@ -82,11 +82,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           timestampProperty,
           foreignKeyProperty,
           simpleProperty);
-      _classDefinition.SetStorageEntity (tableDefinition);
-
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (_classDefinition))
-          .Return (_classDefinition.StorageEntityDefinition as IRdbmsStorageEntityDefinition);
+          .Return (tableDefinition);
 
       var result = _storageSpecificExpressionResolver.ResolveEntity (_classDefinition, "o");
 
@@ -182,31 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var result = _storageSpecificExpressionResolver.ResolveIDColumn (entityExpression, _classDefinition);
 
-      Assert.That (result.ColumnName, Is.EqualTo ("ID"));
-      Assert.That (result.IsPrimaryKey, Is.True);
-      Assert.That (result.OwningTableAlias, Is.EqualTo ("o"));
-      Assert.That (result.Type, Is.SameAs (typeof (ObjectID)));
-    }
-
-    [Test]
-    [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Compound-column IDs are not supported by this LINQ provider.")]
-    public void ResoveIDColumn_CompoundColumn ()
-    {
-      var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Order), "o", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
-      var entityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
-      var objectIDStoragePropertyWithManyLookupColumns = new ObjectIDStoragePropertyDefinition (
-          CompoundStoragePropertyDefinitionObjectMother.CreateWithTwoProperties(),
-          SimpleStoragePropertyDefinitionObjectMother.ClassIDProperty);
-
-      _rdbmsPersistenceModelProviderStub
-          .Stub (stub => stub.GetEntityDefinition (_classDefinition))
-          .Return (entityDefinitionStub);
-      entityDefinitionStub
-          .Stub (stub => stub.ObjectIDProperty)
-          .Return (objectIDStoragePropertyWithManyLookupColumns);
-
-      _storageSpecificExpressionResolver.ResolveIDColumn (entityExpression, _classDefinition);
+      Assert.That (result, Is.SameAs (entityExpression.PrimaryKeyColumn));
     }
 
     [Test]
@@ -217,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       
       _storageTypeInformationProviderStub.Stub (stub => stub.GetStorageTypeForID (true)).Return (storageTypeInformationStub);
 
-      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "columnName", false);
+      var columnExpression = new SqlColumnDefinitionExpression (typeof (string), "o", "columnName", true);
 
       var result = _storageSpecificExpressionResolver.ResolveValueColumn (columnExpression);
 
@@ -229,8 +203,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Assert.That (innerExpression, Is.TypeOf (typeof (SqlColumnDefinitionExpression)));
       var columnDefinitionExpression = ((SqlColumnDefinitionExpression) innerExpression);
       Assert.That (columnDefinitionExpression.Type, Is.SameAs (typeof (Guid)));
-      Assert.That (columnDefinitionExpression.ColumnName, Is.EqualTo ("ID"));
-      Assert.That (columnDefinitionExpression.IsPrimaryKey, Is.False);
+      Assert.That (columnDefinitionExpression.OwningTableAlias, Is.EqualTo ("o"));
+      Assert.That (columnDefinitionExpression.ColumnName, Is.EqualTo ("columnName"));
+      Assert.That (columnDefinitionExpression.IsPrimaryKey, Is.True);
     }
 
     [Test]
@@ -483,7 +458,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       var rightEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, false);
 
       var entityExpression = new SqlEntityDefinitionExpression (
-          typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", false));
+          typeof (Customer), "c", null, new SqlColumnDefinitionExpression (typeof (string), "c", "Name", true));
 
       _rdbmsPersistenceModelProviderStub
           .Stub (stub => stub.GetEntityDefinition (rightEndPointDefinition.ClassDefinition))
@@ -499,7 +474,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       var result = _storageSpecificExpressionResolver.ResolveJoin (entityExpression, leftEndPointDefinition, rightEndPointDefinition, "o");
 
-      Assert.That (((SqlColumnExpression) result.LeftKey).IsPrimaryKey, Is.True);
+      Assert.That (result.LeftKey, Is.SameAs (entityExpression.PrimaryKeyColumn));
       Assert.That (((SqlColumnExpression) result.RightKey).IsPrimaryKey, Is.False);
     }
 

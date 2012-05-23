@@ -56,17 +56,18 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNullOrEmpty ("tableAlias", tableAlias);
 
       var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
-      var tableColumns = (from storageProperty in entityDefinition.GetAllProperties()
+      var idColumnDefinition = GetSingleColumnForLookup (entityDefinition.ObjectIDProperty);
+
+      var tableColumns = (from storageProperty in entityDefinition.GetAllProperties ()
                           from sqlColumnDefinition in CreateSqlColumnDefinitions (storageProperty, tableAlias)
                           select sqlColumnDefinition
                          ).ToArray();
-
 
       return new SqlEntityDefinitionExpression (
           classDefinition.ClassType,
           tableAlias,
           null,
-          tableColumns.Where (c => c.IsPrimaryKey).First(),
+          tableColumns.Single (c => c.ColumnName == idColumnDefinition.Name),
           tableColumns);
     }
 
@@ -89,11 +90,8 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("originatingEntity", originatingEntity);
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      var entityDefinition = _rdbmsPersistenceModelProvider.GetEntityDefinition (classDefinition);
-      var idColumn = GetSingleColumnForLookup (entityDefinition.ObjectIDProperty);
-
-      Assertion.IsTrue (idColumn.IsPartOfPrimaryKey);
-      return GetColumnFromEntity (entityDefinition.ObjectIDProperty.PropertyType, idColumn, originatingEntity);
+      // In ResolveEntity above, we defined that we take the ID column as the primary key.
+      return originatingEntity.PrimaryKeyColumn;
     }
 
     public Expression ResolveValueColumn (SqlColumnExpression idColumn)
@@ -101,7 +99,7 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("idColumn", idColumn);
 
       var storageTypeInfo = _storageTypeInformationProvider.GetStorageTypeForID (true);
-      var sqlColumnExpression = idColumn.Update (storageTypeInfo.DotNetType, idColumn.OwningTableAlias, _storageNameProvider.GetIDColumnName (), false);
+      var sqlColumnExpression = idColumn.Update (storageTypeInfo.DotNetType, idColumn.OwningTableAlias, idColumn.ColumnName, idColumn.IsPrimaryKey);
       return Expression.Convert (sqlColumnExpression, typeof (object));
     }
 
@@ -109,6 +107,8 @@ namespace Remotion.Data.DomainObjects.Linq
     {
       ArgumentUtility.CheckNotNull ("idColumn", idColumn);
 
+      // Note: This will not work reliably because of the way ResolveIDColumn always returns a single column. We can't really detect scenarios where 
+      // this won't work, though. Waiting for RM-4878 for a fix.
       return idColumn.Update (typeof (string), idColumn.OwningTableAlias, _storageNameProvider.GetClassIDColumnName(), false);
     }
 

@@ -484,7 +484,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 3662: Invalid SQL is generated when the Value of an ID coming from a sub-query is used.")]
     public void Query_IDValue_OnReferencedValue ()
     {
       var query = from x in
