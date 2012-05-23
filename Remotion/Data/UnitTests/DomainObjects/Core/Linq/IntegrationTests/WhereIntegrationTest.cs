@@ -463,5 +463,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           DomainObjectIDs.Customer4,
           DomainObjectIDs.Customer5);
     }
+
+    [Test]
+    public void Query_IDValue ()
+    {
+      var query = QueryFactory.CreateLinqQuery<Company> ().Where (c => c.ID.Value == DomainObjectIDs.Customer1.Value);
+
+      CheckQueryResult (query, DomainObjectIDs.Customer1);
+    }
+
+    [Test]
+    public void Query_IDValue_OnColumnOfReferencedEntity ()
+    {
+      var query = from x in
+                    (from c in QueryFactory.CreateLinqQuery<Company> () select new { A = c, B = c.ID }).Distinct ()
+                  where x.A.ID.Value == DomainObjectIDs.Customer1.Value
+                  select x.A;
+
+      CheckQueryResult (query, DomainObjectIDs.Customer1);
+    }
+
+    [Test]
+    [Ignore ("TODO 3662: Invalid SQL is generated when the Value of an ID coming from a sub-query is used.")]
+    public void Query_IDValue_OnReferencedValue ()
+    {
+      var query = from x in
+                    (from c in QueryFactory.CreateLinqQuery<Company> () select new { A = c, B = c.ID }).Distinct ()
+                  where x.B.Value == DomainObjectIDs.Customer1.Value
+                  select x.A;
+
+      CheckQueryResult (query, DomainObjectIDs.Customer1);
+    }
   }
 }
