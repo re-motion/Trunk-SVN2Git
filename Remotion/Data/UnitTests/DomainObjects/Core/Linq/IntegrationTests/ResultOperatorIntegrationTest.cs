@@ -509,24 +509,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4870")]
-    public void Avaerage_OnTopLevel ()
+    public void Average_OnTopLevel_WithIntProperty ()
     {
-      var query = (from o in QueryFactory.CreateLinqQuery<Order> () select o).Average(o=>o.OrderNumber);
+      var query = (from o in QueryFactory.CreateLinqQuery<Order>() select o).Average (o => o.OrderNumber);
 
-      Assert.That (query, Is.EqualTo (3.0));
+      Assert.That (query, Is.EqualTo (3.5));
     }
 
     [Test]
-    public void Average_InSubquery ()
+    public void Average_InSubquery_WithIntProperty ()
     {
       var query =
-          (from o in QueryFactory.CreateLinqQuery<Order> ()
-           where (from s2 in QueryFactory.CreateLinqQuery<Order> () select s2.OrderNumber).Average() == 3.0
-           select o);
+          from c in QueryFactory.CreateLinqQuery<Customer> ()
+          where c.Orders.Average (o => o.OrderNumber) == 1.5
+          select c;
 
-      CheckQueryResult (query, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3, DomainObjectIDs.Order4,
-        DomainObjectIDs.OrderWithoutOrderItem, DomainObjectIDs.InvalidOrder);
+      CheckQueryResult (query, DomainObjectIDs.Customer1);
     }
 
     [Test]
