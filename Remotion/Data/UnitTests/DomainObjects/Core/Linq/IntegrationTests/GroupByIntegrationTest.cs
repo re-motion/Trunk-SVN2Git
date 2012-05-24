@@ -32,34 +32,42 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       Assert.That (result, Is.EqualTo (1));
     }
-
-
+    
     [Test]
     public void GroupBy_GroupingWithSeveralAggregateFunction ()
     {
       var result = from o in QueryFactory.CreateLinqQuery<Order>()
                    group o by o.ID.ClassID
-                   into orderByOrderNumber
+                   into ordersByClassID
                    select
                        new
                        {
-                           Name = orderByOrderNumber.Key,
-                           Count = orderByOrderNumber.Count(),
-                           Sum = orderByOrderNumber.Sum (o => o.OrderNumber),
-                           Min = orderByOrderNumber.Min (o => o.OrderNumber)
+                           ClassID = ordersByClassID.Key,
+                           Count = ordersByClassID.Count(),
+                           Sum = ordersByClassID.Sum (o => o.OrderNumber),
+                           Min = ordersByClassID.Min (o => o.OrderNumber)
                        };
 
-      Assert.That (result.Single (), Is.EqualTo (new { Name="Order", Count=6, Sum=21, Min=1 }));
+      Assert.That (result.ToArray(), Is.EqualTo (new[] { new { ClassID = "Order", Count = 6, Sum = 21, Min = 1 } }));
     }
 
     [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
-        "This SQL generator does not support queries returning groupings that result from a GroupBy operator because SQL is not suited to "
-         + "efficiently return LINQ groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional "
-         + "from clause, or perform an aggregation on the groupings.", MatchType = MessageMatch.Contains)]
+        "There was an error generating SQL for the query 'DomainObjectQueryable<Order> => GroupBy([o].OrderNumber, [o])'. This SQL generator does "
+        + "not support queries returning groupings that result from a GroupBy operator because SQL is not suited to efficiently return LINQ "
+        + "groupings. Use 'group into' and either return the items of the groupings by feeding them into an additional from clause, or perform an "
+        + "aggregation on the groupings. \r\n\r\n"
+        + "Eg., instead of: \r\n"
+        + "'from c in Cooks group c.ID by c.Name', \r\n"
+        + "write: \r\n"
+        + "'from c in Cooks group c.ID by c.Name into groupedCooks \r\n"
+        + " from c in groupedCooks select new { Key = groupedCooks.Key, Item = c }', \r\n"
+        + "or: \r\n"
+        + "'from c in Cooks group c.ID by c.Name into groupedCooks \r\n"
+        + " select new { Key = groupedCooks.Key, Count = groupedCooks.Count() }'.")]
     public void GroupBy_TopLevel ()
     {
-      var query =QueryFactory.CreateLinqQuery<Order>().GroupBy (o => o.OrderNumber);
+      var query = QueryFactory.CreateLinqQuery<Order>().GroupBy (o => o.OrderNumber);
 
       query.ToArray();
     }
@@ -67,11 +75,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     [Test]
     public void GroupBy_WithinSubqueryInFromClause ()
     {
-      var query = from ordersByCustomer in QueryFactory.CreateLinqQuery<Order>().Where(o=>o.OrderNumber==1).GroupBy (o => o.Customer)
+      var query = from ordersByCustomer in QueryFactory.CreateLinqQuery<Order>().GroupBy (o => o.Customer)
+                  where ordersByCustomer.Key.Name.StartsWith ("Kunde")
                   select new { ordersByCustomer.Key.Name, Count = ordersByCustomer.Count() };
       var result = query.ToArray();
-      
-      Assert.That (result.Single(), Is.EqualTo (new { Name="Kunde 1", Count=1 }));
+
+      Assert.That (
+          result,
+          Is.EquivalentTo (
+              new[]
+              {
+                  new { Name = "Kunde 1", Count = 2 },
+                  new { Name = "Kunde 3", Count = 1 }, 
+                  new { Name = "Kunde 4", Count = 2 }
+              }));
     }
 
   }
