@@ -17,13 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 {
-  using Sorting = Tuple<SortingDirection, IComparer<BocListRow>>;
-
   public static class BocListRowSortExtension
   {
     public static IEnumerable<BocListRow> OrderBy (this IEnumerable<BocListRow> rows, BocListSortingOrderEntry[] sortingOrder)
@@ -31,38 +28,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       ArgumentUtility.CheckNotNull ("rows", rows);
       ArgumentUtility.CheckNotNull ("sortingOrder", sortingOrder);
 
-      var sorting = sortingOrder.GetSorting();
-
-      if (!sorting.Any())
-        return rows;
-
-      return sorting.Skip (1).Aggregate (
-          rows.OrderBy (sorting.First()),
-          (current, entry) => current.ThenBy (entry))
-          .ThenBy (r => r.Index);
+      return rows.OrderBy (r => r, new CompoundComparer<BocListRow> (sortingOrder.GetComparers()));
     }
 
-    private static Sorting[] GetSorting (this IEnumerable<BocListSortingOrderEntry> sortingOrder)
+    private static IEnumerable<IComparer<BocListRow>> GetComparers (this IEnumerable<BocListSortingOrderEntry> sortingOrder)
     {
       return sortingOrder
           .Where (entry => entry.Direction != SortingDirection.None)
-          .Select (entry => Tuple.Create (entry.Direction, entry.Column.CreateCellValueComparer())).ToArray();
+          .Select (CreateComparer);
     }
 
-    private static IOrderedEnumerable<BocListRow> OrderBy (this IEnumerable<BocListRow> rows, Sorting sorting)
+    private static IComparer<BocListRow> CreateComparer (BocListSortingOrderEntry entry)
     {
-      if (sorting.Item1 == SortingDirection.Ascending)
-        return rows.OrderBy (r => r, sorting.Item2);
-      else
-        return rows.OrderByDescending (r => r, sorting.Item2);
-    }
+      var baseComparer = entry.Column.CreateCellValueComparer();
 
-    private static IOrderedEnumerable<BocListRow> ThenBy (this IOrderedEnumerable<BocListRow> rows2, Sorting sorting)
-    {
-      if (sorting.Item1 == SortingDirection.Ascending)
-        return rows2.ThenBy (r => r, sorting.Item2);
-      else
-        return rows2.ThenByDescending (r => r, sorting.Item2);
+      if (entry.Direction == SortingDirection.Descending)
+        return new DelegateBasedComparer<BocListRow> ((r1, r2) => baseComparer.Compare (r2, r1));
+
+      return baseComparer;
     }
   }
 }
