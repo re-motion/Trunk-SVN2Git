@@ -203,7 +203,6 @@
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocCustomColumnDefinitionCellValueComparer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocListRowSortExtension.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocSimpleColumnDefinitionCellValueComparer.cs" />
-    <Compile Include="UI\Controls\BocListImplementation\Sorting\DefaultBocListRowComparer.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\BocAutoCompleteReferenceValueInvalidDisplayNameValidator.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderingContext.cs" />

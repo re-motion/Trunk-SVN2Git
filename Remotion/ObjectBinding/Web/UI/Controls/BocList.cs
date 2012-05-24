@@ -61,6 +61,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       IPostBackDataHandler,
       IResourceDispatchTarget
   {
+    #region Obsoletes
+
+    [Obsolete("Use EnsureSortedBocListRowsGot instead. (Version 1.13.52)")]
+    protected BocListRow[] EnsureGotIndexedRowsSorted()
+    {
+      return EnsureSortedBocListRowsGot();
+    }
+
+    [Obsolete("Use EnsureSortedBocListRowsGot instead. (Version 1.13.52)", true)]
+    protected BocListRow[] GetIndexedRows(bool sorted)
+    {
+      throw new NotSupportedException ("Use EnsureSortedBocListRowsGot instead. (Version 1.13.52)");
+    }
+
+    #endregion
+
     //  constants
     private const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
     private const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
@@ -1024,7 +1040,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       // Must be executed before CalculateCurrentPage
       if (_editModeController.IsRowEditModeActive)
       {
-        BocListRow[] sortedRows = EnsureGotIndexedRowsSorted();
+        BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
         for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
         {
           int originalRowIndex = sortedRows[idxRows].Index;
@@ -1642,7 +1658,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
       }
 
-      BocListRow[] rows = EnsureGotIndexedRowsSorted();
+      BocListRow[] rows = EnsureSortedBocListRowsGot();
 
       for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
            idxAbsoluteRows < rowCountWithOffset;
@@ -1833,7 +1849,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
 
       BocColumnDefinition[] columns = EnsureColumnsGot (false);
-      BocListRow[] rows = EnsureGotIndexedRowsSorted();
+      BocListRow[] rows = EnsureSortedBocListRowsGot();
 
       for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
            idxAbsoluteRows < rowCountWithOffset;
@@ -1894,7 +1910,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
       }
 
-      BocListRow[] rows = EnsureGotIndexedRowsSorted();
+      BocListRow[] rows = EnsureSortedBocListRowsGot();
 
       for (int idxColumns = 0; idxColumns < columns.Length; idxColumns++)
       {
@@ -2286,44 +2302,34 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! HasSortingKeys)
         return null;
 
-      BocListRow[] sortedRows = EnsureGotIndexedRowsSorted();
+      BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
 
       return sortedRows.Select (r => r.BusinessObject).ToArray();
     }
 
-    /// <summary> Creates an array of indexed <see cref="IBusinessObject"/> instances, optionally sorted. </summary>
-    /// <param name="sorted"> <see langword="true"/> to sort the rows before returning them. </param>
-    /// <returns> Pair &lt;original index, IBusinessObject&gt; </returns>
-    protected IEnumerable<BocListRow> GetIndexedRows (bool sorted)
+    protected BocListRow[] EnsureSortedBocListRowsGot ()
+    {
+      if (_indexedRowsSorted == null)
+        _indexedRowsSorted = GetSortedBocListRows().ToArray();
+      return _indexedRowsSorted;
+    }
+
+    protected IEnumerable<BocListRow> GetSortedBocListRows ()
     {
       if (!HasValue)
         return new BocListRow[0];
 
       var rows = Value.Cast<IBusinessObject>().Select ((row, rowIndex) => new BocListRow (rowIndex, row));
 
-      if (sorted && HasSortingKeys)
-      {
-        return SortRows (rows, GetSortingOrder());
-      }
-      else
-      {
-        return rows;
-      }
+      return SortBocListRows (rows, GetSortingOrder());
     }
 
-    protected virtual IEnumerable<BocListRow> SortRows (IEnumerable<BocListRow> rows, BocListSortingOrderEntry[] sortingOrder)
+    protected virtual IEnumerable<BocListRow> SortBocListRows (IEnumerable<BocListRow> rows, BocListSortingOrderEntry[] sortingOrder)
     {
       ArgumentUtility.CheckNotNull ("rows", rows);
       ArgumentUtility.CheckNotNull ("sortingOrder", sortingOrder);
 
       return rows.OrderBy (sortingOrder);
-    }
-
-    protected BocListRow[] EnsureGotIndexedRowsSorted ()
-    {
-      if (_indexedRowsSorted == null)
-        _indexedRowsSorted = GetIndexedRows (true).ToArray();
-      return _indexedRowsSorted;
     }
 
     BocListRow[] IBocList.GetRowsToDisplay (out int firstRow)
@@ -2342,7 +2348,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (Value.Count < (firstRow + displayedRowCount))
           displayedRowCount = Value.Count - firstRow;
       }
-      var allRows = EnsureGotIndexedRowsSorted();
+      var allRows = EnsureSortedBocListRowsGot();
 
       BocListRow[] rowsToDisplay = new BocListRow[displayedRowCount];
       for (int i = 0; i < displayedRowCount; i++)
@@ -3007,7 +3013,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! IsReadOnly)
       {
         ResetRows();
-        BocListRow[] sortedRows = EnsureGotIndexedRowsSorted();
+        BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
         for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
         {
           int originalRowIndex = sortedRows[idxRows].Index;
