@@ -30,7 +30,6 @@ using Remotion.Linq.Clauses.ResultOperators;
 using Remotion.Linq.EagerFetching;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using File = System.IO.File;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 {
@@ -52,8 +51,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public override void SetUp ()
     {
       base.SetUp ();
-
-      
 
       _orderClassDefinition = DomainObjectIDs.Order1.ClassDefinition;
       _queryGeneratorMock = MockRepository.GenerateStrictMock<IDomainObjectQueryGenerator>();
@@ -99,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException(typeof(NotSupportedException), ExpectedMessage = "Scalar queries cannot perform eager fetching.")]
     public void ExecuteScalar_WithFetchRequests ()
     {
-      ExpectCreateQueryWithFetchQueryModelBuilders (_someQueryModel, _collectionExecutableQueryMock);
+      AddFetchRequest (_someQueryModel);
 
       _queryExecutor.ExecuteScalar<int> (_someQueryModel);
     }
@@ -161,7 +158,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void ExecuteSingle()
     {
       _queryGeneratorMock
-          .Expect (mock => mock.CreateSequenceQuery<Order> ("<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+          .Expect (
+              mock => mock.CreateSequenceQuery<Order> (
+                  "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder>()))
           .Return (_collectionExecutableQueryMock);
 
       var fakeResult = new[] { _someOrder };
@@ -230,37 +229,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       }
     }
 
-    private void CheckFetchQueryModelBuilder (
-    FetchQueryModelBuilder builder, FetchRequestBase expectedFetchRequest, QueryModel expectedQueryModel, int expectedResultOperatorPosition)
+    private void ExpectCreateQueryWithFetchQueryModelBuilders<T> (QueryModel queryModel, IExecutableQuery<IEnumerable<T>> fakeResult)
     {
-      Assert.That (builder.FetchRequest, Is.SameAs (expectedFetchRequest));
-      Assert.That (builder.SourceItemQueryModel, Is.SameAs (expectedQueryModel));
-      Assert.That (builder.ResultOperatorPosition, Is.EqualTo (expectedResultOperatorPosition));
-    }
-
-    private FetchRequestBase AddFetchRequest ()
-    {
-      var relationMember = MemberInfoFromExpressionUtility.GetProperty ((Order o) => o.OrderTicket);
-      var fetchRequest = new FetchOneRequest (relationMember);
-      _someQueryModel.ResultOperators.Add (fetchRequest);
-      return fetchRequest;
-    }
-
-    private ResultOperatorBase AddSomeResultOperator ()
-    {
-      var someResultOperator = new DistinctResultOperator ();
-      _someQueryModel.ResultOperators.Add (someResultOperator);
-      return someResultOperator;
-    }
-
-    private void ExpectCreateQueryWithFetchQueryModelBuilders<T> (QueryModel expectedQueryModel, IExecutableQuery<IEnumerable<T>> executableQuery)
-    {
-      var nonTrailingFetchRequest = AddFetchRequest();
-      var someResultOperator = AddSomeResultOperator ();
-      var trailingFetchRequest1 = AddFetchRequest ();
-      var trailingFetchRequest2 = AddFetchRequest ();
+      var nonTrailingFetchRequest = AddFetchRequest (queryModel);
+      var someResultOperator = AddSomeResultOperator (queryModel);
+      var trailingFetchRequest1 = AddFetchRequest (queryModel);
+      var trailingFetchRequest2 = AddFetchRequest (queryModel);
       Assert.That (
-          expectedQueryModel.ResultOperators,
+          queryModel.ResultOperators,
           Is.EqualTo (new[] { nonTrailingFetchRequest, someResultOperator, trailingFetchRequest1, trailingFetchRequest2 }));
 
       _queryGeneratorMock
@@ -268,18 +244,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
               mock => mock.CreateSequenceQuery<T> (
                   Arg<string>.Is.Anything,
                   Arg<ClassDefinition>.Is.Anything,
-                  Arg.Is (expectedQueryModel),
+                  Arg.Is (queryModel),
                   Arg<IEnumerable<FetchQueryModelBuilder>>.Is.Anything))
-          .Return (executableQuery)
+          .Return (fakeResult)
           .WhenCalled (mi =>
           {
-            Assert.That (expectedQueryModel.ResultOperators, Is.EqualTo (new[] { nonTrailingFetchRequest, someResultOperator }));
+            Assert.That (queryModel.ResultOperators, Is.EqualTo (new[] { nonTrailingFetchRequest, someResultOperator }));
 
             var builders = ((IEnumerable<FetchQueryModelBuilder>) mi.Arguments[3]).ToArray ();
             Assert.That (builders, Has.Length.EqualTo (2));
-            CheckFetchQueryModelBuilder (builders[0], trailingFetchRequest2, expectedQueryModel, 3);
-            CheckFetchQueryModelBuilder (builders[1], trailingFetchRequest1, expectedQueryModel, 2);
+            CheckFetchQueryModelBuilder (builders[0], trailingFetchRequest2, queryModel, 3);
+            CheckFetchQueryModelBuilder (builders[1], trailingFetchRequest1, queryModel, 2);
           });
+    }
+
+    private void CheckFetchQueryModelBuilder (
+        FetchQueryModelBuilder builder, FetchRequestBase expectedFetchRequest, QueryModel expectedQueryModel, int expectedResultOperatorPosition)
+    {
+      Assert.That (builder.FetchRequest, Is.SameAs (expectedFetchRequest));
+      Assert.That (builder.SourceItemQueryModel, Is.SameAs (expectedQueryModel));
+      Assert.That (builder.ResultOperatorPosition, Is.EqualTo (expectedResultOperatorPosition));
+    }
+
+    private FetchRequestBase AddFetchRequest (QueryModel queryModel)
+    {
+      var relationMember = MemberInfoFromExpressionUtility.GetProperty ((Order o) => o.OrderTicket);
+      var fetchRequest = new FetchOneRequest (relationMember);
+      queryModel.ResultOperators.Add (fetchRequest);
+      return fetchRequest;
+    }
+
+    private ResultOperatorBase AddSomeResultOperator (QueryModel queryModel)
+    {
+      var someResultOperator = new DistinctResultOperator ();
+      queryModel.ResultOperators.Add (someResultOperator);
+      return someResultOperator;
     }
   }
 }

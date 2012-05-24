@@ -18,9 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
-using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
 using Remotion.Linq.EagerFetching;
 using Remotion.Utilities;
@@ -41,7 +39,6 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
 
       _startingClassDefinition = startingClassDefinition;
-
       _queryGenerator = queryGenerator;
     }
 
@@ -61,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// </summary>
     /// <param name="queryModel">The generated <see cref="QueryModel"/> of the LINQ query.</param>
     /// <returns>
-    /// The result of the executed query, cast to <typeparam name="T"/>.
+    /// The result of the executed query, converted to <typeparam name="T"/>.
     /// </returns>
     public T ExecuteScalar<T> (QueryModel queryModel)
     {
@@ -80,13 +77,14 @@ namespace Remotion.Data.DomainObjects.Linq
 
     /// <summary>
     /// Creates and executes a given <see cref="QueryModel"/> as an <see cref="IQuery"/> using the current <see cref="ClientTransaction"/>'s
-    /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a collection query, and its result set is expected in its result set.
+    /// <see cref="ClientTransaction.QueryManager"/>. The query is executed as a collection query, and its result set is expected to contain only a 
+    /// single element.
     /// </summary>
     /// <param name="queryModel">The generated <see cref="QueryModel"/> of the LINQ query.</param>
-    /// <param name="returnDefaultWhenEmpty">If <see langword="true" />, the executor returns a default value when the result set is empty; 
+    /// <param name="returnDefaultWhenEmpty">If <see langword="true" />, the executor returns a default value when the query's result set is empty; 
     /// if <see langword="false" />, it throws an <see cref="InvalidOperationException"/> when its result set is empty.</param>
     /// <returns>
-    /// The result of the executed query, cast to <typeparam name="T"/>.
+    /// The result of the executed query, converted to <typeparam name="T"/>.
     /// </returns>
     public T ExecuteSingle<T> (QueryModel queryModel, bool returnDefaultWhenEmpty)
     {

@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
         "Type 'ObjectID' ist not supported by this storage provider.\r\n"
         + "Please select the ID and ClassID values separately, then create an ObjectID with it in memory "
         + "(e.g., 'select new ObjectID (o.ID.ClassID, o.ID.Value)').")]
-    public void Query_WithUnsupportedType_NonDomainObjectColumn ()
+    public void Query_WithObjectID ()
     {
       var query =
           from o in QueryFactory.CreateLinqQuery<Order> ()

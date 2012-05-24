@@ -58,7 +58,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("RM-4196")]
     public void ExtensibleEnums_AsSingleResult ()
     {
       var query = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes>()
@@ -68,18 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
       var result = query.Single();
 
       Assert.That (result, Is.EqualTo (Color.Values.Red()));
-    }
-
-    [Test]
-    public void ExtensibleEnums_AsSingleResult_Workaround ()
-    {
-      var query = from cwadt in QueryFactory.CreateLinqQuery<ClassWithAllDataTypes> ()
-                  where cwadt.ID == DomainObjectIDs.ClassWithAllDataTypes1
-                  select  (object) cwadt.ExtensibleEnumProperty;
-
-      var result = query.Single ();
-
-      Assert.That (result.ToString(), Is.EqualTo (Color.Values.Red ().ID));
     }
 
     [Test]
