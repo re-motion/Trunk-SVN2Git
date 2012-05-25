@@ -225,7 +225,8 @@
     <Compile Include="Core\Context\MixinContextTest.cs" />
     <Compile Include="Core\Context\ReadOnlyContextCollectionTest.cs" />
     <Compile Include="Core\Context\Serialization\AttributeClassContextSerializationTest.cs" />
-    <Compile Include="Core\Context\Serialization\AttributeMixinContextSerializerTest.cs" />
+    <Compile Include="Core\Context\Serialization\AttributeMixinContextOriginSerializationTest.cs" />
+    <Compile Include="Core\Context\Serialization\AttributeMixinContextSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\SerializationInfoClassContextSerializationTest.cs" />
     <Compile Include="Core\Context\Serialization\SerializationInfoMixinContextSerializationTest.cs" />
     <Compile Include="Core\Context\Suppression\IntegrationTest.cs" />

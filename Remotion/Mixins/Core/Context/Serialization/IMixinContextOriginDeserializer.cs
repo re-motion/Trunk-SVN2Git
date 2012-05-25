@@ -24,7 +24,7 @@ namespace Remotion.Mixins.Context.Serialization
   public interface IMixinContextOriginDeserializer
   {
     string GetKind ();
-    string GetLocation ();
     Assembly GetAssembly ();
+    string GetLocation ();
   }
 }

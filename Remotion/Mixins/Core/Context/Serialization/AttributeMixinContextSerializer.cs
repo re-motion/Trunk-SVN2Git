@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
+  /// <summary>
+  /// Serializes a <see cref="MixinContext"/> into an array suitable for use as a custom attribute parameter.
+  /// </summary>
   public class AttributeMixinContextSerializer : IMixinContextSerializer
   {
     private readonly object[] _values = new object[4];

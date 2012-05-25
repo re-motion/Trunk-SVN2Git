@@ -17,11 +17,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
+  /// <summary>
+  /// Serializes a <see cref="ClassContext"/> into an array suitable for use as a custom attribute parameter.
+  /// </summary>
   public class AttributeClassContextSerializer : IClassContextSerializer
   {
     private readonly object[] _values = new object[3];

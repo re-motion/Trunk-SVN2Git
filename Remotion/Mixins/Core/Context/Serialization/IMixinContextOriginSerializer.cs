@@ -24,7 +24,7 @@ namespace Remotion.Mixins.Context.Serialization
   public interface IMixinContextOriginSerializer
   {
     void AddKind (string kind);
-    void AddLocation (string location);
     void AddAssembly (Assembly assembly);
+    void AddLocation (string location);
   }
 }

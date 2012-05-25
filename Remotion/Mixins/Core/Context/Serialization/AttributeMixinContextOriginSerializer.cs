@@ -15,34 +15,39 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
-  /// Deserializes the data serialized by a <see cref="AttributeClassContextSerializer"/> into a <see cref="ClassContext"/> instance.
+  /// Serializes a <see cref="MixinContextOrigin"/> into an array suitable for use as a custom attribute parameter.
   /// </summary>
-  public class AttributeClassContextDeserializer : AttributeDeserializerBase, IClassContextDeserializer
+  public class AttributeMixinContextOriginSerializer : IMixinContextOriginSerializer
   {
-    public AttributeClassContextDeserializer (object[] values) : base (values, 3)
+    private readonly object[] _values = new object[3];
+
+    public object[] Values
     {
+      get { return _values; }
     }
 
-    public Type GetClassType ()
+    public void AddKind (string kind)
     {
-      return GetValue<Type> (0);
+      ArgumentUtility.CheckNotNullOrEmpty ("kind", kind);
+      _values[0] = kind;
     }
 
-    public IEnumerable<MixinContext> GetMixins()
+    public void AddAssembly (Assembly assembly)
     {
-      var mixins = GetValue<object[]> (1);
-      return mixins.Select (oa => MixinContext.Deserialize (new AttributeMixinContextDeserializer ((object[]) oa)));
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+      _values[1] = assembly.FullName;
     }
 
-    public IEnumerable<Type> GetCompleteInterfaces()
+    public void AddLocation (string location)
     {
-      return GetValue<Type[]> (2);
+      ArgumentUtility.CheckNotNullOrEmpty ("location", location);
+      _values[2] = location;
     }
   }
 }

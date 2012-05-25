@@ -152,8 +152,11 @@
     <Compile Include="Context\ReadOnlyContextCollection.cs" />
     <Compile Include="Context\Serialization\AttributeClassContextDeserializer.cs" />
     <Compile Include="Context\Serialization\AttributeClassContextSerializer.cs" />
+    <Compile Include="Context\Serialization\AttributeDeserializerBase.cs" />
     <Compile Include="Context\Serialization\AttributeMixinContextDeserializer.cs" />
+    <Compile Include="Context\Serialization\AttributeMixinContextOriginSerializer.cs" />
     <Compile Include="Context\Serialization\AttributeMixinContextSerializer.cs" />
+    <Compile Include="Context\Serialization\AttributeMixinContextOriginDeserializer.cs" />
     <Compile Include="Context\Serialization\IClassContextDeserializer.cs" />
     <Compile Include="Context\Serialization\IClassContextSerializer.cs" />
     <Compile Include="Context\Serialization\IMixinContextDeserializer.cs" />

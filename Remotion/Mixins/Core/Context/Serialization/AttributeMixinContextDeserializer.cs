@@ -16,23 +16,17 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.Serialization
 {
-  public class AttributeMixinContextDeserializer : IMixinContextDeserializer
+  /// <summary>
+  /// Deserializes the data serialized by a <see cref="AttributeMixinContextSerializer"/> into a <see cref="MixinContext"/> instance.
+  /// </summary>
+  public class AttributeMixinContextDeserializer : AttributeDeserializerBase, IMixinContextDeserializer
   {
-    private readonly object[] _values;
-
-    public AttributeMixinContextDeserializer(object[] values)
+    public AttributeMixinContextDeserializer (object[] values)
+        : base (values, 4)
     {
-      ArgumentUtility.CheckNotNull ("values", values);
-      
-      if (values.Length != 4)
-        throw new ArgumentException ("Expected an array with 4 elements.", "values");
-      
-      _values = values;
     }
 
     public Type GetMixinType()
@@ -53,20 +47,6 @@ namespace Remotion.Mixins.Context.Serialization
     public IEnumerable<Type> GetExplicitDependencies()
     {
       return GetValue<Type[]> (3);
-    }
-
-    private T GetValue<T> (int index)
-    {
-      var value = _values[index];
-
-      if (!(value is T))
-      {
-        var message = string.Format ("Expected value of type '{0}' at index {1} in the values array, but found '{2}'.", 
-            typeof (T).FullName, index, value != null ? value.GetType ().FullName : "null");
-        throw new SerializationException (message);
-      }
-
-      return (T) value;
     }
   }
 }
