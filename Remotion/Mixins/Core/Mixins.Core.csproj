@@ -145,6 +145,7 @@
     <Compile Include="Context\FluentBuilders\InheritanceResolvingClassContextBuilder.cs" />
     <Compile Include="Context\FluentBuilders\MixinConfigurationBuilder.cs" />
     <Compile Include="Context\FluentBuilders\MixinContextBuilder.cs" />
+    <Compile Include="Context\MixinContextOrigin.cs" />
     <Compile Include="Context\IMixinInheritancePolicy.cs" />
     <Compile Include="Context\MixinContext.cs" />
     <Compile Include="Context\MixinContextCollection.cs" />

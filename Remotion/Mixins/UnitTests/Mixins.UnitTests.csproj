@@ -220,6 +220,7 @@
     <Compile Include="Core\Context\FluentBuilders\InheritanceResolvingClassContextBuilderTest.cs" />
     <Compile Include="Core\Context\FluentBuilders\MixinConfigurationBuilderTest.cs" />
     <Compile Include="Core\Context\FluentBuilders\MixinContextBuilderTest.cs" />
+    <Compile Include="Core\Context\MixinContextOriginTest.cs" />
     <Compile Include="Core\Context\MixinContextCollectionTest.cs" />
     <Compile Include="Core\Context\MixinContextTest.cs" />
     <Compile Include="Core\Context\ReadOnlyContextCollectionTest.cs" />
