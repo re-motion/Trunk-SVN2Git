@@ -20,7 +20,7 @@ using System.Reflection;
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
-  /// Deserializes the data produced by <see cref="AttributeMixinContextOriginSerializer"/> into a <see cref="MixinContextOrigin"/> object.
+  /// Deserializes the data produced by <see cref="AttributeMixinContextOriginSerializer"/>.
   /// </summary>
   public class AttributeMixinContextOriginDeserializer : AttributeDeserializerBase, IMixinContextOriginDeserializer
   {

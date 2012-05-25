@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Utilities;
@@ -23,37 +23,36 @@ using Remotion.Utilities;
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
-  /// Serializes a <see cref="MixinContext"/> object into a <see cref="SerializationInfo"/> object in such a way that deserialization can occur in
+  /// Serializes a <see cref="MixinContextOrigin"/> object into a <see cref="SerializationInfo"/> object in such a way that deserialization can occur in
   /// a single pass (required by mixed object serialization - <see cref="SerializationHelper"/>).
   /// </summary>
-  public class SerializationInfoMixinContextSerializer : SerializationInfoSerializerBase, IMixinContextSerializer
+  public class SerializationInfoMixinContextOriginSerializer : SerializationInfoSerializerBase, IMixinContextOriginSerializer
   {
-    public SerializationInfoMixinContextSerializer (SerializationInfo info, string prefix) : base (info, prefix)
+    public SerializationInfoMixinContextOriginSerializer (SerializationInfo info, string prefix)
+        : base (info, prefix)
     {
     }
 
-    public void AddMixinType (Type mixinType)
+    public void AddKind (string kind)
     {
-      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      ArgumentUtility.CheckNotNullOrEmpty ("kind", kind);
 
-      AddType ("MixinType", mixinType);
+      AddValue ("Kind", kind);
     }
 
-    public void AddMixinKind (MixinKind mixinKind)
+    public void AddAssembly (Assembly assembly)
     {
-      AddValue ("MixinKind", mixinKind);
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
+      // Assembly needs to be serialized as a string; otherwise, SerializationHelper won't be able to use it immediately after deserialization.
+      AddValue ("Assembly.FullName", assembly.FullName);
     }
 
-    public void AddIntroducedMemberVisibility (MemberVisibility introducedMemberVisibility)
+    public void AddLocation (string location)
     {
-      AddValue ("IntroducedMemberVisibility", introducedMemberVisibility);
-    }
+      ArgumentUtility.CheckNotNullOrEmpty ("location", location);
 
-    public void AddExplicitDependencies (IEnumerable<Type> explicitDependencies)
-    {
-      ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
-
-      AddTypes ("ExplicitDependencies", explicitDependencies);
+      AddValue ("Location", location);
     }
   }
 }

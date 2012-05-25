@@ -15,38 +15,35 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
-  /// Deserializes the data serialized by a <see cref="AttributeMixinContextSerializer"/>.
+  /// Deserializes the data serialized by a <see cref="SerializationInfoMixinContextOriginSerializer"/>.
   /// </summary>
-  public class AttributeMixinContextDeserializer : AttributeDeserializerBase, IMixinContextDeserializer
+  public class SerializationInfoMixinContextOriginDeserializer : SerializationInfoDeserializerBase, IMixinContextOriginDeserializer
   {
-    public AttributeMixinContextDeserializer (object[] values)
-        : base (values, 4)
+    public SerializationInfoMixinContextOriginDeserializer (SerializationInfo info, string prefix)
+        : base (info, prefix)
     {
     }
 
-    public Type GetMixinType()
+    public string GetKind ()
     {
-      return GetValue<Type> (0);
+      return GetValue<string> ("Kind");
     }
 
-    public MixinKind GetMixinKind()
+    public Assembly GetAssembly ()
     {
-      return GetValue<MixinKind> (1);
+      var assemblyName = GetValue<string> ("Assembly.FullName");
+      return Assembly.Load (assemblyName);
     }
 
-    public MemberVisibility GetIntroducedMemberVisibility()
+    public string GetLocation ()
     {
-      return GetValue<MemberVisibility> (2);
-    }
-
-    public IEnumerable<Type> GetExplicitDependencies()
-    {
-      return GetValue<Type[]> (3);
+      return GetValue<string> ("Location");
     }
   }
 }

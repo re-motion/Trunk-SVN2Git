@@ -21,7 +21,7 @@ using System.Linq;
 namespace Remotion.Mixins.Context.Serialization
 {
   /// <summary>
-  /// Deserializes the data serialized by a <see cref="AttributeClassContextSerializer"/> into a <see cref="ClassContext"/> instance.
+  /// Deserializes the data serialized by a <see cref="AttributeClassContextSerializer"/>.
   /// </summary>
   public class AttributeClassContextDeserializer : AttributeDeserializerBase, IClassContextDeserializer
   {

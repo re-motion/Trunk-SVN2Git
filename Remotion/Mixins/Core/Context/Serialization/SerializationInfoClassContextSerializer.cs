@@ -17,28 +17,27 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Utilities;
-using System.Linq;
 
 namespace Remotion.Mixins.Context.Serialization
 {
-  public class SerializationInfoClassContextSerializer : IClassContextSerializer
+  /// <summary>
+  /// Serializes a <see cref="ClassContext"/> object into a <see cref="SerializationInfo"/> object in such a way that deserialization can occur in
+  /// a single pass (required by mixed object serialization - <see cref="SerializationHelper"/>).
+  /// </summary>
+  public class SerializationInfoClassContextSerializer : SerializationInfoSerializerBase, IClassContextSerializer
   {
-    private readonly SerializationInfo _info;
-    private readonly string _prefix;
-
     public SerializationInfoClassContextSerializer (SerializationInfo info, string prefix)
+        : base(info, prefix)
     {
-      ArgumentUtility.CheckNotNull ("info", info);
-      ArgumentUtility.CheckNotNull ("prefix", prefix);
-      _info = info;
-      _prefix = prefix;
     }
 
     public void AddClassType(Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      _info.AddValue (_prefix + ".ClassType.AssemblyQualifiedName", type.AssemblyQualifiedName);
+
+      AddType ("ClassType", type);
     }
 
     public void AddMixins(IEnumerable<MixinContext> mixinContexts)
@@ -47,18 +46,20 @@ namespace Remotion.Mixins.Context.Serialization
       int index = 0;
       foreach (var mixinContext in mixinContexts)
       {
-        var serializer = new SerializationInfoMixinContextSerializer (_info, _prefix + ".Mixins[" + index + "]");
+        var serializer = new SerializationInfoMixinContextSerializer (Info, Prefix + ".Mixins[" + index + "]");
         mixinContext.Serialize (serializer);
         ++index;
       }
-      _info.AddValue (_prefix + ".Mixins.Count", index);
+
+      AddValue ("Mixins.Count", index);
     }
 
     public void AddCompleteInterfaces(IEnumerable<Type> completeInterfaces)
     {
       ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
-      var typeNames = completeInterfaces.Select (t => t.AssemblyQualifiedName).ToArray ();
-      _info.AddValue (_prefix + ".CompleteInterfaces.AssemblyQualifiedNames", typeNames);
+
+      // Types must be serialized as a string; otherwise, SerializationHelper won't be able to use them immediately after deserialization.
+      AddTypes ("CompleteInterfaces", completeInterfaces);
     }
   }
 }

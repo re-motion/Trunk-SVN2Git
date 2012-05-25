@@ -157,6 +157,9 @@
     <Compile Include="Context\Serialization\AttributeMixinContextOriginSerializer.cs" />
     <Compile Include="Context\Serialization\AttributeMixinContextSerializer.cs" />
     <Compile Include="Context\Serialization\AttributeMixinContextOriginDeserializer.cs" />
+    <Compile Include="Context\Serialization\SerializationInfoMixinContextOriginDeserializer.cs" />
+    <Compile Include="Context\Serialization\SerializationInfoDeserializerBase.cs" />
+    <Compile Include="Context\Serialization\SerializationInfoMixinContextOriginSerializer.cs" />
     <Compile Include="Context\Serialization\IClassContextDeserializer.cs" />
     <Compile Include="Context\Serialization\IClassContextSerializer.cs" />
     <Compile Include="Context\Serialization\IMixinContextDeserializer.cs" />
@@ -167,6 +170,7 @@
     <Compile Include="Context\Serialization\SerializationInfoClassContextSerializer.cs" />
     <Compile Include="Context\Serialization\SerializationInfoMixinContextDeserializer.cs" />
     <Compile Include="Context\Serialization\SerializationInfoMixinContextSerializer.cs" />
+    <Compile Include="Context\Serialization\SerializationInfoSerializerBase.cs" />
     <Compile Include="Context\Suppression\IMixinSuppressionRule.cs" />
     <Compile Include="Context\Suppression\MixinTreeReplacementSuppressionRule.cs" />
     <Compile Include="Context\Suppression\MixinTreeSuppressionRule.cs" />
