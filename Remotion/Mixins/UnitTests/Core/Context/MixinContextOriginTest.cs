@@ -18,7 +18,9 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core.Context
 {
@@ -73,6 +75,36 @@ namespace Remotion.Mixins.UnitTests.Core.Context
           "SomeKind, Location: 'some location' (Assembly: 'Remotion.Mixins.UnitTests', code base: {0})", 
           expectedCodeBase);
       Assert.That (origin.ToString(), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void Serialize ()
+    {
+      var origin = new MixinContextOrigin ("SomeKind", _someAssembly, "some location");
+
+      var serializerMock = MockRepository.GenerateStrictMock<IMixinContextOriginSerializer>();
+      serializerMock.Expect (mock => mock.AddKind (origin.Kind));
+      serializerMock.Expect (mock => mock.AddAssembly (origin.Assembly));
+      serializerMock.Expect (mock => mock.AddLocation (origin.Location));
+
+      origin.Serialize (serializerMock);
+
+      serializerMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Deserialize ()
+    {
+      var deserializerStub = MockRepository.GenerateStub<IMixinContextOriginDeserializer> ();
+      deserializerStub.Stub (stub => stub.GetKind ()).Return ("SomeKind");
+      deserializerStub.Stub (stub => stub.GetAssembly ()).Return (_someAssembly);
+      deserializerStub.Stub (stub => stub.GetLocation ()).Return ("some location");
+
+      var origin = MixinContextOrigin.Deserialize (deserializerStub);
+
+      Assert.That (origin.Kind, Is.EqualTo ("SomeKind"));
+      Assert.That (origin.Assembly, Is.EqualTo (_someAssembly));
+      Assert.That (origin.Location, Is.EqualTo ("some location"));
     }
   }
 }

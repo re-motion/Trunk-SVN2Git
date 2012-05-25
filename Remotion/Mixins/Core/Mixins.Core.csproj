@@ -157,6 +157,8 @@
     <Compile Include="Context\Serialization\IClassContextDeserializer.cs" />
     <Compile Include="Context\Serialization\IClassContextSerializer.cs" />
     <Compile Include="Context\Serialization\IMixinContextDeserializer.cs" />
+    <Compile Include="Context\Serialization\IMixinContextOriginDeserializer.cs" />
+    <Compile Include="Context\Serialization\IMixinContextOriginSerializer.cs" />
     <Compile Include="Context\Serialization\IMixinContextSerializer.cs" />
     <Compile Include="Context\Serialization\SerializationInfoClassContextDeserializer.cs" />
     <Compile Include="Context\Serialization\SerializationInfoClassContextSerializer.cs" />

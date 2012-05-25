@@ -15,9 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
+using Remotion.Mixins.Context.Serialization;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
@@ -49,6 +48,13 @@ namespace Remotion.Mixins.Context
 
       var location = string.Format ("{0}, declaring type: {1}", methodBase, methodBase.DeclaringType);
       return new MixinContextOrigin ("Method", methodBase.Module.Assembly, location);
+    }
+
+    public static MixinContextOrigin Deserialize (IMixinContextOriginDeserializer deserializer)
+    {
+      ArgumentUtility.CheckNotNull ("deserializer", deserializer);
+
+      return new MixinContextOrigin (deserializer.GetKind(), deserializer.GetAssembly(), deserializer.GetLocation());
     }
 
     private readonly string _kind; // e.g., UsesAttribute or Imperative
@@ -85,6 +91,15 @@ namespace Remotion.Mixins.Context
     {
       var assemblyName = Assembly.GetName (false);
       return string.Format ("{0}, Location: '{1}' (Assembly: '{2}', code base: {3})", Kind, Location, assemblyName.Name, assemblyName.CodeBase);
+    }
+
+    public void Serialize (IMixinContextOriginSerializer serializer)
+    {
+      ArgumentUtility.CheckNotNull ("serializer", serializer);
+
+      serializer.AddKind (_kind);
+      serializer.AddAssembly (_assembly);
+      serializer.AddLocation (_location);
     }
   }
 }
