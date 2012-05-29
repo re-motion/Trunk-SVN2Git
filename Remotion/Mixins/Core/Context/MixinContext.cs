@@ -49,6 +49,7 @@ namespace Remotion.Mixins.Context
 
     private readonly int _cachedHashCode;
 
+    // TODO 1554: Remove
     /// <summary>
     /// Initializes a new instance of the <see cref="MixinContext"/> class.
     /// </summary>
@@ -71,17 +72,36 @@ namespace Remotion.Mixins.Context
           IntroducedMemberVisibility);
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MixinContext"/> class.
-    /// </summary>
-    /// <param name="mixinKind">The kind of mixin represented by this <see cref="MixinContext"/>.</param>
-    /// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
-    /// <param name="introducedMemberVisibility">The default visbility of introduced members.</param>
-    /// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
-    public MixinContext (MixinKind mixinKind, Type mixinType, MemberVisibility introducedMemberVisibility, params Type[] explicitDependencies)
-        : this (mixinKind, mixinType, introducedMemberVisibility, (IEnumerable<Type>) explicitDependencies)
-    {
-    }
+    ///// <summary>
+    ///// Initializes a new instance of the <see cref="MixinContext"/> class.
+    ///// </summary>
+    ///// <param name="mixinKind">The kind of relationship the configured mixin has with its target class.</param>
+    ///// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
+    ///// <param name="introducedMemberVisibility">The default visbility of introduced members.</param>
+    ///// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
+    ///// <param name="origin">
+    ///// A description of where the <see cref="MixinContext"/> stems from. Note that <paramref name="origin"/> is not considered when comparing 
+    ///// <see cref="MixinContext"/> objects for equality.
+    ///// </param>
+    //public MixinContext (
+    //    MixinKind mixinKind,
+    //    Type mixinType,
+    //    MemberVisibility introducedMemberVisibility,
+    //    IEnumerable<Type> explicitDependencies,
+    //    MixinContextOrigin origin)
+    //{
+    //  ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+    //  ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
+
+    //  _mixinType = mixinType;
+    //  _mixinKind = mixinKind;
+    //  _introducedMemberVisibility = introducedMemberVisibility;
+
+    //  _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (t => t, explicitDependencies);
+
+    //  _cachedHashCode = EqualityUtility.GetRotatedHashCode (_mixinKind, _mixinType, EqualityUtility.GetXorHashCode (ExplicitDependencies),
+    //      IntroducedMemberVisibility);
+    //}
 
     /// <summary>
     /// Determines whether the specified <see cref="T:System.Object"></see> is equal to the current <see cref="MixinContext"/>.

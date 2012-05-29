@@ -167,13 +167,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void CloneForSpecificType ()
     {
-      var mixins = new[] {
-                             new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private, new[] { typeof (IBT1Mixin1) }),
-                             new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private)
-                         };
+      var mixins = new[] { CreateBT1Mixin1Context(), CreateBT2Mixin2Context() };
       var interfaces = new[] { typeof (ICBT6Mixin1), typeof (ICBT6Mixin2)};
       var source = new ClassContext (typeof (BaseType1), mixins, interfaces);
-      ClassContext clone = source.CloneForSpecificType (typeof (BaseType2));
+      
+      var clone = source.CloneForSpecificType (typeof (BaseType2));
+      
       Assert.AreNotEqual (source, clone);
       Assert.That(clone.Mixins, Is.EquivalentTo(mixins));
       Assert.That (clone.CompleteInterfaces, Is.EquivalentTo (interfaces));
@@ -187,22 +186,22 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var c1 =
           new ClassContext (
               typeof (BaseType1),
-              new[] {new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private)},
+              new[] { CreateBT1Mixin1Context(), CreateBT2Mixin2Context() },
               new[] {typeof (IBT5MixinC1), typeof (IBT5MixinC2)});
       var c2 =
           new ClassContext (
               typeof (BaseType1),
-              new[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private) },
+              new[] { CreateBT1Mixin1Context(), CreateBT2Mixin2Context() },
               new[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       var c3 =
           new ClassContext (
               typeof (BaseType1),
-              new[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private) },
+              new[] { CreateBT2Mixin2Context(), CreateBT1Mixin1Context() },
               new[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       var c4 =
           new ClassContext (
               typeof (BaseType1),
-              new[] {new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private)},
+              new[] { CreateBT1Mixin1Context(), CreateBT2Mixin2Context() },
               new[] { typeof (IBT5MixinC2), typeof (IBT5MixinC1) });
 
       Assert.AreEqual (c1, c1);
@@ -266,22 +265,22 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var c1 =
           new ClassContext (
               typeof (BaseType1),
-              new[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private) },
+              new[] { CreateBT1Mixin1Context(), CreateBT2Mixin2Context() },
               new[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       var c2 =
           new ClassContext (
               typeof (BaseType1),
-              new[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private) },
+              new[] { CreateBT1Mixin1Context(), CreateBT2Mixin2Context() },
               new[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       var c3 =
           new ClassContext (
               typeof (BaseType1),
-              new[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private) },
+              new[] { CreateBT2Mixin2Context(), CreateBT1Mixin1Context() },
               new[] { typeof (IBT5MixinC1), typeof (IBT5MixinC2) });
       var c4 =
           new ClassContext (
               typeof (BaseType1),
-              new[] { new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private), new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private) },
+              new[] { CreateBT1Mixin1Context(), CreateBT2Mixin2Context() },
               new[] { typeof (IBT5MixinC2), typeof (IBT5MixinC1) });
 
       Assert.AreEqual (c1.GetHashCode (), c2.GetHashCode ());
@@ -297,7 +296,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     public void Serialize()
     {
       var serializer = MockRepository.GenerateMock<IClassContextSerializer> ();
-      var context = new ClassContext (typeof (BaseType1), new[] { new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public) }, new[] { typeof (int), typeof (string) });
+      var context = new ClassContext (typeof (BaseType1), new[] { CreateBT1Mixin1Context() }, new[] { typeof (int), typeof (string) });
       context.Serialize (serializer);
 
       serializer.AssertWasCalled (mock => mock.AddClassType (context.Type));
@@ -308,7 +307,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void Deserialize ()
     {
-      var expectedContext = new ClassContext (typeof (BaseType1), new[] { new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public) }, new[] { typeof (int), typeof (string) });
+      var expectedContext = new ClassContext (typeof (BaseType1), new[] { CreateBT1Mixin1Context() }, new[] { typeof (int), typeof (string) });
 
       var deserializer = MockRepository.GenerateMock<IClassContextDeserializer> ();
       deserializer.Expect (mock => mock.GetClassType ()).Return (expectedContext.Type);
@@ -347,5 +346,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       Assert.That (result.Mixins.Select (mc => mc.MixinType).ToArray (), Is.EquivalentTo (new[] { typeof (string) }));
     }
+
+    private static MixinContext CreateBT1Mixin1Context ()
+    {
+      return new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
+    }
+
+    private static MixinContext CreateBT2Mixin2Context ()
+    {
+      return new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private, Enumerable.Empty<Type> ());
+    }
+
   }
 }

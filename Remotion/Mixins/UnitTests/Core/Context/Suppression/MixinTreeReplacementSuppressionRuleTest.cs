@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Suppression;
@@ -129,12 +130,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
 
     private Dictionary<Type, MixinContext> CreateContextDictionary (params Type[] types)
     {
-      var dictionary = new Dictionary<Type, MixinContext> ();
-      foreach (var type in types)
-      {
-        dictionary.Add (type, new MixinContext (MixinKind.Extending, type, MemberVisibility.Private));
-      }
-      return dictionary;
+      return types.ToDictionary (type => type, type => new MixinContext (MixinKind.Extending, type, MemberVisibility.Private, Enumerable.Empty<Type>()));
     }
   }
 }

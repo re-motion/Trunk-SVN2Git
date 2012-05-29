@@ -14,7 +14,9 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
@@ -36,11 +38,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [SetUp]
     public void SetUp ()
     {
-      _mcObject = new MixinContext (MixinKind.Extending, typeof (object), MemberVisibility.Private);
-      _mcString = new MixinContext (MixinKind.Extending, typeof (string), MemberVisibility.Private);
-      _mcList = new MixinContext (MixinKind.Extending, typeof (List<int>), MemberVisibility.Private);
-      _mcGeneric = new MixinContext (MixinKind.Extending, typeof (DerivedGenericMixin<object>), MemberVisibility.Private);
-      _mcDerived = new MixinContext (MixinKind.Extending, typeof (DerivedNullMixin), MemberVisibility.Private);
+      _mcObject = new MixinContext (MixinKind.Extending, typeof (object), MemberVisibility.Private, Enumerable.Empty<Type>());
+      _mcString = new MixinContext (MixinKind.Extending, typeof (string), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      _mcList = new MixinContext (MixinKind.Extending, typeof (List<int>), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      _mcGeneric = new MixinContext (MixinKind.Extending, typeof (DerivedGenericMixin<object>), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      _mcDerived = new MixinContext (MixinKind.Extending, typeof (DerivedNullMixin), MemberVisibility.Private, Enumerable.Empty<Type> ());
       _collection = new MixinContextCollection (new[] { _mcObject, _mcString, _mcList, _mcDerived });
       _genericCollection = new MixinContextCollection (new[] { _mcGeneric });
     }
