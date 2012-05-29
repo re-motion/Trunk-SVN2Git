@@ -20,12 +20,14 @@ using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.CodeGeneration.Serialization;
-using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
+  /// <summary>
+  /// Serializes a <see cref="ConcreteMixinTypeIdentifier"/> object into instructions that reinstantiate an equivalent object when executed.
+  /// </summary>
   public class CodeGenerationConcreteMixinTypeIdentifierSerializer : IConcreteMixinTypeIdentifierSerializer
   {
     private static readonly ConstructorInfo s_constructor = typeof (ConcreteMixinTypeIdentifier).GetConstructor (

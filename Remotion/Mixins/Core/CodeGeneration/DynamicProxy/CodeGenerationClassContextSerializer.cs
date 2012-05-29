@@ -26,6 +26,9 @@ using System.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
+  /// <summary>
+  /// Serializes a <see cref="ClassContext"/> object into instructions that reinstantiate an equivalent object when executed.
+  /// </summary>
   public class CodeGenerationClassContextSerializer : IClassContextSerializer
   {
     private static readonly ConstructorInfo s_constructor = typeof (ClassContext).GetConstructor (new[] {typeof (Type), typeof (IEnumerable<MixinContext>), typeof (IEnumerable<Type>)});

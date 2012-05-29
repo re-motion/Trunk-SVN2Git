@@ -26,6 +26,9 @@ using System.Reflection;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
+  /// <summary>
+  /// Serializes a <see cref="MixinContext"/> object into instructions that reinstantiate an equivalent object when executed.
+  /// </summary>
   public class CodeGenerationMixinContextSerializer : IMixinContextSerializer
   {
     private static readonly ConstructorInfo s_constructor = 

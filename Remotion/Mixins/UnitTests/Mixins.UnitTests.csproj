@@ -92,6 +92,7 @@
     <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationSerializerUtilityTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtilityTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtilityTest.cs" />
+    <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationMixinContextOriginSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\FakeConcreteMixedType.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\FakeConcreteMixinType.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\MixinSerializationHelperTest.cs" />

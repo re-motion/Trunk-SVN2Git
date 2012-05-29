@@ -75,6 +75,7 @@
     <Compile Include="CodeGeneration\DynamicProxy\CodeGenerationSerializerUtility.cs" />
     <Compile Include="CodeGeneration\DynamicProxy\ConcreteMixedTypeAttributeUtility.cs" />
     <Compile Include="CodeGeneration\DynamicProxy\ConcreteMixinTypeAttributeUtility.cs" />
+    <Compile Include="CodeGeneration\DynamicProxy\CodeGenerationMixinContextOriginSerializer.cs" />
     <Compile Include="CodeGeneration\DynamicProxy\GeneralTypeAssignArrayStatement.cs" />
     <Compile Include="CodeGeneration\DynamicProxy\IInitializableMixinTarget.cs" />
     <Compile Include="CodeGeneration\DynamicProxy\MixinSerializationHelper.cs" />
