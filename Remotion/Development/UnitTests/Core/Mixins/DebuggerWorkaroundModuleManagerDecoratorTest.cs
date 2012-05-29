@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -54,7 +55,7 @@ namespace Remotion.Development.UnitTests.Core.Mixins
       _innerTypeGeneratorStub = MockRepository.GenerateStub<ITypeGenerator> ();
       _innerMixinTypeGeneratorStub = MockRepository.GenerateStub<IMixinTypeGenerator> ();
 
-      _configuration = new TargetClassDefinition (new ClassContext (typeof (object)));
+      _configuration = new TargetClassDefinition (new ClassContext (typeof (object), Enumerable.Empty<MixinContext>(), Enumerable.Empty<Type>()));
       _nameProvider = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
       _mixinNameProvider = MockRepository.GenerateStub<IConcreteMixinTypeNameProvider> ();
       _concreteMixinTypeProvider = MockRepository.GenerateStub<IConcreteMixinTypeProvider> ();

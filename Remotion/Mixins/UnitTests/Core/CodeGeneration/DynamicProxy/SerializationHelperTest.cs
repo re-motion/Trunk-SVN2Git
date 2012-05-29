@@ -40,7 +40,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       _serializationInfo = new SerializationInfo (typeof (object), new FormatterConverter ());
       _context = new StreamingContext ();
       _concreteObject = new BaseType1();
-      _classContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
+      _classContext = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1));
       _extensions = new object[] { new BT1Mixin1 () };
     }
 

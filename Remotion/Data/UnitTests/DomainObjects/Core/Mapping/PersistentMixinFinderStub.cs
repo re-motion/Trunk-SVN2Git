@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Mixins;
 using Remotion.Mixins.Context;
 using System.Linq;
 
@@ -23,12 +24,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
   public class PersistentMixinFinderStub : IPersistentMixinFinder
   {
+    private static ClassContext CreateClassContext (Type classType, Type[] persistentMixins)
+    {
+      var mixinContexts = persistentMixins.Select (t => new MixinContext (MixinKind.Extending, t, MemberVisibility.Private, Enumerable.Empty<Type> ()));
+      return new ClassContext (classType, mixinContexts, Enumerable.Empty<Type> ());
+    }
+
     private readonly Type _classType;
     private readonly Type[] _persistentMixins;
 
     private readonly ClassContext _mixinConfiguration;
 
-    public PersistentMixinFinderStub (Type classType, params Type[] persistentMixins) : this (classType, new ClassContext (classType, persistentMixins))
+    public PersistentMixinFinderStub (Type classType, params Type[] persistentMixins) 
+        : this (classType, CreateClassContext (classType, persistentMixins))
     {
     }
 

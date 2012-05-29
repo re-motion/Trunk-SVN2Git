@@ -42,10 +42,10 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     [SetUp]
     public void SetUp ()
     {
-      _configuredClassContext1 = new ClassContext (typeof (BaseType1), typeof (NullMixin));
-      _configuredClassContext2 = new ClassContext (typeof (NullTarget), typeof (NullMixin));
-      _genericClassContext = new ClassContext (typeof (GenericTargetClass<>), typeof (NullMixin));
-      _interfaceClassContext = new ClassContext (typeof (IBaseType2), typeof (NullMixin));
+      _configuredClassContext1 = ClassContextObjectMother.Create(typeof (BaseType1), typeof (NullMixin));
+      _configuredClassContext2 = ClassContextObjectMother.Create(typeof (NullTarget), typeof (NullMixin));
+      _genericClassContext = ClassContextObjectMother.Create(typeof (GenericTargetClass<>), typeof (NullMixin));
+      _interfaceClassContext = ClassContextObjectMother.Create(typeof (IBaseType2), typeof (NullMixin));
 
       var classContexts = new ClassContextCollection (_configuredClassContext1, _configuredClassContext2, _genericClassContext, _interfaceClassContext);
       _configuration = new MixinConfiguration (classContexts);

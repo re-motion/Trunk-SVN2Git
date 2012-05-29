@@ -67,7 +67,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void GetClassContextsToInheritFrom ()
     {
-      var fakeClassContext = new ClassContext (typeof (object));
+      var fakeClassContext = ClassContextObjectMother.Create(typeof (object));
       var result = _policy.GetClassContextsToInheritFrom (typeof (BaseType1), t => fakeClassContext);
 
       Assert.That (result.ToArray (), Is.EqualTo (new[] { fakeClassContext }));

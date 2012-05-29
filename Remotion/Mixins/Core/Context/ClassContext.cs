@@ -42,25 +42,6 @@ namespace Remotion.Mixins.Context
           deserializer.GetCompleteInterfaces ());
     }
 
-    private static IEnumerable<MixinContext> GetMixinContexts (Type[] mixinTypes)
-    {
-      var mixins = new Dictionary<Type, MixinContext> (mixinTypes.Length);
-      foreach (Type mixinType in mixinTypes)
-      {
-        if (!mixins.ContainsKey (mixinType))
-        {
-          var context = new MixinContext (MixinKind.Extending, mixinType, MemberVisibility.Private, new Type[0]);
-          mixins.Add (context.MixinType, context);
-        }
-        else
-        {
-          string message = string.Format ("The mixin type {0} was tried to be added twice.", mixinType.FullName);
-          throw new ArgumentException (message, "mixinTypes");
-        }
-      }
-      return mixins.Values;
-    }
-
     private static int CalculateHashCode (ClassContext classContext)
     {
       return classContext.Type.GetHashCode ()
@@ -90,40 +71,6 @@ namespace Remotion.Mixins.Context
       _completeInterfaces = new ReadOnlyContextCollection<Type, Type> (t => t, completeInterfaces);
 
       _cachedHashCode = CalculateHashCode (this);
-    }
-
-    /// <summary>
-    /// Initializes a new <see cref="ClassContext"/> for a given target type without mixins.
-    /// </summary>
-    /// <param name="type">The mixin target type to be represented by this context.</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="type"/> parameter is <see langword="null"/>.</exception>
-    public ClassContext (Type type)
-      : this (type, new MixinContext[0], new Type[0])
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new <see cref="ClassContext"/> for a given mixin target type.
-    /// </summary>
-    /// <param name="type">The mixin target type to be represented by this context.</param>
-    /// <param name="mixins">A list of <see cref="MixinContext"/> objects representing the mixins applied to this class.</param>
-    /// <exception cref="ArgumentNullException">The <paramref name="type"/> parameter is <see langword="null"/>.</exception>
-    public ClassContext (Type type, params MixinContext[] mixins)
-        : this (type, mixins, new Type[0])
-    {
-    }
-
-    /// <summary>
-    /// Initializes a new <see cref="ClassContext"/> for a given mixin target type and initializes it to be associated with the given
-    /// mixin types.
-    /// </summary>
-    /// <param name="type">The mixin target type to be represented by this context.</param>
-    /// <param name="mixinTypes">The mixin types to be associated with this context.</param>
-    /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">The <paramref name="mixinTypes"/> parameter contains duplicates.</exception>
-    public  ClassContext (Type type, params Type[] mixinTypes)
-        : this (type, GetMixinContexts (ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes)), new Type[0])
-    {
     }
 
     /// <summary>

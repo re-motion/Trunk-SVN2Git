@@ -38,12 +38,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [SetUp]
     public void SetUp ()
     {
-      _ccObjectWithMixin = new ClassContext (typeof (object), typeof (NullMixin2));
-      _ccString = new ClassContext (typeof (string));
+      _ccObjectWithMixin = ClassContextObjectMother.Create(typeof (object), typeof (NullMixin2));
+      _ccString = ClassContextObjectMother.Create(typeof (string));
       _collectionWithObjectAndString = new ClassContextCollection (_ccObjectWithMixin, _ccString);
 
-      _ccListOfT = new ClassContext (typeof (List<>));
-      _ccListOfString = new ClassContext (typeof (List<string>));
+      _ccListOfT = ClassContextObjectMother.Create(typeof (List<>));
+      _ccListOfString = ClassContextObjectMother.Create(typeof (List<string>));
 
       _emptyCollection = new ClassContextCollection();
     }
@@ -112,7 +112,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void GetWithInheritance_Inheritance_FromInterface ()
     {
-      var classContext = new ClassContext (typeof (IMixedInterface), typeof (NullMixin), typeof (NullMixin2));
+      var classContext = ClassContextObjectMother.Create(typeof (IMixedInterface), typeof (NullMixin), typeof (NullMixin2));
       var collection = new ClassContextCollection (classContext);
 
       ClassContext inherited = collection.GetWithInheritance (typeof (ClassWithMixedInterface));
@@ -125,8 +125,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void GetWithInheritance_Inheritance_FromInterfaceAndBase ()
     {
-      var classContext1 = new ClassContext (typeof (IMixedInterface), typeof (NullMixin), typeof (NullMixin2));
-      var classContext2 = new ClassContext (typeof (object), typeof (NullMixin3));
+      var classContext1 = ClassContextObjectMother.Create(typeof (IMixedInterface), typeof (NullMixin), typeof (NullMixin2));
+      var classContext2 = ClassContextObjectMother.Create(typeof (object), typeof (NullMixin3));
 
       var collection = new ClassContextCollection (classContext1, classContext2);
 
@@ -141,8 +141,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void GetWithInheritance_Inheritance_FromGenericTypeDefinition ()
     {
-      var classContext1 = new ClassContext (typeof (List<>), typeof (NullMixin3));
-      var classContext2 = new ClassContext (typeof (List<string>), typeof (NullMixin4));
+      var classContext1 = ClassContextObjectMother.Create(typeof (List<>), typeof (NullMixin3));
+      var classContext2 = ClassContextObjectMother.Create(typeof (List<string>), typeof (NullMixin4));
 
       var collection = new ClassContextCollection (classContext1, classContext2);
 
@@ -156,9 +156,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void GetWithInheritance_Inheritance_FromGenericTypeDefinitionAndBase ()
     {
-      var classContext1 = new ClassContext (typeof (List<>), typeof (NullMixin3));
-      var classContext2 = new ClassContext (typeof (List<string>), typeof (NullMixin4));
-      var classContext3 = new ClassContext (typeof (object), typeof (NullMixin2));
+      var classContext1 = ClassContextObjectMother.Create(typeof (List<>), typeof (NullMixin3));
+      var classContext2 = ClassContextObjectMother.Create(typeof (List<string>), typeof (NullMixin4));
+      var classContext3 = ClassContextObjectMother.Create(typeof (object), typeof (NullMixin2));
 
       var collection = new ClassContextCollection (classContext1, classContext2, classContext3);
 
@@ -264,8 +264,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void Contains ()
     {
-      var cc3 = new ClassContext (typeof (int));
-      var cc4 = new ClassContext (typeof (object), typeof (NullMixin));
+      var cc3 = ClassContextObjectMother.Create(typeof (int));
+      var cc4 = ClassContextObjectMother.Create(typeof (object), typeof (NullMixin));
 
       Assert.That (_collectionWithObjectAndString.Contains (_ccObjectWithMixin), Is.True);
       Assert.That (_collectionWithObjectAndString.Contains (_ccString), Is.True);

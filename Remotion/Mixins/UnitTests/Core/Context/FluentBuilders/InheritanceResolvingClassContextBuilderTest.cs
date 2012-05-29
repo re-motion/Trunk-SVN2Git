@@ -49,7 +49,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       _classContextBuilderWithParent = new ClassContextBuilder (typeof (NullTarget));
       _classContextBuilderWithParent.AddMixin (typeof (NullMixin2));
-      _parentContextWithBuilder = new ClassContext (typeof (NullTarget), typeof (NullMixin));
+      _parentContextWithBuilder = ClassContextObjectMother.Create(typeof (NullTarget), typeof (NullMixin));
 
       _classContextBuilderWithIndirectParent = new ClassContextBuilder (typeof (DerivedNullTarget));
       
@@ -60,11 +60,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       _buildersWithParentContexts.Add (_classContextBuilderWithParent.TargetType, Tuple.Create (_classContextBuilderWithParent, _parentContextWithBuilder));
       _buildersWithParentContexts.Add (_classContextBuilderWithoutParent.TargetType, Tuple.Create (_classContextBuilderWithoutParent, (ClassContext) null));
 
-      _parentContextWithoutBuilder = new ClassContext (typeof (BaseType1));
+      _parentContextWithoutBuilder = ClassContextObjectMother.Create(typeof (BaseType1));
       _parentContexts = new ClassContextCollection (_parentContextWithoutBuilder, _parentContextWithBuilder);
 
       _inheritancePolicyMock = MockRepository.GenerateMock<IMixinInheritancePolicy> ();
-      _inheritedContext = new ClassContext (typeof (object), typeof (NullMixin));
+      _inheritedContext = ClassContextObjectMother.Create(typeof (object), typeof (NullMixin));
 
       var classContextBuilders = new[] { _classContextBuilderWithoutParent, _classContextBuilderWithIndirectParent, _classContextBuilderWithParent };
       _builder = new InheritanceResolvingClassContextBuilder (classContextBuilders, _parentContexts, _inheritancePolicyMock);
@@ -97,8 +97,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void Build_WithoutCachedContext_NoBuilder_ReturnsCombinedInherited ()
     {
-      var classContext1 = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
-      var classContext2 = new ClassContext (typeof (BaseType2), typeof (NullMixin));
+      var classContext1 = ClassContextObjectMother.Create(typeof (BaseType2), typeof (BT2Mixin1));
+      var classContext2 = ClassContextObjectMother.Create(typeof (BaseType2), typeof (NullMixin));
 
       _inheritancePolicyMock
           .Expect (mock => mock.GetClassContextsToInheritFrom (Arg<Type>.Is.Anything, Arg<Func<Type, ClassContext>>.Is.Anything))
@@ -106,7 +106,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       _inheritancePolicyMock.Replay ();
 
       var result = _builder.Build (typeof (BaseType2));
-      Assert.That (result, Is.EqualTo (new ClassContext (typeof (BaseType2), typeof (BT2Mixin1), typeof (NullMixin))));
+      Assert.That (result, Is.EqualTo (ClassContextObjectMother.Create(typeof (BaseType2), typeof (BT2Mixin1), typeof (NullMixin))));
     }
 
     [Test]
@@ -118,7 +118,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       _inheritancePolicyMock.Replay ();
 
       var result = _builder.Build (typeof (BaseType2));
-      Assert.That (result, Is.EqualTo (new ClassContext (typeof (BaseType2))));
+      Assert.That (result, Is.EqualTo (ClassContextObjectMother.Create(typeof (BaseType2))));
     }
 
     [Test]

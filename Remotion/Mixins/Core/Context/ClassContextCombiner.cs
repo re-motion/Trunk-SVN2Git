@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
@@ -52,7 +53,7 @@ namespace Remotion.Mixins.Context
         case 1:
           return _classContexts[0].CloneForSpecificType (contextType);
         default:
-          return new ClassContext (contextType).InheritFrom (_classContexts);
+          return new ClassContext (contextType, Enumerable.Empty<MixinContext>(), Enumerable.Empty<Type>()).InheritFrom (_classContexts);
       }
     }
   }

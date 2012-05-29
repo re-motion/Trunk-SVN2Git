@@ -49,7 +49,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     [Test]
     public void BuildFromAssemblies_WithParentConfiguration ()
     {
-      var parentConfiguration = new MixinConfiguration (new ClassContextCollection (new ClassContext (typeof (object))));
+      var parentConfiguration = new MixinConfiguration (new ClassContextCollection (ClassContextObjectMother.Create(typeof (object))));
 
       var assemblies = new[] { typeof (BaseType1).Assembly, typeof (object).Assembly };
       MixinConfiguration configuration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (parentConfiguration, assemblies);

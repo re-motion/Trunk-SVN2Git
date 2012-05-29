@@ -122,7 +122,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     [Test]
     public void CreateTypeGenerator_Interface ()
     {
-      var configuration = new TargetClassDefinition (new ClassContext (typeof (IServiceProvider)));
+      var configuration = new TargetClassDefinition (ClassContextObjectMother.Create(typeof (IServiceProvider)));
       Assert.That (
           () => SavedTypeBuilder.Scope.CreateTypeGenerator (configuration, new GuidNameProvider(), ConcreteTypeBuilder.Current),
           Throws.ArgumentException.With.Message.EqualTo (
@@ -133,8 +133,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     public void CreateMixinTypeGenerator ()
     {
       var mixinDefinition = DefinitionObjectMother.GetTargetClassDefinition (
-          new ClassContext(typeof (ClassOverridingMixinMembers), 
-          typeof (MixinWithAbstractMembers))).Mixins[0];
+          ClassContextObjectMother.Create(typeof (ClassOverridingMixinMembers), 
+                 typeof (MixinWithAbstractMembers))).Mixins[0];
       var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
 
       var generator = SavedTypeBuilder.Scope.CreateMixinTypeGenerator (identifier, new GuidNameProvider());
@@ -145,7 +145,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     [Test]
     public void CreateMixinTypeGenerator_Interface ()
     {
-      var configuration = new TargetClassDefinition (new ClassContext (typeof (object)));
+      var configuration = new TargetClassDefinition (ClassContextObjectMother.Create(typeof (object)));
       var mixinDefinition = new MixinDefinition (MixinKind.Extending, typeof (IServiceProvider), configuration, true);
       var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
 

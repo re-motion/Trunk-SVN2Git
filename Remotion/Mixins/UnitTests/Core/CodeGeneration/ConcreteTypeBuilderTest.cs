@@ -61,8 +61,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void GetConcreteType_TypesAreCached ()
     {
-      Type t1 = _builder.GetConcreteType (new ClassContext (typeof (BaseType1)));
-      Type t2 = _builder.GetConcreteType (new ClassContext (typeof (BaseType1)));
+      Type t1 = _builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType1)));
+      Type t2 = _builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType1)));
       Assert.That (t2, Is.SameAs (t1));
     }
     
@@ -82,7 +82,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void GetConstructorLookupInfo ()
     {
-      var classContext = new ClassContext (typeof (BaseType1));
+      var classContext = ClassContextObjectMother.Create(typeof (BaseType1));
       var info1 = _builder.GetConstructorLookupInfo (classContext, true);
       var info2 = _builder.GetConstructorLookupInfo (classContext, true);
 
@@ -97,7 +97,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void GetConcreteMixinType_GeneratedMixinTypesAreCached ()
     {
-      var requestingClass = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      var requestingClass = ClassContextObjectMother.Create(typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       var concreteMixinTypeIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
       var t1 = _builder.GetConcreteMixinType (concreteMixinTypeIdentifier);
       var t2 = _builder.GetConcreteMixinType (concreteMixinTypeIdentifier);
@@ -197,13 +197,13 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void SaveAndResetDynamicScope_CanContinueToGenerateTypesAfterSaving ()
     {
       var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder();
-      var bt1Context = new ClassContext (typeof (BaseType1));
-      var bt2Context = new ClassContext (typeof (BaseType2));
+      var bt1Context = ClassContextObjectMother.Create(typeof (BaseType1));
+      var bt2Context = ClassContextObjectMother.Create(typeof (BaseType2));
 
       Assert.That (builder.GetConcreteType (bt1Context), Is.Not.Null);
       Assert.That (builder.GetConcreteType (bt2Context), Is.Not.Null);
       builder.SaveGeneratedConcreteTypes();
-      var bt3Context = new ClassContext (typeof (BaseType3));
+      var bt3Context = ClassContextObjectMother.Create(typeof (BaseType3));
       Assert.That (builder.GetConcreteType (bt3Context), Is.Not.Null);
     }
 
@@ -212,18 +212,18 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     {
       var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder();
 
-      Type concreteType1 = builder.GetConcreteType (new ClassContext (typeof (BaseType1)));
+      Type concreteType1 = builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType1)));
       string[] paths = builder.SaveGeneratedConcreteTypes();
       Assert.That (paths, Is.Not.Empty);
 
-      Type concreteType2 = builder.GetConcreteType (new ClassContext (typeof (BaseType2)));
+      Type concreteType2 = builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType2)));
       paths = builder.SaveGeneratedConcreteTypes();
       Assert.That (paths, Is.Not.Empty);
 
-      Type concreteType3 = builder.GetConcreteType (new ClassContext (typeof (BaseType3)));
-      Assert.That (builder.GetConcreteType (new ClassContext (typeof (BaseType1))), Is.SameAs (concreteType1));
-      Assert.That (builder.GetConcreteType (new ClassContext (typeof (BaseType2))), Is.SameAs (concreteType2));
-      Assert.That (builder.GetConcreteType (new ClassContext (typeof (BaseType3))), Is.SameAs (concreteType3));
+      Type concreteType3 = builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType3)));
+      Assert.That (builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType1))), Is.SameAs (concreteType1));
+      Assert.That (builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType2))), Is.SameAs (concreteType2));
+      Assert.That (builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType3))), Is.SameAs (concreteType3));
     }
 
     [Test]
@@ -307,7 +307,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       var loadedType = typeof (LoadableConcreteMixinTypeForMixinWithAbstractMembers);
       var assemblyMock = SetupAssemblyMockForLoading (loadedType);
 
-      var requestingClass = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      var requestingClass = ClassContextObjectMother.Create(typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       var concreteMixinIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
 
       Type concreteType1 = _builder.GetConcreteMixinType (concreteMixinIdentifier).GeneratedType;
@@ -337,7 +337,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
           .Return (typeGeneratorMock);
       _moduleManagerMockForLoading.Replay();
 
-      var nonLoadedType = _builderWithModuleManagerMock.GetConcreteType (new ClassContext (typeof (BaseType1), typeof (BT1Mixin1)));
+      var nonLoadedType = _builderWithModuleManagerMock.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1)));
       Assert.That (nonLoadedType, Is.SameAs (typeof (string)));
 
       _moduleManagerMockForLoading.VerifyAllExpectations();
@@ -346,7 +346,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void GetConcreteMixinType_BeforeGetConcreteTypeWorks ()
     {
-      var requestingClass = new ClassContext (typeof (ClassOverridingSingleMixinMethod), typeof (MixinWithOverridableMember));
+      var requestingClass = ClassContextObjectMother.Create(typeof (ClassOverridingSingleMixinMethod), typeof (MixinWithOverridableMember));
       var concreteMixinIdentifier = DefinitionObjectMother.GetTargetClassDefinition (requestingClass).Mixins[0].GetConcreteMixinTypeIdentifier();
 
       Type t = _builder.GetConcreteMixinType (concreteMixinIdentifier).GeneratedType;

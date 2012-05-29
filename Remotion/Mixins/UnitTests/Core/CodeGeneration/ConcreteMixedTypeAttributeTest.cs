@@ -37,16 +37,15 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
           typeof (LoadableConcreteMixedTypeForBaseType1).GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false)).Single();
       var classContext = attribute.GetClassContext ();
 
-      var expectedContext = new ClassContext (
-          typeof (BaseType1), 
-          new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type>()));
+      var expectedContext = ClassContextObjectMother.Create(typeof (BaseType1), 
+                                               new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type>()));
       Assert.That (classContext, Is.EqualTo (expectedContext));
     }
 
     [Test]
     public void FromClassContextSimple ()
     {
-      var simpleContext = new ClassContext (typeof (object), typeof (string));
+      var simpleContext = ClassContextObjectMother.Create(typeof (object), typeof (string));
       ConcreteMixedTypeAttribute attribute = CreateAttribute (simpleContext);
 
       var deserializer = new AttributeClassContextDeserializer (attribute.ClassContextData);
@@ -85,7 +84,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void GetClassContextSimple ()
     {
-      var simpleContext = new ClassContext (typeof (object), typeof (string));
+      var simpleContext = ClassContextObjectMother.Create(typeof (object), typeof (string));
       ConcreteMixedTypeAttribute attribute = CreateAttribute (simpleContext);
       ClassContext regeneratedContext = attribute.GetClassContext();
 
@@ -146,7 +145,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void AttributeWithGenericType ()
     {
-      ClassContext context = new ClassContext (typeof (List<>)).SpecializeWithTypeArguments (new[] {typeof (int)});
+      ClassContext context = ClassContextObjectMother.Create(typeof (List<>)).SpecializeWithTypeArguments (new[] {typeof (int)});
       Assert.That (context.Type, Is.EqualTo (typeof (List<int>)));
       ConcreteMixedTypeAttribute attribute = CreateAttribute (context);
 
@@ -157,9 +156,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void Roundtrip_WithPublicVisibility_IntegrationTest ()
     {
-      var classContext = new ClassContext (
-          typeof (BaseType1), 
-          new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, Enumerable.Empty<Type>()));
+      var classContext = ClassContextObjectMother.Create(typeof (BaseType1), 
+                                            new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, Enumerable.Empty<Type>()));
       var attribute = CreateAttribute (classContext);
       var classContext2 = attribute.GetClassContext ();
 

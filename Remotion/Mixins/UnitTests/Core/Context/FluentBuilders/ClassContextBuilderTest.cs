@@ -252,7 +252,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void EnsureMixin_Inheritance ()
     {
-      var contextWithMixin = new ClassContext (typeof (BaseType3), typeof (NullTarget));
+      var contextWithMixin = ClassContextObjectMother.Create(typeof (BaseType3), typeof (NullTarget));
       
       MixinContextBuilder builder = _classBuilder.EnsureMixin (typeof (DerivedNullTarget));
       Assert.AreEqual (typeof (DerivedNullTarget), builder.MixinType);
@@ -518,7 +518,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2));
       classContextBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ();
 
-      var parentContext = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
+      var parentContext = ClassContextObjectMother.Create(typeof (BaseType2), typeof (BT2Mixin1));
       ClassContext builtContext = classContextBuilder.BuildClassContext (new[] { parentContext });
       
       Assert.AreEqual (3, builtContext.Mixins.Count);
@@ -533,7 +533,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var classContextBuilder = new ClassContextBuilder (_parentBuilderMock, typeof (BaseType2));
       classContextBuilder.Clear ().AddMixins<BT1Mixin1, BT1Mixin2> ();
 
-      var parentContext = new ClassContext (typeof (BaseType2), typeof (BT2Mixin1));
+      var parentContext = ClassContextObjectMother.Create(typeof (BaseType2), typeof (BT2Mixin1));
       ClassContext builtContext = classContextBuilder.BuildClassContext (new[] { parentContext });
 
       Assert.AreEqual (2, builtContext.Mixins.Count);
@@ -549,8 +549,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
 
       classContextBuilder.SuppressMixins (typeof (IBT1Mixin1), typeof (BT5Mixin1), typeof (BT3Mixin3<,>));
 
-      var inheritedContext = new ClassContext (typeof (BaseType2), typeof (BT3Mixin1), typeof (BT3Mixin3<IBaseType33, IBaseType33>));
-      var parentContext = new ClassContext (typeof (BaseType2), typeof (BT5Mixin1), typeof (BT5Mixin2));
+      var inheritedContext = ClassContextObjectMother.Create(typeof (BaseType2), typeof (BT3Mixin1), typeof (BT3Mixin3<IBaseType33, IBaseType33>));
+      var parentContext = ClassContextObjectMother.Create(typeof (BaseType2), typeof (BT5Mixin1), typeof (BT5Mixin2));
       ClassContext builtContext = classContextBuilder.BuildClassContext (new[] { inheritedContext, parentContext });
 
       Assert.AreEqual (3, builtContext.Mixins.Count);

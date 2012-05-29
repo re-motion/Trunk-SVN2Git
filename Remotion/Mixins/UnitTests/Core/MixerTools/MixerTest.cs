@@ -56,7 +56,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
         Directory.Delete (_assemblyOutputDirectoy, true);
 
       _configuration = new MixinConfiguration ();
-      _context = new ClassContext (typeof (object));
+      _context = ClassContextObjectMother.Create(typeof (object));
 
       _classContextFinderStub = MockRepository.GenerateStub<IClassContextFinder> ();
       _concreteTypeBuilderFactoryStub = MockRepository.GenerateStub<IConcreteTypeBuilderFactory> ();

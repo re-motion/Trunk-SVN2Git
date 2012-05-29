@@ -190,7 +190,7 @@ namespace Remotion.Mixins
       ClassContext context = ClassContexts.GetWithInheritance (targetOrConcreteType);
 
       if (context == null)
-        return new ClassContext (targetOrConcreteType);
+        return new ClassContext (targetOrConcreteType, Enumerable.Empty<MixinContext>(), Enumerable.Empty<Type>());
       else
         return context;
     }

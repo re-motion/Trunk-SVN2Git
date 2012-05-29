@@ -35,7 +35,7 @@ namespace Remotion.Mixins.UnitTests.Core
 
     public static Type GetGeneratedMixinType (Type targetType, Type mixinType)
     {
-      var requestingClass = new ClassContext (targetType, mixinType);
+      var requestingClass = ClassContextObjectMother.Create(targetType, mixinType);
       return GetGeneratedMixinType(requestingClass, mixinType);
     }
 
@@ -47,7 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core
 
     public static ConcreteMixinType GetGeneratedMixinTypeAndMetadata (Type targetType, Type mixinType)
     {
-      var requestingClass = new ClassContext (targetType, mixinType);
+      var requestingClass = ClassContextObjectMother.Create(targetType, mixinType);
       return GetGeneratedMixinTypeAndMetadata (requestingClass, mixinType);
     }
 

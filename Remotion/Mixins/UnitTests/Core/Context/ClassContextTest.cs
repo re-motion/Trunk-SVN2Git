@@ -35,13 +35,13 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Object was tried to be added twice", MatchType = MessageMatch.Contains)]
     public void ConstructorThrowsOnDuplicateMixinContexts ()
     {
-      new ClassContext (typeof (string), typeof (object), typeof (object));
+      ClassContextObjectMother.Create(typeof (string), typeof (object), typeof (object));
     }
 
     [Test]
     public void ConstructorWithMixinParameters()
     {
-      var context = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1), typeof (BT1Mixin2));
+      var context = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1), typeof (BT1Mixin2));
       Assert.AreEqual (2, context.Mixins.Count);
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (BT1Mixin1)));
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (BT1Mixin2)));
@@ -51,20 +51,20 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void ConstructorWithMixinParameters_DefaultValues ()
     {
-      var context = new ClassContext (typeof (BaseType1));
+      var context = ClassContextObjectMother.Create(typeof (BaseType1));
       Assert.That (context.Mixins, Is.Empty);
     }
 
     [Test]
     public void Mixins ()
     {
-      var classContext = new ClassContext (typeof (BaseType7));
+      var classContext = ClassContextObjectMother.Create(typeof (BaseType7));
 
       Assert.IsFalse (classContext.Mixins.ContainsKey (typeof (BT7Mixin1)));
       MixinContext mixinContext = classContext.Mixins[typeof (BT7Mixin1)];
       Assert.IsNull (mixinContext);
 
-      classContext = new ClassContext (typeof (BaseType7), typeof (BT7Mixin1));
+      classContext = ClassContextObjectMother.Create(typeof (BaseType7), typeof (BT7Mixin1));
       Assert.IsTrue (classContext.Mixins.ContainsKey (typeof (BT7Mixin1)));
       mixinContext = classContext.Mixins[typeof (BT7Mixin1)];
       Assert.AreSame (mixinContext, classContext.Mixins[typeof (BT7Mixin1)]);
@@ -91,14 +91,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void IsEmpty_True ()
     {
-      var context = new ClassContext (typeof (BaseType1));
+      var context = ClassContextObjectMother.Create(typeof (BaseType1));
       Assert.That (context.IsEmpty (), Is.True);
     }
 
     [Test]
     public void IsEmpty_False_Mixins ()
     {
-      var context = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
+      var context = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1));
       Assert.That (context.IsEmpty (), Is.False);
     }
 
@@ -114,7 +114,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
                                                                       + "Parameter name: mixinTypes")]
     public void ConstructorThrows_OnDuplicateMixinTypes ()
     {
-      new ClassContext (typeof (string), typeof (object), typeof (object));
+      ClassContextObjectMother.Create(typeof (string), typeof (object), typeof (object));
     }
 
     [Test]
@@ -139,14 +139,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void GenericTypesNotTransparentlyConvertedToTypeDefinitions ()
     {
-      var context = new ClassContext (typeof (List<int>));
+      var context = ClassContextObjectMother.Create(typeof (List<int>));
       Assert.AreEqual (typeof (List<int>), context.Type);
     }
 
     [Test]
     public void ContainsAssignableMixin ()
     {
-      var context = new ClassContext (typeof (object), typeof (IList<int>));
+      var context = ClassContextObjectMother.Create(typeof (object), typeof (IList<int>));
 
       Assert.IsTrue (context.Mixins.ContainsKey (typeof (IList<int>)));
       Assert.IsTrue (context.Mixins.ContainsAssignableMixin (typeof (IList<int>)));
@@ -209,16 +209,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.AreEqual (c1, c3);
       Assert.AreEqual (c1, c4);
 
-      var c5 = new ClassContext (typeof (BaseType1));
-      var c6 = new ClassContext (typeof (BaseType1));
+      var c5 = ClassContextObjectMother.Create(typeof (BaseType1));
+      var c6 = ClassContextObjectMother.Create(typeof (BaseType1));
       Assert.AreEqual (c5, c6);
     }
 
     [Test]
     public void Equals_False_ClassType ()
     {
-      var c1 = new ClassContext (typeof (BaseType1));
-      var c2 = new ClassContext (typeof (BaseType2));
+      var c1 = ClassContextObjectMother.Create(typeof (BaseType1));
+      var c2 = ClassContextObjectMother.Create(typeof (BaseType2));
 
       Assert.AreNotEqual (c1, c2);
     }
@@ -226,9 +226,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void Equals_False_Mixins ()
     {
-      var c1 = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
-      var c3 = new ClassContext (typeof (BaseType1), typeof (BT1Mixin2));
-      var c4 = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1), typeof (BT1Mixin2));
+      var c1 = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1));
+      var c3 = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin2));
+      var c4 = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1), typeof (BT1Mixin2));
 
       Assert.AreNotEqual (c1, c3);
       Assert.AreNotEqual (c1, c4);
@@ -287,8 +287,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.AreEqual (c1.GetHashCode (), c3.GetHashCode ());
       Assert.AreEqual (c1.GetHashCode (), c4.GetHashCode ());
 
-      var c5 = new ClassContext (typeof (BaseType1));
-      var c6 = new ClassContext (typeof (BaseType1));
+      var c5 = ClassContextObjectMother.Create(typeof (BaseType1));
+      var c6 = ClassContextObjectMother.Create(typeof (BaseType1));
       Assert.AreEqual (c5.GetHashCode (), c6.GetHashCode ());
     }
 
@@ -340,7 +340,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
           .Stub (stub => stub.RemoveAffectedMixins (Arg<Dictionary<Type, MixinContext>>.Is.Anything))
           .WhenCalled (mi => ((Dictionary<Type, MixinContext>) mi.Arguments[0]).Remove (typeof (double)));
 
-      var original = new ClassContext (typeof (NullTarget), typeof (int), typeof (double), typeof (string));
+      var original = ClassContextObjectMother.Create(typeof (NullTarget), typeof (int), typeof (double), typeof (string));
       
       var result = original.SuppressMixins (new[] { ruleStub1, ruleStub2 });
 

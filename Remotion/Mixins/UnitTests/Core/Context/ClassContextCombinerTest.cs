@@ -33,7 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       _combiner = new ClassContextCombiner ();
       _context1 = new ClassContext (typeof (object), new MixinContext[0], new[] { typeof (int), typeof (float) });
-      _context2 = new ClassContext (typeof (string), new[] { typeof (double), typeof (int) });
+      _context2 = ClassContextObjectMother.Create(typeof (string), new[] { typeof (double), typeof (int) });
     }
 
     [Test]

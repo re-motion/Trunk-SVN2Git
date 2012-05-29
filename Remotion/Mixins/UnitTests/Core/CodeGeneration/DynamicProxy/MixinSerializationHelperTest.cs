@@ -39,7 +39,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       _serializationInfo = new SerializationInfo (typeof (object), new FormatterConverter ());
       _context = new StreamingContext ();
       _concreteMixin = new FakeConcreteMixinType ();
-      var classContext = new ClassContext (typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
+      var classContext = ClassContextObjectMother.Create(typeof (ClassOverridingMixinMembers), typeof (MixinWithAbstractMembers));
       _identifier = DefinitionObjectMother.GetTargetClassDefinition (classContext).Mixins[0].GetConcreteMixinTypeIdentifier ();
     }
 

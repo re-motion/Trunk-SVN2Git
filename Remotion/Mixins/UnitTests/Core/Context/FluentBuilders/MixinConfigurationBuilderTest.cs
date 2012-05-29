@@ -40,7 +40,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void Intitialization_WithParent ()
     {
-      var parent = new MixinConfiguration (new ClassContextCollection (new ClassContext (typeof (string))));
+      var parent = new MixinConfiguration (new ClassContextCollection (ClassContextObjectMother.Create(typeof (string))));
 
       var builder = new MixinConfigurationBuilder (parent);
       Assert.That (builder.ParentConfiguration, Is.SameAs (parent));
@@ -93,7 +93,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void BuildConfiguration_IncludesParentConfiguration_WithClassContext_Unmodified ()
     {
-      var existingContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
+      var existingContext = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1));
       var parentConfiguration = new MixinConfiguration (new ClassContextCollection (existingContext));
 
       var builder = new MixinConfigurationBuilder (parentConfiguration);
@@ -110,7 +110,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void BuildConfiguration_IncludesParentConfiguration_WithClassContext_Modified ()
     {
-      var existingContext = new ClassContext (typeof (BaseType1), typeof (BT1Mixin1));
+      var existingContext = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1));
       var parentConfiguration = new MixinConfiguration (new ClassContextCollection (existingContext));
 
       var builder = new MixinConfigurationBuilder (parentConfiguration);

@@ -28,8 +28,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void InheritFrom_Mixins ()
     {
-      var baseContext = new ClassContext (typeof (string), typeof (DateTime), typeof (int), typeof (DerivedNullTarget));
-      var inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
+      var baseContext = ClassContextObjectMother.Create(typeof (string), typeof (DateTime), typeof (int), typeof (DerivedNullTarget));
+      var inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (baseContext);
 
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (3));
       Assert.That (inheritor.Mixins, Is.EquivalentTo (baseContext.Mixins));
@@ -39,7 +39,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     public void MixinContext ()
     {
       ClassContext baseContext = new ClassContextBuilder (typeof (string)).AddMixin<DateTime>().WithDependency<int>().BuildClassContext();
-      ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
+      ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (baseContext);
 
       Assert.That (inheritor.Mixins[typeof (DateTime)], Is.EqualTo (baseContext.Mixins[typeof (DateTime)]));
     }
@@ -76,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     public void BaseAndDerivedMixin_CanBeInherited ()
     {
       ClassContext baseContext = new ClassContextBuilder (typeof (string)).AddMixin<NullMixin> ().AddMixin<DerivedNullMixin>().BuildClassContext ();
-      ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
+      ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (baseContext);
 
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (2));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
@@ -87,7 +87,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     public void BaseAndDerivedMixin_CanBeInherited_DifferentOrder ()
     {
       ClassContext baseContext = new ClassContextBuilder (typeof (string)).AddMixin<DerivedNullMixin> ().AddMixin<NullMixin> ().BuildClassContext ();
-      ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
+      ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (baseContext);
 
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (2));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (NullMixin)), Is.True);
@@ -167,7 +167,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
           .AddCompleteInterface (typeof (int))
           .BuildClassContext();
 
-      ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
+      ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (baseContext);
 
       Assert.That (inheritor.CompleteInterfaces.Count, Is.EqualTo (2));
       Assert.That (inheritor.CompleteInterfaces, Is.EquivalentTo (inheritor.CompleteInterfaces));
@@ -178,7 +178,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       var baseContext = new ClassContext (typeof (string), new MixinContext[0], new[] {typeof (object)});
 
-      ClassContext inheritor = new ClassContext (typeof (double)).InheritFrom (baseContext);
+      ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (baseContext);
 
       Assert.That (inheritor.CompleteInterfaces.ContainsKey (typeof (object)), Is.True);
     }

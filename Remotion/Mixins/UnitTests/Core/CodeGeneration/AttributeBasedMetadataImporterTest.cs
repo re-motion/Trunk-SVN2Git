@@ -39,7 +39,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void GetMetadataForMixedType_Wrapper()
     {
       var importerMock = new MockRepository ().PartialMock<AttributeBasedMetadataImporter> ();
-      var expectedResult = new ClassContext (typeof (object));
+      var expectedResult = ClassContextObjectMother.Create(typeof (object));
       importerMock.Expect (mock => mock.GetMetadataForMixedType ((_Type) typeof (object))).Return (expectedResult);
 
       importerMock.Replay ();
@@ -178,7 +178,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void GetMetadataForMixedType ()
     {
-      var classContext1 = new ClassContext (typeof (object));
+      var classContext1 = ClassContextObjectMother.Create(typeof (object));
 
       var attribute1 = ConcreteMixedTypeAttribute.FromClassContext (classContext1, new Type[0]);
 

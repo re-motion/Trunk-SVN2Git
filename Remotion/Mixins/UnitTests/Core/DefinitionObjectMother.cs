@@ -38,7 +38,7 @@ namespace Remotion.Mixins.UnitTests.Core
       ArgumentUtility.CheckNotNull ("classType", classType);
       ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
 
-      var result = new TargetClassDefinition (new ClassContext (classType, mixinTypes));
+      var result = new TargetClassDefinition (ClassContextObjectMother.Create(classType, mixinTypes));
       foreach (var type in mixinTypes)
         CreateMixinDefinition (result, type);
       return result;
@@ -254,7 +254,7 @@ namespace Remotion.Mixins.UnitTests.Core
       ArgumentUtility.CheckNotNull ("baseType", baseType);
       ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
 
-      var context = new ClassContext (baseType, mixinTypes);
+      var context = ClassContextObjectMother.Create(baseType, mixinTypes);
       return BuildUnvalidatedDefinition(context);
     }
 

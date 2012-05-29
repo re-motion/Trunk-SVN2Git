@@ -26,14 +26,23 @@ namespace Remotion.Data.DomainObjects.Mapping
   {
     public static ClassContext GetMixinConfigurationForDomainObjectType (Type type)
     {
+      ArgumentUtility.CheckNotNull ("type", type);
+
       // For performance, use the ClassContextCollection rather than ActiveConfiguration.GetClassContext
       // (The former checks whether type is a generated type, which we know isn't the case here.)
-      return Mixins.MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (type) ?? new ClassContext (type);
+      return Mixins.MixinConfiguration.ActiveConfiguration.ClassContexts.GetWithInheritance (type) ?? CreateEmptyClassContext(type);
     }
 
     public static bool IsPersistenceRelevant (Type mixinType)
     {
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+
       return Utilities.ReflectionUtility.CanAscribe (mixinType, typeof (DomainObjectMixin<,>));
+    }
+
+    private static ClassContext CreateEmptyClassContext (Type type)
+    {
+      return new ClassContext (type, Enumerable.Empty<MixinContext> (), Enumerable.Empty<Type> ());
     }
 
     private readonly ClassContext _mixinConfiguration;

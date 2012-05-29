@@ -294,7 +294,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var r2 = new MixinConfiguration ();
       var r3 = _mockRepository.StrictMock<IDisposable> ();
       var r4 = new MixinContextBuilder (r1, typeof (BT1Mixin1));
-      var r5 = new ClassContext (typeof (object));
+      var r5 = ClassContextObjectMother.Create(typeof (object));
 
       IEnumerable<ClassContext> inheritedContexts = new ClassContext[0];
 

@@ -81,7 +81,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     [Test]
     public void InternalAttributesAreIgnored()
     {
-      var context = new ClassContext (typeof (ClassWithInternalAttribute));
+      var context = ClassContextObjectMother.Create(typeof (ClassWithInternalAttribute));
       var definition = TargetClassDefinitionFactory.CreateTargetClassDefinition (context);
       Assert.That (definition.CustomAttributes.ContainsKey (typeof (InternalStuffAttribute)), Is.False);
     }
