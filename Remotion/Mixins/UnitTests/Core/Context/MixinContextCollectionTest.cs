@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
@@ -38,11 +37,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [SetUp]
     public void SetUp ()
     {
-      _mcObject = new MixinContext (MixinKind.Extending, typeof (object), MemberVisibility.Private, Enumerable.Empty<Type>());
-      _mcString = new MixinContext (MixinKind.Extending, typeof (string), MemberVisibility.Private, Enumerable.Empty<Type> ());
-      _mcList = new MixinContext (MixinKind.Extending, typeof (List<int>), MemberVisibility.Private, Enumerable.Empty<Type> ());
-      _mcGeneric = new MixinContext (MixinKind.Extending, typeof (DerivedGenericMixin<object>), MemberVisibility.Private, Enumerable.Empty<Type> ());
-      _mcDerived = new MixinContext (MixinKind.Extending, typeof (DerivedNullMixin), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      _mcObject = MixinContextObjectMother.Create (mixinType: typeof (object));
+      _mcString = MixinContextObjectMother.Create (mixinType: typeof (string));
+      _mcList = MixinContextObjectMother.Create (mixinType: typeof (List<int>));
+      _mcGeneric = MixinContextObjectMother.Create (mixinType: typeof (DerivedGenericMixin<object>));
+      _mcDerived = MixinContextObjectMother.Create (mixinType: typeof (DerivedNullMixin));
       _collection = new MixinContextCollection (new[] { _mcObject, _mcString, _mcList, _mcDerived });
       _genericCollection = new MixinContextCollection (new[] { _mcGeneric });
     }

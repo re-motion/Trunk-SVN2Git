@@ -32,7 +32,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void ExplicitDependencies_Empty ()
     {
-      var mixinContext = new MixinContext (MixinKind.Extending, typeof (BT7Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      var mixinContext = MixinContextObjectMother.Create (explicitDependencies: Enumerable.Empty<Type> ());
 
       Assert.AreEqual (0, mixinContext.ExplicitDependencies.Count);
       Assert.IsFalse (mixinContext.ExplicitDependencies.ContainsKey (typeof (IBaseType2)));
@@ -43,8 +43,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void ExplicitInterfaceDependencies_NonEmpty ()
     {
-      var mixinContext = new MixinContext (
-          MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, new[] { typeof (IBT6Mixin2), typeof (IBT6Mixin3) });
+      var mixinContext = MixinContextObjectMother.Create (explicitDependencies: new[] { typeof (IBT6Mixin2), typeof (IBT6Mixin3) });
 
       Assert.AreEqual (2, mixinContext.ExplicitDependencies.Count);
       Assert.IsTrue (mixinContext.ExplicitDependencies.ContainsKey (typeof (IBT6Mixin2)));
@@ -56,8 +55,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void ExplicitMixinDependencies_NonEmpty ()
     {
-      var mixinContext = new MixinContext (
-          MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, new[] { typeof (BT6Mixin2), typeof (BT6Mixin3<>) });
+      var mixinContext = MixinContextObjectMother.Create (explicitDependencies: new[] { typeof (BT6Mixin2), typeof (BT6Mixin3<>) });
 
       Assert.AreEqual (2, mixinContext.ExplicitDependencies.Count);
       Assert.IsTrue (mixinContext.ExplicitDependencies.ContainsKey (typeof (BT6Mixin2)));
@@ -72,7 +70,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var c1a = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, new[] { typeof (BT6Mixin2), typeof (BT6Mixin3<>) });
       var c1b = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, new[] { typeof (BT6Mixin2), typeof (BT6Mixin3<>) });
       var c1c = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, new[] { typeof (BT6Mixin3<>), typeof (BT6Mixin2) });
-      var c2a = new MixinContext (MixinKind.Used, typeof (BT6Mixin1), MemberVisibility.Public, Enumerable.Empty<Type>());
+      var c2a = new MixinContext (MixinKind.Used, typeof (BT6Mixin1), MemberVisibility.Public, Enumerable.Empty<Type> ());
       var c2b = new MixinContext (MixinKind.Used, typeof (BT6Mixin1), MemberVisibility.Public, Enumerable.Empty<Type> ());
 
       Assert.AreEqual (c1a, c1b);
@@ -102,7 +100,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var c1b = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, new[] { typeof (BT6Mixin2), typeof (BT6Mixin3<>) });
       var c1c = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, new[] { typeof (BT6Mixin3<>), typeof (BT6Mixin2) });
 
-      var c2a = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, Enumerable.Empty<Type>());
+      var c2a = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
       var c2b = new MixinContext (MixinKind.Extending, typeof (BT6Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
 
       var c3a = new MixinContext (MixinKind.Used, typeof (BT6Mixin1), MemberVisibility.Public, new[] { typeof (BT6Mixin3<>), typeof (BT6Mixin2) });
@@ -117,8 +115,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void MixinKindProperty ()
     {
-      var c1 = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
-      var c2 = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      var c1 = MixinContextObjectMother.Create (mixinKind: MixinKind.Extending);
+      var c2 = MixinContextObjectMother.Create (mixinKind: MixinKind.Used);
       Assert.That (c1.MixinKind, Is.EqualTo (MixinKind.Extending));
       Assert.That (c2.MixinKind, Is.EqualTo (MixinKind.Used));
     }
@@ -126,28 +124,37 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     [Test]
     public void IntroducedMemberVisibility_Private ()
     {
-      var context = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      var context = MixinContextObjectMother.Create (introducedMemberVisibility: MemberVisibility.Private);
       Assert.That (context.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
     }
 
     [Test]
     public void IntroducedMemberVisibility_Public ()
     {
-      var context = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, Enumerable.Empty<Type> ());
+      var context = MixinContextObjectMother.Create (introducedMemberVisibility: MemberVisibility.Public);
       Assert.That (context.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Public));
     }
 
     [Test]
     public void Serialize()
     {
+      var mixinKind = MixinKind.Used;
+      var mixinType = typeof (BT1Mixin1);
+      var introducedMemberVisibility = MemberVisibility.Public;
+      var explicitDependencies = new[] { typeof (int), typeof (string) };
+      var context = new MixinContext (
+          mixinKind,
+          mixinType,
+          introducedMemberVisibility,
+          explicitDependencies);
+
       var serializer = MockRepository.GenerateMock<IMixinContextSerializer> ();
-      var context = new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, new[] { typeof (int), typeof (string) });
       context.Serialize (serializer);
 
-      serializer.AssertWasCalled (mock => mock.AddMixinType (typeof (BT1Mixin1)));
-      serializer.AssertWasCalled (mock => mock.AddMixinKind (MixinKind.Used));
-      serializer.AssertWasCalled (mock => mock.AddIntroducedMemberVisibility (MemberVisibility.Public));
-      serializer.AssertWasCalled (mock => mock.AddExplicitDependencies (Arg<IEnumerable<Type>>.List.Equal (new[] {typeof (int), typeof (string) })));
+      serializer.AssertWasCalled (mock => mock.AddMixinType (mixinType));
+      serializer.AssertWasCalled (mock => mock.AddMixinKind (mixinKind));
+      serializer.AssertWasCalled (mock => mock.AddIntroducedMemberVisibility (introducedMemberVisibility));
+      serializer.AssertWasCalled (mock => mock.AddExplicitDependencies (Arg<IEnumerable<Type>>.List.Equal (explicitDependencies)));
     }
 
     [Test]

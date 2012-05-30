@@ -37,8 +37,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
           typeof (LoadableConcreteMixedTypeForBaseType1).GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false)).Single();
       var classContext = attribute.GetClassContext ();
 
-      var expectedContext = ClassContextObjectMother.Create(typeof (BaseType1), 
-                                               new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type>()));
+      var expectedContext = new ClassContext (
+          typeof (BaseType1),
+          new[] { new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ()) },
+          Enumerable.Empty<Type> ());
       Assert.That (classContext, Is.EqualTo (expectedContext));
     }
 
@@ -156,8 +158,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void Roundtrip_WithPublicVisibility_IntegrationTest ()
     {
-      var classContext = ClassContextObjectMother.Create(typeof (BaseType1), 
-                                            new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, Enumerable.Empty<Type>()));
+      var classContext = new ClassContext (
+          typeof (BaseType1), 
+          new[] { new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, Enumerable.Empty<Type>()) },
+          Enumerable.Empty<Type>());
       var attribute = CreateAttribute (classContext);
       var classContext2 = attribute.GetClassContext ();
 

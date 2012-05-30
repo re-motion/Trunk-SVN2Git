@@ -349,13 +349,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
     private static MixinContext CreateBT1Mixin1Context ()
     {
-      return new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      return MixinContextObjectMother.Create (mixinType: typeof (BT1Mixin1));
     }
 
     private static MixinContext CreateBT2Mixin2Context ()
     {
-      return new MixinContext (MixinKind.Extending, typeof (BT1Mixin2), MemberVisibility.Private, Enumerable.Empty<Type> ());
+      return MixinContextObjectMother.Create (mixinType: typeof (BT1Mixin2));
     }
-
   }
 }

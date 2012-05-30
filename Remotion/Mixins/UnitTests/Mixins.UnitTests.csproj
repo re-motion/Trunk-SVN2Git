@@ -334,6 +334,7 @@
     <Compile Include="Core\MixerTools\MixerTest.cs" />
     <Compile Include="Core\MixerTools\Mixer_IntegrationTest.cs" />
     <Compile Include="Core\MixinBaseClassTest.cs" />
+    <Compile Include="Core\MixinContextObjectMother.cs" />
     <Compile Include="Core\MixinTargetMockUtilityTest.cs" />
     <Compile Include="Core\MixinTest.cs" />
     <Compile Include="Core\MixinTypeUtilityTest.cs" />

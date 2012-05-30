@@ -26,7 +26,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain.GeneratedTypes
     {
       MixinContext[] mixins = new MixinContext[1];
       Type[] explicitDependencies = new Type[0];
-      mixins[0] = new MixinContext(MixinKind.Extending, typeof(MixinMixingMixin), MemberVisibility.Private, explicitDependencies);
+      mixins[0] = new MixinContext (MixinKind.Extending, typeof (MixinMixingMixin), MemberVisibility.Private, explicitDependencies);
       Type[] completeInterfaces = new Type[0];
       __classContext = new ClassContext(typeof(MixinMixingClass), mixins, completeInterfaces);
       Type[] expectedMixinTypes = new Type[] { typeof(MixinMixingMixin) };

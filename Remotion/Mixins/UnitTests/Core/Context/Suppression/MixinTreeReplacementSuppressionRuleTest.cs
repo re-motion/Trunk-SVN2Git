@@ -130,7 +130,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Suppression
 
     private Dictionary<Type, MixinContext> CreateContextDictionary (params Type[] types)
     {
-      return types.ToDictionary (type => type, type => new MixinContext (MixinKind.Extending, type, MemberVisibility.Private, Enumerable.Empty<Type>()));
+      return types.ToDictionary (type => type, type => MixinContextObjectMother.Create (mixinType: type));
     }
   }
 }

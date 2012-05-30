@@ -50,8 +50,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     [Test]
     public void AddMixins ()
     {
-      var mixinContext1 = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private, new[] { typeof (int), typeof (string) });
-      var mixinContext2 = new MixinContext (MixinKind.Used, typeof (BT1Mixin2), MemberVisibility.Public, new[] { typeof (object), typeof (DateTime) });
+      var mixinContext1 = MixinContextObjectMother.Create (mixinKind: MixinKind.Extending);
+      var mixinContext2 = MixinContextObjectMother.Create (mixinKind: MixinKind.Used);
       var mixinContexts = new[] { mixinContext1, mixinContext2 };
       _serializer.AddMixins (mixinContexts);
 

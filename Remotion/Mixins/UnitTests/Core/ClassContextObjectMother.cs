@@ -47,7 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core
       {
         if (!mixins.ContainsKey (mixinType))
         {
-          var context = new MixinContext (MixinKind.Extending, mixinType, MemberVisibility.Private, new Type[0]);
+          var context = MixinContextObjectMother.Create (mixinType: mixinType);
           mixins.Add (context.MixinType, context);
         }
         else
