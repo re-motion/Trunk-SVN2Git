@@ -24,7 +24,7 @@ namespace Remotion.Mixins.Context
   /// <summary>
   /// Describes the code artifact (custom attribute, method, etc.) a <see cref="MixinContext"/> was configured by.
   /// </summary>
-  public class MixinContextOrigin
+  public class MixinContextOrigin : IEquatable<MixinContextOrigin>
   {
     public static MixinContextOrigin CreateForCustomAttribute (Attribute attribute, MemberInfo target)
     {
@@ -100,6 +100,30 @@ namespace Remotion.Mixins.Context
       serializer.AddKind (_kind);
       serializer.AddAssembly (_assembly);
       serializer.AddLocation (_location);
+    }
+
+    public bool Equals (MixinContextOrigin other)
+    {
+      if (ReferenceEquals (null, other))
+        return false;
+      if (ReferenceEquals (this, other))
+        return true;
+
+      return
+          GetType() == other.GetType()
+          && Equals (other._kind, _kind)
+          && Equals (other._assembly, _assembly)
+          && Equals (other._location, _location);
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Equals (obj as MixinContextOrigin);
+    }
+
+    public override int GetHashCode ()
+    {
+      return EqualityUtility.GetRotatedHashCode (_kind, _assembly, _location);
     }
   }
 }

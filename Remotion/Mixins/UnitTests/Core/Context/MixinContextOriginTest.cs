@@ -106,5 +106,44 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (origin.Assembly, Is.EqualTo (_someAssembly));
       Assert.That (origin.Location, Is.EqualTo ("some location"));
     }
+
+    [Test]
+    public void Equals_True ()
+    {
+      var origin1 = new MixinContextOrigin ("some kind", GetType ().Assembly, "some location");
+      var origin2 = new MixinContextOrigin ("some kind", GetType ().Assembly, "some location");
+
+      Assert.That (origin1.Equals (origin2), Is.True);
+      Assert.That (origin1.Equals ((object) origin2), Is.True);
+    }
+
+    [Test]
+    public void Equals_False ()
+    {
+      var origin = new MixinContextOrigin ("some kind", GetType ().Assembly, "some location");
+      var originWithDifferentKind = new MixinContextOrigin ("some other kind", GetType ().Assembly, "some location");
+      var originWithDifferentAssembly = new MixinContextOrigin ("some kind", typeof (object).Assembly, "some location");
+      var originWithDifferentLocation = new MixinContextOrigin ("some kind", GetType ().Assembly, "some other location");
+
+      Assert.That (origin.Equals (originWithDifferentKind), Is.False);
+      Assert.That (origin.Equals (originWithDifferentAssembly), Is.False);
+      Assert.That (origin.Equals (originWithDifferentLocation), Is.False);
+      Assert.That (origin.Equals (null), Is.False);
+
+      Assert.That (origin.Equals ((object) originWithDifferentKind), Is.False);
+      Assert.That (origin.Equals ((object) originWithDifferentAssembly), Is.False);
+      Assert.That (origin.Equals ((object) originWithDifferentLocation), Is.False);
+      Assert.That (origin.Equals ((object) null), Is.False);
+      Assert.That (origin.Equals ("some other object"), Is.False);
+    }
+
+    [Test]
+    public void GetHashCode_EqualObjects ()
+    {
+      var origin1 = new MixinContextOrigin ("some kind", GetType ().Assembly, "some location");
+      var origin2 = new MixinContextOrigin ("some kind", GetType ().Assembly, "some location");
+
+      Assert.That (origin1.GetHashCode(), Is.EqualTo (origin2.GetHashCode()));
+    }
   }
 }
