@@ -16,13 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Castle.DynamicProxy.Generators.Emitters.CodeBuilders;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Utilities;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
@@ -31,10 +31,11 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
   /// </summary>
   public class CodeGenerationMixinContextSerializer : IMixinContextSerializer
   {
-    private static readonly ConstructorInfo s_constructor = 
-        typeof (MixinContext).GetConstructor (new[] {typeof (MixinKind), typeof (Type), typeof (MemberVisibility), typeof (IEnumerable<Type>)});
+    private static readonly ConstructorInfo s_constructor =
+        typeof (MixinContext).GetConstructor (
+            new[] { typeof (MixinKind), typeof (Type), typeof (MemberVisibility), typeof (IEnumerable<Type>), typeof (MixinContextOrigin) });
     
-    private readonly Expression[] _constructorArguments = new Expression[4];
+    private readonly Expression[] _constructorArguments = new Expression[5];
     private readonly AbstractCodeBuilder _codeBuilder;
 
     public CodeGenerationMixinContextSerializer (AbstractCodeBuilder codeBuilder)
@@ -70,12 +71,18 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     public void AddExplicitDependencies(IEnumerable<Type> explicitDependencies)
     {
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
-      var explicitDependenciesArray = explicitDependencies.ToArray ();
 
-      ArgumentUtility.CheckNotNull ("explicitDependenciesArray", explicitDependenciesArray);
-      ArgumentUtility.CheckNotNull ("codeBuilder", _codeBuilder);
-      LocalReference arrayLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (explicitDependenciesArray, _codeBuilder, t => new TypeTokenExpression (t));
+      var explicitDependenciesCollection = explicitDependencies.ConvertToCollection();
+      var arrayLocal = CodeGenerationSerializerUtility.DeclareAndFillArrayLocal (explicitDependenciesCollection, _codeBuilder, t => new TypeTokenExpression (t));
       _constructorArguments[3] = arrayLocal.ToExpression();
+    }
+
+    public void AddOrigin (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      var originSerializer = new CodeGenerationMixinContextOriginSerializer();
+      origin.Serialize (originSerializer);
+      _constructorArguments[4] = originSerializer.GetConstructorInvocationExpression();
     }
   }
 }

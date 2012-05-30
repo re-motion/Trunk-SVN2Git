@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Mixins.Context;
 
 namespace Remotion.Mixins.UnitTests.Core
@@ -27,13 +26,15 @@ namespace Remotion.Mixins.UnitTests.Core
         MixinKind mixinKind = MixinKind.Extending,
         Type mixinType = null,
         MemberVisibility introducedMemberVisibility = MemberVisibility.Private,
-        IEnumerable<Type> explicitDependencies = null)
+        IEnumerable<Type> explicitDependencies = null,
+        MixinContextOrigin origin = null)
     {
       return new MixinContext (
           mixinKind,
           mixinType ?? typeof (UnspecifiedType),
           introducedMemberVisibility,
-          explicitDependencies ?? Enumerable.Empty<Type>());
+          explicitDependencies ?? new[] { typeof (object), typeof (string) },
+          origin ?? MixinContextOriginObjectMother.Create());
     }
 
     private class UnspecifiedType { }

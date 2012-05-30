@@ -26,7 +26,7 @@ namespace Remotion.Mixins.Context.Serialization
   /// </summary>
   public class AttributeMixinContextSerializer : IMixinContextSerializer
   {
-    private readonly object[] _values = new object[4];
+    private readonly object[] _values = new object[5];
 
     public object[] Values
     {
@@ -51,7 +51,17 @@ namespace Remotion.Mixins.Context.Serialization
 
     public void AddExplicitDependencies(IEnumerable<Type> explicitDependencies)
     {
+      ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
       Values[3] = explicitDependencies.ToArray ();
+    }
+
+    public void AddOrigin (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
+      var originSerializer = new AttributeMixinContextOriginSerializer();
+      origin.Serialize (originSerializer);
+      Values[4] = originSerializer.Values;
     }
   }
 }

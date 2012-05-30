@@ -55,5 +55,12 @@ namespace Remotion.Mixins.Context.Serialization
 
       AddTypes ("ExplicitDependencies", explicitDependencies);
     }
+
+    public void AddOrigin (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      var originSerializer = new SerializationInfoMixinContextOriginSerializer (Info, Prefix + ".Origin");
+      origin.Serialize (originSerializer);
+    }
   }
 }

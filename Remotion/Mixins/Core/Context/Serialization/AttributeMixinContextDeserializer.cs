@@ -25,7 +25,7 @@ namespace Remotion.Mixins.Context.Serialization
   public class AttributeMixinContextDeserializer : AttributeDeserializerBase, IMixinContextDeserializer
   {
     public AttributeMixinContextDeserializer (object[] values)
-        : base (values, 4)
+        : base (values, 5)
     {
     }
 
@@ -47,6 +47,12 @@ namespace Remotion.Mixins.Context.Serialization
     public IEnumerable<Type> GetExplicitDependencies()
     {
       return GetValue<Type[]> (3);
+    }
+
+    public MixinContextOrigin GetOrigin ()
+    {
+      var originDeserializer = new AttributeMixinContextOriginDeserializer (GetValue<object[]> (4));
+      return MixinContextOrigin.Deserialize (originDeserializer);
     }
   }
 }

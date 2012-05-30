@@ -199,8 +199,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public virtual MixinContextBuilder ReplaceMixin (Type replacedMixinType)
     {
       ArgumentUtility.CheckNotNull ("replacedMixinType", replacedMixinType);
+      Assertion.IsNotNull (_mixinType);
 
-      if (replacedMixinType == MixinType || (MixinType.IsGenericType && replacedMixinType == MixinType.GetGenericTypeDefinition()))
+      if (replacedMixinType == _mixinType || (_mixinType.IsGenericType && replacedMixinType == _mixinType.GetGenericTypeDefinition ()))
       {
         string message = string.Format ("Mixin type '{0}' applied to target class '{1}' suppresses itself.", _mixinType, _parent.TargetType);
         throw new InvalidOperationException (message);
@@ -268,8 +269,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <returns>A <see cref="MixinContext"/> holding all mixin configuration data collected so far.</returns>
     public virtual MixinContext BuildMixinContext ()
     {
-      MixinContext mixinContext = new MixinContext (_mixinKind, _mixinType, _introducedMemberVisiblity, _dependencies);
-      return mixinContext;
+      // TODO 1554: TODO
+      var origin = new MixinContextOrigin ("Imperative configuration API", typeof (MixinContextBuilder).Assembly, "unknown");
+      return new MixinContext (_mixinKind, _mixinType, _introducedMemberVisiblity, _dependencies, origin);
     }
 
     #region Parent members

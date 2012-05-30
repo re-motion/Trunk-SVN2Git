@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Utilities;
 
@@ -37,19 +38,19 @@ namespace Remotion.Mixins.Context
           deserializer.GetMixinKind (),
           deserializer.GetMixinType (),
           deserializer.GetIntroducedMemberVisibility (),
-          deserializer.GetExplicitDependencies ()
+          deserializer.GetExplicitDependencies (),
+          deserializer.GetOrigin()
         );
     }
 
     private readonly Type _mixinType;
     private readonly MixinKind _mixinKind;
-
-    private readonly ReadOnlyContextCollection<Type, Type> _explicitDependencies;
     private readonly MemberVisibility _introducedMemberVisibility;
+    private readonly ReadOnlyContextCollection<Type, Type> _explicitDependencies;
+    private readonly MixinContextOrigin _origin;
 
     private readonly int _cachedHashCode;
 
-    // TODO 1554: Remove
     /// <summary>
     /// Initializes a new instance of the <see cref="MixinContext"/> class.
     /// </summary>
@@ -57,54 +58,36 @@ namespace Remotion.Mixins.Context
     /// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
     /// <param name="introducedMemberVisibility">The default visbility of introduced members.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
-    public MixinContext (MixinKind mixinKind, Type mixinType, MemberVisibility introducedMemberVisibility, IEnumerable<Type> explicitDependencies)
+    /// <param name="origin">
+    /// A description of where the <see cref="MixinContext"/> originates from. Note that <paramref name="origin"/> is not considered when comparing 
+    /// <see cref="MixinContext"/> objects for equality.
+    /// </param>
+    public MixinContext (
+        MixinKind mixinKind,
+        Type mixinType,
+        MemberVisibility introducedMemberVisibility,
+        IEnumerable<Type> explicitDependencies,
+        MixinContextOrigin origin)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
+      ArgumentUtility.CheckNotNull ("origin", origin);
 
       _mixinType = mixinType;
       _mixinKind = mixinKind;
       _introducedMemberVisibility = introducedMemberVisibility;
-
       _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (t => t, explicitDependencies);
+      _origin = origin;
 
-      _cachedHashCode = EqualityUtility.GetRotatedHashCode (_mixinKind, _mixinType, EqualityUtility.GetXorHashCode (ExplicitDependencies), 
+      _cachedHashCode = EqualityUtility.GetRotatedHashCode (
+          _mixinKind,
+          _mixinType,
+          EqualityUtility.GetXorHashCode (ExplicitDependencies),
           IntroducedMemberVisibility);
     }
 
-    ///// <summary>
-    ///// Initializes a new instance of the <see cref="MixinContext"/> class.
-    ///// </summary>
-    ///// <param name="mixinKind">The kind of relationship the configured mixin has with its target class.</param>
-    ///// <param name="mixinType">The mixin type represented by this <see cref="MixinContext"/>.</param>
-    ///// <param name="introducedMemberVisibility">The default visbility of introduced members.</param>
-    ///// <param name="explicitDependencies">The explicit dependencies of the mixin.</param>
-    ///// <param name="origin">
-    ///// A description of where the <see cref="MixinContext"/> stems from. Note that <paramref name="origin"/> is not considered when comparing 
-    ///// <see cref="MixinContext"/> objects for equality.
-    ///// </param>
-    //public MixinContext (
-    //    MixinKind mixinKind,
-    //    Type mixinType,
-    //    MemberVisibility introducedMemberVisibility,
-    //    IEnumerable<Type> explicitDependencies,
-    //    MixinContextOrigin origin)
-    //{
-    //  ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-    //  ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
-
-    //  _mixinType = mixinType;
-    //  _mixinKind = mixinKind;
-    //  _introducedMemberVisibility = introducedMemberVisibility;
-
-    //  _explicitDependencies = new ReadOnlyContextCollection<Type, Type> (t => t, explicitDependencies);
-
-    //  _cachedHashCode = EqualityUtility.GetRotatedHashCode (_mixinKind, _mixinType, EqualityUtility.GetXorHashCode (ExplicitDependencies),
-    //      IntroducedMemberVisibility);
-    //}
-
     /// <summary>
-    /// Determines whether the specified <see cref="T:System.Object"></see> is equal to the current <see cref="MixinContext"/>.
+    /// Determines whether the specified <see cref="T:System.Object"></see> is equal to the current <see cref="MixinContext"/>. The 
     /// </summary>
     /// <param name="obj">The <see cref="T:System.Object"></see> to compare with this <see cref="MixinContext"/>.</param>
     /// <returns>
@@ -123,12 +106,7 @@ namespace Remotion.Mixins.Context
         || other.ExplicitDependencies.Count != ExplicitDependencies.Count)
         return false;
 
-      foreach (Type explicitDependency in ExplicitDependencies)
-      {
-        if (!other.ExplicitDependencies.ContainsKey (explicitDependency))
-          return false;
-      }
-      return true;
+      return ExplicitDependencies.All (explicitDependency => other.ExplicitDependencies.ContainsKey (explicitDependency));
     }
 
     /// <summary>
@@ -140,27 +118,6 @@ namespace Remotion.Mixins.Context
     public override int GetHashCode ()
     {
       return _cachedHashCode;
-    }
-
-    /// <summary>
-    /// Gets the explicit dependencies added to this <see cref="MixinContext"/>.
-    /// </summary>
-    /// <value>The explicit dependencies added to this <see cref="MixinContext"/>.</value>
-    /// <remarks>An explicit dependency is a base call dependency which should be considered for a mixin even though it is not expressed in the
-    /// mixin's class declaration. This can be used to define the ordering of mixins in specific mixin configurations.</remarks>
-    public ReadOnlyContextCollection<Type, Type> ExplicitDependencies
-    {
-      get { return _explicitDependencies; }
-    }
-
-
-    /// <summary>
-    /// Gets the default visibility of members introduced by this mixin.
-    /// </summary>
-    /// <value>The default introduced member visibility.</value>
-    public MemberVisibility IntroducedMemberVisibility
-    {
-      get { return _introducedMemberVisibility; }
     }
 
     /// <summary>
@@ -179,13 +136,45 @@ namespace Remotion.Mixins.Context
       get { return _mixinKind; }
     }
 
+    /// <summary>
+    /// Gets the default visibility of members introduced by this mixin.
+    /// </summary>
+    /// <value>The default introduced member visibility.</value>
+    public MemberVisibility IntroducedMemberVisibility
+    {
+      get { return _introducedMemberVisibility; }
+    }
+
+    /// <summary>
+    /// Gets the explicit dependencies added to this <see cref="MixinContext"/>.
+    /// </summary>
+    /// <value>The explicit dependencies added to this <see cref="MixinContext"/>.</value>
+    /// <remarks>An explicit dependency is a base call dependency which should be considered for a mixin even though it is not expressed in the
+    /// mixin's class declaration. This can be used to define the ordering of mixins in specific mixin configurations.</remarks>
+    public ReadOnlyContextCollection<Type, Type> ExplicitDependencies
+    {
+      get { return _explicitDependencies; }
+    }
+
+    /// <summary>
+    /// Gets a description of where this <see cref="MixinContext"/> originates from. This member is not considered when comparing two 
+    /// <see cref="MixinContext"/> instances for equality.
+    /// </summary>
+    /// <value>The <see cref="MixinContext"/>'s origin.</value>
+    public MixinContextOrigin Origin
+    {
+      get { return _origin; }
+    }
+
     public void Serialize (IMixinContextSerializer serializer)
     {
       ArgumentUtility.CheckNotNull ("serializer", serializer);
-      serializer.AddMixinType (MixinType);
-      serializer.AddMixinKind (MixinKind);
-      serializer.AddIntroducedMemberVisibility (IntroducedMemberVisibility);
-      serializer.AddExplicitDependencies (ExplicitDependencies);
+
+      serializer.AddMixinType (_mixinType);
+      serializer.AddMixinKind (_mixinKind);
+      serializer.AddIntroducedMemberVisibility (_introducedMemberVisibility);
+      serializer.AddExplicitDependencies (_explicitDependencies);
+      serializer.AddOrigin (_origin);
     }
   }
 }

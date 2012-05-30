@@ -14,30 +14,16 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.UnitTests.Core.TestDomain;
+using System.Reflection;
+using Remotion.Mixins.Context;
 
-namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain
+namespace Remotion.Mixins.UnitTests.Core
 {
-  [ConcreteMixedType (
-      new object[] 
-      {
-        typeof (BaseType1), 
-        new object[] 
-        { 
-          new object[] 
-          {
-              typeof (BT1Mixin1), 
-              MixinKind.Used, 
-              MemberVisibility.Private, 
-              new Type[0],
-              new object[] { "some kind", "mscorlib", "some location" }
-          }
-        }, 
-        new Type[0] 
-      }, 
-      new[] { typeof (BT1Mixin1) })]
-  public class LoadableConcreteMixedTypeForBaseType1
-  { }
+  public static class MixinContextOriginObjectMother
+  {
+    public static MixinContextOrigin Create (string kind = "some kind", Assembly assembly = null, string location = "some location")
+    {
+      return new MixinContextOrigin (kind, assembly ?? typeof (MixinContextOriginObjectMother).Assembly, location);
+    }
+  }
 }

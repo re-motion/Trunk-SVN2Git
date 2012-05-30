@@ -25,5 +25,6 @@ namespace Remotion.Mixins.Context.Serialization
     MixinKind GetMixinKind ();
     MemberVisibility GetIntroducedMemberVisibility ();
     IEnumerable<Type> GetExplicitDependencies ();
+    MixinContextOrigin GetOrigin ();
   }
 }

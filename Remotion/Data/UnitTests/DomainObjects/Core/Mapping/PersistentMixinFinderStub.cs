@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Mixins;
 using Remotion.Mixins.Context;
@@ -26,7 +27,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   {
     private static ClassContext CreateClassContext (Type classType, Type[] persistentMixins)
     {
-      var mixinContexts = persistentMixins.Select (t => new MixinContext (MixinKind.Extending, t, MemberVisibility.Private, Enumerable.Empty<Type> ()));
+      var mixinContexts =
+          persistentMixins.Select (
+              t =>
+              new MixinContext (
+                  MixinKind.Extending,
+                  t,
+                  MemberVisibility.Private,
+                  Enumerable.Empty<Type>(),
+                  MixinContextOrigin.CreateForMethod (MethodBase.GetCurrentMethod())));
       return new ClassContext (classType, mixinContexts, Enumerable.Empty<Type> ());
     }
 

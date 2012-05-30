@@ -39,9 +39,19 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       var expectedContext = new ClassContext (
           typeof (BaseType1),
-          new[] { new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Private, Enumerable.Empty<Type> ()) },
+          new[]
+          {
+              new MixinContext (
+                  MixinKind.Used,
+                  typeof (BT1Mixin1),
+                  MemberVisibility.Private,
+                  Enumerable.Empty<Type>(),
+                  new MixinContextOrigin ("some kind", typeof (object).Assembly, "some location")
+              )
+          },
           Enumerable.Empty<Type> ());
       Assert.That (classContext, Is.EqualTo (expectedContext));
+      Assert.That (classContext.Mixins.Single().Origin, Is.EqualTo (expectedContext.Mixins.Single().Origin));
     }
 
     [Test]
@@ -160,7 +170,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     {
       var classContext = new ClassContext (
           typeof (BaseType1), 
-          new[] { new MixinContext (MixinKind.Used, typeof (BT1Mixin1), MemberVisibility.Public, Enumerable.Empty<Type>()) },
+          new[] { MixinContextObjectMother.Create() },
           Enumerable.Empty<Type>());
       var attribute = CreateAttribute (classContext);
       var classContext2 = attribute.GetClassContext ();

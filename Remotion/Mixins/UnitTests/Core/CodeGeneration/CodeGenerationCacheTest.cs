@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       _mixinTypeGeneratorMock = _mockRepository.StrictMock<IMixinTypeGenerator>();
 
       _cache = new CodeGenerationCache ();
-      _targetClassContext = ClassContextObjectMother.Create(typeof (BaseType1), typeof (BT1Mixin1));
+      _targetClassContext = ClassContextObjectMother.Create (typeof (BaseType1), typeof (BT1Mixin1));
 
       var mixinDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1)).Mixins[0];
       _concreteMixinTypeIdentifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();

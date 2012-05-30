@@ -1,5 +1,22 @@
-﻿using System;
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
@@ -26,7 +43,12 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain.GeneratedTypes
     {
       MixinContext[] mixins = new MixinContext[1];
       Type[] explicitDependencies = new Type[0];
-      mixins[0] = new MixinContext(MixinKind.Extending, typeof(MixinMixingClass), MemberVisibility.Private, explicitDependencies);
+      mixins[0] = new MixinContext (
+          MixinKind.Extending,
+          typeof (MixinMixingClass),
+          MemberVisibility.Private,
+          explicitDependencies,
+          new MixinContextOrigin ("some kind", Assembly.Load ("mscorlib"), "some location"));
       Type[] completeInterfaces = new Type[0];
       __classContext = new ClassContext(typeof(ClassWithMixedMixin), mixins, completeInterfaces);
       Type[] expectedMixinTypes = new Type[] { typeof(MixinMixingClass) };

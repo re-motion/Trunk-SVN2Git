@@ -49,5 +49,11 @@ namespace Remotion.Mixins.Context.Serialization
     {
       return GetTypes ("ExplicitDependencies");
     }
+
+    public MixinContextOrigin GetOrigin ()
+    {
+      var originDeserializer = new SerializationInfoMixinContextOriginDeserializer (Info, Prefix + ".Origin");
+      return MixinContextOrigin.Deserialize (originDeserializer);
+    }
   }
 }

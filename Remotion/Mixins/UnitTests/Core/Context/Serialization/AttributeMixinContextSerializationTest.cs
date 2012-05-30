@@ -33,7 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     {
       _serializer = new AttributeMixinContextSerializer ();
       _deserializer = new AttributeMixinContextDeserializer (_serializer.Values);
-      _invalidDeserializer = new AttributeMixinContextDeserializer (new object[] {1, 2, 3, 4});
+      _invalidDeserializer = new AttributeMixinContextDeserializer (new object[] {1, 2, 3, 4, 5});
     }
 
     [Test]
@@ -65,7 +65,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Expected an array with 4 elements.\r\nParameter name: values")]
+    public void AddOrigin ()
+    {
+      var mixinContextOrigin = MixinContextOriginObjectMother.Create();
+      _serializer.AddOrigin (mixinContextOrigin);
+      if (mixinContextOrigin != null)
+        Assert.That (_deserializer.GetOrigin (), Is.EqualTo (mixinContextOrigin));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Expected an array with 5 elements.\r\nParameter name: values")]
     public void Deserializer_InvalidArray()
     {
       new AttributeMixinContextDeserializer (new[] { "x" });
@@ -101,6 +110,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     public void GetExplicitDependencies_Invalid ()
     {
       _invalidDeserializer.GetExplicitDependencies ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (SerializationException),
+        ExpectedMessage = "Expected value of type 'System.Object[]' at index 4 in the values array, but found 'System.Int32'.")]
+    public void GetOrigin_Invalid ()
+    {
+      _invalidDeserializer.GetOrigin ();
     }
   }
 }

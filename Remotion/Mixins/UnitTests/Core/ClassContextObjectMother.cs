@@ -47,7 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core
       {
         if (!mixins.ContainsKey (mixinType))
         {
-          var context = MixinContextObjectMother.Create (mixinType: mixinType);
+          var context = MixinContextObjectMother.Create (mixinType: mixinType, explicitDependencies: Enumerable.Empty<Type> ());
           mixins.Add (context.MixinType, context);
         }
         else

@@ -31,8 +31,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     [Test]
     public void IntegrationTest()
     {
-      var referenceMixinContext1 = new MixinContext (MixinKind.Extending, typeof (BT1Mixin1), MemberVisibility.Private, new[] { typeof (string), typeof (double) });
-      var referenceMixinContext2 = new MixinContext (MixinKind.Used, typeof (BT1Mixin2), MemberVisibility.Public, Enumerable.Empty<Type>());
+      var referenceMixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (BT1Mixin1));
+      var referenceMixinContext2 = MixinContextObjectMother.Create (mixinType: typeof (BT1Mixin2));
       var referenceClassContext = new ClassContext (typeof (BaseType1), new[] { referenceMixinContext1, referenceMixinContext2 }, new[] { typeof (DateTime) });
 
       var module = ((ModuleManager) (SavedTypeBuilder.Scope)).Scope.ObtainDynamicModuleWithWeakName ();

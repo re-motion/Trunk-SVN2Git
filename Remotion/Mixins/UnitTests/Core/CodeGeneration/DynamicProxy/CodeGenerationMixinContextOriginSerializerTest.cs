@@ -47,9 +47,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       Type compiledType = type.CreateType ();
       var result = (MixinContextOrigin) compiledType.GetMethod ("Test").Invoke (null, null);
 
-      Assert.That (result.Kind, Is.EqualTo ("some kind"));
-      Assert.That (result.Assembly, Is.SameAs (someAssembly));
-      Assert.That (result.Location, Is.EqualTo ("some location"));
+      Assert.That (result, Is.EqualTo (referenceContextOrigin));
     }
   }
 }

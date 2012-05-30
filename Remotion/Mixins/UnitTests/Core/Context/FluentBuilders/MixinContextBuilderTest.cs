@@ -285,6 +285,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     }
 
     [Test]
+    public void BuildContext_UnspecifiedOrigin ()
+    {
+      MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
+      var expectedOrigin = new MixinContextOrigin ("Imperative configuration API", typeof (MixinContextBuilder).Assembly, "unknown");
+      Assert.That (mixinContext.Origin, Is.EqualTo (expectedOrigin));
+    }
+
+    [Test]
     public void ParentMembers ()
     {
       _mockRepository.BackToRecordAll ();

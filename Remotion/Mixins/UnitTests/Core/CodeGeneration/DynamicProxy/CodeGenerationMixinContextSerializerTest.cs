@@ -29,7 +29,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     [Test]
     public void IntegrationTest()
     {
-      var referenceContext = new MixinContext (MixinKind.Extending, typeof (int), MemberVisibility.Private, new[] {typeof (string), typeof (double)});
+      var referenceContext = MixinContextObjectMother.Create();
 
       var module = ((ModuleManager) (SavedTypeBuilder.Scope)).Scope.ObtainDynamicModuleWithWeakName ();
       var type = module.DefineType ("CodeGenerationMixinContextSerializerTest.IntegrationTest");
@@ -44,9 +44,10 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       emitter.Generate ();
 
       Type compiledType = type.CreateType ();
-      object result = compiledType.GetMethod ("Test").Invoke (null, null);
+      var result = (MixinContext) compiledType.GetMethod ("Test").Invoke (null, null);
 
       Assert.That (result, Is.EqualTo (referenceContext));
+      Assert.That (result.Origin, Is.EqualTo (referenceContext.Origin));
     }
   }
 }

@@ -55,6 +55,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     }
 
     [Test]
+    public void AddIntroducedMemberVisibility ()
+    {
+      _serializer.AddIntroducedMemberVisibility (MemberVisibility.Public);
+      Assert.That (_info.GetValue ("M1.IntroducedMemberVisibility", typeof (MemberVisibility)), Is.EqualTo (MemberVisibility.Public));
+      Assert.That (_deserializer.GetIntroducedMemberVisibility (), Is.EqualTo (MemberVisibility.Public));
+    }
+
+    [Test]
     public void AddExplicitDependencies ()
     {
       _serializer.AddExplicitDependencies (new[] {typeof (int), typeof (string)});
@@ -64,11 +72,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.Serialization
     }
 
     [Test]
-    public void AddIntroducedMemberVisibility()
+    public void AddOrigin ()
     {
-      _serializer.AddIntroducedMemberVisibility (MemberVisibility.Public);
-      Assert.That (_info.GetValue ("M1.IntroducedMemberVisibility", typeof (MemberVisibility)), Is.EqualTo (MemberVisibility.Public));
-      Assert.That (_deserializer.GetIntroducedMemberVisibility (), Is.EqualTo (MemberVisibility.Public));
+      var origin = MixinContextOriginObjectMother.Create();
+
+      _serializer.AddOrigin (origin);
+
+      Assert.That (_info.GetString ("M1.Origin.Kind"), Is.EqualTo (origin.Kind));
+      Assert.That (_deserializer.GetOrigin(), Is.EqualTo (origin));
     }
   }
 }
