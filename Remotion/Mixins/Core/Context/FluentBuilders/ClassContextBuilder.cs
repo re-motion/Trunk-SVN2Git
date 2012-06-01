@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
 
@@ -119,155 +121,149 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// Collects the given type as a mixin for the <see cref="TargetType"/>.
     /// </summary>
     /// <param name="mixinType">The mixin type to collect.</param>
-    /// <returns>A <see cref="MixinContextBuilder"/> object for further configuration of the mixin.</returns>
-    public virtual MixinContextBuilder AddMixin (Type mixinType)
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <returns>
+    /// A <see cref="MixinContextBuilder"/> object for further configuration of the mixin.
+    /// </returns>
+    public virtual MixinContextBuilder AddMixin (Type mixinType, MixinContextOrigin origin)
     {
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
       if (AlreadyAppliedSame (mixinType))
       {
         Type mixinTypeForException = mixinType.IsGenericType ? mixinType.GetGenericTypeDefinition() : mixinType;
+        Assertion.IsNotNull (mixinTypeForException);
         throw new ArgumentException (
             string.Format ("{0} is already configured as a mixin for type {1}.", mixinTypeForException.FullName, TargetType.FullName), "mixinType");
       }
 
-      var mixinContextBuilder = new MixinContextBuilder (this, mixinType);
+      var mixinContextBuilder = new MixinContextBuilder (this, mixinType, origin);
       _mixinContextBuilders.Add (mixinType, mixinContextBuilder);
       return mixinContextBuilder;
     }
 
-    private bool AlreadyAppliedSame (Type mixinType)
+    /// <summary>
+    /// Collects the given type as a mixin for the <see cref="TargetType"/>, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
+    /// </summary>
+    /// <param name="mixinType">The mixin type to collect.</param>
+    /// <returns>
+    /// A <see cref="MixinContextBuilder"/> object for further configuration of the mixin.
+    /// </returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public MixinContextBuilder AddMixin (Type mixinType)
     {
-      if (_mixinContextBuilders.ContainsKey (mixinType))
-        return true;
-
-      if (!mixinType.IsGenericType)
-        return false;
-
-      Type typeDefinition = mixinType.GetGenericTypeDefinition();
-
-      foreach (MixinContextBuilder mixinContextBuilder in MixinContextBuilders)
-      {
-        if (mixinContextBuilder.MixinType.IsGenericType && mixinContextBuilder.MixinType.GetGenericTypeDefinition() == typeDefinition)
-          return true;
-      }
-
-      return false;
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddMixin (mixinType, origin);
     }
 
     /// <summary>
     /// Collects the given type as a mixin for the <see cref="TargetType"/>.
     /// </summary>
     /// <typeparam name="TMixin">The mixin type to collect.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
     /// <returns>A <see cref="MixinContextBuilder"/> object for further configuration of the mixin.</returns>
-    public virtual MixinContextBuilder AddMixin<TMixin> ()
+    public virtual MixinContextBuilder AddMixin<TMixin> (MixinContextOrigin origin)
     {
-      return AddMixin (typeof (TMixin));
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      return AddMixin (typeof (TMixin), origin);
     }
 
     /// <summary>
-    /// Collects the given types as mixins for the <see cref="TargetType"/>.
-    /// </summary>
-    /// <param name="mixinTypes">The mixin types to collect.</param>
-    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddMixins (params Type[] mixinTypes)
-    {
-      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
-      foreach (Type mixinType in mixinTypes)
-        AddMixin (mixinType);
-      return this;
-    }
-
-    /// <summary>
-    /// Collects the given types as mixins for the <see cref="TargetType"/>.
-    /// </summary>
-    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
-    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
-    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddMixins<TMixin1, TMixin2> ()
-    {
-      return AddMixins (typeof (TMixin1), typeof (TMixin2));
-    }
-
-    /// <summary>
-    /// Collects the given types as mixins for the <see cref="TargetType"/>.
-    /// </summary>
-    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
-    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
-    /// <typeparam name="TMixin3">The third mixin type to collect.</typeparam>
-    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddMixins<TMixin1, TMixin2, TMixin3> ()
-    {
-      return AddMixins (typeof (TMixin1), typeof (TMixin2), typeof (TMixin3));
-    }
-
-    /// <summary>
-    /// Ensures that the given type is configured as a mixin for the <see cref="TargetType"/>, adding it if necessary. The mixin will not be
-    /// added if it has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, it will override corresponding
-    /// mixins inherited from a base type.
-    /// </summary>
-    /// <param name="mixinType">The mixin type to collect.</param>
-    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual MixinContextBuilder EnsureMixin (Type mixinType)
-    {
-      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      MixinContextBuilder builder;
-      if (!_mixinContextBuilders.TryGetValue (mixinType, out builder))
-        builder = AddMixin (mixinType);
-      return builder;
-    }
-
-    /// <summary>
-    /// Ensures that the given type is configured as a mixin for the <see cref="TargetType"/>, adding it if necessary. The mixin will not be
-    /// added if it has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, it will override corresponding
-    /// mixins inherited from a base type.
+    /// Collects the given type as a mixin for the <see cref="TargetType"/>, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
     /// </summary>
     /// <typeparam name="TMixin">The mixin type to collect.</typeparam>
-    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual MixinContextBuilder EnsureMixin<TMixin>()
+    /// <returns>A <see cref="MixinContextBuilder"/> object for further configuration of the mixin.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public MixinContextBuilder AddMixin<TMixin> ()
     {
-      return EnsureMixin (typeof (TMixin));
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddMixin<TMixin> (origin);
     }
 
     /// <summary>
-    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary. The mixins will not be
-    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
-    /// mixins inherited from a base type.
+    /// Collects the given types as mixins for the <see cref="TargetType"/>.
     /// </summary>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
     /// <param name="mixinTypes">The mixin types to collect.</param>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder EnsureMixins (params Type[] mixinTypes)
+    public virtual ClassContextBuilder AddMixins (MixinContextOrigin origin, params Type[] mixinTypes)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
+      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
       foreach (Type mixinType in mixinTypes)
-        EnsureMixin (mixinType);
+        AddMixin (mixinType, origin);
       return this;
     }
 
     /// <summary>
-    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary. The mixins will not be
-    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
-    /// mixins inherited from a base type.
+    /// Collects the given types as mixins for the <see cref="TargetType"/>, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
+    /// </summary>
+    /// <param name="mixinTypes">The mixin types to collect.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder AddMixins (params Type[] mixinTypes)
+    {
+      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
+
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddMixins (origin, mixinTypes);
+    }
+
+    /// <summary>
+    /// Collects the given types as mixins for the <see cref="TargetType"/>.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder AddMixins<TMixin1, TMixin2> (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
+      return AddMixins (origin, typeof (TMixin1), typeof (TMixin2));
+    }
+
+    /// <summary>
+    /// Collects the given types as mixins for the <see cref="TargetType"/>, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
     /// </summary>
     /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
     /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder EnsureMixins<TMixin1, TMixin2> ()
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder AddMixins<TMixin1, TMixin2> ()
     {
-      return EnsureMixins (typeof (TMixin1), typeof (TMixin2));
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddMixins<TMixin1, TMixin2> (origin);
     }
 
     /// <summary>
-    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary. The mixins will not be
-    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
-    /// mixins inherited from a base type.
+    /// Collects the given types as mixins for the <see cref="TargetType"/>.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin3">The third mixin type to collect.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder AddMixins<TMixin1, TMixin2, TMixin3> (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      return AddMixins (origin, typeof (TMixin1), typeof (TMixin2), typeof (TMixin3));
+    }
+
+    /// <summary>
+    /// Collects the given types as mixins for the <see cref="TargetType"/>, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
     /// </summary>
     /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
     /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
     /// <typeparam name="TMixin3">The third mixin type to collect.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder EnsureMixins<TMixin1, TMixin2, TMixin3> ()
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder AddMixins<TMixin1, TMixin2, TMixin3> ()
     {
-      return EnsureMixins (typeof (TMixin1), typeof (TMixin2), typeof (TMixin3));
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddMixins<TMixin1, TMixin2, TMixin3> (origin);
     }
 
     /// <summary>
@@ -275,14 +271,17 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// order.
     /// </summary>
     /// <param name="mixinTypes">The mixin types to collect with dependencies.</param>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddOrderedMixins (params Type[] mixinTypes)
+    public virtual ClassContextBuilder AddOrderedMixins (MixinContextOrigin origin, params Type[] mixinTypes)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
+      
       Type lastMixinType = null;
       foreach (Type mixinType in mixinTypes)
       {
-        MixinContextBuilder mixinContextBuilder = AddMixin (mixinType);
+        MixinContextBuilder mixinContextBuilder = AddMixin (mixinType, origin);
         if (lastMixinType != null)
           mixinContextBuilder.WithDependency (lastMixinType);
         lastMixinType = mixinType;
@@ -292,14 +291,45 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
     /// <summary>
     /// Collects the given types as mixins for the <see cref="TargetType"/> and adds dependencies between the mixins to ensure a proper base call
+    /// order, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
+    /// </summary>
+    /// <param name="mixinTypes">The mixin types to collect with dependencies.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder AddOrderedMixins (params Type[] mixinTypes)
+    {
+      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
+
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddOrderedMixins (origin, mixinTypes);
+    }
+
+    /// <summary>
+    /// Collects the given types as mixins for the <see cref="TargetType"/> and adds dependencies between the mixins to ensure a proper base call
     /// order.
     /// </summary>
     /// <typeparam name="TMixin1">The first mixin type to collect with dependencies.</typeparam>
     /// <typeparam name="TMixin2">The second mixin type to collect with dependencies.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2> ()
+    public virtual ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2> (MixinContextOrigin origin)
     {
-      return AddOrderedMixins (typeof (TMixin1), typeof (TMixin2));
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      return AddOrderedMixins (origin, typeof (TMixin1), typeof (TMixin2));
+    }
+
+    /// <summary>
+    /// Collects the given types as mixins for the <see cref="TargetType"/> and adds dependencies between the mixins to ensure a proper base call
+    /// order, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect with dependencies.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect with dependencies.</typeparam>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2> ()
+    {
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddOrderedMixins<TMixin1, TMixin2> (origin);
     }
 
     /// <summary>
@@ -309,10 +339,190 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <typeparam name="TMixin1">The first mixin type to collect with dependencies.</typeparam>
     /// <typeparam name="TMixin2">The second mixin type to collect with dependencies.</typeparam>
     /// <typeparam name="TMixin3">The third mixin type to collect with dependencies.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2, TMixin3> ()
+    public virtual ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2, TMixin3> (MixinContextOrigin origin)
     {
-      return AddOrderedMixins (typeof (TMixin1), typeof (TMixin2), typeof (TMixin3));
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      return AddOrderedMixins (origin, typeof (TMixin1), typeof (TMixin2), typeof (TMixin3));
+    }
+
+    /// <summary>
+    /// Collects the given types as mixins for the <see cref="TargetType"/> and adds dependencies between the mixins to ensure a proper base call
+    /// order, using the calling method as <see cref="MixinContextBuilder.Origin"/>.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect with dependencies.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect with dependencies.</typeparam>
+    /// <typeparam name="TMixin3">The third mixin type to collect with dependencies.</typeparam>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder AddOrderedMixins<TMixin1, TMixin2, TMixin3> ()
+    {
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddOrderedMixins<TMixin1, TMixin2, TMixin3> (origin);
+    }
+
+    /// <summary>
+    /// Ensures that the given type is configured as a mixin for the <see cref="TargetType"/>, adding it if necessary. The mixin will not be
+    /// added if it has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, it will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <param name="mixinType">The mixin type to collect.</param>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual MixinContextBuilder EnsureMixin (Type mixinType, MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
+      MixinContextBuilder builder;
+      if (!_mixinContextBuilders.TryGetValue (mixinType, out builder))
+        builder = AddMixin (mixinType, origin);
+      return builder;
+    }
+
+    /// <summary>
+    /// Ensures that the given type is configured as a mixin for the <see cref="TargetType"/>, adding it if necessary, 
+    /// using the calling method as <see cref="MixinContextBuilder.Origin"/>. The mixin will not be
+    /// added if it has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, it will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <param name="mixinType">The mixin type to collect.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public MixinContextBuilder EnsureMixin (Type mixinType)
+    {
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return EnsureMixin (mixinType, origin);
+    }
+
+    /// <summary>
+    /// Ensures that the given type is configured as a mixin for the <see cref="TargetType"/>, adding it if necessary. The mixin will not be
+    /// added if it has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, it will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <typeparam name="TMixin">The mixin type to collect.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual MixinContextBuilder EnsureMixin<TMixin>  (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      return EnsureMixin (typeof (TMixin), origin);
+    }
+
+    /// <summary>
+    /// Ensures that the given type is configured as a mixin for the <see cref="TargetType"/>, adding it if necessary, 
+    /// using the calling method as <see cref="MixinContextBuilder.Origin"/>. The mixin will not be
+    /// added if it has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, it will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <typeparam name="TMixin">The mixin type to collect.</typeparam>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public MixinContextBuilder EnsureMixin<TMixin> ()
+    {
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return EnsureMixin<TMixin> (origin);
+    }
+
+    /// <summary>
+    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary. The mixins will not be
+    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <param name="mixinTypes">The mixin types to collect.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder EnsureMixins (MixinContextOrigin origin, params Type[] mixinTypes)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
+      foreach (Type mixinType in mixinTypes)
+        EnsureMixin (mixinType, origin);
+      return this;
+    }
+
+    /// <summary>
+    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary, 
+    /// using the calling method as <see cref="MixinContextBuilder.Origin"/>. The mixins will not be
+    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <param name="mixinTypes">The mixin types to collect.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder EnsureMixins (params Type[] mixinTypes)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
+
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return EnsureMixins (origin, mixinTypes);
+    }
+
+    /// <summary>
+    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary. The mixins will not be
+    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder EnsureMixins<TMixin1, TMixin2> (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      return EnsureMixins (origin, typeof (TMixin1), typeof (TMixin2));
+    }
+
+    /// <summary>
+    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary, 
+    /// using the calling method as <see cref="MixinContextBuilder.Origin"/>. The mixins will not be
+    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder EnsureMixins<TMixin1, TMixin2> ()
+    {
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return EnsureMixins<TMixin1, TMixin2> (origin);
+    }
+
+    /// <summary>
+    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary. The mixins will not be
+    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin3">The third mixin type to collect.</typeparam>
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder EnsureMixins<TMixin1, TMixin2, TMixin3> (MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("origin", origin);
+      return EnsureMixins (origin, typeof (TMixin1), typeof (TMixin2), typeof (TMixin3));
+    }
+
+    /// <summary>
+    /// Ensures that the given types are configured as mixins for the <see cref="TargetType"/>, adding them if necessary, 
+    /// using the calling method as <see cref="MixinContextBuilder.Origin"/>. The mixins will not be
+    /// added if they has been taken over from the parent context (unless <see cref="Clear"/> was called); if added, they will override corresponding
+    /// mixins inherited from a base type.
+    /// </summary>
+    /// <typeparam name="TMixin1">The first mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin2">The second mixin type to collect.</typeparam>
+    /// <typeparam name="TMixin3">The third mixin type to collect.</typeparam>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public ClassContextBuilder EnsureMixins<TMixin1, TMixin2, TMixin3> ()
+    {
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return EnsureMixins<TMixin1, TMixin2, TMixin3> (origin);
     }
 
     /// <summary>
@@ -499,6 +709,25 @@ namespace Remotion.Mixins.Context.FluentBuilders
         return classContext;
       else
         return classContext.InheritFrom (inheritedContexts);
+    }
+
+    private bool AlreadyAppliedSame (Type mixinType)
+    {
+      if (_mixinContextBuilders.ContainsKey (mixinType))
+        return true;
+
+      if (!mixinType.IsGenericType)
+        return false;
+
+      Type typeDefinition = mixinType.GetGenericTypeDefinition ();
+
+      foreach (MixinContextBuilder mixinContextBuilder in MixinContextBuilders)
+      {
+        if (mixinContextBuilder.MixinType.IsGenericType && mixinContextBuilder.MixinType.GetGenericTypeDefinition () == typeDefinition)
+          return true;
+      }
+
+      return false;
     }
 
     #region Parent members

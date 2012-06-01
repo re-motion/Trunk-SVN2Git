@@ -27,6 +27,26 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
   {
     [Uses (typeof (NullMixin))]
     [IgnoreForMixinConfiguration]
+    public class User
+    {
+    }
+
+    [Test]
+    public void Origin ()
+    {
+      var configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (User)).BuildConfiguration();
+      var context = configuration.GetContext (typeof (User));
+      var mixinContext = context.Mixins.Single();
+
+      var expectedOrigin = new MixinContextOrigin (
+          "UsesAttribute",
+          typeof (User).Assembly,
+          "Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder_IntegrationTests.UsesAnalysisTest+User");
+      Assert.That (mixinContext.Origin, Is.EqualTo (expectedOrigin));
+    }
+
+    [Uses (typeof (NullMixin))]
+    [IgnoreForMixinConfiguration]
     public class UserWithoutDependencies
     {
     }

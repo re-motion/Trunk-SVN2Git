@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
@@ -27,14 +28,26 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 
     public virtual void Analyze (Type extender)
     {
+      ArgumentUtility.CheckNotNull ("extender", extender);
+
       foreach (ExtendsAttribute mixinAttribute in extender.GetCustomAttributes (typeof (ExtendsAttribute), false))
         AnalyzeExtendsAttribute (extender, mixinAttribute);
     }
 
     public virtual void AnalyzeExtendsAttribute (Type extender, ExtendsAttribute mixinAttribute)
     {
+      ArgumentUtility.CheckNotNull ("extender", extender);
+      ArgumentUtility.CheckNotNull ("mixinAttribute", mixinAttribute);
+
       Type mixinType = ApplyMixinTypeArguments (mixinAttribute.TargetType, extender, mixinAttribute.MixinTypeArguments);
-      AddMixinAndAdjustException (MixinKind.Extending, mixinAttribute.TargetType, mixinType, mixinAttribute.IntroducedMemberVisibility, mixinAttribute.AdditionalDependencies, mixinAttribute.SuppressedMixins);
+      AddMixinAndAdjustException (
+          MixinKind.Extending,
+          mixinAttribute.TargetType,
+          mixinType,
+          mixinAttribute.IntroducedMemberVisibility,
+          mixinAttribute.AdditionalDependencies,
+          mixinAttribute.SuppressedMixins,
+          MixinContextOrigin.CreateForCustomAttribute (mixinAttribute, extender));
     }
 
     private Type ApplyMixinTypeArguments (Type targetType, Type mixinType, Type[] typeArguments)

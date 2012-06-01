@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.Serialization;
@@ -63,6 +65,18 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (origin.Kind, Is.EqualTo ("Method"));
       Assert.That (origin.Assembly, Is.EqualTo (GetType().Assembly));
       Assert.That (origin.Location, Is.EqualTo ("Void CreateForMethod(), declaring type: Remotion.Mixins.UnitTests.Core.Context.MixinContextOriginTest"));
+    }
+
+    [Test]
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public void CreateForStackFrame ()
+    {
+      var stackFrame = GetCallerStackFrame();
+      var origin = MixinContextOrigin.CreateForStackFrame (stackFrame);
+
+      Assert.That (origin.Kind, Is.EqualTo ("Method"));
+      Assert.That (origin.Assembly, Is.EqualTo (GetType ().Assembly));
+      Assert.That (origin.Location, Is.EqualTo ("Void CreateForStackFrame(), declaring type: Remotion.Mixins.UnitTests.Core.Context.MixinContextOriginTest"));
     }
 
     [Test]
@@ -144,6 +158,12 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var origin2 = new MixinContextOrigin ("some kind", GetType ().Assembly, "some location");
 
       Assert.That (origin1.GetHashCode(), Is.EqualTo (origin2.GetHashCode()));
+    }
+
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    private StackFrame GetCallerStackFrame ()
+    {
+      return new StackFrame (1);
     }
   }
 }

@@ -25,17 +25,31 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
   {
     private readonly MixinConfigurationBuilder _configurationBuilder;
 
-    public RelationAnalyzerBase (MixinConfigurationBuilder configurationBuilder)
+    protected RelationAnalyzerBase (MixinConfigurationBuilder configurationBuilder)
     {
       ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
       _configurationBuilder = configurationBuilder;
     }
 
-    protected void AddMixinAndAdjustException (MixinKind mixinKind, Type targetType, Type mixinType, MemberVisibility introducedMemberVisibility, IEnumerable<Type> additionalDependencies, IEnumerable<Type> suppressedMixins)
+    protected void AddMixinAndAdjustException (
+        MixinKind mixinKind, 
+        Type targetType, 
+        Type mixinType, 
+        MemberVisibility introducedMemberVisibility, 
+        IEnumerable<Type> additionalDependencies, 
+        IEnumerable<Type> suppressedMixins,
+        MixinContextOrigin origin)
     {
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      ArgumentUtility.CheckNotNull ("additionalDependencies", additionalDependencies);
+      ArgumentUtility.CheckNotNull ("suppressedMixins", suppressedMixins);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
       try
       {
-        _configurationBuilder.AddMixinToClass (mixinKind, targetType, mixinType, introducedMemberVisibility, additionalDependencies, suppressedMixins);
+        _configurationBuilder.AddMixinToClass (
+            mixinKind, targetType, mixinType, introducedMemberVisibility, additionalDependencies, suppressedMixins, origin);
       }
       catch (Exception ex)
       {

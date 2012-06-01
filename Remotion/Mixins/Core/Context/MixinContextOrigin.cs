@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Utilities;
@@ -46,8 +47,14 @@ namespace Remotion.Mixins.Context
     {
       ArgumentUtility.CheckNotNull ("methodBase", methodBase);
 
-      var location = string.Format ("{0}, declaring type: {1}", methodBase, methodBase.DeclaringType);
+      var location = String.Format ("{0}, declaring type: {1}", methodBase, methodBase.DeclaringType);
       return new MixinContextOrigin ("Method", methodBase.Module.Assembly, location);
+    }
+
+    public static MixinContextOrigin CreateForStackFrame (StackFrame stackFrame)
+    {
+      ArgumentUtility.CheckNotNull ("stackFrame", stackFrame);
+      return CreateForMethod (stackFrame.GetMethod ());
     }
 
     public static MixinContextOrigin Deserialize (IMixinContextOriginDeserializer deserializer)
@@ -90,7 +97,7 @@ namespace Remotion.Mixins.Context
     public override string ToString ()
     {
       var assemblyName = Assembly.GetName (false);
-      return string.Format ("{0}, Location: '{1}' (Assembly: '{2}', code base: {3})", Kind, Location, assemblyName.Name, assemblyName.CodeBase);
+      return String.Format ("{0}, Location: '{1}' (Assembly: '{2}', code base: {3})", Kind, Location, assemblyName.Name, assemblyName.CodeBase);
     }
 
     public void Serialize (IMixinContextOriginSerializer serializer)

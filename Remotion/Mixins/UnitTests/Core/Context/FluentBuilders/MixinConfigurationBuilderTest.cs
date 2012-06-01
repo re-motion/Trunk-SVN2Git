@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -27,6 +29,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   [TestFixture]
   public class MixinConfigurationBuilderTest
   {
+    private MixinContextOrigin _mixinContextOrigin;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _mixinContextOrigin = MixinContextOriginObjectMother.Create();
+    }
+
     [Test]
     public void Intitialization_WithoutParent ()
     {
@@ -294,23 +304,56 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var suppressedMixins = new[] { typeof (double) };
 
       var classBuilderMock = mockRepository.StrictMock<ClassContextBuilder> (builder, targetType);
-      var mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType);
+      var mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType, _mixinContextOrigin);
 
       using (mockRepository.Ordered ())
       {
-        Expect.Call (builder.AddMixinToClass (MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins))
+        Expect
+            .Call (
+                builder.AddMixinToClass (
+                    MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, _mixinContextOrigin))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         Expect.Call (builder.ForClass (targetType)).Return (classBuilderMock);
-        Expect.Call (classBuilderMock.AddMixin (mixinType)).Return (mixinBuilderMock);
+        Expect.Call (classBuilderMock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.OfKind (MixinKind.Extending)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
 
       mockRepository.ReplayAll ();
-      MixinConfigurationBuilder returnedBuilder = builder.AddMixinToClass (MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins);
+      var returnedBuilder = builder.AddMixinToClass (
+          MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, _mixinContextOrigin);
       Assert.That (returnedBuilder, Is.SameAs (builder));
       mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public void AddMixinToClass_WithoutOrigin ()
+    {
+      var mockRepository = new MockRepository ();
+      var builder = mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+
+      var targetType = typeof (object);
+      var mixinType = typeof (string);
+      var explicitDependencies = new[] { typeof (int) };
+      var suppressedMixins = new[] { typeof (double) };
+
+      var expectedOrigin = MixinContextOrigin.CreateForMethod (MethodBase.GetCurrentMethod());
+
+      Expect
+          .Call (
+              builder.AddMixinToClass (
+                  MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, expectedOrigin))
+          .Return (builder);
+
+      mockRepository.ReplayAll ();
+
+      var returnedBuilder = builder.AddMixinToClass (
+          MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins);
+
+      mockRepository.VerifyAll ();
+      Assert.That (returnedBuilder, Is.SameAs (builder));
     }
 
     [Test]
@@ -325,23 +368,28 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var suppressedMixins = new Type[0];
 
       var classBuilderMock = mockRepository.StrictMock<ClassContextBuilder> (builder, targetType);
-      var mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType);
+      var mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType, _mixinContextOrigin);
 
       using (mockRepository.Ordered ())
       {
-        Expect.Call (builder.AddMixinToClass (MixinKind.Used, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins))
+        Expect
+            .Call (
+                builder.AddMixinToClass (
+                    MixinKind.Used, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, _mixinContextOrigin))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         Expect.Call (builder.ForClass (targetType)).Return (classBuilderMock);
-        Expect.Call (classBuilderMock.AddMixin (mixinType)).Return (mixinBuilderMock);
+        Expect.Call (classBuilderMock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
-
       mockRepository.ReplayAll ();
-      MixinConfigurationBuilder returnedBuilder = builder.AddMixinToClass (MixinKind.Used, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins);
-      Assert.That (returnedBuilder, Is.SameAs (builder));
+      
+      var returnedBuilder = builder.AddMixinToClass (
+          MixinKind.Used, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, _mixinContextOrigin);
+
       mockRepository.VerifyAll ();
+      Assert.That (returnedBuilder, Is.SameAs (builder));
     }
 
     [Test]
@@ -356,23 +404,28 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var suppressedMixins = new Type[0];
 
       var classBuilderMock = mockRepository.StrictMock<ClassContextBuilder> (builder, targetType);
-      var mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType);
+      var mixinBuilderMock = mockRepository.StrictMock<MixinContextBuilder> (classBuilderMock, mixinType, _mixinContextOrigin);
 
       using (mockRepository.Ordered ())
       {
-        Expect.Call (builder.AddMixinToClass (MixinKind.Used, targetType, mixinType, MemberVisibility.Public, explicitDependencies, suppressedMixins))
+        Expect
+            .Call (
+                builder.AddMixinToClass (
+                    MixinKind.Used, targetType, mixinType, MemberVisibility.Public, explicitDependencies, suppressedMixins, _mixinContextOrigin))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
         Expect.Call (builder.ForClass (targetType)).Return (classBuilderMock);
-        Expect.Call (classBuilderMock.AddMixin (mixinType)).Return (mixinBuilderMock);
+        Expect.Call (classBuilderMock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
         Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
-
       mockRepository.ReplayAll ();
-      MixinConfigurationBuilder returnedBuilder = builder.AddMixinToClass (MixinKind.Used, targetType, mixinType, MemberVisibility.Public, explicitDependencies, suppressedMixins);
-      Assert.That (returnedBuilder, Is.SameAs (builder));
+
+      var returnedBuilder = builder.AddMixinToClass (
+          MixinKind.Used, targetType, mixinType, MemberVisibility.Public, explicitDependencies, suppressedMixins, _mixinContextOrigin);
+
       mockRepository.VerifyAll ();
+      Assert.That (returnedBuilder, Is.SameAs (builder));
     }
 
     [Test]
@@ -381,14 +434,22 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void AddMixinToClass_WithSelfSuppressor ()
     {
       var builder = new MixinConfigurationBuilder (null);
-      builder.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (int), MemberVisibility.Private, new Type[0], new[] {typeof (int)});
+      builder.AddMixinToClass (
+          MixinKind.Extending, typeof (object), typeof (int), MemberVisibility.Private, new Type[0], new[] { typeof (int) }, _mixinContextOrigin);
     }
 
     [Test]
     public void AddMixinToClass_WithBaseSuppressor ()
     {
       var builder = new MixinConfigurationBuilder (null);
-      builder.AddMixinToClass (MixinKind.Extending, typeof (object), typeof (DerivedNullMixin), MemberVisibility.Private, new Type[0], new[] { typeof (NullMixin) });
+      builder.AddMixinToClass (
+          MixinKind.Extending,
+          typeof (object),
+          typeof (DerivedNullMixin),
+          MemberVisibility.Private,
+          new Type[0],
+          new[] { typeof (NullMixin) },
+          _mixinContextOrigin);
     }
   }
 }

@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.DeclarativeAnalyzers;
 using Remotion.Mixins.Context.FluentBuilders;
 using Rhino.Mocks;
@@ -36,8 +37,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder>((MixinConfiguration) null);
-      _analyzer = new UsesAnalyzer(_configurationBuilderMock);
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _analyzer = new UsesAnalyzer (_configurationBuilderMock);
     }
 
     [Test]
@@ -56,7 +57,15 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
       UsesAttribute attribute = new UsesAttribute (typeof (string));
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Call (
+              _configurationBuilderMock.AddMixinToClass (
+                  MixinKind.Used,
+                  _userType,
+                  typeof (string),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
           .Return (null);
 
       _mockRepository.ReplayAll();
@@ -68,83 +77,109 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
     public void AnalyzeUsesAttribute_AdditionalDependencies ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
-      attribute.AdditionalDependencies = new Type[] { typeof (int) };
+      attribute.AdditionalDependencies = new[] { typeof (int) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Call (
+              _configurationBuilderMock.AddMixinToClass (
+                  MixinKind.Used,
+                  _userType,
+                  typeof (string),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
           .Return (null);
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
       _analyzer.AnalyzeUsesAttribute (_userType, attribute);
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void AnalyzeUsesAttribute_SuppressedMixins ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
-      attribute.SuppressedMixins = new Type[] { typeof (double) };
+      attribute.SuppressedMixins = new[] { typeof (double) };
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Call (
+              _configurationBuilderMock.AddMixinToClass (
+                  MixinKind.Used,
+                  _userType,
+                  typeof (string),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
           .Return (null);
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
       _analyzer.AnalyzeUsesAttribute (_userType, attribute);
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void AnalyzeUsesAttribute_PrivateVisibility ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
-      attribute.SuppressedMixins = new Type[] { typeof (double) };
+      attribute.SuppressedMixins = new[] { typeof (double) };
       attribute.IntroducedMemberVisibility = MemberVisibility.Private;
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Private, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Call (
+              _configurationBuilderMock.AddMixinToClass (
+                  MixinKind.Used,
+                  _userType,
+                  typeof (string),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
           .Return (null);
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
       _analyzer.AnalyzeUsesAttribute (_userType, attribute);
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
 
     [Test]
     public void AnalyzeUsesAttribute_PublicVisibility ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
-      attribute.SuppressedMixins = new Type[] { typeof (double) };
+      attribute.SuppressedMixins = new[] { typeof (double) };
       attribute.IntroducedMemberVisibility = MemberVisibility.Public;
 
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, _userType, typeof (string), MemberVisibility.Public, attribute.AdditionalDependencies, attribute.SuppressedMixins))
+          .Call (
+              _configurationBuilderMock.AddMixinToClass (
+                  MixinKind.Used,
+                  _userType,
+                  typeof (string),
+                  MemberVisibility.Public,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
           .Return (null);
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
       _analyzer.AnalyzeUsesAttribute (_userType, attribute);
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
     }
-    
+
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Text")]
     public void AnalyzeUsesAttribute_InvalidOperation ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));
       Expect
-          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, null, null, MemberVisibility.Private, null, null))
+          .Call (_configurationBuilderMock.AddMixinToClass (MixinKind.Used, null, null, MemberVisibility.Private, null, null, null))
           .IgnoreArguments()
           .Throw (new InvalidOperationException ("Text"));
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
       _analyzer.AnalyzeUsesAttribute (_userType, attribute);
     }
-
-    [Uses (typeof (int))]
-    [Uses (typeof (string))]
-    [Uses (typeof (double), IntroducedMemberVisibility = MemberVisibility.Public)]
-    [IgnoreForMixinConfiguration]
-    public class ClassWithMultipleUsesAttributes { }
 
     [Test]
     public void Analyze ()
@@ -160,9 +195,22 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
       analyzer.AnalyzeUsesAttribute (typeof (ClassWithMultipleUsesAttributes), attributes[1]); // expect
       analyzer.AnalyzeUsesAttribute (typeof (ClassWithMultipleUsesAttributes), attributes[2]); // expect
 
-      _mockRepository.ReplayAll ();
+      _mockRepository.ReplayAll();
       analyzer.Analyze (typeof (ClassWithMultipleUsesAttributes));
-      _mockRepository.VerifyAll ();
+      _mockRepository.VerifyAll();
+    }
+
+    private MixinContextOrigin CreateExpectedOrigin (UsesAttribute attribute, Type userType = null)
+    {
+      return MixinContextOrigin.CreateForCustomAttribute (attribute, userType ?? _userType);
+    }
+
+    [Uses (typeof (int))]
+    [Uses (typeof (string))]
+    [Uses (typeof (double), IntroducedMemberVisibility = MemberVisibility.Public)]
+    [IgnoreForMixinConfiguration]
+    public class ClassWithMultipleUsesAttributes
+    {
     }
   }
 }

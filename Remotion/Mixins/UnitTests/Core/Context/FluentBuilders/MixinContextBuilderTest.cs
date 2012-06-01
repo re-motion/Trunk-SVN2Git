@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
@@ -30,6 +32,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
   {
     private MockRepository _mockRepository;
     private ClassContextBuilder _parentBuilderMock;
+    private MixinContextOrigin _origin;
+
     private MixinContextBuilder _mixinBuilder;
 
     [SetUp]
@@ -37,7 +41,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       _mockRepository = new MockRepository ();
       _parentBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (typeof (object));
-      _mixinBuilder = new MixinContextBuilder (_parentBuilderMock, typeof (BT2Mixin1));
+      _origin = MixinContextOriginObjectMother.Create();
+    
+      _mixinBuilder = new MixinContextBuilder (_parentBuilderMock, typeof (BT2Mixin1), _origin);
     }
 
     [Test]
@@ -45,6 +51,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       Assert.AreSame (typeof (BT2Mixin1), _mixinBuilder.MixinType);
       Assert.AreSame (_parentBuilderMock, _mixinBuilder.Parent);
+      Assert.That (_mixinBuilder.Origin, Is.SameAs (_origin));
       Assert.That (_mixinBuilder.Dependencies, Is.Empty);
       Assert.That (_mixinBuilder.MixinKind, Is.EqualTo (MixinKind.Extending));
       Assert.That (_mixinBuilder.IntroducedMemberVisiblity, Is.EqualTo (MemberVisibility.Private));
@@ -147,8 +154,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void ReplaceMixin_Generic ()
     {
-      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
-
+      var mixinContextBuilderPartialMock = CreatePartialMock();
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
       mixinContextBuilderPartialMock.Replay ();
 
@@ -161,8 +167,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void ReplaceMixins_NonGeneric ()
     {
-      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
-
+      var mixinContextBuilderPartialMock = CreatePartialMock();
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (double))).Return (mixinContextBuilderPartialMock);
       mixinContextBuilderPartialMock.Replay ();
@@ -176,8 +181,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void ReplaceMixins_Generic2 ()
     {
-      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
-
+      var mixinContextBuilderPartialMock = CreatePartialMock();
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (double))).Return (mixinContextBuilderPartialMock);
       mixinContextBuilderPartialMock.Replay ();
@@ -191,8 +195,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void ReplaceMixins_Generic3 ()
     {
-      var mixinContextBuilderPartialMock = _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object));
-
+      var mixinContextBuilderPartialMock = CreatePartialMock();
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (int))).Return (mixinContextBuilderPartialMock);
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (double))).Return (mixinContextBuilderPartialMock);
       mixinContextBuilderPartialMock.Expect (mock => mock.ReplaceMixin (typeof (string))).Return (mixinContextBuilderPartialMock);
@@ -218,7 +221,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
         + "to target class 'System.Object' suppresses itself.")]
     public void ReplaceMixin_SelfSuppressor_GenericDefinition ()
     {
-      var mixinBuilder = new MixinContextBuilder (_parentBuilderMock, typeof (GenericMixin<object>));
+      var mixinBuilder = new MixinContextBuilder (_parentBuilderMock, typeof (GenericMixin<object>), _origin);
       mixinBuilder.ReplaceMixin (typeof (GenericMixin<>));
     }
 
@@ -285,14 +288,14 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     }
 
     [Test]
-    public void BuildContext_UnspecifiedOrigin ()
+    public void BuildContext_Origin ()
     {
       MixinContext mixinContext = _mixinBuilder.BuildMixinContext ();
-      var expectedOrigin = new MixinContextOrigin ("Imperative configuration API", typeof (MixinContextBuilder).Assembly, "unknown");
-      Assert.That (mixinContext.Origin, Is.EqualTo (expectedOrigin));
+      Assert.That (mixinContext.Origin, Is.EqualTo (_origin));
     }
 
     [Test]
+    [MethodImpl (MethodImplOptions.NoInlining)]
     public void ParentMembers ()
     {
       _mockRepository.BackToRecordAll ();
@@ -301,27 +304,43 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       var r1 = new ClassContextBuilder (new MixinConfigurationBuilder (null), typeof (object));
       var r2 = new MixinConfiguration ();
       var r3 = _mockRepository.StrictMock<IDisposable> ();
-      var r4 = new MixinContextBuilder (r1, typeof (BT1Mixin1));
+      var r4 = new MixinContextBuilder (r1, typeof (BT1Mixin1), _origin);
       var r5 = ClassContextObjectMother.Create(typeof (object));
+      var origin = MixinContextOriginObjectMother.Create();
 
       IEnumerable<ClassContext> inheritedContexts = new ClassContext[0];
+
+      var expectedInferredOrigin = MixinContextOrigin.CreateForMethod (MethodBase.GetCurrentMethod ());
 
       using (_mockRepository.Ordered ())
       {
         Expect.Call (_parentBuilderMock.Clear ()).Return (r1);
-        Expect.Call (_parentBuilderMock.AddMixin (typeof (object))).Return (r4);
-        Expect.Call (_parentBuilderMock.AddMixin<string> ()).Return (r4);
-        Expect.Call (_parentBuilderMock.AddMixins (typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
-        Expect.Call (_parentBuilderMock.AddMixins<BT1Mixin1, BT1Mixin2> ()).Return (r1);
-        Expect.Call (_parentBuilderMock.AddMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ()).Return (r1);
-        Expect.Call (_parentBuilderMock.EnsureMixin (typeof (object))).Return (r4);
-        Expect.Call (_parentBuilderMock.EnsureMixin<string> ()).Return (r4);
-        Expect.Call (_parentBuilderMock.EnsureMixins (typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
-        Expect.Call (_parentBuilderMock.EnsureMixins<BT1Mixin1, BT1Mixin2> ()).Return (r1);
-        Expect.Call (_parentBuilderMock.EnsureMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ()).Return (r1);
-        Expect.Call (_parentBuilderMock.AddOrderedMixins (typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
-        Expect.Call (_parentBuilderMock.AddOrderedMixins<BT1Mixin1, BT1Mixin2> ()).Return (r1);
-        Expect.Call (_parentBuilderMock.AddOrderedMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ()).Return (r1);
+        Expect.Call (_parentBuilderMock.AddMixin (typeof (object), origin)).Return (r4);
+        Expect.Call (_parentBuilderMock.AddMixin (typeof (object), expectedInferredOrigin)).Return (r4);
+        Expect.Call (_parentBuilderMock.AddMixin<string> (origin)).Return (r4);
+        Expect.Call (_parentBuilderMock.AddMixin<string> (expectedInferredOrigin)).Return (r4);
+        Expect.Call (_parentBuilderMock.AddMixins (origin, typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
+        Expect.Call (_parentBuilderMock.AddMixins (expectedInferredOrigin, typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
+        Expect.Call (_parentBuilderMock.AddMixins<BT1Mixin1, BT1Mixin2> (origin)).Return (r1);
+        Expect.Call (_parentBuilderMock.AddMixins<BT1Mixin1, BT1Mixin2> (expectedInferredOrigin)).Return (r1);
+        Expect.Call (_parentBuilderMock.AddMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (origin)).Return (r1);
+        Expect.Call (_parentBuilderMock.AddMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (expectedInferredOrigin)).Return (r1);
+        Expect.Call (_parentBuilderMock.AddOrderedMixins (origin, typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
+        Expect.Call (_parentBuilderMock.AddOrderedMixins (expectedInferredOrigin, typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
+        Expect.Call (_parentBuilderMock.AddOrderedMixins<BT1Mixin1, BT1Mixin2> (origin)).Return (r1);
+        Expect.Call (_parentBuilderMock.AddOrderedMixins<BT1Mixin1, BT1Mixin2> (expectedInferredOrigin)).Return (r1);
+        Expect.Call (_parentBuilderMock.AddOrderedMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (origin)).Return (r1);
+        Expect.Call (_parentBuilderMock.AddOrderedMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (expectedInferredOrigin)).Return (r1);
+        Expect.Call (_parentBuilderMock.EnsureMixin (typeof (object), origin)).Return (r4);
+        Expect.Call (_parentBuilderMock.EnsureMixin (typeof (object), expectedInferredOrigin)).Return (r4);
+        Expect.Call (_parentBuilderMock.EnsureMixin<string> (origin)).Return (r4);
+        Expect.Call (_parentBuilderMock.EnsureMixin<string> (expectedInferredOrigin)).Return (r4);
+        Expect.Call (_parentBuilderMock.EnsureMixins (origin, typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
+        Expect.Call (_parentBuilderMock.EnsureMixins (expectedInferredOrigin, typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
+        Expect.Call (_parentBuilderMock.EnsureMixins<BT1Mixin1, BT1Mixin2> (origin)).Return (r1);
+        Expect.Call (_parentBuilderMock.EnsureMixins<BT1Mixin1, BT1Mixin2> (expectedInferredOrigin)).Return (r1);
+        Expect.Call (_parentBuilderMock.EnsureMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (origin)).Return (r1);
+        Expect.Call (_parentBuilderMock.EnsureMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (expectedInferredOrigin)).Return (r1);
         Expect.Call (_parentBuilderMock.AddCompleteInterface (typeof (IBT6Mixin1))).Return (r1);
         Expect.Call (_parentBuilderMock.AddCompleteInterface<IBT6Mixin1>()).Return (r1);
         Expect.Call (_parentBuilderMock.AddCompleteInterfaces (typeof (IBT6Mixin1), typeof (IBT6Mixin2))).Return (r1);
@@ -346,19 +365,32 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       _mockRepository.ReplayAll ();
 
       Assert.AreSame (r1, _mixinBuilder.Clear ());
+      Assert.AreSame (r4, _mixinBuilder.AddMixin (typeof (object), origin));
       Assert.AreSame (r4, _mixinBuilder.AddMixin (typeof (object)));
+      Assert.AreSame (r4, _mixinBuilder.AddMixin<string> (origin));
       Assert.AreSame (r4, _mixinBuilder.AddMixin<string> ());
+      Assert.AreSame (r1, _mixinBuilder.AddMixins (origin, typeof (BT1Mixin1), typeof (BT1Mixin2)));
       Assert.AreSame (r1, _mixinBuilder.AddMixins (typeof (BT1Mixin1), typeof (BT1Mixin2)));
+      Assert.AreSame (r1, _mixinBuilder.AddMixins<BT1Mixin1, BT1Mixin2> (origin));
       Assert.AreSame (r1, _mixinBuilder.AddMixins<BT1Mixin1, BT1Mixin2> ());
+      Assert.AreSame (r1, _mixinBuilder.AddMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (origin));
       Assert.AreSame (r1, _mixinBuilder.AddMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ());
-      Assert.AreSame (r4, _mixinBuilder.EnsureMixin (typeof (object)));
-      Assert.AreSame (r4, _mixinBuilder.EnsureMixin<string> ());
-      Assert.AreSame (r1, _mixinBuilder.EnsureMixins (typeof (BT1Mixin1), typeof (BT1Mixin2)));
-      Assert.AreSame (r1, _mixinBuilder.EnsureMixins<BT1Mixin1, BT1Mixin2> ());
-      Assert.AreSame (r1, _mixinBuilder.EnsureMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ());
+      Assert.AreSame (r1, _mixinBuilder.AddOrderedMixins (origin, typeof (BT1Mixin1), typeof (BT1Mixin2)));
       Assert.AreSame (r1, _mixinBuilder.AddOrderedMixins (typeof (BT1Mixin1), typeof (BT1Mixin2)));
+      Assert.AreSame (r1, _mixinBuilder.AddOrderedMixins<BT1Mixin1, BT1Mixin2> (origin));
       Assert.AreSame (r1, _mixinBuilder.AddOrderedMixins<BT1Mixin1, BT1Mixin2> ());
+      Assert.AreSame (r1, _mixinBuilder.AddOrderedMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (origin));
       Assert.AreSame (r1, _mixinBuilder.AddOrderedMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ());
+      Assert.AreSame (r4, _mixinBuilder.EnsureMixin (typeof (object), origin));
+      Assert.AreSame (r4, _mixinBuilder.EnsureMixin (typeof (object)));
+      Assert.AreSame (r4, _mixinBuilder.EnsureMixin<string> (origin));
+      Assert.AreSame (r4, _mixinBuilder.EnsureMixin<string> ());
+      Assert.AreSame (r1, _mixinBuilder.EnsureMixins (origin, typeof (BT1Mixin1), typeof (BT1Mixin2)));
+      Assert.AreSame (r1, _mixinBuilder.EnsureMixins (typeof (BT1Mixin1), typeof (BT1Mixin2)));
+      Assert.AreSame (r1, _mixinBuilder.EnsureMixins<BT1Mixin1, BT1Mixin2> (origin));
+      Assert.AreSame (r1, _mixinBuilder.EnsureMixins<BT1Mixin1, BT1Mixin2> ());
+      Assert.AreSame (r1, _mixinBuilder.EnsureMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (origin));
+      Assert.AreSame (r1, _mixinBuilder.EnsureMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ());
       Assert.AreSame (r1, _mixinBuilder.AddCompleteInterface (typeof (IBT6Mixin1)));
       Assert.AreSame (r1, _mixinBuilder.AddCompleteInterface<IBT6Mixin1> ());
       Assert.AreSame (r1, _mixinBuilder.AddCompleteInterfaces (typeof (IBT6Mixin1), typeof (IBT6Mixin2)));
@@ -380,6 +412,11 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.AreSame (r3, _mixinBuilder.EnterScope ());
 
       _mockRepository.VerifyAll ();
+    }
+
+    private MixinContextBuilder CreatePartialMock ()
+    {
+      return _mockRepository.PartialMock<MixinContextBuilder> (_parentBuilderMock, typeof (object), _origin);
     }
   }
 }

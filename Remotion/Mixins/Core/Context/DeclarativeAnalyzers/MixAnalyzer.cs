@@ -18,6 +18,7 @@ using System;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
@@ -29,21 +30,33 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
     {
     }
 
-    public virtual void Analyze (ICustomAttributeProvider assembly)
+    public virtual void Analyze (Assembly assembly)
     {
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
       foreach (MixAttribute attribute in assembly.GetCustomAttributes (typeof (MixAttribute), false))
       {
         if (!_handledBindings.Contains (attribute))
         {
-          AnalyzeMixAttribute (attribute);
+          AnalyzeMixAttribute (attribute, assembly);
           _handledBindings.Add (attribute);
         }
       }
     }
 
-    public virtual void AnalyzeMixAttribute (MixAttribute mixAttribute)
+    public virtual void AnalyzeMixAttribute (MixAttribute mixAttribute, Assembly assembly)
     {
-      AddMixinAndAdjustException (mixAttribute.MixinKind, mixAttribute.TargetType, mixAttribute.MixinType, mixAttribute.IntroducedMemberVisibility, mixAttribute.AdditionalDependencies, mixAttribute.SuppressedMixins);
+      ArgumentUtility.CheckNotNull ("mixAttribute", mixAttribute);
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
+      AddMixinAndAdjustException (
+          mixAttribute.MixinKind,
+          mixAttribute.TargetType,
+          mixAttribute.MixinType,
+          mixAttribute.IntroducedMemberVisibility,
+          mixAttribute.AdditionalDependencies,
+          mixAttribute.SuppressedMixins,
+          MixinContextOrigin.CreateForCustomAttribute (mixAttribute, assembly));
     }
-  }
+ }
 }

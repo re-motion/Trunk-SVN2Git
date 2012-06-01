@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Remotion.Logging;
 using Remotion.Utilities;
 using System.Linq;
@@ -83,8 +85,8 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
     /// <summary>
     /// Adds the given mixin to the given target type with a number of explicit dependencies and suppressed mixins. This is a shortcut
-    /// method for calling <see cref="ForClass"/>, <see cref="ClassContextBuilder.AddMixin"/>, <see cref="MixinContextBuilder.WithDependencies"/>,
-    /// and <see cref="MixinContextBuilder.ReplaceMixins"/> in a row.
+    /// method for calling <see cref="ForClass"/>, <see cref="ClassContextBuilder.AddMixin(System.Type,Remotion.Mixins.Context.MixinContextOrigin)"/>, 
+    /// <see cref="MixinContextBuilder.WithDependencies"/>, and <see cref="MixinContextBuilder.ReplaceMixins"/> in a row.
     /// </summary>
     /// <param name="mixinKind">The kind of relationship the mixin has with its target class.</param>
     /// <param name="targetType">The target type to add a mixin for.</param>
@@ -92,9 +94,23 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <param name="introducedMemberVisibility">The default visibility to be used for introduced members.</param>
     /// <param name="explicitDependencies">The explicit dependencies of the mixin in the context of the target type.</param>
     /// <param name="suppressedMixins">The mixins suppressed by this mixin in the context of the target type.</param>
-    public virtual MixinConfigurationBuilder AddMixinToClass (MixinKind mixinKind, Type targetType, Type mixinType, MemberVisibility introducedMemberVisibility, IEnumerable<Type> explicitDependencies, IEnumerable<Type> suppressedMixins)
+    /// <param name="origin">A <see cref="MixinContextOrigin"/> object describing where the mixin configuration originates from.</param>
+    public virtual MixinConfigurationBuilder AddMixinToClass (
+        MixinKind mixinKind,
+        Type targetType,
+        Type mixinType,
+        MemberVisibility introducedMemberVisibility,
+        IEnumerable<Type> explicitDependencies,
+        IEnumerable<Type> suppressedMixins,
+        MixinContextOrigin origin)
     {
-      MixinContextBuilder mixinContextBuilder = AddMixinToClass (targetType, mixinType);
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
+      ArgumentUtility.CheckNotNull ("suppressedMixins", suppressedMixins);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
+      MixinContextBuilder mixinContextBuilder = AddMixinToClass (targetType, mixinType, origin);
 
       mixinContextBuilder
           .OfKind (mixinKind)
@@ -105,18 +121,49 @@ namespace Remotion.Mixins.Context.FluentBuilders
       return this;
     }
 
-    private MixinContextBuilder AddMixinToClass (Type targetType, Type mixinType)
+    /// <summary>
+    /// Adds the given mixin to the given target type with a number of explicit dependencies and suppressed mixins, 
+    /// using the calling method as <see cref="MixinContextBuilder.Origin"/>. This is a shortcut
+    /// method for calling <see cref="ForClass"/>, <see cref="ClassContextBuilder.AddMixin(System.Type,Remotion.Mixins.Context.MixinContextOrigin)"/>, 
+    /// <see cref="MixinContextBuilder.WithDependencies"/>, and <see cref="MixinContextBuilder.ReplaceMixins"/> in a row.
+    /// </summary>
+    /// <param name="mixinKind">The kind of relationship the mixin has with its target class.</param>
+    /// <param name="targetType">The target type to add a mixin for.</param>
+    /// <param name="mixinType">The mixin type to add.</param>
+    /// <param name="introducedMemberVisibility">The default visibility to be used for introduced members.</param>
+    /// <param name="explicitDependencies">The explicit dependencies of the mixin in the context of the target type.</param>
+    /// <param name="suppressedMixins">The mixins suppressed by this mixin in the context of the target type.</param>
+    [MethodImpl (MethodImplOptions.NoInlining)]
+    public MixinConfigurationBuilder AddMixinToClass (
+        MixinKind mixinKind,
+        Type targetType,
+        Type mixinType,
+        MemberVisibility introducedMemberVisibility,
+        IEnumerable<Type> explicitDependencies,
+        IEnumerable<Type> suppressedMixins)
+    {
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
+      ArgumentUtility.CheckNotNull ("suppressedMixins", suppressedMixins);
+
+      var origin = MixinContextOrigin.CreateForStackFrame (new StackFrame (1));
+      return AddMixinToClass (mixinKind, targetType, mixinType, introducedMemberVisibility, explicitDependencies, suppressedMixins, origin);
+    }
+
+    private MixinContextBuilder AddMixinToClass (Type targetType, Type mixinType, MixinContextOrigin origin)
     {
       MixinContextBuilder mixinContextBuilder;
       try
       {
-        mixinContextBuilder = ForClass (targetType).AddMixin (mixinType);
+        mixinContextBuilder = ForClass (targetType).AddMixin (mixinType, origin);
       }
       catch (ArgumentException ex)
       {
         Type typeForMessage = mixinType;
         if (typeForMessage.IsGenericType)
           typeForMessage = typeForMessage.GetGenericTypeDefinition ();
+        Assertion.IsNotNull (typeForMessage);
         string message = string.Format (
             "Two instances of mixin {0} are configured for target type {1}.",
             typeForMessage.FullName,

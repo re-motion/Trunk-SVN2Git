@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
@@ -28,11 +29,31 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
   {
     [Extends (typeof (object))]
     [IgnoreForMixinConfiguration]
+    public class Extender
+    {
+    }
+
+    [Test]
+    public void Origin ()
+    {
+      var configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (Extender)).BuildConfiguration ();
+      var context = configuration.GetContext (typeof (object));
+      var mixinContext = context.Mixins.Single ();
+
+      var expectedOrigin = new MixinContextOrigin (
+          "ExtendsAttribute",
+          typeof (Extender).Assembly,
+          "Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder_IntegrationTests.ExtendsAnalysisTest+Extender");
+      Assert.That (mixinContext.Origin, Is.EqualTo (expectedOrigin));
+    }
+
+    [Extends (typeof (object))]
+    [IgnoreForMixinConfiguration]
     public class ExtenderWithoutDependencies
     {
     }
 
-    [Extends (typeof (object), AdditionalDependencies = new Type[] { typeof (string) })]
+    [Extends (typeof (object), AdditionalDependencies = new[] { typeof (string) })]
     [IgnoreForMixinConfiguration]
     public class ExtenderWithDependencies
     {
@@ -141,7 +162,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       Assert.AreEqual (1, configuration.GetContext (typeof (ExtendsTargetDerivedWithoutExtends)).Mixins.Count);
     }
 
-    [Extends (typeof (ExtendsTargetBase), MixinTypeArguments = new Type[] { typeof (List<int>), typeof (IList<int>) })]
+    [Extends (typeof (ExtendsTargetBase), MixinTypeArguments = new[] { typeof (List<int>), typeof (IList<int>) })]
     [IgnoreForMixinConfiguration]
     public class GenericMixinWithSpecialization<TTarget, TNext> : Mixin<TTarget, TNext>
         where TTarget : class
@@ -157,10 +178,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       Assert.IsTrue (ReflectionUtility.CanAscribe (mixinContext.MixinType, typeof (GenericMixinWithSpecialization<,>)));
       Assert.IsFalse (mixinContext.MixinType.IsGenericTypeDefinition);
       Assert.IsFalse (mixinContext.MixinType.ContainsGenericParameters);
-      Assert.AreEqual (new Type[] {typeof (List<int>), typeof (IList<int>)}, mixinContext.MixinType.GetGenericArguments());
+      Assert.AreEqual (new[] {typeof (List<int>), typeof (IList<int>)}, mixinContext.MixinType.GetGenericArguments());
     }
 
-    [Extends (typeof (ExtendsTargetBase), MixinTypeArguments = new Type[] { typeof (List<int>) })]
+    [Extends (typeof (ExtendsTargetBase), MixinTypeArguments = new[] { typeof (List<int>) })]
     [IgnoreForMixinConfiguration]
     public class InvalidGenericMixin<TTarget, TNext> : Mixin<TTarget, TNext>
         where TTarget : class
