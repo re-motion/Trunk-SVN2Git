@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Diagnostics;
 using Microsoft.Practices.ServiceLocation;
 
 namespace Remotion.ServiceLocation
@@ -56,6 +57,8 @@ namespace Remotion.ServiceLocation
     /// </summary>
     public static IServiceLocator Current
     {
+      // Have debugger step through to avoid breaking on the NullReferenceException that might be thrown below.
+      [DebuggerStepThrough]
       get
       {
         try
