@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Web.UI;
+using Remotion.Web.Compilation;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -26,8 +27,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// <remarks>
   ///   This class must be inherited from, overwriting <see cref="DataSource"/>.
   /// </remarks>
+  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
   //public class DataEditUserControl : UserControl, IDataEditControl
-  public abstract class DataEditUserControl: UserControl, IDataEditControl
+  public abstract class DataEditUserControl : UserControl, IDataEditControl
   {
     public IBusinessObject BusinessObject
     {

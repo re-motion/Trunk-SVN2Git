@@ -21,6 +21,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using Remotion.Utilities;
+using Remotion.Web.Compilation;
 using Remotion.Web.Configuration;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.Utilities;
@@ -33,7 +34,8 @@ namespace Remotion.Web.UI
 ///   a base class for pages that should supress multiple postbacks, require smart navigation, or have a dirty-state.
 /// </summary>
 /// <include file='..\doc\include\UI\SmartPage.xml' path='SmartPage/Class/*' />
-public class SmartPage: Page, ISmartPage, ISmartNavigablePage
+[FileLevelControlBuilderAttribute(typeof(CodeProcessingPageControlBuilder))]
+public class SmartPage : Page, ISmartPage, ISmartNavigablePage
 {
   #region IPage Implementation
 

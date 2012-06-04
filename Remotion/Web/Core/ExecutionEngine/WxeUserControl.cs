@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Web.UI;
 using Remotion.Collections;
 using Remotion.Utilities;
+using Remotion.Web.Compilation;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
@@ -29,6 +30,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.Web.ExecutionEngine
 {
+  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
   public class WxeUserControl : UserControl, IWxeTemplateControl, IReplaceableControl
   {
     private readonly WxeTemplateControlInfo _wxeInfo;
