@@ -169,6 +169,8 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Core\Compilation\IControlBuilderCodeProcessorTest.cs" />
+    <Compile Include="Core\Compilation\DefaultControlBuilderCodeProcessorTest.cs" />
     <Compile Include="Core\Context\HttpContextStorageProviderTest.cs" />
     <Compile Include="Core\Context\SafeContextWebIntegrationTest.cs" />
     <Compile Include="Core\Design\DesignTimeResourceUrlTest.cs" />

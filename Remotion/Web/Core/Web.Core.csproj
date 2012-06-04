@@ -133,6 +133,10 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Compilation\CodeProcessingPageControlBuilder.cs" />
+    <Compile Include="Compilation\CodeProcessingUserControlBuilder.cs" />
+    <Compile Include="Compilation\IControlBuilderCodeProcessor.cs" />
+    <Compile Include="Compilation\DefaultControlBuilderCodeProcessor.cs" />
     <Compile Include="Compilation\ResourceExpressionBuilder.cs" />
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />

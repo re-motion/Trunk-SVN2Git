@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.ServiceLocation;
+using Remotion.Web.Compilation;
 using Remotion.Web.Legacy;
 using Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
@@ -31,14 +32,23 @@ namespace Remotion.Web.UnitTests.Legacy
     [Test]
     public void GetConfiguration ()
     {
-      var nonLegacyServices = new[] { typeof (IWebTabRenderer), typeof (IScriptUtility), typeof (IMenuTabRenderer), typeof (ResourceTheme) };
+      var nonLegacyServices = new[]
+                              {
+                                  typeof (IWebTabRenderer),
+                                  typeof (IScriptUtility), 
+                                  typeof (IMenuTabRenderer), 
+                                  typeof (ResourceTheme),
+                                  typeof (IControlBuilderCodeProcessor)
+                              };
 
       var allServiceTypes = DefaultServiceConfigurationDiscoveryService.GetDefaultConfiguration (new[] { typeof (IResourceUrl).Assembly })
           .Select (e => e.ServiceType);
       var legacyServiceTypes = allServiceTypes.Except (nonLegacyServices);
 
       Assert.That (
-          legacyServiceTypes, Is.EquivalentTo (LegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType)));
+          legacyServiceTypes, 
+          Is.EquivalentTo (LegacyServiceConfigurationService.GetConfiguration().Select (e => e.ServiceType)),
+          "New service was added in Remotion.Web. Either the Service must also be added to Remotion.Web.Legacy or added to the exclude list in 'nonLegacyServices'.");
 
       Assert.That (
           LegacyServiceConfigurationService.GetConfiguration()
