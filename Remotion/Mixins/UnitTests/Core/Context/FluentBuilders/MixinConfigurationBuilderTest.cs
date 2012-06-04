@@ -308,16 +308,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
 
       using (mockRepository.Ordered ())
       {
-        Expect
-            .Call (
-                builder.AddMixinToClass (
+        builder
+            .Expect (
+                mock => mock.AddMixinToClass (
                     MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, _mixinContextOrigin))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (builder.ForClass (targetType)).Return (classBuilderMock);
-        Expect.Call (classBuilderMock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.OfKind (MixinKind.Extending)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
+        builder.Expect (mock => mock.ForClass (targetType)).Return (classBuilderMock);
+        classBuilderMock.Expect (mock => mock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.OfKind (MixinKind.Extending)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
 
       mockRepository.ReplayAll ();
@@ -341,9 +341,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
 
       var expectedOrigin = MixinContextOrigin.CreateForMethod (MethodBase.GetCurrentMethod());
 
-      Expect
-          .Call (
-              builder.AddMixinToClass (
+      builder
+          .Expect (
+              mock => mock.AddMixinToClass (
                   MixinKind.Extending, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, expectedOrigin))
           .Return (builder);
 
@@ -372,16 +372,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
 
       using (mockRepository.Ordered ())
       {
-        Expect
-            .Call (
-                builder.AddMixinToClass (
+        builder
+            .Expect (
+                mock => mock.AddMixinToClass (
                     MixinKind.Used, targetType, mixinType, MemberVisibility.Private, explicitDependencies, suppressedMixins, _mixinContextOrigin))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (builder.ForClass (targetType)).Return (classBuilderMock);
-        Expect.Call (classBuilderMock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
+        builder.Expect (mock => mock.ForClass (targetType)).Return (classBuilderMock);
+        classBuilderMock.Expect (mock => mock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
       mockRepository.ReplayAll ();
       
@@ -408,16 +408,16 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
 
       using (mockRepository.Ordered ())
       {
-        Expect
-            .Call (
-                builder.AddMixinToClass (
+        builder
+            .Expect (
+                mock => mock.AddMixinToClass (
                     MixinKind.Used, targetType, mixinType, MemberVisibility.Public, explicitDependencies, suppressedMixins, _mixinContextOrigin))
             .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-        Expect.Call (builder.ForClass (targetType)).Return (classBuilderMock);
-        Expect.Call (classBuilderMock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
-        Expect.Call (mixinBuilderMock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
+        builder.Expect (mock => mock.ForClass (targetType)).Return (classBuilderMock);
+        classBuilderMock.Expect (mock => mock.AddMixin (mixinType, _mixinContextOrigin)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.OfKind (MixinKind.Used)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.WithDependencies (explicitDependencies)).Return (mixinBuilderMock);
+        mixinBuilderMock.Expect (mock => mock.ReplaceMixins (suppressedMixins)).Return (mixinBuilderMock);
       }
       mockRepository.ReplayAll ();
 
