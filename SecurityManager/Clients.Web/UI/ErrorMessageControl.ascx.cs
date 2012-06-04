@@ -18,9 +18,11 @@
 using System;
 using System.Web.UI;
 using Remotion.SecurityManager.Clients.Web.Globalization.UI;
+using Remotion.Web.Compilation;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
 {
+  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
   public partial class ErrorMessageControl : UserControl
   {
     // types

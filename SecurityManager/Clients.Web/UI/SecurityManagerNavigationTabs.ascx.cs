@@ -19,9 +19,11 @@ using System;
 using System.Web;
 using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.Compilation;
 
 namespace Remotion.SecurityManager.Clients.Web.UI
 {
+  [FileLevelControlBuilderAttribute(typeof(CodeProcessingUserControlBuilder))]
   public partial class SecurityManagerNavigationTabs : UserControl
   {
   }
