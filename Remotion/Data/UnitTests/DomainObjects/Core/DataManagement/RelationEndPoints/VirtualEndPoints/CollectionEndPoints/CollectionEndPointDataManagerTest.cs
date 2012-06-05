@@ -361,7 +361,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Return (true);
       _changeDetectionStrategyMock.Replay ();
 
-      _dataManager.CollectionData.Add (_domainObject2); // require use of strategy
+      // require use of strategy
+      _dataManager.CollectionData.Add (_domainObject2);
+      _dataManager.CollectionData.Remove (_domainObject2);
 
       var result = _dataManager.HasDataChanged ();
 
@@ -380,7 +382,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Repeat.Once();
       _changeDetectionStrategyMock.Replay ();
 
-      _dataManager.CollectionData.Add (_domainObject2); // require use of strategy
+      // require use of strategy
+      _dataManager.CollectionData.Add (_domainObject2);
+      _dataManager.CollectionData.Remove (_domainObject2);
  
       var result1 = _dataManager.HasDataChanged ();
       var result2 = _dataManager.HasDataChanged ();
@@ -409,11 +413,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       _changeDetectionStrategyMock.Replay ();
 
-      _dataManager.CollectionData.Add (_domainObject2); // require use of strategy
+      // require use of strategy
+      _dataManager.CollectionData.Add (_domainObject2);
+      _dataManager.CollectionData.Remove (_domainObject2);
 
       var result1 = _dataManager.HasDataChanged ();
 
-      _dataManager.CollectionData.Clear ();
+      _dataManager.CollectionData.Add (_domainObject2);
+      _dataManager.CollectionData.Remove (_domainObject2);
 
       var result2 = _dataManager.HasDataChanged ();
 
@@ -531,7 +538,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       _changeDetectionStrategyMock.Replay ();
 
-      _dataManager.CollectionData.Add (_domainObject2); // require use of strategy
+      // require use of strategy
+      _dataManager.CollectionData.Add (_domainObject2);
+      _dataManager.CollectionData.Remove (_domainObject2);
 
       Assert.That (_dataManager.HasDataChanged (), Is.True);
 
@@ -577,7 +586,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       _changeDetectionStrategyMock.Replay ();
 
-      _dataManager.CollectionData.Add (_domainObject2); // require use of strategy
+      // require use of strategy
+      _dataManager.CollectionData.Add (_domainObject2);
+      _dataManager.CollectionData.Remove (_domainObject2);
 
       Assert.That (_dataManager.HasDataChanged (), Is.True);
 

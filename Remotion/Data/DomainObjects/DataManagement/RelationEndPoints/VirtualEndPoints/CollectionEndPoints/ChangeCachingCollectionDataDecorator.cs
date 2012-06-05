@@ -77,12 +77,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
     {
       if (!_isCacheUpToDate)
       {
-        // If the original data still points to this collection, we don't ask the strategy - we know we aren't changed.
-        var hasChanged = _originalData.IsContentsCopied ? strategy.HasDataChanged (this, OriginalData) : false;
+        bool hasChanged = CalculateHasChangedFlag(strategy);
         SetCachedHasChangedFlag (hasChanged);
       }
 
       return _cachedHasChangedFlag;
+    }
+
+    private bool CalculateHasChangedFlag (ICollectionEndPointChangeDetectionStrategy strategy)
+    {
+      // If the original data still points to this collection, we don't ask the strategy - we know we haven't changed.
+      if (!_originalData.IsContentsCopied)
+        return false;
+
+      // If the original data has a different number of items, we don't ask the strategy - we know we have changed.
+      if (_originalData.Count != Count)
+        return true;
+
+      return strategy.HasDataChanged (this, OriginalData);
     }
 
     public void Commit ()

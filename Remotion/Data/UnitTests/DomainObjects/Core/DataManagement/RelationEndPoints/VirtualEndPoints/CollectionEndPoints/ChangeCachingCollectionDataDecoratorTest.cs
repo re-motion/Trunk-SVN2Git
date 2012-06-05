@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
-    public void HasChanged_FastAnswer ()
+    public void HasChanged_FastAnswer_WhenContentsNotCopied ()
     {
       _strategyStrictMock.Replay ();
 
@@ -85,6 +85,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     }
 
     [Test]
+    public void HasChanged_FastAnswer_WhenCountsDiffer ()
+    {
+      _strategyStrictMock.Replay ();
+
+      _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make counts differ
+      Assert.That (_decoratorWithRealData.Count, Is.Not.EqualTo (_decoratorWithRealData.OriginalData.Count));
+
+      var result = _decoratorWithRealData.HasChanged (_strategyStrictMock);
+
+      _strategyStrictMock.AssertWasNotCalled (
+          mock => mock.HasDataChanged (Arg.Is (_decoratorWithRealData), Arg<IDomainObjectCollectionData>.Is.Anything));
+      Assert.That (result, Is.True);
+    }
+
+    [Test]
     public void HasChanged_UsesStrategy ()
     {
       _strategyStrictMock.Expect (mock => mock.HasDataChanged (Arg.Is (_decoratorWithRealData), Arg<IDomainObjectCollectionData>.Is.Anything))
@@ -93,10 +108,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
                .Repeat.Once ();
       _strategyStrictMock.Replay ();
 
-      _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
+      // Make strategy call necessary because both collections have the same count, but different items.
+      _decoratorWithRealData.Replace (0, DomainObjectMother.CreateFakeObject<Order> ());
+      Assert.That (_decoratorWithRealData.Count, Is.EqualTo (_decoratorWithRealData.OriginalData.Count));
 
       var result = _decoratorWithRealData.HasChanged (_strategyStrictMock);
-      
+
       _strategyStrictMock.VerifyAllExpectations ();
       Assert.That (result, Is.True);
     }
@@ -109,7 +126,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           .Repeat.Once();
       _strategyStrictMock.Replay ();
 
-      _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
+      // Make strategy call necessary because both collections have the same count, but different items.
+      _decoratorWithRealData.Replace (0, DomainObjectMother.CreateFakeObject<Order> ());
 
       Assert.That (_decoratorWithRealData.IsCacheUpToDate, Is.False);
 
@@ -146,7 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
       _strategyStrictMock.Replay ();
 
-      _decoratorWithRealData.Add (DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
+      _decoratorWithRealData.Replace (0, DomainObjectMother.CreateFakeObject<Order> ()); // make strategy necessary
 
       var result1 = _decoratorWithRealData.HasChanged (_strategyStrictMock);
       CallOnDataChangedOnWrappedData (_decoratorWithRealData);
@@ -750,7 +768,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private static int CompareTypeNames (DomainObject x, DomainObject y)
     {
+// ReSharper disable PossibleNullReferenceException
       return x.GetPublicDomainObjectType ().FullName.CompareTo (y.GetPublicDomainObjectType ().FullName);
+// ReSharper restore PossibleNullReferenceException
     }
   }
 }
