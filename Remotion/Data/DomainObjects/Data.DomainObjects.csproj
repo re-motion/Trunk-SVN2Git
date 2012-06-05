@@ -155,10 +155,10 @@
     <Compile Include="ClientTransactionExtensionBase.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
     <Compile Include="ClientTransactionFactory.cs" />
-    <Compile Include="Cloning\CloneContext.cs" />
-    <Compile Include="Cloning\CompleteCloneStrategy.cs" />
-    <Compile Include="Cloning\DomainObjectCloner.cs" />
-    <Compile Include="Cloning\ICloneStrategy.cs" />
+    <Compile Include="DomainImplementation\Cloning\CloneContext.cs" />
+    <Compile Include="DomainImplementation\Cloning\CompleteCloneStrategy.cs" />
+    <Compile Include="DomainImplementation\Cloning\DomainObjectCloner.cs" />
+    <Compile Include="DomainImplementation\Cloning\ICloneStrategy.cs" />
     <Compile Include="ConfigurationLoader\IMappingValidatorFactory.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\AllMappingPropertiesFinder.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\ClassIDProvider.cs" />
@@ -680,9 +680,9 @@
     <Compile Include="SimpleDomainObject.cs" />
     <Compile Include="Tracing\TracingDbConnection.cs" />
     <Compile Include="Tracing\TracingDbTransaction.cs" />
-    <Compile Include="Transport\BinaryExportStrategy.cs" />
-    <Compile Include="Transport\DomainObjectImporter.cs" />
-    <Compile Include="Transport\DomainObjectTransporter.cs" />
+    <Compile Include="DomainImplementation\Transport\BinaryExportStrategy.cs" />
+    <Compile Include="DomainImplementation\Transport\DomainObjectImporter.cs" />
+    <Compile Include="DomainImplementation\Transport\DomainObjectTransporter.cs" />
     <Compile Include="IDomainObjectMixin.cs" />
     <Compile Include="Infrastructure\ClientTransactionReadOnlyException.cs" />
     <Compile Include="Infrastructure\CompoundClientTransactionListener.cs" />
@@ -988,17 +988,17 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Infrastructure\ObjectPersistence\SubPersistenceStrategy.cs" />
-    <Compile Include="Transport\BinaryImportStrategy.cs" />
-    <Compile Include="Transport\IExportStrategy.cs" />
-    <Compile Include="Transport\IImportStrategy.cs" />
-    <Compile Include="Transport\TransportationException.cs" />
-    <Compile Include="Transport\TransportedDomainObjects.cs" />
-    <Compile Include="Transport\XmlTransportItem.cs" />
-    <Compile Include="Transport\TransportTransactionListener.cs" />
-    <Compile Include="Transport\TransportFinishTransactionListener.cs" />
-    <Compile Include="Transport\TransportItem.cs" />
-    <Compile Include="Transport\XmlExportStrategy.cs" />
-    <Compile Include="Transport\XmlImportStrategy.cs" />
+    <Compile Include="DomainImplementation\Transport\BinaryImportStrategy.cs" />
+    <Compile Include="DomainImplementation\Transport\IExportStrategy.cs" />
+    <Compile Include="DomainImplementation\Transport\IImportStrategy.cs" />
+    <Compile Include="DomainImplementation\Transport\TransportationException.cs" />
+    <Compile Include="DomainImplementation\Transport\TransportedDomainObjects.cs" />
+    <Compile Include="DomainImplementation\Transport\XmlTransportItem.cs" />
+    <Compile Include="DomainImplementation\Transport\TransportTransactionListener.cs" />
+    <Compile Include="DomainImplementation\Transport\TransportFinishTransactionListener.cs" />
+    <Compile Include="DomainImplementation\Transport\TransportItem.cs" />
+    <Compile Include="DomainImplementation\Transport\XmlExportStrategy.cs" />
+    <Compile Include="DomainImplementation\Transport\XmlImportStrategy.cs" />
     <Compile Include="DataManagement\ValueAccess.cs" />
     <Compile Include="Validation\MandatoryRelationValidator.cs" />
     <Compile Include="ValueChangeEventArgs.cs" />

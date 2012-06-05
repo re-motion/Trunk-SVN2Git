@@ -346,10 +346,10 @@
     <Compile Include="DomainObjects\Core\ClientTransactionObjectMother.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\ClientTransactionTestHelper.cs" />
-    <Compile Include="DomainObjects\Core\Cloning\CloneContextTest.cs" />
-    <Compile Include="DomainObjects\Core\Cloning\CloneStrategyTestBase.cs" />
-    <Compile Include="DomainObjects\Core\Cloning\CompleteCloneStrategyTest.cs" />
-    <Compile Include="DomainObjects\Core\Cloning\IntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\CloneContextTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\CloneStrategyTestBase.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\CompleteCloneStrategyTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\IntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadVirtualEndPointsCommandTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\TransactionHierarchyCommandExecutorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadCommandTest.cs" />
@@ -1136,7 +1136,7 @@
     <Compile Include="DomainObjects\Core\Queries\QueryFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\Configuration\QueryFileElementTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\StorageProviderDefinitionTest.cs" />
-    <Compile Include="DomainObjects\Core\Cloning\DomainObjectClonerTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Cloning\DomainObjectClonerTest.cs" />
     <Compile Include="DomainObjects\Core\DomainObjects\SimpleDomainObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\CollectionSetterTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\StorageClassTransactionTest.cs" />
@@ -1170,7 +1170,7 @@
     <Compile Include="DomainObjects\Core\Tracing\TracingDbConnectionTest.cs" />
     <Compile Include="DomainObjects\Core\Tracing\TracingDbTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionWithCustomITransaction.cs" />
-    <Compile Include="DomainObjects\Core\Transport\DomainObjectTransporterTestHelper.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\DomainObjectTransporterTestHelper.cs" />
     <Compile Include="DomainObjects\Factories\ReflectionMappingHelper.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectDefaultValueStrategyTest.cs" />
     <Compile Include="DomainObjects\ObjectBinding\BindableDomainObjectMixinTests\ObjectBindingToMappingTest.cs" />
@@ -1893,20 +1893,20 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionRollbackDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\BinaryExportStrategyTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\BinaryImportStrategyTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\XmlSerializationStrings.cs" />
-    <Compile Include="DomainObjects\Core\Transport\XmlTransportItemTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\XmlExportStrategyTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\DomainObjectImporterTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\DomainObjectTransporterTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\FollowAllProcessNoneStrategy.cs" />
-    <Compile Include="DomainObjects\Core\Transport\FollowOnlyOneLevelStrategy.cs" />
-    <Compile Include="DomainObjects\Core\Transport\OnlyProcessComputersStrategy.cs" />
-    <Compile Include="DomainObjects\Core\Transport\TransportedDomainObjectsTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\TransportTransactionListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\TransportItemTest.cs" />
-    <Compile Include="DomainObjects\Core\Transport\XmlImportStrategyTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\BinaryExportStrategyTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\BinaryImportStrategyTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\XmlSerializationStrings.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\XmlTransportItemTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\XmlExportStrategyTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\DomainObjectImporterTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\DomainObjectTransporterTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\FollowAllProcessNoneStrategy.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\FollowOnlyOneLevelStrategy.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\OnlyProcessComputersStrategy.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\TransportedDomainObjectsTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\TransportTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\TransportItemTest.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\Transport\XmlImportStrategyTest.cs" />
     <Compile Include="DomainObjects\Core\UnitTestStorageProviderStub.cs">
       <SubType>Code</SubType>
     </Compile>
