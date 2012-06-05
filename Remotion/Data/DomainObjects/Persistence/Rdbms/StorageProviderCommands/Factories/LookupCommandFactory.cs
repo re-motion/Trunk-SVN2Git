@@ -131,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
               result =>
               {
                 Assertion.IsNotNull (
-                    result,
+                    result.Item1,
                     "Because we included IDColumn into the projection and used it for the lookup, every row in the result set certainly has an ID.");
                 return new ObjectLookupResult<object> (result.Item1, result.Item2);
               }));
