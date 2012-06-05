@@ -160,4 +160,74 @@
       <Item>88CA7395-A63D-4934-ADA7-7D0600C85DA3</Item>
     </SkipFilesAndFolders>
   </Daemon.SolutionSettings>
+  <CustomStructuralPatterns>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr2$, Is.EqualTo ($expr$));</ReplacePattern>
+      <SearchPattern>Assert.AreEqual ($expr$, $expr2$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+        <ExpressionPlaceholder Name="expr2" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr2$, Is.SameAs ($expr$));</ReplacePattern>
+      <SearchPattern>Assert.AreSame ($expr$, $expr2$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+        <ExpressionPlaceholder Name="expr2" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr2$, Is.Not.EqualTo ($expr$));</ReplacePattern>
+      <SearchPattern>Assert.AreNotEqual ($expr$, $expr2$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+        <ExpressionPlaceholder Name="expr2" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr2$, Is.Not.SameAs ($expr$));</ReplacePattern>
+      <SearchPattern>Assert.AreNotSame ($expr$, $expr2$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+        <ExpressionPlaceholder Name="expr2" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr$, Is.True);</ReplacePattern>
+      <SearchPattern>Assert.IsTrue ($expr$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr$, Is.False);</ReplacePattern>
+      <SearchPattern>Assert.IsFalse ($expr$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr$, Is.Null);</ReplacePattern>
+      <SearchPattern>Assert.IsNull ($expr$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+    <Pattern Severity="SUGGESTION">
+      <ReplacePattern>Assert.That ($expr$, Is.Not.Null);</ReplacePattern>
+      <SearchPattern>Assert.IsNotNull ($expr$);</SearchPattern>
+      <Params />
+      <Placeholders>
+        <ExpressionPlaceholder Name="expr" ExpressionType="" ExactType="True" />
+      </Placeholders>
+    </Pattern>
+  </CustomStructuralPatterns>
 </Configuration>
