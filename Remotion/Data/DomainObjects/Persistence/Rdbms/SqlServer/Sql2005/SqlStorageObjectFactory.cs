@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           CreateRdbmsPersistenceModelProvider());
     }
 
-    //TODO 4896: Inline at usage point
+    //TODO 4900: Inline at usage point
     public virtual IQueryExecutor CreateLinqQueryExecutor (
         ClassDefinition startingClassDefinition,
         IMethodCallTransformerProvider methodCallTransformerProvider,
