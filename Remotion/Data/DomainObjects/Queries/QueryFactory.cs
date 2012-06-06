@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.Queries
         where T: DomainObject
     {
       var startingClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (T));
-      var providerDefinition = (RdbmsProviderDefinition) startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
+      var providerDefinition = startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
       var executor = providerDefinition.Factory.CreateLinqQueryExecutor (
           startingClassDefinition, 
           s_methodCallTransformerProvider.Value, 
