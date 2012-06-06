@@ -556,6 +556,7 @@ namespace Remotion.Data.DomainObjects
       _dataStrategy.ToArray ().CopyTo (array, index);
     }
 
+    // TODO 4526: Remove
     /// <summary>
     /// Sorts this collection using the specified <see cref="Comparison{T}"/> without triggering bidirectional changes or raising any modification
     /// events apart from <see cref="OnReplaceData"/>. The operation causes the associated <see cref="CollectionEndPoint"/> to become touched, and it 
