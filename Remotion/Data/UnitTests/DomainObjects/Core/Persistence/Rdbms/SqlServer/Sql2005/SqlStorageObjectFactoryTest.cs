@@ -110,7 +110,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateStorageNameResolver ()
+    public void CreateStorageNameProvider ()
     {
       var result = _sqlProviderFactory.CreateStorageNameProvider();
 
