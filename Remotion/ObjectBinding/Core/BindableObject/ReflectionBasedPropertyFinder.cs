@@ -39,6 +39,7 @@ namespace Remotion.ObjectBinding.BindableObject
       _interfaceMethodImplementations = GetInterfaceMethodImplementationCache ();
     }
 
+    // Note: Should no longer be needed after re-bind is changed to explicitly support interfaces.
     private MultiDictionary<MethodInfo, MethodInfo> GetInterfaceMethodImplementationCache ()
     {
       var cache = new MultiDictionary<MethodInfo, MethodInfo> ();
@@ -77,6 +78,9 @@ namespace Remotion.ObjectBinding.BindableObject
       }
     }
 
+    // Note: The re-bind-specific IPropertyInformation implementations should no longer be necessary after re-bind is changed to explicitly support 
+    //       interfaces. (Because re-bind will no longer represent explicit interface properties within the BusinessObjectClass for the class -
+    //       the BusinessObjectClass for the interface must be used instead.)
     private IPropertyInformation GetPropertyInformation (Type currentType, PropertyInfo propertyInfo)
     {
       var introducedMemberAttributes = propertyInfo.GetCustomAttributes (typeof (IntroducedMemberAttribute), true);
