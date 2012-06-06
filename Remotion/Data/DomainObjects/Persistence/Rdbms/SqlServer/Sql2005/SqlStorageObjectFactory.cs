@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return CreateStorageProvider (persistenceExtension, rdbmsProviderDefinition, commandFactory);
     }
 
-    // TODO 4896: Keep as is, move down to protected members
+    // TODO 4896: Keep as is, move down to protected members, use Arg-typecheck as in CreateStorageProvider for ProviderDefinition
     protected virtual StorageProvider CreateStorageProvider (
         IPersistenceExtension persistenceExtension,
         RdbmsProviderDefinition rdbmsProviderDefinition,
@@ -122,6 +122,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           CreateRdbmsPersistenceModelProvider());
     }
 
+    //TODO 4896: Inline at usage point
     public virtual IQueryExecutor CreateLinqQueryExecutor (
         ClassDefinition startingClassDefinition,
         IMethodCallTransformerProvider methodCallTransformerProvider,
@@ -155,7 +156,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ReflectionBasedStorageNameProvider();
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments
+    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
     protected virtual IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (
         IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
         IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
@@ -183,7 +184,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new StoragePropertyDefinitionResolver (CreateRdbmsPersistenceModelProvider());
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments
+    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
     protected virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
         IStorageTypeInformationProvider storageTypeInformationProvider,
         IStorageNameProvider storageNameProvider)
@@ -194,7 +195,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition)
+    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
     protected virtual IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (
         StorageProviderDefinition storageProviderDefinition,
         IStorageTypeInformationProvider storageTypeInformationProvider,
@@ -224,7 +225,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new ValueStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition)
+    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
     protected virtual IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
         StorageProviderDefinition storageProviderDefinition,
         IStorageNameProvider storageNameProvider,
@@ -299,7 +300,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlCommentScriptElementFactory());
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition)
+    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
     protected virtual IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (
         RdbmsProviderDefinition storageProviderDefinition,
         IStorageNameProvider storageNameProvider,
@@ -342,7 +343,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new RdbmsPersistenceModelProvider();
     }
 
-    // TODO 4896: public, interface IStorageObjectFactory
+    // TODO 4896: public, interface IStorageObjectFactory, use Arg-typecheck as in CreateStorageProvider for ProviderDefinition
     protected virtual IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (
         IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
