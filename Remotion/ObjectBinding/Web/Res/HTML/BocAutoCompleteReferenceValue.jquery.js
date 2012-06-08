@@ -223,38 +223,39 @@
                     return;
             }
         }).bind ('keyup paste', function(event) { // re-motion
-            clearTimeout(timeout);
             var handleInput = function() {
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
 
                 informationPopUp.hide();
-                if (currentValue.toLowerCase() != previousValue.toLowerCase())
-                  $input.trigger("invalidateResult");
+                if (currentValue.toLowerCase() != previousValue.toLowerCase()) {
+                    $input.trigger("invalidateResult");
 
-                timeout = setTimeout(
-                    function () { 
-                        onChange(false, currentValue); 
-                    }, 
-                    dropDownDelay);
+                    timeout = setTimeout(
+                        function () {
+                            onChange(false, currentValue); 
+                        }, 
+                        dropDownDelay);
+                }
             };
 
             if (event.type == 'keyup') {
-              var isControlKey = 
-                       event.altKey 
-                    || event.ctrlKey
-                    || event.keyCode < KEY.FIRSTTEXTCHARACTER
-                    || event.keyCode == KEY.BACKSPACE
-                    || event.keyCode == KEY.DEL
-                    || event.keyCode == KEY.SPACE;
+                var isTextKey = event.keyCode >= KEY.FIRSTTEXTCHARACTER;
                 var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
-                if (!isControlKey && !isValueSeparatorKey) {
+
+                if (isTextKey || event.keyCode == KEY.SPACE || event.keyCode == KEY.BACKSPACE || event.keyCode == KEY.DEL) {
+                    clearTimeout(timeout);
+                }
+
+                if (isTextKey && !isValueSeparatorKey) {
                     handleInput();
                 }
             } else if (event.type == 'paste') {
+                clearTimeout(timeout);
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
+                clearTimeout(timeout);
                 throw 'Unexpected event match occurred.';
             }
 
