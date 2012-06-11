@@ -23,6 +23,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.CollectionData
   /// Decorates <see cref="IDomainObjectCollectionData"/> by raising events whenever the inner collection is modified. The events are raised via
   /// an <see cref="IDomainObjectCollectionEventRaiser"/> instance before and after the modification.
   /// </summary>
+  /// <remarks>
+  /// This decorator is used to get events with stand-alone <see cref="DomainObjectCollection"/> instances.
+  /// </remarks>
   [Serializable]
   public class EventRaisingCollectionDataDecorator : ObservableCollectionDataDecoratorBase
   {
