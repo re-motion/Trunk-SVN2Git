@@ -60,7 +60,7 @@ public class ExecutionEngineConfiguration
     set { _enableSessionManagement = value; }
   }
 
-  /// <summary> Gets or sets the default refresh intervall for a function. </summary>
+  /// <summary> Gets or sets the default refresh interval for a function. </summary>
   /// <include file='doc\include\Configuration\ExecutionEngineConfiguration.xml' path='ExecutionEngineConfiguration/RefreshInterval/*' />
   [XmlAttribute ("refreshInterval")]
   public int RefreshInterval
