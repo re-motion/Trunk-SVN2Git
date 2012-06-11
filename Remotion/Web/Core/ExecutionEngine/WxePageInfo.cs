@@ -267,7 +267,7 @@ namespace Remotion.Web.ExecutionEngine
       string temp;
       WxeContext wxeContext = WxeContext.Current;
 
-      int refreshIntervall = 0;
+      int refreshInterval = 0;
       string refreshPath = "null";
       string abortPath = "null";
       if (WxeHandler.IsSessionManagementEnabled)
@@ -281,7 +281,7 @@ namespace Remotion.Web.ExecutionEngine
 
         if (WxeHandler.IsSessionRefreshEnabled)
         {
-          refreshIntervall = WxeHandler.RefreshInterval * 60000;
+          refreshInterval = WxeHandler.RefreshInterval * 60000;
           refreshPath = "'" + resumePath + "&" + WxeHandler.Parameters.WxeAction + "=" + WxeHandler.Actions.Refresh + "'";
         }
 
@@ -317,7 +317,7 @@ namespace Remotion.Web.ExecutionEngine
 
       initScript.AppendLine ("WxePage_Context.SetInstance (new WxePage_Context (");
       initScript.AppendLine ("    ").Append (isCacheDetectionEnabled).AppendLine (",");
-      initScript.AppendLine ("    ").Append (refreshIntervall).AppendLine (",");
+      initScript.AppendLine ("    ").Append (refreshInterval).AppendLine (",");
       initScript.AppendLine ("    ").Append (refreshPath).AppendLine (",");
       initScript.AppendLine ("    ").Append (abortPath).AppendLine (",");
       initScript.AppendLine ("    ").Append (statusIsAbortingMessage).AppendLine (",");
