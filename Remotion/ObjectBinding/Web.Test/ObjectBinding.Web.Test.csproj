@@ -382,6 +382,7 @@
     </Compile>
     <Compile Include="StartForm.aspx.cs">
       <DependentUpon>StartForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="TestForm.aspx.cs">
       <DependentUpon>TestForm.aspx</DependentUpon>
