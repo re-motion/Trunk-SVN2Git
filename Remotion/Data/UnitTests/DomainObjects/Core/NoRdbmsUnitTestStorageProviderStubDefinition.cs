@@ -15,15 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
-  public class UnitTestStorageProviderStubDefinition : RdbmsProviderDefinition
+  public class NoRdbmsUnitTestStorageProviderStubDefinition : StorageProviderDefinition
   {
-    public UnitTestStorageProviderStubDefinition (string storageProviderID)
-        : base (storageProviderID, new UnitTestStorageObjectFactoryStub(), "connectionString")
+    public NoRdbmsUnitTestStorageProviderStubDefinition (string storageProviderID)
+        : base (storageProviderID, new UnitTestStorageObjectFactoryStub())
     {
     }
 

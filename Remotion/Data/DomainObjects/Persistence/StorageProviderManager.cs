@@ -81,7 +81,7 @@ public class StorageProviderManager : IDisposable
         return _storageProviders[storageProviderID];
 
       var providerDefinition = DomainObjectsConfiguration.Current.Storage.StorageProviderDefinitions.GetMandatory (storageProviderID);
-      var provider = providerDefinition.Factory.CreateStorageProvider (_persistenceExtension, providerDefinition);
+      var provider = providerDefinition.Factory.CreateStorageProvider (providerDefinition, _persistenceExtension);
 
       _storageProviders.Add (provider);
 

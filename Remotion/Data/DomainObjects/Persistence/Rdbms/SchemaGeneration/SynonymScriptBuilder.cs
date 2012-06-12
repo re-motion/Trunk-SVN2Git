@@ -57,6 +57,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all synonyms"));
     }
 
+    public ISynonymScriptElementFactory<TableDefinition> TableViewElementFactory
+    {
+      get { return _tableViewElementFactory; }
+    }
+
+    public ISynonymScriptElementFactory<UnionViewDefinition> UnionViewElementFactory
+    {
+      get { return _unionViewElementFactory; }
+    }
+
+    public ISynonymScriptElementFactory<FilterViewDefinition> FilterViewElementFactory
+    {
+      get { return _filterViewElementFactory; }
+    }
+
+    public ISynonymScriptElementFactory<EmptyViewDefinition> EmptyViewElementFactory
+    {
+      get { return _emptyViewElementFactory; }
+    }
+
     public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);

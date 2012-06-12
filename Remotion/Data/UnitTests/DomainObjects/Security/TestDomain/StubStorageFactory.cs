@@ -15,17 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Linq;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Utilities;
 
@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 {
   public class StubStorageFactory : IRdbmsStorageObjectFactory
   {
-    public StorageProvider CreateStorageProvider (IPersistenceExtension persistenceExtension, StorageProviderDefinition storageProviderDefinition)
+    public StorageProvider CreateStorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceExtension persistenceExtension)
     {
       ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -41,22 +41,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new StubStorageProvider (storageProviderDefinition, persistenceExtension);
     }
 
-    public IPersistenceModelLoader CreatePersistenceModelLoader (
-        StorageProviderDefinition storageProviderDefinition, 
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public IPersistenceModelLoader CreatePersistenceModelLoader (StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
       return new SqlStorageObjectFactory ().CreatePersistenceModelLoader (storageProviderDefinition, storageProviderDefinitionFinder);
     }
 
-    public IQueryExecutor CreateLinqQueryExecutor (
-        ClassDefinition startingClassDefinition,
-        IMethodCallTransformerProvider methodCallTransformerProvider,
-        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    public IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (StorageProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
-      throw new NotSupportedException ("Linq queries are not supported by the stub storage provider.");
+      throw new NotImplementedException();
     }
 
     public IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
@@ -65,24 +59,59 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
 
       return new CompositeScriptBuilder (
           storageProviderDefinition,
-          CreateTableBuilder(),
-          CreateViewBuilder(),
-          CreateConstraintBuilder(),
-          CreateIndexBuilder(),
-          CreateSynonymBuilder());
+          CreateTableBuilder(storageProviderDefinition),
+          CreateViewBuilder (storageProviderDefinition),
+          CreateConstraintBuilder (storageProviderDefinition),
+          CreateIndexBuilder (storageProviderDefinition),
+          CreateSynonymBuilder (storageProviderDefinition));
     }
 
-    public IStorageNameProvider CreateStorageNameProvider ()
+    public IStorageNameProvider CreateStorageNameProvider (RdbmsProviderDefinition storageProviderDefiniton)
     {
-      return new ReflectionBasedStorageNameProvider();
+      throw new NotImplementedException();
     }
 
-    private TableScriptBuilder CreateTableBuilder ()
+    public IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return new TableScriptBuilder (new SqlTableScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
-    private ViewScriptBuilder CreateViewBuilder ()
+    public ViewScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return new ViewScriptBuilder (
           new SqlTableViewScriptElementFactory(),
@@ -92,12 +121,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
           new SqlCommentScriptElementFactory());
     }
 
-    private ForeignKeyConstraintScriptBuilder CreateConstraintBuilder ()
+    public ForeignKeyConstraintScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return new ForeignKeyConstraintScriptBuilder (new SqlForeignKeyConstraintScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
-    private IndexScriptBuilder CreateIndexBuilder ()
+    public IndexScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       return
           new IndexScriptBuilder (
@@ -108,7 +137,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
               new SqlCommentScriptElementFactory());
     }
 
-    private SynonymScriptBuilder CreateSynonymBuilder ()
+    public SynonymScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
       var sqlSynonymScriptElementFactory = new SqlSynonymScriptElementFactory();
       return new SynonymScriptBuilder (
@@ -117,6 +146,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
           sqlSynonymScriptElementFactory,
           sqlSynonymScriptElementFactory,
           new SqlCommentScriptElementFactory());
+    }
+
+    public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IDbCommandBuilderFactory CreateDbCommandBuilderFactory (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStorageTypeInformationProvider CreateStorageTypeInformationProvider (RdbmsProviderDefinition rdmsStorageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public ISqlQueryGenerator CreateSqlQueryGenerator (RdbmsProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    {
+      throw new NotImplementedException();
+    }
+
+    public ISqlDialect CreateSqlDialect (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
     }
   }
 }

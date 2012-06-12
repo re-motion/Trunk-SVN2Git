@@ -28,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     [SetUp]
     public void SetUp ()
     {
-      _dialect = SqlDialect.Instance;
+      _dialect = new SqlDialect();
     }
 
     [Test]

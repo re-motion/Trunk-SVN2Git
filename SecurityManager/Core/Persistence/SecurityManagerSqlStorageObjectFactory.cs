@@ -19,6 +19,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
@@ -34,17 +35,17 @@ namespace Remotion.SecurityManager.Persistence
   {
     protected override StorageProvider CreateStorageProvider (
         IPersistenceExtension persistenceExtension,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
+        StorageProviderDefinition storageProviderDefinition,
         IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
       ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
 
       return
           ObjectFactory.Create<SecurityManagerRdbmsProvider> (
               ParamList.Create (
-                  rdbmsProviderDefinition,
+                  storageProviderDefinition,
                   persistenceExtension,
                   commandFactory,
                   (Func<IDbConnection>) (() => new SqlConnection())));

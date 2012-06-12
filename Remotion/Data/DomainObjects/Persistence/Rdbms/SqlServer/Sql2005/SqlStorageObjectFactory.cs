@@ -18,10 +18,10 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Linq;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.DbCommandBuilders;
@@ -46,94 +46,44 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   [ConcreteImplementation (typeof (SqlStorageObjectFactory))]
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
-    public StorageProvider CreateStorageProvider (IPersistenceExtension persistenceExtension, StorageProviderDefinition storageProviderDefinition)
+    public StorageProvider CreateStorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceExtension persistenceExtension)
     {
       ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
-      var rdbmsProviderDefinition =
-          ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
+      var rdbmsProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> (
+          "storageProviderDefinition", storageProviderDefinition);
 
-      var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
-      var storageNameProvider = CreateStorageNameProvider();
-      var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (
-          storageTypeInformationProvider,
-          storageNameProvider);
-      var storageProviderDefinitionFinder = new StorageEntityBasedStorageProviderDefinitionFinder();
-      var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (
-          storageProviderDefinition,
-          storageTypeInformationProvider,
-          storageNameProvider,
-          storageProviderDefinitionFinder);
-      var commandFactory = CreateStorageProviderCommandFactory (
-          rdbmsProviderDefinition,
-          storageNameProvider,
-          infrastructureStoragePropertyDefinitionFactory,
-          dataStoragePropertyDefinitionFactory,
-          storageTypeInformationProvider);
+      var commandFactory = CreateStorageProviderCommandFactory (rdbmsProviderDefinition);
       return CreateStorageProvider (persistenceExtension, rdbmsProviderDefinition, commandFactory);
     }
 
-    // TODO 4896: Keep as is, move down to protected members, use Arg-typecheck as in CreateStorageProvider for ProviderDefinition
-    protected virtual StorageProvider CreateStorageProvider (
-        IPersistenceExtension persistenceExtension,
-        RdbmsProviderDefinition rdbmsProviderDefinition,
-        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
-    {
-      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
-      ArgumentUtility.CheckNotNull ("rdbmsProviderDefinition", rdbmsProviderDefinition);
-      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
-
-      return
-          ObjectFactory.Create<RdbmsProvider> (
-              ParamList.Create (
-                  rdbmsProviderDefinition,
-                  persistenceExtension,
-                  commandFactory,
-                  (Func<IDbConnection>) (() => new SqlConnection())));
-    }
-
     public virtual IPersistenceModelLoader CreatePersistenceModelLoader (
-        StorageProviderDefinition storageProviderDefinition,
-        IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+        StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
+      var rdmsStorageProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> (
+          "storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
-      var storageNameProvider = CreateStorageNameProvider();
-      var storagePropertyDefinitionResolver = CreateStoragePropertyDefinitionResolver();
-      var infrastructureStoragePropertyDefinitionFactory = CreateInfrastructureStoragePropertyDefinitionFactory (
-          storageTypeInformationProvider, storageNameProvider);
+      var storageNameProvider = CreateStorageNameProvider (rdmsStorageProviderDefinition);
       var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (
-          storageProviderDefinition, storageTypeInformationProvider, storageNameProvider, storageProviderDefinitionFinder);
-      var foreignKeyConstraintDefintiionFactory = CreateForeignKeyConstraintDefinitionsFactory (
-          storageNameProvider,
-          infrastructureStoragePropertyDefinitionFactory);
-      var entityDefinitionFactory = CreateEntityDefinitionFactory (
-          infrastructureStoragePropertyDefinitionFactory,
-          foreignKeyConstraintDefintiionFactory,
-          storagePropertyDefinitionResolver,
-          storageNameProvider,
-          storageProviderDefinition);
+          rdmsStorageProviderDefinition, storageProviderDefinitionFinder);
+      var entityDefinitionFactory = CreateEntityDefinitionFactory (rdmsStorageProviderDefinition);
 
       return new RdbmsPersistenceModelLoader (
           entityDefinitionFactory,
           dataStoragePropertyDefinitionFactory,
           storageNameProvider,
-          CreateRdbmsPersistenceModelProvider());
+          CreateRdbmsPersistenceModelProvider (rdmsStorageProviderDefinition));
     }
 
-    //TODO 4900: Inline at usage point
-    public virtual IQueryExecutor CreateLinqQueryExecutor (
-        ClassDefinition startingClassDefinition,
-        IMethodCallTransformerProvider methodCallTransformerProvider,
-        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    public virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
+        RdbmsProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
-      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var queryGenerator = CreateDomainObjectQueryGenerator (methodCallTransformerProvider, resultOperatorHandlerRegistry);
-      return new DomainObjectQueryExecutor (startingClassDefinition, queryGenerator);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
+      var storageNameProvider = CreateStorageNameProvider(storageProviderDefinition);
+
+      return new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
     }
 
     public virtual IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition)
@@ -142,33 +92,23 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var compositeScriptBuilder = new CompositeScriptBuilder (
           storageProviderDefinition,
-          CreateTableBuilder(),
-          CreateConstraintBuilder(),
-          CreateViewBuilder(),
-          CreateIndexBuilder(),
-          CreateSynonymBuilder());
+          CreateTableBuilder (storageProviderDefinition),
+          CreateConstraintBuilder (storageProviderDefinition),
+          CreateViewBuilder (storageProviderDefinition),
+          CreateIndexBuilder (storageProviderDefinition),
+          CreateSynonymBuilder (storageProviderDefinition));
 
       return new SqlDatabaseSelectionScriptElementBuilder (compositeScriptBuilder, storageProviderDefinition.ConnectionString);
     }
 
-    public virtual IStorageNameProvider CreateStorageNameProvider ()
+    public virtual IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
-      return new ReflectionBasedStorageNameProvider();
-    }
-
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
-    protected virtual IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
-        IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactory,
-        IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver,
-        IStorageNameProvider storageNameProvider,
-        StorageProviderDefinition storageProviderDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
-      ArgumentUtility.CheckNotNull ("foreignKeyConstraintDefinitionFactory", foreignKeyConstraintDefinitionFactory);
-      ArgumentUtility.CheckNotNull ("storagePropertyDefinitionResolver", storagePropertyDefinitionResolver);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      var storageNameProvider = CreateStorageNameProvider(storageProviderDefinition);
+      var infrastructureStoragePropertyDefinitionProvider = CreateInfrastructureStoragePropertyDefinitionFactory (storageProviderDefinition);
+      var foreignKeyConstraintDefinitionFactory = CreateForeignKeyConstraintDefinitionsFactory (storageProviderDefinition);
+      var storagePropertyDefinitionResolver = CreateStoragePropertyDefinitionResolver (storageProviderDefinition);
 
       return new RdbmsStorageEntityDefinitionFactory (
           infrastructureStoragePropertyDefinitionProvider,
@@ -178,91 +118,160 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageProviderDefinition);
     }
 
-    // TODO 4896: public, interface
-    protected virtual IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver ()
-    {
-      return new StoragePropertyDefinitionResolver (CreateRdbmsPersistenceModelProvider());
-    }
-
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
-    protected virtual IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (
-        IStorageTypeInformationProvider storageTypeInformationProvider,
-        IStorageNameProvider storageNameProvider)
-    {
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-
-      return new InfrastructureStoragePropertyDefinitionProvider (storageTypeInformationProvider, storageNameProvider);
-    }
-
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
-    protected virtual IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (
+    public virtual IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (
         StorageProviderDefinition storageProviderDefinition,
-        IStorageTypeInformationProvider storageTypeInformationProvider,
-        IStorageNameProvider storageNameProvider,
-        IStorageProviderDefinitionFinder providerDefinitionFinder)
+        IMethodCallTransformerProvider methodCallTransformerProvider,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    {
+      var rdmsStorageProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> (
+          "storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
+      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
+
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (rdmsStorageProviderDefinition);
+      var sqlQueryGenerator = CreateSqlQueryGenerator (rdmsStorageProviderDefinition, methodCallTransformerProvider, resultOperatorHandlerRegistry);
+
+      var typeConversionProvider = TypeConversionProvider.Create();
+      return
+          ObjectFactory.Create<DomainObjectQueryGenerator> (
+              ParamList.Create (sqlQueryGenerator, typeConversionProvider, storageTypeInformationProvider));
+    }
+
+    public virtual ISqlQueryGenerator CreateSqlQueryGenerator (
+        RdbmsProviderDefinition storageProviderDefinition,
+        IMethodCallTransformerProvider methodCallTransformerProvider,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
+      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
 
-      var valueStoragePropertyDefinitionFactory = CreateValueStoragePropertyDefinitionFactory (storageNameProvider, storageTypeInformationProvider);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
+
+      var generator = new UniqueIdentifierGenerator();
+      var storageNameProvider = CreateStorageNameProvider(storageProviderDefinition);
+      var resolver =
+          new MappingResolver (
+              new StorageSpecificExpressionResolver (CreateRdbmsPersistenceModelProvider(storageProviderDefinition), storageNameProvider, storageTypeInformationProvider));
+      var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
+          ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
+      var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
+      var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
+
+      return new SqlQueryGenerator (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
+    }
+
+    public ISqlDialect CreateSqlDialect (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      return new SqlDialect();
+    }
+
+    public virtual IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (
+        RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      var valueStoragePropertyDefinitionFactory = CreateValueStoragePropertyDefinitionFactory (storageProviderDefinition);
       var relationStoragePropertyDefinitionFactory = CreateRelationStoragePropertyDefinitionFactory (
-          storageProviderDefinition, storageNameProvider, providerDefinitionFinder, storageTypeInformationProvider);
+          storageProviderDefinition, storageProviderDefinitionFinder);
 
       return new DataStoragePropertyDefinitionFactory (valueStoragePropertyDefinitionFactory, relationStoragePropertyDefinitionFactory);
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments
-    protected virtual IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (
-        IStorageNameProvider storageNameProvider,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+    public virtual IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (
+        RdbmsProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      var rdbmsProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> (
+          "storageProviderDefinition", storageProviderDefinition);
+      var infrastructureStoragePropertyDefinitionProvider = CreateInfrastructureStoragePropertyDefinitionFactory (storageProviderDefinition);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
+      var storageProviderDefinitionFinder = CreateStorageProviderDefinitionFinder(storageProviderDefinition);
+      var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (rdbmsProviderDefinition, storageProviderDefinitionFinder);
+
+      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory (storageProviderDefinition);
+      var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider(storageProviderDefinition);
+      return new RdbmsProviderCommandFactory (
+          rdbmsProviderDefinition,
+          dbCommandBuilderFactory,
+          rdbmsPersistenceModelProvider,
+          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
+          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
+          dataStoragePropertyDefinitionFactory);
+    }
+
+    public virtual IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
+        RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
+
+      var storageNameProvider = CreateStorageNameProvider(storageProviderDefinition);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
+
+      return new RelationStoragePropertyDefinitionFactory (
+          storageProviderDefinition, false, storageNameProvider, storageTypeInformationProvider, storageProviderDefinitionFinder);
+    }
+
+    public virtual IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (
+        RdbmsProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
+      var storageNameProvider = CreateStorageNameProvider (storageProviderDefinition);
 
       return new ValueStoragePropertyDefinitionFactory (storageTypeInformationProvider, storageNameProvider);
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
-    protected virtual IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
-        StorageProviderDefinition storageProviderDefinition,
-        IStorageNameProvider storageNameProvider,
-        IStorageProviderDefinitionFinder providerDefinitionFinder,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+    public virtual IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("providerDefinitionFinder", providerDefinitionFinder);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
 
-      return new RelationStoragePropertyDefinitionFactory (
-          storageProviderDefinition, false, storageNameProvider, storageTypeInformationProvider, providerDefinitionFinder);
+      return new StoragePropertyDefinitionResolver (CreateRdbmsPersistenceModelProvider (storageProviderDefinition));
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments
-    protected virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
-        IStorageNameProvider storageNameProvider,
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
+    public virtual IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
+        RdbmsProviderDefinition storageProviderDefinition)
     {
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
-      var persistenceModelProvider = CreateRdbmsPersistenceModelProvider();
+      var storageNameProvider = CreateStorageNameProvider (storageProviderDefinition);
+      var infrastructureStoragePropertyDefinitionProvider = CreateInfrastructureStoragePropertyDefinitionFactory (storageProviderDefinition);
+
+      var persistenceModelProvider = CreateRdbmsPersistenceModelProvider (storageProviderDefinition);
       return new ForeignKeyConstraintDefinitionFactory (
           storageNameProvider, persistenceModelProvider, infrastructureStoragePropertyDefinitionProvider);
     }
 
-    // TODO 4896: public, interface
-    protected virtual TableScriptBuilder CreateTableBuilder ()
+    public virtual IStorageNameProvider CreateStorageNameProvider (RdbmsProviderDefinition storageProviderDefiniton)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefiniton", storageProviderDefiniton);
+
+      return new ReflectionBasedStorageNameProvider();
+    }
+
+    public virtual IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
+      return new StorageEntityBasedStorageProviderDefinitionFinder();
+    }
+
+    public virtual TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
       return new TableScriptBuilder (new SqlTableScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
-    // TODO 4896: public, interface
-    protected virtual ViewScriptBuilder CreateViewBuilder ()
+    public virtual ViewScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
       return new ViewScriptBuilder (
           new SqlTableViewScriptElementFactory(),
           new SqlUnionViewScriptElementFactory(),
@@ -271,15 +280,17 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlCommentScriptElementFactory());
     }
 
-    // TODO 4896: public, interface
-    protected virtual ForeignKeyConstraintScriptBuilder CreateConstraintBuilder ()
+    public virtual ForeignKeyConstraintScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
       return new ForeignKeyConstraintScriptBuilder (new SqlForeignKeyConstraintScriptElementFactory(), new SqlCommentScriptElementFactory());
     }
 
-    // TODO 4896: public, interface
-    protected virtual IndexScriptBuilder CreateIndexBuilder ()
+    public virtual IndexScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
       return new IndexScriptBuilder (
           new SqlIndexScriptElementFactory (
               new SqlIndexDefinitionScriptElementFactory(),
@@ -288,9 +299,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlCommentScriptElementFactory());
     }
 
-    // TODO 4896: public, interface
-    protected virtual SynonymScriptBuilder CreateSynonymBuilder ()
+    public virtual SynonymScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
       var sqlSynonymScriptElementFactory = new SqlSynonymScriptElementFactory();
       return new SynonymScriptBuilder (
           sqlSynonymScriptElementFactory,
@@ -300,84 +312,45 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           new SqlCommentScriptElementFactory());
     }
 
-    // TODO 4896: Add public, non-virtual, interface variant without arguments (except storageProviderDefinition as RdbmsStorageProviderDefinition)
-    protected virtual IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (
-        RdbmsProviderDefinition storageProviderDefinition,
-        IStorageNameProvider storageNameProvider,
-        IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider,
-        IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+    public virtual IDbCommandBuilderFactory CreateDbCommandBuilderFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageNameProvider", storageNameProvider);
-      ArgumentUtility.CheckNotNull ("infrastructureStoragePropertyDefinitionProvider", infrastructureStoragePropertyDefinitionProvider);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
-      ArgumentUtility.CheckNotNull ("dataStoragePropertyDefinitionFactory", dataStoragePropertyDefinitionFactory);
 
-      var dbCommandBuilderFactory = CreateDbCommandBuilderFactory();
-      var rdbmsPersistenceModelProvider = CreateRdbmsPersistenceModelProvider();
-      return new RdbmsProviderCommandFactory (
-          storageProviderDefinition,
-          dbCommandBuilderFactory,
-          rdbmsPersistenceModelProvider,
-          new ObjectReaderFactory (rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),
-          new TableDefinitionFinder (rdbmsPersistenceModelProvider),
-          dataStoragePropertyDefinitionFactory);
+      var sqlDialect = CreateSqlDialect (storageProviderDefinition);
+      return new SqlDbCommandBuilderFactory (sqlDialect);
     }
 
-    // TODO 4896: public, interface
-    protected virtual SqlDbCommandBuilderFactory CreateDbCommandBuilderFactory ()
+    public virtual IStorageTypeInformationProvider CreateStorageTypeInformationProvider (RdbmsProviderDefinition rdmsStorageProviderDefinition)
     {
-      return new SqlDbCommandBuilderFactory (SqlDialect.Instance);
-    }
+      ArgumentUtility.CheckNotNull ("rdmsStorageProviderDefinition", rdmsStorageProviderDefinition);
 
-    // TODO 4896: public, interface
-    protected virtual SqlStorageTypeInformationProvider CreateStorageTypeInformationProvider ()
-    {
       return new SqlStorageTypeInformationProvider();
     }
 
-    // TODO 4896: public, interface
-    protected virtual IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider ()
+    public virtual IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider (RdbmsProviderDefinition storageProviderDefinition)
     {
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
+
       return new RdbmsPersistenceModelProvider();
     }
 
-    // TODO 4896: public, interface IStorageObjectFactory, use Arg-typecheck as in CreateStorageProvider for ProviderDefinition
-    protected virtual IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (
-        IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    protected virtual StorageProvider CreateStorageProvider (
+        IPersistenceExtension persistenceExtension,
+        StorageProviderDefinition storageProviderDefinition,
+        IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> commandFactory)
     {
-      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull ("persistenceExtension", persistenceExtension);
+      ArgumentUtility.CheckNotNull ("commandFactory", commandFactory);
+      var rdbmsProviderDefinition = ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> (
+          "storageProviderDefinition", storageProviderDefinition);
 
-      var storageTypeInformationProvider = CreateStorageTypeInformationProvider();
-      var sqlQueryGenerator = CreateSqlQueryGenerator (methodCallTransformerProvider, resultOperatorHandlerRegistry, storageTypeInformationProvider);
-
-      var typeConversionProvider = TypeConversionProvider.Create();
       return
-          ObjectFactory.Create<DomainObjectQueryGenerator> (
-              ParamList.Create (sqlQueryGenerator, typeConversionProvider, storageTypeInformationProvider));
-    }
-
-    // TODO 4896: Add public, non-virtual, interface variant without storageTypeInformationProvider parameter (instead call CreateStorageTypeInformationProvider)
-    protected virtual ISqlQueryGenerator CreateSqlQueryGenerator (
-        IMethodCallTransformerProvider methodCallTransformerProvider,
-        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
-    {
-      ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
-      ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
-      ArgumentUtility.CheckNotNull ("storageTypeInformationProvider", storageTypeInformationProvider);
-
-      var generator = new UniqueIdentifierGenerator();
-      var storageNameProvider = CreateStorageNameProvider();
-      var resolver = new MappingResolver (new StorageSpecificExpressionResolver (CreateRdbmsPersistenceModelProvider(), storageNameProvider, storageTypeInformationProvider));
-      var sqlPreparationStage = ObjectFactory.Create<DefaultSqlPreparationStage> (
-          ParamList.Create (methodCallTransformerProvider, resultOperatorHandlerRegistry, generator));
-      var mappingResolutionStage = ObjectFactory.Create<DefaultMappingResolutionStage> (ParamList.Create (resolver, generator));
-      var sqlGenerationStage = ObjectFactory.Create<DefaultSqlGenerationStage> (ParamList.Empty);
-
-      return new SqlQueryGenerator (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
+          ObjectFactory.Create<RdbmsProvider> (
+              ParamList.Create (
+                  rdbmsProviderDefinition,
+                  persistenceExtension,
+                  commandFactory,
+                  (Func<IDbConnection>) (() => new SqlConnection())));
     }
   }
 }

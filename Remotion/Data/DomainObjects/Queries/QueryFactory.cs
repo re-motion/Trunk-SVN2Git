@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
-using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
 using Remotion.Linq.EagerFetching;
@@ -76,11 +75,10 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       var startingClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (T));
       var providerDefinition = startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
-      var executor = providerDefinition.Factory.CreateLinqQueryExecutor (
-          startingClassDefinition, 
-          s_methodCallTransformerProvider.Value, 
-          s_resultOperatorHandlerRegistry.Value);
 
+      var queryGenerator = providerDefinition.Factory.CreateDomainObjectQueryGenerator (providerDefinition, s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value);
+      var executor = new DomainObjectQueryExecutor (startingClassDefinition, queryGenerator);
+      
       return CreateLinqQuery<T> (s_queryParser.Value, executor);
     }
 
@@ -94,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="executor">The <see cref="IQueryExecutor"/> that is used for the query. Specify an instance of 
     ///   <see cref="DomainObjectQueryExecutor"/> for default behavior.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryParser queryParser, IQueryExecutor executor) 
+    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryParser queryParser, IQueryExecutor executor)
         where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
@@ -213,7 +211,8 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="statement">The scalar query statement.</param>
     /// <param name="queryParameterCollection">The parameter collection to be used for the query.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
-    public static IQuery CreateScalarQuery (string id, StorageProviderDefinition storageProviderDefinition, string statement, QueryParameterCollection queryParameterCollection)
+    public static IQuery CreateScalarQuery (
+        string id, StorageProviderDefinition storageProviderDefinition, string statement, QueryParameterCollection queryParameterCollection)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -238,7 +237,11 @@ namespace Remotion.Data.DomainObjects.Queries
     /// about the collection type. The type passed here is used by <see cref="QueryResult{T}.ToCustomCollection"/>.</param>
     /// <returns>An implementation of <see cref="IQuery"/> with the given statement, parameters, and metadata.</returns>
     public static IQuery CreateCollectionQuery (
-        string id, StorageProviderDefinition storageProviderDefinition, string statement, QueryParameterCollection queryParameterCollection, Type collectionType)
+        string id,
+        StorageProviderDefinition storageProviderDefinition,
+        string statement,
+        QueryParameterCollection queryParameterCollection,
+        Type collectionType)
     {
       ArgumentUtility.CheckNotNull ("id", id);
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
@@ -264,8 +267,8 @@ namespace Remotion.Data.DomainObjects.Queries
     public static IQuery CreateCustomQuery (
         string id,
         StorageProviderDefinition storageProviderDefinition,
-        string statement, 
-      QueryParameterCollection queryParameterCollection)
+        string statement,
+        QueryParameterCollection queryParameterCollection)
     {
       var definition = new QueryDefinition (id, storageProviderDefinition, statement, QueryType.Custom, null);
       return new Query (definition, queryParameterCollection);
@@ -279,23 +282,25 @@ namespace Remotion.Data.DomainObjects.Queries
           new[] { MemberInfoFromExpressionUtility.GetMethod ((DomainObjectCollection obj) => obj.ContainsObject (null)) },
           typeof (ContainsExpressionNode));
       customNodeTypeRegistry.Register (
-          new[] { MemberInfoFromExpressionUtility.GetProperty ((DomainObjectCollection obj) => obj.Count).GetGetMethod () },
+          new[] { MemberInfoFromExpressionUtility.GetProperty ((DomainObjectCollection obj) => obj.Count).GetGetMethod() },
           typeof (CountExpressionNode));
 
       customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
       customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
-      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
-      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
+      customNodeTypeRegistry.Register (
+          new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
+      customNodeTypeRegistry.Register (
+          new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
 
       var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
       var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes());
       foreach (var customNodeType in customNodeTypes)
         customNodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
 
-      var nodeTypeProvider = ExpressionTreeParser.CreateDefaultNodeTypeProvider ();
+      var nodeTypeProvider = ExpressionTreeParser.CreateDefaultNodeTypeProvider();
       nodeTypeProvider.InnerProviders.Insert (0, customNodeTypeRegistry);
 
-      var transformerRegistry = ExpressionTransformerRegistry.CreateDefault ();
+      var transformerRegistry = ExpressionTransformerRegistry.CreateDefault();
       var processor = ExpressionTreeParser.CreateDefaultProcessor (transformerRegistry);
       var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processor);
       var queryParser = new QueryParser (expressionTreeParser);

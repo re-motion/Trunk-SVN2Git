@@ -199,6 +199,7 @@
     </Compile>
     <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />
+    <Compile Include="DomainObjects\Core\NoRdbmsUnitTestStorageProviderStubDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ClassIDsInAllForeignKeysBehaviorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\ClassWithRelations.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\DefaultBehaviorTest.cs" />

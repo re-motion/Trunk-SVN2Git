@@ -24,9 +24,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer
   /// </summary>
   public class SqlDialect : ISqlDialect
   {
-    public static readonly SqlDialect Instance = new SqlDialect ();
-
-    protected SqlDialect ()
+    public SqlDialect ()
     {
     }
 

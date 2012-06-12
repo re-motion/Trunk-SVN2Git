@@ -43,6 +43,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement("Drop all indexes"));
     }
 
+    public IIndexScriptElementFactory IndexScriptElementFactory
+    {
+      get { return _indexScriptElementFactory; }
+    }
+
     public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);

@@ -47,6 +47,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
     }
 
+    public IRdbmsPersistenceModelProvider PersistenceModelProvider
+    {
+      get { return _persistenceModelProvider; }
+    }
+
+    public IStorageNameProvider StorageNameProvider
+    {
+      get { return _storageNameProvider; }
+    }
+
+    public IInfrastructureStoragePropertyDefinitionProvider InfrastructureStoragePropertyDefinitionProvider
+    {
+      get { return _infrastructureStoragePropertyDefinitionProvider; }
+    }
+
     public IEnumerable<ForeignKeyConstraintDefinition> CreateForeignKeyConstraints (ClassDefinition classDefinition)
     {
       var allClassDefinitionsInHierarchy = classDefinition

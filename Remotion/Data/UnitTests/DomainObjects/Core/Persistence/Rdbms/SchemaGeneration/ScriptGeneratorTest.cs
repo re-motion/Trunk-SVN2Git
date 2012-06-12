@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SchemaGen
 
       _thirdProviderStorageEntityDefinitionStub = MockRepository.GenerateStub<IRdbmsStorageEntityDefinition>();
       _thirdProviderStorageEntityDefinitionStub.Stub (stub => stub.StorageProviderDefinition).Return (
-          new UnitTestStorageProviderStubDefinition ("Test"));
+          new NoRdbmsUnitTestStorageProviderStubDefinition ("Test"));
 
       _classDefinitionForFirstStorageProvider1.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);
       _classDefinitionForFirstStorageProvider2.SetStorageEntity (_firstProviderStorageEntityDefinitionStub);

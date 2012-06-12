@@ -42,6 +42,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement ("Drop all tables"));
     }
 
+    public ITableScriptElementFactory ElementFactory
+    {
+      get { return _elementFactory; }
+    }
+
     public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);

@@ -14,7 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
+using Remotion.Linq.SqlBackend.SqlPreparation;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms
 {
@@ -24,5 +28,25 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
   public interface IRdbmsStorageObjectFactory : IStorageObjectFactory
   {
     IScriptBuilder CreateSchemaScriptBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IStorageNameProvider CreateStorageNameProvider (RdbmsProviderDefinition storageProviderDefiniton);
+    IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition);
+    IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver (RdbmsProviderDefinition storageProviderDefinition);
+    IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition);
+    IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder);
+    IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition);
+    IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder);
+    IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (RdbmsProviderDefinition storageProviderDefinition);
+    TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    ViewScriptBuilder CreateViewBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    ForeignKeyConstraintScriptBuilder CreateConstraintBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IndexScriptBuilder CreateIndexBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    SynonymScriptBuilder CreateSynonymBuilder (RdbmsProviderDefinition storageProviderDefinition);
+    IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (RdbmsProviderDefinition storageProviderDefinition);
+    IDbCommandBuilderFactory CreateDbCommandBuilderFactory (RdbmsProviderDefinition storageProviderDefinition);
+    IStorageTypeInformationProvider CreateStorageTypeInformationProvider (RdbmsProviderDefinition rdmsStorageProviderDefinition);
+    IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider (RdbmsProviderDefinition storageProviderDefinition);
+    ISqlQueryGenerator CreateSqlQueryGenerator (RdbmsProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry);
+    ISqlDialect CreateSqlDialect (RdbmsProviderDefinition storageProviderDefinition);
+    IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder (RdbmsProviderDefinition storageProviderDefinition);
   }
 }

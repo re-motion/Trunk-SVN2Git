@@ -57,6 +57,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (commentFactory.GetCommentElement ("Drop all views"));
     }
 
+    public IViewScriptElementFactory<TableDefinition> TableViewElementFactory
+    {
+      get { return _tableViewElementFactory; }
+    }
+
+    public IViewScriptElementFactory<UnionViewDefinition> UnionViewElementFactory
+    {
+      get { return _unionViewElementFactory; }
+    }
+
+    public IViewScriptElementFactory<FilterViewDefinition> FilterViewElementFactory
+    {
+      get { return _filterViewElementFactory; }
+    }
+
+    public IViewScriptElementFactory<EmptyViewDefinition> EmptyViewElementFactory
+    {
+      get { return _emptyViewElementFactory; }
+    }
+
     public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);

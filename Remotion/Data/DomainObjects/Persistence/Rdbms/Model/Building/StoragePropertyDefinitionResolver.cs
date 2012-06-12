@@ -37,6 +37,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building
       _persistenceModelProvider = persistenceModelProvider;
     }
 
+    public IRdbmsPersistenceModelProvider PersistenceModelProvider
+    {
+      get { return _persistenceModelProvider; }
+    }
+
     public IEnumerable<IRdbmsStoragePropertyDefinition> GetStoragePropertiesForHierarchy (ClassDefinition classDefinition)
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);

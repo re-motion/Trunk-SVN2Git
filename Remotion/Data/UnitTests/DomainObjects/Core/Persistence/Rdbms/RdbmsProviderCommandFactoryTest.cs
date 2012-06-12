@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
               TestDomainStorageProviderDefinition, false, storageNameProvider, storageTypeInformationProvider, storageProviderDefinitionFinder));
       _factory = new RdbmsProviderCommandFactory (
           TestDomainStorageProviderDefinition,
-          new SqlDbCommandBuilderFactory (SqlDialect.Instance),
+          new SqlDbCommandBuilderFactory (new SqlDialect()),
           rdbmsPersistenceModelProvider,
           new ObjectReaderFactory (
               rdbmsPersistenceModelProvider, infrastructureStoragePropertyDefinitionProvider, storageTypeInformationProvider),

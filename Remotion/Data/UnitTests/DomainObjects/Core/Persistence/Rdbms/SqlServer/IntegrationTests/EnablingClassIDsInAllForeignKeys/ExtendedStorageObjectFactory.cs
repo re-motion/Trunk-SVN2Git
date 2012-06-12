@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 
@@ -23,14 +23,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 {
   public class ExtendedStorageObjectFactory : SqlStorageObjectFactory
   {
-    protected override IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
-        StorageProviderDefinition storageProviderDefinition,
-        IStorageNameProvider storageNameProvider,
-        IStorageProviderDefinitionFinder providerDefinitionFinder,
-        IStorageTypeInformationProvider storageTypeInformationProvider)
+    public override IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
     {
+      var storageNameProvider = CreateStorageNameProvider(storageProviderDefinition);
+      var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
+
       return new RelationStoragePropertyDefinitionFactory (
-          storageProviderDefinition, true, storageNameProvider, storageTypeInformationProvider, providerDefinitionFinder);
+          storageProviderDefinition, true, storageNameProvider, storageTypeInformationProvider, storageProviderDefinitionFinder);
     }
   }
 }

@@ -47,6 +47,11 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration
       _dropScriptElements.AddElement (_commentFactory.GetCommentElement("Drop foreign keys of all tables"));
     }
 
+    public IForeignKeyConstraintScriptElementFactory ForeignKeyConstraintElementFactory
+    {
+      get { return _foreignKeyConstraintElementFactory; }
+    }
+
     public void AddEntityDefinition (IRdbmsStorageEntityDefinition entityDefinition)
     {
       ArgumentUtility.CheckNotNull ("entityDefinition", entityDefinition);

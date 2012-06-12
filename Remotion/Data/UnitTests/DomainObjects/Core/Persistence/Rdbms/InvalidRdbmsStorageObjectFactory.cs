@@ -15,15 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SchemaGeneration;
 using Remotion.Data.DomainObjects.Tracing;
-using Remotion.Linq;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.ServiceLocation;
-using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
 {
@@ -34,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
     {
     }
 
-    public StorageProvider CreateStorageProvider (IPersistenceExtension persistenceExtension, StorageProviderDefinition storageProviderDefinition)
+    public StorageProvider CreateStorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceExtension persistenceExtension)
     {
       throw new NotImplementedException();
     }
@@ -44,7 +46,102 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       throw new NotImplementedException();
     }
 
-    public IQueryExecutor CreateLinqQueryExecutor (ClassDefinition startingClassDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    public IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IRdbmsStorageEntityDefinitionFactory CreateEntityDefinitionFactory (StorageProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (StorageProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (StorageProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStorageProviderCommandFactory<IRdbmsProviderCommandExecutionContext> CreateStorageProviderCommandFactory (StorageProviderDefinition storageProviderDefinition)
+    {
+      throw new NotImplementedException();
+    }
+
+    public IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStorageNameProvider CreateStorageNameProvider ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IDbCommandBuilderFactory CreateDbCommandBuilderFactory ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStorageTypeInformationProvider CreateStorageTypeInformationProvider ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public ISqlQueryGenerator CreateSqlQueryGenerator (IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    {
+      throw new NotImplementedException();
+    }
+
+    public TableScriptBuilder CreateTableBuilder ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public ViewScriptBuilder CreateViewBuilder ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public ForeignKeyConstraintScriptBuilder CreateConstraintBuilder ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public IndexScriptBuilder CreateIndexBuilder ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public SynonymScriptBuilder CreateSynonymBuilder ()
     {
       throw new NotImplementedException();
     }
