@@ -105,9 +105,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       return _storageNameProvider ?? base.CreateStorageNameProvider(storageProviderDefiniton);
     }
 
-    public override IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
+    protected override IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageTypeInformationProvider storageTypeInformationProvider, IStorageNameProvider storageNameProvider)
     {
-      return _infrastructureStoragePropertyDefinitionProvider ?? base.CreateInfrastructureStoragePropertyDefinitionFactory(storageProviderDefinition);
+      return _infrastructureStoragePropertyDefinitionProvider ?? base.CreateInfrastructureStoragePropertyDefinitionFactory (storageProviderDefinition, storageTypeInformationProvider, storageNameProvider);
     }
 
     public override IDbCommandBuilderFactory CreateDbCommandBuilderFactory (RdbmsProviderDefinition storageProviderDefinition)
@@ -130,32 +130,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       return _storageProviderDefinitionFinder ?? base.CreateStorageProviderDefinitionFinder(storageProviderDefinition);
     }
 
-    public override IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    protected override IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageTypeInformationProvider storageTypeInformationProvider, IStorageNameProvider storageNameProvider, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       return _dataStoragePropertyDefinitionFactory
-             ?? base.CreateDataStoragePropertyDefinitionFactory (storageProviderDefinition, storageProviderDefinitionFinder);
+             ?? base.CreateDataStoragePropertyDefinitionFactory (storageProviderDefinition, storageTypeInformationProvider, storageNameProvider, providerDefinitionFinder);
     }
 
-    public override IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
+    protected override IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, IStorageTypeInformationProvider storageTypeInformationProvider)
     {
-      return _valueStoragePropertyDefinitionFactory ?? base.CreateValueStoragePropertyDefinitionFactory(storageProviderDefinition);
+      return _valueStoragePropertyDefinitionFactory ?? base.CreateValueStoragePropertyDefinitionFactory (storageProviderDefinition, storageNameProvider, storageTypeInformationProvider);
     }
 
-    public override IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    protected override IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, IStorageProviderDefinitionFinder providerDefinitionFinder, IStorageTypeInformationProvider storageTypeInformationProvider)
     {
-      return _relationStoragePropertyDefinitionFactory ?? base.CreateRelationStoragePropertyDefinitionFactory(storageProviderDefinition, storageProviderDefinitionFinder);
+      return _relationStoragePropertyDefinitionFactory ?? base.CreateRelationStoragePropertyDefinitionFactory (storageProviderDefinition, storageNameProvider, providerDefinitionFinder, storageTypeInformationProvider);
     }
 
-    public override ISqlQueryGenerator CreateSqlQueryGenerator (RdbmsProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    protected override ISqlQueryGenerator CreateSqlQueryGenerator (RdbmsProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry, IStorageTypeInformationProvider storageTypeInformationProvider)
     {
-      return _sqlQueryGenerator ?? base.CreateSqlQueryGenerator (storageProviderDefinition, methodCallTransformerProvider, resultOperatorHandlerRegistry);
+      return _sqlQueryGenerator ?? base.CreateSqlQueryGenerator (storageProviderDefinition, methodCallTransformerProvider, resultOperatorHandlerRegistry, storageTypeInformationProvider);
     }
 
-    public override IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (RdbmsProviderDefinition storageProviderDefinition)
+    protected override IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageNameProvider storageNameProvider, IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider)
     {
-      return _foreignKeyConstraintDefinitionFactory ?? base.CreateForeignKeyConstraintDefinitionsFactory(storageProviderDefinition);
+      return _foreignKeyConstraintDefinitionFactory ?? base.CreateForeignKeyConstraintDefinitionsFactory (storageProviderDefinition, storageNameProvider, infrastructureStoragePropertyDefinitionProvider);
     }
-
+    
     public override IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver (RdbmsProviderDefinition storageProviderDefinition)
     {
       return _storagePropertyDefinitionResolver ?? base.CreateStoragePropertyDefinitionResolver (storageProviderDefinition);
