@@ -195,6 +195,7 @@
     <Compile Include="ImmediatelyReturningPage.aspx.designer.cs">
       <DependentUpon>ImmediatelyReturningPage.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Performance\BocListWithRowMenues.cs" />
     <Compile Include="Performance\Form.aspx.cs">
       <DependentUpon>Form.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

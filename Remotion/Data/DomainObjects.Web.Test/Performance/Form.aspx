@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Form.aspx.cs" Inherits="Remotion.Data.DomainObjects.Web.Test.Performance.Form" %>
+<%@ Register TagPrefix="remotion" Namespace="Remotion.Data.DomainObjects.Web.Test.Performance" assembly="Remotion.Data.DomainObjects.Web.Test" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -88,14 +89,15 @@
                   <remotion:SmartLabel ID="ItemsLabel" runat="server" ForControl="ItemList" Text="Items" />
                 </td>
                 <td>
-                  <remotion:BocList ID="ItemList" runat="server" DataSourceControl="CurrentObject" PageSize="100" Selection="Multiple" Index="InitialOrder" Width="100%" Height="15em">
+                  <remotion:BocListWithRowMenues ID="ItemList" runat="server" DataSourceControl="CurrentObject" PageSize="100" Selection="Multiple" Index="InitialOrder" Width="100%" Height="15em" RowMenuDisplay=Manual>
                     <FixedColumns>
                       <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="Name" ColumnTitle="Name" />
                       <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="ClassWithAllDataTypesMandatory.StringProperty" ColumnTitle="String" />
                       <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="ClassWithAllDataTypesMandatory.DateProperty" ColumnTitle="Date" />
                       <remotion:BocSimpleColumnDefinition PropertyPathIdentifier="ClassWithAllDataTypesMandatory.Int32Property" ColumnTitle="Int32" />
+                      <remotion:BocDropDownMenuColumnDefinition Width="16px"/>
                     </FixedColumns>
-                  </remotion:BocList>
+                  </remotion:BocListWithRowMenues>
                 </td>
               </tr>
             </table>

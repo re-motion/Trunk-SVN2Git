@@ -20,6 +20,10 @@ using System.Diagnostics;
 using System.Web;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Security;
+using Remotion.Web.ExecutionEngine;
+using Remotion.Web.Security.ExecutionEngine;
+using Remotion.Web.Security.UI;
+using Remotion.Web.UI;
 
 namespace Remotion.Data.DomainObjects.Web.Test
 {
@@ -44,6 +48,8 @@ namespace Remotion.Data.DomainObjects.Web.Test
       Trace.WriteLine (mappingConfiguration.GetTypeDefinitions().Length);
 
       AdapterRegistry.Instance.SetAdapter (typeof (IObjectSecurityAdapter), new ObjectSecurityAdapter());
+      AdapterRegistry.Instance.SetAdapter (typeof (IWebSecurityAdapter), new WebSecurityAdapter());
+      AdapterRegistry.Instance.SetAdapter (typeof (IWxeSecurityAdapter), new WxeSecurityAdapter());
     }
 
     protected void Session_Start (Object sender, EventArgs e)
