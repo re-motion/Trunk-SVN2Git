@@ -179,7 +179,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       var storageNameProvider = CreateStorageNameProvider (storageProviderDefinition);
       var infrastructureStoragePropertyDefinitionProvider = CreateInfrastructureStoragePropertyDefinitionFactory (storageProviderDefinition);
-      var storageProviderDefinitionFinder = CreateStorageProviderDefinitionFinder(storageProviderDefinition);
+      var storageProviderDefinitionFinder = new StorageEntityBasedStorageProviderDefinitionFinder();
       var dataStoragePropertyDefinitionFactory = CreateDataStoragePropertyDefinitionFactory (storageProviderDefinition, storageProviderDefinitionFinder);
       var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
       
@@ -237,13 +237,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       ArgumentUtility.CheckNotNull ("storageProviderDefiniton", storageProviderDefiniton);
 
       return new ReflectionBasedStorageNameProvider();
-    }
-
-    public virtual IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder (RdbmsProviderDefinition storageProviderDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-
-      return new StorageEntityBasedStorageProviderDefinitionFinder();
     }
 
     public virtual TableScriptBuilder CreateTableBuilder (RdbmsProviderDefinition storageProviderDefinition)

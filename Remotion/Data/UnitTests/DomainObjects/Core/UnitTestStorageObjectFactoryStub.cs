@@ -153,10 +153,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       throw new NotImplementedException();
     }
-
-    public IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder (RdbmsProviderDefinition storageProviderDefinition)
-    {
-      throw new NotImplementedException();
-    }
   }
 }

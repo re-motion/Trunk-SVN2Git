@@ -387,14 +387,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateStorageProviderDefinitionFinder ()
-    {
-      var result = _sqlProviderFactory.CreateStorageProviderDefinitionFinder (_rdbmsProviderDefinition);
-
-      Assert.That (result, Is.TypeOf (typeof (StorageEntityBasedStorageProviderDefinitionFinder)));
-    }
-
-    [Test]
     public void CreateSqlDialect ()
     {
       var result = _sqlProviderFactory.CreateSqlDialect (_rdbmsProviderDefinition);

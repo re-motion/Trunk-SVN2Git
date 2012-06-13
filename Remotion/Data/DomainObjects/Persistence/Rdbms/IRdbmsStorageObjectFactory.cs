@@ -47,6 +47,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms
     IRdbmsPersistenceModelProvider CreateRdbmsPersistenceModelProvider (RdbmsProviderDefinition storageProviderDefinition);
     ISqlQueryGenerator CreateSqlQueryGenerator (RdbmsProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry);
     ISqlDialect CreateSqlDialect (RdbmsProviderDefinition storageProviderDefinition);
-    IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder (RdbmsProviderDefinition storageProviderDefinition);
   }
 }

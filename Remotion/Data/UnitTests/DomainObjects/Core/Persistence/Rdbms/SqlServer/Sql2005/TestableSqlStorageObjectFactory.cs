@@ -125,11 +125,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       return _rdbmsPersistenceModelProvider ?? base.CreateRdbmsPersistenceModelProvider(storageProviderDefinition);
     }
 
-    public override IStorageProviderDefinitionFinder CreateStorageProviderDefinitionFinder (RdbmsProviderDefinition storageProviderDefinition)
-    {
-      return _storageProviderDefinitionFinder ?? base.CreateStorageProviderDefinitionFinder(storageProviderDefinition);
-    }
-
     protected override IDataStoragePropertyDefinitionFactory CreateDataStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageTypeInformationProvider storageTypeInformationProvider, IStorageNameProvider storageNameProvider, IStorageProviderDefinitionFinder providerDefinitionFinder)
     {
       return _dataStoragePropertyDefinitionFactory
