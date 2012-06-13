@@ -204,8 +204,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageProviderDefinition, storageNameProvider, storageProviderDefinitionFinder, storageTypeInformationProvider);
     }
 
-    public IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (
-        RdbmsProviderDefinition storageProviderDefinition)
+    public IValueStoragePropertyDefinitionFactory CreateValueStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
@@ -222,8 +221,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
       return new StoragePropertyDefinitionResolver (CreateRdbmsPersistenceModelProvider (storageProviderDefinition));
     }
 
-    public IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (
-        RdbmsProviderDefinition storageProviderDefinition)
+    public IForeignKeyConstraintDefinitionFactory CreateForeignKeyConstraintDefinitionsFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
 
@@ -480,6 +478,5 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
 
       return new SqlQueryGenerator (sqlPreparationStage, mappingResolutionStage, sqlGenerationStage);
     }
-
   }
 }
