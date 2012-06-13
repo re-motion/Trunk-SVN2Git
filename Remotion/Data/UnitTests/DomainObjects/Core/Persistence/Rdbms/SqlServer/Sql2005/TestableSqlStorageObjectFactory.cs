@@ -37,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     private readonly IDbCommandBuilderFactory _dbCommandBuilderFactory;
     private readonly IStorageNameProvider _storageNameProvider;
     private readonly IInfrastructureStoragePropertyDefinitionProvider _infrastructureStoragePropertyDefinitionProvider;
-    private readonly IStorageProviderDefinitionFinder _storageProviderDefinitionFinder;
     private readonly IDataStoragePropertyDefinitionFactory _dataStoragePropertyDefinitionFactory;
     private readonly IValueStoragePropertyDefinitionFactory _valueStoragePropertyDefinitionFactory;
     private readonly IRelationStoragePropertyDefinitionFactory _relationStoragePropertyDefinitionFactory;
@@ -59,14 +58,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       _synonymBuilder = synonymBuilder;
     }
 
-    public TestableSqlStorageObjectFactory (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider, IStorageTypeInformationProvider storageTypeInformationProvider, IDbCommandBuilderFactory dbCommandBuilderFactory, IStorageNameProvider storageNameProvider, IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider, IStorageProviderDefinitionFinder storageProviderDefinitionFinder, IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory, IValueStoragePropertyDefinitionFactory valueStoragePropertyDefinitionFactory, IRelationStoragePropertyDefinitionFactory relationStoragePropertyDefinitionFactory, ISqlQueryGenerator sqlQueryGenerator, IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactoryFactory, IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver)
+    public TestableSqlStorageObjectFactory (IRdbmsPersistenceModelProvider rdbmsPersistenceModelProvider, IStorageTypeInformationProvider storageTypeInformationProvider, IDbCommandBuilderFactory dbCommandBuilderFactory, IStorageNameProvider storageNameProvider, IInfrastructureStoragePropertyDefinitionProvider infrastructureStoragePropertyDefinitionProvider, IDataStoragePropertyDefinitionFactory dataStoragePropertyDefinitionFactory, IValueStoragePropertyDefinitionFactory valueStoragePropertyDefinitionFactory, IRelationStoragePropertyDefinitionFactory relationStoragePropertyDefinitionFactory, ISqlQueryGenerator sqlQueryGenerator, IForeignKeyConstraintDefinitionFactory foreignKeyConstraintDefinitionFactoryFactory, IStoragePropertyDefinitionResolver storagePropertyDefinitionResolver)
     {
       _infrastructureStoragePropertyDefinitionProvider = infrastructureStoragePropertyDefinitionProvider;
       _storageNameProvider = storageNameProvider;
       _dbCommandBuilderFactory = dbCommandBuilderFactory;
       _storageTypeInformationProvider = storageTypeInformationProvider;
       _rdbmsPersistenceModelProvider = rdbmsPersistenceModelProvider;
-      _storageProviderDefinitionFinder = storageProviderDefinitionFinder;
       _dataStoragePropertyDefinitionFactory = dataStoragePropertyDefinitionFactory;
       _valueStoragePropertyDefinitionFactory = valueStoragePropertyDefinitionFactory;
       _relationStoragePropertyDefinitionFactory = relationStoragePropertyDefinitionFactory;

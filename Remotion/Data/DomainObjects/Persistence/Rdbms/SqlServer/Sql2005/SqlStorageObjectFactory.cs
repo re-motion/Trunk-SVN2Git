@@ -191,14 +191,13 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
           storageTypeInformationProvider);
     }
 
-    public IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (
-        RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
-      ArgumentUtility.CheckNotNull ("storageProviderDefinitionFinder", storageProviderDefinitionFinder);
 
       var storageNameProvider = CreateStorageNameProvider(storageProviderDefinition);
       var storageTypeInformationProvider = CreateStorageTypeInformationProvider (storageProviderDefinition);
+      var storageProviderDefinitionFinder = new StorageEntityBasedStorageProviderDefinitionFinder ();
 
       return CreateRelationStoragePropertyDefinitionFactory (
           storageProviderDefinition, storageNameProvider, storageProviderDefinitionFinder, storageTypeInformationProvider);

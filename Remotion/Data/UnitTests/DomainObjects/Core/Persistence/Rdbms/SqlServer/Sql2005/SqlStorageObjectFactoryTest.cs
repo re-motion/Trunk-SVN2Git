@@ -185,7 +185,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           null,
           null,
           null,
-          null,
           _foreignKeyConstraintDefinitionFactoryStub,
           _storagePropertyDefinitionResolverStub);
 
@@ -207,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateDomainObjectQueryGenerator ()
     {
       IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
-          null, _storageTypeInformationProviderStub, null, null, null, null, null, null, null, _sqlQueryGeneratorStub, null, null);
+          null, _storageTypeInformationProviderStub, null, null, null, null, null, null, _sqlQueryGeneratorStub, null, null);
 
       var result = testableSqlProviderFactory.CreateDomainObjectQueryGenerator (
           _rdbmsProviderDefinition, _methodCallTransformerProviderStub, _resultOpertatorHandlerRegistryStub);
@@ -231,7 +230,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateDataStoragePropertyDefinitionFactory ()
     {
       IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
-          null,
           null,
           null,
           null,
@@ -264,7 +262,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           _dbCommandBuilderFactoryStub,
           null,
           null,
-          null,
           _dataStoragePropertyDefinitionFactoryStub,
           null,
           null,
@@ -286,15 +283,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateRelationStoragePropertyDefinitionFactory ()
     {
       IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
-          null, _storageTypeInformationProviderStub, null, _storageNameProviderStub, null, null, null, null, null, null, null, null);
+          null, _storageTypeInformationProviderStub, null, _storageNameProviderStub, null, null, null, null, null, null, null);
 
       var result = testableSqlProviderFactory.CreateRelationStoragePropertyDefinitionFactory (
-          _rdbmsProviderDefinition, _storageProviderDefinitionFinder);
+          _rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (RelationStoragePropertyDefinitionFactory)));
       var resultAsRelationStoragePropertyDefinitionFactory = (RelationStoragePropertyDefinitionFactory) result;
       Assert.That (resultAsRelationStoragePropertyDefinitionFactory.StorageProviderDefinition, Is.SameAs (_rdbmsProviderDefinition));
-      Assert.That (resultAsRelationStoragePropertyDefinitionFactory.ProviderDefinitionFinder, Is.SameAs (_storageProviderDefinitionFinder));
       Assert.That (resultAsRelationStoragePropertyDefinitionFactory.StorageNameProvider, Is.SameAs (_storageNameProviderStub));
       Assert.That (resultAsRelationStoragePropertyDefinitionFactory.StorageTypeInformationProvider, Is.SameAs (_storageTypeInformationProviderStub));
     }
@@ -303,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateValueStoragePropertyDefinitionFactory ()
     {
       IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
-          null, _storageTypeInformationProviderStub, null, _storageNameProviderStub, null, null, null, null, null, null, null, null);
+          null, _storageTypeInformationProviderStub, null, _storageNameProviderStub, null, null, null, null, null, null, null);
 
       var result = testableSqlProviderFactory.CreateValueStoragePropertyDefinitionFactory (_rdbmsProviderDefinition);
 
@@ -317,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void CreateStoragePropertyDefinitionResolver ()
     {
       IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
-          _rdbmsPersistenceModelProviderStub, null, null, null, null, null, null, null, null, null, null, null);
+          _rdbmsPersistenceModelProviderStub, null, null, null, null, null, null, null, null, null, null);
 
       var result = testableSqlProviderFactory.CreateStoragePropertyDefinitionResolver (_rdbmsProviderDefinition);
 
@@ -335,7 +331,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           null,
           _storageNameProviderStub,
           _infrastructureStoragePropertyDefinitionProviderStub,
-          null,
           null,
           null,
           null,

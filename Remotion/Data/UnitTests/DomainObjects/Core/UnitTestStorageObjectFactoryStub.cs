@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       throw new NotImplementedException();
     }
 
-    public IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageProviderDefinitionFinder storageProviderDefinitionFinder)
+    public IRelationStoragePropertyDefinitionFactory CreateRelationStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }
