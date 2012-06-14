@@ -103,9 +103,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       return _storageNameProvider ?? base.CreateStorageNameProvider(storageProviderDefiniton);
     }
 
-    protected override IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition, IStorageTypeInformationProvider storageTypeInformationProvider, IStorageNameProvider storageNameProvider)
+    protected override IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionProvider (RdbmsProviderDefinition storageProviderDefinition, IStorageTypeInformationProvider storageTypeInformationProvider, IStorageNameProvider storageNameProvider)
     {
-      return _infrastructureStoragePropertyDefinitionProvider ?? base.CreateInfrastructureStoragePropertyDefinitionFactory (storageProviderDefinition, storageTypeInformationProvider, storageNameProvider);
+      return _infrastructureStoragePropertyDefinitionProvider ?? base.CreateInfrastructureStoragePropertyDefinitionProvider (storageProviderDefinition, storageTypeInformationProvider, storageNameProvider);
     }
 
     public override IDbCommandBuilderFactory CreateDbCommandBuilderFactory (RdbmsProviderDefinition storageProviderDefinition)
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       return _foreignKeyConstraintDefinitionFactory ?? base.CreateForeignKeyConstraintDefinitionsFactory (storageProviderDefinition, storageNameProvider, infrastructureStoragePropertyDefinitionProvider);
     }
     
-    public override IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver (RdbmsProviderDefinition storageProviderDefinition)
+    protected override IStoragePropertyDefinitionResolver CreateStoragePropertyDefinitionResolver (RdbmsProviderDefinition storageProviderDefinition)
     {
       return _storagePropertyDefinitionResolver ?? base.CreateStoragePropertyDefinitionResolver (storageProviderDefinition);
     }

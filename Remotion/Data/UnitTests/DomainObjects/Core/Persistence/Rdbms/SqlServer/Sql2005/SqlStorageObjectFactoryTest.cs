@@ -165,9 +165,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     }
 
     [Test]
-    public void CreateInfrastructureStoragePropertyDefinitionFactory ()
+    public void CreateInfrastructureStoragePropertyDefinitionProvider ()
     {
-      var result = _sqlProviderFactory.CreateInfrastructureStoragePropertyDefinitionFactory (_rdbmsProviderDefinition);
+      var result = _sqlProviderFactory.CreateInfrastructureStoragePropertyDefinitionProvider (_rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (InfrastructureStoragePropertyDefinitionProvider)));
     }
@@ -307,19 +307,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var resultAsValueStoragePropertyDefinitionFactory = (ValueStoragePropertyDefinitionFactory) result;
       Assert.That (resultAsValueStoragePropertyDefinitionFactory.StorageTypeInformationProvider, Is.SameAs (_storageTypeInformationProviderStub));
       Assert.That (resultAsValueStoragePropertyDefinitionFactory.StorageNameProvider, Is.SameAs (_storageNameProviderStub));
-    }
-
-    [Test]
-    public void CreateStoragePropertyDefinitionResolver ()
-    {
-      IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
-          _rdbmsPersistenceModelProviderStub, null, null, null, null, null, null, null, null, null, null);
-
-      var result = testableSqlProviderFactory.CreateStoragePropertyDefinitionResolver (_rdbmsProviderDefinition);
-
-      Assert.That (result, Is.TypeOf (typeof (StoragePropertyDefinitionResolver)));
-      var resultAsStoragePropertyDefinitionResolver = (StoragePropertyDefinitionResolver) result;
-      Assert.That (resultAsStoragePropertyDefinitionResolver.PersistenceModelProvider, Is.SameAs (_rdbmsPersistenceModelProviderStub));
     }
 
     [Test]

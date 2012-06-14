@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       throw new NotImplementedException();
     }
 
-    public IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionFactory (RdbmsProviderDefinition storageProviderDefinition)
+    public IInfrastructureStoragePropertyDefinitionProvider CreateInfrastructureStoragePropertyDefinitionProvider (RdbmsProviderDefinition storageProviderDefinition)
     {
       throw new NotImplementedException();
     }
