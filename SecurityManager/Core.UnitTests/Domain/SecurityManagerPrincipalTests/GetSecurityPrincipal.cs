@@ -98,7 +98,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     public void RefreshResetsCacheWithNewRevision ()
     {
       var securityPrincipal = _principal.GetSecurityPrincipal();
-      Revision.IncrementRevision();
+      IncrementRevision();
       _principal.Refresh();
       Assert.That (securityPrincipal, Is.Not.SameAs (_principal.GetSecurityPrincipal()));
     }
@@ -109,12 +109,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-      Revision.IncrementRevision();
+      IncrementRevision();
       _principal.Refresh();
 
       ISecurityPrincipal securityPrincipal = _principal.GetSecurityPrincipal();
       Assert.That (securityPrincipal.IsNull, Is.False);
       Assert.That (securityPrincipal.User, Is.EqualTo ("substituting.user"));
+    }
+
+    private void IncrementRevision ()
+    {
+      ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery());
     }
   }
 }

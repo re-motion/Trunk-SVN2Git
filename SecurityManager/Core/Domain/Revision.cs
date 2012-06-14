@@ -29,7 +29,7 @@ namespace Remotion.SecurityManager.Domain
 {
   public static class Revision
   {
-    public static int GetRevision ()
+    public static IQuery GetGetRevisionQuery ()
     {
       var storageProviderDefinition = GetStorageProviderDefinition();
       var sqlDialect = storageProviderDefinition.Factory.CreateSqlDialect (storageProviderDefinition);
@@ -41,16 +41,15 @@ namespace Remotion.SecurityManager.Domain
       statement.Append (sqlDialect.DelimitIdentifier ("Revision"));
       statement.Append (sqlDialect.StatementDelimiter);
 
-      var query = QueryFactory.CreateQuery (
+      return QueryFactory.CreateQuery (
           new QueryDefinition (
               typeof (Revision) + "." + MethodBase.GetCurrentMethod().Name,
               storageProviderDefinition,
               statement.ToString(),
               QueryType.Scalar));
-      return (int) ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query);
     }
 
-    public static void IncrementRevision ()
+    public static IQuery GetIncrementRevisionQuery ()
     {
       var storageProviderDefinition = GetStorageProviderDefinition();
       var sqlDialect = storageProviderDefinition.Factory.CreateSqlDialect (storageProviderDefinition);
@@ -65,13 +64,12 @@ namespace Remotion.SecurityManager.Domain
       statement.Append (" + 1");
       statement.Append (sqlDialect.StatementDelimiter);
 
-      var query = QueryFactory.CreateQuery (
+      return QueryFactory.CreateQuery (
           new QueryDefinition (
               typeof (Revision) + "." + MethodBase.GetCurrentMethod().Name,
               storageProviderDefinition,
               statement.ToString(),
               QueryType.Scalar));
-      ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query);
     }
 
     private static RdbmsProviderDefinition GetStorageProviderDefinition ()

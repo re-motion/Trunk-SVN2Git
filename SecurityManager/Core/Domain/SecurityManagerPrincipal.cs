@@ -240,10 +240,7 @@ namespace Remotion.SecurityManager.Domain
 
     private int GetRevision ()
     {
-      using (ClientTransaction.CreateRootTransaction().EnterDiscardingScope())
-      {
-        return Revision.GetRevision();
-      }
+      return (int) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery());
     }
 
     bool INullObject.IsNull

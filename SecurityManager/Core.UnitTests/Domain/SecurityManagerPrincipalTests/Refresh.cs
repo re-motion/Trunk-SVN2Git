@@ -76,12 +76,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     
       user2.LastName = "New LN";
       ClientTransaction.Current.Commit ();
-      Revision.IncrementRevision ();
+      IncrementRevision ();
 
       principal.Refresh();
 
       Assert.That (principal.User.ID, Is.EqualTo (oldUser.ID));
       Assert.That (principal.User.DisplayName, Is.Not.EqualTo (oldUser.DisplayName));
+    }
+
+    private void IncrementRevision ()
+    {
+      ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery());
     }
   }
 }

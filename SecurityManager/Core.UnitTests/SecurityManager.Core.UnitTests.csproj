@@ -359,8 +359,6 @@
     </DatabaseFiles>
     <DatabaseFiles Include="..\Core\Database\SecurityManagerSetupDBSpecialTables.sql">
     </DatabaseFiles>
-    <MappingFiles Include="..\Core\Domain\SecurityManagerQueries.xml">
-    </MappingFiles>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

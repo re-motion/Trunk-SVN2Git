@@ -66,9 +66,12 @@ namespace Remotion.SecurityManager.Persistence
     {
       using (IDbCommand command = connection.CreateCommand ())
       {
+        var query =  Revision.GetIncrementRevisionQuery();
+        Assertion.IsTrue (query.Parameters.Count == 0);
+        Assertion.IsTrue (query.QueryType == QueryType.Scalar);
+
         command.Transaction = transaction;
-        QueryDefinition queryDefintion = DomainObjectsConfiguration.Current.Query.QueryDefinitions.GetMandatory ("Remotion.SecurityManager.Domain.Revision.IncrementRevision");
-        command.CommandText = queryDefintion.Statement;
+        command.CommandText = query.Statement;
 
         command.ExecuteNonQuery ();
       }

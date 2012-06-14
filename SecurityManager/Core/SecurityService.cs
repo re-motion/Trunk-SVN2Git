@@ -100,10 +100,7 @@ namespace Remotion.SecurityManager
 
     public int GetRevision ()
     {
-      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
-      {
-        return Revision.GetRevision();
-      }
+      return (int) ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery());
     }
 
     private AccessType ConvertToAccessType (AccessTypeDefinition accessTypeDefinition)

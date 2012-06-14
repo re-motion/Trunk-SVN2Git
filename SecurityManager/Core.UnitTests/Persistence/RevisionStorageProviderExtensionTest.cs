@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Development.UnitTesting;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.SecurityManager.UnitTests.Domain;
@@ -44,11 +45,11 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
     [Test]
     public void Saving_OneSecurityManagerDomainObject ()
     {
-      Tenant tenant = _factory.CreateTenant ();
+      Dev.Null = _factory.CreateTenant ();
 
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      Assert.AreEqual (1, Revision.GetRevision ());
+      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery()), Is.EqualTo (1));
     }
 
     [Test]
@@ -59,7 +60,7 @@ namespace Remotion.SecurityManager.UnitTests.Persistence
 
       ClientTransactionScope.CurrentTransaction.Commit ();
 
-      Assert.AreEqual (0, Revision.GetRevision ());
+      Assert.That (ClientTransaction.CreateRootTransaction().QueryManager.GetScalar (Revision.GetGetRevisionQuery()), Is.EqualTo (0));
     }
   }
 }

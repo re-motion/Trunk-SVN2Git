@@ -91,7 +91,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     public void RefreshResetsCacheWithNewRevision ()
     {
       UserProxy proxy = _principal.User;
-      Revision.IncrementRevision();
+      IncrementRevision();
       _principal.Refresh();
       Assert.That (proxy, Is.Not.SameAs (_principal.User));
     }
@@ -102,12 +102,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-      Revision.IncrementRevision();
+      IncrementRevision();
       _principal.Refresh();
 
       var userProxy = _principal.User;
 
       Assert.That (userProxy.ID, Is.EqualTo (_user.ID));
+    }
+
+    private void IncrementRevision ()
+    {
+      ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery());
     }
   }
 }

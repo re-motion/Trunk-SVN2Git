@@ -94,7 +94,7 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
     public void RefreshResetsCacheWithNewRevision ()
     {
       SubstitutionProxy proxy = _principal.Substitution;
-      Revision.IncrementRevision();
+      IncrementRevision();
       _principal.Refresh();
       Assert.That (proxy, Is.Not.SameAs (_principal.Substitution));
     }
@@ -105,12 +105,17 @@ namespace Remotion.SecurityManager.UnitTests.Domain.SecurityManagerPrincipalTest
       var securityProviderStub = MockRepository.GenerateStub<ISecurityProvider>();
       securityProviderStub.Stub (stub => stub.IsNull).Return (false);
       SecurityConfiguration.Current.SecurityProvider = securityProviderStub;
-      Revision.IncrementRevision();
+      IncrementRevision();
       _principal.Refresh();
 
       var substitutionProxy = _principal.Substitution;
 
       Assert.That (substitutionProxy.ID, Is.EqualTo (_substitution.ID));
+    }
+
+    private void IncrementRevision ()
+    {
+      ClientTransaction.Current.QueryManager.GetScalar (Revision.GetIncrementRevisionQuery());
     }
   }
 }

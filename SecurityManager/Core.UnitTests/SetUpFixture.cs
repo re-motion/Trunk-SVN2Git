@@ -58,10 +58,7 @@ namespace Remotion.SecurityManager.UnitTests
         storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
 
         DomainObjectsConfiguration.SetCurrent (
-            new FakeDomainObjectsConfiguration (
-                new MappingLoaderConfiguration(),
-                storageConfiguration,
-                new QueryConfiguration (GetFullPath (@"SecurityManagerQueries.xml"))));
+            new FakeDomainObjectsConfiguration (new MappingLoaderConfiguration(), storageConfiguration, new QueryConfiguration()));
 
         var rootAssemblyFinder = new FixedRootAssemblyFinder (new RootAssembly (typeof (BaseSecurityManagerObject).Assembly, true));
         var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);

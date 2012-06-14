@@ -158,7 +158,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <MappingFiles Include="..\Core\Domain\SecurityManagerQueries.xml" />
     <Content Include="Global.asax" />
     <Content Include="WxeHandler.ashx" />
   </ItemGroup>
