@@ -31,25 +31,25 @@ namespace Remotion.SecurityManager.UnitTests.Domain
       DatabaseFixtures dbFixtures = new DatabaseFixtures();
       dbFixtures.CreateEmptyDomain();
 
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Assert.AreEqual (0, Revision.GetRevision ());
+        Assert.That (Revision.GetRevision(), Is.EqualTo (0));
       }
     }
 
     [Test]
     public void IncrementRevision ()
     {
-      DatabaseFixtures dbFixtures = new DatabaseFixtures ();
-      dbFixtures.CreateEmptyDomain ();
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      DatabaseFixtures dbFixtures = new DatabaseFixtures();
+      dbFixtures.CreateEmptyDomain();
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Revision.IncrementRevision ();
+        Revision.IncrementRevision();
       }
 
-      using (ClientTransaction.CreateRootTransaction ().EnterNonDiscardingScope ())
+      using (ClientTransaction.CreateRootTransaction().EnterNonDiscardingScope())
       {
-        Assert.AreEqual (1, Revision.GetRevision ());
+        Assert.That (Revision.GetRevision(), Is.EqualTo (1));
       }
     }
   }

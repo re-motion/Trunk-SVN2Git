@@ -16,8 +16,14 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
+using System.Reflection;
+using System.Text;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.DomainObjects.Queries.Configuration;
+using Remotion.SecurityManager.Domain.Metadata;
 
 namespace Remotion.SecurityManager.Domain
 {
@@ -25,14 +31,53 @@ namespace Remotion.SecurityManager.Domain
   {
     public static int GetRevision ()
     {
-      var query = QueryFactory.CreateQueryFromConfiguration ("Remotion.SecurityManager.Domain.Revision.GetRevision");
+      var storageProviderDefinition = GetStorageProviderDefinition();
+      var sqlDialect = storageProviderDefinition.Factory.CreateSqlDialect (storageProviderDefinition);
+
+      var statement = new StringBuilder();
+      statement.Append ("SELECT ");
+      statement.Append (sqlDialect.DelimitIdentifier ("Value"));
+      statement.Append (" FROM ");
+      statement.Append (sqlDialect.DelimitIdentifier ("Revision"));
+      statement.Append (sqlDialect.StatementDelimiter);
+
+      var query = QueryFactory.CreateQuery (
+          new QueryDefinition (
+              typeof (Revision) + "." + MethodBase.GetCurrentMethod().Name,
+              storageProviderDefinition,
+              statement.ToString(),
+              QueryType.Scalar));
       return (int) ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query);
     }
 
     public static void IncrementRevision ()
     {
-      var query = QueryFactory.CreateQueryFromConfiguration ("Remotion.SecurityManager.Domain.Revision.IncrementRevision");
+      var storageProviderDefinition = GetStorageProviderDefinition();
+      var sqlDialect = storageProviderDefinition.Factory.CreateSqlDialect (storageProviderDefinition);
+
+      var statement = new StringBuilder();
+      statement.Append ("Update ");
+      statement.Append (sqlDialect.DelimitIdentifier ("Revision"));
+      statement.Append (" SET ");
+      statement.Append (sqlDialect.DelimitIdentifier ("Value"));
+      statement.Append (" = ");
+      statement.Append (sqlDialect.DelimitIdentifier ("Value"));
+      statement.Append (" + 1");
+      statement.Append (sqlDialect.StatementDelimiter);
+
+      var query = QueryFactory.CreateQuery (
+          new QueryDefinition (
+              typeof (Revision) + "." + MethodBase.GetCurrentMethod().Name,
+              storageProviderDefinition,
+              statement.ToString(),
+              QueryType.Scalar));
       ClientTransactionScope.CurrentTransaction.QueryManager.GetScalar (query);
+    }
+
+    private static RdbmsProviderDefinition GetStorageProviderDefinition ()
+    {
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (SecurableClassDefinition));
+      return (RdbmsProviderDefinition) classDefinition.StorageEntityDefinition.StorageProviderDefinition;
     }
   }
 }
