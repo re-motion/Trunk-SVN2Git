@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static IClientTransactionListenerManager GetListenerManager (ClientTransaction clientTransaction)
     {
-      return (IClientTransactionListenerManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "ListenerManager");
+      return (IClientTransactionListenerManager) PrivateInvoke.GetNonPublicField (clientTransaction, "_listenerManager");
     }
 
     public static void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
