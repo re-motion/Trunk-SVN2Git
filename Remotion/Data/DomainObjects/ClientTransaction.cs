@@ -936,6 +936,8 @@ public class ClientTransaction
 
     using (EnterNonDiscardingScope ())
     {
+      _listenerManager.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, domainObjectType));
+
       var creator = MappingConfiguration.Current.GetTypeDefinition (domainObjectType).GetDomainObjectCreator ();
       var ctorInfo = creator.GetConstructorLookupInfo (domainObjectType);
 

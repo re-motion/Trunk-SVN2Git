@@ -46,6 +46,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     [NonSerialized]
     public bool CtorCalled;
+    [NonSerialized]
+    public ClientTransaction CtorTx;
 
     [NonSerialized]
     public bool OnReferenceInitializingCalledBeforeCtor;
@@ -88,6 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     protected TestDomainBase()
     {
       CtorCalled = true;
+      CtorTx = ClientTransaction.Current;
       OnReferenceInitializingCalledBeforeCtor = OnReferenceInitializingCalled;
     }
 

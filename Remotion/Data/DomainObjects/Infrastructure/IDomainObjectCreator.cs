@@ -38,7 +38,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     /// <summary>
     /// Gets a <see cref="ConstructorLookupInfo"/> that can be used to construct a <see cref="DomainObject"/> of the given 
-    /// <paramref name="domainObjectType"/>.
+    /// <paramref name="domainObjectType"/>. The <see cref="ConstructorLookupInfo"/> returned by this method does not raise the events normally 
+    /// raised when a <see cref="DomainObject"/> is constructed. Use <see cref="ClientTransaction.NewObject"/> to create a <see cref="DomainObject"/>
+    /// with the right events being fired.
     /// </summary>
     /// <param name="domainObjectType">Type of the domain object.</param>
     /// <returns>A <see cref="ConstructorLookupInfo"/> that can be used to instantiate a <see cref="DomainObject"/> of the given type.</returns>
@@ -46,6 +48,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// The <see cref="ConstructorLookupInfo"/> returned by this method might not directly represent the given type; instead, it might represent a 
     /// proxy type compatible with <paramref name="domainObjectType"/>.
     /// </remarks>
-    ConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType);
+    IConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType);
   }
 }

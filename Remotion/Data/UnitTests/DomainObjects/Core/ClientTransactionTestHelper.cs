@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Development.UnitTesting;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -88,6 +89,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static DomainObjectCollection CallGetOriginalRelatedObjects (ClientTransaction clientTransaction, RelationEndPointID relationEndPointID)
     {
       return (DomainObjectCollection) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetOriginalRelatedObjects", relationEndPointID);
+    }
+
+    public static DomainObject CallNewObject (ClientTransaction clientTransaction, Type domainObjectType, ParamList constructorParameters)
+    {
+      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "NewObject", domainObjectType, constructorParameters);
     }
 
     public static void AddListener (ClientTransaction clientTransaction, IClientTransactionListener listener)

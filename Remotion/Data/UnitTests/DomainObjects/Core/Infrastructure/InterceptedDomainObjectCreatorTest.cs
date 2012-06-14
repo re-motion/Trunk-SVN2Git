@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void GetConstructorLookupInfo_BindingFlags ()
     {
-      var info = InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
+      var info = (DomainObjectConstructorLookupInfo) InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
       Assert.That (info.BindingFlags, Is.EqualTo (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
     }
 

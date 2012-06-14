@@ -31,9 +31,12 @@ using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
+using Remotion.Mixins;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -56,14 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private IQueryManager _queryManagerMock;
 
     private TestableClientTransaction _transactionWithMocks;
-
-    private Order _fakeDomainObject1;
-    private Order _fakeDomainObject2;
-    private Order _fakeDomainObject3;
-
-    private DataContainer _fakeDataContainer1;
-    private DataContainer _fakeDataContainer2;
-    private DataContainer _fakeDataContainer3;
 
     public override void SetUp ()
     {
@@ -95,14 +90,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _queryManagerMock);
       // Ignore calls made by ctor
       _listenerManagerMock.BackToRecord();
-
-      _fakeDomainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
-      _fakeDomainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
-      _fakeDomainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
-
-      _fakeDataContainer1 = DataContainer.CreateNew (_fakeDomainObject1.ID);
-      _fakeDataContainer2 = DataContainer.CreateNew (_fakeDomainObject2.ID);
-      _fakeDataContainer3 = DataContainer.CreateNew (_fakeDomainObject3.ID);
     }
 
     [Test]
@@ -297,20 +284,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void Commit ()
     {
-      var item1 = new PersistableData (_fakeDomainObject1, StateType.New, _fakeDataContainer1, new IRelationEndPoint[0]);
-      var item2 = new PersistableData (_fakeDomainObject2, StateType.Changed, _fakeDataContainer2, new IRelationEndPoint[0]);
-      var item3 = new PersistableData (_fakeDomainObject3, StateType.Deleted, _fakeDataContainer3, new IRelationEndPoint[0]);
+      var fakeDomainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
+      var fakeDomainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
+      var fakeDomainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
+
+      var fakeDataContainer1 = DataContainer.CreateNew (fakeDomainObject1.ID);
+      var fakeDataContainer2 = DataContainer.CreateNew (fakeDomainObject2.ID);
+      var fakeDataContainer3 = DataContainer.CreateNew (fakeDomainObject3.ID);
+
+      var item1 = new PersistableData (fakeDomainObject1, StateType.New, fakeDataContainer1, new IRelationEndPoint[0]);
+      var item2 = new PersistableData (fakeDomainObject2, StateType.Changed, fakeDataContainer2, new IRelationEndPoint[0]);
+      var item3 = new PersistableData (fakeDomainObject3, StateType.Deleted, fakeDataContainer3, new IRelationEndPoint[0]);
       _dataManagerMock.Stub (stub => stub.GetNewChangedDeletedData()).Return (new[] { item1, item2, item3 });
       
       var expectationCounter = new OrderedExpectationCounter();
 
-      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject1)).Return (true);
-      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject2)).Return (true);
-      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (_fakeDomainObject3)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (fakeDomainObject1)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (fakeDomainObject2)).Return (true);
+      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (fakeDomainObject3)).Return (true);
 
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject1.ID)).Return (false);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject2.ID)).Return (false);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (_fakeDomainObject3.ID)).Return (false);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject1.ID)).Return (false);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject2.ID)).Return (false);
+      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject3.ID)).Return (false);
 
       var listenerMock = SetupEventForwardingToListenerMock(_listenerManagerMock, _transactionWithMocks);
 
@@ -318,7 +313,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       listenerMock
           .Expect (mock => mock.TransactionCommitting (
               Arg.Is (_transactionWithMocks),
-              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { _fakeDomainObject1, _fakeDomainObject2, _fakeDomainObject3 })))
+              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { fakeDomainObject1, fakeDomainObject2, fakeDomainObject3 })))
           .WhenCalledOrdered (expectationCounter, mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
       listenerMock
           .Expect (
@@ -336,7 +331,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Expect (
               mock => mock.TransactionCommitted (
                   Arg.Is (_transactionWithMocks),
-                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { _fakeDomainObject1, _fakeDomainObject2 })))
+                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { fakeDomainObject1, fakeDomainObject2 })))
           .WhenCalledOrdered (expectationCounter, mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
 
       _mockRepository.ReplayAll();
@@ -516,6 +511,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _transaction.Execute (domainObject.Delete);
 
       Assert.That (_transaction.IsInvalid (domainObject.ID), Is.True);
+    }
+
+    [Test]
+    public void NewObject ()
+    {
+      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
+
+      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+      listenerMock
+          .Expect (mock => mock.NewObjectCreating (_transaction, typeof (OrderItem)))
+          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+
+      var result = ClientTransactionTestHelper.CallNewObject (_transaction, typeof (OrderItem), ParamList.Create ("Some Product"));
+
+      listenerMock.VerifyAllExpectations();
+      ClientTransactionTestHelper.RemoveListener (_transaction, listenerMock);
+      Assert.That (result, Is.Not.Null);
+
+      Assert.That (result, Is.AssignableTo<OrderItem> ());
+      Assert.That (result, Is.Not.TypeOf<OrderItem> ());
+      var typeDefinition = GetTypeDefinition (typeof (OrderItem));
+      var interceptedDomainObjectCreator = ((InterceptedDomainObjectCreator) typeDefinition.GetDomainObjectCreator ());
+      var interceptedDomainObjectTypeFactory = interceptedDomainObjectCreator.Factory;
+      Assert.That (interceptedDomainObjectTypeFactory.WasCreatedByFactory (((object) result).GetType()), Is.True);
+
+      Assert.That (((OrderItem) result).CtorCalled, Is.True);
+      Assert.That (((OrderItem) result).CtorTx, Is.SameAs (_transaction));
+      Assert.That (_transaction.Execute (() => ((OrderItem) result).Product), Is.EqualTo ("Some Product"));
+
+      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
+    }
+
+    [Test]
+    public void NewObject_InitializesMixins ()
+    {
+      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
+      var result = ClientTransactionTestHelper.CallNewObject (_transaction, typeof (ClassWithAllDataTypes), ParamList.Empty);
+
+      var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
+      Assert.That (mixin, Is.Not.Null);
+      Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
+      Assert.That (mixin.OnDomainObjectCreatedTx, Is.SameAs (_transaction));
     }
 
     [Test]

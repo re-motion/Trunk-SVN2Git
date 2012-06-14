@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return instance;
     }
 
-    public ConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType)
+    public IConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
 
@@ -67,8 +67,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       classDefinition.ValidateCurrentMixinConfiguration ();
 
       Type concreteType = Factory.GetConcreteDomainObjectType (domainObjectType);
-      return new DomainObjectConstructorLookupInfo (domainObjectType, concreteType, 
-          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      return new DomainObjectConstructorLookupInfo (domainObjectType, concreteType, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
     }
   }
 }

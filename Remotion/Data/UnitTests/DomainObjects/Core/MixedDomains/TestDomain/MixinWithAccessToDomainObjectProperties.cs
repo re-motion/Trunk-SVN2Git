@@ -23,12 +23,14 @@ using Remotion.Mixins;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
 {
   [CLSCompliant (false)]
-  [Extends (typeof (ClassWithAllDataTypes), MixinTypeArguments = new Type[] { typeof (ClassWithAllDataTypes) })]
+  [Extends (typeof (ClassWithAllDataTypes), MixinTypeArguments = new[] { typeof (ClassWithAllDataTypes) })]
   [Serializable]
   public class MixinWithAccessToDomainObjectProperties<TDomainObject> : DomainObjectMixin<TDomainObject>
       where TDomainObject : DomainObject
   {
     public bool OnDomainObjectCreatedCalled;
+    public ClientTransaction OnDomainObjectCreatedTx;
+
     public bool OnDomainObjectLoadedCalled;
     public LoadMode OnDomainObjectLoadedLoadMode;
     public bool OnDomainObjectReferenceInitializingCalled;
@@ -76,6 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     protected override void OnDomainObjectCreated ()
     {
       OnDomainObjectCreatedCalled = true;
+      OnDomainObjectCreatedTx = ClientTransaction.Current;
     }
 
     protected override void OnDomainObjectLoaded (LoadMode loadMode)

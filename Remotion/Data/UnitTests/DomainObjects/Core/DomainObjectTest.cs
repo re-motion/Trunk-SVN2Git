@@ -65,16 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void Ctor_RaisesNewObjectCreating ()
-    {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      var instance = _transaction.Execute (() => Order.NewObject ());
-
-      listenerMock.AssertWasCalled (mock => mock.NewObjectCreating (_transaction, typeof (Order), instance));
-    }
-
-    [Test]
     public void Ctor_CreatesObjectID ()
     {
       var instance = _transaction.Execute (() => Order.NewObject ());

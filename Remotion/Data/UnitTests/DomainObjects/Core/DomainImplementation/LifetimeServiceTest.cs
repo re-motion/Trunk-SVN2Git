@@ -68,8 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var domainObject = LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithAllDataTypes), ParamList.Empty);
       var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (domainObject);
       Assert.That (mixin, Is.Not.Null);
-
       Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
+      Assert.That (mixin.OnDomainObjectCreatedTx, Is.SameAs (TestableClientTransaction));
     }
 
     [Test]

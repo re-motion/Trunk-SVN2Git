@@ -234,11 +234,9 @@ namespace Remotion.Data.DomainObjects
 // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
       var publicDomainObjectType = GetPublicDomainObjectType ();
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (publicDomainObjectType);
 
       var clientTransaction = ClientTransaction.Current;
-      clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.NewObjectCreating (clientTransaction, publicDomainObjectType, this));
-
-      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (publicDomainObjectType);
       var objectID = clientTransaction.CreateNewObjectID (classDefinition);
 
       Initialize (objectID, clientTransaction as BindingClientTransaction);
