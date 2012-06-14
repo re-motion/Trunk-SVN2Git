@@ -242,7 +242,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
           null,
           null);
 
-      var result = testableSqlProviderFactory.CreateDataStoragePropertyDefinitionFactory (_rdbmsProviderDefinition, _storageProviderDefinitionFinder);
+      var result = testableSqlProviderFactory.CreateDataStoragePropertyDefinitionFactory (_rdbmsProviderDefinition);
 
       Assert.That (result, Is.TypeOf (typeof (DataStoragePropertyDefinitionFactory)));
       var resultAsDataStoragePropertyDefinitionFactory = (DataStoragePropertyDefinitionFactory) result;
