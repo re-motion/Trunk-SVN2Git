@@ -39,9 +39,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DataManager _dataManager;
 
     private IClientTransactionEventSink _transactionEventSinkStub;
-    private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
+    private IDataContainerEventListener _dataContainerEventListenerStub;
     private IObjectLoader _objectLoaderMock;
     private IRelationEndPointManager _endPointManagerMock;
+    private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
+
     private DataManager _dataManagerWithMocks;
 
     public override void SetUp ()
@@ -51,13 +53,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _dataManager = TestableClientTransaction.DataManager;
 
       _transactionEventSinkStub = MockRepository.GenerateStub<IClientTransactionEventSink>();
+      _dataContainerEventListenerStub = MockRepository.GenerateStub<IDataContainerEventListener>();
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
       _endPointManagerMock = MockRepository.GenerateStrictMock<IRelationEndPointManager> ();
-
       _invalidDomainObjectManagerMock = MockRepository.GenerateMock<IInvalidDomainObjectManager>();
+
       _dataManagerWithMocks = new DataManager (
           TestableClientTransaction,
           _transactionEventSinkStub,
+          _dataContainerEventListenerStub,
           _invalidDomainObjectManagerMock,
           _objectLoaderMock,
           _endPointManagerMock);
@@ -68,6 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       Assert.That (_dataManagerWithMocks.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (_dataManagerWithMocks.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
+      Assert.That (_dataManagerWithMocks.DataContainerEventListener, Is.SameAs (_dataContainerEventListenerStub));
       Assert.That (DataManagerTestHelper.GetRelationEndPointManager (_dataManagerWithMocks), Is.SameAs (_endPointManagerMock));
       
       var dataContainerMap = DataManagerTestHelper.GetDataContainerMap (_dataManagerWithMocks);

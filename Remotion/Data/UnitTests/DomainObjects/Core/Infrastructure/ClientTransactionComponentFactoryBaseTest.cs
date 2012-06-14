@@ -83,6 +83,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var fakeInvalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var fakePersistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy>();
 
+      var fakeDataContainerEventListener = MockRepository.GenerateStub<IDataContainerEventListener> ();
       var fakeEndPointProvider = MockRepository.GenerateStub<IRelationEndPointProvider> ();
       var fakeLazyLoader = MockRepository.GenerateStub<ILazyLoader> ();
       var fakeRelationEndPointManager = MockRepository.GenerateStub<IRelationEndPointManager> ();
@@ -93,6 +94,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       DelegatingDataManager objectLoaderDataManager = null;
 
       var factoryPartialMock = MockRepository.GeneratePartialMock<TestableClientTransactionComponentFactoryBase>();
+      factoryPartialMock
+          .Expect (mock => mock.CallCreateDataContainerEventListener (fakeEventSink))
+          .Return (fakeDataContainerEventListener);
       factoryPartialMock
           .Expect (mock => mock.CallGetEndPointProvider (Arg<DelegatingDataManager>.Is.TypeOf))
           .Return (fakeEndPointProvider)
@@ -130,6 +134,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (dataManager.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
       Assert.That (dataManager.TransactionEventSink, Is.SameAs (fakeEventSink));
+      Assert.That (dataManager.DataContainerEventListener, Is.SameAs (fakeDataContainerEventListener));
       Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (fakeInvalidDomainObjectManager));
       Assert.That (DataManagerTestHelper.GetObjectLoader (dataManager), Is.SameAs (fakeObjectLoader));
       Assert.That (DataManagerTestHelper.GetRelationEndPointManager (dataManager), Is.SameAs (fakeRelationEndPointManager));

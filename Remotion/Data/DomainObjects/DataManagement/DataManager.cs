@@ -52,18 +52,21 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public DataManager (
         ClientTransaction clientTransaction, 
         IClientTransactionEventSink transactionEventSink,
+        IDataContainerEventListener dataContainerEventListener,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IObjectLoader objectLoader,
         IRelationEndPointManager relationEndPointManager)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+      ArgumentUtility.CheckNotNull ("dataContainerEventListener", dataContainerEventListener);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("objectLoader", objectLoader);
       ArgumentUtility.CheckNotNull ("relationEndPointManager", relationEndPointManager);
 
       _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
-      _dataContainerEventListener = new DataContainerEventListener (_transactionEventSink); // TODO 3658: Inject
+      _dataContainerEventListener = dataContainerEventListener;
       _invalidDomainObjectManager = invalidDomainObjectManager;
       _objectLoader = objectLoader;
       _relationEndPointManager = relationEndPointManager;

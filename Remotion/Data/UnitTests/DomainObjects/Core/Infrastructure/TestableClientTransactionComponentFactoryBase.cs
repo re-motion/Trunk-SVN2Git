@@ -101,6 +101,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       return CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
     }
 
+    public IDataContainerEventListener CallCreateDataContainerEventListener (IClientTransactionEventSink eventSink)
+    {
+      return CreateDataContainerEventListener (eventSink);
+    }
+
     public IRelationEndPointProvider CallGetEndPointProvider (IDataManager dataManager)
     {
       return GetEndPointProvider (dataManager);
@@ -110,6 +115,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       return GetLazyLoader (dataManager);
     }
-
   }
 }

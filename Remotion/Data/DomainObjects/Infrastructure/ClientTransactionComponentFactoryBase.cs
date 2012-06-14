@@ -80,6 +80,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+    
+      var dataContainerEventListener = CreateDataContainerEventListener (eventSink);
 
       var delegatingDataManager = new DelegatingDataManager ();
       var objectLoader = CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, delegatingDataManager);
@@ -89,8 +91,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           GetEndPointProvider (delegatingDataManager),
           GetLazyLoader (delegatingDataManager),
           eventSink);
-
-      var dataManager = new DataManager (constructedTransaction, eventSink, invalidDomainObjectManager, objectLoader, endPointManager);
+      
+      var dataManager = new DataManager (constructedTransaction, eventSink, dataContainerEventListener, invalidDomainObjectManager, objectLoader, endPointManager);
       delegatingDataManager.InnerDataManager = dataManager;
       return dataManager;
     }
@@ -124,6 +126,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         extensionCollection.Add (factory);
 
       return extensionCollection;
+    }
+
+    protected virtual IDataContainerEventListener CreateDataContainerEventListener (IClientTransactionEventSink eventSink)
+    {
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      return new DataContainerEventListener (eventSink);
     }
 
     protected virtual ILazyLoader GetLazyLoader (IDataManager dataManager)
