@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _endPointID = RelationEndPointID.Resolve (_domainObject, c => c.Employee);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _relatedObject.ID);
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (TestableClientTransaction);
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(TestableClientTransaction);
 
       _command = new ObjectEndPointSetSameCommand (_endPoint, _transactionEventSinkWithMock);
     }

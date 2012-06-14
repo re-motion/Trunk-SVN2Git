@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         _oppositeObjectSetterCalled = true;
         _oppositeObjectSetterObject = id;
       };
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (TestableClientTransaction);
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(TestableClientTransaction);
     }
   }
 }

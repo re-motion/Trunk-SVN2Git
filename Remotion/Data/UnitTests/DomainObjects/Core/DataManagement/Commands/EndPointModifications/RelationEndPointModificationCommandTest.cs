@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       _oldRelatedObject = _transaction.Execute (() => OrderTicket.NewObject ());
       _newRelatedObject = _transaction.Execute (() => OrderTicket.NewObject ());
 
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (_transaction);
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(_transaction);
 
       _command = CreateTestableCommand ();
       _commandPartialMock = CreateCommandPartialMock ();

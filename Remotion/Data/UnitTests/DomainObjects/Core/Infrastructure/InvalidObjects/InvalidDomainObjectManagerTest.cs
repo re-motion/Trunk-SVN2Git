@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.InvalidObjec
     {
       base.SetUp ();
 
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (ClientTransaction.CreateRootTransaction ());
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction ());
 
       _manager = new InvalidDomainObjectManager (_transactionEventSinkWithMock);
       _order1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);

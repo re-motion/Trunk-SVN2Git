@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order>();
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
 
       _unloadDataCommandMock = _mockRepository.StrictMock<IDataManagementCommand>();
 

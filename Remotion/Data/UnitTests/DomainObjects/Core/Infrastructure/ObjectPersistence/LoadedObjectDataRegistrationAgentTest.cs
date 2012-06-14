@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _clientTransaction = ClientTransaction.CreateRootTransaction();
 
       _mockRepository = new MockRepository();
-      _eventSinkWithMock = new ClientTransactionEventSinkWithMock (_clientTransaction);
+      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(_clientTransaction);
       _lifetimeManagerMock = _mockRepository.StrictMock<IDataContainerLifetimeManager> ();
       _transactionEventReceiverMock = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_clientTransaction);
 

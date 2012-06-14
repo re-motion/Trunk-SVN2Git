@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp ();
 
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock(ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
       _map = new RelationEndPointMap (_transactionEventSinkWithMock);
 
       _endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");

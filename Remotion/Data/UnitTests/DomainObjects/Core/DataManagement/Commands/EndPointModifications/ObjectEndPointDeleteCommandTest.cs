@@ -50,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         _oppositeObjectNullSetterCalled = true;
       };
 
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (TestableClientTransaction);
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(TestableClientTransaction);
       _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectNullSetter, _transactionEventSinkWithMock);
     }
 

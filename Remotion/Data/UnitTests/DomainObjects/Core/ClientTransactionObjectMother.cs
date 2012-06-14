@@ -60,6 +60,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return Create<T> (componentFactory);
     }
 
+    public static ClientTransaction Create ()
+    {
+      return ClientTransaction.CreateRootTransaction();
+    }
+
     public static T Create<T> (IClientTransactionComponentFactory componentFactory) where T : ClientTransaction
     {
       return (T) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (T), componentFactory);

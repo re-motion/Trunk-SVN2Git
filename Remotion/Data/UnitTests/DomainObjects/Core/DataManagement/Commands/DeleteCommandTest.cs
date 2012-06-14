@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _transaction = new TestableClientTransaction();
       _order1 = (Order) LifetimeService.GetObject (_transaction, DomainObjectIDs.Order1, false);
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (_transaction);
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(_transaction);
     
       _deleteOrder1Command = new DeleteCommand (_transaction, _order1, _transactionEventSinkWithMock);
       

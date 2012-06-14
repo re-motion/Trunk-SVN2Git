@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _persistenceStrategyMock = MockRepository.GenerateStrictMock<IPersistenceStrategy> ();
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
-      _transactionEventSinkWithMock = new ClientTransactionEventSinkWithMock (ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
 
       _queryManager = new QueryManager (
           _persistenceStrategyMock,
