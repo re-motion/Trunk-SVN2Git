@@ -20,6 +20,7 @@ using System.Reflection;
 using System.Text;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.SecurityManager.Domain.Metadata;
@@ -35,9 +36,9 @@ namespace Remotion.SecurityManager.Domain
 
       var statement = new StringBuilder();
       statement.Append ("SELECT ");
-      statement.Append (sqlDialect.DelimitIdentifier ("Value"));
+      statement.Append (GetRevisionColumnIdentifier (sqlDialect));
       statement.Append (" FROM ");
-      statement.Append (sqlDialect.DelimitIdentifier ("Revision"));
+      statement.Append (GetRevisionTableIdentifier (sqlDialect));
       statement.Append (sqlDialect.StatementDelimiter);
 
       return QueryFactory.CreateQuery (
@@ -55,11 +56,11 @@ namespace Remotion.SecurityManager.Domain
 
       var statement = new StringBuilder();
       statement.Append ("Update ");
-      statement.Append (sqlDialect.DelimitIdentifier ("Revision"));
+      statement.Append (GetRevisionTableIdentifier (sqlDialect));
       statement.Append (" SET ");
-      statement.Append (sqlDialect.DelimitIdentifier ("Value"));
+      statement.Append (GetRevisionColumnIdentifier (sqlDialect));
       statement.Append (" = ");
-      statement.Append (sqlDialect.DelimitIdentifier ("Value"));
+      statement.Append (GetRevisionColumnIdentifier (sqlDialect));
       statement.Append (" + 1");
       statement.Append (sqlDialect.StatementDelimiter);
 
@@ -75,6 +76,22 @@ namespace Remotion.SecurityManager.Domain
     {
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (SecurableClassDefinition));
       return (RdbmsProviderDefinition) classDefinition.StorageEntityDefinition.StorageProviderDefinition;
+    }
+
+    private static string GetRevisionTableIdentifier (ISqlDialect sqlDialect)
+    {
+      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (SecurableClassDefinition));
+      var tableDefinition = (TableDefinition) classDefinition.StorageEntityDefinition;
+
+      if (tableDefinition.TableName.SchemaName == null)
+        return sqlDialect.DelimitIdentifier ("Revision");
+      else
+        return sqlDialect.DelimitIdentifier (tableDefinition.TableName.SchemaName) + "." + sqlDialect.DelimitIdentifier ("Revision");
+    }
+
+    private static string GetRevisionColumnIdentifier (ISqlDialect sqlDialect)
+    {
+      return sqlDialect.DelimitIdentifier ("Value");
     }
   }
 }
