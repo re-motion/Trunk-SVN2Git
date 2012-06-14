@@ -90,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void NewObjectCreating ()
     {
-      _listener.NewObjectCreating (TestableClientTransaction, _domainObject.GetPublicDomainObjectType(), _domainObject);
+      _listener.NewObjectCreating (TestableClientTransaction, _domainObject.GetPublicDomainObjectType());
     }
 
     [Test]

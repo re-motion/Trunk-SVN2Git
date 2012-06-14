@@ -53,7 +53,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// constructor is executing before the subclass constructors have run and before the object has got its <see cref="ObjectID"/> or 
     /// <see cref="DataContainer"/>. If this method throws an exception, the object construction will be canceled and no side effects will remain.
     /// </summary>
-    void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance);
+    void NewObjectCreating (ClientTransaction clientTransaction, Type type);
 
     void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs);
     void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);

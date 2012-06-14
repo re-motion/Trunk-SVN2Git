@@ -114,8 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _strictListenerMock.Expect (
             mock => mock.NewObjectCreating (
                 Arg.Is (TestableClientTransaction), 
-                Arg.Is (typeof (ClassWithAllDataTypes)), 
-                Arg<DomainObject>.Matches (obj => obj != null && obj.ID == null)));
+                Arg.Is (typeof (ClassWithAllDataTypes))));
         _strictListenerMock.Expect (mock => mock.DataContainerMapRegistering (Arg.Is (TestableClientTransaction), Arg<DataContainer>.Is.Anything));
       }
 

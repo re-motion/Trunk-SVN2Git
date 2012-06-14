@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _extension.SubTransactionCreated (clientTransaction, subTransaction);
     }
 
-    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
       _extension.NewObjectCreating (clientTransaction, type);
     }

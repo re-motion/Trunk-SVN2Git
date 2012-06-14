@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
-    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
       throw CreateException();
     }

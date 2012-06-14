@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void NewObjectCreating ()
     {
       CheckLoggingMethod (
-          () => _listener.NewObjectCreating (_clientTransaction, typeof (string), _domainObject),
+          () => _listener.NewObjectCreating (_clientTransaction, typeof (string)),
           string.Format ("{0} NewObjectCreating: {1}", _clientTransaction.ID, typeof (string).FullName));
     }
 

@@ -84,10 +84,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.SubTransactionCreated (clientTransaction, subTransaction);
     }
 
-    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
       foreach (var listener in _listeners)
-        listener.NewObjectCreating (clientTransaction, type, instance);
+        listener.NewObjectCreating (clientTransaction, type);
     }
 
     public virtual void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)

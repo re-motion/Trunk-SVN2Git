@@ -66,7 +66,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} SubTransactionCreated: {1}", clientTransaction.ID, subTransaction.ID);
     }
 
-    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("{0} NewObjectCreating: {1}", clientTransaction.ID, type.FullName);

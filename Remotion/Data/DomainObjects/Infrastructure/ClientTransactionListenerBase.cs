@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public virtual void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
     }
 

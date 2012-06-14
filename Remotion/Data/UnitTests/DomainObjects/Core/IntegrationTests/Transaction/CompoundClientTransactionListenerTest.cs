@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.SubTransactionInitialize (TestableClientTransaction, clientTransaction2));
       CheckNotification (listener => listener.SubTransactionCreated (TestableClientTransaction, clientTransaction2));
 
-      CheckNotification (listener => listener.NewObjectCreating (TestableClientTransaction, typeof (string), null));
+      CheckNotification (listener => listener.NewObjectCreating (TestableClientTransaction, typeof (string)));
 
       CheckNotification (listener => listener.ObjectsLoading (TestableClientTransaction, new ReadOnlyCollection<ObjectID> (new ObjectID[0])));
       CheckNotification (listener => listener.ObjectsLoaded (TestableClientTransaction, domainObjects));

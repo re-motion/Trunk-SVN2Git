@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       Assertion.IsTrue (clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only
     }
 
-    public void NewObjectCreating (ClientTransaction clientTransaction, Type type, DomainObject instance)
+    public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
       EnsureWriteable (clientTransaction, "NewObjectCreating");
     }
