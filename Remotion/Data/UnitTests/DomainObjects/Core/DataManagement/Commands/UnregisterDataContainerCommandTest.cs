@@ -16,9 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 {
@@ -34,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       base.SetUp();
 
-      _map = new DataContainerMap (ClientTransaction.CreateRootTransaction());
+      _map = new DataContainerMap (MockRepository.GenerateStub<IClientTransactionEventSink>());
       _dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
       _map.Register (_dataContainer1);
 

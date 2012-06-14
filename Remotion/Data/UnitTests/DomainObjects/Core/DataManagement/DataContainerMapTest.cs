@@ -18,21 +18,21 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class DataContainerMapTest : ClientTransactionBaseTest
+  public class DataContainerMapTest : StandardMappingTest
   {
+    private ClientTransactionEventSinkWithMock _eventSinkWithDynamicMock;
     private DataContainerMap _map;
 
     public override void SetUp ()
     {
       base.SetUp();
 
-      _map = new DataContainerMap (TestableClientTransaction);
+      _eventSinkWithDynamicMock = ClientTransactionEventSinkWithMock.CreateWithDynamicMock();
+      _map = new DataContainerMap (_eventSinkWithDynamicMock);
     }
 
     [Test]
@@ -80,18 +80,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_map[dataContainer.ID], Is.Not.Null);
 
-      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener> ();
-      listenerMock
-          .Expect (mock => mock.DataContainerMapUnregistering (TestableClientTransaction, dataContainer))
+      _eventSinkWithDynamicMock
+          .ExpectMock (mock => mock.DataContainerMapUnregistering (_eventSinkWithDynamicMock.ClientTransaction, dataContainer))
           .WhenCalled (mi => Assert.That (_map[dataContainer.ID], Is.Not.Null));
-      TestableClientTransaction.AddListener (listenerMock);
-
-      listenerMock.Replay ();
 
       _map.Remove (dataContainer.ID);
 
-      listenerMock.VerifyAllExpectations ();
-      listenerMock.BackToRecord(); // For Discard
+      _eventSinkWithDynamicMock.VerifyMock();
     }
 
     [Test]

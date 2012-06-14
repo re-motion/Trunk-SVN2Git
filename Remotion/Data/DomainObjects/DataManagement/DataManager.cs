@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _objectLoader = objectLoader;
       _relationEndPointManager = relationEndPointManager;
 
-      _dataContainerMap = new DataContainerMap (clientTransaction);
+      _dataContainerMap = new DataContainerMap (_transactionEventSink);
       _domainObjectStateCache = new DomainObjectStateCache (clientTransaction);
     }
 

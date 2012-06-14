@@ -69,6 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_dataManagerWithMocks.ClientTransaction, Is.SameAs (TestableClientTransaction));
       Assert.That (_dataManagerWithMocks.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
       Assert.That (DataManagerTestHelper.GetRelationEndPointManager (_dataManagerWithMocks), Is.SameAs (_endPointManagerMock));
+      
+      var dataContainerMap = DataManagerTestHelper.GetDataContainerMap (_dataManagerWithMocks);
+      Assert.That (dataContainerMap.TransactionEventSink, Is.SameAs (_transactionEventSinkStub));
     }
 
     [Test]

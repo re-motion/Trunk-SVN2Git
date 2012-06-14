@@ -23,35 +23,22 @@ using System.Collections.Generic;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-  // TODO 3658: Inject event sink rather than ClientTransaction
+  /// <summary>
+  /// Stores the <see cref="DataContainer"/> instances held by a <see cref="ClientTransaction"/>.
+  /// </summary>
   public class DataContainerMap : IFlattenedSerializable, IDataContainerMapReadOnlyView
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    private readonly ClientTransaction _clientTransaction;
     private readonly IClientTransactionEventSink _transactionEventSink;
     private readonly DataContainerCollection _dataContainers;
 
     // construction and disposing
 
-    public DataContainerMap (ClientTransaction clientTransaction)
+    public DataContainerMap (IClientTransactionEventSink transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-
-      _clientTransaction = clientTransaction;
-      _transactionEventSink = clientTransaction.ListenerManager;
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+      
+      _transactionEventSink = transactionEventSink;
       _dataContainers = new DataContainerCollection();
-    }
-
-    // methods and properties
-
-    public ClientTransaction ClientTransaction
-    {
-      get { return _clientTransaction; }
     }
 
     public IClientTransactionEventSink TransactionEventSink
@@ -116,7 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     #region Serialization
 
     protected DataContainerMap (FlattenedDeserializationInfo info)
-        : this (info.GetValueForHandle<ClientTransaction>())
+        : this (info.GetValueForHandle<IClientTransactionEventSink>())
     {
       var dataContainerCount = info.GetValue<int>();
       for (int i = 0; i < dataContainerCount; ++i)
@@ -125,7 +112,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      info.AddHandle (_clientTransaction);
+      info.AddHandle (_transactionEventSink);
 
       info.AddValue (_dataContainers.Count);
       foreach (DataContainer dataContainer in _dataContainers)

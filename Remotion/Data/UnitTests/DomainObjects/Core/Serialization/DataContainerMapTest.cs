@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (TestableClientTransaction.DataManager);
 
       DataContainerMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
-      Assert.IsNotNull (deserializedMap);
+      Assert.That (deserializedMap, Is.Not.Null);
     }
 
     [Test]
@@ -48,12 +48,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       DataContainerMap map = DataManagerTestHelper.GetDataContainerMap (TestableClientTransaction.DataManager);
       Order.GetObject (DomainObjectIDs.Order1);
-      Assert.AreEqual (1, map.Count);
+      Assert.That (map.Count, Is.EqualTo (1));
 
       DataContainerMap deserializedMap = FlattenedSerializer.SerializeAndDeserialize (map);
-      Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedMap, "_clientTransaction"));
-      Assert.IsNotNull (PrivateInvoke.GetNonPublicField (deserializedMap, "_transactionEventSink"));
-      Assert.AreEqual (1, deserializedMap.Count);
+      Assert.That (deserializedMap.TransactionEventSink, Is.Not.Null);
+      Assert.That (deserializedMap.Count, Is.EqualTo (1));
     }
   }
 }
