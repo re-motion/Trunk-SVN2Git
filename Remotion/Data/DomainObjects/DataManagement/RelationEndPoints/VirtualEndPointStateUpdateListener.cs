@@ -15,11 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
-  // TODO 3658: Inject event sink
   /// <summary>
   /// Implements the <see cref="IVirtualEndPointStateUpdateListener"/> interface by passing information about state updates on to a 
   /// <see cref="ClientTransaction"/>.
@@ -27,23 +27,23 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   [Serializable]
   public class VirtualEndPointStateUpdateListener : IVirtualEndPointStateUpdateListener
   {
-    private readonly ClientTransaction _clientTransaction;
+    private readonly IClientTransactionEventSink _transactionEventSink;
 
-    public VirtualEndPointStateUpdateListener (ClientTransaction clientTransaction)
+    public VirtualEndPointStateUpdateListener (IClientTransactionEventSink transactionEventSink)
     {
-      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      _clientTransaction = clientTransaction;
+      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+      _transactionEventSink = transactionEventSink;
     }
 
-    public ClientTransaction ClientTransaction
+    public IClientTransactionEventSink TransactionEventSink
     {
-      get { return _clientTransaction; }
+      get { return _transactionEventSink; }
     }
 
     public void VirtualEndPointStateUpdated (RelationEndPointID endPointID, bool? newChangedState)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      _clientTransaction.ListenerManager.RaiseEvent ((tx, l) => l.VirtualRelationEndPointStateUpdated (tx, endPointID, newChangedState));
+      _transactionEventSink.RaiseEvent ((tx, l) => l.VirtualRelationEndPointStateUpdated (tx, endPointID, newChangedState));
     }
   }
 }

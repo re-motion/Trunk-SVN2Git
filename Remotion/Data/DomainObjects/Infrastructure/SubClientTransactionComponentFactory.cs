@@ -132,7 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           eventSink,
           virtualObjectEndPointDataManagerFactory,
           collectionEndPointDataManagerFactory);
-      var virtualEndPointStateUpdateListener = new VirtualEndPointStateUpdateListener (clientTransaction);
+      var virtualEndPointStateUpdateListener = new VirtualEndPointStateUpdateListener (eventSink);
       var stateUpdateRaisingRelationEndPointFactory = new StateUpdateRaisingRelationEndPointFactoryDecorator (
           relationEndPointFactory,
           virtualEndPointStateUpdateListener);

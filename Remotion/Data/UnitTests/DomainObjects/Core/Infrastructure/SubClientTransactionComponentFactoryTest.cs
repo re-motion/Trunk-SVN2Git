@@ -160,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (
           stateUpdateRaisingFactory.Listener,
           Is.TypeOf<VirtualEndPointStateUpdateListener> ()
-              .With.Property<VirtualEndPointStateUpdateListener> (l => l.ClientTransaction).SameAs (_fakeConstructedTransaction));
+              .With.Property<VirtualEndPointStateUpdateListener> (l => l.TransactionEventSink).SameAs (eventSink));
       Assert.That (stateUpdateRaisingFactory.InnerFactory, Is.TypeOf<RelationEndPointFactory> ());
       var endPointFactory = ((RelationEndPointFactory) stateUpdateRaisingFactory.InnerFactory);
       Assert.That (endPointFactory.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
