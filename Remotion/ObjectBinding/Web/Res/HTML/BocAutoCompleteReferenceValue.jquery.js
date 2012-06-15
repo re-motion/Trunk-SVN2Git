@@ -81,7 +81,10 @@
     $.Autocompleter = function(input, options) {
 
       var KEY = {
-            SPACE: 32,
+            SHIFT: 16,
+            CAPSLOCK: 20,
+            CTRL: 17,
+            ALT: 18,
             UP: 38,
             DOWN: 40,
             DEL: 46,
@@ -92,6 +95,7 @@
             PAGEUP: 33,
             PAGEDOWN: 34,
             BACKSPACE: 8,
+            SPACE: 32,
             FIRSTTEXTCHARACTER: 48 // 0
         };
 
@@ -223,39 +227,37 @@
                     return;
             }
         }).bind ('keyup paste', function(event) { // re-motion
+            clearTimeout(timeout);
             var handleInput = function() {
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
 
-                informationPopUp.hide();
-                if (currentValue.toLowerCase() != previousValue.toLowerCase()) {
+                if (currentValue.toLowerCase() != previousValue.toLowerCase())
                     $input.trigger("invalidateResult");
 
-                    timeout = setTimeout(
-                        function () {
-                            onChange(false, currentValue); 
-                        }, 
-                        dropDownDelay);
-                }
+                timeout = setTimeout(
+                    function () { 
+                        onChange(false, currentValue); 
+                    }, 
+                    dropDownDelay);
             };
 
             if (event.type == 'keyup') {
-                var isTextKey = event.keyCode >= KEY.FIRSTTEXTCHARACTER;
+              var isControlKey = 
+                       event.altKey 
+                    || event.ctrlKey
+                    || event.keyCode < KEY.FIRSTTEXTCHARACTER
+                    || event.keyCode == KEY.BACKSPACE
+                    || event.keyCode == KEY.DEL
+                    || event.keyCode == KEY.SPACE;
                 var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
-
-                if (isTextKey || event.keyCode == KEY.SPACE || event.keyCode == KEY.BACKSPACE || event.keyCode == KEY.DEL) {
-                    clearTimeout(timeout);
-                }
-
-                if (!isValueSeparatorKey) {
+                if (!isControlKey && !isValueSeparatorKey) {
                     handleInput();
                 }
             } else if (event.type == 'paste') {
-                clearTimeout(timeout);
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
-                clearTimeout(timeout);
                 throw 'Unexpected event match occurred.';
             }
 
