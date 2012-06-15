@@ -231,7 +231,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     IComparer<BocListRow> IBocSortableColumnDefinition.CreateCellValueComparer ()
     {
-      return new BocCustomColumnDefinitionCellValueComparer (this);
+      var args = new BocCustomCellArguments ((IBocList) OwnerControl, this);
+      return CustomCell.CreateCellValueComparerInternal (args);
     }
   }
 

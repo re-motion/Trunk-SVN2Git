@@ -19,6 +19,8 @@ using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Core.BindableObject;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Sorting
 {
@@ -84,10 +86,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
 
       _firstValueCustomColumn = new BocCustomColumnDefinition();
+      _firstValueCustomColumn.OwnerControl = MockRepository.GenerateStub<IBocList>();
+      _firstValueCustomColumn.CustomCell = MockRepository.GeneratePartialMock<BocCustomColumnDefinitionCell>();
       _firstValueCustomColumn.SetPropertyPath (_firstValuePath);
       _firstValueCustomColumn.IsSortable = true;
 
       _secondValueCustomColumn = new BocCustomColumnDefinition();
+      _secondValueCustomColumn.OwnerControl = MockRepository.GenerateStub<IBocList>();
+      _secondValueCustomColumn.CustomCell = MockRepository.GeneratePartialMock<BocCustomColumnDefinitionCell>();
       _secondValueCustomColumn.SetPropertyPath (_secondValuePath);
       _secondValueCustomColumn.IsSortable = true;
     }
