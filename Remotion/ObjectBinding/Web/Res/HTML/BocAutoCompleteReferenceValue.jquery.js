@@ -247,7 +247,7 @@
                     clearTimeout(timeout);
                 }
 
-                if (isTextKey && !isValueSeparatorKey) {
+                if (!isValueSeparatorKey) {
                     handleInput();
                 }
             } else if (event.type == 'paste') {
