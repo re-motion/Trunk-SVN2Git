@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// </remarks>
   /// <threadsafety static="true" instance="true"/>
   [Serializable]
-  public sealed class SubstitutionProxy : OrganizationalStructureObjectProxy
+  public sealed class SubstitutionProxy : OrganizationalStructureObjectProxy<Substitution>
   {
     public static SubstitutionProxy Create (Substitution substitution)
     {

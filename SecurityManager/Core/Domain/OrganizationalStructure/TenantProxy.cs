@@ -30,7 +30,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
   /// </remarks>
   /// <threadsafety static="true" instance="true"/>
   [Serializable]
-  public sealed class TenantProxy : OrganizationalStructureObjectProxy
+  public sealed class TenantProxy : OrganizationalStructureObjectProxy<Tenant>
   {
     public static TenantProxy Create (Tenant tenant)
     {
