@@ -428,6 +428,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered())
       {
         _extensionMock.ObjectDeleting (_newTransaction, _order1);
+        order1MockEventReceiver.Deleting (_order1, EventArgs.Empty);
 
         using (_mockRepository.Unordered())
         {
@@ -437,8 +438,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           _extensionMock.RelationChanging (_newTransaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           _extensionMock.RelationChanging (_newTransaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
         }
-
-        order1MockEventReceiver.Deleting (_order1, EventArgs.Empty);
 
         using (_mockRepository.Unordered())
         {
@@ -462,9 +461,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           officialMockEventReceiver.RelationChanged (official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
           officialOrdersMockEventReceiver.Removed (officialOrders, _order1);
         }
-
-        order1MockEventReceiver.Deleted (_order1, EventArgs.Empty);
-
+        
         using (_mockRepository.Unordered())
         {
           _extensionMock.RelationChanged (_newTransaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
@@ -474,6 +471,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           _extensionMock.RelationChanged (_newTransaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
         }
 
+        order1MockEventReceiver.Deleted (_order1, EventArgs.Empty);
         _extensionMock.ObjectDeleted (_newTransaction, _order1);
       }
 

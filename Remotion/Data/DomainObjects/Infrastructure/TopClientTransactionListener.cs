@@ -91,11 +91,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public override void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
       base.ObjectDeleting (clientTransaction, domainObject);
+      clientTransaction.Execute (() => domainObject.OnDeleting (EventArgs.Empty));
     }
 
     public override void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      clientTransaction.Execute (() => domainObject.OnDeleted (EventArgs.Empty));
       base.ObjectDeleted (clientTransaction, domainObject);
     }
 

@@ -64,6 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected override void ScopedBegin ()
     {
+      // TODO 4619: When unifying ScopedNotifyClientTransactionOfBegin and ScopedBegin, keep this line:
       ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginDelete();
     }
 

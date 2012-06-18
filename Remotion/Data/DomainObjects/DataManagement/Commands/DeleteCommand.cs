@@ -84,11 +84,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Begin ()
     {
-      _clientTransaction.Execute (delegate
-      {
-        _deletedObject.OnDeleting (EventArgs.Empty);
-        _endPointDeleteCommands.Begin ();
-      });
+      // 4619: Rest moved to TopClientTransactionListener
+     _clientTransaction.Execute (() => _endPointDeleteCommands.Begin ());
     }
 
     public void Perform ()
@@ -103,11 +100,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      _clientTransaction.Execute (delegate
-      {
-        _endPointDeleteCommands.End ();
-        _deletedObject.OnDeleted (EventArgs.Empty);
-      });
+      // 4619: Rest moved to TopClientTransactionListener
+      _clientTransaction.Execute (() => _endPointDeleteCommands.End ());
     }
 
     public void NotifyClientTransactionOfEnd ()

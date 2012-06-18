@@ -139,18 +139,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Begin_CallsOnDeleting ()
-    {
-      var eventReceiver = new DomainObjectEventReceiver (_order1, false, _transaction);
-      Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.False);
-
-      _deleteOrder1Command.Begin ();
-
-      Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.True);
-      Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.False);
-    }
-
-    [Test]
     public void Begin_TriggersEndPointDeleting ()
     {
       var eventReceiver = new DomainObjectCollectionEventReceiver (_orderItemsCollection);
@@ -160,30 +148,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.True);
       Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.False);
-    }
-
-    [Test]
-    public void Begin_Sequence ()
-    {
-      var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _orderItemsCollection });
-      _deleteOrder1Command.Begin ();
-
-      eventReceiver.Check (new ChangeState[] { 
-          new ObjectDeletionState (_order1, "1. _order1.OnDeleting"),
-          new CollectionDeletionState (_orderItemsCollection, "2. _order1.OrderItems.OnDeleting")
-      });
-    }
-
-    [Test]
-    public void End_CallsOnDeleted ()
-    {
-      var eventReceiver = new DomainObjectEventReceiver (_order1, false, _transaction);
-      Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.False);
-
-      _deleteOrder1Command.End ();
-
-      Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.True);
-      Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.False);
     }
 
     [Test]
@@ -198,17 +162,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.False);
     }
 
-    [Test]
-    public void End_Sequence ()
-    {
-      var eventReceiver = new SequenceEventReceiver (new[] { _order1 }, new[] { _orderItemsCollection });
-      _deleteOrder1Command.End ();
-
-      eventReceiver.Check (new ChangeState[] { 
-          new CollectionDeletionState (_orderItemsCollection, "1. _order1.OrderItems.OnDeleted"),
-          new ObjectDeletionState (_order1, "2. _order1.OnDeleted")
-      });
-    }
 
     [Test]
     public void Perform_PerformsEndPointDelete ()

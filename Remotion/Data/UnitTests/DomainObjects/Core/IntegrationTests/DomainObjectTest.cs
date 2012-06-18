@@ -797,6 +797,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           //newOrder2.Delete ();
           extension.ObjectDeleting (TestableClientTransaction, newOrder2);
 
+          newOrder2EventReceiver.Deleting (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull ());
+
           using (mockRepository.Unordered ())
           {
             extension.RelationChanging (
@@ -819,9 +822,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
                 null);
           }
 
-          newOrder2EventReceiver.Deleting (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull ());
-
           using (mockRepository.Unordered ())
           {
             newCustomer2OrdersEventReceiver.Removing (newCustomer2Orders, newOrder2);
@@ -838,9 +838,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderItem1EventReceiver.RelationChanged (newOrderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), newOrder2, null);
           }
 
-          newOrder2EventReceiver.Deleted (null, null);
-          LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull ());
-
           using (mockRepository.Unordered ())
           {
             extension.RelationChanged (
@@ -852,6 +849,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             extension.RelationChanged (
                 TestableClientTransaction, newOrderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), newOrder2, null);
           }
+
+          newOrder2EventReceiver.Deleted (null, null);
+          LastCall.Constraints (Mocks_Is.Same (newOrder2), Mocks_Is.NotNull ());
 
           extension.ObjectDeleted (TestableClientTransaction, newOrder2);
 

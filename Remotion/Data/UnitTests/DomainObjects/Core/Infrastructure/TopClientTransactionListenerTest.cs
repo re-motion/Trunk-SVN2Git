@@ -148,6 +148,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void ObjectDeleting ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.ObjectDeleting (_clientTransaction, _order1),
+          () =>
+          _order1EventReceiverMock
+              .Expect (mock => mock.Deleting (_order1, EventArgs.Empty))
+              .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void ObjectDeleted ()
+    {
+      CheckEventWithListenersLast (
+          l => l.ObjectDeleted (_clientTransaction, _order1),
+          () =>
+          _order1EventReceiverMock
+              .Expect (mock => mock.Deleted (_order1, EventArgs.Empty))
+              .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
     public void Serializable ()
     {
       var instance = new TopClientTransactionListener();
