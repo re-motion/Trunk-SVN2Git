@@ -18,16 +18,14 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   [TestFixture]
-  public class DataContainerEventListenerTest : StandardMappingTest
+  public class DataContainerEventListenerTest : ForwardingEventListenerTestBase<DataContainerEventListener>
   {
-    private ClientTransactionEventSinkWithMock _eventSinkWithMock;
     private DataContainerEventListener _eventListener;
 
     private DataContainer _dataContainer;
@@ -37,11 +35,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       base.SetUp ();
 
-      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
-      _eventListener = new DataContainerEventListener (_eventSinkWithMock);
+      _eventListener = new DataContainerEventListener (EventSinkWithMock);
 
       _dataContainer = DataContainerObjectMother.CreateDataContainer();
       _propertyValue = PropertyValueObjectMother.Create();
+    }
+
+    protected override DataContainerEventListener EventListener
+    {
+      get { return _eventListener; }
     }
 
     [Test]
@@ -92,16 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
 
       Assert.That (deserializedInstance.EventSink, Is.Not.Null);
-    }
-
-    private void CheckEventDelegation (Action<DataContainerEventListener> action, Action<ClientTransaction, IClientTransactionListener> expectedEvent)
-    {
-      _eventSinkWithMock.ExpectMock (mock => expectedEvent (_eventSinkWithMock.ClientTransaction, mock));
-      _eventSinkWithMock.ReplayMock ();
-
-      action (_eventListener);
-
-      _eventSinkWithMock.VerifyMock ();
     }
   }
 }
