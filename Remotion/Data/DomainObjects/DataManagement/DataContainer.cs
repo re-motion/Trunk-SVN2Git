@@ -536,14 +536,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
             args.OldValue, 
             args.NewValue);
       }
-
-      if (!args.PropertyValue.Definition.IsObjectID)
-      {
-        // To save memory, DomainObject does not register any event handlers with its data management infrastructure.
-        // Therefore notification of DomainObject when changing property values is not organized through events.
-        if (_domainObject != null)
-          _domainObject.OnPropertyChanging (args);
-      }
     }
 
     internal void PropertyValueChanged (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)
@@ -554,16 +546,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // - recalculation of all property change states indicates another property doesn't have its original value
       _hasBeenChanged = !_hasBeenChanged || args.PropertyValue.HasChanged || CalculatePropertyValueChangeState();
       RaiseStateUpdatedNotification (State);
-
-      if (!args.PropertyValue.Definition.IsObjectID)
-      {
-        if (_domainObject != null)
-        {
-          // To save memory, DomainObject does not register any event handlers with its data management infrastructure.
-          // Therefore notification of DomainObject when changing property values is not organized through events.
-          _domainObject.OnPropertyChanged (args);
-        }
-      }
 
       if (_eventListener != null)
         _eventListener.PropertyValueChanged (this, args.PropertyValue, args.OldValue, args.NewValue);

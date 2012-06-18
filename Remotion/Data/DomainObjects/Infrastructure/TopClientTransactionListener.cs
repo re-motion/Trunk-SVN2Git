@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -107,39 +108,38 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       base.ObjectDeleted (clientTransaction, domainObject);
     }
 
-    public override void PropertyValueReading (ClientTransaction clientTransaction, DataManagement.DataContainer dataContainer, DataManagement.PropertyValue propertyValue, DataManagement.ValueAccess valueAccess)
+    public override void PropertyValueChanging (
+        ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
-      base.PropertyValueReading (clientTransaction, dataContainer, propertyValue, valueAccess);
-    }
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
 
-    public override void PropertyValueRead (ClientTransaction clientTransaction, DataManagement.DataContainer dataContainer, DataManagement.PropertyValue propertyValue, object value, DataManagement.ValueAccess valueAccess)
-    {
-      base.PropertyValueRead (clientTransaction, dataContainer, propertyValue, value, valueAccess);
-    }
-
-    public override void PropertyValueChanging (ClientTransaction clientTransaction, DataManagement.DataContainer dataContainer, DataManagement.PropertyValue propertyValue, object oldValue, object newValue)
-    {
       base.PropertyValueChanging (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
+
+      if (!propertyValue.Definition.IsObjectID)
+      {
+        Assertion.IsTrue (dataContainer.HasDomainObject, "DataContainers cannot be registered in a ClientTransaction without having a DomainObject");
+        clientTransaction.Execute (
+            () => dataContainer.DomainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyValue, oldValue, newValue)));
+      }
     }
 
-    public override void PropertyValueChanged (ClientTransaction clientTransaction, DataManagement.DataContainer dataContainer, DataManagement.PropertyValue propertyValue, object oldValue, object newValue)
+    public override void PropertyValueChanged (
+        ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+
+      if (!propertyValue.Definition.IsObjectID)
+      {
+        Assertion.IsTrue (dataContainer.HasDomainObject, "DataContainers cannot be registered in a ClientTransaction without having a DomainObject");
+        clientTransaction.Execute (
+            () => dataContainer.DomainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyValue, oldValue, newValue)));
+      }
+      
       base.PropertyValueChanged (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
-    }
-
-    public override void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, Mapping.IRelationEndPointDefinition relationEndPointDefinition, DataManagement.ValueAccess valueAccess)
-    {
-      base.RelationReading (clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
-    }
-
-    public override void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, Mapping.IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, DataManagement.ValueAccess valueAccess)
-    {
-      base.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
-    }
-
-    public override void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, Mapping.IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, DataManagement.ValueAccess valueAccess)
-    {
-      base.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
     public override void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, Mapping.IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)

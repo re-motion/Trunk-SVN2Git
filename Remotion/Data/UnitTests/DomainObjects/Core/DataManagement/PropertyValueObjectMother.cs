@@ -27,5 +27,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo();
       return new PropertyValue (propertyDefinition);
     }
+
+    public static PropertyValue CreateObjectID ()
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID ();
+      return new PropertyValue (propertyDefinition);
+    }
   }
 }

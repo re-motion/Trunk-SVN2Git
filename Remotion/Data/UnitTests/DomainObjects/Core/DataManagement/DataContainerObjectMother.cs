@@ -18,14 +18,24 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   public static class DataContainerObjectMother
   {
-    public static DataContainer CreateDataContainer()
+    public static DataContainer CreateDataContainer (ObjectID objectID = null)
     {
-      return DataContainer.CreateNew (new ObjectID (typeof (Order), Guid.NewGuid()));
+      return DataContainer.CreateNew (objectID ?? new ObjectID (typeof (Order), Guid.NewGuid()));
+    }
+
+    public static DataContainer CreateWithDomainObject (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      var dataContainer = CreateDataContainer (domainObject.ID);
+      dataContainer.SetDomainObject (domainObject);
+      return dataContainer;
     }
   }
 }
