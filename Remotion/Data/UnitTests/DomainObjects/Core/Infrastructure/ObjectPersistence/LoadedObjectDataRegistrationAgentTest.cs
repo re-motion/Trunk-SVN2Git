@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -23,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -39,7 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     private MockRepository _mockRepository;
     private ClientTransactionEventSinkWithMock _eventSinkWithMock;
     private IDataContainerLifetimeManager _lifetimeManagerMock;
-    private ClientTransactionMockEventReceiver _transactionEventReceiverMock;
 
     private LoadedObjectDataRegistrationAgent _agent;
 
@@ -52,7 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository = new MockRepository();
       _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(_clientTransaction);
       _lifetimeManagerMock = _mockRepository.StrictMock<IDataContainerLifetimeManager> ();
-      _transactionEventReceiverMock = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_clientTransaction);
 
       _agent = new LoadedObjectDataRegistrationAgent (_clientTransaction, _eventSinkWithMock);
     }
@@ -69,7 +65,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
-      _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
     }
 
     [Test]
@@ -89,14 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
         _eventSinkWithMock
             .ExpectMock (mock => mock.ObjectsLoaded (
                     Arg.Is (_clientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.Matches (c => c.SequenceEqual (new[] { dataContainer.DomainObject }))))
-            .WhenCalled (mi => CheckOnLoadedCalled(((ReadOnlyCollection<DomainObject>) mi.Arguments[1])));
-        _transactionEventReceiverMock
-            .Expect (
-                mock => mock.Loaded (
-                    Arg.Is (_clientTransaction),
-                    Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (new[] { dataContainer.DomainObject }))))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+                    Arg<ReadOnlyCollection<DomainObject>>.Matches (c => c.SequenceEqual (new[] { dataContainer.DomainObject }))));
       }
       _mockRepository.ReplayAll();
 
@@ -118,7 +106,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
-      _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
     }
 
     [Test]
@@ -133,7 +120,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
-      _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
     }
 
     [Test]
@@ -167,16 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
                 mock => mock.ObjectsLoaded (
                     Arg.Is (_clientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.Matches (
-                        c => c.SequenceEqual (new[] { registerableDataContainer1.DomainObject, registerableDataContainer2.DomainObject }))))
-            .WhenCalled (mi => CheckOnLoadedCalled ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]));
-        _transactionEventReceiverMock
-            .Expect (
-                mock => mock.Loaded (
-                    Arg.Is (_clientTransaction),
-                    Arg<ClientTransactionEventArgs>.Matches (
-                        args =>
-                        args.DomainObjects.SequenceEqual (new[] { registerableDataContainer1.DomainObject, registerableDataContainer2.DomainObject }))))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+                        c => c.SequenceEqual (new[] { registerableDataContainer1.DomainObject, registerableDataContainer2.DomainObject }))));
       }
       _mockRepository.ReplayAll ();
 
@@ -200,8 +177,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
-      _transactionEventReceiverMock.AssertWasNotCalled (
-          mock => mock.Loaded (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
     }
 
     [Test]
@@ -231,15 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
                 mock => mock.ObjectsLoaded (
                     Arg.Is (_clientTransaction),
                     Arg<ReadOnlyCollection<DomainObject>>.Matches (
-                        c => c.SequenceEqual (new[] { registerableDataContainer1.DomainObject }))))
-            .WhenCalled (mi => CheckOnLoadedCalled ((ReadOnlyCollection<DomainObject>) mi.Arguments[1]));
-        _transactionEventReceiverMock
-            .Expect (
-                mock => mock.Loaded (
-                    Arg.Is (_clientTransaction),
-                    Arg<ClientTransactionEventArgs>.Matches (
-                        args =>
-                        args.DomainObjects.SequenceEqual (new[] { registerableDataContainer1.DomainObject }))));
+                        c => c.SequenceEqual (new[] { registerableDataContainer1.DomainObject }))));
       }
       _mockRepository.ReplayAll ();
 
@@ -276,7 +243,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
-      _transactionEventReceiverMock.AssertWasNotCalled (mock => mock.Loaded (Arg<object>.Is.Anything, Arg<ClientTransactionEventArgs>.Is.Anything));
     }
 
     [Test]
@@ -323,16 +289,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       Assert.That (dataContainer.HasDomainObject, Is.True);
       Assert.That (dataContainer.DomainObject, Is.SameAs (_clientTransaction.GetEnlistedDomainObject (dataContainer.ID)));
     }
-
-    private void CheckOnLoadedCalled (IEnumerable<DomainObject> domainObjects)
-    {
-      Assert.That (
-          domainObjects.All (item => ((TestDomainBase) item).OnLoadedCalled),
-          "OnLoaded must be called for all registered DataContainers.");
-      Assert.That (
-          domainObjects.All (item => ((TestDomainBase) item).OnLoadedTx == _clientTransaction),
-          "OnLoaded must be called within a transaction scope.");
-    }
-
   }
 }

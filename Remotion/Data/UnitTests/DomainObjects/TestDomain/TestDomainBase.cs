@@ -43,6 +43,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     [NonSerialized]
     private IUnloadEventReceiver _unloadEventReceiver;
+    [NonSerialized]
+    private ILoadEventReceiver _loadEventReceiver;
 
     [NonSerialized]
     public bool CtorCalled;
@@ -183,6 +185,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
         ProtectedLoaded (this, EventArgs.Empty);
       if (StaticLoadHandler != null)
         StaticLoadHandler (this, EventArgs.Empty);
+
+      if (_loadEventReceiver != null)
+        _loadEventReceiver.OnLoaded (this);
     }
 
     protected override void OnUnloading ()
@@ -220,6 +225,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public void SetUnloadEventReceiver (IUnloadEventReceiver unloadEventReceiver)
     {
       _unloadEventReceiver = unloadEventReceiver;
+    }
+
+    public void SetLoadEventReceiver (ILoadEventReceiver loadEventReceiver)
+    {
+      _loadEventReceiver = loadEventReceiver;
     }
   }
 }

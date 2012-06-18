@@ -38,7 +38,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public override void ObjectsLoaded (ClientTransaction clientTransaction, System.Collections.ObjectModel.ReadOnlyCollection<DomainObject> domainObjects)
     {
-      base.ObjectsLoaded (clientTransaction, domainObjects);
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      using (clientTransaction.EnterNonDiscardingScope ())
+      {
+        foreach (var domainObject in domainObjects)
+          domainObject.OnLoaded();
+
+        base.ObjectsLoaded (clientTransaction, domainObjects);
+
+        clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
+      }
     }
 
     public override void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)

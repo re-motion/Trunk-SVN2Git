@@ -82,24 +82,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         }
         finally
         {
-          using (clientTransaction.EnterNonDiscardingScope())
-          {
-            var domainObjects = loadedDomainObjects.AsReadOnly();
-            RaiseLoadedEvents (transactionEventSink, clientTransaction, domainObjects);
-          }
-        }
-      }
-
-      private void RaiseLoadedEvents (
-          IClientTransactionEventSink transactionEventSink, ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
-      {
-        if (domainObjects.Count > 0)
-        {
-          foreach (var domainObject in domainObjects)
-            domainObject.OnLoaded();
-
-          transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsLoaded (tx, domainObjects));
-          clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
+          var domainObjects = loadedDomainObjects.AsReadOnly();
+          if (domainObjects.Count > 0)
+            transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsLoaded (tx, domainObjects));
         }
       }
     }
