@@ -1020,17 +1020,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void OnSubTransactionCreated_WithCustomFactory ()
-    {
-      var fakeSubTransaction = ClientTransaction.CreateRootTransaction();
-      ClientTransactionTestHelper.SetIsReadOnly(_transactionWithMocks, true);
-
-      PrivateInvoke.InvokeNonPublicMethod (_transactionWithMocks, "OnSubTransactionCreated", new SubTransactionCreatedEventArgs (fakeSubTransaction));
-
-      Assert.That (_transactionWithMocks.SubTransaction, Is.SameAs (fakeSubTransaction));
-    }
-
-    [Test]
     public void Discard ()
     {
       var listenerMock = SetupEventForwardingToListenerMock (_listenerManagerMock, _transactionWithMocks);

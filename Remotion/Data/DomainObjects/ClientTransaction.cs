@@ -762,8 +762,9 @@ public class ClientTransaction
       throw;
     }
 
-    OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
+    _subTransaction = subTransaction;
 
+    RaiseListenerEvent ((tx, l) => l.SubTransactionCreated (tx, subTransaction));
     return subTransaction;
   }
 
@@ -1224,19 +1225,12 @@ public class ClientTransaction
   /// Raises the <see cref="SubTransactionCreated"/> event.
   /// </summary>
   /// <param name="eventArgs">A <see cref="Remotion.Data.DomainObjects.SubTransactionCreatedEventArgs"/> instance containing the event data.</param>
-  protected virtual void OnSubTransactionCreated (SubTransactionCreatedEventArgs eventArgs)
+  protected internal virtual void OnSubTransactionCreated (SubTransactionCreatedEventArgs eventArgs)
   {
     ArgumentUtility.CheckNotNull ("eventArgs", eventArgs);
-
-    _subTransaction = eventArgs.SubTransaction;
-
-    using (EnterNonDiscardingScope ())
-    {
-      if (SubTransactionCreated != null)
-        SubTransactionCreated (this, eventArgs);
-
-      RaiseListenerEvent ((tx, l) => l.SubTransactionCreated (tx, eventArgs.SubTransaction));
-    }
+    
+    if (SubTransactionCreated != null)
+      SubTransactionCreated (this, eventArgs);
   }
 
   /// <summary>

@@ -40,6 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private DomainObjectMockEventReceiver _order2EventReceiverMock;
     private IUnloadEventReceiver _unloadEventReceiverMock;
 
+    private ClientTransactionMockEventReceiver _transactionEventReceiverMock;
+
     private IClientTransactionListener _innerListenerMock;
 
     public override void SetUp ()
@@ -60,8 +62,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _order1.SetUnloadEventReceiver (_unloadEventReceiverMock);
       _order2.SetUnloadEventReceiver (_unloadEventReceiverMock);
 
+      _transactionEventReceiverMock = _mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_clientTransaction);
+
       _innerListenerMock = _mockRepository.StrictMock<IClientTransactionListener>();
       _listener.AddListener (_innerListenerMock);
+    }
+
+    [Test]
+    public void SubTransactionCreated ()
+    {
+      var subTransaction = ClientTransactionObjectMother.Create();
+
+      CheckEventWithListenersLast (
+          l => l.SubTransactionCreated (_clientTransaction, subTransaction),
+          () => 
+            _transactionEventReceiverMock
+                    .Expect (
+                        mock => mock.SubTransactionCreated (
+                            Arg.Is (_clientTransaction),
+                            Arg<SubTransactionCreatedEventArgs>.Matches (args => args.SubTransaction == subTransaction)))
+                    .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction))));
     }
 
     [Test]
@@ -69,21 +89,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var unloadedDomainObjects = Array.AsReadOnly (new DomainObject[] { _order1, _order2 });
 
-      using (_mockRepository.Ordered ())
-      {
-        _innerListenerMock.Expect (mock => mock.ObjectsUnloading (_clientTransaction, unloadedDomainObjects));
-        _unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloading (_order1))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-        _unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloading (_order2))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-      }
-      _mockRepository.ReplayAll();
-
-      _listener.ObjectsUnloading (_clientTransaction, unloadedDomainObjects);
-
-      _mockRepository.VerifyAll ();
+      CheckEventWithListenersFirst (
+          l => l.ObjectsUnloading (_clientTransaction, unloadedDomainObjects),
+          () =>
+          {
+            _unloadEventReceiverMock
+                .Expect (mock => mock.OnUnloading (_order1))
+                .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+            _unloadEventReceiverMock
+                .Expect (mock => mock.OnUnloading (_order2))
+                .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+          });
     }
 
     [Test]
@@ -91,21 +107,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var unloadedDomainObjects = Array.AsReadOnly (new DomainObject[] { _order1, _order2 });
 
-      using (_mockRepository.Ordered ())
-      {
-        _unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloaded (_order2))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-        _unloadEventReceiverMock
-            .Expect (mock => mock.OnUnloaded (_order1))
-            .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
-        _innerListenerMock.Expect (mock => mock.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects));
-      }
-      _mockRepository.ReplayAll ();
-
-      _listener.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects);
-
-      _mockRepository.VerifyAll ();
+      CheckEventWithListenersLast (
+          l => l.ObjectsUnloaded (_clientTransaction, unloadedDomainObjects),
+          () =>
+          {
+            _unloadEventReceiverMock
+                .Expect (mock => mock.OnUnloaded (_order2))
+                .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+            _unloadEventReceiverMock
+                .Expect (mock => mock.OnUnloaded (_order1))
+                .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_clientTransaction)));
+          });
     }
 
     [Test]
@@ -117,6 +129,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
 
       Assert.That (deserializedInstance.Listeners, Is.Not.Empty);
+    }
+
+    private void CheckEventWithListenersLast (Action<IClientTransactionListener> triggeringEvent, Action orderedPreListenerExpectations)
+    {
+      using (_mockRepository.Ordered ())
+      {
+        orderedPreListenerExpectations ();
+        _innerListenerMock.Expect (triggeringEvent);
+      }
+      _mockRepository.ReplayAll ();
+
+      triggeringEvent (_listener);
+
+      _mockRepository.VerifyAll ();
+    }
+
+    private void CheckEventWithListenersFirst (Action<IClientTransactionListener> triggeringEvent, Action orderedPostListenerExpectations)
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _innerListenerMock.Expect (triggeringEvent);
+        orderedPostListenerExpectations ();
+      }
+      _mockRepository.ReplayAll ();
+
+      triggeringEvent (_listener);
+
+      _mockRepository.VerifyAll ();
     }
   }
 }

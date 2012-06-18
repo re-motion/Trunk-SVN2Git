@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.ObjectModel;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -28,6 +29,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     public override void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
+
+      clientTransaction.Execute (() => clientTransaction.OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction)));
       base.SubTransactionCreated (clientTransaction, subTransaction);
     }
 
@@ -38,11 +43,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public override void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
+
       base.ObjectsUnloading (clientTransaction, unloadedDomainObjects);
       clientTransaction.Execute (
           () =>
           {
+            // This is a for loop for symmetry with ObjectsUnloaded
+            // ReSharper disable ForCanBeConvertedToForeach
             for (int i = 0; i < unloadedDomainObjects.Count; i++)
+            // ReSharper restore ForCanBeConvertedToForeach
             {
               var domainObject = unloadedDomainObjects[i];
               domainObject.OnUnloading();
@@ -52,6 +63,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public override void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
+
       clientTransaction.Execute (
          () =>
          {
