@@ -56,11 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin()
+    public void Begin()
     {
       TransactionEventSinkWithMock.ReplayMock();
       
-      _command.NotifyClientTransactionOfBegin();
+      _command.Begin();
 
       TransactionEventSinkWithMock.AssertWasNotCalledMock (
           mock =>
@@ -76,11 +76,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void End ()
     {
       TransactionEventSinkWithMock.ReplayMock ();
 
-      _command.NotifyClientTransactionOfEnd ();
+      _command.End ();
 
       TransactionEventSinkWithMock.AssertWasNotCalledMock (
           mock =>

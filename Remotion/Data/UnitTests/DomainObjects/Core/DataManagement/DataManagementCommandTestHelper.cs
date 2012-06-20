@@ -26,20 +26,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       using (commandMock.GetMockRepository ().Ordered ())
       {
-        commandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        commandMock.Expect (mock => mock.Begin());
         commandMock.Expect (mock => mock.Begin());
         commandMock.Expect (mock => mock.Perform());
-        commandMock.Expect (mock => mock.NotifyClientTransactionOfEnd());
+        commandMock.Expect (mock => mock.End());
         commandMock.Expect (mock => mock.End());
       }
     }
 
     public static void AssertNotifyAndPerformWasCalled (IDataManagementCommand commandMock)
     {
-      commandMock.AssertWasCalled (mock => mock.NotifyClientTransactionOfBegin ());
+      commandMock.AssertWasCalled (mock => mock.Begin ());
       commandMock.AssertWasCalled (mock => mock.Begin ());
       commandMock.AssertWasCalled (mock => mock.Perform ());
-      commandMock.AssertWasCalled (mock => mock.NotifyClientTransactionOfEnd ());
+      commandMock.AssertWasCalled (mock => mock.End ());
       commandMock.AssertWasCalled (mock => mock.End ());
     }
   }

@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         throw new ArgumentException ("Modified end point is null, a NullEndPointModificationCommand is needed.", "modifiedEndPoint");
     }
 
-    protected override void ScopedNotifyClientTransactionOfBegin ()
+    protected override void ScopedBegin ()
     {
       // no notification
     }
@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch();
     }
 
-    protected override void ScopedNotifyClientTransactionOfEnd ()
+    protected override void ScopedEnd ()
     {
       // no notification
     }

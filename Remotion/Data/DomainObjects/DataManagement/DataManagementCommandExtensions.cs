@@ -26,20 +26,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
   {
     /// <summary>
     /// Raises all events and performs the action of the given <see cref="IDataManagementCommand"/>.
-    /// The order of events is as follows: <see cref="IDataManagementCommand.NotifyClientTransactionOfBegin"/>,
+    /// The order of events is as follows: <see cref="IDataManagementCommand.Begin"/>,
     /// <see cref="IDataManagementCommand.Begin"/>, <see cref="IDataManagementCommand.Perform"/>, 
-    /// <see cref="IDataManagementCommand.NotifyClientTransactionOfEnd"/>, <see cref="IDataManagementCommand.End"/>.
+    /// <see cref="IDataManagementCommand.End"/>, <see cref="IDataManagementCommand.End"/>.
     /// </summary>
     /// <param name="command">The command to be executed.</param>
     public static void NotifyAndPerform (this IDataManagementCommand command)
     {
       ArgumentUtility.CheckNotNull ("command", command);
 
-      command.NotifyClientTransactionOfBegin ();
       command.Begin ();
       command.Perform ();
       command.End ();
-      command.NotifyClientTransactionOfEnd ();
     }
 
     /// <summary>

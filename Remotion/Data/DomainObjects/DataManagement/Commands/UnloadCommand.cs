@@ -69,19 +69,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return _unloadDataCommand.GetAllExceptions ();
     }
 
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       this.EnsureCanExecute ();
 
       _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, Array.AsReadOnly (_domainObjects)));
-      _unloadDataCommand.NotifyClientTransactionOfBegin ();
-    }
-
-    public void Begin ()
-    {
-      this.EnsureCanExecute();
-
-      // 4619: Moved rest to TopClientTransactionListener
+      _unloadDataCommand.Begin ();
     }
 
     public void Perform ()
@@ -95,14 +88,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       this.EnsureCanExecute ();
 
-      // 4619: Moved to TopClientTransactionListener
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-      this.EnsureCanExecute ();
-
-      _unloadDataCommand.NotifyClientTransactionOfEnd ();
+      _unloadDataCommand.End ();
       _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, Array.AsReadOnly (_domainObjects)));
     }
 

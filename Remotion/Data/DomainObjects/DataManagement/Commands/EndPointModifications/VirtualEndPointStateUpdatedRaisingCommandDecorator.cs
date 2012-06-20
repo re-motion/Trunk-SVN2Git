@@ -77,11 +77,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       return _decoratedCommand.GetAllExceptions();
     }
 
-    public void NotifyClientTransactionOfBegin ()
-    {
-      _decoratedCommand.NotifyClientTransactionOfBegin();
-    }
-
     public void Begin ()
     {
       _decoratedCommand.Begin();
@@ -102,11 +97,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     public void End ()
     {
       _decoratedCommand.End();
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-      _decoratedCommand.NotifyClientTransactionOfEnd();
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

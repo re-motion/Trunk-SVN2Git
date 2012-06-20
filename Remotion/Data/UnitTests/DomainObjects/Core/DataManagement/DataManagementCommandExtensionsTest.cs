@@ -37,11 +37,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       using (_commandMock.GetMockRepository ().Ordered ())
       {
-        _commandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
         _commandMock.Expect (mock => mock.Begin());
         _commandMock.Expect (mock => mock.Perform());
-        _commandMock.Expect (mock => mock.End());
-        _commandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        _commandMock.Expect (mock => mock.End ());
       }
 
       _commandMock.Replay ();

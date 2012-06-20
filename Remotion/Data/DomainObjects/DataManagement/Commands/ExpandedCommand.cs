@@ -57,29 +57,19 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return _compositeCommand.GetAllExceptions();
     }
 
-    public void Begin ()
-    {
-      _compositeCommand.Begin();
-    }
-
     public void Perform ()
     {
       _compositeCommand.Perform();
     }
 
+    public void Begin ()
+    {
+      _compositeCommand.Begin();
+    }
+
     public void End ()
     {
       _compositeCommand.End();
-    }
-
-    public void NotifyClientTransactionOfBegin ()
-    {
-      _compositeCommand.NotifyClientTransactionOfBegin();
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-      _compositeCommand.NotifyClientTransactionOfEnd();
     }
 
     ExpandedCommand IDataManagementCommand.ExpandToAllRelatedObjects ()

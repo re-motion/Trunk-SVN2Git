@@ -60,10 +60,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     public void DelegatedMembers ()
     {
       _decoratorTestHelper.CheckDelegation (command => command.GetAllExceptions(), new[] { new Exception() });
-      _decoratorTestHelper.CheckDelegation (command => command.NotifyClientTransactionOfBegin());
+      _decoratorTestHelper.CheckDelegation (command => command.Begin());
       _decoratorTestHelper.CheckDelegation (command => command.Begin ());
       _decoratorTestHelper.CheckDelegation (command => command.End ());
-      _decoratorTestHelper.CheckDelegation (command => command.NotifyClientTransactionOfEnd ());
+      _decoratorTestHelper.CheckDelegation (command => command.End ());
     }
 
     [Test]

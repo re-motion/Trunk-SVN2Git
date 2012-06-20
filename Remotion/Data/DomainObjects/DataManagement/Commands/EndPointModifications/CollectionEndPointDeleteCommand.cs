@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _modifiedCollectionData; }
     }
 
-    protected override void ScopedNotifyClientTransactionOfBegin ()
+    protected override void ScopedBegin ()
     {
       // do not call base - no transaction notification
 
@@ -70,7 +70,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch ();
     }
 
-    protected override void ScopedNotifyClientTransactionOfEnd ()
+    protected override void ScopedEnd ()
     {
       // do not call base - no transaction notification
 

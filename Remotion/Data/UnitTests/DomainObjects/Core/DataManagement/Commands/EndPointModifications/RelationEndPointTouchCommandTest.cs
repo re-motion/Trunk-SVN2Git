@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -59,40 +58,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin_DoesNothing ()
+    public void Begin_DoesNothing ()
     {
       ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
-      _command.NotifyClientTransactionOfBegin ();
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEnd_DoesNothing ()
-    {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
-
-      _command.NotifyClientTransactionOfEnd ();
-    }
-
-    [Test]
-    public void Begin ()
-    {
-      var eventReceiver = new DomainObjectEventReceiver (_endPoint.GetDomainObject());
       _command.Begin ();
-
-      Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
     }
 
     [Test]
-    public void End ()
+    public void End_DoesNothing ()
     {
-      var eventReceiver = new DomainObjectEventReceiver (_endPoint.GetDomainObject ());
+      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (_transaction);
 
       _command.End ();
-
-      Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
     }
 
     [Test]

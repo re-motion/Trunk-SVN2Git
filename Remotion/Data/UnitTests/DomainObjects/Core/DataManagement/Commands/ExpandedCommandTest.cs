@@ -91,37 +91,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Begin ()
-    {
-      using (_mockRepository.Ordered ())
-      {
-        _commandMock1.Expect (mock => mock.Begin ());
-        _commandMock2.Expect (mock => mock.Begin ());
-        _commandMock3.Expect (mock => mock.Begin ());
-      }
-
-      _mockRepository.ReplayAll ();
-
-      var compositeCommand = CreateExpandedCommand ();
-      compositeCommand.Begin ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void Begin_NonExecutable ()
-    {
-      _mockRepository.ReplayAll ();
-
-      var nonExecutableComposite = CreateNonExecutableExpandedCommand ();
-      Assert.Throws<Exception> (nonExecutableComposite.Begin);
-
-      _commandMock1.AssertWasNotCalled (mock => mock.Begin ());
-      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.Begin ());
-      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.Begin ());
-    }
-
-    [Test]
     public void Perform ()
     {
       using (_mockRepository.Ordered ())
@@ -153,6 +122,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
+    public void Begin ()
+    {
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock1.Expect (mock => mock.Begin ());
+        _commandMock2.Expect (mock => mock.Begin ());
+        _commandMock3.Expect (mock => mock.Begin ());
+      }
+
+      _mockRepository.ReplayAll ();
+
+      var compositeCommand = CreateExpandedCommand ();
+      compositeCommand.Begin ();
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Begin_NonExecutable ()
+    {
+      _mockRepository.ReplayAll ();
+
+      var nonExecutableComposite = CreateNonExecutableExpandedCommand ();
+      Assert.Throws<Exception> (nonExecutableComposite.Begin);
+
+      _commandMock1.AssertWasNotCalled (mock => mock.Begin ());
+      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.Begin ());
+      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.Begin ());
+    }
+
+
+    [Test]
     public void End ()
     {
       using (_mockRepository.Ordered ())
@@ -181,70 +182,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _commandMock1.AssertWasNotCalled (mock => mock.End ());
       _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.End ());
       _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.End ());
-    }
-
-
-    [Test]
-    public void NotifyClientTransactionOfBegin ()
-    {
-      using (_mockRepository.Ordered ())
-      {
-        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ());
-        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin ());
-        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfBegin ());
-      }
-
-      _mockRepository.ReplayAll ();
-
-      var compositeCommand = CreateExpandedCommand ();
-      compositeCommand.NotifyClientTransactionOfBegin ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfBegin_NonExecutable ()
-    {
-      _mockRepository.ReplayAll ();
-
-      var nonExecutableComposite = CreateNonExecutableExpandedCommand ();
-      Assert.Throws<Exception> (nonExecutableComposite.NotifyClientTransactionOfBegin);
-
-      _commandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
-      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
-      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfBegin ());
-    }
-
-
-    [Test]
-    public void NotifyClientTransactionOfEnd ()
-    {
-      using (_mockRepository.Ordered ())
-      {
-        _commandMock3.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        _commandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ());
-      }
-
-      _mockRepository.ReplayAll ();
-
-      var compositeCommand = CreateExpandedCommand ();
-      compositeCommand.NotifyClientTransactionOfEnd ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEnd_NonExecutable ()
-    {
-      _mockRepository.ReplayAll ();
-
-      var nonExecutableComposite = CreateNonExecutableExpandedCommand ();
-      Assert.Throws<Exception> (nonExecutableComposite.NotifyClientTransactionOfEnd);
-
-      _commandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
-      _nonExecutableCommandMock1.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
-      _nonExecutableCommandMock2.AssertWasNotCalled (mock => mock.NotifyClientTransactionOfEnd ());
     }
 
     private ExpandedCommand CreateExpandedCommand ()

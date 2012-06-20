@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public virtual void NotifyClientTransactionOfBegin ()
+    public virtual void Begin ()
     {
       TransactionEventSinkWithMock.ExpectMock (
           mock => mock.RelationChanging (
@@ -137,13 +137,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
               _newRelatedObject));
       TransactionEventSinkWithMock.ReplayMock();
 
-      _command.NotifyClientTransactionOfBegin();
+      _command.Begin();
 
       TransactionEventSinkWithMock.VerifyMock();
     }
 
     [Test]
-    public virtual void NotifyClientTransactionOfEnd ()
+    public virtual void End ()
     {
       TransactionEventSinkWithMock.ExpectMock (
           mock => mock.RelationChanged (
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
               _newRelatedObject));
       TransactionEventSinkWithMock.ReplayMock();
 
-      _command.NotifyClientTransactionOfEnd();
+      _command.End();
 
       TransactionEventSinkWithMock.VerifyMock();
     }

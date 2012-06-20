@@ -65,11 +65,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return Enumerable.Empty<Exception>();
     }
 
-    public void NotifyClientTransactionOfBegin ()
-    {
-      // Nothing to do here
-    }
-
     public void Begin ()
     {
       // Nothing to do here
@@ -87,11 +82,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     }
 
     public void End ()
-    {
-      // Nothing to do here
-    }
-
-    public void NotifyClientTransactionOfEnd ()
     {
       // Nothing to do here
     }

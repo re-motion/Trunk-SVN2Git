@@ -52,11 +52,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return new Exception[0];
     }
 
-    public void NotifyClientTransactionOfBegin ()
-    {
-      // Nothing to do here
-    }
-
     public void Begin ()
     {
       // Nothing to do here
@@ -68,10 +63,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     }
 
     public void End ()
-    {
-    }
-
-    public void NotifyClientTransactionOfEnd ()
     {
     }
 

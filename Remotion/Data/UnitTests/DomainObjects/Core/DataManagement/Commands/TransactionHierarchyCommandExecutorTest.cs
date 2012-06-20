@@ -177,9 +177,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       using (_mockRepository.Ordered ())
       {
         _commandMock1
-            .Expect (mock => mock.NotifyClientTransactionOfBegin ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
             .Expect (mock => mock.Begin ())
             .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
         _commandMock1
@@ -187,9 +184,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
             .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
         _commandMock1
             .Expect (mock => mock.End ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
-            .Expect (mock => mock.NotifyClientTransactionOfEnd ())
             .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
       }
 
@@ -272,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
         _commandFactoryMock
             .Expect (mock => mock.Create (_leafSubTransaction))
             .Return (_commandMock1);
-        _commandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Throw (exception);
+        _commandMock1.Expect (mock => mock.Begin ()).Throw (exception);
       }
 
       _mockRepository.ReplayAll ();
@@ -292,9 +286,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       using (_mockRepository.Ordered ())
       {
         _commandMock1
-            .Expect (mock => mock.NotifyClientTransactionOfBegin())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
             .Expect (mock => mock.Begin ())
             .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
         _commandMock1
@@ -302,9 +293,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
             .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
         _commandMock1
             .Expect (mock => mock.End ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
-            .Expect (mock => mock.NotifyClientTransactionOfEnd ())
             .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
       }
 
@@ -321,11 +309,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     {
       using (_mockRepository.Ordered ())
       {
-        commandMock.Expect (mock => mock.NotifyClientTransactionOfBegin ());
         commandMock.Expect (mock => mock.Begin ());
         commandMock.Expect (mock => mock.Perform ());
         commandMock.Expect (mock => mock.End ());
-        commandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
       }
     }
 

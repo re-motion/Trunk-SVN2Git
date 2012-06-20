@@ -68,14 +68,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return _exceptions;
     }
 
-    public void Begin ()
-    {
-      this.EnsureCanExecute();
-
-      foreach (var command in _commands)
-        command.Begin ();
-    }
-
     public void Perform ()
     {
       this.EnsureCanExecute ();
@@ -84,28 +76,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
         command.Perform ();
     }
 
+    public void Begin ()
+    {
+      this.EnsureCanExecute ();
+
+      foreach (var command in _commands)
+        command.Begin ();
+    }
+
     public void End ()
     {
       this.EnsureCanExecute ();
 
       for (int i = _commands.Count - 1; i >= 0; i--)
-        _commands[i].End();
-    }
-
-    public void NotifyClientTransactionOfBegin ()
-    {
-      this.EnsureCanExecute ();
-
-      foreach (var command in _commands)
-        command.NotifyClientTransactionOfBegin ();
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-      this.EnsureCanExecute ();
-
-      for (int i = _commands.Count - 1; i >= 0; i--)
-        _commands[i].NotifyClientTransactionOfEnd ();
+        _commands[i].End ();
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

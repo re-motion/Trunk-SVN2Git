@@ -74,10 +74,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       _commandPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedNotifyClientTransactionOfBegin"))
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedBegin"))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)))
           .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       _commandPartialMock.Replay ();
@@ -87,17 +87,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       _transactionEventSinkWithMock.ReplayMock();
 
-      _commandPartialMock.NotifyClientTransactionOfBegin ();
+      _commandPartialMock.Begin ();
 
       _commandPartialMock.VerifyAllExpectations ();
       _transactionEventSinkWithMock.VerifyMock();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void End ()
     {
       _commandPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedNotifyClientTransactionOfEnd"))
+          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedEnd"))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)))
           .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       _commandPartialMock.Replay ();
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       _transactionEventSinkWithMock.ReplayMock ();
       
-      _commandPartialMock.NotifyClientTransactionOfEnd ();
+      _commandPartialMock.End ();
 
       _commandPartialMock.VerifyAllExpectations ();
       _transactionEventSinkWithMock.VerifyMock ();

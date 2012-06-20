@@ -13,7 +13,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// <list type="bullet">
   ///   <item>
   ///     <description>
-  ///       <see cref="NotifyClientTransactionOfBegin"/> raises all begin event notifications on the associated <see cref="ClientTransaction"/>.
+  ///       <see cref="Begin"/> raises all begin event notifications on the associated <see cref="ClientTransaction"/>.
   ///     </description>
   ///   </item>
   ///   <item>
@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
   ///   </item>
   ///   <item>
   ///     <description>
-  ///       <see cref="NotifyClientTransactionOfEnd"/> raises all end event notifications on the associated <see cref="ClientTransaction"/>.
+  ///       <see cref="End"/> raises all end event notifications on the associated <see cref="ClientTransaction"/>.
   ///     </description>
   ///   </item>
   /// </list>
@@ -71,12 +71,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// Notifies the client transaction that the operation is about to begin. The operation can be canceled at this point of time if an event 
     /// handler throws an exception.
     /// </summary>
-    void NotifyClientTransactionOfBegin ();
-
-    /// <summary>
-    /// Raises all begin event notifications on the objects involved in the operation. The operation can be canceled at this point of time if an event 
-    /// handler throws an exception.
-    /// </summary>
     void Begin ();
 
     /// <summary>
@@ -85,16 +79,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void Perform ();
 
     /// <summary>
-    /// Raises all end event notifications on the objects involved in the operation. Event handlers should not throw any exceptions at this point of 
-    /// time, the operation has already been performed.
-    /// </summary>
-    void End ();
-
-    /// <summary>
     /// Raises all end event notifications on the associated <see cref="ClientTransaction"/>. Event handlers should not throw any exceptions at this 
     /// point of time, the operation has already been performed.
     /// </summary>
-    void NotifyClientTransactionOfEnd ();
+    void End ();
 
     /// <summary>
     /// Returns an <see cref="ExpandedCommand"/> that involves changes to all objects affected by this 

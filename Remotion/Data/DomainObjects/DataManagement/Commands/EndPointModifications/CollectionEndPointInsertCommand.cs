@@ -78,10 +78,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _endPointProvider; }
     }
 
-    protected override void ScopedNotifyClientTransactionOfBegin ()
+    protected override void ScopedBegin ()
     {
       ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginAdd (Index, NewRelatedObject);
-      base.ScopedNotifyClientTransactionOfBegin ();
+      base.ScopedBegin ();
     }
 
     public override void Perform ()
@@ -90,9 +90,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch();
     }
 
-    protected override void ScopedNotifyClientTransactionOfEnd ()
+    protected override void ScopedEnd ()
     {
-      base.ScopedNotifyClientTransactionOfEnd ();
+      base.ScopedEnd ();
       ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndAdd (Index, NewRelatedObject);
     }
 

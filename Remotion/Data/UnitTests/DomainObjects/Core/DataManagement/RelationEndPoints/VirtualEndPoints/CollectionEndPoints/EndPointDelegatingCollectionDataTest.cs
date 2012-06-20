@@ -239,8 +239,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       using (mockRepository.Ordered ())
       {
-        nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock2.NotifyClientTransactionOfBegin");
-        nestedCommandMock1.Expect (mock => mock.NotifyClientTransactionOfBegin ()).Message ("nestedCommandMock1.NotifyClientTransactionOfBegin");
         nestedCommandMock2.Expect (mock => mock.Begin ()).Message ("nestedCommandMock2.Begin");
         nestedCommandMock1.Expect (mock => mock.Begin ()).Message ("nestedCommandMock1.Begin");
         nestedCommandMock2.Expect (mock => mock.Perform ()).Message ("nestedCommandMock2.Perform");
@@ -248,8 +246,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
         _collectionEndPointMock.Expect (mock => mock.Touch ()).Message ("endPoint.Touch");
         nestedCommandMock1.Expect (mock => mock.End ()).Message ("nestedCommandMock1.End");
         nestedCommandMock2.Expect (mock => mock.End ()).Message ("nestedCommandMock2.End");
-        nestedCommandMock1.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock1.NotifyClientTransactionOfEnd");
-        nestedCommandMock2.Expect (mock => mock.NotifyClientTransactionOfEnd ()).Message ("nestedCommandMock2.NotifyClientTransactionOfEnd");
       }
 
       mockRepository.ReplayAll ();

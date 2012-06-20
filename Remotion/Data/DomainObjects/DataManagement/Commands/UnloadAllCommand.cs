@@ -76,14 +76,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return Enumerable.Empty<Exception>();
     }
 
-    public void NotifyClientTransactionOfBegin ()
-    {
-      RaiseRecurringBeginEvent (domainObjects => _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, domainObjects)));
-    }
-
     public void Begin ()
     {
-      // 4619: Moved to TopClientTransactionListener
+      RaiseRecurringBeginEvent (domainObjects => _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, domainObjects)));
     }
 
     public void Perform ()
@@ -106,11 +101,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     }
 
     public void End ()
-    {
-      // 4619: Moved to TopClientTransactionListener
-    }
-
-    public void NotifyClientTransactionOfEnd ()
     {
       if (_unloadedDataContainers.Count > 0)
         _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, _unloadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly()));

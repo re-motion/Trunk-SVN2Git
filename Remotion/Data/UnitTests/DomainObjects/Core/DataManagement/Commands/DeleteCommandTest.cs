@@ -61,20 +61,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       _transactionEventSinkWithMock
           .ExpectMock (mock => mock.ObjectDeleting (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       _transactionEventSinkWithMock.ReplayMock();
       
-      _deleteOrder1Command.NotifyClientTransactionOfBegin ();
+      _deleteOrder1Command.Begin ();
 
       _transactionEventSinkWithMock.VerifyMock();
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin_TriggersEndPointModifications ()
+    public void Begin_TriggersEndPointModifications ()
     {
       var mockRepository = _transactionEventSinkWithMock.GetMockRepository();
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       using (mockRepository.Ordered ())
       {
         _transactionEventSinkWithMock.ExpectMock (mock => mock.ObjectDeleting (_transaction, _order1));
-        endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfBegin());
+        endPointCommandMock.Expect (mock => mock.Begin());
       }
 
       mockRepository.ReplayAll ();
@@ -93,27 +93,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
       PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
 
-      _deleteOrder1Command.NotifyClientTransactionOfBegin ();
+      _deleteOrder1Command.Begin ();
 
       mockRepository.VerifyAll ();
       mockRepository.BackToRecordAll (); // For Discard
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void End ()
     {
       _transactionEventSinkWithMock
           .ExpectMock (mock => mock.ObjectDeleted (_transaction, _order1))
           .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
       _transactionEventSinkWithMock.ReplayMock ();
 
-      _deleteOrder1Command.NotifyClientTransactionOfEnd ();
+      _deleteOrder1Command.End ();
 
       _transactionEventSinkWithMock.VerifyMock ();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd_TriggersEndPointModifications ()
+    public void End_TriggersEndPointModifications ()
     {
       var mockRepository = _transactionEventSinkWithMock.GetMockRepository();
 
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       using (mockRepository.Ordered ())
       {
-        endPointCommandMock.Expect (mock => mock.NotifyClientTransactionOfEnd ());
+        endPointCommandMock.Expect (mock => mock.End ());
         _transactionEventSinkWithMock.ExpectMock (mock => mock.ObjectDeleted (_transaction, _order1));
       }
 
@@ -132,7 +132,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       var compositeCommandWithMockStep = compositeCommand.CombineWith (endPointCommandMock);
       PrivateInvoke.SetNonPublicField (_deleteOrder1Command, "_endPointDeleteCommands", compositeCommandWithMockStep);
 
-      _deleteOrder1Command.NotifyClientTransactionOfEnd ();
+      _deleteOrder1Command.End ();
 
       mockRepository.VerifyAll ();
       mockRepository.BackToRecordAll (); // For Discard

@@ -40,27 +40,17 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       return Enumerable.Empty<Exception> ();
     }
 
-    public void Begin ()
-    {
-      // do nothing
-    }
-
     public void Perform ()
     {
       // do nothing
     }
 
+    public void Begin ()
+    {
+      // do nothing
+    }
+
     public void End ()
-    {
-      // do nothing
-    }
-
-    public void NotifyClientTransactionOfBegin ()
-    {
-      // do nothing
-    }
-
-    public void NotifyClientTransactionOfEnd ()
     {
       // do nothing
     }

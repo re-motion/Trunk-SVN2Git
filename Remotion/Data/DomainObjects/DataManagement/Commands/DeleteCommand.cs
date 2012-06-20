@@ -73,18 +73,13 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return Enumerable.Empty<Exception> ();
     }
 
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       _clientTransaction.Execute (delegate
       {
         _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectDeleting (tx, _deletedObject));
-        _endPointDeleteCommands.NotifyClientTransactionOfBegin ();
+        _endPointDeleteCommands.Begin ();
       });
-    }
-
-    public void Begin ()
-    {
-      // 4619: Moved to TopClientTransactionListener
     }
 
     public void Perform ()
@@ -99,14 +94,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      // 4619: Moved to TopClientTransactionListener
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
       _clientTransaction.Execute (delegate
       {
-        _endPointDeleteCommands.NotifyClientTransactionOfEnd ();
+        _endPointDeleteCommands.End ();
         _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectDeleted (tx, _deletedObject));
       });
     }

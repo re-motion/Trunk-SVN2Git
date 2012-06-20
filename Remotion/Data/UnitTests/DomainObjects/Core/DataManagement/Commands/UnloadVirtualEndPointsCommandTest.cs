@@ -49,19 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       _mockRepository.ReplayAll();
 
-      _command.NotifyClientTransactionOfBegin();
-    }
-
-    [Test]
-    public void Begin ()
-    {
-      _mockRepository.ReplayAll ();
-
-      _command.Begin ();
+      _command.Begin();
     }
 
     [Test]
@@ -102,14 +94,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _mockRepository.ReplayAll ();
 
       _command.End ();
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEnd ()
-    {
-      _mockRepository.ReplayAll ();
-
-      _command.NotifyClientTransactionOfEnd ();
     }
   }
 }

@@ -57,19 +57,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin_NoEvents ()
+    public void Begin_NoEvents ()
     {
       TransactionEventSinkWithMock.ReplayMock();
 
-      _command.NotifyClientTransactionOfBegin ();
+      _command.Begin ();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd_NoEvents ()
+    public void End_NoEvents ()
     {
       TransactionEventSinkWithMock.ReplayMock ();
 
-      _command.NotifyClientTransactionOfEnd ();
+      _command.End ();
     }
 
     [Test]

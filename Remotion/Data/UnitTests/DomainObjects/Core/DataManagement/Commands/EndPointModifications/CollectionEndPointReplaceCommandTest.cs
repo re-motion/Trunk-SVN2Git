@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       TransactionEventSinkWithMock
           .ExpectMock (
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                 Assert.That (CollectionEventReceiver.AddingDomainObject, Is.SameAs (_replacementRelatedObject)); // collection got event first
               });
 
-      _command.NotifyClientTransactionOfBegin ();
+      _command.Begin ();
 
       TransactionEventSinkWithMock.VerifyMock ();
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void End ()
     {
       TransactionEventSinkWithMock
           .ExpectMock (
@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
                 Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // collection gets event later
               });
 
-      _command.NotifyClientTransactionOfEnd ();
+      _command.End ();
 
       TransactionEventSinkWithMock.VerifyMock ();
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.EqualTo (new[] { _replacedRelatedObject })); // collection got event later

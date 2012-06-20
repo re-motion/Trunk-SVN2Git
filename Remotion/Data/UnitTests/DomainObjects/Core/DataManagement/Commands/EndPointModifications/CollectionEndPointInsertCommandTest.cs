@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       TransactionEventSinkWithMock
           .ExpectMock (
@@ -70,14 +70,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           .WhenCalled (
               mock => Assert.That (CollectionEventReceiver.AddingDomainObject, Is.SameAs (_insertedRelatedObject))); // collection got event first
 
-      _command.NotifyClientTransactionOfBegin ();
+      _command.Begin ();
 
       TransactionEventSinkWithMock.VerifyMock ();
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void End ()
     {
       TransactionEventSinkWithMock
           .ExpectMock (
@@ -85,7 +85,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
           .WhenCalled (
               mock => Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null)); // collection gets event later
 
-      _command.NotifyClientTransactionOfEnd ();
+      _command.End ();
 
       TransactionEventSinkWithMock.VerifyMock ();
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.SameAs (_insertedRelatedObject)); // collection got event later

@@ -92,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
+    public void Begin ()
     {
       using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
@@ -113,13 +113,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       }
       TransactionEventSinkWithMock.ReplayMock ();
 
-      _command.NotifyClientTransactionOfBegin ();
+      _command.Begin ();
 
       TransactionEventSinkWithMock.VerifyMock ();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd ()
+    public void End ()
     {
       using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       TransactionEventSinkWithMock.ReplayMock ();
 
-      _command.NotifyClientTransactionOfEnd();
+      _command.End();
 
       TransactionEventSinkWithMock.VerifyMock ();
     }

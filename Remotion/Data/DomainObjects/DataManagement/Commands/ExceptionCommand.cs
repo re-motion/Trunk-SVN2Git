@@ -44,11 +44,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       return new[] { _exception };
     }
 
-    public void NotifyClientTransactionOfBegin ()
-    {
-      throw _exception;
-    }
-
     public void Begin ()
     {
       throw _exception;
@@ -60,11 +55,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     }
 
     public void End ()
-    {
-      throw _exception;
-    }
-
-    public void NotifyClientTransactionOfEnd ()
     {
       throw _exception;
     }

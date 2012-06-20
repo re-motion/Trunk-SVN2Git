@@ -103,30 +103,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     public void Begin ()
     {
-      // 4619: Moved to TopClientTransactionListener or NotifyClientTransactionOfBegin
+      _modifiedEndPoint.ClientTransaction.Execute (ScopedBegin);
     }
 
     public void End ()
     {
-      // 4619: Moved to TopClientTransactionListener or NotifyClientTransactionOfEnd
+      _modifiedEndPoint.ClientTransaction.Execute (ScopedEnd);
     }
 
-    public void NotifyClientTransactionOfBegin ()
-    {
-      _modifiedEndPoint.ClientTransaction.Execute (ScopedNotifyClientTransactionOfBegin);
-    }
-
-    public void NotifyClientTransactionOfEnd ()
-    {
-      _modifiedEndPoint.ClientTransaction.Execute (ScopedNotifyClientTransactionOfEnd);
-    }
-
-    protected virtual void ScopedNotifyClientTransactionOfBegin ()
+    protected virtual void ScopedBegin ()
     {
       RaiseClientTransactionBeginNotification (_oldRelatedObject, _newRelatedObject);
     }
 
-    protected virtual void ScopedNotifyClientTransactionOfEnd ()
+    protected virtual void ScopedEnd ()
     {
       RaiseClientTransactionEndNotification (_oldRelatedObject, _newRelatedObject);
     }

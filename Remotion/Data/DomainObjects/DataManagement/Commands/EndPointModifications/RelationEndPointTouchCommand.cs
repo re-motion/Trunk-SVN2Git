@@ -43,11 +43,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       return Enumerable.Empty<Exception> ();
     }
 
-    public void NotifyClientTransactionOfBegin ()
-    {
-      // do not issue any notifications
-    }
-
     public void Begin ()
     {
       // do not issue any notifications
@@ -59,11 +54,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     }
 
     public void End ()
-    {
-      // do not issue any notifications
-    }
-
-    public void NotifyClientTransactionOfEnd ()
     {
       // do not issue any notifications
     }

@@ -72,49 +72,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin_NoEvents()
+    public void Begin_NoEvents()
     {
       _transactionEventSinkWithMock.ReplayMock();
       
-      _command.NotifyClientTransactionOfBegin();
+      _command.Begin();
     }
 
     [Test]
-    public void NotifyClientTransactionOfEnd_NoEvents ()
+    public void End_NoEvents ()
     {
       _transactionEventSinkWithMock.ReplayMock();
 
-      _command.NotifyClientTransactionOfEnd ();
-    }
-
-    [Test]
-    public void Begin ()
-    {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
-
-      _domainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      _domainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
-      _command.Begin ();
-
-      Assert.That (relationChangingCalled, Is.False); // object does not get a notification
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
-    }
-
-    [Test]
-    public void End ()
-    {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
-
-      _domainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      _domainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
       _command.End ();
-
-      Assert.That (relationChangingCalled, Is.False); // object does not get a notification
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
     }
 
     [Test]

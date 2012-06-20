@@ -127,8 +127,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void DelegatingMembers ()
     {
-      CheckOperationIsDelegated (c => c.NotifyClientTransactionOfBegin ());
-      CheckOperationIsDelegated (c => c.NotifyClientTransactionOfEnd ());
+      CheckOperationIsDelegated (c => c.Begin ());
+      CheckOperationIsDelegated (c => c.End ());
       CheckOperationIsDelegated (c => c.Begin ());
       CheckOperationIsDelegated (c => c.End ());
     }

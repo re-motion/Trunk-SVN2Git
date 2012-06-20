@@ -49,15 +49,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin_DoesNothing ()
-    {
-      _command.NotifyClientTransactionOfBegin();
-    }
-
-    [Test]
     public void Begin_DoesNothing ()
     {
-      _command.Begin ();
+      _command.Begin();
     }
 
     [Test]
@@ -73,13 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void End_DoesNothing ()
     {
-      _command.End ();
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEnd_DoesNothing ()
-    {
-      _command.End ();
+      _command.End();
     }
 
     [Test]

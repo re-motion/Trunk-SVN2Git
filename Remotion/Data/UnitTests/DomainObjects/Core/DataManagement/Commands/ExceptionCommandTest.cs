@@ -40,13 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin ()
-    {
-      var exception = Assert.Throws<Exception> (_command.NotifyClientTransactionOfBegin);
-      Assert.That (exception, Is.SameAs (_exception));
-    }
-
-    [Test]
     public void Begin ()
     {
       var exception = Assert.Throws<Exception> (_command.Begin);
@@ -64,13 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     public void End ()
     {
       var exception = Assert.Throws<Exception> (_command.End);
-      Assert.That (exception, Is.SameAs (_exception));
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEnd ()
-    {
-      var exception = Assert.Throws<Exception> (_command.NotifyClientTransactionOfEnd);
       Assert.That (exception, Is.SameAs (_exception));
     }
 

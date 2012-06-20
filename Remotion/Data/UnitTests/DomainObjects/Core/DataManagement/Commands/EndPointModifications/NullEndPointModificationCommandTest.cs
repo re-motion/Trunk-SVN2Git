@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void BeginDoesNothing ()
+    public void Begin_DoesNothing ()
     {
       _mockRepository.ReplayAll ();
 
@@ -86,31 +86,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void EndDoesNothing ()
+    public void End_DoesNothing ()
     {
       _mockRepository.ReplayAll ();
 
       _command.End ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfBeginDoesNothing ()
-    {
-      _mockRepository.ReplayAll ();
-
-      _command.NotifyClientTransactionOfBegin ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void NotifyClientTransactionOfEndDoesNothing ()
-    {
-      _mockRepository.ReplayAll ();
-
-      _command.NotifyClientTransactionOfEnd ();
 
       _mockRepository.VerifyAll ();
     }
