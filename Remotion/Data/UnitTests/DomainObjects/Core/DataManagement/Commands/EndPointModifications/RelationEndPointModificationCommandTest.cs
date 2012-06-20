@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -112,48 +111,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _commandPartialMock.VerifyAllExpectations ();
       _transactionEventSinkWithMock.VerifyMock ();
-    }
-
-    [Test]
-    public void Begin_SetsCurrentTransaction ()
-    {
-      _commandPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedBegin"))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)))
-          .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _commandPartialMock.Replay ();
-
-      var eventReceiverMock = MockRepository.GenerateStrictMock<DomainObjectMockEventReceiver> (_domainObject);
-      eventReceiverMock
-          .Expect (mock => mock.RelationChanging (_domainObject, _endPointDefinition, _oldRelatedObject, _newRelatedObject))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      eventReceiverMock.Replay();
-
-      _commandPartialMock.Begin ();
-
-      _commandPartialMock.VerifyAllExpectations ();
-      eventReceiverMock.VerifyAllExpectations();
-    }
-
-    [Test]
-    public void End_SetsCurrentTransaction ()
-    {
-      _commandPartialMock
-          .Expect (mock => PrivateInvoke.InvokeNonPublicMethod (mock, "ScopedEnd"))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)))
-          .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _commandPartialMock.Replay ();
-
-      var eventReceiverMock = MockRepository.GenerateStrictMock<DomainObjectMockEventReceiver> (_domainObject);
-      eventReceiverMock
-          .Expect (mock => mock.RelationChanged (_domainObject, _endPointDefinition, _oldRelatedObject, _newRelatedObject))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
-      eventReceiverMock.Replay();
-
-      _commandPartialMock.End ();
-
-      _commandPartialMock.VerifyAllExpectations ();
-      eventReceiverMock.VerifyAllExpectations ();
     }
 
     private RelationEndPointModificationCommand CreateCommandPartialMock ()

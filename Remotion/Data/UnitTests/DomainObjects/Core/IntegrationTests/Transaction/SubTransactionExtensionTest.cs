@@ -537,44 +537,43 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.ObjectDeleting (_subTransaction, _order1);
         order1MockEventReceiver.Deleting (_order1, EventArgs.Empty);
 
-        using (_mockRepository.Unordered())
+        using (_mockRepository.Unordered ())
         {
-          _extensionMock.RelationChanging (_subTransaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
-          _extensionMock.RelationChanging (_subTransaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-          _extensionMock.RelationChanging (_subTransaction, orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-          _extensionMock.RelationChanging (_subTransaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-          _extensionMock.RelationChanging (_subTransaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
-        }
-        
-        using (_mockRepository.Unordered())
-        {
-          customerMockEventReceiver.RelationChanging (customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
           customerOrdersMockEventReceiver.Removing (customerOrders, _order1);
+          _extensionMock.RelationChanging (_subTransaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
+          customerMockEventReceiver.RelationChanging (customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
+
+          _extensionMock.RelationChanging (_subTransaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
           orderTicketMockEventReceiver.RelationChanging (orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+
+          _extensionMock.RelationChanging (_subTransaction, orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           orderItem1MockEventReceiver.RelationChanging (orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+
+          _extensionMock.RelationChanging (_subTransaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           orderItem2MockEventReceiver.RelationChanging (orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-          officialMockEventReceiver.RelationChanging (official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
+
           officialOrdersMockEventReceiver.Removing (officialOrders, _order1);
+          _extensionMock.RelationChanging (_subTransaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
+          officialMockEventReceiver.RelationChanging (official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
         }
 
         using (_mockRepository.Unordered ())
         {
           customerMockEventReceiver.RelationChanged (customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
-          customerOrdersMockEventReceiver.Removed (customerOrders, _order1);
-          orderTicketMockEventReceiver.RelationChanged (orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-          orderItem1MockEventReceiver.RelationChanged (orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-          orderItem2MockEventReceiver.RelationChanged (orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-          officialMockEventReceiver.RelationChanged (official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
-          officialOrdersMockEventReceiver.Removed (officialOrders, _order1);
-        }
-
-
-        using (_mockRepository.Unordered ())
-        {
           _extensionMock.RelationChanged (_subTransaction, customer, GetEndPointDefinition (typeof (Customer), "Orders"), _order1, null);
+          customerOrdersMockEventReceiver.Removed (customerOrders, _order1);
+
+          orderTicketMockEventReceiver.RelationChanged (orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
           _extensionMock.RelationChanged (_subTransaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+
+          orderItem1MockEventReceiver.RelationChanged (orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           _extensionMock.RelationChanged (_subTransaction, orderItem1, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+
+          orderItem2MockEventReceiver.RelationChanged (orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
           _extensionMock.RelationChanged (_subTransaction, orderItem2, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+
+          officialOrdersMockEventReceiver.Removed (officialOrders, _order1);
+          officialMockEventReceiver.RelationChanged (official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
           _extensionMock.RelationChanged (_subTransaction, official, GetEndPointDefinition (typeof (Official), "Orders"), _order1, null);
         }
 

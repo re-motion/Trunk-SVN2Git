@@ -59,13 +59,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected override void ScopedNotifyClientTransactionOfBegin ()
     {
-      // no notification
-    }
+      // do not call base - no transaction notification
 
-    protected override void ScopedBegin ()
-    {
-      // TODO 4619: When unifying ScopedNotifyClientTransactionOfBegin and ScopedBegin, keep this line:
-      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginDelete();
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).BeginDelete ();
     }
 
     public override void Perform ()
@@ -74,14 +70,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedEndPoint.Touch ();
     }
 
-    protected override void ScopedEnd ()
-    {
-      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndDelete();
-    }
-
     protected override void ScopedNotifyClientTransactionOfEnd ()
     {
-      // no notification
+      // do not call base - no transaction notification
+
+      ((IDomainObjectCollectionEventRaiser) ModifiedCollection).EndDelete ();
     }
 
     public override ExpandedCommand ExpandToAllRelatedObjects ()

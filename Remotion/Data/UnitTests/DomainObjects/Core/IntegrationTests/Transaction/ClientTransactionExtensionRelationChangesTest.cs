@@ -94,16 +94,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             GetEndPointDefinition (typeof (Order), "OrderTicket"),
             _orderTicket1,
             null);
+        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, null);
+
         _extension.RelationChanging (
             TestableClientTransaction, _orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-
-        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, null);
         _orderTicket1EventReceiver.RelationChanging (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
 
         _orderTicket1EventReceiver.RelationChanged (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, null);
-
         _extension.RelationChanged (TestableClientTransaction, _orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+
+        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, null);
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, null);
       }
 
@@ -122,24 +122,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _mockRepository.BackToRecord (_extension);
 
+      var orderEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (order);
+      var orderTicketEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket);
+
       using (_mockRepository.Ordered())
       {
-        
         _extension.RelationChanging (
             TestableClientTransaction, order, GetEndPointDefinition (typeof (Order), "OrderTicket"), null, orderTicket);
+        orderEventReceiver.RelationChanging (order, GetEndPointDefinition (typeof (Order), "OrderTicket"), null, orderTicket);
+
         _extension.RelationChanging (
             TestableClientTransaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), null, order);
-
-        var orderEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (order);
-        var orderTicketEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (orderTicket);
-
-        orderEventReceiver.RelationChanging (order, GetEndPointDefinition (typeof (Order), "OrderTicket"), null, orderTicket);
         orderTicketEventReceiver.RelationChanging (orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), null, order);
 
         orderTicketEventReceiver.RelationChanged (orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), null, order);
-        orderEventReceiver.RelationChanged (order, GetEndPointDefinition (typeof (Order), "OrderTicket"), null, orderTicket);
-
         _extension.RelationChanged (TestableClientTransaction, orderTicket, GetEndPointDefinition (typeof (OrderTicket), "Order"), null, order);
+
+        orderEventReceiver.RelationChanged (order, GetEndPointDefinition (typeof (Order), "OrderTicket"), null, orderTicket);
         _extension.RelationChanged (TestableClientTransaction, order, GetEndPointDefinition (typeof (Order), "OrderTicket"), null, orderTicket);
       }
 
@@ -164,27 +163,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extension.RelationChanging (
             TestableClientTransaction, orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
+        orderTicket3EventReceiver.RelationChanging (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
+
         _extension.RelationChanging (
             TestableClientTransaction, oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
+        oldOrderOfOrderTicket3EventReceiver.RelationChanging (oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
+
         _extension.RelationChanging (
             TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
+        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
+
         _extension.RelationChanging (
             TestableClientTransaction, _orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-
-        orderTicket3EventReceiver.RelationChanging (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
-        oldOrderOfOrderTicket3EventReceiver.RelationChanging (oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
-        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
         _orderTicket1EventReceiver.RelationChanging (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
 
         _orderTicket1EventReceiver.RelationChanged (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
-        oldOrderOfOrderTicket3EventReceiver.RelationChanged (oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
-        orderTicket3EventReceiver.RelationChanged (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
-
         _extension.RelationChanged (TestableClientTransaction, _orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+
+        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
+
+        oldOrderOfOrderTicket3EventReceiver.RelationChanged (oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
         _extension.RelationChanged (
             TestableClientTransaction, oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
+
+        orderTicket3EventReceiver.RelationChanged (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
         _extension.RelationChanged (TestableClientTransaction, orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
       }
 
@@ -221,27 +224,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extension.RelationChanging (
             TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
+        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
+
         _extension.RelationChanging (
             TestableClientTransaction, _orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+        _orderTicket1EventReceiver.RelationChanging (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+
         _extension.RelationChanging (
             TestableClientTransaction, orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
+        orderTicket3EventReceiver.RelationChanging (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
+
         _extension.RelationChanging (
             TestableClientTransaction, oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
-
-        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
-        _orderTicket1EventReceiver.RelationChanging (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-        orderTicket3EventReceiver.RelationChanging (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
         oldOrderOfOrderTicket3EventReceiver.RelationChanging (oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
 
+        
         oldOrderOfOrderTicket3EventReceiver.RelationChanged (oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
-        orderTicket3EventReceiver.RelationChanged (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
-        _orderTicket1EventReceiver.RelationChanged (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
-        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
-
         _extension.RelationChanged (
             TestableClientTransaction, oldOrderOfOrderTicket3, GetEndPointDefinition (typeof (Order), "OrderTicket"), orderTicket3, null);
+        
+        orderTicket3EventReceiver.RelationChanged (orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
         _extension.RelationChanged (TestableClientTransaction, orderTicket3, GetEndPointDefinition (typeof (OrderTicket), "Order"), oldOrderOfOrderTicket3, _order1);
+        
+        _orderTicket1EventReceiver.RelationChanged (_orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
         _extension.RelationChanged (TestableClientTransaction, _orderTicket1, GetEndPointDefinition (typeof (OrderTicket), "Order"), _order1, null);
+
+        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderTicket"), _orderTicket1, orderTicket3);
       }
 
@@ -357,16 +365,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         _extension.RelationChanging (
             TestableClientTransaction, orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+        orderItemEventReceiver.RelationChanging (orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+
         _extension.RelationChanging (
             TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), orderItem, null);
-
-        orderItemEventReceiver.RelationChanging (orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
         _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), orderItem, null);
 
         _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), orderItem, null);
-        orderItemEventReceiver.RelationChanged (orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), orderItem, null);
+
+        orderItemEventReceiver.RelationChanged (orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
         _extension.RelationChanged (TestableClientTransaction, orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
       }
 
@@ -399,15 +407,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Is.Equal (ValueAccess.Current));
 
         _extension.RelationChanging (TestableClientTransaction, orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
-        _extension.RelationChanging (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, orderItem);
-
         orderItemEventReceiver.RelationChanging (orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
+
+        _extension.RelationChanging (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, orderItem);
         _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, orderItem);
 
         _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, orderItem);
-        orderItemEventReceiver.RelationChanged (orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
-
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, orderItem);
+
+        orderItemEventReceiver.RelationChanged (orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
         _extension.RelationChanged (TestableClientTransaction, orderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
       }
 
@@ -443,22 +451,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         _extension.RelationChanging (
             TestableClientTransaction, newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
+        newOrderItemEventReceiver.RelationChanging (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
+
         _extension.RelationChanging (
             TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, newOrderItem);
+        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, newOrderItem);
+
         _extension.RelationChanging (
             TestableClientTransaction, oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
-
-        newOrderItemEventReceiver.RelationChanging (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
-        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, newOrderItem);
         oldOrderOfNewOrderItemEventReceiver.RelationChanging (oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
-        
-        oldOrderOfNewOrderItemEventReceiver.RelationChanged (oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
-        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, newOrderItem);
-        newOrderItemEventReceiver.RelationChanged (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
 
+       
+        oldOrderOfNewOrderItemEventReceiver.RelationChanged (oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
         _extension.RelationChanged (
             TestableClientTransaction, oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
+
+        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, newOrderItem);
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, newOrderItem);
+
+        newOrderItemEventReceiver.RelationChanged (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
         _extension.RelationChanged (TestableClientTransaction, newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
       }
 
@@ -513,21 +524,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         _extension.RelationChanging (
             TestableClientTransaction, oldOrderItem,GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+        oldOrderItemEventReceiver.RelationChanging (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+
         _extension.RelationChanging (
             TestableClientTransaction, newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
+        newOrderItemEventReceiver.RelationChanging (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
+
         _extension.RelationChanging (
             TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
-
-        oldOrderItemEventReceiver.RelationChanging (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-        newOrderItemEventReceiver.RelationChanging (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
         _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
         
         _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
-        newOrderItemEventReceiver.RelationChanged (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
-        oldOrderItemEventReceiver.RelationChanged (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
+
+        newOrderItemEventReceiver.RelationChanged (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
         _extension.RelationChanged (TestableClientTransaction, newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1);
+
+        oldOrderItemEventReceiver.RelationChanged (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
         _extension.RelationChanged (TestableClientTransaction, oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
       }
 
@@ -568,26 +581,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
         _extension.RelationChanging (
             TestableClientTransaction, oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+        oldOrderItemEventReceiver.RelationChanging (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
+
         _extension.RelationChanging (
             TestableClientTransaction, newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
+        newOrderItemEventReceiver.RelationChanging (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
+
         _extension.RelationChanging (
             TestableClientTransaction, _order1,GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
+        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
+
         _extension.RelationChanging (
             TestableClientTransaction, oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
-
-        oldOrderItemEventReceiver.RelationChanging (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-        newOrderItemEventReceiver.RelationChanging (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
-        _order1EventReceiver.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
         oldOrderOfNewOrderItemEventReceiver.RelationChanging (oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
 
         oldOrderOfNewOrderItemEventReceiver.RelationChanged (oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
-        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
-        newOrderItemEventReceiver.RelationChanged (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
-        oldOrderItemEventReceiver.RelationChanged (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
-
         _extension.RelationChanged (TestableClientTransaction, oldOrderOfNewOrderItem, GetEndPointDefinition (typeof (Order), "OrderItems"), newOrderItem, null);
+
+        _order1EventReceiver.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
         _extension.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), oldOrderItem, newOrderItem);
+
+        newOrderItemEventReceiver.RelationChanged (newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
         _extension.RelationChanged (TestableClientTransaction, newOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), oldOrderOfNewOrderItem, _order1);
+
+        oldOrderItemEventReceiver.RelationChanged (oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
         _extension.RelationChanged (TestableClientTransaction, oldOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null);
       }
 
@@ -617,27 +634,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extension.Expect (mock => mock.RelationChanging (
             TestableClientTransaction, removedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null));
+        removedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanging (removedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null));
+
         _extension.Expect (mock => mock.RelationChanging (
             TestableClientTransaction, addedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1));
+        addedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanging (addedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1));
+
         _extension.Expect (mock => mock.RelationChanging (
             TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), removedOrderItem, null));
+        _order1EventReceiver.Expect (mock => mock.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), removedOrderItem, null));
+
         _extension.Expect (mock => mock.RelationChanging (
             TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, addedOrderItem));
-
-        removedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanging (removedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null));
-        addedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanging (addedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1));
-        _order1EventReceiver.Expect (mock => mock.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), removedOrderItem, null));
         _order1EventReceiver.Expect (mock => mock.RelationChanging (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, addedOrderItem));
 
         _order1EventReceiver.Expect (mock => mock.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, addedOrderItem));
-        _order1EventReceiver.Expect (mock => mock.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), removedOrderItem, null));
-        addedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanged (addedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1));
-        removedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanged (removedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null));
-
         _extension.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), null, addedOrderItem));
+
+        _order1EventReceiver.Expect (mock => mock.RelationChanged (_order1, GetEndPointDefinition (typeof (Order), "OrderItems"), removedOrderItem, null));
         _extension.Expect (mock => mock.RelationChanged (TestableClientTransaction, _order1, GetEndPointDefinition (typeof (Order), "OrderItems"), removedOrderItem, null));
 
+        addedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanged (addedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1));
         _extension.Expect (mock => mock.RelationChanged (TestableClientTransaction, addedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), null, _order1));
+
+        removedOrderItemEventReceiverMock.Expect (mock => mock.RelationChanged (removedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null));
         _extension.Expect (mock => mock.RelationChanged (TestableClientTransaction, removedOrderItem, GetEndPointDefinition (typeof (OrderItem), "Order"), _order1, null));
 
       }

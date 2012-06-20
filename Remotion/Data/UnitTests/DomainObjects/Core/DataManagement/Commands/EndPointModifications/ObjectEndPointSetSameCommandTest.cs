@@ -62,28 +62,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void Begin ()
-    {
-      var eventReceiver = new DomainObjectEventReceiver (_domainObject);
-
-      _command.Begin();
-
-      Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
-    }
-
-    [Test]
-    public void End ()
-    {
-      var eventReceiver = new DomainObjectEventReceiver (_domainObject);
-
-      _command.End();
-
-      Assert.IsFalse (eventReceiver.HasRelationChangingEventBeenCalled);
-      Assert.IsFalse (eventReceiver.HasRelationChangedEventBeenCalled);
-    }
-
-    [Test]
     public void Perform_TouchesEndPoint ()
     {
       Assert.That (_endPoint.HasBeenTouched, Is.False);

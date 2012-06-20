@@ -40,7 +40,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private MockRepository _mockRepository;
     private DomainObjectMockEventReceiver _order1EventReceiverMock;
-    private DomainObjectMockEventReceiver _order2EventReceiverMock;
     private IUnloadEventReceiver _unloadEventReceiverMock;
     private ILoadEventReceiver _loadEventReceiverMock;
 
@@ -60,7 +59,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _mockRepository = new MockRepository();
       _order1EventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
-      _order2EventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order2);
 
       _unloadEventReceiverMock = _mockRepository.StrictMock<IUnloadEventReceiver>();
       _order1.SetUnloadEventReceiver (_unloadEventReceiverMock);
@@ -180,14 +178,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       CheckEventWithListenersFirst (
           l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
-          () =>
-          _order1EventReceiverMock
-              .Expect (mock => mock.PropertyChanging (
-                  Arg.Is (_order1),
-                  Arg<PropertyChangeEventArgs>.Matches (
-                    args => args.PropertyValue == propertyValue 
-                        && args.OldValue == oldValue 
-                        && args.NewValue == newValue)))
+          () => _order1EventReceiverMock
+              .Expect (mock => mock.PropertyChanging (_order1, propertyValue, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -207,6 +199,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                   .Repeat.Never()
                   .Message ("No DomainObject event for foreign key properties."));
     }
+
+    [Test]
+    public void PropertyValueChanging_WithNulls ()
+    {
+      var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
+      var propertyValue = PropertyValueObjectMother.Create ();
+      object oldValue = null;
+      object newValue = null;
+
+      CheckEventWithListenersFirst (
+          l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          () => _order1EventReceiverMock
+                    .Expect (mock => mock.PropertyChanging (_order1, propertyValue, oldValue, newValue))
+                    .WithCurrentTransaction (_clientTransaction));
+    }
     
     [Test]
     public void PropertyValueChanged ()
@@ -220,12 +227,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.PropertyChanged (
-                  Arg.Is (_order1),
-                  Arg<PropertyChangeEventArgs>.Matches (
-                    args => args.PropertyValue == propertyValue
-                        && args.OldValue == oldValue
-                        && args.NewValue == newValue)))
+              .Expect (mock => mock.PropertyChanged (_order1, propertyValue, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -244,6 +246,81 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                   .Expect (mock => mock.PropertyChanged (Arg<object>.Is.Anything, Arg<PropertyChangeEventArgs>.Is.Anything))
                   .Repeat.Never ()
                   .Message ("No DomainObject event for foreign key properties."));
+    }
+
+    [Test]
+    public void PropertyValueChanged_WithNulls ()
+    {
+      var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
+      var propertyValue = PropertyValueObjectMother.Create();
+      object oldValue = null;
+      object newValue = null;
+
+      CheckEventWithListenersLast (
+          l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          () => _order1EventReceiverMock
+                    .Expect (mock => mock.PropertyChanged (_order1, propertyValue, oldValue, newValue))
+                    .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void RelationChanging ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition();
+      var oldValue = DomainObjectMother.CreateFakeObject();
+      var newValue = DomainObjectMother.CreateFakeObject ();
+
+      CheckEventWithListenersFirst (
+          l => l.RelationChanging (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          () =>
+          _order1EventReceiverMock
+              .Expect (mock => mock.RelationChanging (_order1, endPointDefinition, oldValue, newValue))
+              .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void RelationChanging_WithNulls ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition ();
+      DomainObject oldValue = null;
+      DomainObject newValue = null;
+
+      CheckEventWithListenersFirst (
+          l => l.RelationChanging (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          () =>
+          _order1EventReceiverMock
+              .Expect (mock => mock.RelationChanging (_order1, endPointDefinition, oldValue, newValue))
+              .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void RelationChanged ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition ();
+      var oldValue = DomainObjectMother.CreateFakeObject ();
+      var newValue = DomainObjectMother.CreateFakeObject ();
+
+      CheckEventWithListenersLast (
+          l => l.RelationChanged (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          () =>
+          _order1EventReceiverMock
+              .Expect (mock => mock.RelationChanged (_order1, endPointDefinition, oldValue, newValue))
+              .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void RelationChanged_Nulls ()
+    {
+      var endPointDefinition = GetSomeEndPointDefinition ();
+      DomainObject oldValue = null;
+      DomainObject newValue = null;
+
+      CheckEventWithListenersLast (
+          l => l.RelationChanged (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
+          () =>
+          _order1EventReceiverMock
+              .Expect (mock => mock.RelationChanged (_order1, endPointDefinition, oldValue, newValue))
+              .WithCurrentTransaction (_clientTransaction));
     }
 
     [Test]

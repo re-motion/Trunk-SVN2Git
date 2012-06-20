@@ -37,16 +37,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
     {
     }
 
-    protected override void ScopedBegin ()
-    {
-      // do not issue any change notifications, a same-set is not a change
-    }
-
-    protected override void ScopedEnd ()
-    {
-      // do not issue any change notifications, a same-set is not a change
-    }
-
     protected override void ScopedNotifyClientTransactionOfBegin ()
     {
       // do not issue any change notifications, a same-set is not a change

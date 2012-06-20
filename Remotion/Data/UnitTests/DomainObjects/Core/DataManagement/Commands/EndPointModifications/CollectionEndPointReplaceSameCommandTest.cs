@@ -57,42 +57,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void Begin ()
-    {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
-
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
-      _command.Begin ();
-
-      Assert.That (relationChangingCalled, Is.False); // no change notification
-      Assert.That (relationChangedCalled, Is.False); // no change notification
-      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // no change notification
-      Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // no change notification
-    }
-
-    [Test]
-    public void End ()
-    {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
-
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
-      _command.End ();
-
-      Assert.That (relationChangingCalled, Is.False); // no change notification
-      Assert.That (relationChangedCalled, Is.False); // no change notification
-      Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // no change notification
-      Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // no change notification
-      Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null); // no change notification
-      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // no change notification
-    }
-
-    [Test]
     public void NotifyClientTransactionOfBegin_NoEvents ()
     {
       TransactionEventSinkWithMock.ReplayMock();

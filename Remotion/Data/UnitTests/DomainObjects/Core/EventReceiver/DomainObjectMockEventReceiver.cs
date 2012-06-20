@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -87,6 +88,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
                   args.RelationEndPointDefinition == relationEndPointDefinition 
                       && args.OldRelatedObject == oldRelatedObject
                       && args.NewRelatedObject == newRelatedObject)));
+    }
+
+    public void PropertyChanging (object sender, PropertyValue propertyValue, object oldValue, object newValue)
+    {
+      this.Expect (
+          mock => mock.PropertyChanging (
+              Arg.Is (sender),
+              Arg<PropertyChangeEventArgs>.Matches (
+                  args => args.PropertyValue == propertyValue
+                          && args.OldValue == oldValue
+                          && args.NewValue == newValue)));
+    }
+
+    public void PropertyChanged (object sender, PropertyValue propertyValue, object oldValue, object newValue)
+    {
+      this.Expect (
+          mock => mock.PropertyChanged (
+              Arg.Is (sender),
+              Arg<PropertyChangeEventArgs>.Matches (
+                  args => args.PropertyValue == propertyValue
+                          && args.OldValue == oldValue
+                          && args.NewValue == newValue)));
     }
   }
 }

@@ -48,20 +48,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       // no notification
     }
 
-    protected override void ScopedBegin ()
-    {
-      // no notification
-    }
-
     public override void Perform ()
     {
       _oppositeObjectNullSetter();
       ModifiedEndPoint.Touch();
-    }
-
-    protected override void ScopedEnd ()
-    {
-      // no notification
     }
 
     protected override void ScopedNotifyClientTransactionOfEnd ()

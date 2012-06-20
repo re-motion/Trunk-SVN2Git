@@ -139,31 +139,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Begin_TriggersEndPointDeleting ()
-    {
-      var eventReceiver = new DomainObjectCollectionEventReceiver (_orderItemsCollection);
-      Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.False);
-
-      _deleteOrder1Command.Begin ();
-
-      Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.True);
-      Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.False);
-    }
-
-    [Test]
-    public void End_TriggersEndPointDeleted ()
-    {
-      var eventReceiver = new DomainObjectCollectionEventReceiver (_orderItemsCollection);
-      Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.False);
-
-      _deleteOrder1Command.End ();
-
-      Assert.That (eventReceiver.HasDeletedEventBeenCalled, Is.True);
-      Assert.That (eventReceiver.HasDeletingEventBeenCalled, Is.False);
-    }
-
-
-    [Test]
     public void Perform_PerformsEndPointDelete ()
     {
       _deleteOrder1Command.Perform ();

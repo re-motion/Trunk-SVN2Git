@@ -92,62 +92,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void Begin ()
-    {
-      var relationChangingEventArgs = new List<RelationChangingEventArgs> ();
-      bool relationChangedCalled = false;
-
-      CollectionEventReceiver.Reset();
-
-      DomainObject.RelationChanging += (sender, args) => relationChangingEventArgs.Add (args);
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
-      _command.Begin ();
-
-      Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty);
-      Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null);
-
-      Assert.That (relationChangingEventArgs.Count, Is.EqualTo (2)); // operation was started
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
-
-      Assert.That (relationChangingEventArgs[0].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
-      Assert.That (relationChangingEventArgs[0].OldRelatedObject, Is.SameAs (_orderWithoutOrderItem));
-      Assert.That (relationChangingEventArgs[0].NewRelatedObject, Is.Null);
-
-      Assert.That (relationChangingEventArgs[1].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
-      Assert.That (relationChangingEventArgs[1].OldRelatedObject, Is.Null);
-      Assert.That (relationChangingEventArgs[1].NewRelatedObject, Is.SameAs (_order2));
-    }
-
-    [Test]
-    public void End ()
-    {
-      var relationChangedEventArgs = new List<RelationChangedEventArgs> ();
-      bool relationChangingCalled = false;
-
-      CollectionEventReceiver.Reset ();
-
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) => relationChangedEventArgs.Add (args);
-
-      _command.End ();
-
-      Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty);
-      Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null);
-
-      Assert.That (relationChangedEventArgs.Count, Is.EqualTo (2)); // operation was started
-      Assert.That (relationChangingCalled, Is.False); // operation was not finished
-
-      Assert.That (relationChangedEventArgs[0].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
-      Assert.That (relationChangedEventArgs[0].OldRelatedObject, Is.Null);
-      Assert.That (relationChangedEventArgs[0].NewRelatedObject, Is.SameAs (_order2));
-
-      Assert.That (relationChangedEventArgs[1].RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
-      Assert.That (relationChangedEventArgs[1].OldRelatedObject, Is.SameAs (_orderWithoutOrderItem));
-      Assert.That (relationChangedEventArgs[1].NewRelatedObject, Is.Null);
-    }
-
-    [Test]
     public void NotifyClientTransactionOfBegin ()
     {
       using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())

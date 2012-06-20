@@ -82,7 +82,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       this.EnsureCanExecute();
 
       // 4619: Moved rest to TopClientTransactionListener
-      _unloadDataCommand.Begin ();
     }
 
     public void Perform ()
@@ -96,8 +95,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       this.EnsureCanExecute ();
 
-      // 4619: Moved rest to TopClientTransactionListener
-      _unloadDataCommand.End ();
+      // 4619: Moved to TopClientTransactionListener
     }
 
     public void NotifyClientTransactionOfEnd ()

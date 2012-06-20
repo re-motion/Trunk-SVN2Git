@@ -17,6 +17,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -142,13 +143,35 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       base.PropertyValueChanged (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
     }
 
-    public override void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, Mapping.IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public override void RelationChanging (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
       base.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
+      clientTransaction.Execute (
+          () => domainObject.OnRelationChanging (new RelationChangingEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject)));
     }
 
-    public override void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, Mapping.IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public override void RelationChanged (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+      ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+
+      clientTransaction.Execute (
+            () => domainObject.OnRelationChanged (new RelationChangedEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject)));
       base.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 

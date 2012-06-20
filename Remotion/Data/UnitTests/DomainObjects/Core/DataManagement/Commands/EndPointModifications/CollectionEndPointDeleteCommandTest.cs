@@ -16,8 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Mapping;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -54,51 +56,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void NotifyClientTransactionOfBegin_NoEvents()
+    public void NotifyClientTransactionOfBegin()
     {
       TransactionEventSinkWithMock.ReplayMock();
       
       _command.NotifyClientTransactionOfBegin();
-    }
 
-    [Test]
-    public void NotifyClientTransactionOfEnd_NoEvents ()
-    {
-      TransactionEventSinkWithMock.ReplayMock ();
+      TransactionEventSinkWithMock.AssertWasNotCalledMock (
+          mock =>
+          mock.RelationChanging (
+              Arg<ClientTransaction>.Is.Anything,
+              Arg<DomainObject>.Is.Anything,
+              Arg<IRelationEndPointDefinition>.Is.Anything,
+              Arg<DomainObject>.Is.Anything,
+              Arg<DomainObject>.Is.Anything));
 
-      _command.NotifyClientTransactionOfEnd ();
-    }
-
-    [Test]
-    public void Begin ()
-    {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
-
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
-      _command.Begin ();
-
-      Assert.That (relationChangingCalled, Is.False); // object does not get a notification
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
       Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.True);
       Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.False);
     }
 
     [Test]
-    public void End ()
+    public void NotifyClientTransactionOfEnd ()
     {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
+      TransactionEventSinkWithMock.ReplayMock ();
 
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
+      _command.NotifyClientTransactionOfEnd ();
 
-      _command.End ();
+      TransactionEventSinkWithMock.AssertWasNotCalledMock (
+          mock =>
+          mock.RelationChanged (
+              Arg<ClientTransaction>.Is.Anything,
+              Arg<DomainObject>.Is.Anything,
+              Arg<IRelationEndPointDefinition>.Is.Anything,
+              Arg<DomainObject>.Is.Anything,
+              Arg<DomainObject>.Is.Anything));
 
-      Assert.That (relationChangingCalled, Is.False); // object does not get a notification
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
       Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.False);
       Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.True);
     }
@@ -106,12 +98,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Perform ()
     {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
-
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
       CollectionDataMock.BackToRecord ();
       CollectionDataMock.Expect (mock => mock.Clear());
       CollectionDataMock.Replay ();
@@ -122,8 +108,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       CollectionDataMock.VerifyAllExpectations ();
 
-      Assert.That (relationChangingCalled, Is.False); // operation was not started
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
       Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.False); // operation was not started
       Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.False); // operation was not finished
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);

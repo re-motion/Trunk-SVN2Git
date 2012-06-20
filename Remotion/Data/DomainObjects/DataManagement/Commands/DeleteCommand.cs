@@ -84,8 +84,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Begin ()
     {
-      // 4619: Rest moved to TopClientTransactionListener
-     _clientTransaction.Execute (() => _endPointDeleteCommands.Begin ());
+      // 4619: Moved to TopClientTransactionListener
     }
 
     public void Perform ()
@@ -100,8 +99,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void End ()
     {
-      // 4619: Rest moved to TopClientTransactionListener
-      _clientTransaction.Execute (() => _endPointDeleteCommands.End ());
+      // 4619: Moved to TopClientTransactionListener
     }
 
     public void NotifyClientTransactionOfEnd ()

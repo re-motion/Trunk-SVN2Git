@@ -24,6 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Database;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
 using DomainObjectIDs = Remotion.Data.UnitTests.DomainObjects.Factories.DomainObjectIDs;
 
@@ -112,6 +113,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
           .PropertyDefinition;
       Assertion.IsNotNull (propertyDefinition, "Property '{0}.{1}' is not a mapped property.", declaringType, shortPropertyName);
       return propertyDefinition;
+    }
+
+    protected IRelationEndPointDefinition GetSomeEndPointDefinition ()
+    {
+      return GetEndPointDefinition (typeof (Order), "OrderItems");
     }
 
     protected IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)

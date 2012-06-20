@@ -105,16 +105,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         RaiseClientTransactionBeginNotification (null, AddedObjects[i]);
     }
 
-    protected override void ScopedBegin ()
-    {
-      DomainObject domainObject = ModifiedEndPoint.GetDomainObject ();
-
-      for (int i = 0; i < RemovedObjects.Length; i++)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (ModifiedEndPoint.Definition, RemovedObjects[i], null));
-      for (int i = 0; i < AddedObjects.Length; i++)
-        domainObject.OnRelationChanging (new RelationChangingEventArgs (ModifiedEndPoint.Definition, null, AddedObjects[i]));
-    }
-
     public override void Perform ()
     {
       // After this operation, NewCollection will be associated with the end-point and ModifiedEndPoint.Collection will return NewCollection.
@@ -125,16 +115,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       ModifiedCollectionData.ReplaceContents (oldDataStrategyOfNewCollection);
       
       ModifiedEndPoint.Touch();
-    }
-
-    protected override void ScopedEnd ()
-    {
-      DomainObject domainObject = ModifiedEndPoint.GetDomainObject ();
-
-      for (int i = AddedObjects.Length - 1; i >= 0; i--)
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition, null, AddedObjects[i]));
-      for (int i = RemovedObjects.Length - 1; i >= 0; i--)
-        domainObject.OnRelationChanged (new RelationChangedEventArgs (ModifiedEndPoint.Definition, RemovedObjects[i], null));
     }
 
     protected override void ScopedNotifyClientTransactionOfEnd ()

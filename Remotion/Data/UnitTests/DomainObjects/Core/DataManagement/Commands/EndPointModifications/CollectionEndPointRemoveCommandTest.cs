@@ -60,63 +60,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     }
 
     [Test]
-    public void Begin ()
+    public void NotifyClientTransactionOfBegin ()
     {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
+      TransactionEventSinkWithMock
+          .ExpectMock (
+              mock => mock.RelationChanging (TestableClientTransaction, DomainObject, CollectionEndPoint.Definition, _removedRelatedObject, null))
+          .WhenCalled (
+              mock => Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.EqualTo (new[] { _removedRelatedObject }))); // collection got event first
 
-      DomainObject.RelationChanging += (sender, args) =>
-      {
-        relationChangingCalled = true;
+      _command.NotifyClientTransactionOfBegin ();
 
-        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
-        Assert.That (args.NewRelatedObject, Is.Null);
-        Assert.That (args.OldRelatedObject, Is.SameAs (_removedRelatedObject));
-
-        Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.EqualTo (new[] { _removedRelatedObject }));
-        // collection got event first
-      };
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
-      _command.Begin();
-
-      Assert.That (relationChangingCalled, Is.True); // operation was started
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
+      TransactionEventSinkWithMock.VerifyMock();
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
     }
 
     [Test]
-    public void End ()
+    public void NotifyClientTransactionOfEnd ()
     {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
+      TransactionEventSinkWithMock
+          .ExpectMock (
+              mock => mock.RelationChanged (TestableClientTransaction, DomainObject, CollectionEndPoint.Definition, _removedRelatedObject, null))
+          .WhenCalled (
+              mock => Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty)); // collection gets event later
 
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) =>
-      {
-        relationChangedCalled = true;
+      _command.NotifyClientTransactionOfEnd ();
 
-        Assert.That (args.RelationEndPointDefinition.PropertyName, Is.EqualTo (CollectionEndPoint.Definition.PropertyName));
-        Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // collection gets event later
-      };
-
-      _command.End();
-
+      TransactionEventSinkWithMock.VerifyMock ();
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.EqualTo (new[] { _removedRelatedObject })); // collection got event later
-      Assert.That (relationChangingCalled, Is.False); // operation was not started
-      Assert.That (relationChangedCalled, Is.True); // operation was finished
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started
     }
 
     [Test]
     public void Perform ()
     {
-      bool relationChangingCalled = false;
-      bool relationChangedCalled = false;
-
-      DomainObject.RelationChanging += (sender, args) => relationChangingCalled = true;
-      DomainObject.RelationChanged += (sender, args) => relationChangedCalled = true;
-
       CollectionDataMock.BackToRecord ();
       CollectionDataMock.Expect (mock => mock.Remove (_removedRelatedObject)).Return (true);
       CollectionDataMock.Replay ();
@@ -125,8 +101,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       CollectionDataMock.VerifyAllExpectations ();
 
-      Assert.That (relationChangingCalled, Is.False); // operation was not started
-      Assert.That (relationChangedCalled, Is.False); // operation was not finished
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);

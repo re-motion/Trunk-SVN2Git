@@ -107,32 +107,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void Begin ()
-    {
-      _unloadDataCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
-
-      _unloadDataCommandMock.Expect (mock => mock.Begin());
-      _mockRepository.ReplayAll ();
-
-      _unloadCommand.Begin();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void Begin_NonExecutable ()
-    {
-      _unloadDataCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new[] { _exception1 });
-
-      _mockRepository.ReplayAll ();
-
-      var exception = Assert.Throws<Exception> (_unloadCommand.Begin);
-      Assert.That (exception, Is.SameAs (_exception1));
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
     public void Perform ()
     {
       _unloadDataCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
@@ -156,32 +130,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _mockRepository.VerifyAll ();
     }
 
-    [Test]
-    public void End ()
-    {
-      _unloadDataCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
-
-      _unloadDataCommandMock.Expect (mock => mock.End ());
-      _mockRepository.ReplayAll ();
-
-      _unloadCommand.End ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void End_NonExecutable ()
-    {
-      _unloadDataCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (new[] { _exception1 });
-
-      _mockRepository.ReplayAll ();
-
-      var exception = Assert.Throws<Exception> (_unloadCommand.End);
-      Assert.That (exception, Is.SameAs (_exception1));
-
-      _mockRepository.VerifyAll ();
-    }
-    
     [Test]
     public void NotifyClientTransactionOfEnd ()
     {
