@@ -133,14 +133,15 @@ namespace Remotion.Mixins.MixerTools
 
         var classContexts = ClassContextFinder.FindClassContexts (configuration).ToArray ();
 
-        s_log.InfoFormat ("Generating types...");
+        s_log.Info ("Generating types...");
         foreach (var classContext in classContexts)
           Generate (classContext, builder);
 
-        s_log.InfoFormat ("Saving assemblies...");
+        s_log.Info ("Saving assemblies...");
         Save (builder);
       }
-      LogStatistics();
+
+      s_log.InfoFormat ("Successfully generated concrete types for {0} target classes.", _finishedTypes.Count);
     }
 
     private void Generate (ClassContext classContext, IConcreteTypeBuilder concreteTypeBuilder)
@@ -178,11 +179,6 @@ namespace Remotion.Mixins.MixerTools
         foreach (string path in paths)
           s_log.InfoFormat ("Generated assembly file {0}.", path);
       }
-    }
-
-    private void LogStatistics ()
-    {
-      s_log.Info (CodeGenerationStatistics.GetStatisticsString());
     }
 
     private void CleanupIfExists (string path)
