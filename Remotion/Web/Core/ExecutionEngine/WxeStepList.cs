@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
@@ -29,17 +29,12 @@ namespace Remotion.Web.ExecutionEngine
   [Serializable]
   public class WxeStepList : WxeStep
   {
-    /// <summary> ArrayList&lt;WxeStep&gt; </summary>
-    private ArrayList _steps;
+    private List<WxeStep> _steps = new List<WxeStep>();
 
-    private int _nextStep;
-    private int _lastExecutedStep;
+    private int _executingStep = -1;
 
     public WxeStepList ()
     {
-      _steps = new ArrayList ();
-      _nextStep = 0;
-      _lastExecutedStep = -1;
       InitializeSteps ();
     }
 
@@ -53,41 +48,40 @@ namespace Remotion.Web.ExecutionEngine
     /// </param>
     protected void Encapsulate (WxeStepList innerList)
     {
-      if (this._nextStep != 0 || this._lastExecutedStep != -1)
+      if (this.IsExecutionStarted)
         throw new InvalidOperationException ("Cannot encapsulate executing list.");
-      if (innerList._steps.Count > 0)
+      if (innerList.Count > 0)
         throw new ArgumentException ("List must be empty.", "innerList");
-      if (innerList._nextStep != 0 || innerList._lastExecutedStep != -1)
+      if (innerList.IsExecutionStarted)
         throw new ArgumentException ("Cannot encapsulate into executing list.", "innerList");
 
       innerList._steps = this._steps;
       foreach (WxeStep step in innerList._steps)
         step.SetParentStep (innerList);
 
-      this._steps = new ArrayList (1);
+      this._steps = new List<WxeStep> (1);
       this._steps.Add (innerList);
       innerList.SetParentStep (this);
     }
 
     public override void Execute (WxeContext context)
     {
-      for (int i = _nextStep; i < _steps.Count; ++i)
-      {
-        _lastExecutedStep = i;
-        WxeStep currentStep = this[i];
-        if (currentStep.IsAborted)
-          throw new InvalidOperationException ("Step " + i + " of " + this.GetType ().FullName + " is aborted.");
-        currentStep.Execute (context);
-        _nextStep = i + 1;
-      }
+      if (!IsExecutionStarted)
+        _executingStep = 0;
 
-      if (_steps.Count == 0)
-        _lastExecutedStep = 0;
+      while (_executingStep < _steps.Count)
+      {
+        var currentStep = _steps[_executingStep];
+        if (currentStep.IsAborted)
+          throw new InvalidOperationException ("Step " + _executingStep + " of " + this.GetType ().FullName + " is aborted.");
+        currentStep.Execute (context);
+        _executingStep++;
+      }
     }
 
     public WxeStep this[int index]
     {
-      get { return (WxeStep) _steps[index]; }
+      get { return _steps[index]; }
     }
 
     public int Count
@@ -116,12 +110,12 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNull ("steps", steps);
 
       for (int i = 0; i < steps.Count; i++)
-        Add ((WxeStep) steps._steps[i]);
+        Add (steps[i]);
     }
 
     public void Insert (int index, WxeStep step)
     {
-      if (_lastExecutedStep >= index)
+      if (_executingStep >= index)
         throw new ArgumentException ("Cannot insert step only after the last executed step.", "index");
       ArgumentUtility.CheckNotNull ("step", step);
       
@@ -133,8 +127,8 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        if (_lastExecutedStep < _steps.Count)
-          return ((WxeStep) _steps[_lastExecutedStep]).ExecutingStep;
+        if (_executingStep < _steps.Count)
+          return _steps[_executingStep].ExecutingStep;
         else
           return this;
       }
@@ -144,8 +138,8 @@ namespace Remotion.Web.ExecutionEngine
     {
       get
       {
-        if (_lastExecutedStep < _steps.Count && _lastExecutedStep >= 0)
-          return (WxeStep) _steps[_lastExecutedStep];
+        if (_executingStep < _steps.Count && IsExecutionStarted)
+          return _steps[_executingStep];
         else
           return null;
       }
@@ -153,7 +147,7 @@ namespace Remotion.Web.ExecutionEngine
 
     public bool IsExecutionStarted
     {
-      get { return _lastExecutedStep >= 0; }
+      get { return _executingStep >= 0; }
     }
 
     private void InitializeSteps ()
