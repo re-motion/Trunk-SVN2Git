@@ -88,7 +88,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new UnmappedItemException (message, ex);
       }
 
-      var isEntityQuery = GetQueryKind (sqlStatement.SelectProjection);
+      var selectedEntityTypeOrNull = GetSelectedEntityType (sqlStatement.SelectProjection);
       SqlCommandData sqlCommandData;
       try
       {
@@ -100,7 +100,7 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new NotSupportedException (message, ex);
       }
 
-      return new SqlQueryGeneratorResult (sqlCommandData, isEntityQuery);
+      return new SqlQueryGeneratorResult (sqlCommandData, selectedEntityTypeOrNull);
     }
 
     /// <summary>
@@ -127,15 +127,15 @@ namespace Remotion.Data.DomainObjects.Linq
       return commandBuilder.GetCommand ();
     }
 
-    private SqlQueryGeneratorResult.QueryKind GetQueryKind (Expression selectProjection)
+    private Type GetSelectedEntityType (Expression selectProjection)
     {
       var expression = selectProjection;
       while (expression is UnaryExpression)
         expression = ((UnaryExpression) expression).Operand;
       if (expression is SqlEntityExpression)
-        return SqlQueryGeneratorResult.QueryKind.EntityQuery;
+        return expression.Type;
 
-      return SqlQueryGeneratorResult.QueryKind.Other;
+      return null;
     }
   }
 }

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using Remotion.Linq.SqlBackend.SqlGeneration;
 
 namespace Remotion.Data.DomainObjects.Linq
@@ -23,19 +24,13 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public struct SqlQueryGeneratorResult
   {
-    public enum QueryKind
-    {
-      EntityQuery,
-      Other
-    } ;
-
     private readonly SqlCommandData _sqlCommand;
-    private readonly QueryKind _kind;
+    private readonly Type _selectedEntityTypeOrNull;
 
-    public SqlQueryGeneratorResult (SqlCommandData sqlCommand, QueryKind kind)
+    public SqlQueryGeneratorResult (SqlCommandData sqlCommand, Type selectedEntityTypeOrNull)
     {
       _sqlCommand = sqlCommand;
-      _kind = kind;
+      _selectedEntityTypeOrNull = selectedEntityTypeOrNull;
     }
 
     public SqlCommandData SqlCommand
@@ -43,9 +38,9 @@ namespace Remotion.Data.DomainObjects.Linq
       get { return _sqlCommand; }
     }
 
-    public QueryKind Kind
+    public Type SelectedEntityType
     {
-      get { return _kind; }
+      get { return _selectedEntityTypeOrNull; }
     }
   }
 }

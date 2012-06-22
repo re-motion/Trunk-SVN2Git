@@ -88,21 +88,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateSqlQuery_QueryKindEntity ()
     {
       var selectProjection = CreateEntityDefinitionExpression();
-      CheckCreateSqlQuery_QueryKind (SqlQueryGeneratorResult.QueryKind.EntityQuery, selectProjection);
+      CheckCreateSqlQuery_SelectedEntityType (typeof (Order), selectProjection);
     }
 
     [Test]
     public void CreateSqlQuery_QueryKindEntity_WrappedInUnaryExpressions ()
     {
       var selectProjection = Expression.Convert (Expression.Convert (CreateEntityDefinitionExpression (), typeof (object)), typeof (Order));
-      CheckCreateSqlQuery_QueryKind (SqlQueryGeneratorResult.QueryKind.EntityQuery, selectProjection);
+      CheckCreateSqlQuery_SelectedEntityType (typeof (Order), selectProjection);
     }
 
     [Test]
     public void CreateSqlQuery_QueryKindOther ()
     {
       var selectProjection = Expression.Constant (null);
-      CheckCreateSqlQuery_QueryKind (SqlQueryGeneratorResult.QueryKind.Other, selectProjection);
+      CheckCreateSqlQuery_SelectedEntityType (null, selectProjection);
     }
 
     [Test]
@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
               "Query 'from Order o in null select null' contains an unmapped item. Bla."));
     }
 
-    private void CheckCreateSqlQuery_QueryKind (SqlQueryGeneratorResult.QueryKind expectedQueryKind, Expression selectProjection)
+    private void CheckCreateSqlQuery_SelectedEntityType (Type expectedSelectedEntityType, Expression selectProjection)
     {
       _preparationStageMock
           .Stub (mock => mock.PrepareSqlStatement (_queryModel, null))
@@ -197,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       
       var result = _sqlQueryGenerator.CreateSqlQuery (_queryModel);
 
-      Assert.That (result.Kind, Is.EqualTo (expectedQueryKind));
+      Assert.That (result.SelectedEntityType, Is.EqualTo (expectedSelectedEntityType));
     }
 
     private SqlStatement CreateSqlStatement (Expression selectProjection = null)

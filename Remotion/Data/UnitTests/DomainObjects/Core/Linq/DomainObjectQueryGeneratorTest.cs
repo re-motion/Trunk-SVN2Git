@@ -117,7 +117,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateSequenceQuery_EntityQuery ()
     {
-      var fakeSqlQueryResult = CreateSqlQueryGeneratorResult ("SELECT x", queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery);
+      var fakeSqlQueryResult = CreateSqlQueryGeneratorResult ("SELECT x", selectedEntityType: typeof (Order));
       _sqlQueryGeneratorMock.Expect (mock => mock.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQueryResult);
 
       var result = _generator.CreateSequenceQuery<int> (
@@ -136,7 +136,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateSequenceQuery_EntityQuery_NoParameters ()
     {
       var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (
-        queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery, 
+        selectedEntityType: typeof (Order), 
         parameters: new CommandParameter[0]);
       _sqlQueryGeneratorMock.Expect (mock => mock.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQueryResult);
 
@@ -151,7 +151,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateSequenceQuery_EntityQuery_WithParameters ()
     {
       var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (
-          queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery, 
+          selectedEntityType: typeof (Order), 
           parameters: new[] { new CommandParameter ("p0", "paramval") });
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQueryResult);
 
@@ -163,7 +163,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateSequenceQuery_EntityQuery_WithFetchRequests ()
     {
-      var fakeSqlQuery = CreateSqlQueryGeneratorResult (queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery);
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Order));
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer o) => o.Ceo);
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateSequenceQuery_EntityQuery_WithFetchRequestWithSortExpression ()
     {
-      var fakeSqlQuery = CreateSqlQueryGeneratorResult (queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery);
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Order));
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchManyQueryModelBuilder ((Customer o) => o.Orders);
@@ -222,11 +222,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateSequenceQuery_EntityQuery_WithNestedFetchRequests ()
     {
-      var fakeSqlQuery = CreateSqlQueryGeneratorResult (queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery);
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Order));
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer c) => c.Ceo);
-      var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult ("FETCH");
+      var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Ceo), commandText: "FETCH");
       _sqlQueryGeneratorMock.Expect (mock => mock.CreateSqlQuery (Arg<QueryModel>.Is.Anything)).Return (fakeFetchSqlQueryResult).Repeat.Once ();
 
       var innerFetchRequest = CreateFetchOneRequest ((Ceo c) => c.Company);
@@ -255,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         "The member 'CtorCalled' is a 'Field', which cannot be fetched by this LINQ provider. Only properties can be fetched.")]
     public void CreateSequenceQuery_EntityQuery_WithInvalidFetchRequest_MemberIsNoPropertyInfo ()
     {
-      var fakeSqlQuery = CreateSqlQueryGeneratorResult (queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery);
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Order));
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer o) => o.CtorCalled);
@@ -269,7 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
         + "Fetching it is not supported by this LINQ provider.")]
     public void CreateSequenceQuery_EntityQuery_WithInvalidFetchRequest_MemberIsNoRelationProperty ()
     {
-      var fakeSqlQuery = CreateSqlQueryGeneratorResult (queryKind: SqlQueryGeneratorResult.QueryKind.EntityQuery);
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Order));
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer o) => o.Name);
@@ -284,7 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       Expression<Func<IDatabaseResultRow, int>> inMemoryProjection = row => CheckQueryResultRowAdapter (row, fakeQueryResultRow, 42);
       var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (
           "SELECT x",
-          queryKind: SqlQueryGeneratorResult.QueryKind.Other,
+          selectedEntityType: null,
           inMemoryProjectionParameter: inMemoryProjection.Parameters.Single(),
           inMemoryProjectionBody: inMemoryProjection.Body);
       _sqlQueryGeneratorMock.Expect (mock => mock.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQueryResult);
@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateSequenceQuery_NonEntityQuery_NoParameters ()
     {
-      var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (queryKind: SqlQueryGeneratorResult.QueryKind.Other, parameters: new CommandParameter[0]);
+      var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (selectedEntityType: null, parameters: new CommandParameter[0]);
       _sqlQueryGeneratorMock.Expect (mock => mock.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQueryResult);
 
       var result = _generator.CreateSequenceQuery<int> ("id", _customerClassDefinition, _customerQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ());
@@ -319,7 +319,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     public void CreateSequenceQuery_NonEntityQuery_WithParameters ()
     {
       var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (
-          queryKind: SqlQueryGeneratorResult.QueryKind.Other,
+          selectedEntityType: null,
           parameters: new[] { new CommandParameter ("p0", "paramval") });
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQueryResult);
 
@@ -332,7 +332,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage = "Only queries returning DomainObjects can perform eager fetching.")]
     public void CreateSequenceQuery_NonEntityQuery_WithFetchRequests ()
     {
-      var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (queryKind: SqlQueryGeneratorResult.QueryKind.Other);
+      var fakeSqlQueryResult = CreateSqlQueryGeneratorResult (selectedEntityType: null);
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQueryResult);
 
       var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer o) => o.Ceo);
@@ -342,12 +342,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private SqlQueryGeneratorResult CreateSqlQueryGeneratorResult (
         string commandText = null, 
         CommandParameter[] parameters = null,
-        SqlQueryGeneratorResult.QueryKind queryKind = SqlQueryGeneratorResult.QueryKind.EntityQuery,
+        Type selectedEntityType = null,
         ParameterExpression inMemoryProjectionParameter = null,
         Expression inMemoryProjectionBody = null)
     {
       var sqlCommandData = CreateSqlCommandData (commandText, parameters, inMemoryProjectionParameter, inMemoryProjectionBody);
-      return new SqlQueryGeneratorResult (sqlCommandData, queryKind);
+      return new SqlQueryGeneratorResult (sqlCommandData, selectedEntityType);
     }
 
     private SqlCommandData CreateSqlCommandData (

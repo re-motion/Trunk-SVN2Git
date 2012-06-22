@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.Linq
       var sqlQuery = _sqlQueryGenerator.CreateSqlQuery (queryModel);
       var command = sqlQuery.SqlCommand;
 
-      var queryType = sqlQuery.Kind == SqlQueryGeneratorResult.QueryKind.EntityQuery ? QueryType.Collection : QueryType.Custom;
+      var queryType = sqlQuery.SelectedEntityType != null ? QueryType.Collection : QueryType.Custom;
       var query = CreateQuery (id, classDefinition.StorageEntityDefinition.StorageProviderDefinition, command.CommandText, command.Parameters, queryType);
       
       if (queryType == QueryType.Collection)
@@ -146,11 +146,12 @@ namespace Remotion.Data.DomainObjects.Linq
     }
 
     private IEnumerable<Tuple<IRelationEndPointDefinition, IQuery>> CreateEagerFetchQueries<T> (
-        ClassDefinition classDefinition, IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
+        ClassDefinition previousClassDefinition,
+        IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
     {
       foreach (var fetchQueryModelBuilder in fetchQueryModelBuilders)
       {
-        var relationEndPointDefinition = GetEagerFetchRelationEndPointDefinition (fetchQueryModelBuilder.FetchRequest, classDefinition);
+        var relationEndPointDefinition = GetEagerFetchRelationEndPointDefinition (fetchQueryModelBuilder.FetchRequest, previousClassDefinition);
 
         // clone the fetch query model because we don't want to modify the source model of all inner requests
         var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel().Clone();
