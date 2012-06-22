@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Queries
           s_methodCallTransformerProvider.Value, 
           s_resultOperatorHandlerRegistry.Value,
           MappingConfiguration.Current);
-      var executor = new DomainObjectQueryExecutor (startingClassDefinition, queryGenerator);
+      var executor = new DomainObjectQueryExecutor (providerDefinition, queryGenerator);
       
       return CreateLinqQuery<T> (s_queryParser.Value, executor);
     }
@@ -175,8 +175,7 @@ namespace Remotion.Data.DomainObjects.Queries
 
       return queryExecutor.QueryGenerator.CreateSequenceQuery<T> (
           id,
-          queryExecutor.StartingClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
-          queryExecutor.StartingClassDefinition,
+          queryExecutor.StorageProviderDefinition,
           queryModel,
           fetchQueryModelBuilders);
     }

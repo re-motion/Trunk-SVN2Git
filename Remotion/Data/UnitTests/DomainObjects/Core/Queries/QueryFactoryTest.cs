@@ -217,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (result.Provider.Executor, Is.TypeOf (typeof (DomainObjectQueryExecutor)));
       
       var queryExecutor = (DomainObjectQueryExecutor) result.Provider.Executor;
-      Assert.That (queryExecutor.StartingClassDefinition, Is.SameAs (GetTypeDefinition (typeof (Order))));
+      Assert.That (queryExecutor.StorageProviderDefinition, Is.SameAs (TestDomainStorageProviderDefinition));
       var domainObjectQueryGenerator = (DomainObjectQueryGenerator) queryExecutor.QueryGenerator;
       var sqlQueryGenerator = (SqlQueryGenerator) domainObjectQueryGenerator.SqlQueryGenerator;
 

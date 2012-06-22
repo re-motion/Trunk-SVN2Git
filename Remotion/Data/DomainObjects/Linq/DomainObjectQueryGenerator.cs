@@ -102,7 +102,6 @@ namespace Remotion.Data.DomainObjects.Linq
     public virtual IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T> (
         string id,
         StorageProviderDefinition storageProviderDefinition,
-        ClassDefinition classDefinition,
         QueryModel queryModel,
         IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders)
     {
@@ -110,7 +109,6 @@ namespace Remotion.Data.DomainObjects.Linq
       ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("queryModel", queryModel);
       ArgumentUtility.CheckNotNull ("fetchQueryModelBuilders", fetchQueryModelBuilders);
-      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
       var sqlQuery = _sqlQueryGenerator.CreateSqlQuery (queryModel);
       var command = sqlQuery.SqlCommand;
@@ -192,7 +190,6 @@ namespace Remotion.Data.DomainObjects.Linq
         var fetchQuery = CreateSequenceQuery<T> (
             "<fetch query for " + fetchQueryModelBuilder.FetchRequest.RelationMember.Name + ">",
             previousClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
-            relationEndPointDefinition.GetOppositeClassDefinition(),
             fetchQueryModel,
             fetchQueryModelBuilder.CreateInnerBuilders()
            );

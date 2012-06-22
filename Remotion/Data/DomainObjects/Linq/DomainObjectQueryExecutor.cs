@@ -17,7 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Linq;
 using Remotion.Linq.EagerFetching;
@@ -30,21 +30,21 @@ namespace Remotion.Data.DomainObjects.Linq
   /// </summary>
   public class DomainObjectQueryExecutor : IQueryExecutor
   {
-    private readonly ClassDefinition _startingClassDefinition;
+    private readonly StorageProviderDefinition _storageProviderDefinition;
     private readonly IDomainObjectQueryGenerator _queryGenerator;
 
-    public DomainObjectQueryExecutor (ClassDefinition startingClassDefinition, IDomainObjectQueryGenerator queryGenerator)
+    public DomainObjectQueryExecutor (StorageProviderDefinition storageProviderDefinition, IDomainObjectQueryGenerator queryGenerator)
     {
-      ArgumentUtility.CheckNotNull ("startingClassDefinition", startingClassDefinition);
+      ArgumentUtility.CheckNotNull ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("queryGenerator", queryGenerator);
 
-      _startingClassDefinition = startingClassDefinition;
+      _storageProviderDefinition = storageProviderDefinition;
       _queryGenerator = queryGenerator;
     }
 
-    public ClassDefinition StartingClassDefinition
+    public StorageProviderDefinition StorageProviderDefinition
     {
-      get { return _startingClassDefinition; }
+      get { return _storageProviderDefinition; }
     }
 
     public IDomainObjectQueryGenerator QueryGenerator
@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.Linq
       if (fetchQueryModelBuilders.Any ())
         throw new NotSupportedException ("Scalar queries cannot perform eager fetching.");
 
-      var query = _queryGenerator.CreateScalarQuery<T> ("<dynamic query>", _startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition, queryModel);
+      var query = _queryGenerator.CreateScalarQuery<T> ("<dynamic query>", _storageProviderDefinition, queryModel);
       return query.Execute(ClientTransaction.Current.QueryManager);
     }
 
@@ -120,8 +120,7 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var query = _queryGenerator.CreateSequenceQuery<T> (
           "<dynamic query>",
-          _startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
-          _startingClassDefinition,
+          _storageProviderDefinition,
           queryModel,
           fetchQueryModelBuilders);
       return query.Execute (ClientTransaction.Current.QueryManager); 
