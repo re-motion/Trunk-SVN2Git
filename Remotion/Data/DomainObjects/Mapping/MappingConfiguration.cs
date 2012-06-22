@@ -27,7 +27,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
-  public class MappingConfiguration
+  public class MappingConfiguration : IMappingConfiguration
   {
     #region Obsolete
 

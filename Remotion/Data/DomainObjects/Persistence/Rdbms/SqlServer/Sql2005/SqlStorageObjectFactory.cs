@@ -18,6 +18,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
@@ -103,19 +104,21 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
     public virtual IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (
         StorageProviderDefinition storageProviderDefinition,
         IMethodCallTransformerProvider methodCallTransformerProvider,
-        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
+        IMappingConfiguration mappingConfiguration)
     {
       var rdmsStorageProviderDefinition = 
           ArgumentUtility.CheckNotNullAndType<RdbmsProviderDefinition> ("storageProviderDefinition", storageProviderDefinition);
       ArgumentUtility.CheckNotNull ("methodCallTransformerProvider", methodCallTransformerProvider);
       ArgumentUtility.CheckNotNull ("resultOperatorHandlerRegistry", resultOperatorHandlerRegistry);
+      ArgumentUtility.CheckNotNull ("mappingConfiguration", mappingConfiguration);
 
       var storageTypeInformationProvider = CreateStorageTypeInformationProvider (rdmsStorageProviderDefinition);
       var sqlQueryGenerator = CreateSqlQueryGenerator (rdmsStorageProviderDefinition, methodCallTransformerProvider, resultOperatorHandlerRegistry);
       var typeConversionProvider = TypeConversionProvider.Create();
 
       return ObjectFactory.Create<DomainObjectQueryGenerator> (
-          ParamList.Create (sqlQueryGenerator, typeConversionProvider, storageTypeInformationProvider));
+          ParamList.Create (sqlQueryGenerator, typeConversionProvider, storageTypeInformationProvider, mappingConfiguration));
     }
 
 

@@ -267,14 +267,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 4890")]
     public void EagerFetching_WithDifferentEntityThanInMainFromClause ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
                    where o.OrderNumber == 1
                    select o.Customer).FetchMany (c => c.Orders);
 
-      CheckQueryResult (query, DomainObjectIDs.Order1);
+      CheckQueryResult (query, DomainObjectIDs.Customer1);
 
       CheckDataContainersRegistered (DomainObjectIDs.Customer1, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);
       CheckCollectionRelationRegistered (DomainObjectIDs.Customer1, "Orders", false, DomainObjectIDs.Order1, DomainObjectIDs.OrderWithoutOrderItem);

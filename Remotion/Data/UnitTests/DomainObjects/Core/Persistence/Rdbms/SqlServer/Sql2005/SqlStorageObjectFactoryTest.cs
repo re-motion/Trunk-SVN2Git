@@ -18,7 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DataReaders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
@@ -32,6 +34,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.SchemaGeneration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Tracing;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Development.UnitTesting;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
@@ -207,14 +210,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       IRdbmsStorageObjectFactory testableSqlProviderFactory = new TestableSqlStorageObjectFactory (
           null, _storageTypeInformationProviderStub, null, null, null, null, null, null, _sqlQueryGeneratorStub, null, null);
+      var mappingConfiguration = MockRepository.GenerateStub<IMappingConfiguration>();
 
       var result = testableSqlProviderFactory.CreateDomainObjectQueryGenerator (
-          _rdbmsProviderDefinition, _methodCallTransformerProviderStub, _resultOpertatorHandlerRegistryStub);
+          _rdbmsProviderDefinition, 
+          _methodCallTransformerProviderStub, 
+          _resultOpertatorHandlerRegistryStub,
+          mappingConfiguration);
 
       Assert.That (result, Is.TypeOf (typeof (DomainObjectQueryGenerator)));
       var resultAsDomainObjectQueryGenerator = (DomainObjectQueryGenerator) result;
       Assert.That (resultAsDomainObjectQueryGenerator.SqlQueryGenerator, Is.SameAs (_sqlQueryGeneratorStub));
       Assert.That (resultAsDomainObjectQueryGenerator.StorageTypeInformationProvider, Is.SameAs (_storageTypeInformationProviderStub));
+      Assert.That (resultAsDomainObjectQueryGenerator.MappingConfiguration, Is.SameAs (mappingConfiguration));
     }
 
     [Test]

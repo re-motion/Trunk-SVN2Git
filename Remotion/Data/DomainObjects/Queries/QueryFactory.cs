@@ -76,7 +76,11 @@ namespace Remotion.Data.DomainObjects.Queries
       var startingClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (T));
       var providerDefinition = startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
 
-      var queryGenerator = providerDefinition.Factory.CreateDomainObjectQueryGenerator (providerDefinition, s_methodCallTransformerProvider.Value, s_resultOperatorHandlerRegistry.Value);
+      var queryGenerator = providerDefinition.Factory.CreateDomainObjectQueryGenerator (
+          providerDefinition, 
+          s_methodCallTransformerProvider.Value, 
+          s_resultOperatorHandlerRegistry.Value,
+          MappingConfiguration.Current);
       var executor = new DomainObjectQueryExecutor (startingClassDefinition, queryGenerator);
       
       return CreateLinqQuery<T> (s_queryParser.Value, executor);

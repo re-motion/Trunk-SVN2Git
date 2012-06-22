@@ -57,7 +57,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _typeConversionProvider = TypeConversionProvider.Create();
       _storageTypeInformationProviderStub = MockRepository.GenerateStub<IStorageTypeInformationProvider>();
 
-      _generator = new DomainObjectQueryGenerator (_sqlQueryGeneratorMock, _typeConversionProvider, _storageTypeInformationProviderStub);
+      _generator = new DomainObjectQueryGenerator (
+          _sqlQueryGeneratorMock, 
+          _typeConversionProvider, 
+          _storageTypeInformationProviderStub, 
+          Configuration);
 
       _customerClassDefinition = GetTypeDefinition (typeof (Customer));
       _customerQueryModel = QueryModelObjectMother.Create (Expression.Constant (null, typeof (Customer)));
@@ -168,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateSequenceQuery_EntityQuery_WithFetchRequests ()
     {
-      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Order));
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Customer));
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((Customer o) => o.Ceo);
@@ -193,7 +197,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     [Test]
     public void CreateSequenceQuery_EntityQuery_WithFetchRequestWithSortExpression ()
     {
-      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Order));
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (Customer));
       _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
 
       var fetchQueryModelBuilder = CreateFetchManyQueryModelBuilder ((Customer o) => o.Orders);

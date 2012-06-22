@@ -237,6 +237,7 @@
     <Compile Include="Linq\ScalarResultRowAdapter.cs" />
     <Compile Include="Linq\SqlQueryGenerator.cs" />
     <Compile Include="Linq\SqlQueryGeneratorResult.cs" />
+    <Compile Include="Mapping\IMappingConfiguration.cs" />
     <Compile Include="Mapping\MappingConfigurationValidationHelper.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelValidatorFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\QueryResultRow.cs" />

@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Model;
@@ -48,7 +49,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return new SqlStorageObjectFactory ().CreatePersistenceModelLoader (storageProviderDefinition, storageProviderDefinitionFinder);
     }
 
-    public IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (StorageProviderDefinition storageProviderDefinition, IMethodCallTransformerProvider methodCallTransformerProvider, ResultOperatorHandlerRegistry resultOperatorHandlerRegistry)
+    public IDomainObjectQueryGenerator CreateDomainObjectQueryGenerator (
+        StorageProviderDefinition storageProviderDefinition,
+        IMethodCallTransformerProvider methodCallTransformerProvider,
+        ResultOperatorHandlerRegistry resultOperatorHandlerRegistry,
+        IMappingConfiguration mappingConfiguration)
     {
       throw new NotImplementedException();
     }
