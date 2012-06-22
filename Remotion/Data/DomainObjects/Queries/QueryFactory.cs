@@ -170,7 +170,11 @@ namespace Remotion.Data.DomainObjects.Queries
       var fetchQueryModelBuilders = FetchFilteringQueryModelVisitor.RemoveFetchRequestsFromQueryModel (queryModel);
 
       return queryExecutor.QueryGenerator.CreateSequenceQuery<T> (
-          id, queryExecutor.StartingClassDefinition, queryModel, fetchQueryModelBuilders);
+          id,
+          queryExecutor.StartingClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
+          queryExecutor.StartingClassDefinition,
+          queryModel,
+          fetchQueryModelBuilders);
     }
 
 

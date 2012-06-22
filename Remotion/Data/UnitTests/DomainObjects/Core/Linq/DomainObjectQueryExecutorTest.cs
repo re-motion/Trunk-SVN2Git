@@ -22,6 +22,8 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Linq;
@@ -116,7 +118,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       _queryGeneratorMock
           .Expect (mock => mock.CreateSequenceQuery<Order> (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+              "<dynamic query>",
+              TestDomainStorageProviderDefinition,
+              _orderClassDefinition,
+              _someQueryModel,
+              Enumerable.Empty<FetchQueryModelBuilder>()))
           .Return (_collectionExecutableQueryMock);
 
       var fakeResult = new[] { _someOrder };
@@ -160,7 +166,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
       _queryGeneratorMock
           .Expect (
               mock => mock.CreateSequenceQuery<Order> (
-                  "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder>()))
+                  "<dynamic query>",
+                  TestDomainStorageProviderDefinition,
+                  _orderClassDefinition,
+                  _someQueryModel,
+                  Enumerable.Empty<FetchQueryModelBuilder>()))
           .Return (_collectionExecutableQueryMock);
 
       var fakeResult = new[] { _someOrder };
@@ -179,7 +189,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       _queryGeneratorMock
           .Expect (mock => mock.CreateSequenceQuery<Order> (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+              "<dynamic query>",
+              TestDomainStorageProviderDefinition,
+              _orderClassDefinition,
+              _someQueryModel,
+              Enumerable.Empty<FetchQueryModelBuilder>()))
           .Return (_collectionExecutableQueryMock);
 
       var fakeResult = new[] { _someOrder, DomainObjectMother.CreateFakeObject<Order>() };
@@ -193,7 +207,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
       _queryGeneratorMock
           .Expect (mock => mock.CreateSequenceQuery<Order> (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+              "<dynamic query>",
+              TestDomainStorageProviderDefinition,
+              _orderClassDefinition,
+              _someQueryModel,
+              Enumerable.Empty<FetchQueryModelBuilder>()))
           .Return (_collectionExecutableQueryMock);
 
       var fakeResult = new Order[0];
@@ -210,7 +228,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     {
        _queryGeneratorMock
           .Expect (mock => mock.CreateSequenceQuery<Order> (
-              "<dynamic query>", _orderClassDefinition, _someQueryModel, Enumerable.Empty<FetchQueryModelBuilder> ()))
+              "<dynamic query>",
+              TestDomainStorageProviderDefinition,
+              _orderClassDefinition,
+              _someQueryModel,
+              Enumerable.Empty<FetchQueryModelBuilder>()))
           .Return (_collectionExecutableQueryMock);
 
       var fakeResult = new Order[0];
@@ -243,6 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           .Expect (
               mock => mock.CreateSequenceQuery<T> (
                   Arg<string>.Is.Anything,
+                  Arg<StorageProviderDefinition>.Is.Anything,
                   Arg<ClassDefinition>.Is.Anything,
                   Arg.Is (queryModel),
                   Arg<IEnumerable<FetchQueryModelBuilder>>.Is.Anything))
@@ -251,7 +274,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
           {
             Assert.That (queryModel.ResultOperators, Is.EqualTo (new[] { nonTrailingFetchRequest, someResultOperator }));
 
-            var builders = ((IEnumerable<FetchQueryModelBuilder>) mi.Arguments[3]).ToArray ();
+            var builders = ((IEnumerable<FetchQueryModelBuilder>) mi.Arguments[4]).ToArray ();
             Assert.That (builders, Has.Length.EqualTo (2));
             CheckFetchQueryModelBuilder (builders[0], trailingFetchRequest2, queryModel, 3);
             CheckFetchQueryModelBuilder (builders[1], trailingFetchRequest1, queryModel, 2);

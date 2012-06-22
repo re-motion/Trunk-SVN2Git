@@ -118,7 +118,12 @@ namespace Remotion.Data.DomainObjects.Linq
 
       var fetchQueryModelBuilders = RemoveTrailingFetchRequests (queryModel);
 
-      var query = _queryGenerator.CreateSequenceQuery<T> ("<dynamic query>", _startingClassDefinition, queryModel, fetchQueryModelBuilders);
+      var query = _queryGenerator.CreateSequenceQuery<T> (
+          "<dynamic query>",
+          _startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition,
+          _startingClassDefinition,
+          queryModel,
+          fetchQueryModelBuilders);
       return query.Execute (ClientTransaction.Current.QueryManager); 
     }
 

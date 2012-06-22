@@ -168,6 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       Assert.That (query.Parameters.Count, Is.EqualTo (1));
       Assert.That (query.ID, Is.EqualTo ("<dynamico queryo>"));
       Assert.That (query.QueryType, Is.EqualTo (QueryType.Collection));
+      Assert.That (query.StorageProviderDefinition, Is.EqualTo (TestDomainStorageProviderDefinition));
     }
 
     [Test]

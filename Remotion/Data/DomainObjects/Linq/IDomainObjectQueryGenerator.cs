@@ -36,7 +36,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// Creates an <see cref="IExecutableQuery{T}"/> object for a given <see cref="ClassDefinition"/> based on the given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="id">The identifier for the resulting query.</param>
-    /// <param name="storageProviderDefinition">The <see cref="StorageProvider"/> for the query</param>
+    /// <param name="storageProviderDefinition">The <see cref="StorageProvider"/> for the query.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> describing the query.</param>
     /// <returns>
     /// An <see cref="IExecutableQuery{T}"/> object corresponding to the given <paramref name="queryModel"/> that returns a scalar value when it is executed.
@@ -47,6 +47,7 @@ namespace Remotion.Data.DomainObjects.Linq
     /// Creates an <see cref="IExecutableQuery{T}"/> collection for a given <see cref="ClassDefinition"/> based on the given <see cref="QueryModel"/>.
     /// </summary>
     /// <param name="id">The identifier for the resulting query.</param>
+    /// <param name="storageProviderDefinition">The <see cref="StorageProvider"/> for the query.</param>
     /// <param name="classDefinition">The <see cref="ClassDefinition"/> to use for creating the query. This is used to obtain the 
     /// <see cref="StorageProvider"/> for the query, and it is used to analyze the relation properties for eager fetching.</param>
     /// <param name="queryModel">The <see cref="QueryModel"/> describing the query.</param>
@@ -58,6 +59,7 @@ namespace Remotion.Data.DomainObjects.Linq
     IExecutableQuery<IEnumerable<T>> CreateSequenceQuery<T>
         (
         string id,
+        StorageProviderDefinition storageProviderDefinition, 
         ClassDefinition classDefinition,
         QueryModel queryModel,
         IEnumerable<FetchQueryModelBuilder> fetchQueryModelBuilders);
