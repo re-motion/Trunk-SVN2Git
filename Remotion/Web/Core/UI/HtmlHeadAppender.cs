@@ -22,6 +22,7 @@ using System.Web;
 using Remotion.Collections;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.Web.UI
@@ -307,24 +308,6 @@ namespace Remotion.Web.UI
       RegisterJavaScriptInclude (key, new StaticResourceUrl (src));
     }
 
-    public void RegisterUtilitiesJavaScriptInclude ()
-    {
-      string jqueryKey = typeof (HtmlHeadContents).FullName + "_JQuery";
-      var jqueryFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery-1.6.4.js");
-      RegisterJavaScriptInclude (jqueryKey, jqueryFileUrl);
-
-      string utilitiesKey = typeof (HtmlHeadContents).FullName + "_Utilities";
-      var utilitiesScripFileUrl = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "Utilities.js");
-      RegisterJavaScriptInclude (utilitiesKey, utilitiesScripFileUrl);
-    }
-
-    public void RegisterJQueryIFrameShimJavaScriptInclude ()
-    {
-      string key = typeof (HtmlHeadContents).FullName + "_JQueryBgiFrames";
-      var href = ResourceUrlFactory.CreateResourceUrl (typeof (HtmlHeadContents), ResourceType.Html, "jquery.IFrameShim.js");
-      RegisterJavaScriptInclude (key, href);
-    }
-
     /// <summary> Registers a <see cref="HtmlHeadElement"/>. </summary>
     /// <remarks>
     ///   All calls to <see cref="RegisterHeadElement"/> must be completed before
@@ -391,11 +374,6 @@ namespace Remotion.Web.UI
           _handler = new WeakReference (handler);
         }
       }
-    }
-
-    private IResourceUrlFactory ResourceUrlFactory
-    {
-      get { return SafeServiceLocator.Current.GetInstance<IResourceUrlFactory>(); }
     }
   }
 }
