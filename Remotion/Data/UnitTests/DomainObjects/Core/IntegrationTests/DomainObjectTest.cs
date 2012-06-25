@@ -1007,19 +1007,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       DataContainer dataContainer = orderItem.InternalDataContainer;
 
-      dataContainer.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product", "newProduct");
+      var propertyDefinition = GetPropertyDefinition (typeof (OrderItem), "Product");
+      dataContainer.SetValue (propertyDefinition, "newProduct");
 
-      Assert.AreNotEqual (
-          "newProduct",
-          dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"].OriginalValue);
+      Assert.AreNotEqual ("newProduct", dataContainer.GetValue (propertyDefinition, ValueAccess.Original));
       Assert.AreEqual ("newProduct", orderItem.Product);
 
       TestableClientTransaction.Commit();
       orderItem.Product = "newProduct2";
 
-      Assert.AreEqual (
-          "newProduct",
-          dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"].OriginalValue);
+      Assert.AreEqual ("newProduct", dataContainer.GetValue (propertyDefinition, ValueAccess.Original));
       Assert.AreEqual ("newProduct2", orderItem.Product);
     }
 

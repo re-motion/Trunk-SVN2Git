@@ -63,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee1);
       computerWithoutEmployee.Employee = employee;
 
-			Assert.AreEqual (employee.ID, computerWithoutEmployee.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
+      Assert.AreEqual (employee.ID, computerWithoutEmployee.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
 
       Assert.AreSame (employee, computerWithoutEmployee.Employee);
       Assert.AreSame (computerWithoutEmployee, employee.Computer);
@@ -76,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = Computer.GetObject (DomainObjectIDs.Computer4);
       employeeWithoutComputer.Computer = computer;
 
-			Assert.AreEqual (employeeWithoutComputer.ID, computer.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
+      Assert.AreEqual (employeeWithoutComputer.ID, computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
 
       Assert.AreSame (computer, employeeWithoutComputer.Computer);
       Assert.AreSame (employeeWithoutComputer, computer.Employee);
@@ -89,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = employee.Computer;
       computer.Employee = null;
 
-			Assert.IsNull (computer.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
+      Assert.IsNull (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
 
       Assert.IsNull (computer.Employee);
       Assert.IsNull (employee.Computer);
@@ -102,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Computer computer = employee.Computer;
       employee.Computer = null;
 
-			Assert.IsNull (computer.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
+			Assert.IsNull (computer.Properties[typeof (Computer), "Employee"].GetRelatedObjectID());
 
       Assert.IsNull (employee.Computer);
       Assert.IsNull (computer.Employee);

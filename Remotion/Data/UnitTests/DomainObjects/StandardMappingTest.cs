@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     protected void SetPropertyValue (DataContainer dataContainer, Type declaringType, string shortPropertyName, object value)
     {
-      dataContainer.SetValue (GetPropertyIdentifier (declaringType, shortPropertyName), value);
+      dataContainer.SetValue (GetPropertyDefinition (declaringType, shortPropertyName), value);
     }
 
     protected string GetPropertyIdentifier (Type declaringType, string shortPropertyName)

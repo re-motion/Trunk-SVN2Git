@@ -21,9 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.TestDomain;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -34,14 +32,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   [TestFixture]
   public class DataContainerTest : ClientTransactionBaseTest
   {
-    private PropertyValue _additionalPropertyValue;
-
     private DataContainer _newDataContainer;
     private DataContainer _existingDataContainer;
     private DataContainer _deletedDataContainer;
     private DataContainer _discardedDataContainer;
     private ObjectID _invalidObjectID;
     private IDataContainerEventListener _eventListenerMock;
+
+    private PropertyDefinition _orderNumberProperty;
+    private PropertyDefinition _nonOrderProperty;
 
     public override void SetUp ()
     {
@@ -65,11 +64,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _discardedDataContainer = DataContainer.CreateNew (_invalidObjectID);
       _discardedDataContainer.Discard();
 
-      var orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
-      var additionalPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (orderClass, "Name");
-      _additionalPropertyValue = new PropertyValue (additionalPropertyDefinition, "Arthur Dent");
-
       _eventListenerMock = MockRepository.GenerateMock<IDataContainerEventListener>();
+
+      _orderNumberProperty = GetPropertyDefinition (typeof (Order), "OrderNumber");
+      _nonOrderProperty = GetPropertyDefinition (typeof (OrderItem), "Order");
+    }
+
+        [Test]
+    public void CreateNew_IncludesStorageClassPersistentProperties ()
+    {
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
+      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Persistent");
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (0));
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void CreateNew_IncludesStorageClassTransactionProperties ()
+    {
+      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
+      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Transaction");
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (0));
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (0));
     }
 
     [Test]
@@ -87,6 +103,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer.CreateNew (id);
     }
 
+        [Test]
+    public void CreateForExisting_IncludesStorageClassPersistentProperties_WithLookupValue ()
+    {
+      DataContainer dc = DataContainer.CreateForExisting (
+          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          1,
+          delegate { return 2; });
+      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Persistent");
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (2));
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (2));
+    }
+
+    [Test]
+    public void CreateForExisting_IncludesStorageClassTransactionProperties_WithLookupValue ()
+    {
+      DataContainer dc = DataContainer.CreateForExisting (
+          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
+          1,
+          delegate { return 2; });
+      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Transaction");
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (2));
+      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (2));
+    }
+
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
         "The ClassDefinition 'Remotion.Data.DomainObjects.Mapping.ClassDefinition: Order' "
@@ -100,34 +140,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       MappingConfiguration.SetCurrent (StandardConfiguration.Instance.GetMappingConfiguration ());
       Assert.That (id.ClassDefinition, Is.Not.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
       DataContainer.CreateForExisting(id, null, pd => pd.DefaultValue);
-    }
-
-    [Test]
-    public void NewDataContainerStates ()
-    {
-      _newDataContainer.PropertyValues.Add (_additionalPropertyValue);
-
-      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
-      Assert.That (_newDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
-
-      _newDataContainer["Name"] = "Zaphod Beeblebrox";
-
-      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
-      Assert.That (_newDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
-    }
-
-    [Test]
-    public void ExistingDataContainerStates ()
-    {
-      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-
-      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
-
-      _existingDataContainer["Name"] = "Zaphod Beeblebrox";
-
-      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
-      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
     }
 
     [Test]
@@ -150,241 +162,310 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void PropertyRead_WithoutListener ()
+    public void GetValue_SetValue ()
     {
-      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-      Assert.That (_existingDataContainer.EventListener, Is.Null);
+      var valueBeforeChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current);
+      Assert.That (valueBeforeChange, Is.EqualTo (0));
+      var originalValueBeforeChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original);
+      Assert.That (originalValueBeforeChange, Is.EqualTo (0));
 
-      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
+      _existingDataContainer.SetValue (_orderNumberProperty, 17);
+
+      var valueAfterChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current);
+      Assert.That (valueAfterChange, Is.EqualTo (17));
+      var originalValueAfterChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original);
+      Assert.That (originalValueAfterChange, Is.EqualTo (0));
     }
 
     [Test]
-    public void PropertyRead_WithListener ()
+    public void GetValue_RaisesEvent ()
     {
-      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
       _existingDataContainer.SetEventListener (_eventListenerMock);
 
-      using (_eventListenerMock.GetMockRepository ().Ordered ())
-      {
-        _eventListenerMock.Expect (mock => mock.PropertyValueReading (_existingDataContainer, _additionalPropertyValue, ValueAccess.Current));
-        _eventListenerMock.Expect (mock => mock.PropertyValueRead (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", ValueAccess.Current));
+      _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original);
 
-        _eventListenerMock.Expect (mock => mock.PropertyValueReading (_existingDataContainer, _additionalPropertyValue, ValueAccess.Original));
-        _eventListenerMock.Expect (mock => mock.PropertyValueRead (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", ValueAccess.Original));
-      }
-
-      Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
-      Assert.That (_existingDataContainer.PropertyValues["Name"].OriginalValue, Is.EqualTo ("Arthur Dent"));
-
-      _eventListenerMock.VerifyAllExpectations ();
+      _eventListenerMock.AssertWasCalled (
+          mock => mock.PropertyValueReading (
+              _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], ValueAccess.Original));
+      _eventListenerMock.AssertWasCalled (
+          mock => mock.PropertyValueRead (
+              _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, ValueAccess.Original));
     }
 
     [Test]
-    public void PropertyChange_WithoutListener ()
+    public void GetValue_RaisesEvent_Cancellation ()
     {
-      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-      Assert.That (_existingDataContainer.EventListener, Is.Null);
+      _existingDataContainer.SetEventListener (_eventListenerMock);
 
-      _existingDataContainer["Name"] = "Zaphod Beeblebrox";
+      var exception = new Exception();
+      _eventListenerMock
+          .Expect (mock => mock.PropertyValueReading (_existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], ValueAccess.Original))
+          .Throw (exception);
+      
+      Assert.That (() => _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Throws.Exception.SameAs (exception));
+      _eventListenerMock.AssertWasNotCalled (
+          mock => mock.PropertyValueRead (
+              Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<object>.Is.Anything, Arg<ValueAccess>.Is.Anything));
+    }
+
+    [Test]
+    public void GetValue_Discarded ()
+    {
+      _existingDataContainer.Discard();
+
+      Assert.That (() => _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Throws.TypeOf<ObjectInvalidException>());
+    }
+
+    [Test]
+    public void GetValue_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.GetValue (_nonOrderProperty, ValueAccess.Current), 
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void SetValue_RaisesEvent ()
+    {
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+
+      _eventListenerMock
+          .Expect (
+              mock => mock.PropertyValueChanging (
+                  _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, 17))
+          .WhenCalled (mi => Assert.That (_existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0)));
+      _eventListenerMock
+          .Expect (
+              mock => mock.PropertyValueChanged (
+                  _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, 17))
+          .WhenCalled (mi => Assert.That (_existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (17)));
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 17);
+
+      _eventListenerMock.VerifyAllExpectations();
+      Assert.That (_existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (17));
+    }
+
+    [Test]
+    public void SetValue_RaisesEvent_Cancellation ()
+    {
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+
+      var exception = new Exception();
+      _eventListenerMock
+          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, 17))
+          .Throw (exception);
+
+      Assert.That (() => _existingDataContainer.SetValue (_orderNumberProperty, 17), Throws.Exception.SameAs (exception));
+
+      _eventListenerMock.AssertWasNotCalled (
+          mock => mock.PropertyValueChanged (
+              Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<object>.Is.Anything, Arg<object>.Is.Anything));
+
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0));
+    }
+
+    [Test]
+    public void SetValue_Discarded ()
+    {
+      _existingDataContainer.Discard ();
+
+      Assert.That (() => _existingDataContainer.SetValue (_orderNumberProperty, 17), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void SetValue_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.SetValue (_nonOrderProperty, 17), 
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void GetValueWithoutEvents ()
+    {
+      var valueBeforeChange = _existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current);
+      Assert.That (valueBeforeChange, Is.EqualTo (0));
+      var originalValueBeforeChange = _existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Original);
+      Assert.That (originalValueBeforeChange, Is.EqualTo (0));
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 17);
+
+      var valueAfterChange = _existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current);
+      Assert.That (valueAfterChange, Is.EqualTo (17));
+      var originalValueAfterChange = _existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Original);
+      Assert.That (originalValueAfterChange, Is.EqualTo (0));
+    }
+
+    [Test]
+    public void GetValueWithoutEvents_RaisesNoEvent ()
+    {
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+
+      _existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Original);
+
+      _eventListenerMock.AssertWasNotCalled (
+          mock => mock.PropertyValueReading (Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<ValueAccess>.Is.Anything));
+      _eventListenerMock.AssertWasNotCalled (
+          mock => mock.PropertyValueRead (
+              Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<object>.Is.Anything, Arg<ValueAccess>.Is.Anything));
+    }
+
+    [Test]
+    public void GetValueWithoutEvents_Discarded ()
+    {
+      _existingDataContainer.Discard ();
+
+      Assert.That (
+          () => _existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current), Throws.TypeOf<ObjectInvalidException>());
+    }
+
+    [Test]
+    public void GetValueWithoutEvents_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.GetValueWithoutEvents (_nonOrderProperty, ValueAccess.Current), 
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void HasValueBeenTouched ()
+    {
+      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.False);
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 0);
+
+      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.True);
+    }
+
+    [Test]
+    public void HasValueBeenTouched_Discarded ()
+    {
+      _existingDataContainer.Discard ();
+
+      Assert.That (() => _existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void HasValueBeenTouched_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.HasValueBeenTouched (_nonOrderProperty), 
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void TouchValue ()
+    {
+      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.False);
+
+      _existingDataContainer.TouchValue (_orderNumberProperty);
+
+      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.True);
+    }
+
+    [Test]
+    public void TouchValue_Discarded ()
+    {
+      _existingDataContainer.Discard ();
+
+      Assert.That (() => _existingDataContainer.TouchValue (_orderNumberProperty), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void TouchValue_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.TouchValue (_nonOrderProperty), 
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void HasValueChanged ()
+    {
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 1);
+
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 0);
+
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+    }
+
+    [Test]
+    public void HasValueChanged_Discarded ()
+    {
+      _existingDataContainer.Discard ();
+
+      Assert.That (() => _existingDataContainer.HasValueChanged (_orderNumberProperty), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void HasValueChanged_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.HasValueChanged (_nonOrderProperty), 
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void PropertyChange_StateUpdate ()
+    {
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 5);
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 0);
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
     }
 
     [Test]
-    public void PropertyChange_WithListener ()
+    public void PropertyChange_StateUpdate_WithNewDataContainer ()
     {
-      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-      _existingDataContainer.SetEventListener (_eventListenerMock);
+      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
+      Assert.That (_newDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.Not.EqualTo (17));
 
-      _eventListenerMock
-          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
-          .WhenCalled (
-              mi =>
-              {
-                Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
-                Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
-              });
-      _eventListenerMock
-          .Expect (mock => mock.PropertyValueChanged (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
-          .WhenCalled (mi =>
-          {
-            Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
-            Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Zaphod Beeblebrox"));
-          });
+      _newDataContainer.SetValue (_orderNumberProperty, 17);
 
-      _existingDataContainer["Name"] = "Zaphod Beeblebrox";
+      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
 
-      _eventListenerMock.VerifyAllExpectations ();
+      _newDataContainer.SetValue (_orderNumberProperty, 0);
 
-      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
-    }
-
-    [Test]
-    public void PropertyChange_WithCancellation ()
-    {
-      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-      _existingDataContainer.SetEventListener (_eventListenerMock);
-
-      _eventListenerMock
-          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _additionalPropertyValue, "Arthur Dent", "Zaphod Beeblebrox"))
-          .Throw (new EventReceiverCancelException());
-
-      try
-      {
-        _existingDataContainer["Name"] = "Zaphod Beeblebrox";
-        Assert.Fail ("EventReceiverCancelException should be raised.");
-      }
-      catch (EventReceiverCancelException)
-      {
-        Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
-        Assert.That (_existingDataContainer["Name"], Is.EqualTo ("Arthur Dent"));
-      }
-
-      _eventListenerMock.VerifyAllExpectations ();
-    }
-
-    [Test]
-    public void PropertyChange_UpdatesState ()
-    {
-      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-
-      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
-
-      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
+      Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
     public void PropertyChange_RaisesStateUpdated ()
     {
-      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-
-      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5, StateType.Changed);
+      CheckStateNotification (_existingDataContainer, dc => dc.SetValue (_orderNumberProperty, 5), StateType.Changed);
+      CheckStateNotification (_newDataContainer, dc => dc.SetValue (_orderNumberProperty, 5), StateType.New);
     }
 
     [Test]
     public void PropertyChange_ChangeBack_RaisesStateUpdated ()
     {
-      var dataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-
-      dataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
-      CheckStateNotification (dataContainer, dc => dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 0, StateType.Unchanged);
-    }
-
-    [Test]
-    public void PropertyChange_UpdatesState_After_PropertyValueEvent ()
-    {
-      var dc = DataContainer.CreateForExisting (DomainObjectIDs.Order1, "ts", pd => pd.DefaultValue);
-      Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-
-      var propertyChangingCalled = false;
-      var propertyChangedCalled = false;
-
-      // It is documented that the DataContainer's state has not been updated in PropertyValueCollection.PropertyChanged:
-
-      dc.PropertyValues.PropertyChanging += delegate
-      {
-        propertyChangingCalled = true;
-        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-      };
-      dc.PropertyValues.PropertyChanged += delegate
-      {
-        propertyChangedCalled = true;
-        Assert.That (dc.State, Is.EqualTo (StateType.Unchanged));
-      };
-
-      dc.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 5;
-
-      Assert.That (dc.State, Is.EqualTo (StateType.Changed));
-      Assert.That (propertyChangingCalled, Is.True);
-      Assert.That (propertyChangedCalled, Is.True);
-    }
-
-    [Test]
-    public void GetObjectID ()
-    {
-      DataContainer dataContainer = TestDataContainerObjectMother.CreateOrder1DataContainer();
-      var id = (ObjectID) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer");
-      Assert.That (id, Is.Not.Null);
-    }
-
-    [Test]
-    public void GetNullObjectID ()
-    {
-      var id = new ObjectID (typeof (Order), Guid.NewGuid());
-      var container = DataContainer.CreateNew (id);
-
-      Assert.That (container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"), Is.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentException),
-        ExpectedMessage = "Property 'NonExistingPropertyName' does not exist.\r\nParameter name: propertyName")]
-    public void GetObjectIDForNonExistingProperty ()
-    {
-      DataContainer container = TestDataContainerObjectMother.CreateOrder1DataContainer();
-      container.GetValue ("NonExistingPropertyName");
-    }
-
-    [Test]
-    public void ChangePropertyBackToOriginalValue ()
-    {
-      DataContainer container = TestDataContainerObjectMother.CreateOrder1DataContainer();
-
-      container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
-      Assert.That (container.State, Is.EqualTo (StateType.Changed));
-      Assert.That (container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"), Is.EqualTo (42));
-
-      container["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 1;
-      Assert.That (container.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (container.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"), Is.EqualTo (1));
-    }
-
-    [Test]
-    public void SetValue ()
-    {
-      _existingDataContainer.PropertyValues.Add (_additionalPropertyValue);
-      _existingDataContainer.SetValue ("Name", "Zaphod Beeblebrox");
-
-      Assert.That (_existingDataContainer.GetValue ("Name"), Is.EqualTo ("Zaphod Beeblebrox"));
-    }
-
-    [Test]
-    public void GetBytes ()
-    {
-      DataContainer dataContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer();
-
-      ResourceManager.IsEqualToImage1 (
-          (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
-      Assert.That (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"), Is.Null);
-    }
-
-    [Test]
-    public void SetBytes ()
-    {
-      DataContainer dataContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer();
-
-      dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"] = new byte[0];
-      ResourceManager.IsEmptyImage (
-          (byte[]) dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
-
-      dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = null;
-      Assert.That (dataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"), Is.Null);
+      _existingDataContainer.SetValue (_orderNumberProperty, 5);
+      CheckStateNotification (_existingDataContainer, dc => dc.SetValue (_orderNumberProperty, 0), StateType.Unchanged);
     }
 
     [Test]
     public void SetTimestamp ()
     {
-      DataContainer dataContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer();
-      dataContainer.SetTimestamp (10);
+      _existingDataContainer.SetTimestamp (10);
 
-      Assert.That (dataContainer.Timestamp, Is.EqualTo (10));
+      Assert.That (_existingDataContainer.Timestamp, Is.EqualTo (10));
     }
 
     [Test]
     public void Clone_SetsID ()
     {
-      var original = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
+      var original = _existingDataContainer;
+      Assert.That (original.ID, Is.Not.EqualTo (DomainObjectIDs.Order2));
 
       var clone = original.Clone (DomainObjectIDs.Order2);
       Assert.That (clone.ID, Is.EqualTo (DomainObjectIDs.Order2));
@@ -393,10 +474,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Clone_CopiesState ()
     {
-      var originalNew = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var originalNew = _newDataContainer;
       Assert.That (originalNew.State, Is.EqualTo (StateType.New));
 
-      var originalExisting = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      var originalExisting = _existingDataContainer;
       Assert.That (originalExisting.State, Is.EqualTo (StateType.Unchanged));
 
       var clonedNew = originalNew.Clone (DomainObjectIDs.Order3);
@@ -409,7 +490,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Clone_CopiesTimestamp ()
     {
-      var original = DataContainer.CreateNew (DomainObjectIDs.Order1);
+      var original = _newDataContainer;
       original.SetTimestamp (12);
 
       var clone = original.Clone (DomainObjectIDs.Order2);
@@ -419,25 +500,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Clone_CopiesPropertyValues ()
     {
-      var original = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      var original = _existingDataContainer;
 
       var clone = original.Clone (DomainObjectIDs.Order2);
 
       Assert.That (
-          clone.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Definition).ToArray(),
-          Is.EqualTo (original.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Definition).ToArray()));
+          clone.ClassDefinition.GetPropertyDefinitions().Select (pd => clone.GetValue (pd, ValueAccess.Current)),
+          Is.EqualTo (clone.ClassDefinition.GetPropertyDefinitions().Select (pd => original.GetValue (pd, ValueAccess.Current))));
       Assert.That (
-          clone.PropertyValues.Cast<PropertyValue>().Select (pv => pv.OriginalValue).ToArray(),
-          Is.EqualTo (original.PropertyValues.Cast<PropertyValue>().Select (pv => pv.OriginalValue).ToArray()));
-      Assert.That (
-          clone.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Value).ToArray(),
-          Is.EqualTo (original.PropertyValues.Cast<PropertyValue>().Select (pv => pv.Value).ToArray()));
+          clone.ClassDefinition.GetPropertyDefinitions().Select (pd => clone.GetValue (pd, ValueAccess.Original)),
+          Is.EqualTo (clone.ClassDefinition.GetPropertyDefinitions().Select (pd => original.GetValue (pd, ValueAccess.Original))));
     }
 
     [Test]
     public void Clone_CopiesHasBeenMarkedChanged ()
     {
-      var original = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
+      var original = _existingDataContainer;
       original.MarkAsChanged();
       Assert.That (original.HasBeenMarkedChanged, Is.True);
 
@@ -448,8 +526,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Clone_CopiesHasBeenChangedFlag ()
     {
-      var original = DataContainer.CreateForExisting (DomainObjectIDs.Order2, null, pd => pd.DefaultValue);
-      original.PropertyValues[typeof (Order) + ".OrderNumber"].Value = 10;
+      var original = _existingDataContainer;
+      original.SetValue (_orderNumberProperty, 10);
       Assert.That (original.State, Is.EqualTo (StateType.Changed));
 
       var clone = original.Clone (DomainObjectIDs.Order2);
@@ -459,23 +537,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void Clone_DomainObjectEmpty ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
-      var original = order.InternalDataContainer;
-      Assert.That (original.DomainObject, Is.SameAs (order));
+      var original = _existingDataContainer;
+      original.SetDomainObject (DomainObjectMother.CreateFakeObject (original.ID));
+      Assert.That (original.HasDomainObject, Is.True);
 
       var clone = original.Clone (DomainObjectIDs.Order1);
-      Assert.That (PrivateInvoke.GetNonPublicField (clone, "_domainObject"), Is.Null);
+      Assert.That (clone.HasDomainObject, Is.False);
     }
 
     [Test]
     public void Clone_TransactionEmpty ()
     {
-      var order = Order.GetObject (DomainObjectIDs.Order1);
-      var original = order.InternalDataContainer;
-      Assert.That (original.ClientTransaction, Is.SameAs (TestableClientTransaction));
+      var original = _existingDataContainer;
+      original.SetDomainObject (DomainObjectMother.CreateFakeObject (original.ID));
+      TestableClientTransaction.DataManager.RegisterDataContainer (original);
+      Assert.That (original.IsRegistered, Is.True);
 
       var clone = original.Clone (DomainObjectIDs.Order1);
-      Assert.That (PrivateInvoke.GetNonPublicField (clone, "_clientTransaction"), Is.Null);
+      Assert.That (clone.IsRegistered, Is.False);
     }
 
     [Test]
@@ -505,25 +584,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void CommitState_CommitsPropertyValues ()
     {
-      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
-      propertyValue.Value = 10;
+      _existingDataContainer.SetValue (_orderNumberProperty, 10);
 
-      Assert.That (propertyValue.HasChanged, Is.True);
-      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
-      Assert.That (propertyValue.Value, Is.EqualTo (10));
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (10));
 
       _existingDataContainer.CommitState ();
 
-      Assert.That (propertyValue.HasChanged, Is.False);
-      Assert.That (propertyValue.OriginalValue, Is.EqualTo (10));
-      Assert.That (propertyValue.Value, Is.EqualTo (10));
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (10));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (10));
     }
 
     [Test]
     public void CommitState_ResetsChangedFlag ()
     {
-      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
-      propertyValue.Value = 10;
+      _existingDataContainer.SetValue (_orderNumberProperty, 10);
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
 
@@ -575,25 +652,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void RollbackState_RollsbackPropertyValues ()
     {
-      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
-      propertyValue.Value = 10;
+      _existingDataContainer.SetValue (_orderNumberProperty, 10);
 
-      Assert.That (propertyValue.HasChanged, Is.True);
-      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
-      Assert.That (propertyValue.Value, Is.EqualTo (10));
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (10));
 
       _existingDataContainer.RollbackState ();
 
-      Assert.That (propertyValue.HasChanged, Is.False);
-      Assert.That (propertyValue.OriginalValue, Is.EqualTo (0));
-      Assert.That (propertyValue.Value, Is.EqualTo (0));
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0));
     }
 
     [Test]
     public void RollbackState_ResetsChangedFlag ()
     {
-      var propertyValue = _existingDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
-      propertyValue.Value = 10;
+      _existingDataContainer.SetValue (_orderNumberProperty, 10);
 
       Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
 
@@ -674,17 +749,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void Discard_DiscardsPropertyValues ()
-    {
-      var propertyValue = _newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
-      Assert.That (propertyValue.IsDiscarded, Is.False);
-
-      _newDataContainer.Discard ();
-
-      Assert.That (propertyValue.IsDiscarded, Is.True);
-    }
-
-    [Test]
     public void Discard_DisassociatesFromEventListener ()
     {
       _newDataContainer.SetEventListener (_eventListenerMock);
@@ -700,11 +764,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      Assert.That (newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value, Is.Not.EqualTo (1));
+      Assert.That (newDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.Not.EqualTo (1));
 
       newDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
-      Assert.That (newDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value, Is.EqualTo (1));
+      Assert.That (newDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (1));
     }
 
     [Test]
@@ -712,11 +776,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var sourceDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket2);
-      Assert.That (newDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.Not.EqualTo (DomainObjectIDs.Order1));
+      var propertyDefinition = GetPropertyDefinition (typeof (OrderTicket), "Order");
+      Assert.That (newDataContainer.GetValue (propertyDefinition, ValueAccess.Current), Is.Not.EqualTo (DomainObjectIDs.Order1));
 
       newDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
-      Assert.That (newDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].Value, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (newDataContainer.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
@@ -736,7 +801,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order1);
-      targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
+      targetDataContainer.SetValue (_orderNumberProperty, 10);
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
       targetDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
@@ -747,8 +812,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void SetDataFromSubTransaction_RaisesStateUpdated_Changed ()
     {
-      var sourceDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
-      sourceDataContainer[GetPropertyIdentifier (typeof (Order), "OrderNumber")] = 12;
+      var sourceDataContainer = _existingDataContainer;
+      sourceDataContainer.SetValue (_orderNumberProperty, 12);
 
       var targetDataContainer = DataContainer.CreateForExisting (DomainObjectIDs.Order1, null, pd => pd.DefaultValue);
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Unchanged));
@@ -761,7 +826,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var targetDataContainer = sourceDataContainer.Clone (DomainObjectIDs.Order2);
-      targetDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"].Value = 10;
+      targetDataContainer.SetValue (_orderNumberProperty, 10);
       Assert.That (targetDataContainer.State, Is.EqualTo (StateType.Changed));
 
       CheckStateNotification (targetDataContainer, dc => dc.SetPropertyDataFromSubTransaction (sourceDataContainer), StateType.Unchanged);
@@ -894,100 +959,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateNew_DoesNotIncludesStorageClassNoneProperties ()
-    {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("None")), Is.False);
-    }
-
-    [Test]
-    public void CreateNew_IncludesStorageClassPersistentProperties ()
-    {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Persistent")), Is.True);
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].Value, Is.EqualTo (0));
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].OriginalValue, Is.EqualTo (0));
-    }
-
-    [Test]
-    public void CreateNew_IncludesStorageClassTransactionProperties ()
-    {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (0));
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].OriginalValue, Is.EqualTo (0));
-    }
-
-    [Test]
-    public void CreateNew_HasSamePropertyOrderAsClassDefinition ()
-    {
-      DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
-
-      int index = 0;
-      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions())
-      {
-        if (propertyDefinition.StorageClass != StorageClass.None)
-        {
-          Assert.That (dc.PropertyValues[index].Definition, Is.SameAs (propertyDefinition));
-          index++;
-        }
-      }
-    }
-
-    [Test]
-    public void CreateForExisting_DoesNotIncludesStorageClassNoneProperties ()
-    {
-      DataContainer dc = DataContainer.CreateForExisting (
-          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
-          1,
-          delegate { return 2; });
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("None")), Is.False);
-    }
-
-    [Test]
-    public void CreateForExisting_IncludesStorageClassPersistentProperties_WithLookupValue ()
-    {
-      DataContainer dc = DataContainer.CreateForExisting (
-          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
-          1,
-          delegate { return 2; });
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Persistent")), Is.True);
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].Value, Is.EqualTo (2));
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Persistent")].OriginalValue, Is.EqualTo (2));
-    }
-
-    [Test]
-    public void CreateForExisting_IncludesStorageClassTransactionProperties_WithLookupValue ()
-    {
-      DataContainer dc = DataContainer.CreateForExisting (
-          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
-          1,
-          delegate { return 2; });
-      Assert.That (dc.PropertyValues.Contains (GetStorageClassPropertyName ("Transaction")), Is.True);
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].Value, Is.EqualTo (2));
-      Assert.That (dc.PropertyValues[GetStorageClassPropertyName ("Transaction")].OriginalValue, Is.EqualTo (2));
-    }
-
-    [Test]
-    public void CreateExisting_HasSamePropertyOrderAsClassDefinition ()
-    {
-      DataContainer dc = DataContainer.CreateForExisting (
-          new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()),
-          1,
-          delegate { return 2; });
-
-      int index = 0;
-      foreach (PropertyDefinition propertyDefinition in dc.ClassDefinition.GetPropertyDefinitions())
-      {
-        if (propertyDefinition.StorageClass != StorageClass.None)
-        {
-          Assert.That (dc.PropertyValues[index].Definition, Is.SameAs (propertyDefinition));
-          index++;
-        }
-      }
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "This DataContainer has not been associated with a DomainObject yet.")]
     public void DomainObject_NoneSet ()
     {
@@ -1076,11 +1047,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var dc = DataContainer.CreateNew (DomainObjectIDs.Order1);
       DataContainerTestHelper.SetClientTransaction (dc, TestableClientTransaction);
       DataContainerTestHelper.SetClientTransaction (dc, TestableClientTransaction);
-    }
-
-    private string GetStorageClassPropertyName (string shortName)
-    {
-      return ReflectionMappingHelper.GetPropertyName (typeof (ClassWithPropertiesHavingStorageClassAttribute), shortName);
     }
 
     private void CheckStateNotification (DataContainer dataContainer, Action<DataContainer> action, StateType expectedState)

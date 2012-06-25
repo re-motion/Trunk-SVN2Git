@@ -120,7 +120,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Assert.AreEqual (StateType.Unchanged, _oldCustomerOfNewOrder.State);
       Assert.AreEqual (StateType.Changed, _oldOrder.State);
       Assert.AreEqual (StateType.New, newOrder.State);
-			Assert.AreEqual (_customer.ID, newOrder.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
+      Assert.AreEqual (_customer.ID, newOrder.Properties[typeof (Order), "Customer"].GetRelatedObjectID ());
 
       Assert.AreSame (newOrder, _customer.Orders[replaceIndex]);
       Assert.AreSame (_customer, newOrder.Customer);

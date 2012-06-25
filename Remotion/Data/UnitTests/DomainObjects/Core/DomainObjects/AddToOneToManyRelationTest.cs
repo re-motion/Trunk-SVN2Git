@@ -230,7 +230,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _supervisor.Subordinates.Add (_subordinate);
 
-      Assert.AreEqual (_supervisor.ID, _subordinate.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
+      Assert.AreEqual (_supervisor.ID, _subordinate.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID());
     }
 
     [Test]

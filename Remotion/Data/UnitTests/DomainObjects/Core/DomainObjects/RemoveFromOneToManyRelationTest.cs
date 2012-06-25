@@ -229,7 +229,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _supervisor.Subordinates.Remove (_subordinate);
 
-      Assert.IsNull ((ObjectID) _subordinate.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
+      Assert.IsNull (_subordinate.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
     }
 
     [Test]

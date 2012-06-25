@@ -23,7 +23,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.DbCommandBuilders;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.Factories;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
@@ -65,7 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var dataContainerNew2 = DataContainer.CreateNew (DomainObjectIDs.Computer2);
       SetPropertyValue (dataContainerNew2, typeof (Computer), "SerialNumber", "654321");
 
-      dataContainerNew2.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "654321");
       var dataContainerNewWithoutRelations = DataContainer.CreateNew (DomainObjectIDs.Official1);
 
       var insertDbCommandBuilderNew1 = MockRepository.GenerateStub<IDbCommandBuilder>();
@@ -148,10 +146,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     public void CreateForSave_Changed ()
     {
       var dataContainerChangedSerialNumber = DataContainer.CreateForExisting (DomainObjectIDs.Computer1, null, pd => pd.DefaultValue);
-      dataContainerChangedSerialNumber.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.SerialNumber", "123456");
+      SetPropertyValue (dataContainerChangedSerialNumber, typeof (Computer), "SerialNumber", "123456");
       var dataContainerChangedEmployee = DataContainer.CreateForExisting (DomainObjectIDs.Computer2, null, pd => pd.DefaultValue);
-      dataContainerChangedEmployee.SetValue (
-          "Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee", DomainObjectIDs.Employee2);
+      SetPropertyValue (dataContainerChangedEmployee, typeof (Computer), "Employee", DomainObjectIDs.Employee2);
       var dataContainerChangedMarkedAsChanged = DataContainer.CreateForExisting (DomainObjectIDs.Computer3, null, pd => pd.DefaultValue);
       dataContainerChangedMarkedAsChanged.MarkAsChanged();
 

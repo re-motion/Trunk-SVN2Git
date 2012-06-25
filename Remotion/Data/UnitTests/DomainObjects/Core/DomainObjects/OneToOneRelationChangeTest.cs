@@ -368,8 +368,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _order.OrderTicket = _newOrderTicket;
 
-      Assert.IsNull (_oldOrderTicket.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
-      Assert.AreEqual (_order.ID, _newOrderTicket.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.IsNull (_oldOrderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID());
+      Assert.AreEqual (_order.ID, _newOrderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID ());
 
       Assert.AreSame (_newOrderTicket, _order.OrderTicket);
       Assert.AreSame (_order, _newOrderTicket.Order);
@@ -382,8 +382,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       _newOrderTicket.Order = _order;
 
-      Assert.IsNull (_oldOrderTicket.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
-      Assert.AreEqual (_order.ID, _newOrderTicket.InternalDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"));
+      Assert.IsNull (_oldOrderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID ());
+      Assert.AreEqual (_order.ID, _newOrderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID ());
 
       Assert.AreSame (_order, _newOrderTicket.Order);
       Assert.AreSame (_newOrderTicket, _order.OrderTicket);

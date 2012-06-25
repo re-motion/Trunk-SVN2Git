@@ -582,11 +582,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     public void SaveNullForeignKey ()
     {
       DataContainer savedComputerContainer = LoadDataContainer (DomainObjectIDs.Computer1);
-      savedComputerContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"] = null;
+      var propertyDefinition = GetPropertyDefinition (typeof (Computer), "Employee");
+      savedComputerContainer.SetValue (propertyDefinition, null);
       Provider.Save (new[] { savedComputerContainer });
 
       DataContainer reloadedComputerContainer = ReloadDataContainer (DomainObjectIDs.Computer1);
-      Assert.IsNull (reloadedComputerContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"));
+      Assert.IsNull (reloadedComputerContainer.GetValue (propertyDefinition, ValueAccess.Current));
     }
 
     [Test]

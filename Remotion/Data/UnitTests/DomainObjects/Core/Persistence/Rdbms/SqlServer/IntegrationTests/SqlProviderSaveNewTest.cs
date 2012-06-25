@@ -240,8 +240,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var newDataContainer = CreateNewDataContainer (typeof (Employee));
       var existingDataContainer = LoadDataContainer (DomainObjectIDs.Employee1);
 
-      newDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"] = "Supervisor";
-      existingDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"] = newDataContainer.ID;
+      newDataContainer.SetValue (GetPropertyDefinition (typeof (Employee), "Name"), "Supervisor");
+      var supervisorProperty = GetPropertyDefinition (typeof (Employee), "Supervisor");
+      existingDataContainer.SetValue (supervisorProperty, newDataContainer.ID);
 
       Provider.Save (new[] { newDataContainer, existingDataContainer });
 
@@ -249,25 +250,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       DataContainer existingSubordinateContainer = ReloadDataContainer (existingDataContainer.ID);
 
       Assert.IsNotNull (newSupervisorContainer);
-      Assert.AreEqual (
-          newSupervisorContainer.ID, existingSubordinateContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"));
+      Assert.AreEqual (newSupervisorContainer.ID, existingSubordinateContainer.GetValue (supervisorProperty, ValueAccess.Current));
     }
 
     [Test]
     public void NewObjectRelatesToExisting ()
     {
       var newDataContainer = CreateNewDataContainer (typeof (Order));
-      newDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"] = new DateTime (2005, 12, 24);
-      newDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"] = DomainObjectIDs.Customer1;
-      newDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"] = DomainObjectIDs.Official1;
+      var deliveryDateProperty = GetPropertyDefinition (typeof (Order), "DeliveryDate");
+      var customerProperty = GetPropertyDefinition (typeof (Order), "Customer");
+      var officialProperty = GetPropertyDefinition (typeof (Order), "Official");
+      newDataContainer.SetValue (deliveryDateProperty, new DateTime (2005, 12, 24));
+      newDataContainer.SetValue (customerProperty, DomainObjectIDs.Customer1);
+      newDataContainer.SetValue (officialProperty, DomainObjectIDs.Official1);
 
       Provider.Save (new[] { newDataContainer });
 
       DataContainer loadedDataContainer = ReloadDataContainer (newDataContainer.ID);
 
       Assert.IsNotNull (loadedDataContainer);
-      Assert.AreEqual (DomainObjectIDs.Customer1, loadedDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
-      Assert.AreEqual (DomainObjectIDs.Official1, loadedDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"));
+      Assert.AreEqual (DomainObjectIDs.Customer1, loadedDataContainer.GetValue (customerProperty, ValueAccess.Current));
+      Assert.AreEqual (DomainObjectIDs.Official1, loadedDataContainer.GetValue (officialProperty, ValueAccess.Current));
     }
 
     [Test]
@@ -276,8 +279,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var newCustomerDataContainer = CreateNewDataContainer (typeof (Customer));
       var newOrderDataContainer = CreateNewDataContainer (typeof (Order));
 
-      newOrderDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"] = new DateTime (2005, 12, 24);
-      newOrderDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"] = newCustomerDataContainer.ID;
+      var deliveryDateProperty = GetPropertyDefinition (typeof (Order), "DeliveryDate");
+      var customerProperty = GetPropertyDefinition (typeof (Order), "Customer");
+      newOrderDataContainer.SetValue (deliveryDateProperty, new DateTime (2005, 12, 24));
+      newOrderDataContainer.SetValue (customerProperty, newCustomerDataContainer.ID);
 
       Provider.Save (new[] { newOrderDataContainer, newCustomerDataContainer });
 
@@ -286,7 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.IsNotNull (reloadedCustomerContainer);
       Assert.IsNotNull (reloadedOrderContainer);
-      Assert.AreEqual (reloadedCustomerContainer.ID, reloadedOrderContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"));
+      Assert.AreEqual (reloadedCustomerContainer.ID, reloadedOrderContainer.GetValue (customerProperty, ValueAccess.Current));
     }
 
     [Test]
@@ -296,12 +301,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       ObjectID newID = dataContainer.ID;
 
       SetDefaultValues (dataContainer);
-      dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = null;
+      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithAllDataTypes), "NullableBinaryProperty");
+      dataContainer.SetValue (propertyDefinition, null);
 
       Provider.Save (new[] { dataContainer });
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
-      Assert.IsNull (reloadedDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
+      Assert.IsNull (reloadedDataContainer.GetValue (propertyDefinition, ValueAccess.Current));
     }
 
     [Test]
@@ -311,13 +317,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       ObjectID newID = dataContainer.ID;
 
       SetDefaultValues (dataContainer);
-      dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"] = new byte[0];
+      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithAllDataTypes), "NullableBinaryProperty");
+      dataContainer.SetValue (propertyDefinition, new byte[0]);
 
       Provider.Save (new[] { dataContainer });
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
-      ResourceManager.IsEmptyImage (
-          (byte[]) reloadedDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"));
+      ResourceManager.IsEmptyImage ((byte[]) reloadedDataContainer.GetValue (propertyDefinition, ValueAccess.Current));
     }
 
     [Test]
@@ -327,13 +333,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       ObjectID newID = dataContainer.ID;
 
       SetDefaultValues (dataContainer);
-      dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"] = ResourceManager.GetImageLarger1MB();
+      var propertyDefinition = GetPropertyDefinition (typeof (ClassWithAllDataTypes), "BinaryProperty");
+      dataContainer.SetValue (propertyDefinition, ResourceManager.GetImageLarger1MB ());
 
       Provider.Save (new[] { dataContainer });
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
-      ResourceManager.IsEqualToImageLarger1MB (
-          (byte[]) reloadedDataContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"));
+      ResourceManager.IsEqualToImageLarger1MB ((byte[]) reloadedDataContainer.GetValue (propertyDefinition, ValueAccess.Current));
     }
 
     [Test]

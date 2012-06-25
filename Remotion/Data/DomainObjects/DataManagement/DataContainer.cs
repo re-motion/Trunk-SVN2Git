@@ -164,42 +164,62 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenMarkedChanged; }
     }
 
-    /// <summary>
-    /// Gets the value of the <see cref="PropertyValue"/> specified by <paramref name="propertyName"/>.
-    /// </summary>
-    /// <param name="propertyName">The name of the <see cref="PropertyValue"/>. Must not be <see langword="null"/>.</param>
-    /// <returns>The value of the <see cref="PropertyValue"/>.</returns>
-    /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
-    /// <exception cref="System.ArgumentException">The given <paramref name="propertyName"/> does not exist in the data container.</exception>
-    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
-    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
-    public object GetValue (string propertyName)
+    public object GetValue (PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      CheckNotDiscarded();
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      CheckNotDiscarded ();
 
-      return this[propertyName];
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      if (valueAccess == ValueAccess.Current)
+        return propertyValue.Value;
+      else
+        return propertyValue.OriginalValue;
     }
 
-    /// <summary>
-    /// Sets the value of the <see cref="PropertyValue"/> specified by <paramref name="propertyName"/>.
-    /// </summary>
-    /// <param name="propertyName">The name of the <see cref="PropertyValue"/>. Must not be <see langword="null"/>.</param>
-    /// <param name="value">The value the <see cref="PropertyValue"/> is set to.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
-    /// <exception cref="System.ArgumentException">The given <paramref name="propertyName"/> does not exist in the data container.</exception>
-    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
-    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
-    public void SetValue (string propertyName, object value)
+    public void SetValue (PropertyDefinition propertyDefinition, object value)
     {
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       CheckNotDiscarded();
 
-      this[propertyName] = value;
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      propertyValue.Value = value;
     }
 
+    public object GetValueWithoutEvents (PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      CheckNotDiscarded ();
+
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      return propertyValue.GetValueWithoutEvents (valueAccess);
+    }
+
+    public void TouchValue (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      CheckNotDiscarded ();
+
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      propertyValue.Touch();
+    }
+
+    public bool HasValueBeenTouched (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      CheckNotDiscarded ();
+
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      return propertyValue.HasBeenTouched;
+    }
+
+    public object HasValueChanged (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      CheckNotDiscarded ();
+
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      return propertyValue.HasChanged;
+    }
 
     /// <summary>
     /// Gets the <see cref="Remotion.Data.DomainObjects.ClientTransaction"/> which the <see cref="DataContainer"/> is part of.
@@ -604,6 +624,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (_eventListener != null)
         _eventListener.StateUpdated (this, state);
+    }
+
+    private PropertyValue GetPropertyValue (PropertyDefinition propertyDefinition)
+    {
+      try
+      {
+        return _propertyValues[propertyDefinition.PropertyName];
+      }
+      catch (ArgumentException ex)
+      {
+        var message = string.Format ("Property '{0}' does not exist.", propertyDefinition.PropertyName);
+        throw new ArgumentException (message, "propertyDefinition", ex);
+      }
     }
 
     #region Serialization

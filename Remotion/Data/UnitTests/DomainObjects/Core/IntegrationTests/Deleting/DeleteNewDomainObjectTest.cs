@@ -147,18 +147,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 
     [Test]
     [ExpectedException (typeof (ObjectInvalidException))]
-    public void DataContainerGetIndexer ()
+    public void DomainObjectGetPropertyValue ()
     {
       _newOrder.Delete ();
-      int orderNumber = (int) _newOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
+      Dev.Null = _newOrder.Properties[typeof (Order), "OrderNumber"].GetValueWithoutTypeCheck();
     }
 
     [Test]
     [ExpectedException (typeof (ObjectInvalidException))]
-    public void DataContainerSetIndexer ()
+    public void DomainObjectSetPropertyValue ()
     {
       _newOrder.Delete ();
-      _newOrderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      _newOrder.Properties[typeof (Order), "OrderNumber"].SetValueWithoutTypeCheck (10);
     }
 
     [Test]
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     public void DataContainerGetValue ()
     {
       _newOrder.Delete ();
-      _newOrderContainer.GetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber");
+      _newOrderContainer.GetValue (GetPropertyDefinition (typeof (Order), "OrderNumber"), ValueAccess.Current);
     }
 
     [Test]
@@ -174,7 +174,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     public void DataContainerSetValue ()
     {
       _newOrder.Delete ();
-      _newOrderContainer.SetValue ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber", 10);
+      _newOrderContainer.SetValue (GetPropertyDefinition (typeof (Order), "OrderNumber"), 10);
     }
 
     [Test]
