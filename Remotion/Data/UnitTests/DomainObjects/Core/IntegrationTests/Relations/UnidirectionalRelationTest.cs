@@ -46,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Relations
       _location.Client = _newClient;
 
       Assert.AreSame (_newClient, _location.Client);
-      Assert.AreEqual (_newClient.ID, _location.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"]);
+      Assert.AreEqual (_newClient.ID, _location.Properties[typeof (Location), "Client"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Changed, _location.State);
       Assert.AreEqual (StateType.Unchanged, _oldClient.State);
       Assert.AreEqual (StateType.Unchanged, _newClient.State);

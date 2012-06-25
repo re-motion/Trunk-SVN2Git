@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       location.Client = null;
 
       Assert.IsNull (location.Client);
-      Assert.IsNull (location.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Location.Client"]);
+      Assert.IsNull (location.Properties[typeof (Location), "Client"].GetRelatedObjectID());
       Assert.AreEqual (StateType.Changed, location.State);
       Assert.AreEqual (StateType.Unchanged, oldClient.State);
     }
@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       client.ParentClient = newClient;
 
       Assert.AreSame (newClient, client.ParentClient);
-			Assert.AreEqual (newClient.ID, client.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Client.ParentClient"]);
+      Assert.AreEqual (newClient.ID, client.Properties[typeof (Client), "ParentClient"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Changed, client.State);
       Assert.AreEqual (StateType.Unchanged, newClient.State);
     }
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       eventReceiver.Check (new ChangeState[0]);
       Assert.IsNull (client.ParentClient);
-			Assert.IsNull (client.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Client.ParentClient"]);
+      Assert.IsNull (client.Properties[typeof (Client), "ParentClient"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Unchanged, client.State);
     }
   }

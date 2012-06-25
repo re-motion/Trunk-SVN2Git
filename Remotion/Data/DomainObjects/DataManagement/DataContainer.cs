@@ -131,34 +131,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _propertyValues.RegisterForChangeNotification (this);
     }
 
-    // methods and properties
-
-    /// <summary>
-    /// Gets the value of the <see cref="PropertyValue"/> specified by <paramref name="propertyName"/>.
-    /// </summary>
-    /// <param name="propertyName">The name of the property. Must not be <see langword="null"/>.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    /// <exception cref="Remotion.Utilities.ArgumentEmptyException"><paramref name="propertyName"/> is an empty string.</exception>
-    /// <exception cref="System.ArgumentException">The given <paramref name="propertyName"/> does not exist in the data container.</exception>
-    /// <exception cref="ObjectInvalidException">The object is already discarded. See <see cref="ObjectInvalidException"/> for further information.</exception>
-    public object this [string propertyName]
-    {
-      get
-      {
-        ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-        CheckNotDiscarded();
-
-        return _propertyValues[propertyName].Value;
-      }
-      set
-      {
-        ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-        CheckNotDiscarded();
-
-        _propertyValues[propertyName].Value = value;
-      }
-    }
-
     public bool HasBeenMarkedChanged
     {
       get { return _hasBeenMarkedChanged; }

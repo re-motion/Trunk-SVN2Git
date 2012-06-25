@@ -97,12 +97,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty' does not allow null values.")]
-    public void GetNullFromNonNullableValueType()
+    public void SetNullIntoNonNullableValueType()
     {
       ClassWithAllDataTypes classWithAllDataTypes = ClassWithAllDataTypes.NewObject();
-      classWithAllDataTypes.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"] = null;
-      Dev.Null = classWithAllDataTypes.BooleanProperty;
+      Assert.That (
+          () => SetPropertyValue (classWithAllDataTypes.InternalDataContainer, typeof (ClassWithAllDataTypes), "BooleanProperty", null),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "Property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty' does not allow null values."));
     }
 
     [Test]

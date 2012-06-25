@@ -377,8 +377,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
       var dataContainers = new DataContainerCollection { orderContainer, officialContainer };
 
-      orderContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 42;
-      officialContainer[typeof (Official).FullName + ".Name"] = "Zaphod"; //Stub implementation
+      SetPropertyValue (orderContainer, typeof (Order), "OrderNumber", 42);
+      SetPropertyValue (officialContainer, typeof (Official), "Name", "Zaphod");
 
       _persistenceManager.Save (dataContainers);
     }

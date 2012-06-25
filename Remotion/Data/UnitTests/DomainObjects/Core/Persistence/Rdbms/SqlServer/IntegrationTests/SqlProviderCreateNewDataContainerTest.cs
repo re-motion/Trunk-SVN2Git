@@ -41,10 +41,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Assert.IsNull (newContainer.Timestamp, "Timestamp of new DataContainer.");
       Assert.AreEqual (StateType.New, newContainer.State, "State of new DataContainer.");
       Assert.AreEqual (4, newContainer.PropertyValues.Count, "PropertyValues.Count");
-      Assert.AreEqual (0, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"], "OrderNumber");
-      Assert.AreEqual (DateTime.MinValue, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"], "DeliveryDate");
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Official"], "Official");
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"], "Customer");
+      Assert.AreEqual (0, GetPropertyValue (newContainer, typeof (Order), "OrderNumber"), "OrderNumber");
+      Assert.AreEqual (DateTime.MinValue, GetPropertyValue (newContainer, typeof (Order), "DeliveryDate"), "DeliveryDate");
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (Order), "Official"), "Official");
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (Order), "Customer"), "Customer");
     }
 
     [Test]
@@ -53,51 +53,51 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithAllDataTypes));
       DataContainer newContainer = DataContainer.CreateNew (Provider.CreateNewObjectID (classDefinition));
 
-      Assert.AreEqual (false, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BooleanProperty"]);
-      Assert.AreEqual ((byte)0, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ByteProperty"]);
-      Assert.AreEqual (new DateTime (), newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateProperty"]);
-      Assert.AreEqual (new DateTime (), newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DateTimeProperty"]);
-      Assert.AreEqual (0m, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DecimalProperty"]);
-      Assert.AreEqual (0d, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.DoubleProperty"]);
-      Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.EnumProperty"]);
-      Assert.AreEqual (Color.Values.Blue(), newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumProperty"]);
-      Assert.AreEqual (Guid.Empty, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.GuidProperty"]);
-      Assert.AreEqual ((short)0, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int16Property"]);
-      Assert.AreEqual (0, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int32Property"]);
-      Assert.AreEqual (0L, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.Int64Property"]);
-      Assert.AreEqual (0F, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.SingleProperty"]);
-      Assert.AreEqual (string.Empty, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringProperty"]);
-      Assert.AreEqual (string.Empty, newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringPropertyWithoutMaxLength"]);
-      ResourceManager.IsEmptyImage ((byte[]) newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.BinaryProperty"]);
+      Assert.AreEqual (false, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "BooleanProperty"));
+      Assert.AreEqual ((byte)0, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "ByteProperty"));
+      Assert.AreEqual (new DateTime (), GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "DateProperty"));
+      Assert.AreEqual (new DateTime (), GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "DateTimeProperty"));
+      Assert.AreEqual (0m, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "DecimalProperty"));
+      Assert.AreEqual (0d, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "DoubleProperty"));
+      Assert.AreEqual (ClassWithAllDataTypes.EnumType.Value0, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "EnumProperty"));
+      Assert.AreEqual (Color.Values.Blue(), GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "ExtensibleEnumProperty"));
+      Assert.AreEqual (Guid.Empty, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "GuidProperty"));
+      Assert.AreEqual ((short)0, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "Int16Property"));
+      Assert.AreEqual (0, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "Int32Property"));
+      Assert.AreEqual (0L, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "Int64Property"));
+      Assert.AreEqual (0F, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "SingleProperty"));
+      Assert.AreEqual (string.Empty, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "StringProperty"));
+      Assert.AreEqual (string.Empty, GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "StringPropertyWithoutMaxLength"));
+      ResourceManager.IsEmptyImage ((byte[]) GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "BinaryProperty"));
 
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16Property"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32Property"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64Property"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleProperty"]);
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaBooleanProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaByteProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDateProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDateTimeProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDecimalProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDoubleProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaEnumProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaGuidProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaInt16Property"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaInt32Property"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaInt64Property"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaSingleProperty"));
 
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaBooleanWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaByteWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDateTimeWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDecimalWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaDoubleWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaEnumWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaGuidWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt16WithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt32WithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaInt64WithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NaSingleWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.StringWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.ExtensibleEnumWithNullValueProperty"]);
-      Assert.IsNull (newContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithAllDataTypes.NullableBinaryProperty"]);
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaBooleanWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaByteWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDateWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDateTimeWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDecimalWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaDoubleWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaEnumWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaGuidWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaInt16WithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaInt32WithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaInt64WithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NaSingleWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "StringWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "ExtensibleEnumWithNullValueProperty"));
+      Assert.IsNull (GetPropertyValue (newContainer, typeof (ClassWithAllDataTypes), "NullableBinaryProperty"));
     }
 
     [Test]

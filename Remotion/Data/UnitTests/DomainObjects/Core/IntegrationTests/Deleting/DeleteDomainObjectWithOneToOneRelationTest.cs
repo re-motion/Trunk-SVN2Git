@@ -121,7 +121,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 
       Assert.IsNull (_orderTicket.Order);
       Assert.IsNull (_order.OrderTicket);
-      Assert.IsNull (_orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.IsNull (_orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID());
       Assert.AreEqual (StateType.Changed, _order.State);
       Assert.AreEqual (StateType.Unchanged, _order.InternalDataContainer.State);
     }
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 
       Assert.IsNull (_orderTicket.Order);
       Assert.IsNull (_order.OrderTicket);
-      Assert.IsNull (_orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.IsNull (_orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Changed, _orderTicket.InternalDataContainer.State);
     }
 

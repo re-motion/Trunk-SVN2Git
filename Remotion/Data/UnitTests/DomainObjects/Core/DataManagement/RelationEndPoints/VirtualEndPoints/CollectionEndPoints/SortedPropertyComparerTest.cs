@@ -147,7 +147,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private void SetOrderNumber (DataContainer dataContainer, int orderNumber)
     {
-      dataContainer[_orderNumberPropertyDefinition.PropertyName] = orderNumber;
+      dataContainer.SetValue (_orderNumberPropertyDefinition, orderNumber);
     }
   }
 }

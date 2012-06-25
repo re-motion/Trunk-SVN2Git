@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 
       Assert.IsNull (orderTicket.Order);
       Assert.IsNull (order.OrderTicket);
-      Assert.IsNull (orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.IsNull (orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID());
       Assert.AreEqual (StateType.Changed, order.State);
       Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
     }
@@ -45,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
       computerWithoutEmployee.Delete ();
 
       Assert.IsNull (computerWithoutEmployee.Employee);
-      Assert.IsNull (computerWithoutEmployee.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Computer.Employee"]);
+      Assert.IsNull (computerWithoutEmployee.Properties[typeof (Computer), "Employee"].GetRelatedObjectID ());
     }
 
     [Test]
@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 
       Assert.IsNull (orderTicket.Order);
       Assert.IsNull (order.OrderTicket);
-      Assert.IsNull (orderTicket.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order"]);
+      Assert.IsNull (orderTicket.Properties[typeof (OrderTicket), "Order"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Changed, orderTicket.InternalDataContainer.State);
     }
 
@@ -83,8 +83,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
       Assert.AreEqual (0, supervisor.Subordinates.Count);
       Assert.IsNull (subordinate1.Supervisor);
       Assert.IsNull (subordinate2.Supervisor);
-      Assert.IsNull (subordinate1.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
-      Assert.IsNull (subordinate2.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
+      Assert.IsNull (subordinate1.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
+      Assert.IsNull (subordinate2.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Changed, subordinate1.InternalDataContainer.State);
       Assert.AreEqual (StateType.Changed, subordinate2.InternalDataContainer.State);
     }
@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
       Assert.IsNull (orderItem.Order);
       Assert.AreEqual (1, order.OrderItems.Count);
       Assert.IsFalse (order.OrderItems.Contains (orderItem.ID));
-      Assert.IsNull (orderItem.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Order"]);
+      Assert.IsNull (orderItem.Properties[typeof (OrderItem), "Order"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Changed, order.State);
       Assert.AreEqual (StateType.Unchanged, order.InternalDataContainer.State);
     }

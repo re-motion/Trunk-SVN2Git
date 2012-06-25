@@ -112,8 +112,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
       Assert.AreEqual (0, _supervisor.Subordinates.Count);
       Assert.IsNull (_subordinate1.Supervisor);
       Assert.IsNull (_subordinate2.Supervisor);
-      Assert.IsNull (_subordinate1.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
-      Assert.IsNull (_subordinate2.InternalDataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Supervisor"]);
+      Assert.IsNull (_subordinate1.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
+      Assert.IsNull (_subordinate2.Properties[typeof (Employee), "Supervisor"].GetRelatedObjectID ());
       Assert.AreEqual (StateType.Changed, _subordinate1.InternalDataContainer.State);
       Assert.AreEqual (StateType.Changed, _subordinate2.InternalDataContainer.State);
     }

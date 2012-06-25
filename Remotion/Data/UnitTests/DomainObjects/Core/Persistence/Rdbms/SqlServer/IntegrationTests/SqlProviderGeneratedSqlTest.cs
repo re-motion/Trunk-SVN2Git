@@ -221,12 +221,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var newGuid = new Guid ("322D1DCB-19E4-49BA-90AB-7F5C9C8126E8");
       var newDataContainer = DataContainer.CreateNew (new ObjectID (Configuration.GetTypeDefinition (typeof (Employee)), newGuid));
       var changedDataContainer = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee1);
-      changedDataContainer[GetPropertyIdentifier (typeof (Employee), "Name")] = "George";
+      SetPropertyValue (changedDataContainer, typeof (Employee), "Name", "George");
       var markedAsChangedDataContainer = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee2);
       markedAsChangedDataContainer.MarkAsChanged();
       var unchangedDataContainer = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee3);
       var deletedDataContainer = _testHelper.LoadDataContainerInSeparateProvider (DomainObjectIDs.Employee7);
-      deletedDataContainer[GetPropertyIdentifier (typeof (Employee), "Supervisor")] = null;
+      SetPropertyValue (deletedDataContainer, typeof (Employee), "Supervisor", null);
       deletedDataContainer.Delete();
 
       _testHelper.ExpectExecuteNonQuery (

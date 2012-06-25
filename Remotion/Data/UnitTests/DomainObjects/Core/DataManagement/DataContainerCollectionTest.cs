@@ -16,10 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _collection.Add (_dataContainer);
       _collection.Add (TestDataContainerObjectMother.CreateCustomer1DataContainer ());
 
-      _dataContainer["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"] = 10;
+      SetPropertyValue (_dataContainer, typeof (Order), "OrderNumber", 10);
 
       DataContainerCollection changedContainers = _collection.GetByState (StateType.Changed);
 
