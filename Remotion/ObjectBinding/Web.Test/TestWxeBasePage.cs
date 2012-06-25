@@ -77,15 +77,9 @@ public class TestWxeBasePage:
 
     base.OnPreRender (e);
 
-    string key = GetType().FullName + "_Style";
-    if (! HtmlHeadAppender.Current.IsRegistered (key))
-    {
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory> ().CreateResourceUrlResolver ();
-      string href = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "Style.css");
-      HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
-    }
+    HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
 
-    key = GetType().FullName + "_Global";
+    var key = GetType().FullName + "_Global";
     if (! HtmlHeadAppender.Current.IsRegistered (key))
     {
       HtmlHeadAppender.Current.RegisterStylesheetLink (key, "Html/global.css");

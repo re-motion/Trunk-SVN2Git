@@ -55,7 +55,7 @@ namespace Remotion.Web.UI
     }
 
     /// <summary>
-    /// Registeres style.css in themed HTML folder of Remotion.Web.dll.
+    /// Registeres style.css in themed HTML folder of Remotion.Web.dll with priority level <see cref="HtmlHeadAppender.Priority.Page"/>.
     /// </summary>
     public static void RegisterPageStylesheetLink (this HtmlHeadAppender htmlHeadAppender, IPage page)
     {

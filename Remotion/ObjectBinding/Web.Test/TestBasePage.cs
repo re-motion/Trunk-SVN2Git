@@ -60,16 +60,9 @@ namespace OBWTest
       //  A call to the ResourceDispatcher to get have the automatic resources dispatched
       ResourceDispatcher.Dispatch (this, ResourceManagerUtility.GetResourceManager (this));
 
-      string key = GetType().FullName + "_Style";
-      if (! HtmlHeadAppender.Current.IsRegistered (key))
-      {
-        var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
-        string href = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "Style.css");
+      HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
 
-        HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
-      }
-
-      key = GetType().FullName + "_Global";
+      var key = GetType().FullName + "_Global";
       if (! HtmlHeadAppender.Current.IsRegistered (key))
       {
         string href = ResolveClientUrl ("~/Html/global.css");

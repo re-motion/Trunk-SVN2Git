@@ -61,13 +61,7 @@ public class SingleBocTestBasePage:
   {
     base.OnPreRender (e);
 
-    string key = GetType().FullName + "_Style";
-    if (! HtmlHeadAppender.Current.IsRegistered (key))
-    {
-      var themedResourceUrlResolver = SafeServiceLocator.Current.GetInstance<IThemedResourceUrlResolverFactory>().CreateResourceUrlResolver();
-      string href = themedResourceUrlResolver.GetResourceUrl (this, ResourceType.Html, "Style.css");
-      HtmlHeadAppender.Current.RegisterStylesheetLink (key, href);
-    }
+    HtmlHeadAppender.Current.RegisterPageStylesheetLink (this);
 
     //  A call to the ResourceDispatcher to get have the automatic resources dispatched
     ResourceDispatcher.Dispatch (this, ResourceManagerUtility.GetResourceManager (this));
