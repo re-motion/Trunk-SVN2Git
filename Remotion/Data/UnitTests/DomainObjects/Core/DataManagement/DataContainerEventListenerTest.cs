@@ -18,7 +18,9 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
@@ -29,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private DataContainerEventListener _eventListener;
 
     private DataContainer _dataContainer;
-    private PropertyValue _propertyValue;
+    private PropertyDefinition _propertyDefinition;
 
     public override void SetUp ()
     {
@@ -38,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _eventListener = new DataContainerEventListener (EventSinkWithMock);
 
       _dataContainer = DataContainerObjectMother.CreateDataContainer();
-      _propertyValue = PropertyValueObjectMother.Create();
+      _propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo();
     }
 
     protected override DataContainerEventListener EventListener
@@ -50,32 +52,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void PropertyValueReading ()
     {
       CheckEventDelegation (
-          l => l.PropertyValueReading (_dataContainer, _propertyValue, ValueAccess.Original), 
-          (tx, mock) => mock.PropertyValueReading (tx, _dataContainer, _propertyValue, ValueAccess.Original));
+          l => l.PropertyValueReading (_dataContainer, _propertyDefinition, ValueAccess.Original), 
+          (tx, mock) => mock.PropertyValueReading (tx, _dataContainer, _propertyDefinition, ValueAccess.Original));
     }
 
     [Test]
     public void PropertyValueRead ()
     {
       CheckEventDelegation (
-          l => l.PropertyValueRead (_dataContainer, _propertyValue, "value", ValueAccess.Original),
-          (tx, mock) => mock.PropertyValueRead (tx, _dataContainer, _propertyValue, "value", ValueAccess.Original));
+          l => l.PropertyValueRead (_dataContainer, _propertyDefinition, "value", ValueAccess.Original),
+          (tx, mock) => mock.PropertyValueRead (tx, _dataContainer, _propertyDefinition, "value", ValueAccess.Original));
     }
 
     [Test]
     public void PropertyValueChanging ()
     {
       CheckEventDelegation (
-          l => l.PropertyValueChanging (_dataContainer, _propertyValue, "oldValue", "newValue"),
-          (tx, mock) => mock.PropertyValueChanging (tx, _dataContainer, _propertyValue, "oldValue", "newValue"));
+          l => l.PropertyValueChanging (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
+          (tx, mock) => mock.PropertyValueChanging (tx, _dataContainer, _propertyDefinition, "oldValue", "newValue"));
     }
 
     [Test]
     public void PropertyValueChanged ()
     {
       CheckEventDelegation (
-          l => l.PropertyValueChanged (_dataContainer, _propertyValue, "oldValue", "newValue"),
-          (tx, mock) => mock.PropertyValueChanged (tx, _dataContainer, _propertyValue, "oldValue", "newValue"));
+          l => l.PropertyValueChanged (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
+          (tx, mock) => mock.PropertyValueChanged (tx, _dataContainer, _propertyDefinition, "oldValue", "newValue"));
     }
 
     [Test]

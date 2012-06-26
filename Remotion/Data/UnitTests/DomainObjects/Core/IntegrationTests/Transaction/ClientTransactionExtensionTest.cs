@@ -589,21 +589,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
 
-      var propertyValue = 
-          _newTransaction.DataManager.DataContainers[_order1.ID].PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
+      var propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
       using (_mockRepository.Ordered())
       {
-        _extensionMock.PropertyValueReading (_newTransaction, order1DC, propertyValue, ValueAccess.Current);
-        _extensionMock.PropertyValueRead (_newTransaction, order1DC, propertyValue, orderNumber, ValueAccess.Current);
-        _extensionMock.PropertyValueReading (_newTransaction, order1DC, propertyValue, ValueAccess.Original);
-        _extensionMock.PropertyValueRead (_newTransaction, order1DC, propertyValue, orderNumber, ValueAccess.Original);
+        _extensionMock.PropertyValueReading (_newTransaction, order1DC, propertyDefinition, ValueAccess.Current);
+        _extensionMock.PropertyValueRead (_newTransaction, order1DC, propertyDefinition, orderNumber, ValueAccess.Current);
+        _extensionMock.PropertyValueReading (_newTransaction, order1DC, propertyDefinition, ValueAccess.Original);
+        _extensionMock.PropertyValueRead (_newTransaction, order1DC, propertyDefinition, orderNumber, ValueAccess.Original);
       }
 
       _mockRepository.ReplayAll();
       using (_newTransaction.EnterNonDiscardingScope())
       {
         Dev.Null = _order1.OrderNumber;
-        Dev.Null = (int) propertyValue.OriginalValue;
+        Dev.Null = _order1.Properties[propertyDefinition.PropertyName].GetOriginalValueWithoutTypeCheck();
       }
 
       _mockRepository.VerifyAll();
@@ -628,9 +627,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ReadObjectIDProperty ()
     {
-      PropertyValue customerPropertyValue =
-          _newTransaction.DataManager.DataContainers[_order1.ID].PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"];
-      var customerID = (ObjectID) customerPropertyValue.Value;
+      var customerPropertyDefinition = GetPropertyDefinition (typeof (Order), "Customer");
+      var customerID = _order1.Properties[customerPropertyDefinition.PropertyName, _newTransaction].GetRelatedObjectID();
 
       DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
 
@@ -638,15 +636,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.PropertyValueReading (_newTransaction, order1DC, customerPropertyValue, ValueAccess.Current);
-        _extensionMock.PropertyValueRead (_newTransaction, order1DC, customerPropertyValue, customerID, ValueAccess.Current);
+        _extensionMock.PropertyValueReading (_newTransaction, order1DC, customerPropertyDefinition, ValueAccess.Current);
+        _extensionMock.PropertyValueRead (_newTransaction, order1DC, customerPropertyDefinition, customerID, ValueAccess.Current);
       }
 
       _mockRepository.ReplayAll();
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        Dev.Null = _order1.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].Value;
+        Dev.Null = _order1.Properties[customerPropertyDefinition.PropertyName, _newTransaction].GetRelatedObjectID ();
       }
       _mockRepository.VerifyAll();
     }
@@ -671,7 +669,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       int oldOrderNumber = _order1.OrderNumber;
       int newOrderNumber = oldOrderNumber + 1;
 
-      DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
+      var order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
+      var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
       _mockRepository.BackToRecord (_extensionMock);
 
@@ -680,36 +679,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.PropertyValueChanging (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             oldOrderNumber,
             newOrderNumber);
         _extensionMock.PropertyValueChanged (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             oldOrderNumber,
             newOrderNumber);
 
         _extensionMock.PropertyValueReading (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             ValueAccess.Current);
         _extensionMock.PropertyValueRead (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             newOrderNumber,
             ValueAccess.Current);
         _extensionMock.PropertyValueReading (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             ValueAccess.Original);
         _extensionMock.PropertyValueRead (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             oldOrderNumber,
             ValueAccess.Original);
       }
@@ -732,21 +731,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       int oldOrderNumber = _order1.OrderNumber;
       _mockRepository.BackToRecord (_extensionMock);
 
-      DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
-
+      var order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
+      var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
       using (_mockRepository.Ordered())
       {
         _extensionMock.PropertyValueChanging (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             oldOrderNumber,
             oldOrderNumber + 1);
         _extensionMock.PropertyValueChanged (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             oldOrderNumber,
             oldOrderNumber + 1);
       }
@@ -772,6 +771,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var domainObjectMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
       var propertyValueCollectionMockEventReceiver =
           _mockRepository.StrictMock<PropertyValueCollectionMockEventReceiver> (order1DC.PropertyValues);
+      var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
 
       using (_mockRepository.Ordered())
@@ -781,7 +781,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.PropertyValueChanging (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             oldOrderNumber,
             oldOrderNumber + 1);
 
@@ -802,7 +802,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.PropertyValueChanged (
             _newTransaction,
             order1DC,
-            order1DC.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"],
+            orderNumberPropertyDefinition,
             oldOrderNumber,
             oldOrderNumber + 1);
       }

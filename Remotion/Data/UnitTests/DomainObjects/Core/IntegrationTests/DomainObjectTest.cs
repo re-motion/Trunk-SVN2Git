@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -35,16 +36,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
   [TestFixture]
   public class DomainObjectTest : ClientTransactionBaseTest
   {
-    private DataContainer _orderDataContainer;
-    private PropertyValueCollection _orderPropertyValues;
-    private PropertyValue _orderDeliveryDateProperty;
-
-    private DomainObjectEventReceiver _orderDomainObjectEventReceiver;
+    private PropertyDefinition _orderDeliveryDateProperty;
 
     public override void TestFixtureSetUp ()
     {
       base.TestFixtureSetUp();
       SetDatabaseModifyable();
+    }
+
+    public override void SetUp ()
+    {
+      base.SetUp ();
+
+      _orderDeliveryDateProperty = GetPropertyDefinition (typeof (Order), "DeliveryDate");
     }
 
     [Test]
@@ -1068,12 +1072,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       Order newOrder = Order.NewObject();
 
-      InitializeEventReceivers (newOrder);
-      CheckNoEvents();
+      var eventReceiver = new DomainObjectEventReceiver (newOrder);
+      CheckNoEvents (eventReceiver);
 
       newOrder.DeliveryDate = DateTime.Now;
 
-      CheckEvents (_orderDeliveryDateProperty);
+      CheckEvents (eventReceiver, _orderDeliveryDateProperty);
     }
 
     [Test]
@@ -1081,12 +1085,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       Order newOrder = Order.NewObject();
 
-      InitializeEventReceivers (newOrder);
-      CheckNoEvents();
+      var eventReceiver = new DomainObjectEventReceiver (newOrder);
+      CheckNoEvents (eventReceiver);
 
       newOrder.Customer = null;
 
-      CheckNoEvents();
+      CheckNoEvents (eventReceiver);
     }
 
     [Test]
@@ -1094,12 +1098,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       Order order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      InitializeEventReceivers (order2);
-      CheckNoEvents();
+      var eventReceiver = new DomainObjectEventReceiver (order2);
+      CheckNoEvents(eventReceiver);
 
       order2.DeliveryDate = DateTime.Now;
 
-      CheckEvents (_orderDeliveryDateProperty);
+      CheckEvents (eventReceiver, _orderDeliveryDateProperty);
     }
 
     [Test]
@@ -1107,12 +1111,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       Order order2 = Order.GetObject (DomainObjectIDs.Order2);
 
-      InitializeEventReceivers (order2);
-      CheckNoEvents();
+      var eventReceiver = new DomainObjectEventReceiver (order2);
+      CheckNoEvents(eventReceiver);
 
       order2.Customer = null;
 
-      CheckNoEvents();
+      CheckNoEvents(eventReceiver);
     }
 
     [Test]
@@ -1141,29 +1145,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       }
     }
 
-    private void InitializeEventReceivers (Order order)
+    private void CheckNoEvents (DomainObjectEventReceiver eventReceiver)
     {
-      _orderDataContainer = order.InternalDataContainer;
-      _orderPropertyValues = _orderDataContainer.PropertyValues;
-      _orderDeliveryDateProperty = _orderPropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate"];
-
-      _orderDomainObjectEventReceiver = new DomainObjectEventReceiver (order);
+      Assert.IsFalse (eventReceiver.HasChangingEventBeenCalled);
+      Assert.IsFalse (eventReceiver.HasChangedEventBeenCalled);
+      Assert.IsNull (eventReceiver.ChangingPropertyDefinition);
+      Assert.IsNull (eventReceiver.ChangedPropertyDefinition);
     }
 
-    private void CheckNoEvents ()
+    private void CheckEvents (DomainObjectEventReceiver eventReceiver, PropertyDefinition propertyDefinition)
     {
-      Assert.IsFalse (_orderDomainObjectEventReceiver.HasChangingEventBeenCalled);
-      Assert.IsFalse (_orderDomainObjectEventReceiver.HasChangedEventBeenCalled);
-      Assert.IsNull (_orderDomainObjectEventReceiver.ChangingPropertyValue);
-      Assert.IsNull (_orderDomainObjectEventReceiver.ChangedPropertyValue);
-    }
-
-    private void CheckEvents (PropertyValue propertyValue)
-    {
-      Assert.IsTrue (_orderDomainObjectEventReceiver.HasChangingEventBeenCalled);
-      Assert.IsTrue (_orderDomainObjectEventReceiver.HasChangedEventBeenCalled);
-      Assert.AreSame (propertyValue, _orderDomainObjectEventReceiver.ChangingPropertyValue);
-      Assert.AreSame (propertyValue, _orderDomainObjectEventReceiver.ChangedPropertyValue);
+      Assert.IsTrue (eventReceiver.HasChangingEventBeenCalled);
+      Assert.IsTrue (eventReceiver.HasChangedEventBeenCalled);
+      Assert.AreSame (propertyDefinition, eventReceiver.ChangingPropertyDefinition);
+      Assert.AreSame (propertyDefinition, eventReceiver.ChangedPropertyDefinition);
     }
 
     private void BackToRecord (MockRepository mockRepository, params object[] objects)

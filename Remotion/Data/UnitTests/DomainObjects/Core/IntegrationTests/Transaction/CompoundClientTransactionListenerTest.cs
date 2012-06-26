@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -115,28 +116,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.ObjectDeleting (TestableClientTransaction, order));
       CheckNotification (listener => listener.ObjectDeleted (TestableClientTransaction, order));
 
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       CheckNotification (listener => listener.PropertyValueReading (
           TestableClientTransaction, 
           order.InternalDataContainer, 
-          order.InternalDataContainer.PropertyValues[0], 
+          propertyDefinition, 
           ValueAccess.Original));
       CheckNotification (listener => listener.PropertyValueRead (
         TestableClientTransaction, 
         order.InternalDataContainer,
-        order.InternalDataContainer.PropertyValues[0],
+        propertyDefinition,
         "Foo", 
         ValueAccess.Original));
 
       CheckNotification (listener => listener.PropertyValueChanging (
           TestableClientTransaction, 
           order.InternalDataContainer,
-          order.InternalDataContainer.PropertyValues[0], 
+          propertyDefinition, 
           "Foo", 
           "Bar"));
       CheckNotification (listener => listener.PropertyValueChanged (
           TestableClientTransaction, 
           order.InternalDataContainer,
-          order.InternalDataContainer.PropertyValues[0], 
+          propertyDefinition, 
           "Foo", 
           "Bar"));
 

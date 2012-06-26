@@ -149,8 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
 
       Assert.IsTrue (orderEventReceiver.HasChangingEventBeenCalled);
       Assert.IsTrue (orderEventReceiver.HasChangedEventBeenCalled);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate", orderEventReceiver.ChangingPropertyValue.Name);
-      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate", orderEventReceiver.ChangedPropertyValue.Name);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate", orderEventReceiver.ChangingPropertyDefinition.PropertyName);
+      Assert.AreEqual ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.DeliveryDate", orderEventReceiver.ChangedPropertyDefinition.PropertyName);
 
       Assert.IsTrue (orderEventReceiver.HasRelationChangingEventBeenCalled);
       Assert.IsTrue (orderEventReceiver.HasRelationChangedEventBeenCalled);

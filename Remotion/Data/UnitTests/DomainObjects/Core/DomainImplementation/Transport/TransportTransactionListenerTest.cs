@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -57,8 +56,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       _transporter.Load (DomainObjectIDs.Computer1);
 
       var source = (Computer) _transporter.GetTransportedObject(DomainObjectIDs.Computer1);
-      _listener.PropertyValueChanging (TestableClientTransaction, source.InternalDataContainer,
-          source.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
+      _listener.PropertyValueChanging (
+          TestableClientTransaction, source.InternalDataContainer, GetPropertyDefinition (typeof (Computer), "SerialNumber"), null, null);
     }
 
     [Test]
@@ -69,8 +68,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       _transporter.Load (DomainObjectIDs.Computer2);
 
       Computer source = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).GetBindingTransaction().GetObjects<Computer> (DomainObjectIDs.Computer1)[0];
-      _listener.PropertyValueChanging (TestableClientTransaction, source.InternalDataContainer,
-          source.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "SerialNumber")], null, null);
+      _listener.PropertyValueChanging (
+          TestableClientTransaction, source.InternalDataContainer, GetPropertyDefinition (typeof (Computer), "SerialNumber"), null, null);
     }
 
     [Test]

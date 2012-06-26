@@ -15,7 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
@@ -29,41 +29,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // member fields
 
-    private PropertyValue _propertyValue;
-    private object _oldValue;
-    private object _newValue;
+    private readonly PropertyDefinition _propertyDefinition;
+    private readonly object _oldValue;
+    private readonly object _newValue;
 
     // construction and disposing
 
-    public PropertyChangeState (
-        object sender,
-        PropertyValue propertyValue,
-        object oldValue,
-        object newValue)
-      : this (sender, propertyValue, oldValue, newValue, null)
-    {
-    }
-
-    public PropertyChangeState (
-        object sender,
-        PropertyValue propertyValue,
-        object oldValue,
-        object newValue,
-        string message)
+    public PropertyChangeState (object sender, PropertyDefinition propertyDefinition, object oldValue, object newValue, string message = null)
       : base (sender, message)
     {
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      _propertyValue = propertyValue;
+      _propertyDefinition = propertyDefinition;
       _oldValue = oldValue;
       _newValue = newValue;
     }
 
     // methods and properties
 
-    public PropertyValue PropertyValue
+    public PropertyDefinition PropertyDefinition
     {
-      get { return _propertyValue; }
+      get { return _propertyDefinition; }
     }
 
     public object OldValue
@@ -82,12 +68,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
       PropertyChangeState propertyChangeState = (PropertyChangeState) expectedState;
 
-      if (_propertyValue.Name != propertyChangeState.PropertyValue.Name)
+      if (_propertyDefinition != propertyChangeState.PropertyDefinition)
       {
         throw CreateApplicationException (
             "Actual PropertyName '{0}' and expected PropertyName '{1}' do not match.",
-            _propertyValue.Name,
-            propertyChangeState.PropertyValue.Name);
+            _propertyDefinition.PropertyName,
+            propertyChangeState.PropertyDefinition.PropertyName);
       }
 
       if (!Equals (_oldValue, propertyChangeState.OldValue))

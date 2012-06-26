@@ -126,28 +126,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectDeleted (clientTransaction, domainObject);
     }
 
-    public virtual void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    public virtual void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
       foreach (var listener in _listeners)
-        listener.PropertyValueReading (clientTransaction, dataContainer, propertyValue, valueAccess);
+        listener.PropertyValueReading (clientTransaction, dataContainer, propertyDefinition, valueAccess);
     }
 
-    public virtual void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
+    public virtual void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
     {
       foreach (var listener in _listeners)
-        listener.PropertyValueRead (clientTransaction, dataContainer, propertyValue, value, valueAccess);
+        listener.PropertyValueRead (clientTransaction, dataContainer, propertyDefinition, value, valueAccess);
     }
 
-    public virtual void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public virtual void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       foreach (var listener in _listeners)
-        listener.PropertyValueChanging (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
+        listener.PropertyValueChanging (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
     }
 
-    public virtual void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public virtual void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       foreach (var listener in _listeners)
-        listener.PropertyValueChanged (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
+        listener.PropertyValueChanged (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
     }
 
     public virtual void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)

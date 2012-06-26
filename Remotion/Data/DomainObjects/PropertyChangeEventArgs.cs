@@ -16,6 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -25,28 +26,27 @@ namespace Remotion.Data.DomainObjects
   /// </summary>
   public class PropertyChangeEventArgs : ValueChangeEventArgs
   {
-    private readonly PropertyValue _propertyValue;
+    private readonly PropertyDefinition _propertyDefinition;
 
     /// <summary>
     /// Initializes a new instance of the <b>ValueChangingEventArgs</b> class.
     /// </summary>
-    /// <param name="propertyValue">The <see cref="PropertyValue"/> that is being changed. Must not be <see langword="null"/>.</param>
+    /// <param name="propertyDefinition"></param>
     /// <param name="oldValue">The old value.</param>
     /// <param name="newValue">The new value.</param>
-    /// <exception cref="System.ArgumentNullException"><paramref name="propertyValue"/> is <see langword="null"/>.</exception>
-    public PropertyChangeEventArgs (PropertyValue propertyValue, object oldValue, object newValue)
+    public PropertyChangeEventArgs (PropertyDefinition propertyDefinition, object oldValue, object newValue)
         : base (oldValue, newValue)
     {
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
-      _propertyValue = propertyValue;
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      _propertyDefinition = propertyDefinition;
     }
 
     /// <summary>
     /// Gets the <see cref="DataManagement.PropertyValue"/> object that is being changed.
     /// </summary>
-    public PropertyValue PropertyValue
+    public PropertyDefinition PropertyDefinition
     {
-      get { return _propertyValue; }
+      get { return _propertyDefinition; }
     }
   }
 }

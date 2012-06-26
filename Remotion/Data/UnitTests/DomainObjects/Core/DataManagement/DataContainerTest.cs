@@ -184,12 +184,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original);
 
-      _eventListenerMock.AssertWasCalled (
-          mock => mock.PropertyValueReading (
-              _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], ValueAccess.Original));
-      _eventListenerMock.AssertWasCalled (
-          mock => mock.PropertyValueRead (
-              _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, ValueAccess.Original));
+      _eventListenerMock.AssertWasCalled (mock => mock.PropertyValueReading (_existingDataContainer, _orderNumberProperty, ValueAccess.Original));
+      _eventListenerMock.AssertWasCalled (mock => mock.PropertyValueRead (_existingDataContainer, _orderNumberProperty, 0, ValueAccess.Original));
     }
 
     [Test]
@@ -199,13 +195,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var exception = new Exception();
       _eventListenerMock
-          .Expect (mock => mock.PropertyValueReading (_existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], ValueAccess.Original))
+          .Expect (mock => mock.PropertyValueReading (_existingDataContainer, _orderNumberProperty, ValueAccess.Original))
           .Throw (exception);
       
       Assert.That (() => _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Throws.Exception.SameAs (exception));
       _eventListenerMock.AssertWasNotCalled (
           mock => mock.PropertyValueRead (
-              Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<object>.Is.Anything, Arg<ValueAccess>.Is.Anything));
+              Arg<DataContainer>.Is.Anything, Arg<PropertyDefinition>.Is.Anything, Arg<object>.Is.Anything, Arg<ValueAccess>.Is.Anything));
     }
 
     [Test]
@@ -230,14 +226,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _existingDataContainer.SetEventListener (_eventListenerMock);
 
       _eventListenerMock
-          .Expect (
-              mock => mock.PropertyValueChanging (
-                  _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, 17))
+          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _orderNumberProperty, 0, 17))
           .WhenCalled (mi => Assert.That (_existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0)));
       _eventListenerMock
-          .Expect (
-              mock => mock.PropertyValueChanged (
-                  _existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, 17))
+          .Expect (mock => mock.PropertyValueChanged (_existingDataContainer, _orderNumberProperty, 0, 17))
           .WhenCalled (mi => Assert.That (_existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (17)));
 
       _existingDataContainer.SetValue (_orderNumberProperty, 17);
@@ -253,14 +245,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var exception = new Exception();
       _eventListenerMock
-          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _existingDataContainer.PropertyValues[_orderNumberProperty.PropertyName], 0, 17))
+          .Expect (mock => mock.PropertyValueChanging (_existingDataContainer, _orderNumberProperty, 0, 17))
           .Throw (exception);
 
       Assert.That (() => _existingDataContainer.SetValue (_orderNumberProperty, 17), Throws.Exception.SameAs (exception));
 
       _eventListenerMock.AssertWasNotCalled (
           mock => mock.PropertyValueChanged (
-              Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<object>.Is.Anything, Arg<object>.Is.Anything));
+              Arg<DataContainer>.Is.Anything, Arg<PropertyDefinition>.Is.Anything, Arg<object>.Is.Anything, Arg<object>.Is.Anything));
 
       Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0));
     }
@@ -305,10 +297,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _existingDataContainer.GetValueWithoutEvents (_orderNumberProperty, ValueAccess.Original);
 
       _eventListenerMock.AssertWasNotCalled (
-          mock => mock.PropertyValueReading (Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<ValueAccess>.Is.Anything));
+          mock => mock.PropertyValueReading (Arg<DataContainer>.Is.Anything, Arg<PropertyDefinition>.Is.Anything, Arg<ValueAccess>.Is.Anything));
       _eventListenerMock.AssertWasNotCalled (
           mock => mock.PropertyValueRead (
-              Arg<DataContainer>.Is.Anything, Arg<PropertyValue>.Is.Anything, Arg<object>.Is.Anything, Arg<ValueAccess>.Is.Anything));
+              Arg<DataContainer>.Is.Anything, Arg<PropertyDefinition>.Is.Anything, Arg<object>.Is.Anything, Arg<ValueAccess>.Is.Anything));
     }
 
     [Test]

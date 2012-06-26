@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     private Order _order;
     private DataContainer _dataContainer;
-    private PropertyValue _propertyValue;
+    private PropertyDefinition _propertyDefinition;
 
     public override void SetUp ()
     {
@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _order = Order.NewObject ();
       _dataContainer = _order.InternalDataContainer;
-      _propertyValue = _dataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
+      _propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
     }
 
     [Test]
@@ -248,13 +248,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
-        _extension2.Expect (mock => mock.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
+        _extension1.Expect (mock => mock.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1));
+        _extension2.Expect (mock => mock.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
+      _collectionWithExtensions.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1);
 
       _mockRepository.VerifyAll ();
     }
@@ -264,13 +264,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
-        _extension2.Expect (mock => mock.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1));
+        _extension1.Expect (mock => mock.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1));
+        _extension2.Expect (mock => mock.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
+      _collectionWithExtensions.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1);
 
       _mockRepository.VerifyAll ();
     }
@@ -280,13 +280,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original));
-        _extension2.Expect (mock => mock.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original));
+        _extension1.Expect (mock => mock.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyDefinition, ValueAccess.Original));
+        _extension2.Expect (mock => mock.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyDefinition, ValueAccess.Original));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original);
+      _collectionWithExtensions.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyDefinition, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }
@@ -299,7 +299,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       Stopwatch sw = Stopwatch.StartNew ();
       for (int i = 0; i < 100000; ++i)
-        coll.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Original);
+        coll.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyDefinition, ValueAccess.Original);
       sw.Stop ();
       Console.WriteLine (sw.Elapsed);
       Console.WriteLine (sw.ElapsedMilliseconds / 100000.0);
@@ -310,13 +310,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Original));
-        _extension2.Expect (mock => mock.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Original));
+        _extension1.Expect (mock => mock.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, ValueAccess.Original));
+        _extension2.Expect (mock => mock.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, ValueAccess.Original));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Original);
+      _collectionWithExtensions.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, ValueAccess.Original);
 
       _mockRepository.VerifyAll ();
     }

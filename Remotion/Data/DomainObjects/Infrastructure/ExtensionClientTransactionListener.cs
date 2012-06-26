@@ -107,26 +107,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _extension.ObjectDeleted (clientTransaction, domainObject);
     }
 
-    public void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    public void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
-      _extension.PropertyValueReading (clientTransaction, dataContainer, propertyValue, valueAccess);
+      _extension.PropertyValueReading (clientTransaction, dataContainer, propertyDefinition, valueAccess);
     }
 
-    public void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object value, ValueAccess valueAccess)
+    public void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
     {
-      _extension.PropertyValueRead (clientTransaction, dataContainer, propertyValue, value, valueAccess);
+      _extension.PropertyValueRead (clientTransaction, dataContainer, propertyDefinition, value, valueAccess);
     }
 
-    public void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      if (!propertyValue.Definition.IsObjectID)
-        _extension.PropertyValueChanging (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
+      if (!propertyDefinition.IsObjectID)
+        _extension.PropertyValueChanging (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
     }
 
-    public void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      if (!propertyValue.Definition.IsObjectID)
-        _extension.PropertyValueChanged (clientTransaction, dataContainer, propertyValue, oldValue, newValue);
+      if (!propertyDefinition.IsObjectID)
+        _extension.PropertyValueChanged (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
     }
 
     public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)

@@ -18,6 +18,7 @@ using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
@@ -34,7 +35,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       _transporter = transporter;
     }
 
-    public override void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public override void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       if (_transporter == null)
         throw new InvalidOperationException ("Cannot use the transported transaction for changing properties after it has been deserialized.");

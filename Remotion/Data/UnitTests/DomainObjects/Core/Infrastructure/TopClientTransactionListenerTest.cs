@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
@@ -172,14 +173,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanging ()
     {
       var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
-      var propertyValue = PropertyValueObjectMother.Create();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo();
       object oldValue = "old";
       object newValue = "new";
 
       CheckEventWithListenersFirst (
-          l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyDefinition, oldValue, newValue),
           () => _order1EventReceiverMock
-              .Expect (mock => mock.PropertyChanging (_order1, propertyValue, oldValue, newValue))
+              .Expect (mock => mock.PropertyChanging (_order1, propertyDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -187,12 +188,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanging_WithObjectIDProperty ()
     {
       var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
-      var propertyValue = PropertyValueObjectMother.CreateObjectID ();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID();
       object oldValue = "old";
       object newValue = "new";
 
       CheckEventWithListenersFirst (
-          l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyDefinition, oldValue, newValue),
           () => 
               _order1EventReceiverMock
                   .Expect (mock => mock.PropertyChanging (Arg<object>.Is.Anything, Arg<PropertyChangeEventArgs>.Is.Anything))
@@ -204,14 +205,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanging_WithNulls ()
     {
       var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
-      var propertyValue = PropertyValueObjectMother.Create ();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       object oldValue = null;
       object newValue = null;
 
       CheckEventWithListenersFirst (
-          l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          l => l.PropertyValueChanging (_clientTransaction, dataContainer, propertyDefinition, oldValue, newValue),
           () => _order1EventReceiverMock
-                    .Expect (mock => mock.PropertyChanging (_order1, propertyValue, oldValue, newValue))
+                    .Expect (mock => mock.PropertyChanging (_order1, propertyDefinition, oldValue, newValue))
                     .WithCurrentTransaction (_clientTransaction));
     }
     
@@ -219,15 +220,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanged ()
     {
       var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
-      var propertyValue = PropertyValueObjectMother.Create ();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       object oldValue = "old";
       object newValue = "new";
 
       CheckEventWithListenersLast (
-          l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.PropertyChanged (_order1, propertyValue, oldValue, newValue))
+              .Expect (mock => mock.PropertyChanged (_order1, propertyDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -235,12 +236,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanged_WithObjectIDProperty ()
     {
       var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
-      var propertyValue = PropertyValueObjectMother.CreateObjectID ();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID();
       object oldValue = "old";
       object newValue = "new";
 
       CheckEventWithListenersLast (
-          l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyDefinition, oldValue, newValue),
           () =>
               _order1EventReceiverMock
                   .Expect (mock => mock.PropertyChanged (Arg<object>.Is.Anything, Arg<PropertyChangeEventArgs>.Is.Anything))
@@ -252,14 +253,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanged_WithNulls ()
     {
       var dataContainer = DataContainerObjectMother.CreateWithDomainObject (_order1);
-      var propertyValue = PropertyValueObjectMother.Create();
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       object oldValue = null;
       object newValue = null;
 
       CheckEventWithListenersLast (
-          l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyValue, oldValue, newValue),
+          l => l.PropertyValueChanged (_clientTransaction, dataContainer, propertyDefinition, oldValue, newValue),
           () => _order1EventReceiverMock
-                    .Expect (mock => mock.PropertyChanged (_order1, propertyValue, oldValue, newValue))
+                    .Expect (mock => mock.PropertyChanged (_order1, propertyDefinition, oldValue, newValue))
                     .WithCurrentTransaction (_clientTransaction));
     }
 

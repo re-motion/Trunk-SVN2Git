@@ -524,35 +524,35 @@ namespace Remotion.Data.DomainObjects.DataManagement
       {
         _eventListener.PropertyValueChanging (
             this, 
-            args.PropertyValue, 
+            args.PropertyDefinition, 
             args.OldValue, 
             args.NewValue);
       }
     }
 
-    internal void PropertyValueChanged (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)
+    internal void PropertyValueChanged (PropertyValueCollection propertyValueCollection, PropertyValue propertyValue, PropertyChangeEventArgs args)
     {
       // set _hasBeenChanged to true if:
       // - we were not changed before this event (now we must be - the property only fires this event when it was set to a different value)
       // - the property indicates that it doesn't have the original value ("HasChanged")
       // - recalculation of all property change states indicates another property doesn't have its original value
-      _hasBeenChanged = !_hasBeenChanged || args.PropertyValue.HasChanged || CalculatePropertyValueChangeState();
+      _hasBeenChanged = !_hasBeenChanged || propertyValue.HasChanged || CalculatePropertyValueChangeState ();
       RaiseStateUpdatedNotification (State);
 
       if (_eventListener != null)
-        _eventListener.PropertyValueChanged (this, args.PropertyValue, args.OldValue, args.NewValue);
+        _eventListener.PropertyValueChanged (this, propertyValue.Definition, args.OldValue, args.NewValue);
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
     {
       if (_eventListener != null)
-        _eventListener.PropertyValueReading (this, propertyValue, valueAccess);
+        _eventListener.PropertyValueReading (this, propertyValue.Definition, valueAccess);
     }
 
     internal void PropertyValueRead (PropertyValue propertyValue, object value, ValueAccess valueAccess)
     {
       if (_eventListener != null)
-        _eventListener.PropertyValueRead (this, propertyValue, value, valueAccess);
+        _eventListener.PropertyValueRead (this, propertyValue.Definition, value, valueAccess);
     }
 
     private void CheckNotDiscarded ()

@@ -16,7 +16,7 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {
@@ -36,9 +36,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     private bool _hasChangingEventBeenCalled = false;
     private bool _hasChangedEventBeenCalled = false;
     [NonSerialized]
-    private PropertyValue _changingPropertyValue;
+    private PropertyDefinition _changingPropertyDefinition;
     [NonSerialized]
-    private PropertyValue _changedPropertyValue;
+    private PropertyDefinition _changedPropertyDefinition;
     private object _changingOldValue;
     private object _changingNewValue;
     private object _changedOldValue;
@@ -67,17 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // construction and disposing
 
-    public DomainObjectEventReceiver (DomainObject domainObject)
-      : this (domainObject, false)
-    {
-    }
-
-    public DomainObjectEventReceiver (DomainObject domainObject, bool cancel)
-      : this (domainObject, cancel, null)
-    {
-    }
-
-    public DomainObjectEventReceiver (DomainObject domainObject, bool cancel, ClientTransaction transactionToVerify)
+    public DomainObjectEventReceiver (DomainObject domainObject, bool cancel = false, ClientTransaction transactionToVerify = null)
     {
       _domainObject = domainObject;
       _cancel = cancel;
@@ -113,14 +103,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
       get { return _hasChangedEventBeenCalled; }
     }
 
-    public PropertyValue ChangingPropertyValue
+    public PropertyDefinition ChangingPropertyDefinition
     {
-      get { return _changingPropertyValue; }
+      get { return _changingPropertyDefinition; }
     }
 
-    public PropertyValue ChangedPropertyValue
+    public PropertyDefinition ChangedPropertyDefinition
     {
-      get { return _changedPropertyValue; }
+      get { return _changedPropertyDefinition; }
     }
 
     public object ChangingOldValue
@@ -216,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     private void DomainObject_PropertyChanging (object sender, PropertyChangeEventArgs args)
     {
       _hasChangingEventBeenCalled = true;
-      _changingPropertyValue = args.PropertyValue;
+      _changingPropertyDefinition = args.PropertyDefinition;
       _changingOldValue = args.OldValue;
       _changingNewValue = args.NewValue;
 
@@ -229,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     private void DomainObject_PropertyChanged (object sender, PropertyChangeEventArgs args)
     {
       _hasChangedEventBeenCalled = true;
-      _changedPropertyValue = args.PropertyValue;
+      _changedPropertyDefinition = args.PropertyDefinition;
       _changedOldValue = args.OldValue;
       _changedNewValue = args.NewValue;
 

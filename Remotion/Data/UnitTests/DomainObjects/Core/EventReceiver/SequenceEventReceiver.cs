@@ -159,12 +159,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public void DomainObject_PropertyChanged (object sender, PropertyChangeEventArgs args)
     {
-      _states.Add (new PropertyChangeState (sender, args.PropertyValue, args.OldValue, args.NewValue));
+      _states.Add (new PropertyChangeState (sender, args.PropertyDefinition, args.OldValue, args.NewValue));
     }
 
     public void DomainObject_PropertyChanging (object sender, PropertyChangeEventArgs args)
     {
-      _states.Add (new PropertyChangeState (sender, args.PropertyValue, args.OldValue, args.NewValue));
+      _states.Add (new PropertyChangeState (sender, args.PropertyDefinition, args.OldValue, args.NewValue));
 
       if (_states.Count == _cancelEventNumber)
         CancelOperation();

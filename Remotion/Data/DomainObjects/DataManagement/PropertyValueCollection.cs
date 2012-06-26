@@ -324,7 +324,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void PropertyValueChanging (PropertyValue propertyValue, ValueChangeEventArgs e)
     {
-      PropertyChangeEventArgs eventArgs = new PropertyChangeEventArgs (propertyValue, e.OldValue, e.NewValue);
+      PropertyChangeEventArgs eventArgs = new PropertyChangeEventArgs (propertyValue.Definition, e.OldValue, e.NewValue);
 
       // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
       // Therefore notification of DataContainer when changing property values is not organized through events.
@@ -336,13 +336,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void PropertyValueChanged (PropertyValue propertyValue, ValueChangeEventArgs e)
     {
-      PropertyChangeEventArgs eventArgs = new PropertyChangeEventArgs (propertyValue, e.OldValue, e.NewValue);
+      PropertyChangeEventArgs eventArgs = new PropertyChangeEventArgs (propertyValue.Definition, e.OldValue, e.NewValue);
       OnPropertyChanged (eventArgs);
 
       // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
       // Therefore notification of DataContainer when changing property values is not organized through events.
       if (_dataContainer != null)
-        _dataContainer.PropertyValueChanged (this, eventArgs);
+        _dataContainer.PropertyValueChanged (this, propertyValue, eventArgs);
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)

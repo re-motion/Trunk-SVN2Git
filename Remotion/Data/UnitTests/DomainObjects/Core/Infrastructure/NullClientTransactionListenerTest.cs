@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private IClientTransactionListener _listener;
     private DataContainer _dataContainer;
     private Client _domainObject;
-    private PropertyValue _propertyValue;
+    private PropertyDefinition _propertyDefinition;
     private IRelationEndPoint _relationEndPoint;
 
     [SetUp]
@@ -45,7 +46,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _listener = NullClientTransactionListener.Instance;
       _domainObject = DomainObjectMother.CreateObjectInTransaction<Client> (TestableClientTransaction);
       _dataContainer = _domainObject.GetInternalDataContainerForTransaction (TestableClientTransaction);
-      _propertyValue = _dataContainer.PropertyValues[0];
+      _propertyDefinition = GetPropertyDefinition (typeof (Client), "ParentClient");
       _relationEndPoint = TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (_dataContainer.AssociatedRelationEndPointIDs[0]);
     }
 
@@ -132,25 +133,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void PropertyValueReading ()
     {
-      _listener.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyValue, ValueAccess.Current);
+      _listener.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyDefinition, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueRead ()
     {
-      _listener.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyValue, 0, ValueAccess.Current);
+      _listener.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueChanging ()
     {
-      _listener.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
+      _listener.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1);
     }
 
     [Test]
     public void PropertyValueChanged ()
     {
-      _listener.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyValue, 0, 1);
+      _listener.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1);
     }
 
     [Test]

@@ -149,15 +149,20 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    public override void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, ValueAccess valueAccess)
+    public override void PropertyValueReading (
+        ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
+      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyDefinition.PropertyInfo);
     }
 
-    public override void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    public override void RelationReading (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ValueAccess valueAccess)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
@@ -190,15 +195,21 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    public override void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyValue propertyValue, object oldValue, object newValue)
+    public override void PropertyValueChanging (
+        ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      ArgumentUtility.CheckNotNull ("propertyValue", propertyValue);
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyValue.Definition.PropertyInfo);
+      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyDefinition.PropertyInfo);
     }
 
-    public override void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public override void RelationChanging (
+        ClientTransaction clientTransaction,
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        DomainObject oldRelatedObject,
+        DomainObject newRelatedObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
