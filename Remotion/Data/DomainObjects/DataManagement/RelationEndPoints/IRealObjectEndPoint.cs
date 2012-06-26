@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using Remotion.Data.DomainObjects.Mapping;
+
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 {
   /// <summary>
@@ -25,6 +27,6 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     void MarkUnsynchronized ();
     void ResetSyncState ();
     DataContainer ForeignKeyDataContainer { get; }
-    PropertyValue ForeignKeyProperty { get; }
+    PropertyDefinition PropertyDefinition { get; }
   }
 }

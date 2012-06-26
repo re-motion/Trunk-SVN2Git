@@ -353,11 +353,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.NewObject ();
       employee.Name = "Mr. Prosser";
 
-      Assert.IsTrue (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasChanged);
+      Assert.IsTrue (employee.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (Employee), "Name")));
 
       TestableClientTransaction.Commit ();
 
-      Assert.IsFalse (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasChanged);
+      Assert.IsFalse (employee.InternalDataContainer.HasValueChanged (GetPropertyDefinition (typeof (Employee), "Name")));
     }
 
     [Test]
@@ -366,11 +366,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Employee employee = Employee.NewObject ();
       employee.Name = "Mr. Prosser";
 
-      Assert.IsTrue (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasBeenTouched);
+      Assert.IsTrue (employee.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Employee), "Name")));
 
       TestableClientTransaction.Commit ();
 
-      Assert.IsFalse (employee.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Employee.Name"].HasBeenTouched);
+      Assert.IsFalse (employee.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Employee), "Name")));
     }
 
     [Test]

@@ -1595,7 +1595,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderBaseTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderCreateNewDataContainerTest.cs">
+    <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderCreateNewObjectIDTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderDeleteTest.cs">

@@ -119,7 +119,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     protected virtual IEnumerable<ColumnValue> GetComparedColumnValuesForDelete (DataContainer dataContainer, TableDefinition tableDefinition)
     {
       var objectIDColumnValues = tableDefinition.ObjectIDProperty.SplitValueForComparison (dataContainer.ID);
-      var mustAddTimestamp = !dataContainer.PropertyValues.Cast<PropertyValue>().Any (propertyValue => propertyValue.Definition.IsObjectID);
+      // If a DataContainer contains a relation property, an Update previous to the Delete will already have checked the timestamp.
+      // Otherwise (no relation properties), the Delete must check the timestamp.
+      var mustAddTimestamp = dataContainer.ClassDefinition.GetPropertyDefinitions().All (pd => !pd.IsObjectID);
       if (mustAddTimestamp)
         return objectIDColumnValues.Concat (tableDefinition.TimestampProperty.SplitValueForComparison (dataContainer.Timestamp));
       else
@@ -130,9 +132,9 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
     {
       var propertyFilter = GetUpdatedPropertyFilter (dataContainer);
 
-      var dataStorageColumnValues = dataContainer.PropertyValues.Cast<PropertyValue>()
-          .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && propertyFilter (pv))
-          .SelectMany (GetColumnValuesForPropertyValue)
+      var dataStorageColumnValues = dataContainer.ClassDefinition.GetPropertyDefinitions()
+          .Where (pd => pd.StorageClass == StorageClass.Persistent && propertyFilter (pd))
+          .SelectMany (pd => GetColumnValuesForPropertyValue (dataContainer, pd))
           .ToArray();
 
       if (!dataStorageColumnValues.Any() && dataContainer.HasBeenMarkedChanged)
@@ -149,26 +151,26 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var objectIDStoragePropertyDefinition = (IRdbmsStoragePropertyDefinition) ((IRdbmsStorageEntityDefinition) tableDefinition).ObjectIDProperty;
       var columnValuesForID = objectIDStoragePropertyDefinition.SplitValue (dataContainer.ID);
 
-      var columnValuesForDataProperties = dataContainer.PropertyValues.Cast<PropertyValue>()
-          .Where (pv => pv.Definition.StorageClass == StorageClass.Persistent && !pv.Definition.IsObjectID)
-          .SelectMany (GetColumnValuesForPropertyValue);
+      var columnValuesForDataProperties = dataContainer.ClassDefinition.GetPropertyDefinitions()
+          .Where (pd => pd.StorageClass == StorageClass.Persistent && !pd.IsObjectID)
+          .SelectMany (pd => GetColumnValuesForPropertyValue (dataContainer, pd));
       return columnValuesForID.Concat (columnValuesForDataProperties);
     }
 
-    protected virtual Func<PropertyValue, bool> GetUpdatedPropertyFilter (DataContainer dataContainer)
+    protected virtual Func<PropertyDefinition, bool> GetUpdatedPropertyFilter (DataContainer dataContainer)
     {
       if (dataContainer.State == StateType.New || dataContainer.State == StateType.Deleted)
-        return pv => pv.Definition.IsObjectID;
+        return pd => pd.IsObjectID;
       else if (dataContainer.State == StateType.Changed)
-        return pv => pv.HasChanged;
+        return dataContainer.HasValueChanged;
       else
-        return pv => false;
+        return pd => false;
     }
 
-    protected virtual IEnumerable<ColumnValue> GetColumnValuesForPropertyValue (PropertyValue propertyValue)
+    protected virtual IEnumerable<ColumnValue> GetColumnValuesForPropertyValue (DataContainer dataContainer, PropertyDefinition propertyDefinition)
     {
-      var storageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyValue.Definition);
-      var columnValues = storageProperty.SplitValue (propertyValue.GetValueWithoutEvents (ValueAccess.Current));
+      var storageProperty = _rdbmsPersistenceModelProvider.GetStoragePropertyDefinition (propertyDefinition);
+      var columnValues = storageProperty.SplitValue (dataContainer.GetValueWithoutEvents (propertyDefinition, ValueAccess.Current));
       return columnValues;
     }
 

@@ -34,7 +34,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { throw new NotSupportedException (); }
     }
 
-    public PropertyValue ForeignKeyProperty
+    public PropertyDefinition PropertyDefinition
     {
       get { throw new NotSupportedException (); }
     }

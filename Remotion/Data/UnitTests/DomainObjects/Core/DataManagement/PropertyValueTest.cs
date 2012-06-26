@@ -644,14 +644,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetValueWithoutEvents_NoEvents ()
     {
-      var clientTransactionMock = new TestableClientTransaction();
+      var clientTransactionMock = new TestableClientTransaction ();
       using (clientTransactionMock.EnterDiscardingScope())
       {
-        PropertyValue propertyValue = Order.NewObject().InternalDataContainer.PropertyValues[typeof (Order).FullName + ".OrderNumber"];
+        var dataContainer = Order.NewObject ().InternalDataContainer;
+        var propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
         ClientTransactionTestHelper.EnsureTransactionThrowsOnEvents (clientTransactionMock);
 
-        Dev.Null = propertyValue.GetValueWithoutEvents (ValueAccess.Current);
+        dataContainer.GetValueWithoutEvents (propertyDefinition, ValueAccess.Current);
       }
     }
 

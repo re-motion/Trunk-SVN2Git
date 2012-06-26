@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -32,6 +34,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public static IRealObjectEndPointSyncState GetSyncState (RealObjectEndPoint objectEndPoint)
     {
       return (IRealObjectEndPointSyncState) PrivateInvoke.GetNonPublicField (objectEndPoint, "_syncState");
+    }
+
+    public static object GetValueViaDataContainer (RealObjectEndPoint realObjectEndPoint)
+    {
+      return realObjectEndPoint.ForeignKeyDataContainer.GetValue (realObjectEndPoint.PropertyDefinition, ValueAccess.Current);
+    }
+
+    public static void SetValueViaDataContainer (RealObjectEndPoint realObjectEndPoint, ObjectID objectID)
+    {
+      realObjectEndPoint.ForeignKeyDataContainer.SetValue (realObjectEndPoint.PropertyDefinition, objectID);
+    }
+
+    public static bool HasChangedViaDataContainer (RealObjectEndPoint realObjectEndPoint)
+    {
+      return realObjectEndPoint.ForeignKeyDataContainer.HasValueChanged (realObjectEndPoint.PropertyDefinition);
+    }
+
+    public static bool HasBeenTouchedViaDataContainer (RealObjectEndPoint realObjectEndPoint)
+    {
+      return realObjectEndPoint.ForeignKeyDataContainer.HasValueBeenTouched (realObjectEndPoint.PropertyDefinition);
     }
   }
 }

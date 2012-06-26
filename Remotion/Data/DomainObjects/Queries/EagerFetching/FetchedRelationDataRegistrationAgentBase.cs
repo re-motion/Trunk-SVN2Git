@@ -113,8 +113,7 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
                  data,
                  virtualEndPointDefinition,
                  oppositeEndPointDefinition)
-             let propertyValue = dataContainer.PropertyValues[oppositeEndPointDefinition.PropertyDefinition.PropertyName]
-             let originatingObjectID = (ObjectID) propertyValue.GetValueWithoutEvents (ValueAccess.Current)
+             let originatingObjectID = (ObjectID) dataContainer.GetValueWithoutEvents (oppositeEndPointDefinition.PropertyDefinition, ValueAccess.Current)
              select Tuple.Create (originatingObjectID, data);
     }
 

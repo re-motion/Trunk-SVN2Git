@@ -193,10 +193,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       else
         return new ObjectID (classDefinition, s_nextID++);
     }
-
-    public new object GetFieldValue (DataContainer dataContainer, string propertyName, ValueAccess valueAccess)
-    {
-      return base.GetFieldValue (dataContainer, propertyName, valueAccess);
-    }
   }
 }

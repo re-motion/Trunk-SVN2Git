@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
@@ -28,26 +29,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
   /// </summary>
   public class RealObjectEndPoint : ObjectEndPoint, IRealObjectEndPoint
   {
-    private static PropertyValue GetForeignKeyProperty (DataContainer foreignKeyDataContainer, string propertyName)
-    {
-      PropertyValue foreignKeyProperty;
-      try
-      {
-        foreignKeyProperty = foreignKeyDataContainer.PropertyValues[propertyName];
-      }
-      catch (ArgumentException ex)
-      {
-        throw new ArgumentException ("The foreign key data container must be compatible with the end point definition.", "foreignKeyDataContainer", ex);
-      }
-
-      Assertion.IsTrue (foreignKeyProperty.Definition.IsObjectID, "The foreign key property must have a property type of ObjectID.");
-      return foreignKeyProperty;
-    }
-
     private readonly DataContainer _foreignKeyDataContainer;
     private readonly IRelationEndPointProvider _endPointProvider;
     private readonly IClientTransactionEventSink _transactionEventSink;
-    private readonly PropertyValue _foreignKeyProperty;
+    private readonly PropertyDefinition _propertyDefinition;
 
     private IRealObjectEndPointSyncState _syncState; // keeps track of whether this end-point is synchronised with the opposite end point
 
@@ -68,11 +53,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       if (ID.Definition.IsVirtual)
         throw new ArgumentException ("End point ID must refer to a non-virtual end point.", "id");
 
+      var propertyDefinition = GetPropertyDefinition();
+
+      if (foreignKeyDataContainer.ID != id.ObjectID)
+        throw new ArgumentException ("The foreign key data container must be from the same object as the end point definition.", "foreignKeyDataContainer");
+
       _foreignKeyDataContainer = foreignKeyDataContainer;
       _endPointProvider = endPointProvider;
       _transactionEventSink = transactionEventSink;
 
-      _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
+      _propertyDefinition = propertyDefinition;
       _syncState = new UnknownRealObjectEndPointSyncState (_endPointProvider);
     }
 
@@ -91,29 +81,29 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       get { return _transactionEventSink; }
     }
 
-    public PropertyValue ForeignKeyProperty
+    public PropertyDefinition PropertyDefinition
     {
-      get { return _foreignKeyProperty; }
+      get { return _propertyDefinition; }
     }
 
     public override ObjectID OppositeObjectID
     {
-      get { return (ObjectID) ForeignKeyProperty.GetValueWithoutEvents (ValueAccess.Current); }
+      get { return (ObjectID) ForeignKeyDataContainer.GetValueWithoutEvents (PropertyDefinition, ValueAccess.Current); }
     }
 
     public override ObjectID OriginalOppositeObjectID
     {
-      get { return (ObjectID) ForeignKeyProperty.GetValueWithoutEvents (ValueAccess.Original); }
+      get { return (ObjectID) ForeignKeyDataContainer.GetValueWithoutEvents (PropertyDefinition, ValueAccess.Original); }
     }
 
     public override bool HasChanged
     {
-      get { return ForeignKeyProperty.HasChanged; }
+      get { return ForeignKeyDataContainer.HasValueChanged (PropertyDefinition); }
     }
 
     public override bool HasBeenTouched
     {
-      get { return ForeignKeyProperty.HasBeenTouched; }
+      get { return ForeignKeyDataContainer.HasValueBeenTouched (PropertyDefinition); }
     }
 
     public override bool IsDataComplete
@@ -183,20 +173,20 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override void Touch ()
     {
-      ForeignKeyProperty.Touch ();
+      ForeignKeyDataContainer.TouchValue (PropertyDefinition);
       Assertion.IsTrue (HasBeenTouched);
     }
 
     public override void Commit ()
     {
-      ForeignKeyProperty.CommitState ();
+      ForeignKeyDataContainer.GetPropertyValue (PropertyDefinition).CommitState();
       Assertion.IsFalse (HasBeenTouched);
       Assertion.IsFalse (HasChanged);
     }
 
     public override void Rollback ()
     {
-      ForeignKeyProperty.RollbackState ();
+      ForeignKeyDataContainer.GetPropertyValue (PropertyDefinition).RollbackState();
       Assertion.IsFalse (HasBeenTouched);
       Assertion.IsFalse (HasChanged);
     }
@@ -204,12 +194,18 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
       var sourceAsRealObjectEndPoint = ArgumentUtility.CheckNotNullAndType<RealObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
-      _foreignKeyProperty.SetDataFromSubTransaction (sourceAsRealObjectEndPoint.ForeignKeyProperty);
+      var sourcePropertyValue = sourceAsRealObjectEndPoint.ForeignKeyDataContainer.GetPropertyValue (sourceAsRealObjectEndPoint.PropertyDefinition);
+      ForeignKeyDataContainer.GetPropertyValue (PropertyDefinition).SetDataFromSubTransaction (sourcePropertyValue);
     }
 
     private void SetOppositeObjectID (ObjectID value)
     {
-      _foreignKeyProperty.Value = value; // TODO 4608: This is with events, which is a little inconsistent to OppositeObjectID
+      ForeignKeyDataContainer.SetValue (_propertyDefinition, value); // TODO 4608: This is with events, which is a little inconsistent to OppositeObjectID
+    }
+
+    private PropertyDefinition GetPropertyDefinition ()
+    {
+      return ((RelationEndPointDefinition) ID.Definition).PropertyDefinition;
     }
 
 
@@ -218,7 +214,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
       : base (info)
     {
       _foreignKeyDataContainer = info.GetValueForHandle<DataContainer> ();
-      _foreignKeyProperty = GetForeignKeyProperty (_foreignKeyDataContainer, PropertyName);
+      _propertyDefinition = GetPropertyDefinition();
       _endPointProvider = info.GetValueForHandle<IRelationEndPointProvider> ();
       _transactionEventSink = info.GetValueForHandle<IClientTransactionEventSink> ();
       _syncState = info.GetValueForHandle<IRealObjectEndPointSyncState> ();

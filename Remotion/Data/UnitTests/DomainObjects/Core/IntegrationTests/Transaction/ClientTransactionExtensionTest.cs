@@ -718,8 +718,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _order1.OrderNumber = newOrderNumber;
         Dev.Null = _order1.OrderNumber;
-        Dev.Null =
-            (int) _order1.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue;
+        Dev.Null = _order1.Properties[typeof (Order), "OrderNumber"].GetOriginalValueWithoutTypeCheck();
       }
 
       _mockRepository.VerifyAll();
@@ -769,8 +768,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_newTransaction);
 
       var domainObjectMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
-      var propertyValueCollectionMockEventReceiver =
-          _mockRepository.StrictMock<PropertyValueCollectionMockEventReceiver> (order1DC.PropertyValues);
       var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
 
@@ -788,13 +785,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         domainObjectMockEventReceiver.PropertyChanging (null, null);
         LastCall.IgnoreArguments();
 
-        propertyValueCollectionMockEventReceiver.PropertyChanging (null, null);
-        LastCall.IgnoreArguments();
-
         // "Changed" notifications
-
-        propertyValueCollectionMockEventReceiver.PropertyChanged (null, null);
-        LastCall.IgnoreArguments();
 
         domainObjectMockEventReceiver.PropertyChanged (null, null);
         LastCall.IgnoreArguments();
@@ -1380,35 +1371,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
 
       _mockRepository.VerifyAll();
-    }
-
-    [Test]
-    public void StorageProviderGetFieldValue ()
-    {
-      int originalOrderNumber = _order1.OrderNumber;
-      _order1.OrderNumber = originalOrderNumber + 1;
-
-      _mockRepository.BackToRecord (_extensionMock);
-
-      using (var storageProviderManager = new StorageProviderManager(NullPersistenceExtension.Instance))
-      {
-        using (var storageProvider =
-            (UnitTestStorageProviderStub) storageProviderManager.GetMandatory (c_unitTestStorageProviderStubID))
-        {
-          _mockRepository.ReplayAll();
-
-          Assert.AreEqual (
-              originalOrderNumber + 1,
-              storageProvider.GetFieldValue (
-                  _order1.InternalDataContainer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber", ValueAccess.Current));
-          Assert.AreEqual (
-              originalOrderNumber,
-              storageProvider.GetFieldValue (
-                  _order1.InternalDataContainer, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber", ValueAccess.Original));
-
-          _mockRepository.VerifyAll();
-        }
-      }
     }
 
     [Test]

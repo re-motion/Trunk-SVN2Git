@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -50,7 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public void ExecuteCustomQuery ()
     {
       var fakeResult = new IQueryResultRow[0];
-      Func<IQueryResultRow, object> rowConversion = qrr => new object();
       
       _parentTransactionOperationsMock
           .Expect (mock => mock.ExecuteCustomQuery (_queryStub))
@@ -84,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       var instance = DomainObjectMother.CreateFakeObject<Order> ();
       var dataContainer = DataContainer.CreateNew (instance.ID);
-      dataContainer.PropertyValues[GetPropertyIdentifier (typeof (Order), "OrderNumber")].Value = 12;
+      SetPropertyValue (dataContainer, typeof (Order), "OrderNumber", 12);
       dataContainer.SetDomainObject (instance);
 
       var persistableData = new PersistableData (instance, StateType.New, dataContainer, new IRelationEndPoint[0]);
@@ -104,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
                   Assert.That (dc.State, Is.EqualTo (StateType.New));
                   Assert.That (dc.HasDomainObject, Is.True);
                   Assert.That (dc.DomainObject, Is.SameAs (instance));
-                  Assert.That (dc.PropertyValues[GetPropertyIdentifier (typeof (Order), "OrderNumber")].Value, Is.EqualTo (12));
+                  Assert.That (GetPropertyValue (dc, typeof (Order), "OrderNumber"), Is.EqualTo (12));
                 }
             );
         _parentTransactionOperationsMock.Expect (mock => mock.Dispose());

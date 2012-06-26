@@ -430,7 +430,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order oldOrder = _newOrderTicket.Order;
 
-      Assert.IsFalse (_oldOrderTicket.InternalDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].HasBeenTouched);
+      Assert.IsFalse (_oldOrderTicket.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (OrderTicket), "Order")));
 
       CheckTouching (delegate { _newOrderTicket.Order = _order; }, _newOrderTicket, "Order",
           RelationEndPointID.Create(_order.ID, typeof (Order).FullName + ".OrderTicket"),
@@ -438,7 +438,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
           RelationEndPointID.Create(_oldOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"),
           RelationEndPointID.Create(_newOrderTicket.ID, typeof (OrderTicket).FullName + ".Order"));
 
-      Assert.IsTrue (_oldOrderTicket.InternalDataContainer.PropertyValues[typeof (OrderTicket).FullName + ".Order"].HasBeenTouched);
+      Assert.IsTrue (_oldOrderTicket.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (OrderTicket), "Order")));
     }
 
     [Test]

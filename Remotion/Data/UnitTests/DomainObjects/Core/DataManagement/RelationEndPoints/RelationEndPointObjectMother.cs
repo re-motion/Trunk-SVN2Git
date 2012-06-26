@@ -98,7 +98,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       else
       {
         var endPoint = CreateRealObjectEndPoint (endPointID);
-        endPoint.ForeignKeyProperty.Value = oppositeObjectID;
+        RealObjectEndPointTestHelper.SetValueViaDataContainer (endPoint, oppositeObjectID);
         endPoint.Commit ();
         return endPoint;
       }

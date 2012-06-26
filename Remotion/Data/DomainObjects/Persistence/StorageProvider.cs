@@ -120,15 +120,6 @@ namespace Remotion.Data.DomainObjects.Persistence
         throw CreateArgumentException (argumentName, "Expected query type is '{0}', but was '{1}'.", expectedQueryType, query.QueryType);
     }
 
-    protected object GetFieldValue (DataContainer dataContainer, string propertyName, ValueAccess valueAccess)
-    {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
-      ArgumentUtility.CheckValidEnumValue ("valueAccess", valueAccess);
-
-      return dataContainer.PropertyValues[propertyName].GetValueWithoutEvents (valueAccess);
-    }
-
     protected bool IsDisposed
     {
       get { return _disposed; }

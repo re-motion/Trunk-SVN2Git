@@ -191,7 +191,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       get { throw new NotImplementedException(); }
     }
 
-    public PropertyValue ForeignKeyProperty
+    public PropertyDefinition PropertyDefinition
     {
       get { throw new NotImplementedException(); }
     }

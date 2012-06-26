@@ -55,11 +55,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     public static void CheckEqualData (DataContainer expectedData, TransportItem item)
     {
       Assert.AreEqual (expectedData.ID, item.ID);
-      Assert.AreEqual (expectedData.PropertyValues.Count, item.Properties.Count);
-      foreach (PropertyValue propertyValue in expectedData.PropertyValues)
+      foreach (var propertyDefinition in expectedData.ClassDefinition.GetPropertyDefinitions())
       {
-        Assert.IsTrue (item.Properties.ContainsKey (propertyValue.Name));
-        Assert.AreEqual (propertyValue.Value, item.Properties[propertyValue.Name]);
+        Assert.IsTrue (item.Properties.ContainsKey (propertyDefinition.PropertyName));
+        Assert.AreEqual (expectedData.GetValue (propertyDefinition), item.Properties[propertyDefinition.PropertyName]);
       }
     }
 

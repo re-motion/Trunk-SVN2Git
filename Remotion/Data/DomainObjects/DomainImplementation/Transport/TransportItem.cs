@@ -39,8 +39,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       ArgumentUtility.CheckNotNull ("container", container);
 
       TransportItem item = new TransportItem (container.ID);
-      foreach (PropertyValue propertyValue in container.PropertyValues)
-        item.Properties.Add (propertyValue.Name, propertyValue.Value);
+      foreach (var propertyDefinition in container.ClassDefinition.GetPropertyDefinitions())
+        item.Properties.Add (propertyDefinition.PropertyName, container.GetValue (propertyDefinition, ValueAccess.Current));
       return item;
     }
 

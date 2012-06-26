@@ -325,7 +325,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (comparedColumnValues[0].Column, 
           Is.SameAs (StoragePropertyDefinitionTestHelper.GetIDColumnDefinition (tableDefinition.ObjectIDProperty)));
       Assert.That (comparedColumnValues[0].Value, Is.SameAs (dataContainer.ID.Value));
-      if (dataContainer.PropertyValues.Cast<PropertyValue>().All (propertyValue => !propertyValue.Definition.IsObjectID))
+      if (dataContainer.ClassDefinition.GetPropertyDefinitions().All (propertyDefinition => !propertyDefinition.IsObjectID))
       {
         Assert.That (comparedColumnValues[1].Column, Is.SameAs (StoragePropertyDefinitionTestHelper.GetSingleColumn (tableDefinition.TimestampProperty)));
         Assert.That (comparedColumnValues[1].Value, Is.SameAs (dataContainer.Timestamp));

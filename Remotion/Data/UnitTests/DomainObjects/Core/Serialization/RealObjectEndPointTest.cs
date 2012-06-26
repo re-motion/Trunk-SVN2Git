@@ -82,18 +82,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       var id = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
       var endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithLazyLoad (id);
-      Assert.That (endPoint.ForeignKeyProperty, Is.Not.Null);
+      Assert.That (endPoint.PropertyDefinition, Is.Not.Null);
 
       var deserializedEndPoint = FlattenedSerializer.SerializeAndDeserialize (endPoint);
 
+      Assert.That (deserializedEndPoint.PropertyDefinition, Is.SameAs (endPoint.PropertyDefinition));
       Assert.That (deserializedEndPoint.ForeignKeyDataContainer, Is.Not.Null);
-      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Not.Null);
-      var expectedForeignKeyProperty = deserializedEndPoint.ForeignKeyDataContainer.PropertyValues[typeof (OrderTicket) + ".Order"];
-      Assert.That (deserializedEndPoint.ForeignKeyProperty,  Is.SameAs (expectedForeignKeyProperty));
     }
 
     [Test]
-    public void ForeignKeyProperty_IntegrationWithDataManager ()
+    public void ForeignKeyDataContainer_IntegrationWithDataManager ()
     {
       OrderTicket.GetObject (DomainObjectIDs.OrderTicket1);
       var id = RelationEndPointID.Create(DomainObjectIDs.OrderTicket1, typeof (OrderTicket) + ".Order");
@@ -104,11 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 
       Assert.That (deserializedEndPoint.ForeignKeyDataContainer, Is.Not.Null);
       Assert.That (deserializedEndPoint.ForeignKeyDataContainer, Is.SameAs (deserializedDataManager.DataContainers[DomainObjectIDs.OrderTicket1]));
-      
-      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.Not.Null);
-      var expectedForeignKeyProperty = deserializedEndPoint.ForeignKeyDataContainer.PropertyValues[typeof (OrderTicket) + ".Order"];
-      Assert.That (deserializedEndPoint.ForeignKeyProperty, Is.SameAs (expectedForeignKeyProperty));
-    }
+          }
 
     [Test]
     public void SyncState ()

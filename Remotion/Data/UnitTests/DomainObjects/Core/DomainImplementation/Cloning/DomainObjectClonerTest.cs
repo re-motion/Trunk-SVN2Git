@@ -21,7 +21,6 @@ using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation.Cloning;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -162,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     [Test]
     public void CreateValueClone_OriginalValueNotCloned ()
     {
-      _classWithAllDataTypes.Int32Property = 2 * _classWithAllDataTypes.Int32Property;
+      _classWithAllDataTypes.Int32Property = -2;
       ClassWithAllDataTypes clone = _cloner.CreateValueClone (_classWithAllDataTypes);
 
       Assert.That (clone.Int32Property, Is.EqualTo (_classWithAllDataTypes.Int32Property));
@@ -185,7 +184,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       Computer clone = _cloner.CreateValueClone (_computer1);
       Assert.That (_computer1.Employee, Is.Not.Null);
       Assert.That (clone.Employee, Is.Null);
-      Assert.That (clone.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")].Value, Is.Null);
     }
 
     [Test]
@@ -194,7 +192,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       Computer clone = _cloner.CreateValueClone (_computer1);
       Assert.That (_computer1.Employee, Is.Not.Null);
       Assert.That (clone.Properties[typeof (Computer), "Employee"].GetOriginalValue<Employee> (), Is.Null);
-      Assert.That (clone.InternalDataContainer.PropertyValues[ReflectionMappingHelper.GetPropertyName (typeof (Computer), "Employee")].OriginalValue, Is.Null);
     }
 
     [Test]

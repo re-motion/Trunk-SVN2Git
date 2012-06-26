@@ -35,8 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       if (foreignKeyObject != null)
       {
         Assert.IsFalse (
-            foreignKeyObject.InternalDataContainer.PropertyValues[foreignKeyObject.GetPublicDomainObjectType() + "." + simpleForeignKeyPropertyName].
-                HasBeenTouched,
+            foreignKeyObject.Properties[foreignKeyObject.GetPublicDomainObjectType(), simpleForeignKeyPropertyName].HasBeenTouched,
             "ObjectID before modification");
       }
 
@@ -48,8 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       if (foreignKeyObject != null)
       {
         Assert.IsTrue (
-            foreignKeyObject.InternalDataContainer.PropertyValues[foreignKeyObject.GetPublicDomainObjectType() + "." + simpleForeignKeyPropertyName].
-                HasBeenTouched,
+            foreignKeyObject.Properties[foreignKeyObject.GetPublicDomainObjectType(), simpleForeignKeyPropertyName].HasBeenTouched,
             "ObjectID after modification");
       }
 

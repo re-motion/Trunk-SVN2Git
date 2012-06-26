@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
@@ -43,13 +44,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.AreEqual (expectedContainer.DomainObjectType, actualContainer.DomainObjectType, "DomainObjectType");
       Assert.AreEqual (expectedContainer.State, actualContainer.State, "State");
 
-      Assert.AreEqual (expectedContainer.PropertyValues.Count, actualContainer.PropertyValues.Count,
-          "PropertyValues.Count");
-
       PropertyValueChecker valueChecker = new PropertyValueChecker ();
-      foreach (PropertyValue expectedPropertyValue in expectedContainer.PropertyValues)
+      foreach (var expectedPropertyValue in expectedContainer.ClassDefinition.GetPropertyDefinitions())
       {
-        valueChecker.Check (expectedPropertyValue, actualContainer.PropertyValues[expectedPropertyValue.Name]);
+        valueChecker.Check (expectedPropertyValue, expectedContainer, actualContainer);
       }
     }
   }

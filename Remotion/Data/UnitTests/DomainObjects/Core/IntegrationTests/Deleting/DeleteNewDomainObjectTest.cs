@@ -31,9 +31,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
   {
     private Order _newOrder;
     private DataContainer _newOrderContainer;
-    private PropertyValueCollection _newOrderPropertyValues;
-    private PropertyValue _orderNumberValue;
     private OrderTicket _newOrderTicket;
+
+    private PropertyDefinition _orderNumberProperty;
 
     public override void SetUp ()
     {
@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 
       _newOrder = Order.NewObject ();
       _newOrderContainer = _newOrder.InternalDataContainer;
-      _newOrderPropertyValues = _newOrderContainer.PropertyValues;
-      _orderNumberValue = _newOrderPropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
       _newOrderTicket = OrderTicket.NewObject (_newOrder);
+
+      _orderNumberProperty = GetPropertyDefinition (typeof (Order), "OrderNumber");
     }
 
     [Test]
@@ -208,14 +208,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void DataContainerPropertyValues ()
-    {
-      _newOrder.Delete ();
-      PropertyValueCollection propertyValues = _newOrderContainer.PropertyValues;
-    }
-
-    [Test]
     public void DataContainerState ()
     {
       _newOrder.Delete ();
@@ -252,138 +244,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
 
     [Test]
     [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionContainsPropertyName ()
-    {
-      _newOrder.Delete ();
-      bool contains = _newOrderPropertyValues.Contains ("Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber");
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionContainsPropertyValue ()
-    {
-      PropertyValue propertyValue = _newOrderPropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-
-      _newOrder.Delete ();
-
-      bool contains = _newOrderPropertyValues.Contains (propertyValue);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionInt32Indexer ()
-    {
-      _newOrder.Delete ();
-      PropertyValue propertyValue = _newOrderPropertyValues[0];
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionStringIndexer ()
-    {
-      _newOrder.Delete ();
-      PropertyValue propertyValue = _newOrderPropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionAdd ()
-    {
-      PropertyValue propertyValue = _newOrderPropertyValues[0];
-
-      _newOrder.Delete ();
-
-      _newOrderPropertyValues.Add (propertyValue);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionCopyTo ()
-    {
-      _newOrder.Delete ();
-
-      _newOrderPropertyValues.CopyTo (new object[0], 0);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionCount ()
-    {
-      _newOrder.Delete ();
-
-      int count = _newOrderPropertyValues.Count;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionGetEnumerator ()
-    {
-      _newOrder.Delete ();
-
-      IEnumerator enumerator = _newOrderPropertyValues.GetEnumerator ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionIsReadOnly ()
-    {
-      _newOrder.Delete ();
-
-      bool isReadOnly = _newOrderPropertyValues.IsReadOnly;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionIsSynchronized ()
-    {
-      _newOrder.Delete ();
-
-      bool isSynchronized = _newOrderPropertyValues.IsSynchronized;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void PropertyValueCollectionSyncRoot ()
-    {
-      _newOrder.Delete ();
-
-      object syncRoot = _newOrderPropertyValues.SyncRoot;
-    }
-
-    [Test]
-    public void PropertyValueCollectionIsDiscarded ()
-    {
-      PropertyValueCollection propertyValueCollection = _newOrder.InternalDataContainer.PropertyValues;
-      Assert.IsFalse (propertyValueCollection.IsDiscarded);
-
-      _newOrder.Delete ();
-
-      Assert.IsTrue (propertyValueCollection.IsDiscarded);
-    }
-
-    [Test]
-    public void PropertyValueDefinition ()
-    {
-      _newOrder.Delete ();
-
-      Dev.Null = _orderNumberValue.Definition;
-    }
-
-    [Test]
-    public void PropertyValueName ()
-    {
-      _newOrder.Delete ();
-
-      Dev.Null = _orderNumberValue.Name;
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
     public void PropertyValueGetValue ()
     {
       _newOrder.Delete ();
 
-      object value = _orderNumberValue.Value;
+      Dev.Null = _newOrderContainer.GetValue (_orderNumberProperty);
     }
 
     [Test]
@@ -392,7 +257,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     {
       _newOrder.Delete ();
 
-      _orderNumberValue.Value = 10;
+      _newOrderContainer.SetValue (_orderNumberProperty, 10);
     }
 
     [Test]
@@ -401,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     {
       _newOrder.Delete ();
 
-      object originalValue = _orderNumberValue.OriginalValue;
+      Dev.Null = _newOrderContainer.GetValue (_orderNumberProperty, ValueAccess.Original);
     }
 
     [Test]
@@ -410,7 +275,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     {
       _newOrder.Delete ();
 
-      bool hasChanged = _orderNumberValue.HasChanged;
+      bool hasChanged = _newOrderContainer.HasValueChanged (_orderNumberProperty);
     }
 
     [Test]
@@ -419,18 +284,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     {
       _newOrder.Delete ();
 
-      bool hasBeenTouched = _orderNumberValue.HasBeenTouched;
-    }
-
-    [Test]
-    public void PropertyValueIsDiscarded ()
-    {
-      PropertyValue propertyValue = _newOrder.InternalDataContainer.PropertyValues[0];
-      Assert.IsFalse (propertyValue.IsDiscarded);
-
-      _newOrder.Delete ();
-
-      Assert.IsTrue (propertyValue.IsDiscarded);
+      bool hasBeenTouched = _newOrderContainer.HasValueBeenTouched (_orderNumberProperty);
     }
 
     [Test]

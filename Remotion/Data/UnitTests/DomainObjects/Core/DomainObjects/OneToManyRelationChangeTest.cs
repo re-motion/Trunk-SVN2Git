@@ -371,14 +371,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     {
       Order newOrder = Order.NewObject ();
       
-      Assert.IsFalse (newOrder.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"].HasBeenTouched, "newOrder ObjectID touched");
+      Assert.IsFalse (newOrder.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Order), "Customer")), "newOrder ObjectID touched");
 
       CheckTouching (delegate { _oldCustomer.Orders[_oldCustomer.Orders.IndexOf (_order1)] = newOrder; }, _order1, "Customer",
         RelationEndPointID.Create(_order1.ID, typeof (Order).FullName + ".Customer"),
         RelationEndPointID.Create(newOrder.ID, typeof (Order).FullName + ".Customer"),
         RelationEndPointID.Create(_oldCustomer.ID, typeof (Customer).FullName + ".Orders"));
-      
-      Assert.IsTrue (newOrder.InternalDataContainer.PropertyValues[typeof (Order).FullName + ".Customer"].HasBeenTouched, "newOrder ObjectID touched");
+
+      Assert.IsTrue (newOrder.InternalDataContainer.HasValueBeenTouched (GetPropertyDefinition (typeof (Order), "Customer")), "newOrder ObjectID touched");
     }
 
     [Test]

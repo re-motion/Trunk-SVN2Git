@@ -164,10 +164,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       DataContainer container = Provider.LoadDataContainer (id).LocatedObject;
 
-      PropertyValue actualPropertyValue = container.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional"];
-
-      Assert.IsNotNull (actualPropertyValue, "PropertyValue");
-      Assert.IsNull (actualPropertyValue.Value, "PropertyValue.Value");
+      Assert.IsNull (container.GetValue (GetPropertyDefinition (typeof (ClassWithValidRelations), "ClassWithGuidKeyOptional")), "PropertyValue.Value");
     }
 
     [Test]

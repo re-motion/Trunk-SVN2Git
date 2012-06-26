@@ -25,7 +25,6 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
-using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
@@ -795,8 +794,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       _order1.OrderNumber = newOrderNumber;
       Dev.Null = _order1.OrderNumber;
-      Dev.Null =
-          (int) _order1.InternalDataContainer.PropertyValues["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"].OriginalValue;
+      Dev.Null = _order1.Properties[typeof (Order), "OrderNumber"].GetOriginalValueWithoutTypeCheck ();
 
       _mockRepository.VerifyAll();
     }
@@ -842,8 +840,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       DataContainer order1DC = _order1.GetInternalDataContainerForTransaction (_subTransaction);
 
       var domainObjectMockEventReceiver = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
-      var propertyValueCollectionMockEventReceiver =
-          _mockRepository.StrictMock<PropertyValueCollectionMockEventReceiver> (order1DC.PropertyValues);
       var propertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
       using (_mockRepository.Ordered())
@@ -860,15 +856,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         domainObjectMockEventReceiver.PropertyChanging (null, null);
         LastCall.IgnoreArguments();
 
-        propertyValueCollectionMockEventReceiver.PropertyChanging (null, null);
-        LastCall.IgnoreArguments();
 
 
         // "Changed" notifications
 
-
-        propertyValueCollectionMockEventReceiver.PropertyChanged (null, null);
-        LastCall.IgnoreArguments();
 
         domainObjectMockEventReceiver.PropertyChanged (null, null);
         LastCall.IgnoreArguments();

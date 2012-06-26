@@ -81,13 +81,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateExistingForeignKeyDataContainer (endPointID, DomainObjectIDs.Order2);
-      var foreignKeyProperty = dataContainer.PropertyValues[endPointID.Definition.PropertyName];
+      var foreignKeyProperty = GetPropertyDefinition (typeof (OrderTicket), "Order");
 
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
 
       var endPoint = (RealObjectEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
       Assert.That (endPoint, Is.Not.Null);
-      Assert.That (endPoint.ForeignKeyProperty, Is.SameAs (foreignKeyProperty));
+      Assert.That (endPoint.PropertyDefinition, Is.EqualTo (foreignKeyProperty));
       Assert.That (endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
     }
 
@@ -161,12 +161,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
       var dataContainer = RelationEndPointTestHelper.CreateNewDataContainer (endPointID);
+      var foreignKeyProperty = GetPropertyDefinition (typeof (OrderTicket), "Order");
 
       _relationEndPointManager.RegisterEndPointsForDataContainer (dataContainer);
 
       var objectEndPoint = (RealObjectEndPoint) _relationEndPointManager.RelationEndPoints[endPointID];
-      Assert.That (objectEndPoint.ForeignKeyProperty, Is.Not.Null);
-      Assert.That (objectEndPoint.ForeignKeyProperty, Is.SameAs (dataContainer.PropertyValues[typeof (OrderTicket) + ".Order"]));
+      Assert.That (objectEndPoint.PropertyDefinition, Is.EqualTo (foreignKeyProperty));
     }
 
     [Test]

@@ -205,7 +205,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       var thisDataContainer = DataContainer.CreateForExisting (
           parentDataContainer.ID, 
           parentDataContainer.Timestamp, 
-          pd => parentDataContainer.PropertyValues[pd.PropertyName].GetValueWithoutEvents (ValueAccess.Current));
+          pd => parentDataContainer.GetValueWithoutEvents (pd, ValueAccess.Current));
 
       Assertion.IsTrue (thisDataContainer.State == StateType.Unchanged);
       return thisDataContainer;

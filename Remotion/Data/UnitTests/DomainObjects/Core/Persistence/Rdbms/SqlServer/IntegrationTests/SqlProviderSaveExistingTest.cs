@@ -361,11 +361,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DataContainer orderContainer = LoadDataContainer (DomainObjectIDs.Order1);
 
-      PropertyDefinition newDefinition =
-          MappingConfiguration.Current.GetTypeDefinition (typeof (OrderItem))["Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem.Product"];
-
-      orderContainer.PropertyValues.Add (new PropertyValue (newDefinition, "Raumschiff"));
-      SetPropertyValue (orderContainer, typeof (OrderItem), "Product", "Auto");
+      SetPropertyValue (orderContainer, typeof (Order), "Customer", new ObjectID (typeof (Customer), Guid.NewGuid()));
 
       Provider.Save (new[] { orderContainer });
     }

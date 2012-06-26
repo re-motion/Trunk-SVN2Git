@@ -136,7 +136,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _hasBeenMarkedChanged; }
     }
 
-    public object GetValue (PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    public object GetValue (PropertyDefinition propertyDefinition, ValueAccess valueAccess = ValueAccess.Current)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       CheckNotDiscarded ();
@@ -157,7 +157,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       propertyValue.Value = value;
     }
 
-    public object GetValueWithoutEvents (PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    public object GetValueWithoutEvents (PropertyDefinition propertyDefinition, ValueAccess valueAccess = ValueAccess.Current)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       CheckNotDiscarded ();
@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return propertyValue.HasBeenTouched;
     }
 
-    public object HasValueChanged (PropertyDefinition propertyDefinition)
+    public bool HasValueChanged (PropertyDefinition propertyDefinition)
     {
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       CheckNotDiscarded ();
@@ -300,22 +300,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return _id.ClassDefinition.ClassType;
       }
     }
-
-
-    /// <summary>
-    /// Gets the <see cref="PropertyValueCollection"/> of all <see cref="PropertyValue"/>s that are part of the <see cref="DataContainer"/>.
-    /// </summary>
-    /// <exception cref="ObjectInvalidException">The <see cref="DomainObject"/> is invalid and its <see cref="DataContainer"/> has been discarded. 
-    /// See <see cref="ObjectInvalidException"/> for further information.</exception>
-    public PropertyValueCollection PropertyValues
-    {
-      get
-      {
-        CheckNotDiscarded();
-        return _propertyValues;
-      }
-    }
-
 
     /// <summary>
     /// Gets the state of the <see cref="DataContainer"/>.
@@ -555,6 +539,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _eventListener.PropertyValueRead (this, propertyValue.Definition, value, valueAccess);
     }
 
+    internal PropertyValue GetPropertyValue (PropertyDefinition propertyDefinition)
+    {
+      try
+      {
+        return _propertyValues[propertyDefinition.PropertyName];
+      }
+      catch (ArgumentException ex)
+      {
+        var message = string.Format ("Property '{0}' does not exist.", propertyDefinition.PropertyName);
+        throw new ArgumentException (message, "propertyDefinition", ex);
+      }
+    }
+
     private void CheckNotDiscarded ()
     {
       if (_isDiscarded)
@@ -596,19 +593,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (_eventListener != null)
         _eventListener.StateUpdated (this, state);
-    }
-
-    private PropertyValue GetPropertyValue (PropertyDefinition propertyDefinition)
-    {
-      try
-      {
-        return _propertyValues[propertyDefinition.PropertyName];
-      }
-      catch (ArgumentException ex)
-      {
-        var message = string.Format ("Property '{0}' does not exist.", propertyDefinition.PropertyName);
-        throw new ArgumentException (message, "propertyDefinition", ex);
-      }
     }
 
     #region Serialization

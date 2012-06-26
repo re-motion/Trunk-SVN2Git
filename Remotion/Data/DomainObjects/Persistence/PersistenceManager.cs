@@ -246,17 +246,15 @@ namespace Remotion.Data.DomainObjects.Persistence
         RelationEndPointID relationEndPointID,
         DataContainer oppositeDataContainer)
     {
-      var objectID =
-          (ObjectID)
-          oppositeDataContainer.PropertyValues[relationEndPointID.Definition.GetOppositeEndPointDefinition().PropertyName].GetValueWithoutEvents (
-              ValueAccess.Current);
+      var oppositeEndPointDefinition = (RelationEndPointDefinition) relationEndPointID.Definition.GetOppositeEndPointDefinition();
+      var objectID = (ObjectID) oppositeDataContainer.GetValueWithoutEvents (oppositeEndPointDefinition.PropertyDefinition, ValueAccess.Current);
 
       if (relationEndPointID.ObjectID.ClassID != objectID.ClassID)
       {
         throw CreatePersistenceException (
             "The property '{0}' of the loaded DataContainer '{1}'"
             + " refers to ClassID '{2}', but the actual ClassID is '{3}'.",
-            relationEndPointID.Definition.GetOppositeEndPointDefinition().PropertyName,
+            oppositeEndPointDefinition.PropertyName,
             oppositeDataContainer.ID,
             objectID.ClassID,
             relationEndPointID.ObjectID.ClassID);

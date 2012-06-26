@@ -33,7 +33,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     [Test]
     public void Import_DeserializesData ()
     {
-      string orderNumberIdentifier = ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber");
+      var orderNumberPropertyDefinition = GetPropertyDefinition (typeof (Order), "OrderNumber");
 
       DataContainer expectedContainer1 = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       DataContainer expectedContainer2 = Order.GetObject (DomainObjectIDs.Order2).InternalDataContainer;
@@ -43,12 +43,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       Assert.AreEqual (2, items.Length);
 
       Assert.AreEqual (expectedContainer1.ID, items[0].ID);
-      Assert.AreEqual (expectedContainer1.PropertyValues.Count, items[0].Properties.Count);
-      Assert.AreEqual (expectedContainer1.PropertyValues[orderNumberIdentifier].Value, items[0].Properties[orderNumberIdentifier]);
+      Assert.AreEqual (expectedContainer1.GetValue (orderNumberPropertyDefinition), items[0].Properties[orderNumberPropertyDefinition.PropertyName]);
 
       Assert.AreEqual (expectedContainer2.ID, items[1].ID);
-      Assert.AreEqual (expectedContainer2.PropertyValues.Count, items[1].Properties.Count);
-      Assert.AreEqual (expectedContainer2.PropertyValues[orderNumberIdentifier].Value, items[1].Properties[orderNumberIdentifier]);
+      Assert.AreEqual (expectedContainer2.GetValue (orderNumberPropertyDefinition), items[1].Properties[orderNumberPropertyDefinition.PropertyName]);
     }
 
     [Test]

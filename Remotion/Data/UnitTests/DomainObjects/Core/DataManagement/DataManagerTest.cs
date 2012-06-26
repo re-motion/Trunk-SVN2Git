@@ -26,7 +26,6 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Linq;
@@ -85,8 +84,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Unchanged));
 
-      var propertyName = ReflectionMappingHelper.GetPropertyName (typeof (Order), "OrderNumber");
-      _dataManager.DataContainers[order1.ID].PropertyValues[propertyName].Value = 100;
+      var propertyName = GetPropertyDefinition (typeof (Order), "OrderNumber");
+      _dataManager.DataContainers[order1.ID].SetValue (propertyName, 100);
 
       Assert.That (_dataManager.DomainObjectStateCache.GetState (order1.ID), Is.EqualTo (StateType.Changed));
     }

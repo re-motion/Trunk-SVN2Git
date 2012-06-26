@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
@@ -37,32 +38,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 
     // methods and properties
 
-    public void Check (PropertyValue expectedValue, PropertyValue actualValue)
+    public void Check (PropertyDefinition propertyDefinition, DataContainer containerWithExpectedValue, DataContainer actualContainer)
     {
-      Assert.IsNotNull (actualValue, expectedValue.Name);
-      Assert.AreEqual (expectedValue.Name, actualValue.Name, "Name");
+      var expectedValue = containerWithExpectedValue.GetValue (propertyDefinition);
+      var actualValue = actualContainer.GetValue (propertyDefinition);
+      AreValuesEqual (
+          expectedValue,
+          actualValue,
+          string.Format ("Value, expected property name: '{0}'", propertyDefinition.PropertyName));
 
-      AreValuesEqual (expectedValue.Value, actualValue.Value, string.Format ("Value, expected property name: '{0}'", expectedValue.Name));
-
-      if (expectedValue.Value != null)
+      if (expectedValue != null)
       {
-        Assert.AreEqual (expectedValue.Value.GetType (), actualValue.Value.GetType (),
-            string.Format ("Type of Value, expected property name: '{0}'", expectedValue.Name));
+        Assert.AreEqual (expectedValue.GetType (), actualValue.GetType (),
+            string.Format ("Type of Value, expected property name: '{0}'", propertyDefinition.PropertyName));
       }
 
-      AreValuesEqual (expectedValue.OriginalValue, actualValue.OriginalValue, string.Format ("OriginalValue, expected property name: '{0}'", expectedValue.Name));
+      var expectedOriginalValue = containerWithExpectedValue.GetValue (propertyDefinition, ValueAccess.Original);
+      var actualOriginalValue = actualContainer.GetValue (propertyDefinition, ValueAccess.Original);
+      AreValuesEqual (expectedOriginalValue, actualOriginalValue, string.Format ("OriginalValue, expected property name: '{0}'", propertyDefinition.PropertyName));
 
-      if (expectedValue.OriginalValue != null)
+      if (expectedOriginalValue != null)
       {
-        Assert.AreEqual (expectedValue.OriginalValue.GetType (), actualValue.OriginalValue.GetType (),
-            string.Format ("Type of OriginalValue, expected property name: '{0}'", expectedValue.Name));
+        Assert.AreEqual (expectedOriginalValue.GetType (), actualOriginalValue.GetType (),
+            string.Format ("Type of OriginalValue, expected property name: '{0}'", propertyDefinition.PropertyName));
       }
 
-      Assert.AreEqual (expectedValue.HasChanged, actualValue.HasChanged,
-          string.Format ("HasChanged, expected property name: '{0}'", expectedValue.Name));
+      Assert.AreEqual (containerWithExpectedValue.HasValueChanged (propertyDefinition), actualContainer.HasValueChanged (propertyDefinition),
+          string.Format ("HasChanged, expected property name: '{0}'", propertyDefinition.PropertyName));
 
-      Assert.AreEqual (expectedValue.HasBeenTouched, actualValue.HasBeenTouched,
-          string.Format ("HasBeenTouched, expected property name: '{0}'", expectedValue.Name));
+      Assert.AreEqual (containerWithExpectedValue.HasValueBeenTouched (propertyDefinition), actualContainer.HasValueBeenTouched (propertyDefinition),
+          string.Format ("HasBeenTouched, expected property name: '{0}'", propertyDefinition.PropertyName));
     }
 
     private void AreValuesEqual (object expected, object actual, string message)

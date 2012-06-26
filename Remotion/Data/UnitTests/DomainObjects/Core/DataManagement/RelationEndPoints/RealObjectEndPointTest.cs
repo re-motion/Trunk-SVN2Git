@@ -66,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     [Test]
     [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The foreign key data container must be compatible with the end point definition.\r\nParameter name: foreignKeyDataContainer")]
+        "The foreign key data container must be from the same object as the end point definition.\r\nParameter name: foreignKeyDataContainer")]
     public void Initialize_InvalidDataContainer ()
     {
       var id = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order");
@@ -108,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void OppositeObjectID_Get_FromProperty ()
     {
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
-      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
+      RealObjectEndPointTestHelper.SetValueViaDataContainer(_endPoint, DomainObjectIDs.Order2);
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
     }
@@ -137,19 +137,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void OppositeObjectID_Set_ToProperty ()
     {
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Not.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer(_endPoint), Is.Not.EqualTo (DomainObjectIDs.Order2));
 
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order2);
-      
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order2));
+
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer(_endPoint), Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]
     public void OriginalOppositeObjectID_Get_FromProperty ()
     {
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
       Assert.That (_endPoint.OriginalOppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
 
-      PrivateInvoke.SetNonPublicField (_endPoint.ForeignKeyProperty, "_originalValue", DomainObjectIDs.Order2);
+      _endPoint.ForeignKeyDataContainer.CommitState();
 
       Assert.That (_endPoint.OriginalOppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
     }
@@ -159,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (_endPoint.HasChanged, Is.False);
 
-      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
 
       Assert.That (_endPoint.HasChanged, Is.True);
     }
@@ -169,7 +170,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (_endPoint.HasBeenTouched, Is.False);
 
-      _endPoint.ForeignKeyProperty.Touch();
+      _endPoint.ForeignKeyDataContainer.TouchValue (_endPoint.PropertyDefinition);
 
       Assert.That (_endPoint.HasBeenTouched, Is.True);
     }
@@ -347,7 +348,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _syncStateMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (fakeResult));
 
-      _foreignKeyDataContainer.PropertyValues[_endPointID.Definition.PropertyName].Value = DomainObjectIDs.Order1;
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order1);
 
       Assert.That (_endPoint.OppositeObjectID, Is.Not.Null);
       oppositeObjectSetter ();
@@ -357,39 +358,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void Touch_ToProperty ()
     {
-      Assert.That (_endPoint.ForeignKeyProperty.HasBeenTouched, Is.False);
+      Assert.That (RealObjectEndPointTestHelper.HasBeenTouchedViaDataContainer (_endPoint), Is.False);
 
       _endPoint.Touch ();
 
-      Assert.That (_endPoint.ForeignKeyProperty.HasBeenTouched, Is.True);
+      Assert.That (RealObjectEndPointTestHelper.HasBeenTouchedViaDataContainer (_endPoint), Is.True);
     }
 
     [Test]
     public void Commit_ToProperty ()
     {
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Null);
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.Null);
 
-      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
-      Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.True);
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
+      Assert.That (RealObjectEndPointTestHelper.HasChangedViaDataContainer(_endPoint), Is.True);
 
       _endPoint.Commit ();
 
-      Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.False);
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.EqualTo (DomainObjectIDs.Order2));
+      Assert.That (RealObjectEndPointTestHelper.HasChangedViaDataContainer (_endPoint), Is.False);
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.EqualTo (DomainObjectIDs.Order2));
     }
 
     [Test]
     public void Rollback_ToProperty ()
     {
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Null);
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.Null);
 
-      _endPoint.ForeignKeyProperty.Value = DomainObjectIDs.Order2;
-      Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.True);
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (_endPoint, DomainObjectIDs.Order2);
+      Assert.That (RealObjectEndPointTestHelper.HasChangedViaDataContainer (_endPoint), Is.True);
 
       _endPoint.Rollback ();
 
-      Assert.That (_endPoint.ForeignKeyProperty.HasChanged, Is.False);
-      Assert.That (_endPoint.ForeignKeyProperty.Value, Is.Null);
+      Assert.That (RealObjectEndPointTestHelper.HasChangedViaDataContainer (_endPoint), Is.False);
+      Assert.That (RealObjectEndPointTestHelper.GetValueViaDataContainer (_endPoint), Is.Null);
     }
 
     [Test]
@@ -397,30 +398,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       Assert.That (_endPoint.OppositeObjectID, Is.Not.EqualTo (DomainObjectIDs.Order2));
       var sourceDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
-      var sourceForeignKeyProperty = sourceDataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")];
-      sourceForeignKeyProperty.Value = DomainObjectIDs.Order2;
+      
       var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub, _transactionEventSinkStub);
+      RealObjectEndPointTestHelper.SetValueViaDataContainer (source, DomainObjectIDs.Order2);
 
       PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
 
       Assert.That (_endPoint.OppositeObjectID, Is.EqualTo (DomainObjectIDs.Order2));
       Assert.That (_endPoint.HasChanged, Is.True);
-    }
-
-    [Test]
-    public void SetOppositeObjectDataFromSubTransaction_NoEvents ()
-    {
-      var accessObserver = new PropertyValueCollection();
-      accessObserver.Add (_endPoint.ForeignKeyProperty);
-      accessObserver.PropertyChanging += delegate { Assert.Fail ("Must not be called."); };
-      accessObserver.PropertyChanged += delegate { Assert.Fail ("Must not be called."); };
-
-      var sourceDataContainer = DataContainer.CreateForExisting (_endPointID.ObjectID, null, pd => pd.DefaultValue);
-      var sourceForeignKeyProperty = sourceDataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")];
-      sourceForeignKeyProperty.Value = DomainObjectIDs.Order2;
-      var source = new RealObjectEndPoint (TestableClientTransaction, _endPointID, sourceDataContainer, _endPointProviderStub, _transactionEventSinkStub);
-
-      PrivateInvoke.InvokeNonPublicMethod (_endPoint, "SetOppositeObjectDataFromSubTransaction", source);
     }
   }
 }

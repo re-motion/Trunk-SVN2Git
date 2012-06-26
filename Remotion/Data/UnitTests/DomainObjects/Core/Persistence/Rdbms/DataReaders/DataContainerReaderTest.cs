@@ -233,12 +233,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.DataReade
       Assert.That (dataContainer.ID, Is.EqualTo (expectedID));
       Assert.That (dataContainer.Timestamp, Is.EqualTo (expectedTimestamp));
 
-      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "FileName")].OriginalValue, Is.EqualTo (expectedFileName));
-      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "FileName")].Value, Is.EqualTo (expectedFileName));
-      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")].OriginalValue, Is.EqualTo (expectedOrder));
-      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Order")].Value, Is.EqualTo (expectedOrder));
-      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Int32TransactionProperty")].OriginalValue, Is.EqualTo (0));
-      Assert.That (dataContainer.PropertyValues[GetPropertyIdentifier (typeof (OrderTicket), "Int32TransactionProperty")].Value, Is.EqualTo (0));
+      Assert.That (dataContainer.GetValue (GetPropertyDefinition (typeof (OrderTicket), "FileName"), ValueAccess.Original), Is.EqualTo (expectedFileName));
+      Assert.That (dataContainer.GetValue (GetPropertyDefinition (typeof (OrderTicket), "FileName")), Is.EqualTo (expectedFileName));
+      Assert.That (dataContainer.GetValue (GetPropertyDefinition (typeof (OrderTicket), "Order"), ValueAccess.Original), Is.EqualTo (expectedOrder));
+      Assert.That (dataContainer.GetValue (GetPropertyDefinition (typeof (OrderTicket), "Order")), Is.EqualTo (expectedOrder));
+      Assert.That (dataContainer.GetValue (GetPropertyDefinition (typeof (OrderTicket), "Int32TransactionProperty"), ValueAccess.Original), Is.EqualTo (0));
+      Assert.That (dataContainer.GetValue (GetPropertyDefinition (typeof (OrderTicket), "Int32TransactionProperty")), Is.EqualTo (0));
     }
 
     private void ReplayAll()
