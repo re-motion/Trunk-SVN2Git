@@ -218,13 +218,13 @@
         <tr>
           <td><see cref="N:Remotion.Data.DomainObjects.ObjectBinding" /></td>
           <td>
-            An implementation of <see href="Remotion.ObjectBinding.html" /> interfaces for the DomainObjects framework.
+            An implementation of <see cref="N:Remotion.ObjectBinding" /> interfaces for the DomainObjects framework.
           </td>
         </tr>
         <tr>
-          <td><see cref="N:Remotion.Data.DomainObjects.ObjectBinding.Web" /></td>
+          <td><see cref="N:Remotion.Data.DomainObjects.Security" /></td>
           <td>
-            An implementation of <see href="Remotion.ObjectBinding.Web.html" /> classes for the DomainObjects framework.
+            An implementation of <see cref="N:Remotion.Security" /> classes for the DomainObjects framework.
           </td>
         </tr>
       </tbody>

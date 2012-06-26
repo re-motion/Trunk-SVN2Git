@@ -245,7 +245,7 @@
     </table>
     </div>
     For information on the browser compatibility of the controls, see the 
-    <see href="N_Remotion_ObjectBinding_Web_UI_Controls.html">Remotion.ObjectBinding.Web.UI.Controls</see> namespace.
+    <see cref="N:Remotion.ObjectBinding.Web.UI.Controls">Remotion.ObjectBinding.Web.UI.Controls</see> namespace.
   </summary>
     </member>
     <member name="N:Remotion.ObjectBinding.Web.UI.Controls">
@@ -546,7 +546,7 @@
     </table>
     </div>
     <para>
-      See the <see href="N_Remotion_Web_UI.html#wai">Remotion.Web.UI</see> namespace documentation for details 
+      See the <see cref="N:Remotion.Web.UI"/> namespace documentation for details 
       on enforcing WAI conformance.
     </para>
   </summary>

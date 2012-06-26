@@ -73,9 +73,7 @@
       all checkpoints related to inter-control relationships and the web application's content itself.
     </para><para>
       A list of WCAG conform controls can be found in the 
-      <see href="N_Remotion_Web_UI_Controls.html">Remotion.Web.UI.Controls</see> and
-      <see href="N_Remotion_ObjectBinding_Web_UI_Controls.html">Remotion.ObjectBinding.Web.UI.Controls</see> namespace 
-      documentation.
+      <see cref="N:Remotion.Web.UI.Controls"/> and <see cref="N:Remotion.ObjectBinding.Web.UI.Controls"/> namespace documentation.
     </para>
   </summary>
     </member>
@@ -174,7 +172,7 @@
     </table>
     </div>
     <para>
-      See the <see href="N_Remotion_Web_UI.html#wai">Remotion.Web.UI</see> namespace documentation for details 
+      See the <see cref="N:Remotion.Web.UI" /> namespace documentation for details 
       on enforcing WCAG conformance.
     </para>
   </summary>

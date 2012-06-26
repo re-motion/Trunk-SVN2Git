@@ -41,7 +41,7 @@
 
     <h3 class="dtH3">ObjectBinding, Mixins, and the Visual Studio Designer</h3>
     <para>
-      <B>Remotion.ObjectBinding</B> is designed to work together with types mixed via <see href="N_Remotion_Mixins.html">Remotion.Mixins</see>.
+      <B>Remotion.ObjectBinding</B> is designed to work together with types mixed via <see cref="N:Remotion.Mixins"/>.
       Its standard implementation of the object binding interfaces is supplied by a mixin that is configured via 
       <see cref="Remotion.ObjectBinding.BindableObjectAttribute" /> and <see cref="Remotion.ObjectBinding.BindableObjectWithIdentityAttribute" />.
       That standard implementation also supports binding of properties added by other mixins.
@@ -69,7 +69,7 @@
       If the object model is defined at compile time but has to be accessed by a generic data access layer, this is 
       also a use case for <b>Business Object Binding</b>. Generic data access is required when data binding is involved, 
       for instance to use the web controls provided by the 
-      <see href="N_Remotion_ObjectBinding_Web.html">Remotion.ObjectBinding.Web</see> namespace.
+      <see cref="N:Remotion.ObjectBinding.Web"/> namespace.
     </para><para>
       In addition to these obvious problems, an application often requires a greater set of meta data than the CLS 
       types can provide by themselves. For instance, a CLS property can only provide its data type and the implicit 
