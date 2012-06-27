@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Persistent");
-      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (0));
+      Assert.That (dc.GetValue (propertyDefinition), Is.EqualTo (0));
       Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (0));
     }
 
@@ -84,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Transaction");
-      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (0));
+      Assert.That (dc.GetValue (propertyDefinition), Is.EqualTo (0));
       Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (0));
     }
 
@@ -111,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           1,
           delegate { return 2; });
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Persistent");
-      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (2));
+      Assert.That (dc.GetValue (propertyDefinition), Is.EqualTo (2));
       Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (2));
     }
 
@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           1,
           delegate { return 2; });
       var propertyDefinition = GetPropertyDefinition (typeof (ClassWithPropertiesHavingStorageClassAttribute), "Transaction");
-      Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (2));
+      Assert.That (dc.GetValue (propertyDefinition), Is.EqualTo (2));
       Assert.That (dc.GetValue (propertyDefinition, ValueAccess.Original), Is.EqualTo (2));
     }
 
@@ -164,14 +164,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void GetValue_SetValue ()
     {
-      var valueBeforeChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current);
+      var valueBeforeChange = _existingDataContainer.GetValue (_orderNumberProperty);
       Assert.That (valueBeforeChange, Is.EqualTo (0));
       var originalValueBeforeChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original);
       Assert.That (originalValueBeforeChange, Is.EqualTo (0));
 
       _existingDataContainer.SetValue (_orderNumberProperty, 17);
 
-      var valueAfterChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current);
+      var valueAfterChange = _existingDataContainer.GetValue (_orderNumberProperty);
       Assert.That (valueAfterChange, Is.EqualTo (17));
       var originalValueAfterChange = _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original);
       Assert.That (originalValueAfterChange, Is.EqualTo (0));
@@ -209,14 +209,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _existingDataContainer.Discard();
 
-      Assert.That (() => _existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Throws.TypeOf<ObjectInvalidException>());
+      Assert.That (() => _existingDataContainer.GetValue (_orderNumberProperty), Throws.TypeOf<ObjectInvalidException>());
     }
 
     [Test]
     public void GetValue_InvalidProperty ()
     {
       Assert.That (
-          () => _existingDataContainer.GetValue (_nonOrderProperty, ValueAccess.Current), 
+          () => _existingDataContainer.GetValue (_nonOrderProperty), 
           Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
     }
 
@@ -268,7 +268,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
           mock => mock.PropertyValueChanged (
               Arg<DataContainer>.Is.Anything, Arg<PropertyDefinition>.Is.Anything, Arg<object>.Is.Anything, Arg<object>.Is.Anything));
 
-      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (0));
     }
 
     [Test]
@@ -457,7 +457,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void PropertyChange_StateUpdate_WithNewDataContainer ()
     {
       Assert.That (_newDataContainer.State, Is.EqualTo (StateType.New));
-      Assert.That (_newDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.Not.EqualTo (17));
+      Assert.That (_newDataContainer.GetValue (_orderNumberProperty), Is.Not.EqualTo (17));
 
       _newDataContainer.SetValue (_orderNumberProperty, 17);
 
@@ -534,8 +534,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var clone = original.Clone (DomainObjectIDs.Order2);
 
       Assert.That (
-          clone.ClassDefinition.GetPropertyDefinitions().Select (pd => clone.GetValue (pd, ValueAccess.Current)),
-          Is.EqualTo (clone.ClassDefinition.GetPropertyDefinitions().Select (pd => original.GetValue (pd, ValueAccess.Current))));
+          clone.ClassDefinition.GetPropertyDefinitions().Select (pd => clone.GetValue (pd)),
+          Is.EqualTo (clone.ClassDefinition.GetPropertyDefinitions().Select (pd => original.GetValue (pd))));
       Assert.That (
           clone.ClassDefinition.GetPropertyDefinitions().Select (pd => clone.GetValue (pd, ValueAccess.Original)),
           Is.EqualTo (clone.ClassDefinition.GetPropertyDefinitions().Select (pd => original.GetValue (pd, ValueAccess.Original))));
@@ -617,13 +617,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
       Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
-      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (10));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (10));
 
       _existingDataContainer.CommitState ();
 
       Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
       Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (10));
-      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (10));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (10));
     }
 
     [Test]
@@ -685,13 +685,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
       Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
-      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (10));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (10));
 
       _existingDataContainer.RollbackState ();
 
       Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
       Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
-      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (0));
     }
 
     [Test]
@@ -793,11 +793,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var sourceDataContainer = Order.GetObject (DomainObjectIDs.Order1).InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      Assert.That (newDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.Not.EqualTo (1));
+      Assert.That (newDataContainer.GetValue (_orderNumberProperty), Is.Not.EqualTo (1));
 
       newDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
-      Assert.That (newDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (1));
+      Assert.That (newDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (1));
     }
 
     [Test]
@@ -806,11 +806,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       var sourceDataContainer = OrderTicket.GetObject (DomainObjectIDs.OrderTicket1).InternalDataContainer;
       var newDataContainer = DataContainer.CreateNew (DomainObjectIDs.OrderTicket2);
       var propertyDefinition = GetPropertyDefinition (typeof (OrderTicket), "Order");
-      Assert.That (newDataContainer.GetValue (propertyDefinition, ValueAccess.Current), Is.Not.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (newDataContainer.GetValue (propertyDefinition), Is.Not.EqualTo (DomainObjectIDs.Order1));
 
       newDataContainer.SetPropertyDataFromSubTransaction (sourceDataContainer);
 
-      Assert.That (newDataContainer.GetValue (propertyDefinition, ValueAccess.Current), Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (newDataContainer.GetValue (propertyDefinition), Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]

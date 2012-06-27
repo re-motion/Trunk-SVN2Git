@@ -38,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     public static object GetValueViaDataContainer (RealObjectEndPoint realObjectEndPoint)
     {
-      return realObjectEndPoint.ForeignKeyDataContainer.GetValue (realObjectEndPoint.PropertyDefinition, ValueAccess.Current);
+      return realObjectEndPoint.ForeignKeyDataContainer.GetValue (realObjectEndPoint.PropertyDefinition);
     }
 
     public static void SetValueViaDataContainer (RealObjectEndPoint realObjectEndPoint, ObjectID objectID)

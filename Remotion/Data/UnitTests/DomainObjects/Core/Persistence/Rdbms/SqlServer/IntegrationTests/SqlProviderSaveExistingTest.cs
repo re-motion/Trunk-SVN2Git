@@ -577,7 +577,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Provider.Save (new[] { savedComputerContainer });
 
       DataContainer reloadedComputerContainer = ReloadDataContainer (DomainObjectIDs.Computer1);
-      Assert.IsNull (reloadedComputerContainer.GetValue (propertyDefinition, ValueAccess.Current));
+      Assert.IsNull (reloadedComputerContainer.GetValue (propertyDefinition));
     }
 
     [Test]

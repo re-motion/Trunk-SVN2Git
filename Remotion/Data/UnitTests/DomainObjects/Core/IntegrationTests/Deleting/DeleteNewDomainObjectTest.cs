@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     public void DataContainerGetValue ()
     {
       _newOrder.Delete ();
-      _newOrderContainer.GetValue (GetPropertyDefinition (typeof (Order), "OrderNumber"), ValueAccess.Current);
+      _newOrderContainer.GetValue (GetPropertyDefinition (typeof (Order), "OrderNumber"));
     }
 
     [Test]

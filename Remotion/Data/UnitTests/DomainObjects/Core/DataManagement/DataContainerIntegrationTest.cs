@@ -39,7 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       var propertyDefinition = GetPropertyDefinition (typeof (Order), "Customer");
       _existingOrderDataContainer.SetValue (propertyDefinition, DomainObjectIDs.Customer1);
-      var id = (ObjectID) _existingOrderDataContainer.GetValue (propertyDefinition, ValueAccess.Current);
+      var id = (ObjectID) _existingOrderDataContainer.GetValue (propertyDefinition);
       Assert.That (id, Is.EqualTo (DomainObjectIDs.Customer1));
     }
 
@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     public void GetNullObjectID ()
     {
       var propertyDefinition = GetPropertyDefinition (typeof (Order), "Customer");
-      var id = (ObjectID) _existingOrderDataContainer.GetValue (propertyDefinition, ValueAccess.Current);
+      var id = (ObjectID) _existingOrderDataContainer.GetValue (propertyDefinition);
       Assert.That (id, Is.Null);
     }
 
@@ -57,9 +57,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       DataContainer dataContainer = TestDataContainerObjectMother.CreateClassWithAllDataTypes1DataContainer ();
 
       var propertyDefinition1 = GetPropertyDefinition (typeof (ClassWithAllDataTypes), "BinaryProperty");
-      ResourceManager.IsEqualToImage1 ((byte[]) dataContainer.GetValue (propertyDefinition1, ValueAccess.Current));
+      ResourceManager.IsEqualToImage1 ((byte[]) dataContainer.GetValue (propertyDefinition1));
       var propertyDefinition2 = GetPropertyDefinition (typeof (ClassWithAllDataTypes), "NullableBinaryProperty");
-      Assert.That (dataContainer.GetValue (propertyDefinition2, ValueAccess.Current), Is.Null);
+      Assert.That (dataContainer.GetValue (propertyDefinition2), Is.Null);
     }
 
     [Test]
@@ -69,11 +69,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       var propertyDefinition1 = GetPropertyDefinition (typeof (ClassWithAllDataTypes), "BinaryProperty");
       dataContainer.SetValue (propertyDefinition1, new byte[0]);
-      ResourceManager.IsEmptyImage ((byte[]) dataContainer.GetValue (propertyDefinition1, ValueAccess.Current));
+      ResourceManager.IsEmptyImage ((byte[]) dataContainer.GetValue (propertyDefinition1));
 
       var propertyDefinition2 = GetPropertyDefinition (typeof (ClassWithAllDataTypes), "NullableBinaryProperty");
       dataContainer.SetValue (propertyDefinition2, null);
-      Assert.That (dataContainer.GetValue (propertyDefinition2, ValueAccess.Current), Is.Null);
+      Assert.That (dataContainer.GetValue (propertyDefinition2), Is.Null);
     }
   }
 }

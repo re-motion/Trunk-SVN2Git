@@ -172,7 +172,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DataContainer orderTicketContainer = Provider.LoadDataContainer (DomainObjectIDs.OrderTicket1).LocatedObject;
       var propertyDefinition = GetPropertyDefinition (typeof (OrderTicket), "Order");
-      Assert.AreEqual (DomainObjectIDs.Order1, orderTicketContainer.GetValue (propertyDefinition, ValueAccess.Current));
+      Assert.AreEqual (DomainObjectIDs.Order1, orderTicketContainer.GetValue (propertyDefinition));
     }
 
     [Test]
@@ -180,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     {
       DataContainer ceoContainer = Provider.LoadDataContainer (DomainObjectIDs.Ceo7).LocatedObject;
       var propertyDefinition = GetPropertyDefinition (typeof (Ceo), "Company");
-      Assert.AreEqual (DomainObjectIDs.Partner2, ceoContainer.GetValue (propertyDefinition, ValueAccess.Current));
+      Assert.AreEqual (DomainObjectIDs.Partner2, ceoContainer.GetValue (propertyDefinition));
     }
 
     [Test]

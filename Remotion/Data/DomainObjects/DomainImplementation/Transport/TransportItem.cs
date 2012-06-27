@@ -40,7 +40,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
 
       TransportItem item = new TransportItem (container.ID);
       foreach (var propertyDefinition in container.ClassDefinition.GetPropertyDefinitions())
-        item.Properties.Add (propertyDefinition.PropertyName, container.GetValue (propertyDefinition, ValueAccess.Current));
+        item.Properties.Add (propertyDefinition.PropertyName, container.GetValue (propertyDefinition));
       return item;
     }
 

@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       DataContainer existingSubordinateContainer = ReloadDataContainer (existingDataContainer.ID);
 
       Assert.IsNotNull (newSupervisorContainer);
-      Assert.AreEqual (newSupervisorContainer.ID, existingSubordinateContainer.GetValue (supervisorProperty, ValueAccess.Current));
+      Assert.AreEqual (newSupervisorContainer.ID, existingSubordinateContainer.GetValue (supervisorProperty));
     }
 
     [Test]
@@ -269,8 +269,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       DataContainer loadedDataContainer = ReloadDataContainer (newDataContainer.ID);
 
       Assert.IsNotNull (loadedDataContainer);
-      Assert.AreEqual (DomainObjectIDs.Customer1, loadedDataContainer.GetValue (customerProperty, ValueAccess.Current));
-      Assert.AreEqual (DomainObjectIDs.Official1, loadedDataContainer.GetValue (officialProperty, ValueAccess.Current));
+      Assert.AreEqual (DomainObjectIDs.Customer1, loadedDataContainer.GetValue (customerProperty));
+      Assert.AreEqual (DomainObjectIDs.Official1, loadedDataContainer.GetValue (officialProperty));
     }
 
     [Test]
@@ -291,7 +291,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
 
       Assert.IsNotNull (reloadedCustomerContainer);
       Assert.IsNotNull (reloadedOrderContainer);
-      Assert.AreEqual (reloadedCustomerContainer.ID, reloadedOrderContainer.GetValue (customerProperty, ValueAccess.Current));
+      Assert.AreEqual (reloadedCustomerContainer.ID, reloadedOrderContainer.GetValue (customerProperty));
     }
 
     [Test]
@@ -307,7 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Provider.Save (new[] { dataContainer });
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
-      Assert.IsNull (reloadedDataContainer.GetValue (propertyDefinition, ValueAccess.Current));
+      Assert.IsNull (reloadedDataContainer.GetValue (propertyDefinition));
     }
 
     [Test]
@@ -323,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Provider.Save (new[] { dataContainer });
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
-      ResourceManager.IsEmptyImage ((byte[]) reloadedDataContainer.GetValue (propertyDefinition, ValueAccess.Current));
+      ResourceManager.IsEmptyImage ((byte[]) reloadedDataContainer.GetValue (propertyDefinition));
     }
 
     [Test]
@@ -339,7 +339,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       Provider.Save (new[] { dataContainer });
 
       DataContainer reloadedDataContainer = ReloadDataContainer (newID);
-      ResourceManager.IsEqualToImageLarger1MB ((byte[]) reloadedDataContainer.GetValue (propertyDefinition, ValueAccess.Current));
+      ResourceManager.IsEqualToImageLarger1MB ((byte[]) reloadedDataContainer.GetValue (propertyDefinition));
     }
 
     [Test]
