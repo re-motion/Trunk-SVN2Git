@@ -94,7 +94,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
 
     private readonly ObjectID _id;
-    private readonly PropertyValueCollection _propertyValues;
+    private readonly Dictionary<PropertyDefinition, PropertyValue> _propertyValues;
 
     private ClientTransaction _clientTransaction;
     private IDataContainerEventListener _eventListener;
@@ -126,9 +126,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _timestamp = timestamp;
       _state = state;
 
-      _propertyValues = new PropertyValueCollection ();
-      foreach (var propertyValue in propertyValues)
-        _propertyValues.Add (propertyValue);
+      _propertyValues = propertyValues.ToDictionary (pv => pv.Definition);
     }
 
     public bool HasBeenMarkedChanged
@@ -417,7 +415,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenMarkedChanged = false;
       _hasBeenChanged = false;
 
-      foreach (PropertyValue propertyValue in _propertyValues)
+      foreach (PropertyValue propertyValue in _propertyValues.Values)
         propertyValue.CommitState ();
 
       _state = DataContainerStateType.Existing;
@@ -434,7 +432,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenMarkedChanged = false;
       _hasBeenChanged = false;
 
-      foreach (PropertyValue propertyValue in _propertyValues)
+      foreach (PropertyValue propertyValue in _propertyValues.Values)
         propertyValue.RollbackState ();
 
       _state = DataContainerStateType.Existing;
@@ -455,8 +453,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Discard ()
     {
       CheckNotDiscarded ();
-
-      _propertyValues.Discard ();
 
       _isDiscarded = true;
       RaiseStateUpdatedNotification (StateType.Invalid);
@@ -480,8 +476,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "source");
       }
 
-      for (int i = 0; i < _propertyValues.Count; ++i)
-        _propertyValues[i].SetDataFromSubTransaction (source._propertyValues[i]);
+      foreach (var propertyValue in _propertyValues.Values)
+        propertyValue.SetDataFromSubTransaction (source.GetPropertyValue (propertyValue.Definition));
 
       _hasBeenChanged = CalculatePropertyValueChangeState ();
       RaiseStateUpdatedNotification (State);
@@ -556,9 +552,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       try
       {
-        return _propertyValues[propertyDefinition.PropertyName];
+        return _propertyValues[propertyDefinition];
       }
-      catch (ArgumentException ex)
+      catch (KeyNotFoundException ex)
       {
         var message = string.Format ("Property '{0}' does not exist.", propertyDefinition.PropertyName);
         throw new ArgumentException (message, "propertyDefinition", ex);
@@ -582,8 +578,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       CheckNotDiscarded();
 
-      var clonePropertyValues = from propertyValue in _propertyValues.Cast<PropertyValue>()
-                                select new PropertyValue (propertyValue.Definition, propertyValue.Value);
+      var clonePropertyValues = from kvp in _propertyValues
+                                select new PropertyValue (kvp.Key, kvp.Value.Value);
 
       var clone = new DataContainer (id, _state, _timestamp, clonePropertyValues);
 
@@ -597,7 +593,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     private bool CalculatePropertyValueChangeState ()
     {
-      return _propertyValues.Cast<PropertyValue> ().Any (pv => pv.HasChanged);
+      return _propertyValues.Values.Any (pv => pv.HasChanged);
     }
 
     private void RaiseStateUpdatedNotification (StateType state)
@@ -619,14 +615,19 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _timestamp = info.GetValue<object>();
       _isDiscarded = info.GetBoolValue ();
 
-      _propertyValues = new PropertyValueCollection ();
-      foreach (var propertyValue in GetDefaultPropertyValues (_id))
-        _propertyValues.Add (propertyValue);
+      _propertyValues = new Dictionary<PropertyDefinition, PropertyValue>();
 
       if (!_isDiscarded)
-        RestorePropertyValuesFromData (info);
-      
-      _propertyValues.RegisterForChangeNotification (this);
+      {
+        for (int i = 0; i < ClassDefinition.GetPropertyDefinitions ().Count (); ++i)
+        {
+          var propertyName = info.GetValueForHandle<string>();
+          var propertyDefinition = ClassDefinition.GetPropertyDefinition (propertyName);
+          var propertyValue = new PropertyValue (propertyDefinition);
+          propertyValue.DeserializeFromFlatStructure (info);
+          _propertyValues.Add (propertyDefinition, propertyValue);
+        }
+      }
 
       _clientTransaction = info.GetValueForHandle<ClientTransaction> ();
       _eventListener = info.GetValueForHandle<IDataContainerEventListener> ();
@@ -637,16 +638,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
     }
     // ReSharper restore UnusedMember.Local
 
-    private void RestorePropertyValuesFromData (FlattenedDeserializationInfo info)
-    {
-      int numberOfProperties = _propertyValues.Count;
-      for (int i = 0; i < numberOfProperties; ++i)
-      {
-        var propertyName = info.GetValueForHandle<string>();
-        _propertyValues[propertyName].DeserializeFromFlatStructure (info);
-      }
-    }
-
     void IFlattenedSerializable.SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
       info.AddHandle (_id);
@@ -654,10 +645,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddBoolValue (_isDiscarded);
       if (!_isDiscarded)
       {
-        foreach (PropertyValue propertyValue in _propertyValues)
+        foreach (var kvp in _propertyValues)
         {
-          info.AddHandle (propertyValue.Name);
-          propertyValue.SerializeIntoFlatStructure (info);
+          info.AddHandle (kvp.Key.PropertyName);
+          kvp.Value.SerializeIntoFlatStructure (info);
         }
       }
 
@@ -673,7 +664,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     #region Obsolete
     [Obsolete ("This method is obsolete. Use Clone (ObjectID id) instead. (1.13.39)", true)]
+// ReSharper disable UnusedParameter.Global
     public static DataContainer CreateAndCopyState (ObjectID id, DataContainer stateSource)
+// ReSharper restore UnusedParameter.Global
     {
       throw new NotImplementedException ();
     }

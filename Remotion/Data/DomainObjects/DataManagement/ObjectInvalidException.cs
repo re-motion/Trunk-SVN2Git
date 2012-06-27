@@ -41,18 +41,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 ///     above.
 ///   </description>
 /// </list>
-/// All objects that were associated with the invalid <see cref="DomainObject"/> are discarded. These objects are:
-/// <list type="buttons">
-///   <description>
-///     The <see cref="DataContainer"/> associated with the <see cref="DomainObject"/>.
-///   </description>
-///   <description>
-///     The <see cref="PropertyValueCollection"/> holding the properties of of the <see cref="DomainObject"/>.
-///   </description>
-///   <description>
-///     Each <see cref="PropertyValue"/> of the <see cref="DomainObject"/>.
-///   </description>
-/// </list>
+/// The <see cref="DataContainer"/> that was associated with the invalid <see cref="DomainObject"/> is discarded.
 /// </remarks>
 [Serializable]
 public class ObjectInvalidException : DomainObjectException

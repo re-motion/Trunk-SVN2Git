@@ -1438,9 +1438,6 @@
     <Compile Include="DomainObjects\Core\DataManagement\RelationEndPoints\ObjectEndPointTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\DataManagement\PropertyValueCollectionTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="DomainObjects\Core\DataManagement\PropertyValueTest.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1881,7 +1878,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\EventReceiver\DomainObjectMockEventReceiver.cs" />
-    <Compile Include="DomainObjects\Core\EventReceiver\PropertyValueCollectionMockEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionScopeTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CompoundClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionStateTransitionBaseTest.cs" />

@@ -944,9 +944,6 @@
     <Compile Include="DataManagement\PropertyValue.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataManagement\PropertyValueCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Queries\Configuration\QueryConfiguration.cs">
       <SubType>Code</SubType>
     </Compile>

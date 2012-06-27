@@ -609,22 +609,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void PropertyReadWithoutDataContainer ()
-    {
-      ClassDefinition orderClass = MappingConfiguration.Current.GetTypeDefinition (typeof (Order));
-      PropertyDefinition orderNumberDefinition =
-          orderClass.MyPropertyDefinitions["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber"];
-
-      var propertyValue = new PropertyValue (orderNumberDefinition);
-      var propertyValueCollection = new PropertyValueCollection();
-      propertyValueCollection.Add (propertyValue);
-
-      Dev.Null = (int) propertyValue.Value;
-
-      // Expectation: no exception
-    }
-
-    [Test]
     public void ReadObjectIDProperty ()
     {
       var customerPropertyDefinition = GetPropertyDefinition (typeof (Order), "Customer");

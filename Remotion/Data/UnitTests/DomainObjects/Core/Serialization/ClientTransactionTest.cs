@@ -53,23 +53,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     }
 
     [Test]
-    [ExpectedException (typeof (SerializationException), ExpectedMessage = "not marked as serializable", MatchType = MessageMatch.Contains)]
-    public void PropertyValueCollection ()
-    {
-      ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Customer));
-      PropertyDefinition propertyDefinition = classDefinition["Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.CustomerSince"];
-      PropertyValue value = new PropertyValue (propertyDefinition);
-
-      PropertyValueCollection collection = new PropertyValueCollection ();
-
-      collection.Add (value);
-
-      SerializeAndDeserialize (collection);
-    }
-
-    
-
-    [Test]
     public void DomainObjectTest ()
     {
       DomainObject domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
