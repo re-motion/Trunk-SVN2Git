@@ -16,13 +16,10 @@
 // 
 using System;
 using System.Collections;
-using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
-using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Design;
@@ -44,19 +41,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       :
           BocReferenceValueBase,
           IBocReferenceValue,
-          IResourceDispatchTarget,
           IFocusableControl
   {
     // constants
 
     /// <summary> The text displayed when control is displayed in desinger, is read-only, and has no contents. </summary>
     private const string c_designModeEmptyLabelContents = "##";
-
-    /// <summary> The key identifying a options menu item resource entry. </summary>
-    private const string c_resourceKeyOptionsMenuItems = "OptionsMenuItems";
-
-    /// <summary> The key identifying the command resource entry. </summary>
-    private const string c_resourceKeyCommand = "Command";
 
     private const string c_dropDownListIDPostfix = "Boc_DropDownList";
 
@@ -81,15 +71,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // static members
 
-    private static readonly ILog s_log = LogManager.GetLogger (MethodBase.GetCurrentMethod().DeclaringType);
-
     // member fields
 
     private bool _isBusinessObejectListPopulated;
 
-    private readonly Style _commonStyle;
     private readonly DropDownListStyle _dropDownListStyle;
-    private readonly Style _labelStyle;
 
     /// <summary> 
     ///   The object returned by <see cref="BocReferenceValue"/>. 
@@ -109,9 +95,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       EnableIcon = true;
       _listItems = new ListItemCollection();
-      _commonStyle = new Style();
       _dropDownListStyle = new DropDownListStyle();
-      _labelStyle = new Style();
     }
 
     // methods and properties
@@ -167,6 +151,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return UniqueID + IdSeparator + c_dropDownListIDPostfix; }
     }
 
+    public string DropDownListClientID
+    {
+      get { return ClientID + ClientIDSeparator + c_dropDownListIDPostfix; }
+    }
+
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
     protected override void RaisePostDataChangedEvent ()
     {
@@ -184,146 +173,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         OnSelectionChanged();
     }
 
-    /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>
-    /// <param name="values"> An <c>IDictonary</c>: &lt;string key, string value&gt;. </param>
-    void IResourceDispatchTarget.Dispatch (IDictionary values)
-    {
-      ArgumentUtility.CheckNotNull ("values", values);
-      Dispatch (values);
-    }
-
-    /// <summary> Dispatches the resources passed in <paramref name="values"/> to the control's properties. </summary>
-    /// <param name="values"> An <c>IDictonary</c>: &lt;string key, string value&gt;. </param>
-    protected virtual void Dispatch (IDictionary values)
-    {
-      HybridDictionary optionsMenuItemValues = new HybridDictionary();
-      HybridDictionary propertyValues = new HybridDictionary();
-      HybridDictionary commandValues = new HybridDictionary();
-
-      //  Parse the values
-
-      foreach (DictionaryEntry entry in values)
-      {
-        string key = (string) entry.Key;
-        string[] keyParts = key.Split (new[] { ':' }, 3);
-
-        //  Is a property/value entry?
-        if (keyParts.Length == 1)
-        {
-          string property = keyParts[0];
-          propertyValues.Add (property, entry.Value);
-        }
-            //  Is compound element entry
-        else if (keyParts.Length == 2)
-        {
-          //  Compound key: "elementID:property"
-          string elementID = keyParts[0];
-          string property = keyParts[1];
-
-          //  Switch to the right collection
-          switch (elementID)
-          {
-            case c_resourceKeyCommand:
-            {
-              commandValues.Add (property, entry.Value);
-              break;
-            }
-            default:
-            {
-              //  Invalid collection property
-              s_log.Debug (
-                  "BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page
-                  + "' does not contain an element named '" + elementID + "'.");
-              break;
-            }
-          }
-        }
-            //  Is collection entry?
-        else if (keyParts.Length == 3)
-        {
-          //  Compound key: "collectionID:elementID:property"
-          string collectionID = keyParts[0];
-          string elementID = keyParts[1];
-          string property = keyParts[2];
-
-          IDictionary currentCollection = null;
-
-          //  Switch to the right collection
-          switch (collectionID)
-          {
-            case c_resourceKeyOptionsMenuItems:
-            {
-              currentCollection = optionsMenuItemValues;
-              break;
-            }
-            default:
-            {
-              //  Invalid collection property
-              s_log.Debug (
-                  "BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page
-                  + "' does not contain a collection property named '" + collectionID + "'.");
-              break;
-            }
-          }
-
-          //  Add the property/value pair to the collection
-          if (currentCollection != null)
-          {
-            //  Get the dictonary for the current element
-            IDictionary elementValues = (IDictionary) currentCollection[elementID];
-
-            //  If no dictonary exists, create it and insert it into the elements hashtable.
-            if (elementValues == null)
-            {
-              elementValues = new HybridDictionary();
-              currentCollection[elementID] = elementValues;
-            }
-
-            //  Insert the argument and resource's value into the dictonary for the specified element.
-            elementValues.Add (property, entry.Value);
-          }
-        }
-        else
-        {
-          //  Not supported format or invalid property
-          s_log.Debug (
-              "BocReferenceValue '" + ID + "' in naming container '" + NamingContainer.GetType().FullName + "' on page '" + Page
-              + "' received a resource with an invalid or unknown key '" + key
-              + "'. Required format: 'property' or 'collectionID:elementID:property'.");
-        }
-      }
-
-      //  Dispatch simple properties
-      ResourceDispatcher.DispatchGeneric (this, propertyValues);
-
-      //  Dispatch compound element properties
-      if (Command != null)
-        ResourceDispatcher.DispatchGeneric (Command, commandValues);
-
-      //  Dispatch to collections
-      OptionsMenuItems.Dispatch (optionsMenuItemValues, this, "OptionsMenuItems");
-    }
-
     /// <summary> Loads the resources into the control's properties. </summary>
     protected override void LoadResources (IResourceManager resourceManager)
     {
       ArgumentUtility.CheckNotNull ("resourceManager", resourceManager);
 
+      if (IsDesignMode)
+        return;
+
       base.LoadResources (resourceManager);
 
-      string key;
-      key = ResourceManagerUtility.GetGlobalResourceKey (Select);
+      var key = ResourceManagerUtility.GetGlobalResourceKey (Select);
       if (! StringUtility.IsNullOrEmpty (key))
         Select = resourceManager.GetString (key);
-
-      key = ResourceManagerUtility.GetGlobalResourceKey (OptionsTitle);
-      if (! StringUtility.IsNullOrEmpty (key))
-        OptionsTitle = resourceManager.GetString (key);
-
-      if (Command != null)
-        Command.LoadResources (resourceManager);
-
-      OptionsMenuItems.LoadResources (resourceManager);
     }
 
     /// <summary> Checks whether the control conforms to the required WAI level. </summary>
@@ -430,11 +292,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     protected override IResourceManager GetResourceManager ()
     {
       return GetResourceManager (typeof (ResourceIdentifier));
-    }
-
-    IResourceManager IBocReferenceValueBase.GetResourceManager ()
-    {
-      return GetResourceManager();
     }
 
     protected override sealed string GetNullItemValidationMessage ()
@@ -551,7 +408,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    string IBocReferenceValueBase.GetLabelText ()
+    protected override string GetLabelText ()
     {
       string text;
       if (InternalValue != null)
@@ -637,28 +494,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsReadOnly ? null : DropDownListClientID; }
     }
 
-    /// <summary>
-    ///   Gets the style that you want to apply to the <see cref="DropDownList"/> (edit mode) 
-    ///   and the <see cref="Label"/> (read-only mode).
-    /// </summary>
-    /// <remarks>
-    ///   Use the <see cref="DropDownListStyle"/> and <see cref="LabelStyle"/> to assign individual 
-    ///   style settings for the respective modes. Note that if you set one of the <b>Font</b> 
-    ///   attributes (Bold, Italic etc.) to <see langword="true"/>, this cannot be overridden using 
-    ///   <see cref="DropDownListStyle"/> and <see cref="LabelStyle"/>  properties.
-    /// </remarks>
-    [Category ("Style")]
-    [Description ("The style that you want to apply to the DropDownList (edit mode) and the Label (read-only mode).")]
-    [NotifyParentProperty (true)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    public Style CommonStyle
-    {
-      get { return _commonStyle; }
-    }
-
     /// <summary> Gets the style that you want to apply to the <see cref="DropDownList"/> (edit mode) only. </summary>
-    /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
+    /// <remarks> These style settings override the styles defined in <see cref="BocReferenceValueBase.CommonStyle"/>. </remarks>
     [Category ("Style")]
     [Description ("The style that you want to apply to the DropDownList (edit mode) only.")]
     [NotifyParentProperty (true)]
@@ -667,18 +504,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public DropDownListStyle DropDownListStyle
     {
       get { return _dropDownListStyle; }
-    }
-
-    /// <summary> Gets the style that you want to apply to the <see cref="Label"/> (read-only mode) only. </summary>
-    /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
-    [Category ("Style")]
-    [Description ("The style that you want to apply to the Label (read-only mode) only.")]
-    [NotifyParentProperty (true)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    public Style LabelStyle
-    {
-      get { return _labelStyle; }
     }
 
     /// <summary> The search expression used to populate the selection list in edit mode. </summary>
@@ -763,52 +588,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    bool IBocRenderableControl.IsDesignMode
+    /// <summary>
+    ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
+    ///   <see cref="BocReferenceValueBase.TargetControl"/>.
+    /// </summary>
+    /// <value> Always <see langword="false"/>. </value>
+    public override bool UseLabel
     {
-      get { return IsDesignMode; }
-    }
-
-    bool IBocReferenceValueBase.HasOptionsMenu
-    {
-      get { return HasOptionsMenu; }
-    }
-
-    bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)
-    {
-      return IsCommandEnabled (readOnly);
-    }
-
-    DropDownMenu IBocReferenceValueBase.OptionsMenu
-    {
-      get { return OptionsMenu; }
-    }
-
-    IconInfo IBocReferenceValueBase.GetIcon ()
-    {
-      var businessObjectClass = GetBusinessObjectClass ();
-      if (businessObjectClass == null)
-        return null;
-      return GetIcon (Value, businessObjectClass.BusinessObjectProvider);
-    }
-
-    public string DropDownListClientID
-    {
-      get { return ClientID + ClientIDSeparator + c_dropDownListIDPostfix; }
-    }
-
-    string IBocReferenceValueBase.LabelClientID
-    {
-      get { return ClientID +  ClientIDSeparator + "Boc_Label"; }
-    }
-
-    string IBocReferenceValueBase.IconClientID
-    {
-      get { return ClientID +  ClientIDSeparator + "Boc_Icon"; }
-    }
-
-    string IBocReferenceValueBase.NullValueString
-    {
-      get { return c_nullIdentifier; }
+      get { return false; }
     }
   }
 }

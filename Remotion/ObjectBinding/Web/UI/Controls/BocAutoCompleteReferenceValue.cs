@@ -53,7 +53,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_textBoxIDPostfix = "Boc_TextBox";
     private const string c_hiddenFieldIDPostfix = "Boc_HiddenField";
     private const string c_buttonIDPostfix = "Boc_DropDownButton";
-    private const string c_iconIDPostfix = "Boc_Icon";
 
     // types
     
@@ -79,9 +78,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     // member fields
 
-    private readonly Style _commonStyle;
     private readonly SingleRowTextBoxStyle _textBoxStyle;
-    private readonly Style _labelStyle;
 
     /// <summary> 
     ///   The object returned by <see cref="BocReferenceValue"/>. 
@@ -111,9 +108,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public BocAutoCompleteReferenceValue ()
     {
-      _commonStyle = new Style();
       _textBoxStyle = new SingleRowTextBoxStyle();
-      _labelStyle = new Style();
       _validators = new ArrayList();
 
       EnableIcon = true;
@@ -210,17 +205,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       EnsureChildControls();
       base.OnPreRender (e);
-
-      LoadResources (GetResourceManager());
-
-      if (!IsDesignMode)
-        PreRenderMenuItems();
-
-      if (HasOptionsMenu)
-        PreRenderOptionsMenu();
-
-      if (Command != null)
-        Command.RegisterForSynchronousPostBack (this, null, string.Format ("BocAutoCompleteReferenceValue '{0}', Object Command", ID));
 
       if (!IsReadOnly)
         PreRenderEditModeValue();
@@ -369,12 +353,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
-    IResourceManager IBocReferenceValueBase.GetResourceManager ()
-    {
-      return GetResourceManager();
-    }
-
-    string IBocReferenceValueBase.GetLabelText ()
+    protected override string GetLabelText ()
     {
       if (IsDesignMode)
       {
@@ -448,16 +427,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return !isList;
     }
 
-    /// <summary>
-    ///   Gets a flag that determines whether it is valid to generate HTML &lt;label&gt; tags referencing the
-    ///   <see cref="BocReferenceValueBase.TargetControl"/>.
-    /// </summary>
-    /// <value> Returns always <see langword="true"/>. </value>
-    public override bool UseLabel
-    {
-      get { return true; }
-    }
-
     /// <summary> Gets the ID of the element to receive the focus when the page is loaded. </summary>
     /// <value>
     ///   Returns the <see cref="Control.ClientID"/> of the <see cref="DropDownList"/> if the control is in edit mode, 
@@ -470,28 +439,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return IsReadOnly ? null : TextBoxClientID; }
     }
 
-    /// <summary>
-    ///   Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) 
-    ///   and the <see cref="Label"/> (read-only mode).
-    /// </summary>
-    /// <remarks>
-    ///   Use the <see cref="TextBoxStyle"/> and <see cref="LabelStyle"/> to assign individual 
-    ///   style settings for the respective modes. Note that if you set one of the <b>Font</b> 
-    ///   attributes (Bold, Italic etc.) to <see langword="true"/>, this cannot be overridden using 
-    ///   <see cref="TextBoxStyle"/> and <see cref="LabelStyle"/>  properties.
-    /// </remarks>
-    [Category ("Style")]
-    [Description ("The style that you want to apply to the TextBox (edit mode) and the Label (read-only mode).")]
-    [NotifyParentProperty (true)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    public Style CommonStyle
-    {
-      get { return _commonStyle; }
-    }
-
     /// <summary> Gets the style that you want to apply to the <see cref="TextBox"/> (edit mode) only. </summary>
-    /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
+    /// <remarks> These style settings override the styles defined in <see cref="BocReferenceValueBase.CommonStyle"/>. </remarks>
     [Category ("Style")]
     [Description ("The style that you want to apply to the TextBox (edit mode) only.")]
     [NotifyParentProperty (true)]
@@ -500,18 +449,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public SingleRowTextBoxStyle TextBoxStyle
     {
       get { return _textBoxStyle; }
-    }
-
-    /// <summary> Gets the style that you want to apply to the <see cref="Label"/> (read-only mode) only. </summary>
-    /// <remarks> These style settings override the styles defined in <see cref="CommonStyle"/>. </remarks>
-    [Category ("Style")]
-    [Description ("The style that you want to apply to the Label (read-only mode) only.")]
-    [NotifyParentProperty (true)]
-    [DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
-    [PersistenceMode (PersistenceMode.InnerProperty)]
-    public Style LabelStyle
-    {
-      get { return _labelStyle; }
     }
     
     /// <summary> Gets or sets the validation error message displayed when the entered text does not identify an item. </summary>
@@ -681,11 +618,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)
-    {
-      return IsCommandEnabled (readOnly);
-    }
-
     public string TextBoxUniqueID
     {
       get { return UniqueID + IdSeparator + c_textBoxIDPostfix; }
@@ -711,44 +643,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return UniqueID + IdSeparator + c_hiddenFieldIDPostfix; }
     }
 
-    string IBocReferenceValueBase.IconClientID
-    {
-      get { return ClientID + ClientIDSeparator + c_iconIDPostfix; }
-    }
-
-    string IBocReferenceValueBase.LabelClientID
-    {
-      get { return ClientID + ClientIDSeparator + "Boc_Label"; }
-    }
-
-    bool IBocRenderableControl.IsDesignMode
-    {
-      get { return base.IsDesignMode; }
-    }
-
-    IconInfo IBocReferenceValueBase.GetIcon ()
-    {
-      var businessObjectClass = GetBusinessObjectClass();
-      if (businessObjectClass == null)
-        return null;
-      return GetIcon (Value, businessObjectClass.BusinessObjectProvider);
-    }
-
-    DropDownMenu IBocReferenceValueBase.OptionsMenu
-    {
-      get { return OptionsMenu; }
-    }
-
-    bool IBocReferenceValueBase.HasOptionsMenu
-    {
-      get { return HasOptionsMenu; }
-    }
-
-    string IBocReferenceValueBase.NullValueString
-    {
-      get { return c_nullIdentifier; }
-    }
-    
     protected override sealed string GetNullItemValidationMessage ()
     {
       return GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
