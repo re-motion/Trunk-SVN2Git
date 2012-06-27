@@ -141,7 +141,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       var propertyValue = GetPropertyValue (propertyDefinition);
       
-      PropertyValueReading  (propertyValue, valueAccess);
+      RaisePropertyValueReadingNotification  (propertyValue.Definition, valueAccess);
       
       object value;
       if (valueAccess == ValueAccess.Current)
@@ -149,7 +149,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       else
         value = propertyValue.OriginalValue;
       
-      PropertyValueRead (propertyValue, value, valueAccess);
+      RaisePropertyValueReadNotification (propertyValue.Definition, value, valueAccess);
       
       return value;
     }
@@ -159,6 +159,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
       CheckNotDiscarded();
 
+      if (_state == DataContainerStateType.Deleted)
+        throw new ObjectDeletedException (_id);
+
       var propertyValue = GetPropertyValue (propertyDefinition);
       if (!PropertyValue.AreValuesDifferent (propertyValue.Value, value))
       {
@@ -166,12 +169,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
         return;
       }
       
-      PropertyValueChanging (propertyDefinition, propertyValue.Value, value);
+      RaisePropertyValueChangingNotification (propertyDefinition, propertyValue.Value, value);
 
       var oldValue = propertyValue.Value;
       propertyValue.Value = value;
 
-      PropertyValueChanged (propertyDefinition, oldValue, value, propertyValue.HasChanged);
+      // set _hasBeenChanged to true if:
+      // - we were not changed before this event (now we must be - the property only fires this event when it was set to a different value)
+      // - the property indicates that it doesn't have the original value ("HasChanged")
+      // - recalculation of all property change states indicates another property doesn't have its original value
+      _hasBeenChanged = !_hasBeenChanged || propertyValue.HasChanged || CalculatePropertyValueChangeState ();
+      RaiseStateUpdatedNotification (State);
+      RaisePropertyValueChangedNotification(propertyDefinition, oldValue, value);
     }
 
     public object GetValueWithoutEvents (PropertyDefinition propertyDefinition, ValueAccess valueAccess = ValueAccess.Current)
@@ -504,6 +513,30 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _eventListener = listener;
     }
 
+    /// <summary>
+    /// Creates a copy of this data container and its state.
+    /// </summary>
+    /// <returns>A copy of this data container with the same <see cref="ObjectID"/> and the same property values. The copy's
+    /// <see cref="ClientTransaction"/> and <see cref="DomainObject"/> are not set, so the returned <see cref="DataContainer"/> cannot be 
+    /// used until it is registered with a <see cref="DomainObjects.ClientTransaction"/>. Its <see cref="DomainObject"/> is set via the
+    /// <see cref="SetDomainObject"/> method.</returns>
+    public DataContainer Clone (ObjectID id)
+    {
+      CheckNotDiscarded ();
+
+      var clonePropertyValues = from kvp in _propertyValues
+                                select new PropertyValue (kvp.Key, kvp.Value.Value);
+
+      var clone = new DataContainer (id, _state, _timestamp, clonePropertyValues);
+
+      clone._hasBeenMarkedChanged = _hasBeenMarkedChanged;
+      clone._hasBeenChanged = _hasBeenChanged;
+
+      Assertion.IsNull (clone._clientTransaction);
+      Assertion.IsNull (clone._domainObject);
+      return clone;
+    }
+
     internal void SetClientTransaction (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
@@ -512,40 +545,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException ("This DataContainer has already been registered with a ClientTransaction.");
 
       _clientTransaction = clientTransaction;
-    }
-
-    internal void PropertyValueChanging (PropertyDefinition propertyDefinition, object oldValue, object newValue)
-    {
-      if (_state == DataContainerStateType.Deleted)
-        throw new ObjectDeletedException (_id);
-
-      if (_eventListener != null)
-        _eventListener.PropertyValueChanging (this, propertyDefinition, oldValue, newValue);
-    }
-
-    internal void PropertyValueChanged (PropertyDefinition propertyDefinition, object oldValue, object newValue, bool newHasChangedState)
-    {
-      // set _hasBeenChanged to true if:
-      // - we were not changed before this event (now we must be - the property only fires this event when it was set to a different value)
-      // - the property indicates that it doesn't have the original value ("HasChanged")
-      // - recalculation of all property change states indicates another property doesn't have its original value
-      _hasBeenChanged = !_hasBeenChanged || newHasChangedState || CalculatePropertyValueChangeState ();
-      RaiseStateUpdatedNotification (State);
-
-      if (_eventListener != null)
-        _eventListener.PropertyValueChanged (this, propertyDefinition, oldValue, newValue);
-    }
-
-    internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
-    {
-      if (_eventListener != null)
-        _eventListener.PropertyValueReading (this, propertyValue.Definition, valueAccess);
-    }
-
-    internal void PropertyValueRead (PropertyValue propertyValue, object value, ValueAccess valueAccess)
-    {
-      if (_eventListener != null)
-        _eventListener.PropertyValueRead (this, propertyValue.Definition, value, valueAccess);
     }
 
     internal PropertyValue GetPropertyValue (PropertyDefinition propertyDefinition)
@@ -567,33 +566,33 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ObjectInvalidException (_id);
     }
 
-    /// <summary>
-    /// Creates a copy of this data container and its state.
-    /// </summary>
-    /// <returns>A copy of this data container with the same <see cref="ObjectID"/> and the same property values. The copy's
-    /// <see cref="ClientTransaction"/> and <see cref="DomainObject"/> are not set, so the returned <see cref="DataContainer"/> cannot be 
-    /// used until it is registered with a <see cref="DomainObjects.ClientTransaction"/>. Its <see cref="DomainObject"/> is set via the
-    /// <see cref="SetDomainObject"/> method.</returns>
-    public DataContainer Clone (ObjectID id)
-    {
-      CheckNotDiscarded();
-
-      var clonePropertyValues = from kvp in _propertyValues
-                                select new PropertyValue (kvp.Key, kvp.Value.Value);
-
-      var clone = new DataContainer (id, _state, _timestamp, clonePropertyValues);
-
-      clone._hasBeenMarkedChanged = _hasBeenMarkedChanged;
-      clone._hasBeenChanged = _hasBeenChanged;
-
-      Assertion.IsNull (clone._clientTransaction);
-      Assertion.IsNull (clone._domainObject);
-      return clone;
-    }
-
     private bool CalculatePropertyValueChangeState ()
     {
       return _propertyValues.Values.Any (pv => pv.HasChanged);
+    }
+
+    private void RaisePropertyValueReadingNotification (PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    {
+      if (_eventListener != null)
+        _eventListener.PropertyValueReading (this, propertyDefinition, valueAccess);
+    }
+
+    private void RaisePropertyValueReadNotification (PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
+    {
+      if (_eventListener != null)
+        _eventListener.PropertyValueRead (this, propertyDefinition, value, valueAccess);
+    }
+
+    private void RaisePropertyValueChangingNotification (PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    {
+      if (_eventListener != null)
+        _eventListener.PropertyValueChanging (this, propertyDefinition, oldValue, newValue);
+    }
+
+    private void RaisePropertyValueChangedNotification (PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    {
+      if (_eventListener != null)
+        _eventListener.PropertyValueChanged (this, propertyDefinition, oldValue, newValue);
     }
 
     private void RaiseStateUpdatedNotification (StateType state)

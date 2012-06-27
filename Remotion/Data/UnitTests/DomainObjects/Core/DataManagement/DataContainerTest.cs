@@ -305,6 +305,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void SetValue_Deleted ()
+    {
+      _existingDataContainer.Delete ();
+
+      Assert.That (() => _existingDataContainer.SetValue (_orderNumberProperty, 17), Throws.TypeOf<ObjectDeletedException> ());
+    }
+
+    [Test]
     public void SetValue_InvalidProperty ()
     {
       Assert.That (
