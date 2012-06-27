@@ -221,6 +221,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void SetValue ()
+    {
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.Not.EqualTo (17));
+      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.False);
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+
+      _existingDataContainer.SetValue (_orderNumberProperty, 17);
+
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (17));
+      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.True);
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
+    }
+
+    [Test]
     public void SetValue_RaisesEvent ()
     {
       _existingDataContainer.SetEventListener (_eventListenerMock);
@@ -257,6 +271,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Current), Is.EqualTo (0));
     }
 
+    [Test]
+    public void SetValue_SameValue_NoEventButStillTouched ()
+    {
+      var currentValue = _existingDataContainer.GetValue (_orderNumberProperty);
+      _existingDataContainer.SetEventListener (_eventListenerMock);
+
+      _existingDataContainer.SetValue (_orderNumberProperty, currentValue);
+
+      _eventListenerMock.AssertWasNotCalled (
+          mock => mock.PropertyValueChanging (
+              Arg<DataContainer>.Is.Anything,
+              Arg<PropertyDefinition>.Is.Anything,
+              Arg<object>.Is.Anything,
+              Arg<object>.Is.Anything));
+      _eventListenerMock.AssertWasNotCalled (
+          mock => mock.PropertyValueChanged (
+              Arg<DataContainer>.Is.Anything,
+              Arg<PropertyDefinition>.Is.Anything,
+              Arg<object>.Is.Anything,
+              Arg<object>.Is.Anything));
+
+      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.True);
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+    }
+    
     [Test]
     public void SetValue_Discarded ()
     {
@@ -318,16 +357,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (
           () => _existingDataContainer.GetValueWithoutEvents (_nonOrderProperty, ValueAccess.Current), 
           Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
-    }
-
-    [Test]
-    public void HasValueBeenTouched ()
-    {
-      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.False);
-
-      _existingDataContainer.SetValue (_orderNumberProperty, 0);
-
-      Assert.That (_existingDataContainer.HasValueBeenTouched (_orderNumberProperty), Is.True);
     }
 
     [Test]

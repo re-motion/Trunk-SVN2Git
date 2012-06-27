@@ -97,14 +97,16 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private readonly PropertyValueCollection _propertyValues;
 
     private ClientTransaction _clientTransaction;
-    private IDataContainerEventListener _eventListener = null;
+    private IDataContainerEventListener _eventListener;
+    private DomainObject _domainObject;
+
+    private RelationEndPointID[] _associatedRelationEndPointIDs;
+
     private object _timestamp;
     private DataContainerStateType _state;
-    private DomainObject _domainObject;
-    private RelationEndPointID[] _associatedRelationEndPointIDs = null;
-    private bool _isDiscarded = false;
-    private bool _hasBeenMarkedChanged = false;
-    private bool _hasBeenChanged = false;
+    private bool _isDiscarded;
+    private bool _hasBeenMarkedChanged;
+    private bool _hasBeenChanged;
 
     // construction and disposing
 
