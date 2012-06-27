@@ -502,20 +502,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void SetDataFromSubTransaction_SetsDiscardedFlag ()
-    {
-      var source = new PropertyValue (_orderNumberPropertyDefinition, 1);
-      PrivateInvoke.InvokeNonPublicMethod (source, "Discard");
-
-      var target = new PropertyValue (_orderNumberPropertyDefinition, 2);
-      Assert.That (target.IsDiscarded, Is.False);
-
-      target.SetDataFromSubTransaction (source);
-
-      Assert.That (target.IsDiscarded, Is.True);
-    }
-
-    [Test]
     public void SetDataFromSubTransaction_HasBeenTouched_TrueIfPropertyWasTouched ()
     {
       var source = new PropertyValue (_orderNumberPropertyDefinition, 1);

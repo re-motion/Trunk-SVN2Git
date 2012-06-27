@@ -172,7 +172,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       try
       {
         int position = BaseAdd(value.Name, value);
-        value.RegisterForAccessObservation(this);
 
         return position;
       }
@@ -308,9 +307,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     internal void Discard ()
     {
-      foreach (PropertyValue propertyValue in this)
-        propertyValue.Discard ();
-
       _isDiscarded = true;
     }
 
@@ -329,7 +325,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
       // Therefore notification of DataContainer when changing property values is not organized through events.
       if (_dataContainer != null)
-        _dataContainer.PropertyValueChanging (this, eventArgs);
+        _dataContainer.PropertyValueChanging (eventArgs.PropertyDefinition, eventArgs.OldValue, eventArgs.NewValue);
 
       OnPropertyChanging (eventArgs);
     }
@@ -342,7 +338,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
       // Therefore notification of DataContainer when changing property values is not organized through events.
       if (_dataContainer != null)
-        _dataContainer.PropertyValueChanged (this, propertyValue, eventArgs);
+        _dataContainer.PropertyValueChanged (propertyValue.Definition, eventArgs.OldValue, eventArgs.NewValue, propertyValue.HasChanged);
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)

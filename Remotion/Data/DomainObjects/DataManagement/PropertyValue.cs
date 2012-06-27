@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using Remotion.Data.DomainObjects.Infrastructure.Serialization;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -27,37 +26,29 @@ namespace Remotion.Data.DomainObjects.DataManagement
   /// </summary>
   public class PropertyValue
   {
-    // types
-
-    // static members and constants
-
     public static bool IsTypeSupported (Type propertyType)
     {
       ArgumentUtility.CheckNotNull ("propertyType", propertyType);
 
-      return propertyType.IsValueType 
-          || ReflectionUtility.IsStringPropertyValueType(propertyType) 
-          || ReflectionUtility.IsBinaryPropertyValueType(propertyType) 
-          || ReflectionUtility.IsTypePropertyValueType(propertyType)
-          || ReflectionUtility.IsObjectIDPropertyValueType(propertyType) 
-          || ReflectionUtility.IsExtensibleEnumPropertyValueType(propertyType);
+      return propertyType.IsValueType
+          || ReflectionUtility.IsStringPropertyValueType (propertyType)
+          || ReflectionUtility.IsBinaryPropertyValueType (propertyType)
+          || ReflectionUtility.IsTypePropertyValueType (propertyType)
+          || ReflectionUtility.IsObjectIDPropertyValueType (propertyType)
+          || ReflectionUtility.IsExtensibleEnumPropertyValueType (propertyType);
     }
 
-    private static bool AreValuesDifferent (object value1, object value2)
+    // TODO 1997: Test!
+    public static bool AreValuesDifferent (object value1, object value2)
     {
       return !object.Equals (value1, value2);
     }
 
-    // member fields
-
     private readonly PropertyDefinition _definition;
-    private readonly ArrayList _accessObservers;
-  
-    // actual property data
+
     private object _value;
     private object _originalValue;
     private bool _hasBeenTouched;
-    private bool _isDiscarded;
 
     // construction and disposing
 
@@ -66,7 +57,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// </summary>
     /// <param name="definition">The <see cref="PropertyDefinition"/> to use for initializing the <b>PropertyValue</b>. Must not be <see langword="null"/>.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="definition"/> is <see langword="null"/>.</exception>
-    public PropertyValue (PropertyDefinition definition) : this (definition, definition.DefaultValue)
+    public PropertyValue (PropertyDefinition definition)
+      : this (definition, definition.DefaultValue)
     {
     }
 
@@ -79,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// <exception cref="Remotion.Data.DomainObjects.InvalidTypeException"><paramref name="value"/> does not match the required type specified in <paramref name="definition"/>.</exception>
     /// <exception cref="Remotion.Data.DomainObjects.ValueTooLongException"><paramref name="value"/> is longer than the maximum length specified in <paramref name="definition"/>.</exception>
     public PropertyValue (PropertyDefinition definition, object value)
-        : this (definition, value, value)
+      : this (definition, value, value)
     {
     }
 
@@ -101,9 +93,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _definition = definition;
       _value = value;
       _originalValue = originalValue;
-      _isDiscarded = false;
       _hasBeenTouched = false;
-      _accessObservers = new ArrayList ();
     }
 
     // methods and properties
@@ -115,9 +105,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public PropertyDefinition Definition
     {
-      get 
+      get
       {
-        return _definition; 
+        return _definition;
       }
     }
 
@@ -128,9 +118,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public string Name
     {
-      get 
+      get
       {
-        return _definition.PropertyName; 
+        return _definition.PropertyName;
       }
     }
 
@@ -145,36 +135,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckNotDiscarded ();
-
-        // Note: A ClientTransaction extension could possibly raise an exception during BeginValueGet.
-        //       If another ClientTransaction extension only wants to be notified on success it should use EndValueGet.
-        BeginValueGet (ValueAccess.Current);
-        EndValueGet ();
-      
         return _value;
       }
       set
       {
-        CheckNotDiscarded ();
-        
-        if (AreValuesDifferent (_value, value))
-        {
-          CheckValue (value, _definition);
-
-          BeginValueSet (value);
-
-          object oldValue = _value;
-          _value = value;
-
-          Touch ();
-
-          EndValueSet (oldValue);
-        }
-        else
-        {
-          Touch();
-        }
+        CheckValue (value, _definition);
+        _value = value;
+        Touch();
       }
     }
 
@@ -190,16 +157,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public object OriginalValue
     {
-      get 
-      { 
-        CheckNotDiscarded ();
-
-        // Note: A ClientTransaction extension could possibly raise an exception during BeginOriginalValueGet.
-        //       If another ClientTransaction extension only wants to be notified on success it should use EndOriginalValueGet.
-        BeginValueGet (ValueAccess.Original);
-        EndOriginalValueGet ();
-
-        return _originalValue; 
+      get
+      {
+        return _originalValue;
       }
     }
 
@@ -210,9 +170,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
     /// See <see cref="ObjectInvalidException"/> for further information.</exception>
     public bool HasChanged
     {
-      get 
+      get
       {
-        CheckNotDiscarded ();
         return AreValuesDifferent (_value, _originalValue);
       }
     }
@@ -227,36 +186,39 @@ namespace Remotion.Data.DomainObjects.DataManagement
     {
       get
       {
-        CheckNotDiscarded ();
         return _hasBeenTouched;
       }
     }
 
-    /// <summary>
-    /// Gets a value indicating the discarded status of the <see cref="PropertyValue"/>.
-    /// </summary>
-    /// <remarks>
-    /// For more information why and when a <see cref="PropertyValue"/> is discarded see <see cref="ObjectInvalidException"/>.
-    /// </remarks>
-    public bool IsDiscarded
+    public bool IsRelationProperty
     {
-      get { return _isDiscarded; }
+      get { return _definition.IsObjectID; }
     }
 
     public object GetValueWithoutEvents (ValueAccess valueAccess)
     {
-      CheckNotDiscarded ();
-
       if (valueAccess == ValueAccess.Current)
         return _value;
       else
         return _originalValue;
     }
 
-    internal void RegisterForAccessObservation (PropertyValueCollection propertyValueCollection)
+    public void SetDataFromSubTransaction (PropertyValue source)
     {
-      ArgumentUtility.CheckNotNull ("propertyValueCollection", propertyValueCollection);
-      _accessObservers.Add (propertyValueCollection);
+      ArgumentUtility.CheckNotNull ("source", source);
+
+      if (source.Definition != Definition)
+      {
+        var message = string.Format (
+            "Cannot set this property's value from '{0}'; the properties do not have the same property definition.",
+            source.Definition);
+        throw new ArgumentException (message, "source");
+      }
+
+      _value = source._value;
+
+      if (source.HasBeenTouched || HasChanged)
+        Touch ();
     }
 
     internal void CommitState ()
@@ -273,11 +235,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
         _value = _originalValue;
 
       _hasBeenTouched = false;
-    }
-
-    internal void Discard ()
-    {
-      _isDiscarded = true;
     }
 
     private void CheckValue (object value, PropertyDefinition definition)
@@ -324,7 +281,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (definition.MaxLength.HasValue && value.Length > definition.MaxLength.Value)
       {
         string message = string.Format (
-            "Value for property '{0}' is too large. Maximum size: {1}.", 
+            "Value for property '{0}' is too large. Maximum size: {1}.",
             definition.PropertyName, definition.MaxLength.Value);
 
         throw new ValueTooLongException (message, definition.PropertyName, definition.MaxLength.Value);
@@ -349,105 +306,23 @@ namespace Remotion.Data.DomainObjects.DataManagement
       }
     }
 
-    private void BeginValueGet (ValueAccess valueAccess)
-    {
-      foreach (PropertyValueCollection accessObserver in _accessObservers)
-        accessObserver.PropertyValueReading (this, valueAccess);
-    }
-
-    private void EndValueGet ()
-    {
-      foreach (PropertyValueCollection accessObserver in _accessObservers)
-        accessObserver.PropertyValueRead (this, _value, ValueAccess.Current);
-    }
-
-    private void EndOriginalValueGet ()
-    {
-      foreach (PropertyValueCollection accessObserver in _accessObservers)
-        accessObserver.PropertyValueRead (this, _originalValue, ValueAccess.Original);
-    }
-
-    private void BeginValueSet (object newValue)
-    {
-      var changingArgs = new ValueChangeEventArgs (_value, newValue);
-
-      // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
-      // Therefore notification of PropertyValueCollection when changing property values is not organized through events.
-      foreach (PropertyValueCollection accessObserver in _accessObservers)
-        accessObserver.PropertyValueChanging (this, changingArgs);
-    }
-
-    private void EndValueSet (object oldValue)
-    {
-      var changedArgs = new ValueChangeEventArgs (oldValue, _value);
-
-      // Note: .NET 1.1 will not deserialize delegates to non-public (that means internal, protected, private) methods. 
-      // Therefore notification of PropertyValueCollection when changing property values is not organized through events.
-      foreach (PropertyValueCollection accessObserver in _accessObservers)
-        accessObserver.PropertyValueChanged (this, changedArgs);
-    }
-
-    public bool IsRelationProperty
-    {
-      get { return _definition.IsObjectID; }
-    }
-
-    private void CheckNotDiscarded ()
-    {
-      if (_isDiscarded)
-        throw new ObjectInvalidException ();
-    }
-
-    public void SetDataFromSubTransaction (PropertyValue source)
-    {
-      ArgumentUtility.CheckNotNull ("source", source);
-      CheckNotDiscarded ();
-
-      if (source.Definition != Definition)
-      {
-        var message = string.Format (
-            "Cannot set this property's value from '{0}'; the properties do not have the same property definition.",
-            source.Definition);
-        throw new ArgumentException (message, "source");
-      }
-
-      _value = source._value;
-      _isDiscarded = source._isDiscarded;
-
-      if (!_isDiscarded)
-      {
-        if (source.HasBeenTouched || HasChanged)
-          Touch();
-      }
-    }
-
     #region Serialization
     internal void DeserializeFromFlatStructure (FlattenedDeserializationInfo info)
     {
-      _isDiscarded = info.GetBoolValue ();
-      if (!_isDiscarded)
-      {
-        _hasBeenTouched = info.GetBoolValue ();
-        _value = info.GetValue<object> ();
-        if (_hasBeenTouched)
-          _originalValue = info.GetValue<object> ();
-        else
-          _originalValue = _value;
-      }
+      _hasBeenTouched = info.GetBoolValue ();
+      _value = info.GetValue<object> ();
+      if (_hasBeenTouched)
+        _originalValue = info.GetValue<object> ();
+      else
+        _originalValue = _value;
     }
 
     internal void SerializeIntoFlatStructure (FlattenedSerializationInfo info)
     {
-      if (_isDiscarded)
-        info.AddBoolValue (true);
-      else
-      {
-        info.AddBoolValue (_isDiscarded);
-        info.AddBoolValue (_hasBeenTouched);
-        info.AddValue (_value);
-        if (_hasBeenTouched)
-          info.AddValue (_originalValue);
-      }
+      info.AddBoolValue (_hasBeenTouched);
+      info.AddValue (_value);
+      if (_hasBeenTouched)
+        info.AddValue (_originalValue);
     }
     #endregion
   }

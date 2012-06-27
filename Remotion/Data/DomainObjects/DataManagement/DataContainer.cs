@@ -127,8 +127,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _propertyValues = new PropertyValueCollection ();
       foreach (var propertyValue in propertyValues)
         _propertyValues.Add (propertyValue);
-
-      _propertyValues.RegisterForChangeNotification (this);
     }
 
     public bool HasBeenMarkedChanged
@@ -142,10 +140,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotDiscarded ();
 
       var propertyValue = GetPropertyValue (propertyDefinition);
+      
+      PropertyValueReading  (propertyValue, valueAccess);
+      
+      object value;
       if (valueAccess == ValueAccess.Current)
-        return propertyValue.Value;
+        value = propertyValue.Value;
       else
-        return propertyValue.OriginalValue;
+        value = propertyValue.OriginalValue;
+      
+      PropertyValueRead (propertyValue, value, valueAccess);
+      
+      return value;
     }
 
     public void SetValue (PropertyDefinition propertyDefinition, object value)
@@ -154,7 +160,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotDiscarded();
 
       var propertyValue = GetPropertyValue (propertyDefinition);
+      if (!PropertyValue.AreValuesDifferent (propertyValue.Value, value))
+      {
+        propertyValue.Touch();
+        return;
+      }
+      
+      PropertyValueChanging (propertyDefinition, propertyValue.Value, value);
+
+      var oldValue = propertyValue.Value;
       propertyValue.Value = value;
+
+      PropertyValueChanged (propertyDefinition, oldValue, value, propertyValue.HasChanged);
     }
 
     public object GetValueWithoutEvents (PropertyDefinition propertyDefinition, ValueAccess valueAccess = ValueAccess.Current)
@@ -499,32 +516,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = clientTransaction;
     }
 
-    internal void PropertyValueChanging (PropertyValueCollection propertyValueCollection, PropertyChangeEventArgs args)
+    internal void PropertyValueChanging (PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       if (_state == DataContainerStateType.Deleted)
         throw new ObjectDeletedException (_id);
 
       if (_eventListener != null)
-      {
-        _eventListener.PropertyValueChanging (
-            this, 
-            args.PropertyDefinition, 
-            args.OldValue, 
-            args.NewValue);
-      }
+        _eventListener.PropertyValueChanging (this, propertyDefinition, oldValue, newValue);
     }
 
-    internal void PropertyValueChanged (PropertyValueCollection propertyValueCollection, PropertyValue propertyValue, PropertyChangeEventArgs args)
+    internal void PropertyValueChanged (PropertyDefinition propertyDefinition, object oldValue, object newValue, bool newHasChangedState)
     {
       // set _hasBeenChanged to true if:
       // - we were not changed before this event (now we must be - the property only fires this event when it was set to a different value)
       // - the property indicates that it doesn't have the original value ("HasChanged")
       // - recalculation of all property change states indicates another property doesn't have its original value
-      _hasBeenChanged = !_hasBeenChanged || propertyValue.HasChanged || CalculatePropertyValueChangeState ();
+      _hasBeenChanged = !_hasBeenChanged || newHasChangedState || CalculatePropertyValueChangeState ();
       RaiseStateUpdatedNotification (State);
 
       if (_eventListener != null)
-        _eventListener.PropertyValueChanged (this, propertyValue.Definition, args.OldValue, args.NewValue);
+        _eventListener.PropertyValueChanged (this, propertyDefinition, oldValue, newValue);
     }
 
     internal void PropertyValueReading (PropertyValue propertyValue, ValueAccess valueAccess)
