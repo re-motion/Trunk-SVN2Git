@@ -38,7 +38,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
           || ReflectionUtility.IsExtensibleEnumPropertyValueType (propertyType);
     }
 
-    // TODO 1997: Test!
     public static bool AreValuesDifferent (object value1, object value2)
     {
       return !object.Equals (value1, value2);

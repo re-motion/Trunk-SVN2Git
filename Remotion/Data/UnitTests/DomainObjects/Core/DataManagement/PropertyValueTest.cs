@@ -41,6 +41,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
+    public void AreValuesDifferent_False ()
+    {
+      Assert.That (PropertyValue.AreValuesDifferent (10, 10), Is.False);
+      Assert.That (PropertyValue.AreValuesDifferent (null, null), Is.False);
+      Assert.That (PropertyValue.AreValuesDifferent ("test", "test"), Is.False);
+      
+      var array = new byte[] { 1, 2, 3 };
+      Assert.That (PropertyValue.AreValuesDifferent (array, array), Is.False);
+    }
+
+    [Test]
+    public void AreValuesDifferent_True ()
+    {
+      Assert.That (PropertyValue.AreValuesDifferent (10, 11), Is.True);
+      Assert.That (PropertyValue.AreValuesDifferent ("test", "other"), Is.True);
+
+      Assert.That (PropertyValue.AreValuesDifferent (new byte[] { 1, 2, 3 }, new byte[] { 1, 2, 3 }), Is.True);
+    }
+
+    [Test]
     [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
         @"The property 'test' \(declared on class 'ClassName'\) is invalid because its values cannot be copied\. "
         + @"Only value types, strings, the Type type, byte arrays, and ObjectIDs are currently supported, but the property's type is "
