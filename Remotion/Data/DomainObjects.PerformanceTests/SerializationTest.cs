@@ -23,7 +23,7 @@ using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
-  // Reference system: Dell Dimension 9200, Intel Core 2 @ 2,66 GHz, 3,93 GB RAM; run in Release mode
+  // Reference system: Dell Prevision T1600, Intel Xeon @ 3.6 GHz, 16 GB RAM; run in Release mode (1.13.157, 2012-06-27)
 
   [TestFixture]
   public class SerializationTest : DatabaseTest
@@ -38,73 +38,73 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void SerializeRelationPropertyObjects00041 ()
     {
-      PerformSerializationTests (1, "SerializeRelationPropertyObjects00041", 10, 15, 67548, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (1, "SerializeRelationPropertyObjects00041", 15, 10, 77239, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeRelationPropertyObjects00410 ()
     {
-      PerformSerializationTests (10, "SerializeRelationPropertyObjects00410", 150, 75, 445787, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (10, "SerializeRelationPropertyObjects00410", 111, 52, 427630, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeRelationPropertyObjects01025 ()
     {
-      PerformSerializationTests (25, "SerializeRelationPropertyObjects01025", 650, 200, 1076164, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (25, "SerializeRelationPropertyObjects01025", 170, 125, 1011628, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeRelationPropertyObjects10250 ()
     {
-      PerformSerializationTests (250, "SerializeRelationPropertyObjects10205", 6000, 3000, 10531760, CreateAndFillRelationPropertyObject);
+      PerformSerializationTests (250, "SerializeRelationPropertyObjects10205", 2685, 1474, 9767722, CreateAndFillRelationPropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects00050 ()
     {
-      PerformSerializationTests (50, "SerializeSmallValuePropertyObjects00050", 5, 8, 58235, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (50, "SerializeSmallValuePropertyObjects00050", 11, 11, 67726, CreateAndFillSmallValuePropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects00500 ()
     {
-      PerformSerializationTests (500, "SerializeSmallValuePropertyObjects00500", 30, 90, 455585, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (500, "SerializeSmallValuePropertyObjects00500", 103, 90, 458395, CreateAndFillSmallValuePropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects01025 ()
     {
-      PerformSerializationTests (1025, "SerializeSmallValuePropertyObjects01025", 80, 200, 919170, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (1025, "SerializeSmallValuePropertyObjects01025", 214, 180, 914134, CreateAndFillSmallValuePropertyObject);
     }
 
     [Test]
     public void SerializeSmallValuePropertyObjects10250 ()
     {
-      PerformSerializationTests (10250, "SerializeSmallValuePropertyObjects10250", 800, 2600, 9064835, CreateAndFillSmallValuePropertyObject);
+      PerformSerializationTests (10250, "SerializeSmallValuePropertyObjects10250", 2121, 2185, 8921542, CreateAndFillSmallValuePropertyObject);
     }
     
     [Test]
     public void SerializeValuePropertyObjects00050 ()
     {
-      PerformSerializationTests (50, "SerializeValuePropertyObjects00050", 6, 10, 86301, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (50, "SerializeValuePropertyObjects00050", 14, 21, 94792, CreateAndFillValuePropertyObject);
     }
 
     [Test]
     public void SerializeValuePropertyObjects00500 ()
     {
-      PerformSerializationTests (500, "SerializeValuePropertyObjects00500", 50, 125, 718551, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (500, "SerializeValuePropertyObjects00500", 132, 207, 711341, CreateAndFillValuePropertyObject);
     }
 
     [Test]
     public void SerializeValuePropertyObjects01025 ()
     {
-      PerformSerializationTests (1025, "SerializeValuePropertyObjects01025", 110, 250, 1456176, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (1025, "SerializeValuePropertyObjects01025", 2612, 422, 1430640, CreateAndFillValuePropertyObject);
     }
 
     [Test]
     public void SerializeValuePropertyObjects10250 ()
     {
-      PerformSerializationTests (10250, "SerializeValuePropertyObjects10250", 1100, 3500, 14417301, CreateAndFillValuePropertyObject);
+      PerformSerializationTests (10250, "SerializeValuePropertyObjects10250", 2619, 4775, 14068968, CreateAndFillValuePropertyObject);
     }
 
     private void PerformSerializationTests (int count, string nameOfTest, int serExpectedMS, int deserExpectedMS, int expectedDataSize, Action objectCreator)
