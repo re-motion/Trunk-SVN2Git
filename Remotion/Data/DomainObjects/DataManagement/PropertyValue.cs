@@ -194,14 +194,6 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return _definition.IsObjectID; }
     }
 
-    public object GetValueWithoutEvents (ValueAccess valueAccess)
-    {
-      if (valueAccess == ValueAccess.Current)
-        return _value;
-      else
-        return _originalValue;
-    }
-
     public void SetDataFromSubTransaction (PropertyValue source)
     {
       ArgumentUtility.CheckNotNull ("source", source);

@@ -142,14 +142,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       var propertyValue = GetPropertyValue (propertyDefinition);
       
       RaisePropertyValueReadingNotification  (propertyValue.Definition, valueAccess);
-      
-      object value;
-      if (valueAccess == ValueAccess.Current)
-        value = propertyValue.Value;
-      else
-        value = propertyValue.OriginalValue;
-      
-      RaisePropertyValueReadNotification (propertyValue.Definition, value, valueAccess);
+      object value = GetValueWithoutEvents (propertyValue, valueAccess);
+     RaisePropertyValueReadNotification (propertyValue.Definition, value, valueAccess);
       
       return value;
     }
@@ -189,7 +183,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
       CheckNotDiscarded ();
 
       var propertyValue = GetPropertyValue (propertyDefinition);
-      return propertyValue.GetValueWithoutEvents (valueAccess);
+      return GetValueWithoutEvents(propertyValue, valueAccess);
+    }
+
+    private object GetValueWithoutEvents (PropertyValue propertyValue, ValueAccess valueAccess)
+    {
+      if (valueAccess == ValueAccess.Current)
+        return propertyValue.Value;
+      else
+        return propertyValue.OriginalValue;
     }
 
     public void TouchValue (PropertyDefinition propertyDefinition)

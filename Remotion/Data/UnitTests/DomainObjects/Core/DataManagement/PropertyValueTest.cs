@@ -630,24 +630,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void GetValueWithoutEvents_Current ()
-    {
-      var propertyValue = new PropertyValue (_orderNumberPropertyDefinition, 11);
-
-      propertyValue.Value = 10;
-      Assert.That (propertyValue.GetValueWithoutEvents (ValueAccess.Current), Is.EqualTo (10));
-    }
-
-    [Test]
-    public void GetValueWithoutEvents_Original ()
-    {
-      var propertyValue = new PropertyValue (_orderNumberPropertyDefinition, 11);
-
-      propertyValue.Value = 10;
-      Assert.That (propertyValue.GetValueWithoutEvents (ValueAccess.Original), Is.EqualTo (11));
-    }
-
-    [Test]
     public void GetValueWithoutEvents_NoEvents ()
     {
       var clientTransactionMock = new TestableClientTransaction ();
