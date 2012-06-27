@@ -108,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} ObjectDeleted: {1}", clientTransaction.ID, GetDomainObjectString (domainObject));
     }
 
-    public void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    public void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
       {
@@ -117,11 +117,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             clientTransaction.ID,
             propertyDefinition.PropertyName,
             valueAccess,
-            dataContainer.ID);
+            domainObject.ID);
       }
     }
 
-    public void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
+    public void PropertyValueRead (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
     {
       if (s_log.IsDebugEnabled)
       {
@@ -131,11 +131,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             propertyDefinition.PropertyName,
             value ?? "<null>",
             valueAccess,
-            dataContainer.ID);
+            domainObject.ID);
       }
     }
 
-    public void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       if (s_log.IsDebugEnabled)
       {
@@ -145,11 +145,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             propertyDefinition.PropertyName,
             oldValue ?? "<null>",
             newValue ?? "<null>",
-            dataContainer.ID);
+            domainObject.ID);
       }
     }
 
-    public void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       if (s_log.IsDebugEnabled)
       {
@@ -159,7 +159,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             propertyDefinition.PropertyName,
             oldValue ?? "<null>",
             newValue ?? "<null>",
-            dataContainer.ID);
+            domainObject.ID);
       }
     }
 

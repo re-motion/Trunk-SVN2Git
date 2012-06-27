@@ -119,25 +119,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
       CheckNotification (listener => listener.PropertyValueReading (
           TestableClientTransaction, 
-          order.InternalDataContainer, 
+          order, 
           propertyDefinition, 
           ValueAccess.Original));
       CheckNotification (listener => listener.PropertyValueRead (
         TestableClientTransaction, 
-        order.InternalDataContainer,
+        order,
         propertyDefinition,
         "Foo", 
         ValueAccess.Original));
 
       CheckNotification (listener => listener.PropertyValueChanging (
           TestableClientTransaction, 
-          order.InternalDataContainer,
+          order,
           propertyDefinition, 
           "Foo", 
           "Bar"));
       CheckNotification (listener => listener.PropertyValueChanged (
           TestableClientTransaction, 
-          order.InternalDataContainer,
+          order,
           propertyDefinition, 
           "Foo", 
           "Bar"));

@@ -133,25 +133,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void PropertyValueReading ()
     {
-      _listener.PropertyValueReading (TestableClientTransaction, _dataContainer, _propertyDefinition, ValueAccess.Current);
+      _listener.PropertyValueReading (TestableClientTransaction, _domainObject, _propertyDefinition, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueRead ()
     {
-      _listener.PropertyValueRead (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, ValueAccess.Current);
+      _listener.PropertyValueRead (TestableClientTransaction, _domainObject, _propertyDefinition, 0, ValueAccess.Current);
     }
 
     [Test]
     public void PropertyValueChanging ()
     {
-      _listener.PropertyValueChanging (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1);
+      _listener.PropertyValueChanging (TestableClientTransaction, _domainObject, _propertyDefinition, 0, 1);
     }
 
     [Test]
     public void PropertyValueChanged ()
     {
-      _listener.PropertyValueChanged (TestableClientTransaction, _dataContainer, _propertyDefinition, 0, 1);
+      _listener.PropertyValueChanged (TestableClientTransaction, _domainObject, _propertyDefinition, 0, 1);
     }
 
     [Test]

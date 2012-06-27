@@ -249,43 +249,43 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    public void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.PropertyValueReading (clientTransaction, dataContainer, propertyDefinition, valueAccess);
+        extension.PropertyValueReading (clientTransaction, domainObject, propertyDefinition, valueAccess);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
+    public void PropertyValueRead (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.PropertyValueRead (clientTransaction, dataContainer, propertyDefinition, value, valueAccess);
+        extension.PropertyValueRead (clientTransaction, domainObject, propertyDefinition, value, valueAccess);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.PropertyValueChanging (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
+        extension.PropertyValueChanging (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.PropertyValueChanged (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
+        extension.PropertyValueChanged (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

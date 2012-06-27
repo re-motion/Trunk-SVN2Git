@@ -35,15 +35,15 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       _transporter = transporter;
     }
 
-    public override void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       if (_transporter == null)
         throw new InvalidOperationException ("Cannot use the transported transaction for changing properties after it has been deserialized.");
 
-      if (!_transporter.IsLoaded (dataContainer.ID))
+      if (!_transporter.IsLoaded (domainObject.ID))
       {
         string message = string.Format ("Object '{0}' cannot be modified for transportation because it hasn't been loaded yet. Load it before "
-            + "manipulating it.", dataContainer.ID);
+            + "manipulating it.", domainObject.ID);
         throw new InvalidOperationException(message);
       }
     }

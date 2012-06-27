@@ -18,7 +18,6 @@ using System;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Security;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -61,13 +60,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public void Test_AccessGranted ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, _stringPropertyDefinition, "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, _stringPropertyDefinition, "old", "new");
 
       _testHelper.VerifyAll ();
     }
@@ -77,13 +75,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public void Test_AccessDenied ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, _stringPropertyDefinition, "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, _stringPropertyDefinition, "old", "new");
     }
 
     [Test]
@@ -93,13 +90,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
       var setMethodInformation = MethodInfoAdapter.Create(propertyInfo.GetSetMethod (true));
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (setMethodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, GetPropertyDefinition (propertyInfo), "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, GetPropertyDefinition (propertyInfo), "old", "new");
 
       _testHelper.VerifyAll ();
     }
@@ -112,13 +108,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
           typeof (SecurableObject).GetProperty ("NonPublicPropertyWithCustomPermission", BindingFlags.NonPublic | BindingFlags.Instance);
       var setMethodInformation = MethodInfoAdapter.Create(propertyInfo.GetSetMethod (true));
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (setMethodInformation, TestAccessTypes.First);
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, GetPropertyDefinition (propertyInfo), "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, GetPropertyDefinition (propertyInfo), "old", "new");
     }
 
     [Test]
@@ -126,13 +121,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       var propertyInfo = typeof (SecurableObject).GetProperty ("PropertyWithMissingSetAccessor");
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new NullMethodInformation());
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Edit, true);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, GetPropertyDefinition (propertyInfo), "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, GetPropertyDefinition (propertyInfo), "old", "new");
 
       _testHelper.VerifyAll ();
     }
@@ -143,26 +137,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       var propertyInfo = typeof (SecurableObject).GetProperty ("PropertyWithMissingSetAccessor");
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (new NullMethodInformation());
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, GeneralAccessTypes.Edit, false);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, GetPropertyDefinition (propertyInfo), "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, GetPropertyDefinition (propertyInfo), "old", "new");
     }
 
     [Test]
     public void Test_AccessGranted_WithinSecurityFreeSection ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
       using (new SecurityFreeSection ())
       {
-        _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, _stringPropertyDefinition, "old", "new");
+        _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, _stringPropertyDefinition, "old", "new");
       }
 
       _testHelper.VerifyAll ();
@@ -173,11 +165,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     {
       var propertyInfo = typeof (NonSecurableObject).GetProperty ("StringProperty");
       NonSecurableObject nonSecurableObject = _testHelper.CreateNonSecurableObject ();
-      DataContainer dataContainer = nonSecurableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, GetPropertyDefinition (propertyInfo, typeof (NonSecurableObject)), "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, nonSecurableObject, GetPropertyDefinition (propertyInfo, typeof (NonSecurableObject)), "old", "new");
 
       _testHelper.VerifyAll ();
     }
@@ -186,7 +177,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
     public void Test_RecursiveSecurity ()
     {
       SecurableObject securableObject = _testHelper.CreateSecurableObject ();
-      DataContainer dataContainer = securableObject.GetDataContainer (_testHelper.Transaction);
       _testHelper.AddExtension (_extension);
       _testHelper.ExpectPermissionReflectorGetRequiredMethodPermissions (_setMethodInformation, TestAccessTypes.First);
       HasAccessDelegate hasAccess = delegate 
@@ -197,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.SecurityClientTransacti
       _testHelper.ExpectObjectSecurityStrategyHasAccess (securableObject, TestAccessTypes.First, hasAccess);
       _testHelper.ReplayAll ();
 
-      _extension.PropertyValueChanging (_testHelper.Transaction, dataContainer, _stringPropertyDefinition, "old", "new");
+      _extension.PropertyValueChanging (_testHelper.Transaction, securableObject, _stringPropertyDefinition, "old", "new");
 
       _testHelper.VerifyAll ();
     }

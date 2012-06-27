@@ -109,36 +109,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       base.ObjectDeleted (clientTransaction, domainObject);
     }
 
-    public override void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      base.PropertyValueChanging (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
+      base.PropertyValueChanging (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
 
       if (!propertyDefinition.IsObjectID)
       {
-        Assertion.IsTrue (dataContainer.HasDomainObject, "DataContainers cannot be registered in a ClientTransaction without having a DomainObject");
-        clientTransaction.Execute (
-            () => dataContainer.DomainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
+        clientTransaction.Execute (() => domainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
       }
     }
 
-    public override void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       if (!propertyDefinition.IsObjectID)
       {
-        Assertion.IsTrue (dataContainer.HasDomainObject, "DataContainers cannot be registered in a ClientTransaction without having a DomainObject");
-        clientTransaction.Execute (
-            () => dataContainer.DomainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
+        clientTransaction.Execute (() => domainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
       }
       
-      base.PropertyValueChanged (clientTransaction, dataContainer, propertyDefinition, oldValue, newValue);
+      base.PropertyValueChanged (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
     public override void RelationChanging (

@@ -180,12 +180,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (_mockRepository.Ordered ())
       {
         _strictListenerMock.Expect (
-            mock => mock.PropertyValueReading (
-                TestableClientTransaction, order.InternalDataContainer, orderNumberPropertyDefinition, ValueAccess.Current));
+            mock => mock.PropertyValueReading (TestableClientTransaction, order, orderNumberPropertyDefinition, ValueAccess.Current));
         _strictListenerMock.Expect (
             mock => mock.PropertyValueRead (
                 TestableClientTransaction,
-                order.InternalDataContainer,
+                order,
                 orderNumberPropertyDefinition,
                 orderNumber,
                 ValueAccess.Current));
@@ -212,7 +211,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanging (
                 TestableClientTransaction,
-                order.InternalDataContainer,
+                order,
                 orderNumberPropertyDefinition,
                 orderNumber,
                 43));
@@ -220,7 +219,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanged (
                 TestableClientTransaction,
-                order.InternalDataContainer,
+                order,
                 orderNumberPropertyDefinition,
                 orderNumber,
                 43));
@@ -311,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanging (
                 TestableClientTransaction, 
-                order.InternalDataContainer,
+                order,
                 customerPropertyDefinition,
                 oldCustomer.ID,
                 newCustomer.ID));
@@ -319,7 +318,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _strictListenerMock.Expect (
             mock => mock.PropertyValueChanged (
                 TestableClientTransaction, 
-                order.InternalDataContainer,
+                order,
                 customerPropertyDefinition,
                 oldCustomer.ID,
                 newCustomer.ID));

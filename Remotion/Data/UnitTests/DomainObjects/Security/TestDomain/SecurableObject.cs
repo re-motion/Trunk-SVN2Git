@@ -60,12 +60,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       return GetPublicDomainObjectType();
     }
 
-    public DataContainer GetDataContainer (ClientTransaction transaction)
-    {
-      var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (transaction, "DataManager");
-      return dataManager.GetDataContainerWithLazyLoad (ID);
-    }
-
     public abstract string StringProperty { get; set; }
 
     public abstract string OtherStringProperty { get; set; }

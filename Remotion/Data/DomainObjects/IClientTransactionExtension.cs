@@ -195,30 +195,24 @@ namespace Remotion.Data.DomainObjects
     void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject);
 
     /// <summary>
-    /// Invoked before a value of <paramref name="dataContainer"/> is read. 
+    /// Invoked before a value of a <see cref="DomainObject"/> is read. 
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="dataContainer">
-    ///   The <see cref="DataContainer"/> holding the value that is being read.
-    ///   Use the <see cref="DataContainer.DomainObject"/> property to get the corresponding <see cref="DomainObject"/>.
-    /// </param>
+    /// <param name="domainObject">The <see cref="DomainObject"/> whose property is read.</param>
     /// <param name="propertyDefinition">The <see cref="PropertyDefinition"/> identifying the property that is being read.</param>
     /// <param name="valueAccess">A value indicating whether the current or the original value is being accessed.</param>
     /// <remarks>
     ///   Use this method to cancel the operation, whereas <see cref="PropertyValueRead"/> should be used to perform actions on its successful execution.
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    void PropertyValueReading (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, ValueAccess valueAccess);
+    void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess);
 
     /// <summary>
-    /// Invoked when a value of <paramref name="dataContainer"/> was read. 
+    /// Invoked when a value of a <see cref="DomainObject"/> was read. 
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="dataContainer">
-    ///   The <see cref="DataContainer"/> holding the value that was read.
-    ///   Use the <see cref="DataContainer.DomainObject"/> property to get the corresponding <see cref="DomainObject"/>.
-    /// </param>
+    /// <param name="domainObject">The <see cref="DomainObject"/> whose property was read.</param>
     /// <param name="propertyDefinition">The <see cref="PropertyDefinition"/> identifying the property that was read.</param>
     /// <param name="value">The value that was read.</param>
     /// <param name="valueAccess">A value indicating whether the current or the original value was accessed.</param>
@@ -226,17 +220,14 @@ namespace Remotion.Data.DomainObjects
     ///   Use this method to perform actions on a successful execution, whereas <see cref="PropertyValueReading"/> should be used to cancel the operation.
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="PropertyValueReading"/> instead.</note>
     /// </remarks>
-    void PropertyValueRead (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess);
+    void PropertyValueRead (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess);
 
     /// <summary>
-    /// Invoked before a value of <paramref name="dataContainer"/> is changed.
+    /// Invoked before a value of a <see cref="DomainObject"/> is changed.
     /// The operation may be cancelled at this point.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="dataContainer">
-    ///   The <see cref="DataContainer"/> holding the value that is being changed.
-    ///   Use the <see cref="DataContainer.DomainObject"/> property to get the corresponding <see cref="DomainObject"/>.
-    /// </param>
+    /// <param name="domainObject">The <see cref="DomainObject"/> whose property is being changed.</param>
     /// <param name="propertyDefinition">The <see cref="PropertyDefinition"/> identifying the property that is being changed.</param>
     /// <param name="oldValue">The value of the property it currently has.</param>
     /// <param name="newValue">The new value to be assigned to the property.</param>
@@ -249,16 +240,13 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    void PropertyValueChanging (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue);
+    void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
 
     /// <summary>
-    /// Invoked after a value of <paramref name="dataContainer"/> was changed.
+    /// Invoked after a value of a <see cref="DomainObject"/> was changed.
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
-    /// <param name="dataContainer">
-    ///   The <see cref="DataContainer"/> holding the value that was changed.
-    ///   Use the <see cref="DataContainer.DomainObject"/> property to get the corresponding <see cref="DomainObject"/>.
-    /// </param>
+    /// <param name="domainObject">The <see cref="DomainObject"/> whose property was changed.</param>
     /// <param name="propertyDefinition">The <see cref="PropertyDefinition"/> identifying the property that was changed.</param>
     /// <param name="oldValue">The old value of the property it had before.</param>
     /// <param name="newValue">The value that was assigned to the property.</param>
@@ -271,7 +259,7 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method must not throw an exception. To cancel the operation use <see cref="PropertyValueChanging"/> instead.</note>
     /// </remarks>
-    void PropertyValueChanged (ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue);
+    void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
 
     /// <summary>
     /// Invoked before a relation property is being read. 

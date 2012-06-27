@@ -149,13 +149,12 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    public override void PropertyValueReading (
-        ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    public override void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      PropertyReading (clientTransaction, dataContainer.DomainObject, propertyDefinition.PropertyInfo);
+      PropertyReading (clientTransaction, domainObject, propertyDefinition.PropertyInfo);
     }
 
     public override void RelationReading (
@@ -195,13 +194,12 @@ namespace Remotion.Data.DomainObjects.Security
       }
     }
 
-    public override void PropertyValueChanging (
-        ClientTransaction clientTransaction, DataContainer dataContainer, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      PropertyChanging (clientTransaction, dataContainer.DomainObject, propertyDefinition.PropertyInfo);
+      PropertyChanging (clientTransaction, domainObject, propertyDefinition.PropertyInfo);
     }
 
     public override void RelationChanging (

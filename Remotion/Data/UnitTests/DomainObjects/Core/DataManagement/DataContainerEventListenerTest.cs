@@ -30,6 +30,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
   {
     private DataContainerEventListener _eventListener;
 
+    private DomainObject _domainObject;
     private DataContainer _dataContainer;
     private PropertyDefinition _propertyDefinition;
 
@@ -39,7 +40,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _eventListener = new DataContainerEventListener (EventSinkWithMock);
 
-      _dataContainer = DataContainerObjectMother.CreateDataContainer();
+      _domainObject = DomainObjectMother.CreateFakeObject();
+      _dataContainer = DataContainerObjectMother.CreateWithDomainObject (_domainObject);
       _propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo();
     }
 
@@ -53,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       CheckEventDelegation (
           l => l.PropertyValueReading (_dataContainer, _propertyDefinition, ValueAccess.Original), 
-          (tx, mock) => mock.PropertyValueReading (tx, _dataContainer, _propertyDefinition, ValueAccess.Original));
+          (tx, mock) => mock.PropertyValueReading (tx, _domainObject, _propertyDefinition, ValueAccess.Original));
     }
 
     [Test]
@@ -61,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       CheckEventDelegation (
           l => l.PropertyValueRead (_dataContainer, _propertyDefinition, "value", ValueAccess.Original),
-          (tx, mock) => mock.PropertyValueRead (tx, _dataContainer, _propertyDefinition, "value", ValueAccess.Original));
+          (tx, mock) => mock.PropertyValueRead (tx, _domainObject, _propertyDefinition, "value", ValueAccess.Original));
     }
 
     [Test]
@@ -69,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       CheckEventDelegation (
           l => l.PropertyValueChanging (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
-          (tx, mock) => mock.PropertyValueChanging (tx, _dataContainer, _propertyDefinition, "oldValue", "newValue"));
+          (tx, mock) => mock.PropertyValueChanging (tx, _domainObject, _propertyDefinition, "oldValue", "newValue"));
     }
 
     [Test]
@@ -77,7 +79,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       CheckEventDelegation (
           l => l.PropertyValueChanged (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
-          (tx, mock) => mock.PropertyValueChanged (tx, _dataContainer, _propertyDefinition, "oldValue", "newValue"));
+          (tx, mock) => mock.PropertyValueChanged (tx, _domainObject, _propertyDefinition, "oldValue", "newValue"));
     }
 
     [Test]

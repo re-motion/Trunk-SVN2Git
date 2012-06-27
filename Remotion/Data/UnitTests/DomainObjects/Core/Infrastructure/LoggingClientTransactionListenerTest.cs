@@ -179,7 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueReading ()
     {
       CheckLoggingMethod (
-          () => _listener.PropertyValueReading (_clientTransaction, _dataContainer, _propertyDefinition, ValueAccess.Current),
+          () => _listener.PropertyValueReading (_clientTransaction, _domainObject, _propertyDefinition, ValueAccess.Current),
           string.Format (
               "{0} PropertyValueReading: {1} ({2}, {3})", _clientTransaction.ID, _propertyDefinition.PropertyName, ValueAccess.Current, _dataContainer.ID));
     }
@@ -188,7 +188,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanging ()
     {
       CheckLoggingMethod (
-          () => _listener.PropertyValueChanging (_clientTransaction, _dataContainer, _propertyDefinition, 1, 2),
+          () => _listener.PropertyValueChanging (_clientTransaction, _domainObject, _propertyDefinition, 1, 2),
           string.Format ("{0} PropertyValueChanging: {1} {2}->{3} ({4})", _clientTransaction.ID, _propertyDefinition.PropertyName, 1, 2, _dataContainer.ID));
     }
 
@@ -196,7 +196,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void PropertyValueChanged ()
     {
       CheckLoggingMethod (
-          () => _listener.PropertyValueChanged (_clientTransaction, _dataContainer, _propertyDefinition, 1, 2),
+          () => _listener.PropertyValueChanged (_clientTransaction, _domainObject, _propertyDefinition, 1, 2),
           string.Format ("{0} PropertyValueChanged: {1} {2}->{3} ({4})", _clientTransaction.ID, _propertyDefinition.PropertyName, 1, 2, _dataContainer.ID));
     }
 
