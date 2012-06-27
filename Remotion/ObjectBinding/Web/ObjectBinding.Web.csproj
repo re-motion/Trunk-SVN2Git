@@ -220,7 +220,7 @@
     <Compile Include="UI\Controls\BocCheckBox.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="UI\Controls\BocBooleanValueBase.cs" />
+    <Compile Include="UI\Controls\BocBooleanValueImplementation\BocBooleanValueBase.cs" />
     <Compile Include="UI\Controls\BocColumnDefinition.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -475,7 +475,9 @@
     <Content Include="Doc\include\UI\Controls\BocList.xml" />
     <Content Include="Doc\include\UI\Controls\BocMultilineTextValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocReferenceValue.xml" />
-    <Content Include="Doc\include\UI\Controls\BocReferenceValueBase.xml" />
+    <Content Include="Doc\include\UI\Controls\BocReferenceValueBase.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Doc\include\UI\Controls\BocTextValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
     <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />

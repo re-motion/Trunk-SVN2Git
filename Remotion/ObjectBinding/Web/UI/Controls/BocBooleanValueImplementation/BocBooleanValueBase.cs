@@ -19,11 +19,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation
 {
   /// <summary>
   /// Abstract base class for <see cref="BocBooleanValue"/> and <see cref="BocCheckBox"/>, 
@@ -45,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary>
-    /// Registers the control as requiring a postback. <seealso cref="T:Page.RegisterRequiresPostBack"/>.
+    /// Registers the control as requiring a postback. <seealso cref="Page.RegisterRequiresPostBack"/>.
     /// </summary>
     /// <param name="e">ignored</param>
     protected override void OnInit (EventArgs e)
@@ -65,7 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Loads the <see cref="Value"/> from the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadValue/*' />
+    /// <include file='..\..\..\doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadValue/*' />
     public override void LoadValue (bool interim)
     {
       if (interim)
@@ -86,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Populates the <see cref="Value"/> with the unbound <paramref name="value"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadUnboundValue/*' />
+    /// <include file='..\..\..\doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/LoadUnboundValue/*' />
     public void LoadUnboundValue (bool? value, bool interim)
     {
       LoadValueInternal (value, interim);
@@ -103,7 +102,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     }
 
     /// <summary> Saves the <see cref="Value"/> into the bound <see cref="IBusinessObject"/>. </summary>
-    /// <include file='doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/SaveValue/*' />
+    /// <include file='..\..\..\doc\include\UI\Controls\BocBooleanValue.xml' path='BocBooleanValue/SaveValue/*' />
     public override void SaveValue (bool interim)
     {
       if (interim)
