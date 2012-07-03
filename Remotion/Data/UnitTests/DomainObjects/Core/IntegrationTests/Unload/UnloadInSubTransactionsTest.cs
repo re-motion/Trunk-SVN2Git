@@ -18,8 +18,10 @@ using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -486,65 +488,92 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    [Ignore ("TODO 4626")]
     public void Events ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
+      order1.OrderItems.EnsureDataComplete();
+      var endPointID = order1.OrderItems.AssociatedEndPointID;
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
 
-      var subListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_subTransaction);
-      var rootListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_subTransaction.ParentTransaction);
-      using (subListenerMock.GetMockRepository ().Ordered ())
+      var rootTransaction = _subTransaction.ParentTransaction;
+
+      var mockRepository = new MockRepository();
+      var subListenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+      var rootListenerMock = mockRepository.StrictMock<IClientTransactionListener> ();
+
+      ClientTransactionTestHelper.AddListener (_subTransaction, subListenerMock);
+      ClientTransactionTestHelper.AddListener (rootTransaction, rootListenerMock);
+
+      try
       {
-        subListenerMock
-            .Expect (mock => mock.ObjectsUnloading (
-                Arg.Is (_subTransaction), 
-                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
-            .WhenCalled (
-            mi =>
-            {
-              Assert.That (orderItemA.State, Is.EqualTo (StateType.Unchanged));
-              Assert.That (orderItemB.State, Is.EqualTo (StateType.Unchanged));
-            });
-        subListenerMock
-            .Expect (mock => mock.ObjectsUnloaded (
-                Arg.Is (_subTransaction), 
-                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
-            .WhenCalled (
-            mi =>
-            {
-              Assert.That (orderItemA.State, Is.EqualTo (StateType.NotLoadedYet));
-              Assert.That (orderItemB.State, Is.EqualTo (StateType.NotLoadedYet));
-            });
+        using (mockRepository.Ordered())
+        {
+          subListenerMock
+              .Expect (
+                  mock => mock.ObjectsUnloading (
+                      Arg.Is (_subTransaction),
+                      Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })));
+          rootListenerMock
+              .Expect (
+                  mock => mock.ObjectsUnloading (
+                      Arg.Is (_subTransaction),
+                      Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+              .WhenCalled (
+                  mi =>
+                  {
+                    Assert.That (orderItemA.TransactionContext[_subTransaction].State, Is.EqualTo (StateType.Unchanged));
+                    Assert.That (orderItemB.TransactionContext[_subTransaction].State, Is.EqualTo (StateType.Unchanged));
 
-        rootListenerMock
-            .Expect (mock => mock.ObjectsUnloading (
-                Arg.Is (_subTransaction), 
-                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
-            .WhenCalled (
-            mi =>
-            {
-              Assert.That (orderItemA.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.Unchanged));
-              Assert.That (orderItemB.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.Unchanged));
-            });
-        rootListenerMock
-            .Expect (mock => mock.ObjectsUnloaded (
-                Arg.Is (_subTransaction), 
-                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
-            .WhenCalled (
-            mi =>
-            {
-              Assert.That (orderItemA.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
-              Assert.That (orderItemB.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
-            });
+                    Assert.That (orderItemA.TransactionContext[rootTransaction].State, Is.EqualTo (StateType.Unchanged));
+                    Assert.That (orderItemB.TransactionContext[rootTransaction].State, Is.EqualTo (StateType.Unchanged));
+
+                    Assert.That (rootTransaction.IsReadOnly, Is.True);
+                  });
+
+          subListenerMock.Expect (mock => mock.RelationEndPointUnloading (_subTransaction, endPointID));
+          subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (_subTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemA.ID)));
+          subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (_subTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemB.ID)));
+          
+          rootListenerMock.Expect (mock => mock.RelationEndPointUnloading (rootTransaction, endPointID));
+          subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemA.ID)));
+          subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemB.ID)));
+
+          rootListenerMock
+              .Expect (
+                  mock => mock.ObjectsUnloaded (
+                      Arg.Is (_subTransaction),
+                      Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
+              .WhenCalled (
+                  mi =>
+                  {
+                    Assert.That (orderItemA.TransactionContext[rootTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
+                    Assert.That (orderItemB.TransactionContext[rootTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
+
+                    Assert.That (orderItemA.TransactionContext[_subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
+                    Assert.That (orderItemB.TransactionContext[_subTransaction].State, Is.EqualTo (StateType.NotLoadedYet));
+
+                    Assert.That (rootTransaction.IsReadOnly, Is.True);
+                  });
+          subListenerMock
+              .Expect (
+                  mock => mock.ObjectsUnloaded (
+                      Arg.Is (_subTransaction),
+                      Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })));
+        }
+
+        mockRepository.ReplayAll ();
+
+        UnloadService.UnloadVirtualEndPointAndItemData (_subTransaction, endPointID);
+
+        mockRepository.VerifyAll ();
       }
-
-      subListenerMock.Replay ();
-
-      UnloadService.UnloadVirtualEndPointAndItemData (_subTransaction, order1.OrderItems.AssociatedEndPointID);
-
-      subListenerMock.VerifyAllExpectations ();
-      subListenerMock.BackToRecord (); // For Discarding
+      finally
+      {
+        ClientTransactionTestHelper.RemoveListener (rootTransaction, rootListenerMock);
+        ClientTransactionTestHelper.RemoveListener (_subTransaction, subListenerMock);
+      }
     }
 
     private void CheckDataContainerExists (ClientTransaction clientTransaction, DomainObject domainObject, bool dataContainerShouldExist)
