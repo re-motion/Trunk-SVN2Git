@@ -42,15 +42,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
-      using (clientTransaction.EnterNonDiscardingScope ())
-      {
-        foreach (var domainObject in domainObjects)
-          domainObject.OnLoaded();
+      clientTransaction.Execute (
+          () =>
+          {
+            foreach (var domainObject in domainObjects)
+              domainObject.OnLoaded();
 
-        base.ObjectsLoaded (clientTransaction, domainObjects);
+            clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
+          });
 
-        clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
-      }
+      base.ObjectsLoaded (clientTransaction, domainObjects);
     }
 
     public override void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)

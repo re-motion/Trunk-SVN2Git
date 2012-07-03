@@ -464,14 +464,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             mock => mock.ObjectsLoading (
                         Arg.Is (_subTransaction),
                         Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.ClassWithAllDataTypes1 })));
-        _extensionMock.Expect (mock => mock.ObjectsLoaded (
-            Arg.Is (_subTransaction),
-            Arg<ReadOnlyCollection<DomainObject>>.Matches (list => list.Count == 1)));
         
         clientTransactionEventReceiver.Loaded (null, null);
         LastCall.Constraints (
             Mocks_Is.Same (_subTransaction),
             Property.ValueConstraint ("DomainObjects", Property.Value ("Count", 1)));
+        _extensionMock.Expect (mock => mock.ObjectsLoaded (
+            Arg.Is (_subTransaction),
+            Arg<ReadOnlyCollection<DomainObject>>.Matches (list => list.Count == 1)));
       }
 
       _mockRepository.ReplayAll();

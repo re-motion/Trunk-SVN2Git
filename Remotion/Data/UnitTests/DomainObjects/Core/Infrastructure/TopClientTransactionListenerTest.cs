@@ -108,20 +108,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void ObjectsLoaded ()
     {
       var domainObjects = Array.AsReadOnly (new DomainObject[] { _order1, _order2 });
-      CheckEventWithListenersInTheMiddle (
+      CheckEventWithListenersLast (
           l => l.ObjectsLoaded (_clientTransaction, domainObjects),
           () =>
           {
             _loadEventReceiverMock.Expect (mock => mock.OnLoaded (_order1)).WithCurrentTransaction (_clientTransaction);
             _loadEventReceiverMock.Expect (mock => mock.OnLoaded (_order2)).WithCurrentTransaction (_clientTransaction);
-          },
-          () =>
             _transactionEventReceiverMock
-                    .Expect (
-                        mock => mock.Loaded (
-                            Arg.Is (_clientTransaction),
-                            Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (domainObjects))))
-                    .WithCurrentTransaction (_clientTransaction));
+                .Expect (
+                    mock => mock.Loaded (
+                        Arg.Is (_clientTransaction),
+                        Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (domainObjects))))
+                .WithCurrentTransaction (_clientTransaction);
+          });
     }
 
     [Test]
