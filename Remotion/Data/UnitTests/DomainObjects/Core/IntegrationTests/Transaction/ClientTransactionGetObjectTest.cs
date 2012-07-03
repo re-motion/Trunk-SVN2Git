@@ -44,15 +44,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void DataContainerMapLookUp ()
     {
       DomainObject domainObject1 = TestableClientTransaction.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
 
-      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (domainObject1));
       _eventReceiver.Clear ();
 
       DomainObject domainObject2 = TestableClientTransaction.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
 
       Assert.That (domainObject2, Is.SameAs (domainObject1));
     }
@@ -64,17 +64,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       ObjectID id2 = DomainObjectIDs.ClassWithAllDataTypes2;
 
       DomainObject domainObject1 = TestableClientTransaction.GetObject (id1, false);
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
 
-      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (domainObject1));
       _eventReceiver.Clear ();
 
       DomainObject domainObject2 = TestableClientTransaction.GetObject (id2, false);
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
 
-      domainObjects = _eventReceiver.LoadedDomainObjects[0];
+      domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (domainObject2));
 
@@ -106,8 +106,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           DomainObjectIDs.Order1,
           DomainObjectIDs.Order2,
           DomainObjectIDs.OrderItem1);
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
-      Assert.That (_eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists[0], Is.EqualTo (objects));
 
       listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
           Arg.Is (TestableClientTransaction),
@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestableClientTransaction.AddListener (listenerMock);
 
       TestableClientTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1);
-      Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
+      Assert.That (_eventReceiver.LoadedDomainObjectLists, Is.Empty);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
           Arg<ClientTransaction>.Is.Anything,
@@ -169,7 +169,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       TestableClientTransaction.AddListener (listenerMock);
 
       TestableClientTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
-      Assert.That (_eventReceiver.LoadedDomainObjects, Is.Empty);
+      Assert.That (_eventReceiver.LoadedDomainObjectLists, Is.Empty);
 
       listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
           Arg<ClientTransaction>.Is.Anything,

@@ -31,17 +31,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     // member fields
 
     private readonly ClientTransaction _clientTransaction;
-    private List<ReadOnlyCollection<DomainObject>> _loadedDomainObjects;
-    private List<ReadOnlyCollection<DomainObject>> _committingDomainObjects;
-    private List<ReadOnlyCollection<DomainObject>> _committedDomainObjects;
+    private List<ReadOnlyCollection<DomainObject>> _loadedDomainObjectLists;
+    private List<ReadOnlyCollection<DomainObject>> _committingDomainObjectLists;
+    private List<ReadOnlyCollection<DomainObject>> _committedDomainObjectLists;
 
     // construction and disposing
 
     public ClientTransactionEventReceiver (ClientTransaction clientTransaction)
     {
-      _loadedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
-      _committingDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
-      _committedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
+      _loadedDomainObjectLists = new List<ReadOnlyCollection<DomainObject>> ();
+      _committingDomainObjectLists = new List<ReadOnlyCollection<DomainObject>> ();
+      _committedDomainObjectLists = new List<ReadOnlyCollection<DomainObject>> ();
       _clientTransaction = clientTransaction;
 
       _clientTransaction.Loaded += ClientTransaction_Loaded;
@@ -53,9 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public void Clear ()
     {
-      _loadedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
-      _committingDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
-      _committedDomainObjects = new List<ReadOnlyCollection<DomainObject>> ();
+      _loadedDomainObjectLists = new List<ReadOnlyCollection<DomainObject>> ();
+      _committingDomainObjectLists = new List<ReadOnlyCollection<DomainObject>> ();
+      _committedDomainObjectLists = new List<ReadOnlyCollection<DomainObject>> ();
     }
 
     public void Unregister ()
@@ -67,32 +67,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     private void ClientTransaction_Loaded (object sender, ClientTransactionEventArgs args)
     {
-      _loadedDomainObjects.Add (args.DomainObjects);
+      _loadedDomainObjectLists.Add (args.DomainObjects);
     }
 
     private void ClientTransaction_Committing (object sender, ClientTransactionEventArgs args)
     {
-      _committingDomainObjects.Add (args.DomainObjects);
+      _committingDomainObjectLists.Add (args.DomainObjects);
     }
 
     private void ClientTransaction_Committed (object sender, ClientTransactionEventArgs args)
     {
-      _committedDomainObjects.Add (args.DomainObjects);
+      _committedDomainObjectLists.Add (args.DomainObjects);
     }
 
-    public List<ReadOnlyCollection<DomainObject>> LoadedDomainObjects
+    public List<ReadOnlyCollection<DomainObject>> LoadedDomainObjectLists
     {
-      get { return _loadedDomainObjects; }
+      get { return _loadedDomainObjectLists; }
     }
 
-    public List<ReadOnlyCollection<DomainObject>> CommittingDomainObjects
+    public List<ReadOnlyCollection<DomainObject>> CommittingDomainObjectLists
     {
-      get { return _committingDomainObjects; }
+      get { return _committingDomainObjectLists; }
     }
 
-    public List<ReadOnlyCollection<DomainObject>> CommittedDomainObjects
+    public List<ReadOnlyCollection<DomainObject>> CommittedDomainObjectLists
     {
-      get { return _committedDomainObjects; }
+      get { return _committedDomainObjectLists; }
     }
   }
 }

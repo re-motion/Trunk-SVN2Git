@@ -916,6 +916,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
           //21
           //ClientTransactionScope.CurrentTransaction.Commit ();
+
+          extension.Committing (
+              Arg.Is (ClientTransactionScope.CurrentTransaction),
+              Arg<ReadOnlyCollection<DomainObject>>.Matches (
+                  c => c.SetEquals (new DomainObject[] { newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1 })));
+
           using (mockRepository.Unordered ())
           {
             newCustomer1EventReceiver.Committing (null, null);
@@ -936,10 +942,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderTicket1EventReceiver.Committing (null, null);
             LastCall.Constraints (Mocks_Is.Same (newOrderTicket1), Mocks_Is.NotNull ());
           }
-          extension.Committing (null, null);
-          LastCall.Constraints (
-              Mocks_Is.Same (ClientTransactionScope.CurrentTransaction),
-              new ContainsConstraint (newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1));
 
           extension.CommitValidate (
               Arg.Is (ClientTransactionScope.CurrentTransaction),
@@ -967,10 +969,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             newOrderTicket1EventReceiver.Committed (null, null);
             LastCall.Constraints (Mocks_Is.Same (newOrderTicket1), Mocks_Is.NotNull ());
           }
-          extension.Committed (null, null);
-          LastCall.Constraints (
-              Mocks_Is.Same (ClientTransactionScope.CurrentTransaction),
-              Mocks_Property.Value ("Count", 6) & new ContainsConstraint (newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1));
+          extension.Committed (
+              Arg.Is (ClientTransactionScope.CurrentTransaction), 
+              Arg<ReadOnlyCollection<DomainObject>>.Matches (
+                  c => c.SetEquals (new DomainObject[] { newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1 })));
         }
 
         mockRepository.ReplayAll ();

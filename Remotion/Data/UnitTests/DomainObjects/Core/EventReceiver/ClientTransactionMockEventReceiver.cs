@@ -16,12 +16,9 @@
 // 
 using System;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Mocks_List = Rhino.Mocks.Constraints.List;
-using Mocks_Property = Rhino.Mocks.Constraints.Property;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {
@@ -35,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // construction and disposing
 
-    public ClientTransactionMockEventReceiver (ClientTransaction clientTransaction)
+    protected ClientTransactionMockEventReceiver (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
@@ -60,24 +57,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public void RollingBack (object sender, params DomainObject[] domainObjects)
     {
-      RollingBack (null, (ClientTransactionEventArgs) null);
-
-      LastCall.Constraints (
-          Mocks_Is.Same (sender),
-          Mocks_Property.ValueConstraint ("DomainObjects",
-              Mocks_Property.Value ("Count", domainObjects.Length)
-              & new ContainsConstraint (domainObjects)));
+      RollingBack (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
     }
 
     public void RolledBack (object sender, params DomainObject[] domainObjects)
     {
-      RolledBack (null, (ClientTransactionEventArgs) null);
+      RolledBack (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+    }
 
-      LastCall.Constraints (
-          Mocks_Is.Same (sender),
-          Mocks_Property.ValueConstraint ("DomainObjects",
-              Mocks_Property.Value ("Count", domainObjects.Length)
-              & new ContainsConstraint (domainObjects)));
+    public void Committing (object sender, params DomainObject[] domainObjects)
+    {
+      Committing (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+    }
+
+    public void Committed (object sender, params DomainObject[] domainObjects)
+    {
+      Committed (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
     }
   }
 }

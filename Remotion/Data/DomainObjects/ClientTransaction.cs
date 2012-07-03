@@ -1176,7 +1176,7 @@ public class ClientTransaction
   /// Raises the <see cref="Committing"/> event.
   /// </summary>
   /// <param name="args">A <see cref="ClientTransactionEventArgs"/> object that contains the event data.</param>
-  protected virtual void OnCommitting (ClientTransactionEventArgs args)
+  protected internal virtual void OnCommitting (ClientTransactionEventArgs args)
   {
     ArgumentUtility.CheckNotNull ("args", args);
 
@@ -1189,7 +1189,7 @@ public class ClientTransaction
   /// Raises the <see cref="Committed"/> event.
   /// </summary>
   /// <param name="args">A <see cref="ClientTransactionEventArgs"/> object that contains the event data.</param>
-  protected virtual void OnCommitted (ClientTransactionEventArgs args)
+  protected internal virtual void OnCommitted (ClientTransactionEventArgs args)
   {
     ArgumentUtility.CheckNotNull ("args", args);
 
@@ -1201,7 +1201,7 @@ public class ClientTransaction
   /// Raises the <see cref="RollingBack"/> event.
   /// </summary>
   /// <param name="args">A <see cref="ClientTransactionEventArgs"/> object that contains the event data.</param>
-  protected virtual void OnRollingBack (ClientTransactionEventArgs args)
+  protected internal virtual void OnRollingBack (ClientTransactionEventArgs args)
   {
     ArgumentUtility.CheckNotNull ("args", args);
 
@@ -1213,7 +1213,7 @@ public class ClientTransaction
   /// Raises the <see cref="RolledBack"/> event.
   /// </summary>
   /// <param name="args">A <see cref="ClientTransactionEventArgs"/> object that contains the event data.</param>
-  protected virtual void OnRolledBack (ClientTransactionEventArgs args)
+  protected internal virtual void OnRolledBack (ClientTransactionEventArgs args)
   {
     ArgumentUtility.CheckNotNull ("args", args);
 
@@ -1267,43 +1267,21 @@ public class ClientTransaction
     // Every object raises a Committing event even if another object's Committing event changes the first object's state back to original 
     // during its own Committing event. Because the event order of .NET is not deterministic, this behavior is desired to ensure consistency: 
     // Every object changed during a ClientTransaction raises a Committing event regardless of the Committing event order of specific objects.  
-    // But: The same object is not included in the ClientTransaction's Committing event, because this order (DomainObject Committing events are raised
-    // before the ClientTransaction Committing events) IS deterministic.
 
     // Note regarding to Committed: 
     // If an object is changed back to its original state during the Committing phase, no Committed event will be raised,
     // because in this case the object won't be committed to the underlying backend (e.g. database).
 
     var changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-    var domainObjectComittingEventRaised = new DomainObjectCollection();
     var clientTransactionCommittingEventRaised = new DomainObjectCollection();
 
     List<DomainObject> clientTransactionCommittingEventNotRaised;
     do
     {
-      var domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised).ToList();
-      while (domainObjectCommittingEventNotRaised.Any())
-      {
-        foreach (DomainObject domainObject in domainObjectCommittingEventNotRaised)
-        {
-          if (!domainObject.IsInvalid)
-          {
-            domainObject.OnCommitting (EventArgs.Empty);
-
-            if (!domainObject.IsInvalid)
-              domainObjectComittingEventRaised.Add (domainObject);
-          }
-        }
-
-        changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-        domainObjectCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectComittingEventRaised).ToList();
-      }
-
       clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised).ToList();
 
       var eventArgReadOnlyCollection = clientTransactionCommittingEventNotRaised.AsReadOnly ();
       RaiseListenerEvent ((tx, l) => l.TransactionCommitting (tx, eventArgReadOnlyCollection));
-      OnCommitting (new ClientTransactionEventArgs (eventArgReadOnlyCollection));
 
       foreach (DomainObject domainObject in clientTransactionCommittingEventNotRaised)
       {
@@ -1318,10 +1296,6 @@ public class ClientTransaction
 
   private void EndCommit (ReadOnlyCollection<DomainObject> changedDomainObjects)
   {
-    foreach (DomainObject changedDomainObject in changedDomainObjects)
-      changedDomainObject.OnCommitted (EventArgs.Empty);
-
-    OnCommitted (new ClientTransactionEventArgs (changedDomainObjects));
     RaiseListenerEvent ((tx, l) => l.TransactionCommitted (tx, changedDomainObjects));
   }
 
@@ -1333,43 +1307,21 @@ public class ClientTransaction
     // Every object raises a RollingBack event even if another object's RollingBack event changes the first object's state back to original 
     // during its own RollingBack event. Because the event order of .NET is not deterministic, this behavior is desired to ensure consistency: 
     // Every object changed during a ClientTransaction raises a RollingBack event regardless of the RollingBack event order of specific objects.  
-    // But: The same object is not included in the ClientTransaction's RollingBack event, because this order (DomainObject RollingBack events are raised
-    // before the ClientTransaction RollingBack events) IS deterministic.
 
     // Note regarding to RolledBack: 
     // If an object is changed back to its original state during the RollingBack phase, no RolledBack event will be raised,
     // because the object actually has never been changed from a ClientTransaction's perspective.
 
     var changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-    var domainObjectRollingBackEventRaised = new DomainObjectCollection();
     var clientTransactionRollingBackEventRaised = new DomainObjectCollection();
 
     List<DomainObject> clientTransactionRollingBackEventNotRaised;
     do
     {
-      var domainObjectRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectRollingBackEventRaised).ToList();
-      while (domainObjectRollingBackEventNotRaised.Any())
-      {
-        foreach (DomainObject domainObject in domainObjectRollingBackEventNotRaised)
-        {
-          if (!domainObject.IsInvalid)
-          {
-            domainObject.OnRollingBack (EventArgs.Empty);
-
-            if (!domainObject.IsInvalid)
-              domainObjectRollingBackEventRaised.Add (domainObject);
-          }
-        }
-
-        changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-        domainObjectRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (domainObjectRollingBackEventRaised).ToList();
-      }
-
       clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList();
 
       var eventArgReadOnlyCollection = clientTransactionRollingBackEventNotRaised.AsReadOnly ();
       RaiseListenerEvent ((tx, l) => l.TransactionRollingBack (tx, eventArgReadOnlyCollection));
-      OnRollingBack (new ClientTransactionEventArgs (eventArgReadOnlyCollection));
 
       foreach (DomainObject domainObject in clientTransactionRollingBackEventNotRaised)
       {
@@ -1384,10 +1336,6 @@ public class ClientTransaction
 
   private void EndRollback (ReadOnlyCollection<DomainObject> changedDomainObjects)
   {
-    foreach (DomainObject changedDomainObject in changedDomainObjects)
-      changedDomainObject.OnRolledBack (EventArgs.Empty);
-
-    OnRolledBack (new ClientTransactionEventArgs (changedDomainObjects));
     RaiseListenerEvent ((tx, l) => l.TransactionRolledBack (tx, changedDomainObjects));
   }
 

@@ -341,9 +341,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     [Test]
     public void DeleteNewObjectsInDomainObjectsCommittingEvent ()
     {
-      _newOrder.Committing += new EventHandler (NewOrder_Committing);
-      _newOrderTicket.Committing += new EventHandler (NewOrderTicket_Committing);
-      TestableClientTransaction.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInDomainObjectsCommittingEvent;
+      _newOrder.Committing += (o, args) =>
+      {
+        _newOrder.Delete();
+        _newOrderTicket.Delete();
+      };
+      _newOrderTicket.Committing += (o, args) => Assert.Fail ("NewOrderTicket_Committing event should not be raised.");
+      TestableClientTransaction.Committing += (sender, args1) => Assert.That (args1.DomainObjects.Count, Is.EqualTo (2));
 
       TestableClientTransaction.Commit ();
     }
@@ -351,30 +355,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
     [Test]
     public void DeleteNewObjectsInClientTransactionsCommittingEvent ()
     {
-      TestableClientTransaction.Committing += ClientTransactionMock_Committing_DeleteNewObjectsInClientTransactionsCommittingEvent;
+      _newOrder.Committing += (sender, args) => Assert.Fail ("Should not be called.");
+      _newOrderTicket.Committing += (sender1, args1) => Assert.Fail ("Should not be called.");
+      TestableClientTransaction.Committing += (sender2, args2) =>
+      {
+        _newOrder.Delete ();
+        _newOrderTicket.Delete ();
+      };
       TestableClientTransaction.Commit ();
-    }
-
-    private void NewOrder_Committing (object sender, EventArgs e)
-    {
-      ((Order) sender).Delete ();
-      _newOrderTicket.Delete ();
-    }
-
-    private void ClientTransactionMock_Committing_DeleteNewObjectsInClientTransactionsCommittingEvent (object sender, ClientTransactionEventArgs args)
-    {
-      _newOrder.Delete ();
-      _newOrderTicket.Delete ();
-    }
-
-    private void ClientTransactionMock_Committing_DeleteNewObjectsInDomainObjectsCommittingEvent (object sender, ClientTransactionEventArgs args)
-    {
-      Assert.AreEqual (0, args.DomainObjects.Count);
-    }
-
-    private void NewOrderTicket_Committing (object sender, EventArgs e)
-    {
-      Assert.Fail ("NewOrderTicket_Committing event should not be raised.");
     }
   }
 }

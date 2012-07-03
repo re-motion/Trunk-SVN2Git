@@ -48,13 +48,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
               RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket")),
           Is.SameAs (orderTicket));
 
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
 
       Assert.That (
           TestableClientTransaction.GetRelatedObject (
               RelationEndPointID.Create (orderTicket.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderTicket.Order")),
           Is.SameAs (order));
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -66,9 +66,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (order, Is.Not.Null);
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
 
-      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (order));
     }
@@ -84,9 +84,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (orderTicket, Is.Not.Null);
       Assert.That (orderTicket.ID, Is.EqualTo (DomainObjectIDs.OrderTicket1));
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
 
-      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
       Assert.That (domainObjects.Count, Is.EqualTo (1));
       Assert.That (domainObjects[0], Is.SameAs (orderTicket));
     }
@@ -105,7 +105,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                   classWithValidRelation.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithValidRelations.ClassWithGuidKeyOptional")),
           Is.Null);
 
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -122,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                   classWithGuidKey.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.ClassWithGuidKey.ClassWithValidRelationsOptional")),
           Is.Null);
 
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
     }
 
     [Test]
@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (orders.GetType (), Is.EqualTo (typeof (OrderCollection)), "Type of collection");
       Assert.That (orders.Count, Is.EqualTo (2));
 
-      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
+      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
       Assert.That (domainObjects.Count, Is.EqualTo (2));
     }
 
@@ -225,8 +225,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (ReferenceEquals (orders1, orders2), Is.True);
 
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
-      var domainObjects = _eventReceiver.LoadedDomainObjects[0];
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
+      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
       Assert.That (domainObjects.Count, Is.EqualTo (2));
     }
 
@@ -241,7 +241,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           RelationEndPointID.Create (customer.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders"));
 
       Assert.That (orders[DomainObjectIDs.Order1], Is.SameAs (order));
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
     }
 
     [Test]
@@ -254,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (orders, Is.Not.Null);
       Assert.IsEmpty (orders);
-      Assert.That (_eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (0));
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
     }
 
     [Test]

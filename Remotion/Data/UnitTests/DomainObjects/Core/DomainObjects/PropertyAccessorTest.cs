@@ -476,13 +476,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order existingOrder = Order.GetObject (DomainObjectIDs.Order1);
 
       eventReceiver.Clear ();
-      Assert.AreEqual (0, eventReceiver.LoadedDomainObjects.Count);
+      Assert.AreEqual (0, eventReceiver.LoadedDomainObjectLists.Count);
 
       Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].IsNull);
-      Assert.AreEqual (0, eventReceiver.LoadedDomainObjects.Count, "The IsNull check did not cause the object to be loaded.");
+      Assert.AreEqual (0, eventReceiver.LoadedDomainObjectLists.Count, "The IsNull check did not cause the object to be loaded.");
 
       Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer"].GetValue<Customer> () == null);
-      Assert.AreEqual (1, eventReceiver.LoadedDomainObjects.Count, "An ordinary check does cause the object to be loaded.");
+      Assert.AreEqual (1, eventReceiver.LoadedDomainObjectLists.Count, "An ordinary check does cause the object to be loaded.");
     }
 
     [Test]
@@ -501,13 +501,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       Order existingOrder = Order.GetObject (DomainObjectIDs.Order1);
 
       eventReceiver.Clear ();
-      Assert.AreEqual (0, eventReceiver.LoadedDomainObjects.Count);
+      Assert.AreEqual (0, eventReceiver.LoadedDomainObjectLists.Count);
 
       Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].IsNull);
-      Assert.AreEqual (1, eventReceiver.LoadedDomainObjects.Count, "For virtual end points, the IsNull unfortunately does cause a load.");
+      Assert.AreEqual (1, eventReceiver.LoadedDomainObjectLists.Count, "For virtual end points, the IsNull unfortunately does cause a load.");
 
       Assert.IsFalse (existingOrder.Properties["Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"].GetValue<OrderTicket> () == null);
-      Assert.AreEqual (1, eventReceiver.LoadedDomainObjects.Count, "An ordinary check does cause the object to be loaded.");
+      Assert.AreEqual (1, eventReceiver.LoadedDomainObjectLists.Count, "An ordinary check does cause the object to be loaded.");
     }
 
     [Test]

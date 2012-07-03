@@ -316,8 +316,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             DomainObjectIDs.Order2,
             DomainObjectIDs.OrderItem1);
 
-        Assert.That (eventReceiver.LoadedDomainObjects.Count, Is.EqualTo (1));
-        Assert.That (eventReceiver.LoadedDomainObjects[0], Is.EqualTo (objects));
+        Assert.That (eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
+        Assert.That (eventReceiver.LoadedDomainObjectLists[0], Is.EqualTo (objects));
 
         listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
             Arg.Is (subTransaction),
@@ -365,7 +365,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         PrivateInvoke.InvokeNonPublicMethod (subTransaction, "AddListener", listenerMock);
 
         subTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1);
-        Assert.That (eventReceiver.LoadedDomainObjects, Is.Empty);
+        Assert.That (eventReceiver.LoadedDomainObjectLists, Is.Empty);
 
         listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
             Arg<ClientTransaction>.Is.Anything,
@@ -402,7 +402,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         PrivateInvoke.InvokeNonPublicMethod (subTransaction, "AddListener", listenerMock);
 
         subTransaction.GetObjects<DomainObject> (expectedObjects[0].ID, expectedObjects[1].ID);
-        Assert.That (eventReceiver.LoadedDomainObjects, Is.Empty);
+        Assert.That (eventReceiver.LoadedDomainObjectLists, Is.Empty);
 
         listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
             Arg<ClientTransaction>.Is.Anything,

@@ -1356,12 +1356,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        computerEventReveiver.Expect (mock => mock.Committing (computer, EventArgs.Empty));
         _extensionMock.Expect (mock => mock.Committing (Arg.Is (_subTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
         clientTransactionMockEventReceiver.Expect (
             mock =>
             mock.Committing (
                 Arg.Is (_subTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (new[] { computer }))));
+        computerEventReveiver.Expect (mock => mock.Committing (computer, EventArgs.Empty));
 
         _extensionMock.Expect (mock => mock.CommitValidate (
             Arg.Is (_subTransaction), 

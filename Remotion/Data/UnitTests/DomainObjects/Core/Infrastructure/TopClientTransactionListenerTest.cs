@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
@@ -36,11 +35,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private ClientTransaction _clientTransaction;
     private Order _order1;
     private Order _order2;
+    private Order _invalidObject;
 
     private TopClientTransactionListener _listener;
 
     private MockRepository _mockRepository;
+
     private DomainObjectMockEventReceiver _order1EventReceiverMock;
+    private DomainObjectMockEventReceiver _order2EventReceiverMock;
+    private DomainObjectMockEventReceiver _invalidObjectEventReceiverMock;
+    
     private IUnloadEventReceiver _unloadEventReceiverMock;
     private ILoadEventReceiver _loadEventReceiverMock;
 
@@ -55,11 +59,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _clientTransaction = ClientTransaction.CreateRootTransaction();
       _order1 = _clientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       _order2 = _clientTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
+      _invalidObject = _clientTransaction.Execute (
+          () =>
+          {
+            var order = Order.NewObject();
+            order.Delete();
+            return order;
+          });
 
       _listener = new TopClientTransactionListener ();
 
       _mockRepository = new MockRepository();
       _order1EventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order1);
+      _order2EventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_order2);
+      _invalidObjectEventReceiverMock = _mockRepository.StrictMock<DomainObjectMockEventReceiver> (_invalidObject);
 
       _unloadEventReceiverMock = _mockRepository.StrictMock<IUnloadEventReceiver>();
       _order1.SetUnloadEventReceiver (_unloadEventReceiverMock);
@@ -304,7 +317,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void RelationChanged_Nulls ()
+    public void RelationChanged_WithNulls ()
     {
       var endPointDefinition = GetSomeEndPointDefinition ();
       DomainObject oldValue = null;
@@ -316,6 +329,116 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           _order1EventReceiverMock
               .Expect (mock => mock.RelationChanged (_order1, endPointDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
+    }
+
+    [Test]
+    public void TransactionCommitting ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          () =>
+          {
+            _transactionEventReceiverMock
+                .Expect (mock => mock.Committing (_clientTransaction, _order1, _order2))
+                .WithCurrentTransaction (_clientTransaction);
+            _order1EventReceiverMock
+                .Expect (mock => mock.Committing (_order1, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+            _order2EventReceiverMock
+                .Expect (mock => mock.Committing (_order2, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+          });
+    }
+
+    [Test]
+    public void TransactionCommitting_InvalidObject ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject })),
+          () =>
+          {
+            _transactionEventReceiverMock
+                .Expect (mock => mock.Committing (_clientTransaction, _invalidObject))
+                .WithCurrentTransaction (_clientTransaction);
+            _invalidObjectEventReceiverMock
+                .Expect (mock => mock.Committing (Arg<object>.Is.Anything, Arg<EventArgs>.Is.Anything))
+                .Repeat.Never()
+                .Message ("DomainObject event should not be raised if object is made invalid.");
+          });
+    }
+
+    [Test]
+    public void TransactionCommitted ()
+    {
+      CheckEventWithListenersLast (
+          l => l.TransactionCommitted (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          () =>
+          {
+            _order2EventReceiverMock
+                .Expect (mock => mock.Committed (_order2, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+            _order1EventReceiverMock
+                .Expect (mock => mock.Committed (_order1, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+            _transactionEventReceiverMock
+                .Expect (mock => mock.Committed (_clientTransaction, _order1, _order2))
+                .WithCurrentTransaction (_clientTransaction);
+          });
+    }
+
+    [Test]
+    public void TransactionRollingBack ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.TransactionRollingBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          () =>
+          {
+            _transactionEventReceiverMock
+                .Expect (mock => mock.RollingBack (_clientTransaction, _order1, _order2))
+                .WithCurrentTransaction (_clientTransaction);
+            _order1EventReceiverMock
+                .Expect (mock => mock.RollingBack (_order1, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+            _order2EventReceiverMock
+                .Expect (mock => mock.RollingBack (_order2, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+          });
+    }
+
+    [Test]
+    public void TransactionRollingBack_InvalidObjects ()
+    {
+      CheckEventWithListenersFirst (
+          l => l.TransactionRollingBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject })),
+          () =>
+          {
+            _transactionEventReceiverMock
+                .Expect (mock => mock.RollingBack (_clientTransaction, _invalidObject))
+                .WithCurrentTransaction (_clientTransaction);
+            _invalidObjectEventReceiverMock
+                .Expect (mock => mock.RollingBack (Arg<DomainObject>.Is.Anything, Arg<EventArgs>.Is.Anything))
+                .Repeat.Never ()
+                .Message ("DomainObject event should not be raised if object is made invalid.");
+          });
+    }
+
+    [Test]
+    public void TransactionRolledBack ()
+    {
+      CheckEventWithListenersLast (
+          l => l.TransactionRolledBack (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          () =>
+          {
+            _order2EventReceiverMock
+                .Expect (mock => mock.RolledBack (_order2, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+            _order1EventReceiverMock
+                .Expect (mock => mock.RolledBack (_order1, EventArgs.Empty))
+                .WithCurrentTransaction (_clientTransaction);
+            _transactionEventReceiverMock
+                .Expect (mock => mock.RolledBack (_clientTransaction, _order1, _order2))
+                .WithCurrentTransaction (_clientTransaction);
+          });
     }
 
     [Test]

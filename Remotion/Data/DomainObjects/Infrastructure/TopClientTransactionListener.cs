@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 
@@ -169,23 +168,77 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       base.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
-    public override void TransactionCommitting (ClientTransaction clientTransaction, System.Collections.ObjectModel.ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
       base.TransactionCommitting (clientTransaction, domainObjects);
+      clientTransaction.Execute (
+          () =>
+          {
+            clientTransaction.OnCommitting (new ClientTransactionEventArgs (domainObjects));
+            // ReSharper disable ForCanBeConvertedToForeach
+            for (int i = 0; i < domainObjects.Count; i++)
+            {
+              var domainObject = domainObjects[i];
+              if (!domainObject.IsInvalid)
+                domainObject.OnCommitting (EventArgs.Empty);
+            }
+            // ReSharper restore ForCanBeConvertedToForeach
+          });
     }
 
     public override void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      clientTransaction.Execute (
+          () =>
+          {
+            for (int i = domainObjects.Count - 1; i >= 0; i--)
+              domainObjects[i].OnCommitted (EventArgs.Empty);
+            clientTransaction.OnCommitted (new ClientTransactionEventArgs (domainObjects));
+          });
+      
       base.TransactionCommitted (clientTransaction, domainObjects);
     }
 
-    public override void TransactionRollingBack (ClientTransaction clientTransaction, System.Collections.ObjectModel.ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
       base.TransactionRollingBack (clientTransaction, domainObjects);
+      clientTransaction.Execute (
+          () =>
+          {
+            clientTransaction.OnRollingBack (new ClientTransactionEventArgs (domainObjects));
+            // ReSharper disable ForCanBeConvertedToForeach
+            for (int i = 0; i < domainObjects.Count; i++)
+            {
+              var domainObject = domainObjects[i];
+              if (!domainObject.IsInvalid)
+                domainObject.OnRollingBack (EventArgs.Empty);
+            }
+            // ReSharper restore ForCanBeConvertedToForeach
+          });
     }
 
     public override void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
+      ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
+
+      clientTransaction.Execute (
+          () =>
+          {
+            for (int i = domainObjects.Count - 1; i >= 0; i--)
+              domainObjects[i].OnRolledBack (EventArgs.Empty);
+            clientTransaction.OnRolledBack (new ClientTransactionEventArgs (domainObjects));
+          });
+
       base.TransactionRolledBack (clientTransaction, domainObjects);
     }
   }
