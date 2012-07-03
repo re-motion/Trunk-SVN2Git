@@ -54,7 +54,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private IEnlistedDomainObjectManager _enlistedObjectManagerMock;
     private ClientTransactionExtensionCollection _fakeExtensions;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
-    private IClientTransactionListenerManager _listenerManagerMock;
+    private IClientTransactionEventBroker _eventBrokerMock;
     private IPersistenceStrategy _persistenceStrategyMock;
     private IQueryManager _queryManagerMock;
 
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _enlistedObjectManagerMock = _mockRepository.StrictMock<IEnlistedDomainObjectManager> ();
       _fakeExtensions = new ClientTransactionExtensionCollection("test");
       _invalidDomainObjectManagerMock = _mockRepository.StrictMock<IInvalidDomainObjectManager> ();
-      _listenerManagerMock = _mockRepository.StrictMock<IClientTransactionListenerManager>();
+      _eventBrokerMock = _mockRepository.StrictMock<IClientTransactionEventBroker>();
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
       _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
 
@@ -85,11 +85,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _enlistedObjectManagerMock,
           _fakeExtensions,
           _invalidDomainObjectManagerMock,
-          _listenerManagerMock,
+          _eventBrokerMock,
           _persistenceStrategyMock,
           _queryManagerMock);
       // Ignore calls made by ctor
-      _listenerManagerMock.BackToRecord();
+      _eventBrokerMock.BackToRecord();
     }
 
     [Test]
@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionTestHelper.SetIsReadOnly (fakeParentTransaction, true);
 
       var componentFactoryMock = _mockRepository.StrictMock<IClientTransactionComponentFactory>();
-      var listenerManagerMock = _mockRepository.StrictMock<IClientTransactionListenerManager>();
+      var listenerManagerMock = _mockRepository.StrictMock<IClientTransactionEventBroker>();
       
       var fakeExtensionCollection = new ClientTransactionExtensionCollection ("test");
 
@@ -130,7 +130,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         componentFactoryMock
             .Expect (mock => mock.CreateEnlistedObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_enlistedObjectManagerMock)
-            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetListenerManager (constructedTransaction), Is.SameAs (listenerManagerMock)));
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetEventBroker (constructedTransaction), Is.SameAs (listenerManagerMock)));
         componentFactoryMock
             .Expect (mock => mock.CreateInvalidDomainObjectManager (
                 Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
@@ -261,24 +261,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void AddListener ()
     {
       var listenerStub = MockRepository.GenerateStub<IClientTransactionListener>();
-      _listenerManagerMock.Expect (mock => mock.AddListener (listenerStub));
-      _listenerManagerMock.Replay();
+      _eventBrokerMock.Expect (mock => mock.AddListener (listenerStub));
+      _eventBrokerMock.Replay();
 
       _transactionWithMocks.AddListener (listenerStub);
 
-      _listenerManagerMock.VerifyAllExpectations();
+      _eventBrokerMock.VerifyAllExpectations();
     }
 
     [Test]
     public void RemoveListener ()
     {
       var listenerStub = MockRepository.GenerateStub<IClientTransactionListener> ();
-      _listenerManagerMock.Expect (mock => mock.RemoveListener (listenerStub));
-      _listenerManagerMock.Replay ();
+      _eventBrokerMock.Expect (mock => mock.RemoveListener (listenerStub));
+      _eventBrokerMock.Replay ();
 
       _transactionWithMocks.RemoveListener (listenerStub);
 
-      _listenerManagerMock.VerifyAllExpectations ();
+      _eventBrokerMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -307,7 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject2.ID)).Return (false);
       _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject3.ID)).Return (false);
 
-      var listenerMock = SetupEventForwardingToListenerMock(_listenerManagerMock, _transactionWithMocks);
+      var listenerMock = SetupEventForwardingToListenerMock(_eventBrokerMock, _transactionWithMocks);
 
       // Use a manager with mock instead
       listenerMock
@@ -1022,9 +1022,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void Discard ()
     {
-      var listenerMock = SetupEventForwardingToListenerMock (_listenerManagerMock, _transactionWithMocks);
+      var listenerMock = SetupEventForwardingToListenerMock (_eventBrokerMock, _transactionWithMocks);
       listenerMock.Expect (mock => mock.TransactionDiscard (_transactionWithMocks));
-      _listenerManagerMock.Expect (mock => mock.AddListener (Arg<InvalidatedTransactionListener>.Is.TypeOf));
+      _eventBrokerMock.Expect (mock => mock.AddListener (Arg<InvalidatedTransactionListener>.Is.TypeOf));
       _mockRepository.ReplayAll();
 
       Assert.That (_transactionWithMocks.IsDiscarded, Is.False);
@@ -1044,8 +1044,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var subTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, subTransaction);
 
-      _listenerManagerMock.Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
-      _listenerManagerMock.Stub (stub => stub.AddListener (Arg<IClientTransactionListener>.Is.Anything));
+      _eventBrokerMock.Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
+      _eventBrokerMock.Stub (stub => stub.AddListener (Arg<IClientTransactionListener>.Is.Anything));
       _mockRepository.ReplayAll ();
 
       Assert.That (parentTransaction.IsReadOnly, Is.True);
@@ -1066,7 +1066,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var subTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, subTransaction);
-      _listenerManagerMock.Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
+      _eventBrokerMock.Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
 
       subTransaction.Discard();
 
@@ -1074,12 +1074,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var otherSubTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, otherSubTransaction);
 
-      _listenerManagerMock.BackToRecord();
-      _listenerManagerMock.Replay();
+      _eventBrokerMock.BackToRecord();
+      _eventBrokerMock.Replay();
 
       subTransaction.Discard ();
 
-      _listenerManagerMock.AssertWasNotCalled (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
+      _eventBrokerMock.AssertWasNotCalled (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
       Assert.That (parentTransaction.IsReadOnly, Is.True);
       Assert.That (parentTransaction.SubTransaction, Is.SameAs (otherSubTransaction));
     }
@@ -1382,7 +1382,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _enlistedObjectManagerMock,
           _fakeExtensions,
           _invalidDomainObjectManagerMock,
-          _listenerManagerMock,
+          _eventBrokerMock,
           _persistenceStrategyMock,
           _queryManagerMock);
     }
@@ -1400,10 +1400,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       listenerMock.VerifyAllExpectations();
     }
 
-    private IClientTransactionListener SetupEventForwardingToListenerMock (IClientTransactionListenerManager listenerManagerMock, TestableClientTransaction expectedClientTransaction)
+    private IClientTransactionListener SetupEventForwardingToListenerMock (IClientTransactionEventBroker eventBrokerMock, TestableClientTransaction expectedClientTransaction)
     {
       var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      listenerManagerMock
+      eventBrokerMock
           .Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything))
           .WhenCalled (mi => ((Action<ClientTransaction, IClientTransactionListener>) mi.Arguments[0]) (expectedClientTransaction, listenerMock));
       return listenerMock;

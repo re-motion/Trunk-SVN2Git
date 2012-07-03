@@ -22,21 +22,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
   /// Manages the <see cref="IClientTransactionListener"/> instances attached to a <see cref="DomainObjects.ClientTransaction"/> instance and
-  /// allows clients to raise events for the <see cref="ClientTransaction"/>.
+  /// allows clients to raise events for the <see cref="ClientTransaction"/>. This class delegates the actual event distribution to an implementation 
+  /// of <see cref="IClientTransactionEventDistributor"/>.
   /// </summary>
   [Serializable]
-  public class ClientTransactionListenerManager : IClientTransactionListenerManager
+  public class ClientTransactionEventBroker : IClientTransactionEventBroker
   {
     private readonly ClientTransaction _clientTransaction;
-    private readonly ITopClientTransactionListener _topListener;
+    private readonly IClientTransactionEventDistributor _eventDistributor;
 
-    public ClientTransactionListenerManager (ClientTransaction clientTransaction, ITopClientTransactionListener topListener)
+    public ClientTransactionEventBroker (ClientTransaction clientTransaction, IClientTransactionEventDistributor eventDistributor)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-      ArgumentUtility.CheckNotNull ("topListener", topListener);
+      ArgumentUtility.CheckNotNull ("eventDistributor", eventDistributor);
 
       _clientTransaction = clientTransaction;
-      _topListener = topListener;
+      _eventDistributor = eventDistributor;
     }
 
     public ClientTransaction ClientTransaction
@@ -44,32 +45,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _clientTransaction; }
     }
 
-    public ITopClientTransactionListener TopListener
+    public IClientTransactionEventDistributor EventDistributor
     {
-      get { return _topListener; }
+      get { return _eventDistributor; }
     }
 
     public IEnumerable<IClientTransactionListener> Listeners
     {
-      get { return _topListener.Listeners; }
+      get { return _eventDistributor.Listeners; }
     }
 
     public void AddListener (IClientTransactionListener listener)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
-      _topListener.AddListener (listener);
+      _eventDistributor.AddListener (listener);
     }
 
     public void RemoveListener (IClientTransactionListener listener)
     {
       ArgumentUtility.CheckNotNull ("listener", listener);
-      _topListener.RemoveListener (listener);
+      _eventDistributor.RemoveListener (listener);
     }
 
     public void RaiseEvent (Action<ClientTransaction, IClientTransactionListener> action)
     {
       ArgumentUtility.CheckNotNull ("action", action);
-      action (_clientTransaction, _topListener);
+      action (_clientTransaction, _eventDistributor);
     }
   }
 }

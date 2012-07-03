@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           new CollectionEndPointCollectionManager (endPointID, new CollectionEndPointCollectionProvider (dataStrategyFactory), dataStrategyFactory),
           dataManager,
           dataManager,
-          ClientTransactionTestHelper.GetListenerManager (clientTransaction),
+          ClientTransactionTestHelper.GetEventBroker (clientTransaction),
           new CollectionEndPointDataManagerFactory (changeDetectionStrategy));
       
       if (initialContents != null)
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var clientTransaction = dataContainer.ClientTransaction;
       var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      var transactionEventSink = ClientTransactionTestHelper.GetListenerManager (clientTransaction);
+      var transactionEventSink = ClientTransactionTestHelper.GetEventBroker (clientTransaction);
       return new RealObjectEndPoint (clientTransaction, endPointID, dataContainer, endPointProvider, transactionEventSink);
     }
 
@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       var lazyLoader = ClientTransactionTestHelper.GetDataManager (clientTransaction);
       var endPointProvider = ClientTransactionTestHelper.GetDataManager (clientTransaction);
-      var transactionEventSink = ClientTransactionTestHelper.GetListenerManager (clientTransaction);
+      var transactionEventSink = ClientTransactionTestHelper.GetEventBroker (clientTransaction);
       var dataManagerFactory = new VirtualObjectEndPointDataManagerFactory ();
       return new VirtualObjectEndPoint (
           clientTransaction,

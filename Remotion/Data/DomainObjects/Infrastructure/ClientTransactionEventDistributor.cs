@@ -22,11 +22,11 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Holds all the <see cref="IClientTransactionListener"/> instances attached to a <see cref="ClientTransaction"/>, forwarding events to them, 
-  /// and raising <see cref="DomainObject"/> and <see cref="ClientTransaction"/> events.
+  /// Forwards event notifications to <see cref="IClientTransactionListener"/>, <see cref="ClientTransaction"/>, and <see cref="DomainObject"/> 
+  /// instances.
   /// </summary>
   [Serializable]
-  public class TopClientTransactionListener : CompoundClientTransactionListener, ITopClientTransactionListener
+  public class ClientTransactionEventDistributor : CompoundClientTransactionListener, IClientTransactionEventDistributor
   {
     public override void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {

@@ -128,9 +128,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return listenerMock;
     }
 
-    public static IClientTransactionListenerManager GetListenerManager (ClientTransaction clientTransaction)
+    public static IClientTransactionEventBroker GetEventBroker (ClientTransaction clientTransaction)
     {
-      return (IClientTransactionListenerManager) PrivateInvoke.GetNonPublicField (clientTransaction, "_listenerManager");
+      return (IClientTransactionEventBroker) PrivateInvoke.GetNonPublicField (clientTransaction, "_eventBroker");
     }
 
     public static void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)
@@ -157,7 +157,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void ClearAllListeners (ClientTransaction clientTransaction)
     {
-      var listenerManager = GetListenerManager (clientTransaction);
+      var listenerManager = GetEventBroker (clientTransaction);
       foreach (var listener in listenerManager.Listeners.ToArray ().Reverse ())
         listenerManager.RemoveListener (listener);
     }

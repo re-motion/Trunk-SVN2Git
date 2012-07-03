@@ -202,10 +202,10 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
-    <Compile Include="Infrastructure\ClientTransactionListenerManager.cs" />
+    <Compile Include="Infrastructure\ClientTransactionEventBroker.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventSink.cs" />
-    <Compile Include="Infrastructure\IClientTransactionListenerManager.cs" />
-    <Compile Include="Infrastructure\ITopClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\IClientTransactionEventBroker.cs" />
+    <Compile Include="Infrastructure\IClientTransactionEventDistributor.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\IFetchEnabledPersistenceStrategy.cs" />
@@ -224,7 +224,7 @@
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionOperations.cs" />
-    <Compile Include="Infrastructure\TopClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\ClientTransactionEventDistributor.cs" />
     <Compile Include="Linq\ExecutableQueries\CustomSequenceQueryAdapter.cs" />
     <Compile Include="Linq\DomainObjectQueryGenerator.cs" />
     <Compile Include="Linq\ExecutableQueries\DomainObjectSequenceQueryAdapter.cs" />

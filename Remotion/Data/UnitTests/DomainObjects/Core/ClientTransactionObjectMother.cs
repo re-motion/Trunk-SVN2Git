@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        IClientTransactionListenerManager listenerManager,
+        IClientTransactionEventBroker eventBroker,
         IPersistenceStrategy persistenceStrategy,
         IQueryManager queryManager)
       where T : ClientTransaction
@@ -91,7 +91,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           enlistedDomainObjectManager,
           extensions,
           invalidDomainObjectManager,
-          listenerManager,
+          eventBroker,
           persistenceStrategy,
           queryManager);
 
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
         ClientTransactionExtensionCollection extensions,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        IClientTransactionListenerManager listenerManager,
+        IClientTransactionEventBroker eventBroker,
         IPersistenceStrategy persistenceStrategy,
         IQueryManager queryManager)
     {
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryStub
           .Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything, Arg<IClientTransactionEventSink>.Is.Anything))
           .Return (invalidDomainObjectManager);
-      componentFactoryStub.Stub (stub => stub.CreateListenerManager (Arg<ClientTransaction>.Is.Anything)).Return (listenerManager);
+      componentFactoryStub.Stub (stub => stub.CreateListenerManager (Arg<ClientTransaction>.Is.Anything)).Return (eventBroker);
       componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<ClientTransaction>.Is.Anything)).Return (persistenceStrategy);
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (

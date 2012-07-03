@@ -20,10 +20,10 @@ using System.Collections.Generic;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Defines an interface for classes representing the root of the <see cref="IClientTransactionListener"/> chain attached to a 
-  /// <see cref="ClientTransaction"/>.
+  /// Defines an interface for classes forwarding event notifications to <see cref="IClientTransactionListener"/>,
+  /// <see cref="ClientTransaction"/>, and <see cref="DomainObject"/> instances.
   /// </summary>
-  public interface ITopClientTransactionListener : IClientTransactionListener
+  public interface IClientTransactionEventDistributor : IClientTransactionListener
   {
     IEnumerable<IClientTransactionListener> Listeners { get; }
     void AddListener (IClientTransactionListener listener);

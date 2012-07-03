@@ -145,7 +145,7 @@ public class ClientTransaction
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly ClientTransactionExtensionCollection _extensions;
 
-  private readonly IClientTransactionListenerManager _listenerManager;
+  private readonly IClientTransactionEventBroker _eventBroker;
 
   private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
   private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
@@ -168,12 +168,12 @@ public class ClientTransaction
 
     _applicationData = componentFactory.CreateApplicationData (this);
 
-    _listenerManager = componentFactory.CreateListenerManager (this);
+    _eventBroker = componentFactory.CreateListenerManager (this);
     _enlistedDomainObjectManager = componentFactory.CreateEnlistedObjectManager (this);
-    _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this, _listenerManager);
+    _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this, _eventBroker);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
-    _dataManager = componentFactory.CreateDataManager (this, _listenerManager, _invalidDomainObjectManager, _persistenceStrategy);
-    _queryManager = componentFactory.CreateQueryManager (this, _listenerManager, _invalidDomainObjectManager, _persistenceStrategy, _dataManager);
+    _dataManager = componentFactory.CreateDataManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy);
+    _queryManager = componentFactory.CreateQueryManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy, _dataManager);
 
     _extensions = componentFactory.CreateExtensionCollection (this);
     AddListener (new ExtensionClientTransactionListener (_extensions));
@@ -328,19 +328,19 @@ public class ClientTransaction
   protected internal void AddListener (IClientTransactionListener listener)
   {
     ArgumentUtility.CheckNotNull ("listener", listener);
-    _listenerManager.AddListener (listener);
+    _eventBroker.AddListener (listener);
   }
 
   protected internal void RemoveListener (IClientTransactionListener listener)
   {
     ArgumentUtility.CheckNotNull ("listener", listener);
-    _listenerManager.RemoveListener (listener);
+    _eventBroker.RemoveListener (listener);
   }
 
   protected void RaiseListenerEvent (Action<ClientTransaction, IClientTransactionListener> eventRaiser)
   {
     ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
-    _listenerManager.RaiseEvent (eventRaiser);
+    _eventBroker.RaiseEvent (eventRaiser);
   }
 
   /// <summary>

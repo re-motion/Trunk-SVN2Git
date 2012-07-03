@@ -57,10 +57,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (
           result,
-          Is.TypeOf<ClientTransactionListenerManager>()
-              .With.Property<ClientTransactionListenerManager> (m => m.ClientTransaction).SameAs (_fakeConstructedTransaction)
-              .And.Property<ClientTransactionListenerManager> (m => m.TopListener).TypeOf<TopClientTransactionListener>()
-              .And.Property<ClientTransactionListenerManager> (m => m.Listeners).EqualTo (new[] { fakeListener }));
+          Is.TypeOf<ClientTransactionEventBroker>()
+              .With.Property<ClientTransactionEventBroker> (m => m.ClientTransaction).SameAs (_fakeConstructedTransaction)
+              .And.Property<ClientTransactionEventBroker> (m => m.EventDistributor).TypeOf<ClientTransactionEventDistributor>()
+              .And.Property<ClientTransactionEventBroker> (m => m.Listeners).EqualTo (new[] { fakeListener }));
     }
 
     [Test]

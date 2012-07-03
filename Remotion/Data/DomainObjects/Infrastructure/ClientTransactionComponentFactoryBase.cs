@@ -54,11 +54,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager);
 
-    public virtual IClientTransactionListenerManager CreateListenerManager (ClientTransaction constructedTransaction)
+    public virtual IClientTransactionEventBroker CreateListenerManager (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 
-      var listenerManager = new ClientTransactionListenerManager (constructedTransaction, new TopClientTransactionListener ());
+      var listenerManager = new ClientTransactionEventBroker (constructedTransaction, new ClientTransactionEventDistributor ());
       foreach (var listener in CreateListeners (constructedTransaction))
         listenerManager.AddListener (listener);
       return listenerManager;
