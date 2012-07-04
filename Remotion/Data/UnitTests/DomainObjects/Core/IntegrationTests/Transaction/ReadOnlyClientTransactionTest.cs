@@ -432,7 +432,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage =
         "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: "
-        + "ObjectsUnloading.")]
+        + "DataContainerMapUnregistering.")]
     public void ThrowsOnUnloadData_WithEndPoints ()
     {
       TestableClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1);

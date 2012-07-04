@@ -68,11 +68,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "ObjectsLoading");
     }
 
-    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-      EnsureWriteable (clientTransaction, "ObjectsUnloaded");
-    }
-
     public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       EnsureWriteable (clientTransaction, "ObjectsLoaded");
@@ -80,7 +75,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      EnsureWriteable (clientTransaction, "ObjectsUnloading");
+      // Allowed for read-only transactions (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction is made 
+      // writeable on the actual modification, though)
+    }
+
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      // Allowed for read-only transactions (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction was made 
+      // writeable on the actual modification, though)
     }
 
     public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)

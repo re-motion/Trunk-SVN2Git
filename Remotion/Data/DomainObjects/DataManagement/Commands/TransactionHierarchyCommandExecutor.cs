@@ -15,13 +15,20 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement.Commands
 {
   /// <summary>
   /// Provides functionality for executing <see cref="IDataManagementCommand"/> instances on a whole <see cref="ClientTransaction"/> hierarchy.
+  /// All commands are executed as a single, combined command - ordered from the leaf transaction to the root transaction -, i.e., first all the
+  /// <see cref="IDataManagementCommand.Begin"/> logic is executed over the hierarchy, then all the <see cref="IDataManagementCommand.Perform"/>
+  /// logic (the transactions are made writeable for this), then all the <see cref="IDataManagementCommand.End"/> logic.
   /// </summary>
   public class TransactionHierarchyCommandExecutor
   {
@@ -37,53 +44,53 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      return ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var command = _commandFactory (tx);
-            if (!command.CanExecute ())
-              return false;
+      var combinedCommand = CreateCombinedCommand (clientTransaction);
+      if (!combinedCommand.CanExecute ())
+        return false;
 
-            command.NotifyAndPerform ();
-            return true;
-          });
+      combinedCommand.NotifyAndPerform();
+      return true;
     }
 
     public void ExecuteCommandForTransactionHierarchy (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      ApplyToTransactionHierarchy (
-          clientTransaction,
-          delegate (ClientTransaction tx)
-          {
-            var command = _commandFactory (tx);
-            command.NotifyAndPerform ();
-            return true;
-          });
+      var combinedCommand = CreateCombinedCommand (clientTransaction);
+      combinedCommand.NotifyAndPerform();
     }
 
-    private bool ApplyToTransactionHierarchy (ClientTransaction clientTransaction, Func<ClientTransaction, bool> operation)
+    private CompositeCommand CreateCombinedCommand (ClientTransaction clientTransaction)
     {
-      var currentTransaction = clientTransaction.LeafTransaction;
-      bool result = true;
-      while (currentTransaction != null && result)
-      {
-        if (currentTransaction.IsReadOnly)
-        {
-          using (TransactionUnlocker.MakeWriteable (currentTransaction))
-          {
-            result = operation (currentTransaction);
-          }
-        }
-        else
-          result = operation (currentTransaction);
+      var allCommands = from tx in clientTransaction.LeafTransaction.CreateSequence (tx => tx.ParentTransaction)
+                        let command = _commandFactory (tx)
+                        select tx.IsReadOnly ? new UnlockingCommandDecorator (command, tx) : command;
+      return new CompositeCommand (allCommands);
+    }
 
-        currentTransaction = currentTransaction.ParentTransaction;
+    private class UnlockingCommandDecorator : DataManagementCommandDecoratorBase
+    {
+      private readonly ClientTransaction _transactionToBeUnlocked;
+
+      public UnlockingCommandDecorator (IDataManagementCommand decoratedCommand, ClientTransaction transactionToBeUnlocked)
+          : base(decoratedCommand)
+      {
+        _transactionToBeUnlocked = transactionToBeUnlocked;
       }
 
-      return result;
+      public override void Perform ()
+      {
+        using (TransactionUnlocker.MakeWriteable (_transactionToBeUnlocked))
+        {
+          base.Perform();
+        }
+      }
+
+      protected override IDataManagementCommand Decorate (IDataManagementCommand decoratedCommand)
+      {
+        ArgumentUtility.CheckNotNull ("decoratedCommand", decoratedCommand);
+        return new UnlockingCommandDecorator (decoratedCommand, _transactionToBeUnlocked);
+      }
     }
   }
 }

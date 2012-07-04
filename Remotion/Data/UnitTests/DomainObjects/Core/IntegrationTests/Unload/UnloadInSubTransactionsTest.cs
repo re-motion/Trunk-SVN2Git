@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using Remotion.Data.DomainObjects.Mapping;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 {
@@ -131,13 +132,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
             + "has been changed. Changed end points cannot be unloaded."));
       }
 
-      CheckVirtualEndPoint (_subTransaction, order, "OrderItems", false);
-      CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", true);
-
-      orderItems.EnsureDataComplete ();
-
       CheckVirtualEndPoint (_subTransaction, order, "OrderItems", true);
       CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderItems", true);
+
       Assert.That (orderItems.Count, Is.EqualTo (3));
     }
 
@@ -244,13 +241,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
             + "has been changed. Changed end points cannot be unloaded."));
       }
 
-      CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", false);
-      CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderTicket", true);
-
-      _subTransaction.EnsureDataComplete (RelationEndPointID.Resolve (order, o => o.OrderTicket));
-
       CheckVirtualEndPoint (_subTransaction, order, "OrderTicket", true);
       CheckVirtualEndPoint (_subTransaction.ParentTransaction, order, "OrderTicket", true);
+
       Assert.That (order.OrderTicket, Is.SameAs (newOrderTicket));
     }
 
@@ -408,13 +401,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
             + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' (Changed)."));
       }
 
-      Assert.That (order1.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
       Assert.That (order1.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.Changed));
 
       Assert.That (order1.OrderNumber, Is.EqualTo (4711));
-
-      Assert.That (order1.State, Is.EqualTo (StateType.Unchanged));
-      Assert.That (order1.TransactionContext[_subTransaction.ParentTransaction].State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]
@@ -488,14 +478,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    [Ignore ("TODO 4626")]
     public void Events ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       order1.OrderItems.EnsureDataComplete();
-      var endPointID = order1.OrderItems.AssociatedEndPointID;
       var orderItemA = order1.OrderItems[0];
       var orderItemB = order1.OrderItems[1];
+
+      var endPointID = order1.OrderItems.AssociatedEndPointID;
+      var oppositeEndPointIDA = RelationEndPointID.Create (orderItemA.ID, endPointID.Definition.GetOppositeEndPointDefinition ());
+      var oppositeEndPointIDB = RelationEndPointID.Create (orderItemB.ID, endPointID.Definition.GetOppositeEndPointDefinition ());
 
       var rootTransaction = _subTransaction.ParentTransaction;
 
@@ -518,7 +510,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
           rootListenerMock
               .Expect (
                   mock => mock.ObjectsUnloading (
-                      Arg.Is (_subTransaction),
+                      Arg.Is (rootTransaction),
                       Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
               .WhenCalled (
                   mi =>
@@ -534,16 +526,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
           subListenerMock.Expect (mock => mock.RelationEndPointUnloading (_subTransaction, endPointID));
           subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (_subTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemA.ID)));
+          subListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (_subTransaction, oppositeEndPointIDA));
           subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (_subTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemB.ID)));
-          
+          subListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (_subTransaction, endPointID));
+          subListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (_subTransaction, oppositeEndPointIDB));
+
           rootListenerMock.Expect (mock => mock.RelationEndPointUnloading (rootTransaction, endPointID));
-          subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemA.ID)));
-          subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemB.ID)));
+          rootListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemA.ID)));
+          rootListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (rootTransaction, oppositeEndPointIDA));
+          rootListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemB.ID)));
+          rootListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (rootTransaction, endPointID));
+          rootListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (rootTransaction, oppositeEndPointIDB));
 
           rootListenerMock
               .Expect (
                   mock => mock.ObjectsUnloaded (
-                      Arg.Is (_subTransaction),
+                      Arg.Is (rootTransaction),
                       Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { orderItemA, orderItemB })))
               .WhenCalled (
                   mi =>

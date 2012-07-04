@@ -70,7 +70,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
           .Expect (mock => mock.Create (_leafRootTransaction))
           .Return (_commandMock1);
       _commandMock1.Stub (stub => stub.GetAllExceptions()).Return (new Exception[0]);
-      ExpectNotifyAndPerform (_commandMock1);
+      
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock1.Expect (mock => mock.Begin ());
+        _commandMock1.Expect (mock => mock.Perform ());
+        _commandMock1.Expect (mock => mock.End ());
+      }
 
       _mockRepository.ReplayAll ();
 
@@ -99,19 +105,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void TryExecuteCommandForTransactionHierarchy_Hierarchy_ApplyToRoot ()
     {
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
       using (_mockRepository.Ordered ())
       {
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_leafSubTransaction))
-            .Return (_commandMock1);
-        _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
-        ExpectNotifyAndPerform (_commandMock1);
+       _commandMock1.Expect (mock => mock.Begin ());
+        _commandMock2.Expect (mock => mock.Begin ());
 
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_rootTransactionWithSub))
-            .Return (_commandMock2);
-        _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
-        ExpectNotifyAndPerform (_commandMock2);
+        _commandMock1.Expect (mock => mock.Perform ());
+        _commandMock2.Expect (mock => mock.Perform ());
+
+        _commandMock2.Expect (mock => mock.End());
+        _commandMock1.Expect (mock => mock.End ());
       }
 
       _mockRepository.ReplayAll ();
@@ -124,19 +137,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void TryExecuteCommandForTransactionHierarchy_Hierarchy_ApplyToLeaf ()
     {
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
       using (_mockRepository.Ordered ())
       {
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_leafSubTransaction))
-            .Return (_commandMock1);
-        _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
-        ExpectNotifyAndPerform (_commandMock1);
+        _commandMock1.Expect (mock => mock.Begin ());
+        _commandMock2.Expect (mock => mock.Begin ());
 
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_rootTransactionWithSub))
-            .Return (_commandMock2);
-        _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
-        ExpectNotifyAndPerform (_commandMock2);
+        _commandMock1.Expect (mock => mock.Perform ());
+        _commandMock2.Expect (mock => mock.Perform ());
+
+        _commandMock2.Expect (mock => mock.End ());
+        _commandMock1.Expect (mock => mock.End ());
       }
 
       _mockRepository.ReplayAll ();
@@ -147,16 +167,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void TryExecuteCommandForTransactionHierarchy_Hierarchy_StopsAtException ()
+    public void TryExecuteCommandForTransactionHierarchy_Hierarchy_NoBeginIfException_InLeaf ()
     {
       var exception = new Exception ("Oh no!");
-      using (_mockRepository.Ordered ())
-      {
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_leafSubTransaction))
-            .Return (_commandMock1);
-        _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new[] { exception });
-      }
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new[] { exception });
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _mockRepository.ReplayAll ();
+
+      var result = _executor.TryExecuteCommandForTransactionHierarchy (_rootTransactionWithSub);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.False);
+    }
+
+    [Test]
+    public void TryExecuteCommandForTransactionHierarchy_Hierarchy_NoBeginIfException_InRoot ()
+    {
+      var exception = new Exception ("Oh no!");
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new[] { exception });
 
       _mockRepository.ReplayAll ();
 
@@ -172,19 +216,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _commandFactoryMock
           .Expect (mock => mock.Create (_readOnlyTransaction))
           .Return (_commandMock1);
-
       _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
       using (_mockRepository.Ordered ())
       {
-        _commandMock1
-            .Expect (mock => mock.Begin ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
-            .Expect (mock => mock.Perform ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
-            .Expect (mock => mock.End ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
+        _commandMock1.Expect (mock => mock.Begin ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.True));
+        _commandMock1.Expect (mock => mock.Perform ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
+        _commandMock1.Expect (mock => mock.End ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.True));
       }
 
       _mockRepository.ReplayAll ();
@@ -202,7 +240,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _commandFactoryMock
           .Expect (mock => mock.Create (_leafRootTransaction))
           .Return (_commandMock1);
-      ExpectNotifyAndPerform (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+      
+      using (_mockRepository.Ordered ())
+      {
+        _commandMock1.Expect (mock => mock.Begin ());
+        _commandMock1.Expect (mock => mock.Perform ());
+        _commandMock1.Expect (mock => mock.End ());
+      }
 
       _mockRepository.ReplayAll();
 
@@ -214,17 +259,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void ExecuteCommandForTransactionHierarchy_Hierarchy_ApplyToRoot ()
     {
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
       using (_mockRepository.Ordered ())
       {
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_leafSubTransaction))
-            .Return (_commandMock1);
-        ExpectNotifyAndPerform (_commandMock1);
+        _commandMock1.Expect (mock => mock.Begin ());
+        _commandMock2.Expect (mock => mock.Begin ());
 
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_rootTransactionWithSub))
-            .Return (_commandMock2);
-        ExpectNotifyAndPerform (_commandMock2);
+        _commandMock1.Expect (mock => mock.Perform ());
+        _commandMock2.Expect (mock => mock.Perform ());
+
+        _commandMock2.Expect (mock => mock.End ());
+        _commandMock1.Expect (mock => mock.End ());
       }
 
       _mockRepository.ReplayAll ();
@@ -237,17 +291,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     [Test]
     public void ExecuteCommandForTransactionHierarchy_Hierarchy_ApplyToLeaf ()
     {
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
       using (_mockRepository.Ordered ())
       {
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_leafSubTransaction))
-            .Return (_commandMock1);
-        ExpectNotifyAndPerform (_commandMock1);
+        _commandMock1.Expect (mock => mock.Begin ());
+        _commandMock2.Expect (mock => mock.Begin ());
 
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_rootTransactionWithSub))
-            .Return (_commandMock2);
-        ExpectNotifyAndPerform (_commandMock2);
+        _commandMock1.Expect (mock => mock.Perform ());
+        _commandMock2.Expect (mock => mock.Perform ());
+
+        _commandMock2.Expect (mock => mock.End ());
+        _commandMock1.Expect (mock => mock.End ());
       }
 
       _mockRepository.ReplayAll ();
@@ -258,16 +321,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     }
 
     [Test]
-    public void ExecuteCommandForTransactionHierarchy_Hierarchy_StopsAtException ()
+    public void ExecuteCommandForTransactionHierarchy_Hierarchy_NoBeginIfException_InLeaf ()
     {
       var exception = new Exception ("Oh no!");
-      using (_mockRepository.Ordered ())
-      {
-        _commandFactoryMock
-            .Expect (mock => mock.Create (_leafSubTransaction))
-            .Return (_commandMock1);
-        _commandMock1.Expect (mock => mock.Begin ()).Throw (exception);
-      }
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new[] { exception });
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _mockRepository.ReplayAll ();
+
+      Assert.That (() => _executor.ExecuteCommandForTransactionHierarchy (_rootTransactionWithSub), Throws.Exception.SameAs (exception));
+
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void ExecuteCommandForTransactionHierarchy_Hierarchy_NoBeginIfException_InSub ()
+    {
+      var exception = new Exception ("Oh no!");
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_leafSubTransaction))
+          .Return (_commandMock1);
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
+      _commandFactoryMock
+          .Expect (mock => mock.Create (_rootTransactionWithSub))
+          .Return (_commandMock2);
+      _commandMock2.Stub (stub => stub.GetAllExceptions ()).Return (new[] { exception });
 
       _mockRepository.ReplayAll ();
 
@@ -282,18 +368,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _commandFactoryMock
           .Expect (mock => mock.Create (_readOnlyTransaction))
           .Return (_commandMock1);
-      
+      _commandMock1.Stub (stub => stub.GetAllExceptions ()).Return (new Exception[0]);
+
       using (_mockRepository.Ordered ())
       {
-        _commandMock1
-            .Expect (mock => mock.Begin ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
-            .Expect (mock => mock.Perform ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
-        _commandMock1
-            .Expect (mock => mock.End ())
-            .WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
+        _commandMock1.Expect (mock => mock.Begin ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.True));
+        _commandMock1.Expect (mock => mock.Perform ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.False));
+        _commandMock1.Expect (mock => mock.End ()).WhenCalled (mi => Assert.That (_readOnlyTransaction.IsReadOnly, Is.True));
       }
 
       _mockRepository.ReplayAll ();
@@ -304,16 +385,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       _mockRepository.VerifyAll ();
     }
-
-    private void ExpectNotifyAndPerform (IDataManagementCommand commandMock)
-    {
-      using (_mockRepository.Ordered ())
-      {
-        commandMock.Expect (mock => mock.Begin ());
-        commandMock.Expect (mock => mock.Perform ());
-        commandMock.Expect (mock => mock.End ());
-      }
-    }
-
   }
 }

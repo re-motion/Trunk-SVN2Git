@@ -248,15 +248,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       EnsureEndPointLoadedAndComplete (subDataManager, _collectionEndPointID);
 
       Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
-      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
       Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.False);
+
+      Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
       Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.True);
 
       var result = UnloadService.TryUnloadVirtualEndPoint (subTransaction, _collectionEndPointID);
 
       Assert.That (result, Is.False);
 
-      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Null);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
+      Assert.That (subDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).HasChanged, Is.False);
       
       Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID), Is.Not.Null);
       Assert.That (parentDataManager.GetRelationEndPointWithoutLoading (_collectionEndPointID).IsDataComplete, Is.True);
@@ -375,7 +378,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var result = UnloadService.TryUnloadData (subTransaction, DomainObjectIDs.Order1);
 
       Assert.That (result, Is.False);
-      Assert.That (subDataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
+      Assert.That (subDataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (subDataManager.DataContainers[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Unchanged));
       Assert.That (parentDataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
       Assert.That (parentDataManager.DataContainers[DomainObjectIDs.Order1].State, Is.EqualTo (StateType.Changed));
     }
@@ -769,7 +773,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var result = UnloadService.TryUnloadVirtualEndPointAndItemData (subTransaction, parentOrdersEndPoint.ID);
 
       Assert.That (result, Is.False);
-      Assert.That (subOrdersEndPoint.IsDataComplete, Is.False);
+      Assert.That (subOrdersEndPoint.IsDataComplete, Is.True);
       Assert.That (parentOrdersEndPoint.IsDataComplete, Is.True);
     }
 

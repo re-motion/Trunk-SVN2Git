@@ -30,21 +30,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private ReadOnlyClientTransactionListener _listener;
     private TestableClientTransaction _clientTransaction;
 
-    private readonly string[] _neverThrowingMethodNames = {
-        "TransactionInitialize",
-        "TransactionDiscard",
-        "DataContainerStateUpdated",
-        "VirtualRelationEndPointStateUpdated",
-        "PropertyValueReading",
-        "PropertyValueRead",
-        "RelationReading", 
-        "RelationRead", 
-        "ObjectMarkedInvalid", 
-        "ObjectMarkedNotInvalid", 
-        "DataContainerStateUpdated", 
-        "VirtualRelationEndPointStateUpdated",
-        "FilterQueryResult",
-        "FilterCustomQueryResult"};
+    private readonly string[] _neverThrowingMethodNames =
+        {
+            "TransactionInitialize",
+            "TransactionDiscard",
+            "DataContainerStateUpdated",
+            "VirtualRelationEndPointStateUpdated",
+            "PropertyValueReading",
+            "PropertyValueRead",
+            "RelationReading",
+            "RelationRead",
+            "ObjectMarkedInvalid",
+            "ObjectMarkedNotInvalid",
+            "DataContainerStateUpdated",
+            "VirtualRelationEndPointStateUpdated",
+            "FilterQueryResult",
+            "FilterCustomQueryResult",
+            "ObjectsUnloading",
+            "ObjectsUnloaded",
+        };
 
     private readonly string[] _methodsExpectingReadOnlynessNames = {
           "SubTransactionCreated", 
@@ -77,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = true;
 
-      Assert.That (_throwingMethods, Has.Length.EqualTo (22));
+      Assert.That (_throwingMethods, Has.Length.EqualTo (20));
       
       foreach (var method in _throwingMethods)
       {
@@ -107,7 +111,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = true;
 
-      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (13));
+      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (15));
 
       foreach (var method in _neverThrowingMethods)
       {
