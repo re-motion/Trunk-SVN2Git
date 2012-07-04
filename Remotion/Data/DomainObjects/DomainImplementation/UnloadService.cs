@@ -79,10 +79,16 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a virtual relation end point.</exception>
     /// <remarks>
+    /// <para>
+    /// If a <see cref="DomainObject.OnUnloading"/>, <see cref="IClientTransactionExtension.ObjectsUnloading"/>, or similar handler throws an 
+    /// exception to cancel the operation, that exception is propagated to the caller (rather than returning <see langword="false" />).
+    /// </para>
+    /// <para>
     /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
     /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
     /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
     /// succeeded, but not in the one where it failed or those above.
+    /// </para>
     /// </remarks>
     public static bool TryUnloadVirtualEndPoint (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
@@ -145,13 +151,17 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// (in one transaction).</returns>
     /// <remarks>
     /// <para>
+    /// If a <see cref="DomainObject.OnUnloading"/>, <see cref="IClientTransactionExtension.ObjectsUnloading"/>, or similar handler throws an 
+    /// exception to cancel the operation, that exception is propagated to the caller (rather than returning <see langword="false" />).
+    /// </para>
+    /// <para>
     /// The method unloads the <see cref="DataContainer"/>, the collection end points the object is part of (but not
     /// the collection end points the object owns), the non-virtual end points owned by the object and their respective opposite virtual object 
     /// end-points. This means that unloading an object will unload a relation if and only if the object's <see cref="DataContainer"/> is holding 
     /// the foreign key for the relation. Use <see cref="TryUnloadVirtualEndPoint"/> or <see cref="TryUnloadVirtualEndPointAndItemData"/> to unload 
     /// relations whose foreign keys are not held by the object.
     /// </para>
-    /// 	<para>
+    /// <para>
     /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
     /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
     /// it will stop and throw an exception. At this point of time, the operation will have unloaded items from all the transactions where it 
@@ -222,6 +232,10 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
     /// <exception cref="ArgumentNullException">One of the arguments passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">The given <paramref name="endPointID"/> does not specify a collection end point.</exception>
     /// <remarks>
+    /// <para>
+    /// If a <see cref="DomainObject.OnUnloading"/>, <see cref="IClientTransactionExtension.ObjectsUnloading"/>, or similar handler throws an 
+    /// exception to cancel the operation, that exception is propagated to the caller (rather than returning <see langword="false" />).
+    /// </para>
     /// <para>
     /// The unload operation is not atomic over the transaction hierarchy. It will start at the <see cref="ClientTransaction.LeafTransaction"/> 
     /// and try to unload here, then it will go over the parent transactions one by one. If the operation fails in any of the transactions, 
