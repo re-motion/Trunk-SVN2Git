@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Utilities;
@@ -28,10 +27,9 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// used by <see cref="StateUpdateRaisingCollectionEndPointDecorator"/> to ensure <see cref="IVirtualEndPointStateUpdateListener"/> implementations
   /// are informed when a command changes the state of a <see cref="ICollectionEndPoint"/>.
   /// </summary>
-  public class VirtualEndPointStateUpdatedRaisingCommandDecorator : IDataManagementCommand
+  public class VirtualEndPointStateUpdatedRaisingCommandDecorator : DataManagementCommandDecoratorBase
   {
     private readonly RelationEndPointID _modifiedEndPointID;
-    private readonly IDataManagementCommand _decoratedCommand;
     private readonly IVirtualEndPointStateUpdateListener _listener;
     private readonly Func<bool?> _changeStateProvider;
 
@@ -39,22 +37,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         IDataManagementCommand decoratedCommand,
         RelationEndPointID modifiedEndPointID,
         IVirtualEndPointStateUpdateListener listener,
-        Func<bool?> changeStateProvider)
+        Func<bool?> changeStateProvider) 
+      : base (decoratedCommand)
     {
-      ArgumentUtility.CheckNotNull ("decoratedCommand", decoratedCommand);
       ArgumentUtility.CheckNotNull ("modifiedEndPointID", modifiedEndPointID);
       ArgumentUtility.CheckNotNull ("listener", listener);
       ArgumentUtility.CheckNotNull ("changeStateProvider", changeStateProvider);
 
-      _decoratedCommand = decoratedCommand;
       _modifiedEndPointID = modifiedEndPointID;
       _listener = listener;
       _changeStateProvider = changeStateProvider;
-    }
-
-    public IDataManagementCommand DecoratedCommand
-    {
-      get { return _decoratedCommand; }
     }
 
     public RelationEndPointID ModifiedEndPointID
@@ -72,21 +64,11 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _changeStateProvider; }
     }
 
-    public IEnumerable<Exception> GetAllExceptions ()
-    {
-      return _decoratedCommand.GetAllExceptions();
-    }
-
-    public void Begin ()
-    {
-      _decoratedCommand.Begin();
-    }
-
-    public void Perform ()
+    public override void Perform ()
     {
       try
       {
-        _decoratedCommand.Perform();
+        base.Perform();
       }
       finally
       {
@@ -94,15 +76,10 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       }
     }
 
-    public void End ()
+    protected override IDataManagementCommand Decorate (IDataManagementCommand decoratedCommand)
     {
-      _decoratedCommand.End();
-    }
-
-    public ExpandedCommand ExpandToAllRelatedObjects ()
-    {
-      var expandedCommand = _decoratedCommand.ExpandToAllRelatedObjects();
-      return new ExpandedCommand (new VirtualEndPointStateUpdatedRaisingCommandDecorator (expandedCommand, _modifiedEndPointID, _listener, _changeStateProvider));
+      ArgumentUtility.CheckNotNull ("decoratedCommand", decoratedCommand);
+      return new VirtualEndPointStateUpdatedRaisingCommandDecorator (decoratedCommand, _modifiedEndPointID, _listener, _changeStateProvider);
     }
   }
 }

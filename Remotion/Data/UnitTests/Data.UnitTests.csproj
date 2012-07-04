@@ -198,6 +198,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />

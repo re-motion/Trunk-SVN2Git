@@ -25,9 +25,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
   /// Decorates an <see cref="IDataManagementCommand"/> and adds functionality for registering/unregistering with the opposite of a 
   /// <see cref="RealObjectEndPoint"/>.
   /// </summary>
-  public class RealObjectEndPointRegistrationCommandDecorator : IDataManagementCommand
+  public class RealObjectEndPointRegistrationCommandDecorator : DataManagementCommandDecoratorBase
   {
-    private readonly IDataManagementCommand _decoratedCommand;
     private readonly IRealObjectEndPoint _realObjectEndPoint;
     private readonly IVirtualEndPoint _oldRelatedEndPoint;
     private readonly IVirtualEndPoint _newRelatedEndPoint;
@@ -37,21 +36,15 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
         IRealObjectEndPoint realObjectEndPoint,
         IVirtualEndPoint oldRelatedEndPoint,
         IVirtualEndPoint newRelatedEndPoint)
+      : base (decoratedCommand)
     {
-      ArgumentUtility.CheckNotNull ("decoratedCommand", decoratedCommand);
       ArgumentUtility.CheckNotNull ("realObjectEndPoint", realObjectEndPoint);
       ArgumentUtility.CheckNotNull ("oldRelatedEndPoint", oldRelatedEndPoint);
       ArgumentUtility.CheckNotNull ("newRelatedEndPoint", newRelatedEndPoint);
 
-      _decoratedCommand = decoratedCommand;
       _realObjectEndPoint = realObjectEndPoint;
       _oldRelatedEndPoint = oldRelatedEndPoint;
       _newRelatedEndPoint = newRelatedEndPoint;
-    }
-
-    public IDataManagementCommand DecoratedCommand
-    {
-      get { return _decoratedCommand; }
     }
 
     public IRealObjectEndPoint RealObjectEndPoint
@@ -69,39 +62,24 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
       get { return _newRelatedEndPoint; }
     }
 
-    public IEnumerable<Exception> GetAllExceptions ()
-    {
-      return _decoratedCommand.GetAllExceptions();
-    }
-
-    public void Begin ()
-    {
-      _decoratedCommand.Begin();
-    }
-
-    public void Perform ()
+    public override void Perform ()
     {
       this.EnsureCanExecute();
 
       _oldRelatedEndPoint.UnregisterCurrentOppositeEndPoint (_realObjectEndPoint);
-      _decoratedCommand.Perform();
+      base.Perform();
       _newRelatedEndPoint.RegisterCurrentOppositeEndPoint (_realObjectEndPoint);
     }
 
-    public void End ()
+    protected override IDataManagementCommand Decorate (IDataManagementCommand decoratedCommand)
     {
-      _decoratedCommand.End ();
-    }
+      ArgumentUtility.CheckNotNull ("decoratedCommand", decoratedCommand);
 
-    public ExpandedCommand ExpandToAllRelatedObjects ()
-    {
-      var innerExpandedCommand = _decoratedCommand.ExpandToAllRelatedObjects();
-      var decoratedExpandedCommand = new RealObjectEndPointRegistrationCommandDecorator (
-          innerExpandedCommand, 
-          _realObjectEndPoint, 
-          _oldRelatedEndPoint, 
+      return new RealObjectEndPointRegistrationCommandDecorator (
+          decoratedCommand,
+          _realObjectEndPoint,
+          _oldRelatedEndPoint,
           _newRelatedEndPoint);
-      return new ExpandedCommand (decoratedExpandedCommand);
     }
   }
 }

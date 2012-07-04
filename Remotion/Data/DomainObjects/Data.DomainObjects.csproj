@@ -155,6 +155,7 @@
     <Compile Include="ClientTransactionExtensionBase.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
     <Compile Include="ClientTransactionFactory.cs" />
+    <Compile Include="DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBase.cs" />
     <Compile Include="DomainImplementation\Cloning\CloneContext.cs" />
     <Compile Include="DomainImplementation\Cloning\CompleteCloneStrategy.cs" />
     <Compile Include="DomainImplementation\Cloning\DomainObjectCloner.cs" />
