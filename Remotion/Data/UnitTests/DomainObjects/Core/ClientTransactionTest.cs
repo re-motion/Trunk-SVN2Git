@@ -258,6 +258,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void ToString_LeafRootTransaction ()
+    {
+      var expected = string.Format ("ClientTransaction (root, leaf) {0}", _transaction.ID);
+      Assert.That (_transaction.ToString(), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void ToString_NonLeafRootTransaction ()
+    {
+      _transaction.CreateSubTransaction ();
+      var expected = string.Format ("ClientTransaction (root, parent) {0}", _transaction.ID);
+      Assert.That (_transaction.ToString (), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void ToString_LeafSubTransaction ()
+    {
+      var subTransaction = _transaction.CreateSubTransaction();
+      var expected = string.Format ("ClientTransaction (sub, leaf) {0}", subTransaction.ID);
+      Assert.That (subTransaction.ToString(), Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void ToString_NonLeafSubTransaction ()
+    {
+      var subTransaction = _transaction.CreateSubTransaction ();
+      subTransaction.CreateSubTransaction ();
+      var expected = string.Format ("ClientTransaction (sub, parent) {0}", subTransaction.ID);
+      Assert.That (subTransaction.ToString (), Is.EqualTo (expected));
+    }
+
+    [Test]
     public void AddListener ()
     {
       var listenerStub = MockRepository.GenerateStub<IClientTransactionListener>();

@@ -304,6 +304,13 @@ public class ClientTransaction
     get { return _queryManager; }
   }
 
+  public override string ToString ()
+  {
+    string rootOrSub = ParentTransaction == null ? "root" : "sub";
+    string leafOrParent = SubTransaction == null ? "leaf" : "parent";
+    return string.Format ("ClientTransaction ({0}, {1}) {2}", rootOrSub, leafOrParent, ID);
+  }
+
   /// <summary>Initializes a new instance of this transaction.</summary>
   [Obsolete (
       "This member will be removed in the near future. Use ClientTransaction.CreateRootTransaction and CreateSubTransaction instead. (1.13.138)",
