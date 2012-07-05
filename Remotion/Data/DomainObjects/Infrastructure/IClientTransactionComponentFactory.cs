@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction);
     Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
-    IClientTransactionEventBroker CreateListenerManager (ClientTransaction constructedTransaction);
+    IClientTransactionEventBroker CreateEventBroker (ClientTransaction constructedTransaction);
     IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
     IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
     IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IDataManager dataManager);
 
     ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction);
-    
+
     // This member is likely to be removed in the future
     // TODO 2968: Remove this member
     Func<ClientTransaction, ClientTransaction> CreateCloneFactory ();

@@ -46,14 +46,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void CreateListenerManager ()
+    public void CreateEventBroker ()
     {
       var fakeListener = MockRepository.GenerateStub<IClientTransactionListener>();
 
       var factoryPartialMock = MockRepository.GeneratePartialMock<TestableClientTransactionComponentFactoryBase> ();
       factoryPartialMock.Stub (stub => stub.CallCreateListeners (_fakeConstructedTransaction)).Return (new[] { fakeListener });
 
-      var result = factoryPartialMock.CreateListenerManager (_fakeConstructedTransaction);
+      var result = factoryPartialMock.CreateEventBroker (_fakeConstructedTransaction);
 
       Assert.That (
           result,

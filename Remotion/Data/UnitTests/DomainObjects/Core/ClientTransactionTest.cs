@@ -124,7 +124,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Return (_fakeApplicationData)
             .WhenCalled (mi => Assert.That (constructedTransaction.ParentTransaction == fakeParentTransaction));
         componentFactoryMock
-            .Expect (mock => mock.CreateListenerManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
+            .Expect (mock => mock.CreateEventBroker (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (listenerManagerMock)
             .WhenCalled (mi => Assert.That (constructedTransaction.ApplicationData, Is.SameAs (_fakeApplicationData)));
         componentFactoryMock

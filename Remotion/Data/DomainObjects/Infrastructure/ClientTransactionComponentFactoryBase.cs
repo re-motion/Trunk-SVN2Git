@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager);
 
-    public virtual IClientTransactionEventBroker CreateListenerManager (ClientTransaction constructedTransaction)
+    public virtual IClientTransactionEventBroker CreateEventBroker (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 

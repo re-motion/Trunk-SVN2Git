@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryStub
           .Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything, Arg<IClientTransactionEventSink>.Is.Anything))
           .Return (invalidDomainObjectManager);
-      componentFactoryStub.Stub (stub => stub.CreateListenerManager (Arg<ClientTransaction>.Is.Anything)).Return (eventBroker);
+      componentFactoryStub.Stub (stub => stub.CreateEventBroker (Arg<ClientTransaction>.Is.Anything)).Return (eventBroker);
       componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<ClientTransaction>.Is.Anything)).Return (persistenceStrategy);
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (
