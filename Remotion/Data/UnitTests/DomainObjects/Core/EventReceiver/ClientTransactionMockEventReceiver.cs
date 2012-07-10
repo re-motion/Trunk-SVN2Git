@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     // abstract methods and properties
 
     public abstract void Loaded (object sender, ClientTransactionEventArgs args);
-    public abstract void Committing (object sender, ClientTransactionEventArgs args);
+    public abstract void Committing (object sender, ClientTransactionCommittingEventArgs args);
     public abstract void Committed (object sender, ClientTransactionEventArgs args);
     public abstract void RollingBack (object sender, ClientTransactionEventArgs args);
     public abstract void RolledBack (object sender, ClientTransactionEventArgs args);
@@ -67,7 +67,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     public void Committing (object sender, params DomainObject[] domainObjects)
     {
-      Committing (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+      Committing (Arg.Is (sender), Arg<ClientTransactionCommittingEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
     }
 
     public void Committed (object sender, params DomainObject[] domainObjects)

@@ -216,7 +216,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           repository.VerifyAll ();
 
           repository.BackToRecordAll ();
-          extensionMock.Committing (null, null);
+          extensionMock.Committing (null, null, null);
           LastCall.IgnoreArguments ();
           extensionMock.CommitValidate (null, null);
           LastCall.IgnoreArguments ();
@@ -254,7 +254,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
           using (repository.Ordered ())
           {
-            extensionMock.Committing (null, null);
+            extensionMock.Committing (null, null, null);
             LastCall.IgnoreArguments ();
             extensionMock.CommitValidate (null, null);
             LastCall.IgnoreArguments ();

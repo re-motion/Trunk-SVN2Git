@@ -121,6 +121,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       AssertEventRegistered (deserializedData.Item1, "RolledBack", deserializedData.Item2, GetEventHandlerMethod (instance, "RolledBack"));
     }
 
+    [Test]
+    public void DomainObject_IDeserializationCallbackTest ()
+    {
+      Customer domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
+
+      Customer deserializedDomainObject = Serializer.SerializeAndDeserialize (domainObject);
+      Assert.IsTrue (deserializedDomainObject.OnDeserializationCalled);
+    }
+
+    [Test]
+    public void DomainObject_DeserializationCallbackAttributesTest ()
+    {
+      Customer domainObject = Customer.GetObject (DomainObjectIDs.Customer1);
+
+      Customer deserializedDomainObject = Serializer.SerializeAndDeserialize (domainObject);
+      Assert.IsTrue (deserializedDomainObject.OnDeserializingAttributeCalled);
+      Assert.IsTrue (deserializedDomainObject.OnDeserializedAttributeCalled);
+    }
+
+
     private void AssertEventRegistered (DomainObject domainObject, string eventName, object receiver, MethodInfo receiverMethod)
     {
       var eventDelegate = (Delegate) PrivateInvoke.GetNonPublicField (domainObject, typeof (DomainObject), eventName);

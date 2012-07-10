@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
 
@@ -52,6 +54,22 @@ namespace Remotion.Data.UnitTests.UnitTesting
             counter.CheckPosition (mi.Method.ToString(), expectedPosition);
             whenCalledAction (mi);
           });
+    }
+
+    public static IMethodOptions<T> WhenCalledWithCurrentTransaction<T> (
+        this IMethodOptions<T> options, ClientTransaction expectedTransaction, Action<MethodInvocation> whenCalledAction)
+    {
+      return options.WhenCalled (
+          mi =>
+          {
+            Assert.That (ClientTransaction.Current, Is.SameAs (expectedTransaction));
+            whenCalledAction (mi);
+          });
+    }
+
+    public static IMethodOptions<T> WithCurrentTransaction<T> (this IMethodOptions<T> options, ClientTransaction expectedTransaction)
+    {
+      return options.WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (expectedTransaction)));
     }
   }
 }

@@ -15,15 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
 using Rhino.Mocks;
-using Mocks_Is = Rhino.Mocks.Constraints.Is;
-using Mocks_List = Rhino.Mocks.Constraints.List;
-using Mocks_Property = Rhino.Mocks.Constraints.Property;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {
@@ -37,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // construction and disposing
 
-    public DomainObjectMockEventReceiver (DomainObject domainObject)
+    protected DomainObjectMockEventReceiver (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
@@ -61,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     public abstract void PropertyChanged (object sender, PropertyChangeEventArgs args);
     public abstract void Deleting (object sender, EventArgs e);
     public abstract void Deleted (object sender, EventArgs e);
-    public abstract void Committing (object sender, EventArgs e);
+    public abstract void Committing (object sender, DomainObjectCommittingEventArgs e);
     public abstract void Committed (object sender, EventArgs e);
     public abstract void RollingBack (object sender, EventArgs e);
     public abstract void RolledBack (object sender, EventArgs e);
@@ -110,6 +105,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
                   args => args.PropertyDefinition == propertyDefinition
                           && args.OldValue == oldValue
                           && args.NewValue == newValue)));
+    }
+
+    public void Committing (object sender)
+    {
+      this.Expect (mock => mock.Committing (Arg.Is (sender), Arg<DomainObjectCommittingEventArgs>.Is.Anything));
+    }
+
+    public void Committed (object sender)
+    {
+      this.Expect (mock => mock.Committed (Arg.Is (sender), Arg<EventArgs>.Is.Anything));
+    }
+
+    public void RollingBack (object sender)
+    {
+      this.Expect (mock => mock.RollingBack (Arg.Is (sender), Arg<EventArgs>.Is.Anything));
+    }
+
+    public void RolledBack (object sender)
+    {
+      this.Expect (mock => mock.RolledBack (Arg.Is (sender), Arg<EventArgs>.Is.Anything));
     }
   }
 }

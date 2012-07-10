@@ -25,14 +25,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public class ClientTransactionEventSinkWithMock : IClientTransactionEventSink
   {
-    public static ClientTransactionEventSinkWithMock CreateWithStrictMock (ClientTransaction clientTransaction = null)
+    public static ClientTransactionEventSinkWithMock CreateWithStrictMock (ClientTransaction clientTransaction = null, MockRepository mockRepository = null)
     {
-      return new ClientTransactionEventSinkWithMock (MockRepository.GenerateStrictMock<IClientTransactionListener> (), clientTransaction);
+      var mock = mockRepository != null ? mockRepository.StrictMock<IClientTransactionListener>() : MockRepository.GenerateStrictMock<IClientTransactionListener> ();
+      return new ClientTransactionEventSinkWithMock (mock, clientTransaction);
     }
 
-    public static ClientTransactionEventSinkWithMock CreateWithDynamicMock (ClientTransaction clientTransaction = null)
+    public static ClientTransactionEventSinkWithMock CreateWithDynamicMock (ClientTransaction clientTransaction = null, MockRepository mockRepository = null)
     {
-      return new ClientTransactionEventSinkWithMock (MockRepository.GenerateMock<IClientTransactionListener> (), clientTransaction);
+      var mock = mockRepository != null ? mockRepository.DynamicMock<IClientTransactionListener> () : MockRepository.GenerateMock<IClientTransactionListener> ();
+      return new ClientTransactionEventSinkWithMock (mock, clientTransaction);
     }
 
     private readonly ClientTransaction _clientTransaction;

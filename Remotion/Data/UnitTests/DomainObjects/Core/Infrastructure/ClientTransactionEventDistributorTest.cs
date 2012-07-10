@@ -22,10 +22,11 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFake
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
-using Rhino.Mocks.Interfaces;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -333,18 +334,28 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void TransactionCommitting ()
     {
+      var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar>();
       CheckEventWithListenersFirst (
-          l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 })),
+          l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _order1, _order2 }), eventRegistrar),
           () =>
           {
             _transactionEventReceiverMock
-                .Expect (mock => mock.Committing (_clientTransaction, _order1, _order2))
+                .Expect (
+                    mock =>
+                    mock.Committing (
+                        Arg.Is (_clientTransaction),
+                        Arg<ClientTransactionCommittingEventArgs>.Matches (
+                            args => args.DomainObjects.SetEquals (new[] { _order1, _order2 }) && args.EventRegistrar == eventRegistrar)))
                 .WithCurrentTransaction (_clientTransaction);
             _order1EventReceiverMock
-                .Expect (mock => mock.Committing (_order1, EventArgs.Empty))
+                .Expect (mock => mock.Committing (
+                    Arg.Is (_order1), 
+                    Arg<DomainObjectCommittingEventArgs>.Matches (args => args.EventRegistrar == eventRegistrar)))
                 .WithCurrentTransaction (_clientTransaction);
             _order2EventReceiverMock
-                .Expect (mock => mock.Committing (_order2, EventArgs.Empty))
+                .Expect (mock => mock.Committing (
+                    Arg.Is (_order2),
+                    Arg<DomainObjectCommittingEventArgs>.Matches (args => args.EventRegistrar == eventRegistrar)))
                 .WithCurrentTransaction (_clientTransaction);
           });
     }
@@ -352,15 +363,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void TransactionCommitting_InvalidObject ()
     {
+      var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar> ();
       CheckEventWithListenersFirst (
-          l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject })),
+          l => l.TransactionCommitting (_clientTransaction, Array.AsReadOnly (new DomainObject[] { _invalidObject }), eventRegistrar),
           () =>
           {
             _transactionEventReceiverMock
                 .Expect (mock => mock.Committing (_clientTransaction, _invalidObject))
                 .WithCurrentTransaction (_clientTransaction);
             _invalidObjectEventReceiverMock
-                .Expect (mock => mock.Committing (Arg<object>.Is.Anything, Arg<EventArgs>.Is.Anything))
+                .Expect (mock => mock.Committing (Arg<object>.Is.Anything, Arg<DomainObjectCommittingEventArgs>.Is.Anything))
                 .Repeat.Never()
                 .Message ("DomainObject event should not be raised if object is made invalid.");
           });
@@ -474,14 +486,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       triggeringEvent (_listener);
 
       _mockRepository.VerifyAll ();
-    }
-  }
-
-  static class TestHelper
-  {
-    public static IMethodOptions<T> WithCurrentTransaction<T> (this IMethodOptions<T> options, ClientTransaction expectedTransaction)
-    {
-      return options.WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (expectedTransaction)));
     }
   }
 }

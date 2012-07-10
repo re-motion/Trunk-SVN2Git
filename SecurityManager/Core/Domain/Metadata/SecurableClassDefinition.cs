@@ -431,7 +431,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
         result.AddInvalidStateCombination (stateCombination);
     }
 
-    protected override void OnCommitting (EventArgs args)
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
     {
       SecurableClassValidationResult result = Validate();
       if (!result.IsValid)

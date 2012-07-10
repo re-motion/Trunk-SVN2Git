@@ -48,7 +48,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       }
     }
 
-    public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
     {
       throw new InvalidOperationException ("The transport transaction cannot be committed.");
     }

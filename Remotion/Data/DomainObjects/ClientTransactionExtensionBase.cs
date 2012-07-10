@@ -162,7 +162,7 @@ namespace Remotion.Data.DomainObjects
       return results;
     }
 
-    public virtual void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
+    public virtual void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects, ICommittingEventRegistrar eventRegistrar)
     {
     }
 

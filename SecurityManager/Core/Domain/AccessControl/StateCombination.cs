@@ -95,7 +95,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return StateUsages.Select (stateUsage => stateUsage.StateDefinition).ToArray();
     }
 
-    protected override void OnCommitting (EventArgs args)
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
     {
       base.OnCommitting (args);
 

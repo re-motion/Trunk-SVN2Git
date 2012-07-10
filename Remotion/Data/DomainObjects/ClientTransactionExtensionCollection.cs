@@ -360,12 +360,12 @@ namespace Remotion.Data.DomainObjects
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects)
+    public void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects, ICommittingEventRegistrar eventRegistrar)
     {
       ArgumentUtility.CheckNotNull ("changedDomainObjects", changedDomainObjects);
 
       foreach (IClientTransactionExtension extension in this)
-        extension.Committing (clientTransaction, changedDomainObjects);
+        extension.Committing (clientTransaction, changedDomainObjects, eventRegistrar);
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]

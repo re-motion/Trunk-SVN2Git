@@ -87,8 +87,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var domainObjects = Array.AsReadOnly (new DomainObject[0]);
       var persistableData = Array.AsReadOnly (new PersistableData[0]);
+      var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar>();
 
-      ExpectDelegation (l => l.TransactionCommitting (_clientTransaction, domainObjects), e => e.Committing (_clientTransaction, domainObjects));
+      ExpectDelegation (
+          l => l.TransactionCommitting (_clientTransaction, domainObjects, eventRegistrar), 
+          e => e.Committing (_clientTransaction, domainObjects, eventRegistrar));
       ExpectDelegation (l => l.TransactionCommitValidate (_clientTransaction, persistableData), e => e.CommitValidate (_clientTransaction, persistableData));
       ExpectDelegation (l => l.TransactionCommitted (_clientTransaction, domainObjects), e => e.Committed (_clientTransaction, domainObjects));
     }

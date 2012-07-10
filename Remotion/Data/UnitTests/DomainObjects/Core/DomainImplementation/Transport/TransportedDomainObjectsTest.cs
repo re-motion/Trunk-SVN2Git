@@ -93,7 +93,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       extensionMock.Expect (mock => mock.Committing (
           Arg.Is (transportedObjects.DataTransaction),
-          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects))));
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (GetTransportedObjects (transportedObjects)), 
+          Arg<ICommittingEventRegistrar>.Is.Anything));
       extensionMock.Expect (mock => mock.CommitValidate (
           Arg.Is (transportedObjects.DataTransaction),
           Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (GetTransportedObjects (transportedObjects)))));

@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -460,6 +459,8 @@ namespace Remotion.Data.DomainObjects
     /// </summary>
     /// <param name="clientTransaction">The <see cref="ClientTransaction"/> instance for which the event is raised.</param>
     /// <param name="changedDomainObjects">A <see cref="ReadOnlyCollection{T}"/> holding all changed <see cref="DomainObject"/>s that are being committed.</param>
+    /// <param name="eventRegistrar">An <see cref="ICommittingEventRegistrar"/> allowing to register objects for additional events to be raised 
+    ///   before the <see cref="ClientTransaction.Commit"/>  operation is performed.</param>
     /// <remarks>
     ///   <para>Use this method to cancel the operation, whereas <see cref="Committed"/> should be used to perform actions on its successful execution.</para>
     ///   <para>
@@ -468,7 +469,8 @@ namespace Remotion.Data.DomainObjects
     ///   </para>
     /// <note type="inotes">The implementation of this method should throw an exception if the operation must be cancelled.</note>
     /// </remarks>
-    void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects);
+    void Committing (
+        ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> changedDomainObjects, ICommittingEventRegistrar eventRegistrar);
 
     /// <summary>
     /// Invoked just before a set of <see cref="DomainObject"/> instances is to be committed.

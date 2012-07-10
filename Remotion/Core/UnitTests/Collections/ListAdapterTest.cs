@@ -144,19 +144,33 @@ namespace Remotion.UnitTests.Collections
     {
       Assert.That (_adapter.Contains ("7"), Is.False);
       Assert.That (_adapter.Contains ("1"), Is.True);
+      Assert.That (_adapter.Contains ("b"), Is.False);
     }
 
     [Test]
-    [ExpectedException (typeof (FormatException))]
-    public void Contains_InvalidItem ()
+    public void Contains_WithReadOnlyAdapter ()
     {
-      _adapter.Contains ("b");
+      var readOnlyAdapter = ListAdapter.AdaptReadOnly (_innerList, i => i.ToString());
+      Assert.That (readOnlyAdapter.Contains ("7"), Is.False);
+      Assert.That (readOnlyAdapter.Contains ("1"), Is.True);
+      Assert.That (readOnlyAdapter.Contains ("b"), Is.False);
     }
 
     [Test]
     public void IndexOf ()
     {
       Assert.That (_adapter.IndexOf ("1"), Is.EqualTo (0));
+      Assert.That (_adapter.IndexOf ("7"), Is.EqualTo (-1));
+      Assert.That (_adapter.IndexOf ("b"), Is.EqualTo (-1));
+    }
+
+    [Test]
+    public void IndexOf_WithReadOnlyAdapter ()
+    {
+      var readOnlyAdapter = ListAdapter.AdaptReadOnly (_innerList, i => i.ToString ());
+      Assert.That (readOnlyAdapter.IndexOf ("1"), Is.EqualTo (0));
+      Assert.That (readOnlyAdapter.IndexOf ("7"), Is.EqualTo (-1));
+      Assert.That (readOnlyAdapter.IndexOf ("b"), Is.EqualTo (-1));
     }
 
     [Test]

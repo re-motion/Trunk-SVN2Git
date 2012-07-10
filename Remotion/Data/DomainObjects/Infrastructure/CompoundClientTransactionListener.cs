@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -190,10 +191,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return _listeners.Aggregate (results, (current, listener) => listener.FilterCustomQueryResult (clientTransaction, query, current));
     }
 
-    public virtual void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public virtual void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
     {
       foreach (var listener in _listeners)
-        listener.TransactionCommitting (clientTransaction, domainObjects);
+        listener.TransactionCommitting (clientTransaction, domainObjects, eventRegistrar);
     }
 
     public virtual void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)

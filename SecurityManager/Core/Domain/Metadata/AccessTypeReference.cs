@@ -45,8 +45,8 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [DBBidirectionalRelation ("AccessTypeReferences")]
     [Mandatory]
     public abstract AccessTypeDefinition AccessType { get; set; }
- 
-    protected override void OnCommitting (EventArgs args)
+
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
     {
       base.OnCommitting (args);
 

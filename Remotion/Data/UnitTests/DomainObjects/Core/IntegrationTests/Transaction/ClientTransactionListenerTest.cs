@@ -401,7 +401,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _strictListenerMock.Expect (mock => mock.TransactionCommitting (
             Arg.Is (TestableClientTransaction), 
-            Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { order })));
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { order }), 
+            Arg<CommittingEventRegistrar>.Is.TypeOf));
         _strictListenerMock.Expect (mock => mock.TransactionCommitValidate (
             Arg.Is (TestableClientTransaction),
             Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new[] { order }))));

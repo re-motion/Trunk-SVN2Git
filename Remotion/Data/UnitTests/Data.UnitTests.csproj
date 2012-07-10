@@ -201,7 +201,15 @@
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\CommitRollbackAgentTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\CommittingEventRegistrarTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitFullEventChainTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitRollbackFullEventChainTestBase.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RegisterForAdditionalCommittingEventsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />
     <Compile Include="DomainObjects\Core\NoRdbmsUnitTestStorageProviderStubDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ClassIDsInAllForeignKeysBehaviorTest.cs" />
@@ -1645,9 +1653,6 @@
     <Compile Include="DomainObjects\Core\Schemas\TypesSchemaLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Schemas\SchemaLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\SerializationBaseTest.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DomainObjects\Core\Serialization\ClientTransactionTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\Serialization\QueriesTest.cs">

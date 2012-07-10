@@ -81,16 +81,12 @@ namespace Remotion.Data.DomainObjects
     /// <remarks>
     /// 	<para>The method does not modify the given <see cref="DomainObjectCollection"/> istances.</para>
     /// </remarks>
-    public static IEnumerable<DomainObject> GetItemsExcept (this DomainObjectCollection collection, DomainObjectCollection exceptedDomainObjects)
+    public static IEnumerable<DomainObject> GetItemsExcept (this DomainObjectCollection collection, HashSet<DomainObject> exceptedDomainObjects)
     {
       ArgumentUtility.CheckNotNull ("collection", collection);
       ArgumentUtility.CheckNotNull ("exceptedDomainObjects", exceptedDomainObjects);
 
-      foreach (DomainObject domainObject in collection)
-      {
-        if (!exceptedDomainObjects.Contains (domainObject.ID))
-          yield return domainObject;
-      }
+      return collection.Cast<DomainObject>().Where (domainObject => !exceptedDomainObjects.Contains (domainObject));
     }
 
     /// <summary>

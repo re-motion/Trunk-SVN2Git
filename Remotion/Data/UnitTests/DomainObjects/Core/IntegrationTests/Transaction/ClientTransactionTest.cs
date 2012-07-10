@@ -527,7 +527,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void CopyTransactionEventHandlers ()
     {
       EventHandler<ClientTransactionEventArgs> committedHandler = delegate { };
-      EventHandler<ClientTransactionEventArgs> committingHandler = delegate { };
+      EventHandler<ClientTransactionCommittingEventArgs> committingHandler = delegate { };
       EventHandler<ClientTransactionEventArgs> loadedHandler = delegate { };
       EventHandler<ClientTransactionEventArgs> rolledBackHandler = delegate { };
       EventHandler<ClientTransactionEventArgs> rollingBackHandler = delegate { };
@@ -561,7 +561,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         EventHandler<ClientTransactionEventArgs> committedHandler = delegate { };
-        EventHandler<ClientTransactionEventArgs> committingHandler = delegate { };
+        EventHandler<ClientTransactionCommittingEventArgs> committingHandler = delegate { };
         EventHandler<ClientTransactionEventArgs> loadedHandler = delegate { };
         EventHandler<ClientTransactionEventArgs> rolledBackHandler = delegate { };
         EventHandler<ClientTransactionEventArgs> rollingBackHandler = delegate { };

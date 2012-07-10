@@ -44,20 +44,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static T CreateTransactionWithPersistenceStrategy<T> (IPersistenceStrategy persistenceStrategy) where T : ClientTransaction
     {
       var componentFactory = new TestComponentFactoryWithSpecificPersistenceStrategy (persistenceStrategy);
-      return Create<T> (componentFactory);
+      return CreateWithComponents<T> (componentFactory);
     }
 
     public static T CreateTransactionWithQueryManager<T> (IQueryManager queryManager) where T : ClientTransaction
     {
       var componentFactory = new TestComponentFactoryWithSpecificQueryManager (queryManager);
-      return Create<T> (componentFactory);
+      return CreateWithComponents<T> (componentFactory);
     }
 
     public static T CreateTransactionWithObjectLoaderDecorator<T> (TestComponentFactoryWithObjectLoaderDecorator.DecoratorFactory factory) 
         where T : ClientTransaction
     {
       var componentFactory = new TestComponentFactoryWithObjectLoaderDecorator (factory);
-      return Create<T> (componentFactory);
+      return CreateWithComponents<T> (componentFactory);
     }
 
     public static ClientTransaction Create ()
@@ -65,22 +65,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return ClientTransaction.CreateRootTransaction();
     }
 
-    public static T Create<T> (IClientTransactionComponentFactory componentFactory) where T : ClientTransaction
+    public static T CreateWithComponents<T> (IClientTransactionComponentFactory componentFactory) where T : ClientTransaction
     {
       return (T) PrivateInvoke.CreateInstanceNonPublicCtor (typeof (T), componentFactory);
     }
 
-    public static T Create<T> (
-        ClientTransaction parentTransaction,
-        Dictionary<Enum, object> applicationData,
-        Func<ClientTransaction, ClientTransaction> cloneFactory,
-        IDataManager dataManager,
-        IEnlistedDomainObjectManager enlistedDomainObjectManager,
-        ClientTransactionExtensionCollection extensions,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IClientTransactionEventBroker eventBroker,
-        IPersistenceStrategy persistenceStrategy,
-        IQueryManager queryManager)
+    public static T CreateWithComponents<T> (
+        ClientTransaction parentTransaction = null,
+        Dictionary<Enum, object> applicationData = null,
+        Func<ClientTransaction, ClientTransaction> cloneFactory = null,
+        IDataManager dataManager = null,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager = null,
+        ClientTransactionExtensionCollection extensions = null,
+        IInvalidDomainObjectManager invalidDomainObjectManager = null,
+        IClientTransactionEventBroker eventBroker = null,
+        IPersistenceStrategy persistenceStrategy = null,
+        IQueryManager queryManager = null,
+        ICommitRollbackAgent commitRollbackAgent = null)
       where T : ClientTransaction
     {
       var componentFactoryStub = CreateComponentFactory (
@@ -93,23 +94,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           invalidDomainObjectManager,
           eventBroker,
           persistenceStrategy,
-          queryManager);
+          queryManager,
+          commitRollbackAgent);
 
-      return Create<T> (componentFactoryStub);
+      return CreateWithComponents<T> (componentFactoryStub);
     }
 
     public static IClientTransactionComponentFactory CreateComponentFactory (
-        ClientTransaction parentTransaction,
-        Dictionary<Enum, object> applicationData,
-        Func<ClientTransaction, ClientTransaction> cloneFactory,
-        IDataManager dataManager,
-        IEnlistedDomainObjectManager enlistedDomainObjectManager,
-        ClientTransactionExtensionCollection extensions,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IClientTransactionEventBroker eventBroker,
-        IPersistenceStrategy persistenceStrategy,
-        IQueryManager queryManager)
+        ClientTransaction parentTransaction = null,
+        Dictionary<Enum, object> applicationData = null,
+        Func<ClientTransaction, ClientTransaction> cloneFactory = null,
+        IDataManager dataManager = null,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager = null,
+        ClientTransactionExtensionCollection extensions = null,
+        IInvalidDomainObjectManager invalidDomainObjectManager = null,
+        IClientTransactionEventBroker eventBroker = null,
+        IPersistenceStrategy persistenceStrategy = null,
+        IQueryManager queryManager = null,
+        ICommitRollbackAgent commitRollbackAgent = null)
     {
+      applicationData = applicationData ?? new Dictionary<Enum, object>();
+      cloneFactory = cloneFactory ?? (tx => { throw new Exception ("Should not be called."); });
+      dataManager = dataManager ?? MockRepository.GenerateStub<IDataManager> ();
+      enlistedDomainObjectManager = enlistedDomainObjectManager ?? MockRepository.GenerateStub<IEnlistedDomainObjectManager> ();
+      extensions = extensions ?? new ClientTransactionExtensionCollection ("test");
+      invalidDomainObjectManager = invalidDomainObjectManager ?? MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      eventBroker = eventBroker ?? MockRepository.GenerateStub<IClientTransactionEventBroker> ();
+      persistenceStrategy = persistenceStrategy ?? MockRepository.GenerateStub<IPersistenceStrategy> ();
+      queryManager = queryManager ?? MockRepository.GenerateStub<IQueryManager> ();
+      commitRollbackAgent = commitRollbackAgent ?? MockRepository.GenerateStub<ICommitRollbackAgent> ();
+      
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
       componentFactoryStub.Stub (stub => stub.GetParentTransaction (Arg<ClientTransaction>.Is.Anything)).Return (parentTransaction);
       componentFactoryStub.Stub (stub => stub.CreateApplicationData (Arg<ClientTransaction>.Is.Anything)).Return (applicationData);
@@ -136,6 +150,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IPersistenceStrategy>.Is.Anything,
               Arg<IDataManager>.Is.Anything))
           .Return (queryManager);
+      componentFactoryStub
+          .Stub (stub => stub.CreateCommitRollbackAgent (
+              Arg<ClientTransaction>.Is.Anything,
+              Arg<IClientTransactionEventSink>.Is.Anything,
+              Arg<IPersistenceStrategy>.Is.Anything,
+              Arg<IDataManager>.Is.Anything))
+          .Return (commitRollbackAgent);
       return componentFactoryStub;
     }
 
@@ -147,7 +168,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Return (listeners);
       componentFactoryPartialMock.Replay ();
 
-      return Create<ClientTransaction> (componentFactoryPartialMock);
+      return CreateWithComponents<ClientTransaction> (componentFactoryPartialMock);
     }
   }
 }

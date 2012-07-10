@@ -114,6 +114,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return new QueryManager (persistenceStrategy, objectLoader, eventSink);
     }
 
+    public virtual ICommitRollbackAgent CreateCommitRollbackAgent (
+        ClientTransaction constructedTransaction,
+        IClientTransactionEventSink eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IDataManager dataManager)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+
+      return new CommitRollbackAgent (constructedTransaction, eventSink, persistenceStrategy, dataManager);
+    }
+
     public virtual ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);

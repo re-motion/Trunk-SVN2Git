@@ -187,7 +187,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Occurs before the changes of a <see cref="DomainObject"/> are committed.
     /// </summary>
-    public event EventHandler Committing;
+    public event EventHandler<DomainObjectCommittingEventArgs> Committing;
 
     /// <summary>
     /// Occurs after the changes of a <see cref="DomainObject"/> are successfully committed.
@@ -278,7 +278,7 @@ namespace Remotion.Data.DomainObjects
         RelationChanged = (EventHandler<RelationChangedEventArgs>) info.GetValue ("DomainObject.RelationChanged", typeof (EventHandler<RelationChangedEventArgs>));
         Deleting = (EventHandler) info.GetValue ("DomainObject.Deleting", typeof (EventHandler));
         Deleted = (EventHandler) info.GetValue ("DomainObject.Deleted", typeof (EventHandler));
-        Committing = (EventHandler) info.GetValue ("DomainObject.Committing", typeof (EventHandler));
+        Committing = (EventHandler<DomainObjectCommittingEventArgs>) info.GetValue ("DomainObject.Committing", typeof (EventHandler<DomainObjectCommittingEventArgs>));
         Committed = (EventHandler) info.GetValue ("DomainObject.Committed", typeof (EventHandler));
         RollingBack = (EventHandler) info.GetValue ("DomainObject.RollingBack", typeof (EventHandler));
         RolledBack = (EventHandler) info.GetValue ("DomainObject.RolledBack", typeof (EventHandler));
@@ -730,8 +730,8 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Raises the <see cref="Committing"/> event.
     /// </summary>
-    /// <param name="args">A <see cref="System.EventArgs"/> object that contains the event data.</param>
-    protected internal virtual void OnCommitting (EventArgs args)
+    /// <param name="args">A <see cref="DomainObjectCommittingEventArgs"/> object that contains the event data.</param>
+    protected internal virtual void OnCommitting (DomainObjectCommittingEventArgs args)
     {
       if (Committing != null)
         Committing (this, args);

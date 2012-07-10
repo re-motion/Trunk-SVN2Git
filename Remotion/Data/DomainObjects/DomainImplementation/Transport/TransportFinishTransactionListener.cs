@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       _filter = filter;
     }
 
-    public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
     {
       // Rollback the state of all objects not matched by the filter - we don't want those objects to be committed to the transaction
 

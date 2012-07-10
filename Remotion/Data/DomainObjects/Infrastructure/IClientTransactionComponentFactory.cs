@@ -56,6 +56,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IPersistenceStrategy persistenceStrategy,
         IDataManager dataManager);
 
+    ICommitRollbackAgent CreateCommitRollbackAgent (
+        ClientTransaction constructedTransaction,
+        IClientTransactionEventSink eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IDataManager dataManager);
+
     ClientTransactionExtensionCollection CreateExtensionCollection (ClientTransaction constructedTransaction);
 
     // This member is likely to be removed in the future

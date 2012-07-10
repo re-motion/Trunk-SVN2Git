@@ -413,15 +413,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Committing ()
     {
       var data = new ReadOnlyCollection<DomainObject> (new DomainObject[0]);
+      var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar> ();
       using (_mockRepository.Ordered ())
       {
-        _extension1.Expect (mock => mock.Committing (TestableClientTransaction, data));
-        _extension2.Expect (mock => mock.Committing (TestableClientTransaction, data));
+        _extension1.Expect (mock => mock.Committing (TestableClientTransaction, data, eventRegistrar));
+        _extension2.Expect (mock => mock.Committing (TestableClientTransaction, data, eventRegistrar));
       }
 
       _mockRepository.ReplayAll ();
 
-      _collectionWithExtensions.Committing (TestableClientTransaction, data);
+      _collectionWithExtensions.Committing (TestableClientTransaction, data, eventRegistrar);
 
       _mockRepository.VerifyAll ();
     }

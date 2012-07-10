@@ -337,7 +337,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void TransactionCommitting ()
     {
       CheckLoggingMethod (
-          () => _listener.TransactionCommitting (_clientTransaction, new ReadOnlyCollection<DomainObject> (new List<DomainObject> { _domainObject })),
+          () =>
+          _listener.TransactionCommitting (
+              _clientTransaction,
+              new ReadOnlyCollection<DomainObject> (new List<DomainObject> { _domainObject }),
+              MockRepository.GenerateStub<ICommittingEventRegistrar>()),
           string.Format (
               "{0} TransactionCommitting: {1}",
               _clientTransaction.ID,

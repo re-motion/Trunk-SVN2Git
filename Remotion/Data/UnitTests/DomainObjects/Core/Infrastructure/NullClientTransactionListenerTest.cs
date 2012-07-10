@@ -201,7 +201,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void TransactionCommitting ()
     {
-      _listener.TransactionCommitting (TestableClientTransaction, new ReadOnlyCollection<DomainObject> (new DomainObject[0]));
+      _listener.TransactionCommitting (
+          TestableClientTransaction,
+          new ReadOnlyCollection<DomainObject> (new DomainObject[0]),
+          MockRepository.GenerateStub<ICommittingEventRegistrar>());
     }
 
     [Test]

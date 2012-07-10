@@ -44,7 +44,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
     [Mandatory]
     public abstract StatePropertyDefinition StateProperty { get; set; }
 
-    protected override void OnCommitting (EventArgs args)
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
     {
       base.OnCommitting (args);
 

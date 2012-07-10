@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -106,21 +107,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     [Test]
     public void GetItemsExcept ()
     {
-      var exceptedDomainObjects = new DomainObjectCollection { _customer1 };
+      var exceptedDomainObjects = new HashSet<DomainObject> { _customer1 };
 
       var itemsNotInCollection = _collection.GetItemsExcept (exceptedDomainObjects);
 
       Assert.That (itemsNotInCollection.ToArray(), Is.EqualTo (new[] { _customer2 }));
-    }
-
-    [Test]
-    public void GetItemsExcept_BasedOnID ()
-    {
-      var exceptedDomainObjects = new DomainObjectCollection { _customer1FromOtherTransaction };
-
-      var itemsNotInCollection = _collection.GetItemsExcept (exceptedDomainObjects);
-
-      Assert.That (itemsNotInCollection.ToArray (), Is.EqualTo (new[] { _customer2 }));
     }
 
     [Test]

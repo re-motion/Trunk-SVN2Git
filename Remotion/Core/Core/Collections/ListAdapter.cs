@@ -101,12 +101,18 @@ namespace Remotion.Collections
 
     public bool Contains (TDest item)
     {
-      return _adaptedList.Contains (_destToSource (item));
+      var equalityComparer = EqualityComparer<TDest>.Default;
+      return this.Any (element => equalityComparer.Equals (element, item));
     }
 
     public int IndexOf (TDest item)
     {
-      return _adaptedList.IndexOf (_destToSource (item));
+      var equalityComparer = EqualityComparer<TDest>.Default;
+      var result = this.Select ((element, i) => new { element, i }).FirstOrDefault (tuple => equalityComparer.Equals (item, tuple.element));
+      if (result == null)
+        return -1;
+      else
+        return result.i;
     }
 
     public void CopyTo (TDest[] array, int arrayIndex)

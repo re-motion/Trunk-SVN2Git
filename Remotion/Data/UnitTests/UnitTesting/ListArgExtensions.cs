@@ -36,6 +36,11 @@ namespace Remotion.Data.UnitTests.UnitTesting
       return default (T);
     }
 
+    public static T Equivalent<T> (this ListArg<T> arg, params object[] items) where T : IEnumerable
+    {
+      return Equivalent (arg, (IEnumerable) items);
+    }
+
     class PredicateConstraintWithMessage<T> : PredicateConstraint<T>
     {
       private readonly string _message;

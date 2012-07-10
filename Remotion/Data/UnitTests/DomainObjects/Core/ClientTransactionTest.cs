@@ -57,6 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private IClientTransactionEventBroker _eventBrokerMock;
     private IPersistenceStrategy _persistenceStrategyMock;
     private IQueryManager _queryManagerMock;
+    private ICommitRollbackAgent _commitRollbackAgentMock;
 
     private TestableClientTransaction _transactionWithMocks;
 
@@ -76,8 +77,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _eventBrokerMock = _mockRepository.StrictMock<IClientTransactionEventBroker>();
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
       _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
+      _commitRollbackAgentMock = _mockRepository.StrictMock<ICommitRollbackAgent>();
 
-      _transactionWithMocks = ClientTransactionObjectMother.Create<TestableClientTransaction> (
+      _transactionWithMocks = ClientTransactionObjectMother.CreateWithComponents<TestableClientTransaction> (
           null,
           _fakeApplicationData,
           tx => { throw new NotImplementedException(); },
@@ -87,7 +89,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _invalidDomainObjectManagerMock,
           _eventBrokerMock,
           _persistenceStrategyMock,
-          _queryManagerMock);
+          _queryManagerMock,
+          _commitRollbackAgentMock);
       // Ignore calls made by ctor
       _eventBrokerMock.BackToRecord();
     }
@@ -168,9 +171,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Return (_queryManagerMock)
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetIDataManager (constructedTransaction), Is.SameAs (_dataManagerMock)));
         componentFactoryMock
+            .Expect (
+                mock =>
+                mock.CreateCommitRollbackAgent (
+                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
+                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == listenerManagerMock),
+                    Arg.Is (_persistenceStrategyMock),
+                    Arg.Is (_dataManagerMock)))
+            .Return (_commitRollbackAgentMock)
+            .WhenCalled (mi => Assert.That (constructedTransaction.QueryManager, Is.SameAs (_queryManagerMock)));
+        componentFactoryMock
             .Expect (mock => mock.CreateExtensionCollection (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (fakeExtensionCollection)
-            .WhenCalled (mi => Assert.That (constructedTransaction.QueryManager, Is.SameAs (_queryManagerMock)));
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetCommitRollbackAgent (constructedTransaction), Is.SameAs (_commitRollbackAgentMock)));
         listenerManagerMock
             .Expect (mock => mock.AddListener (Arg<ExtensionClientTransactionListener>.Is.TypeOf))
             .WhenCalled (
@@ -314,65 +327,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void HasChanged ()
+    {
+      _commitRollbackAgentMock.Expect (mock => mock.HasDataChanged ()).Return (true).Repeat.Once ();
+      _commitRollbackAgentMock.Expect (mock => mock.HasDataChanged ()).Return (false).Repeat.Once ();
+      _mockRepository.ReplayAll ();
+
+      var result1 = _transactionWithMocks.HasChanged ();
+      var result2 = _transactionWithMocks.HasChanged ();
+
+      _mockRepository.VerifyAll ();
+
+      Assert.That (result1, Is.True);
+      Assert.That (result2, Is.False);
+    }
+
+    [Test]
     public void Commit ()
     {
-      var fakeDomainObject1 = DomainObjectMother.CreateFakeObject<Order> ();
-      var fakeDomainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
-      var fakeDomainObject3 = DomainObjectMother.CreateFakeObject<Order> ();
-
-      var fakeDataContainer1 = DataContainer.CreateNew (fakeDomainObject1.ID);
-      var fakeDataContainer2 = DataContainer.CreateNew (fakeDomainObject2.ID);
-      var fakeDataContainer3 = DataContainer.CreateNew (fakeDomainObject3.ID);
-
-      var item1 = new PersistableData (fakeDomainObject1, StateType.New, fakeDataContainer1, new IRelationEndPoint[0]);
-      var item2 = new PersistableData (fakeDomainObject2, StateType.Changed, fakeDataContainer2, new IRelationEndPoint[0]);
-      var item3 = new PersistableData (fakeDomainObject3, StateType.Deleted, fakeDataContainer3, new IRelationEndPoint[0]);
-      _dataManagerMock.Stub (stub => stub.GetNewChangedDeletedData()).Return (new[] { item1, item2, item3 });
-      
-      var expectationCounter = new OrderedExpectationCounter();
-
-      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (fakeDomainObject1)).Return (true);
-      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (fakeDomainObject2)).Return (true);
-      _enlistedObjectManagerMock.Stub (stub => stub.IsEnlisted (fakeDomainObject3)).Return (true);
-
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject1.ID)).Return (false);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject2.ID)).Return (false);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (fakeDomainObject3.ID)).Return (false);
-
-      var listenerMock = SetupEventForwardingToListenerMock(_eventBrokerMock, _transactionWithMocks);
-
-      // Use a manager with mock instead
-      listenerMock
-          .Expect (mock => mock.TransactionCommitting (
-              Arg.Is (_transactionWithMocks),
-              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { fakeDomainObject1, fakeDomainObject2, fakeDomainObject3 })))
-          .WhenCalledOrdered (expectationCounter, mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
-      listenerMock
-          .Expect (
-              mock => mock.TransactionCommitValidate (
-                  Arg.Is (_transactionWithMocks),
-                  Arg<ReadOnlyCollection<PersistableData>>.List.Equivalent (new[] { item1, item2, item3 })))
-          .WhenCalledOrdered (expectationCounter, mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
-      _persistenceStrategyMock
-          .Expect (mock => mock.PersistData (Arg<ReadOnlyCollection<PersistableData>>.List.Equivalent (new[] { item1, item2, item3 })))
-          .Ordered (expectationCounter);
-      _dataManagerMock
-          .Expect (mock => mock.Commit())
-          .Ordered (expectationCounter);
-      listenerMock
-          .Expect (
-              mock => mock.TransactionCommitted (
-                  Arg.Is (_transactionWithMocks),
-                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { fakeDomainObject1, fakeDomainObject2 })))
-          .WhenCalledOrdered (expectationCounter, mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transactionWithMocks)));
-
+      _commitRollbackAgentMock.Expect (mock => mock.CommitData());
       _mockRepository.ReplayAll();
 
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transactionWithMocks));
       _transactionWithMocks.Commit();
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transactionWithMocks));
 
       _mockRepository.VerifyAll();
+    }
+
+    [Test]
+    public void Rollback ()
+    {
+      _commitRollbackAgentMock.Expect (mock => mock.RollbackData ());
+      _mockRepository.ReplayAll ();
+
+      _transactionWithMocks.Rollback ();
+
+      _mockRepository.VerifyAll ();
     }
 
     [Test]
@@ -975,7 +964,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       mockRepository.ReplayAll ();
 
       _transaction.CreateSubTransaction ((tx, invalidDomainObjectManager, enlistedDomainObjectManager) => 
-          ClientTransactionObjectMother.Create<ClientTransaction> (componentFactoryPartialMock));
+          ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (componentFactoryPartialMock));
       mockRepository.VerifyAll ();
     }
 
@@ -1404,9 +1393,45 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository.VerifyAll ();
     }
 
+    [Test]
+    public void Serialization ()
+    {
+      var clientTransaction = ClientTransaction.CreateRootTransaction();
+      var subTransaction = clientTransaction.CreateSubTransaction ();
+
+      var deserializedClientTransaction = Serializer.SerializeAndDeserialize (clientTransaction);
+
+      Assert.That (deserializedClientTransaction, Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetComponentFactory (deserializedClientTransaction), Is.Not.Null);
+      Assert.That (deserializedClientTransaction.ParentTransaction, Is.Null);
+      Assert.That (deserializedClientTransaction.ApplicationData, Is.Not.Null);
+      Assert.That (deserializedClientTransaction.Extensions, Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetEventBroker (deserializedClientTransaction), Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetEnlistedDomainObjectManager (deserializedClientTransaction), Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetInvalidDomainObjectManager (deserializedClientTransaction), Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetIDataManager (deserializedClientTransaction), Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetPersistenceStrategy (deserializedClientTransaction), Is.Not.Null);
+      Assert.That (deserializedClientTransaction.QueryManager, Is.Not.Null);
+      Assert.That (ClientTransactionTestHelper.GetCommitRollbackAgent (deserializedClientTransaction), Is.Not.Null);
+      Assert.That (deserializedClientTransaction.SubTransaction, Is.Not.Null);
+      Assert.That (deserializedClientTransaction.IsDiscarded, Is.False);
+      Assert.That (deserializedClientTransaction.ID, Is.EqualTo (clientTransaction.ID));
+
+      var deserializedSubTransaction = Serializer.SerializeAndDeserialize (subTransaction);
+
+      Assert.That (deserializedSubTransaction.ParentTransaction, Is.Not.Null);
+      Assert.That (deserializedSubTransaction.SubTransaction, Is.Null);
+
+      clientTransaction.Discard();
+
+      var deserializedDiscardedTransaction = Serializer.SerializeAndDeserialize (clientTransaction);
+
+      Assert.That (deserializedDiscardedTransaction.IsDiscarded, Is.True);
+    }
+
     private ClientTransaction CreateTransactionInHierarchy (ClientTransaction parent)
     {
-      return ClientTransactionObjectMother.Create<ClientTransaction> (
+      return ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (
           parent,
           _fakeApplicationData,
           tx => { throw new NotImplementedException (); },

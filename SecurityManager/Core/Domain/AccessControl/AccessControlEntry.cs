@@ -313,7 +313,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return result;
     }
 
-    protected override void OnCommitting (EventArgs args)
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
     {
       AccessControlEntryValidationResult result = Validate();
       if (!result.IsValid)

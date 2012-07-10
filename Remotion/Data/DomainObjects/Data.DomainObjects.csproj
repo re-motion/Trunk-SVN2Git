@@ -151,6 +151,7 @@
     </Compile>
     <Compile Include="AutoRollbackBehavior.cs" />
     <Compile Include="ClassIDAttribute.cs" />
+    <Compile Include="ClientTransactionCommittingEventArgs.cs" />
     <Compile Include="ClientTransactionEventArgs.cs" />
     <Compile Include="ClientTransactionExtensionBase.cs" />
     <Compile Include="ClientTransactionExtensions.cs" />
@@ -202,11 +203,16 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
+    <Compile Include="DomainObjectCommittingEventArgs.cs" />
+    <Compile Include="Infrastructure\CommitRollbackAgent.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ClientTransactionEventBroker.cs" />
+    <Compile Include="Infrastructure\CommittingEventRegistrar.cs" />
+    <Compile Include="Infrastructure\ICommitRollbackAgent.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventSink.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventBroker.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventDistributor.cs" />
+    <Compile Include="ICommittingEventRegistrar.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\IFetchEnabledPersistenceStrategy.cs" />

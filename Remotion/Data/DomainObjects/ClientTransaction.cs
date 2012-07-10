@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -31,7 +30,6 @@ using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
-using Remotion.Data.DomainObjects.Linq;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -122,7 +120,7 @@ public class ClientTransaction
   /// <summary>
   /// Occurs immediately before the <b>ClientTransaction</b> performs a <see cref="Commit"/> operation.
   /// </summary>
-  public event EventHandler<ClientTransactionEventArgs> Committing;
+  public event EventHandler<ClientTransactionCommittingEventArgs> Committing;
 
   /// <summary>
   /// Occurs immediately after the <b>ClientTransaction</b> has successfully performed a <see cref="Commit"/> operation.
@@ -152,13 +150,14 @@ public class ClientTransaction
   private readonly IDataManager _dataManager;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IQueryManager _queryManager;
+  private readonly ICommitRollbackAgent _commitRollbackAgent;
 
   private ClientTransaction _subTransaction;
 
   private bool _isDiscarded;
 
   private readonly Guid _id = Guid.NewGuid ();
-  
+
   protected ClientTransaction (IClientTransactionComponentFactory componentFactory)
   {
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
@@ -174,6 +173,7 @@ public class ClientTransaction
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
     _dataManager = componentFactory.CreateDataManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy);
     _queryManager = componentFactory.CreateQueryManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy, _dataManager);
+    _commitRollbackAgent = componentFactory.CreateCommitRollbackAgent (this, _eventBroker, _persistenceStrategy, _dataManager);
 
     _extensions = componentFactory.CreateExtensionCollection (this);
     AddListener (new ExtensionClientTransactionListener (_extensions));
@@ -789,7 +789,7 @@ public class ClientTransaction
   /// <returns><see langword="true"/> if at least one <see cref="DomainObject"/> in this <b>ClientTransaction</b> has been changed; otherwise, <see langword="false"/>.</returns>
   public virtual bool HasChanged ()
   {
-    return _dataManager.GetNewChangedDeletedData().Any();
+    return _commitRollbackAgent.HasDataChanged();
   }
 
   /// <summary>
@@ -797,46 +797,109 @@ public class ClientTransaction
   /// </summary>
   /// <exception cref="Persistence.PersistenceException">Changes to objects from multiple storage providers were made.</exception>
   /// <exception cref="Persistence.StorageProviderException">An error occurred while committing the changes to the data source.</exception>
+  /// <remarks>
+  /// <para>
+  /// Committing a <see cref="ClientTransaction"/> raises a number of events:
+  /// <list type="number">
+  /// <item><description>
+  /// First, a chain of Commtting events is raised. Each Committing event can cancel the <see cref="Commit"/> operation by throwing an exception 
+  /// (which, after canceling the operation, will be propagated to the caller). Committing event handlers can also modify each 
+  /// <see cref="DomainObject"/> being committed, and they can add or remove objects to or from the commit set. For example, if a Committing event
+  /// handler modifies a changed object so that it becomes <see cref="StateType.Unchanged"/>, that object will be removed from the commit set.
+  /// Or, if a handler modifies an unchanged object so that it becomes <see cref="StateType.Changed"/>, it will become part of the commit set.
+  /// When a set of objects (a, b) is committed, the Committing event chain consists of the following events, raised in order:
+  /// <list type="number">
+  /// <item><description>
+  /// <see cref="IClientTransactionListener"/>.<see cref="IClientTransactionListener.TransactionCommitting"/> and 
+  /// <see cref="IClientTransactionExtension"/>.<see cref="IClientTransactionExtension.Committing"/> for (a, b)</description></item>
+  /// <item><description><see cref="ClientTransaction"/>.<see cref="ClientTransaction.Committing"/> for (a, b)</description></item>
+  /// <item><description>a.<see cref="DomainObject.Committing"/>, b.<see cref="DomainObject.Committing"/> (order undefined)</description></item>
+  /// </list>
+  /// Usually, every event handler in the Committing event chain receives each object in the commit set exactly once. (See 
+  /// <see cref="ICommittingEventRegistrar.RegisterForAdditionalCommittingEvents"/> in order to repeat the Committing events for an object.)
+  /// If any event handler adds an object c to the commit set (e.g., by changing or creating it), the whole chain is repeated, but only for c.
+  /// </description></item>
+  /// <item><description>
+  /// Then, <see cref="IClientTransactionListener"/>.<see cref="IClientTransactionListener.TransactionCommitValidate"/> and 
+  /// <see cref="IClientTransactionExtension"/>.<see cref="IClientTransactionExtension.CommitValidate"/> are raised for the commit set.
+  /// The event handlers for those events get the commit set exactly as it is saved to the underlying data store (or parent transaction) and are 
+  /// allowed to cancel the operation by throwing an exception, e.g., if a validation rule fails. The event handlers must not modify the 
+  /// <see cref="ClientTransaction"/>'s state (including that of any <see cref="DomainObject"/> in the transaction) in any way.
+  /// </description></item>
+  /// <item><description>
+  /// Then, the data is saved to the underlying data store or parent transaction. The data store or parent transaction may cancel the operation
+  /// by throwing an exception (e.g., a <see cref="ConcurrencyViolationException"/> or a database-level exception).
+  /// </description></item>
+  /// <item><description>
+  /// Finally, if the <see cref="Commit"/> operation was completed successfully, a chain of Committed events is raised. Committed event handlers must
+  /// not throw an exception. When a set of objects (a, b) was committed, the Committed event chain consists of the following events, raised in order:
+  /// <list type="number">
+  /// <item><description>a.<see cref="DomainObject.Committed"/>, b.<see cref="DomainObject.Committed"/> (order undefined)</description></item>
+  /// <item><description><see cref="ClientTransaction"/>.<see cref="ClientTransaction.Committed"/> for (a, b)</description></item>
+  /// <item><description>
+  /// <see cref="IClientTransactionListener"/>.<see cref="IClientTransactionListener.TransactionCommitted"/> and 
+  /// <see cref="IClientTransactionExtension"/>.<see cref="IClientTransactionExtension.Committed"/> for (a, b)
+  /// </description></item>
+  /// </list>
+  /// </description></item>
+  /// </list>
+  /// </para>
+  /// </remarks>
   public virtual void Commit ()
   {
     using (EnterNonDiscardingScope ())
     {
-      BeginCommit();
-
-      var persistableDataItems = _dataManager.GetNewChangedDeletedData().ToList().AsReadOnly();
-      RaiseListenerEvent ((tx, l) => l.TransactionCommitValidate (tx, persistableDataItems));
-      
-      _persistenceStrategy.PersistData (persistableDataItems);
-
-      _dataManager.Commit ();
-      
-      var changedButNotDeletedDomainObjects = persistableDataItems
-          .Where (item => item.DomainObjectState != StateType.Deleted)
-          .Select (item => item.DomainObject)
-          .ToList()
-          .AsReadOnly();
-      EndCommit (changedButNotDeletedDomainObjects);
+      _commitRollbackAgent.CommitData();
     }
   }
 
   /// <summary>
   /// Performs a rollback of all changes within the <b>ClientTransaction</b>.
   /// </summary>
+  /// <remarks>
+  /// <para>
+  /// Rolling back a <see cref="ClientTransaction"/> raises a number of events:
+  /// <list type="number">
+  /// <item><description>
+  /// First, a chain of RollingBack events is raised. Each RollingBack event can cancel the <see cref="Rollback"/> operation by throwing an exception 
+  /// (which, after canceling the operation, will be propagated to the caller). RollingBack event handlers can also modify each 
+  /// <see cref="DomainObject"/> being rolled back, and they can add or remove objects to or from the rollback set. For example, if a RollingBack event
+  /// handler modifies a changed object so that it becomes <see cref="StateType.Unchanged"/>, that object will no longer need to be rolled back.
+  /// Or, if a handler modifies an unchanged object so that it becomes <see cref="StateType.Changed"/>, it will become part of the rollback set.
+  /// When a set of objects (a, b) is rolled back, the RollingBack event chain consists of the following events, raised in order:
+  /// <list type="number">
+  /// <item><description>
+  /// <see cref="IClientTransactionListener"/>.<see cref="IClientTransactionListener.TransactionRollingBack"/> and 
+  /// <see cref="IClientTransactionExtension"/>.<see cref="IClientTransactionExtension.RollingBack"/> for (a, b)</description></item>
+  /// <item><description><see cref="ClientTransaction"/>.<see cref="ClientTransaction.RollingBack"/> for (a, b)</description></item>
+  /// <item><description>a.<see cref="DomainObject.RollingBack"/>, b.<see cref="DomainObject.RollingBack"/> (order undefined)</description></item>
+  /// </list>
+  /// Every event handler in the RollingBack event chain receives each object in the rollback set exactly once.
+  /// If any event handler adds an object c to the rollback set (e.g., by changing or creating it), the whole chain is repeated, but only for c.
+  /// </description></item>
+  /// <item><description>
+  /// Then, the data is rolled back.
+  /// </description></item>
+  /// <item><description>
+  /// Finally, if the <see cref="Rollback"/> operation was completed successfully, a chain of RolledBack events is raised. RolledBack event handlers must
+  /// not throw an exception. When a set of objects (a, b) was rolled back, the RolledBack event chain consists of the following events, raised in order:
+  /// <list type="number">
+  /// <item><description>a.<see cref="DomainObject.RolledBack"/>, b.<see cref="DomainObject.RolledBack"/> (order undefined)</description></item>
+  /// <item><description><see cref="ClientTransaction"/>.<see cref="ClientTransaction.RolledBack"/> for (a, b)</description></item>
+  /// <item><description>
+  /// <see cref="IClientTransactionListener"/>.<see cref="IClientTransactionListener.TransactionRolledBack"/> and 
+  /// <see cref="IClientTransactionExtension"/>.<see cref="IClientTransactionExtension.RolledBack"/> for (a, b)
+  /// </description></item>
+  /// </list>
+  /// </description></item>
+  /// </list>
+  /// </para>
+  /// </remarks>
   public virtual void Rollback ()
   {
     using (EnterNonDiscardingScope ())
     {
-      BeginRollback();
-
-      var changedButNotNewItems =
-          _dataManager.GetLoadedDataByObjectState (StateType.Changed, StateType.Deleted)
-          .Select (item => item.DomainObject)
-          .ToList()
-          .AsReadOnly();
-
-      _dataManager.Rollback ();
-
-      EndRollback (changedButNotNewItems);
+      _commitRollbackAgent.RollbackData();
     }
   }
 
@@ -1183,7 +1246,7 @@ public class ClientTransaction
   /// Raises the <see cref="Committing"/> event.
   /// </summary>
   /// <param name="args">A <see cref="ClientTransactionEventArgs"/> object that contains the event data.</param>
-  protected internal virtual void OnCommitting (ClientTransactionEventArgs args)
+  protected internal virtual void OnCommitting (ClientTransactionCommittingEventArgs args)
   {
     ArgumentUtility.CheckNotNull ("args", args);
 
@@ -1266,91 +1329,6 @@ public class ClientTransaction
     get { return _applicationData; }
   }
 
-  private void BeginCommit ()
-  {
-    // TODO Doc: ES
-
-    // Note regarding to Committing: 
-    // Every object raises a Committing event even if another object's Committing event changes the first object's state back to original 
-    // during its own Committing event. Because the event order of .NET is not deterministic, this behavior is desired to ensure consistency: 
-    // Every object changed during a ClientTransaction raises a Committing event regardless of the Committing event order of specific objects.  
-
-    // Note regarding to Committed: 
-    // If an object is changed back to its original state during the Committing phase, no Committed event will be raised,
-    // because in this case the object won't be committed to the underlying backend (e.g. database).
-
-    var changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-    var clientTransactionCommittingEventRaised = new DomainObjectCollection();
-
-    List<DomainObject> clientTransactionCommittingEventNotRaised;
-    do
-    {
-      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised).ToList();
-
-      var eventArgReadOnlyCollection = clientTransactionCommittingEventNotRaised.AsReadOnly ();
-      RaiseListenerEvent ((tx, l) => l.TransactionCommitting (tx, eventArgReadOnlyCollection));
-
-      foreach (DomainObject domainObject in clientTransactionCommittingEventNotRaised)
-      {
-        if (!domainObject.IsInvalid)
-          clientTransactionCommittingEventRaised.Add (domainObject);
-      }
-
-      changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-      clientTransactionCommittingEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionCommittingEventRaised).ToList();
-    } while (clientTransactionCommittingEventNotRaised.Any());
-  }
-
-  private void EndCommit (ReadOnlyCollection<DomainObject> changedDomainObjects)
-  {
-    RaiseListenerEvent ((tx, l) => l.TransactionCommitted (tx, changedDomainObjects));
-  }
-
-  private void BeginRollback ()
-  {
-    // TODO Doc: ES
-
-    // Note regarding to RollingBack: 
-    // Every object raises a RollingBack event even if another object's RollingBack event changes the first object's state back to original 
-    // during its own RollingBack event. Because the event order of .NET is not deterministic, this behavior is desired to ensure consistency: 
-    // Every object changed during a ClientTransaction raises a RollingBack event regardless of the RollingBack event order of specific objects.  
-
-    // Note regarding to RolledBack: 
-    // If an object is changed back to its original state during the RollingBack phase, no RolledBack event will be raised,
-    // because the object actually has never been changed from a ClientTransaction's perspective.
-
-    var changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-    var clientTransactionRollingBackEventRaised = new DomainObjectCollection();
-
-    List<DomainObject> clientTransactionRollingBackEventNotRaised;
-    do
-    {
-      clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList();
-
-      var eventArgReadOnlyCollection = clientTransactionRollingBackEventNotRaised.AsReadOnly ();
-      RaiseListenerEvent ((tx, l) => l.TransactionRollingBack (tx, eventArgReadOnlyCollection));
-
-      foreach (DomainObject domainObject in clientTransactionRollingBackEventNotRaised)
-      {
-        if (!domainObject.IsInvalid)
-          clientTransactionRollingBackEventRaised.Add (domainObject);
-      }
-
-      changedDomainObjects = GetChangedDomainObjects().ToObjectList();
-      clientTransactionRollingBackEventNotRaised = changedDomainObjects.GetItemsExcept (clientTransactionRollingBackEventRaised).ToList();
-    } while (clientTransactionRollingBackEventNotRaised.Any());
-  }
-
-  private void EndRollback (ReadOnlyCollection<DomainObject> changedDomainObjects)
-  {
-    RaiseListenerEvent ((tx, l) => l.TransactionRolledBack (tx, changedDomainObjects));
-  }
-
-  private IEnumerable<DomainObject> GetChangedDomainObjects ()
-  {
-    return _dataManager.GetNewChangedDeletedData ().Select (item => item.DomainObject);
-  }
-
   public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
@@ -1369,6 +1347,7 @@ public class ClientTransaction
     return Maybe.ForValue (DataManager.GetDataContainerWithoutLoading (objectID)).Select (dc => dc.DomainObject).ValueOrDefault ();
   }
 
+  // ReSharper disable UnusedParameter.Global
   [Obsolete ("This method has been removed. Please implement the desired behavior yourself, using GetEnlistedDomainObjects(), EnlistDomainObject(), "
              + "and CopyCollectionEventHandlers(). (1.13.41)", false)]
   public void EnlistSameDomainObjects (ClientTransaction sourceTransaction, bool copyCollectionEventHandlers)
@@ -1417,5 +1396,6 @@ public class ClientTransaction
   {
     throw new NotImplementedException ();
   }
+  // ReSharper restore UnusedParameter.Global
 }
 }

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -31,6 +32,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
   public static class ClientTransactionTestHelper
   {
+    public static IClientTransactionComponentFactory GetComponentFactory (ClientTransaction clientTransaction)
+    {
+      return (IClientTransactionComponentFactory) PrivateInvoke.GetNonPublicField (clientTransaction, "_componentFactory");
+    }
+
     public static DataManager GetDataManager (ClientTransaction clientTransaction)
     {
       return (DataManager) DataManagementService.GetDataManager (clientTransaction);
@@ -56,6 +62,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (IPersistenceStrategy) PrivateInvoke.GetNonPublicField (clientTransaction, "_persistenceStrategy");
     }
 
+    public static IClientTransactionEventBroker GetEventBroker (ClientTransaction clientTransaction)
+    {
+      return (IClientTransactionEventBroker) PrivateInvoke.GetNonPublicField (clientTransaction, "_eventBroker");
+    }
+
+    public static ICommitRollbackAgent GetCommitRollbackAgent (ClientTransaction clientTransaction)
+    {
+      return (ICommitRollbackAgent) PrivateInvoke.GetNonPublicField (clientTransaction, "_commitRollbackAgent");
+    }
     public static DomainObject CallGetObject (ClientTransaction clientTransaction, ObjectID objectID, bool includeDeleted)
     {
       return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObject", objectID, includeDeleted);
@@ -126,11 +141,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
       AddListener (clientTransaction, listenerMock);
       return listenerMock;
-    }
-
-    public static IClientTransactionEventBroker GetEventBroker (ClientTransaction clientTransaction)
-    {
-      return (IClientTransactionEventBroker) PrivateInvoke.GetNonPublicField (clientTransaction, "_eventBroker");
     }
 
     public static void RegisterDataContainer (ClientTransaction clientTransaction, DataContainer dataContainer)

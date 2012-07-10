@@ -149,7 +149,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckNotification (listener => listener.RelationChanging (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, order2));
       CheckNotification (listener => listener.RelationChanged (TestableClientTransaction, order, realtionEndPointDefinitionMock, order, order2));
 
-      CheckNotification (listener => listener.TransactionCommitting (TestableClientTransaction, domainObjects));
+      var eventRegistrar = MockRepository.GenerateStub<ICommittingEventRegistrar>();
+      CheckNotification (listener => listener.TransactionCommitting (TestableClientTransaction, domainObjects, eventRegistrar));
       CheckNotification (listener => listener.TransactionCommitValidate (TestableClientTransaction, persistableData));
       CheckNotification (listener => listener.TransactionCommitted (TestableClientTransaction, domainObjects));
       CheckNotification (listener => listener.TransactionRollingBack (TestableClientTransaction, domainObjects));

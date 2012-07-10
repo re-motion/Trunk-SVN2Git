@@ -920,7 +920,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           extension.Committing (
               Arg.Is (ClientTransactionScope.CurrentTransaction),
               Arg<ReadOnlyCollection<DomainObject>>.Matches (
-                  c => c.SetEquals (new DomainObject[] { newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1 })));
+                  c => c.SetEquals (new DomainObject[] { newCustomer1, official2, newCeo2, newOrder1, newOrderItem2, newOrderTicket1 })), 
+              Arg<ICommittingEventRegistrar>.Is.Anything);
 
           using (mockRepository.Unordered ())
           {

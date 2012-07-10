@@ -125,7 +125,7 @@ namespace Remotion.Data.DomainObjects.UberProfIntegration
       return results;
     }
 
-    public void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public void Committing (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
     {
     }
 

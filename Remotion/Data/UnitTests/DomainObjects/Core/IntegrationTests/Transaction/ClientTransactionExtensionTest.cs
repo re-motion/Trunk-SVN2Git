@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
@@ -1213,7 +1214,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Expect (mock => mock.Committing (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
+        _extensionMock.Expect (
+            mock =>
+            mock.Committing (
+                Arg.Is (_newTransaction),
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer }),
+                Arg<CommittingEventRegistrar>.Is.TypeOf));
         _extensionMock.Expect (mock => mock.CommitValidate (
             Arg.Is (_newTransaction), 
             Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new[] { computer }))));
@@ -1246,7 +1252,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       {
         _extensionMock.Expect (
             mock =>
-            mock.Committing (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee })));
+            mock.Committing (
+                Arg.Is (_newTransaction),
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { computer, employee }),
+                Arg<CommittingEventRegistrar>.Is.TypeOf));
         _extensionMock.Expect (
             mock =>
             mock.CommitValidate (
@@ -1282,7 +1291,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _extensionMock.Expect (
             mock =>
             mock.Committing (
-                Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer })));
+                Arg.Is (_newTransaction),
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new DomainObject[] { _order1, newCustomer, oldCustomer }),
+                Arg<CommittingEventRegistrar>.Is.TypeOf));
         _extensionMock.Expect (
             mock =>
             mock.CommitValidate (
@@ -1320,22 +1331,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_mockRepository.Ordered())
       {
-        _extensionMock.Expect (mock => mock.Committing (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
-        clientTransactionMockEventReceiver.Expect (
+        _extensionMock.Expect (
             mock =>
             mock.Committing (
-                Arg.Is (_newTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (new[] { computer }))));
-        computerEventReveiver.Expect (mock => mock.Committing (computer, EventArgs.Empty));
+                Arg.Is (_newTransaction),
+                Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer }),
+                Arg<CommittingEventRegistrar>.Is.TypeOf));
+        clientTransactionMockEventReceiver.Expect (mock =>mock.Committing (_newTransaction, computer));
+        computerEventReveiver.Expect (mock => mock.Committing (computer));
 
         _extensionMock.Expect (mock => mock.CommitValidate (
             Arg.Is (_newTransaction), 
             Arg<ReadOnlyCollection<PersistableData>>.Matches (c => c.Select (d => d.DomainObject).SetEquals (new DomainObject[] { computer }))));
 
-        computerEventReveiver.Expect (mock => mock.Committed (computer, EventArgs.Empty));
-        clientTransactionMockEventReceiver.Expect (
-            mock =>
-            mock.Committed (
-                Arg.Is (_newTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SequenceEqual (new[] { computer }))));
+        computerEventReveiver.Expect (mock => mock.Committed (computer));
+        clientTransactionMockEventReceiver.Expect (mock => mock.Committed (_newTransaction, computer));
         _extensionMock.Expect (mock => mock.Committed (Arg.Is (_newTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { computer })));
       }
 

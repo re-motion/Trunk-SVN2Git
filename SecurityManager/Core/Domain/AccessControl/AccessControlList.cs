@@ -124,7 +124,7 @@ namespace Remotion.SecurityManager.Domain.AccessControl
       return GetAccessTypes (token, null);
     }
 
-    protected override void OnCommitting (EventArgs args)
+    protected override void OnCommitting (DomainObjectCommittingEventArgs args)
     {
       base.OnCommitting (args);
 

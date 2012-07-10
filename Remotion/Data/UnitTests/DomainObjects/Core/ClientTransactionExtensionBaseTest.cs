@@ -70,7 +70,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var fakeCustomResult = new[] { new object() };
       CheckNopEvent (e => e.FilterCustomQueryResult (null, null, fakeCustomResult), fakeCustomResult);
 
-      CheckNopEvent (e => e.Committing (null, null));
+      CheckNopEvent (e => e.Committing (null, null, null));
       CheckNopEvent (e => e.CommitValidate (null, null));
       CheckNopEvent (e => e.Committed (null, null));
       CheckNopEvent (e => e.RollingBack (null, null));

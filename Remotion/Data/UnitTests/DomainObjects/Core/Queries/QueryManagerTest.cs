@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -261,6 +262,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _persistenceStrategyMock.VerifyAllExpectations();
       _transactionEventSinkWithMock.VerifyMock();
       Assert.That (result.ToArray(), Is.EqualTo (new[] { "Fake1", "Fake2" }));
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var queryManager = ClientTransactionScope.CurrentTransaction.QueryManager;
+
+      var deserializedQueryManager = Serializer.SerializeAndDeserialize (queryManager);
+
+      Assert.That (deserializedQueryManager, Is.Not.Null);
     }
   }
 }
