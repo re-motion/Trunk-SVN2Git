@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
+using Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchronization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
@@ -129,8 +130,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       var employee = computer1.Employee;
       employee.EnsureDataAvailable ();
 
-      var unsynchronizedComputerID = 
-          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employee.ID, (ot, o) => ot.Employee = o);
+      var unsynchronizedComputerID =
+          RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employee.ID, (ot, o) => ot.Employee = o);
       var unsynchronizedComputer = Computer.GetObject (unsynchronizedComputerID);
 
       Assert.That (computer1.State, Is.EqualTo (StateType.Unchanged));

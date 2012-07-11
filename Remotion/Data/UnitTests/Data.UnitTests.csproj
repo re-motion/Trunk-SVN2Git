@@ -206,6 +206,8 @@
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommitRollbackAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommittingEventRegistrarTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\NotFoundObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconcsistenciesTestHelper.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitRollbackFullEventChainTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RegisterForAdditionalCommittingEventsTest.cs" />

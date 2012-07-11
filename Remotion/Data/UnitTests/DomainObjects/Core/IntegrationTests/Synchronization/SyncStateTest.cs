@@ -55,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       var order = Order.GetObject (DomainObjectIDs.Order1);
       order.OrderItems.EnsureDataComplete();
 
-      var orderItemID = DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (order.ID, (oi, o) => oi.Order = o);
+      var orderItemID = RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<OrderItem, Order> (order.ID, (oi, o) => oi.Order = o);
       var orderItem = OrderItem.GetObject (orderItemID);
       var endPointID = RelationEndPointID.Resolve (orderItem, oi => oi.Order);
       var endPoint = (RealObjectEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);

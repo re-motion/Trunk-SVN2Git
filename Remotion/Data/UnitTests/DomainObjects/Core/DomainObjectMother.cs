@@ -20,7 +20,6 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
-using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -111,34 +110,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       LifetimeService.DeleteObject (transaction, deletedInstance);
       Assert.That (deletedInstance.State, Is.EqualTo (StateType.Deleted));
       return deletedInstance;
-    }
-
-    public static ObjectID CreateObjectAndSetRelationInOtherTransaction<TCreated, TRelated> (ObjectID relatedID, Action<TCreated, TRelated> setter)
-        where TCreated : DomainObject
-        where TRelated : DomainObject
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        var domainObject = (TCreated) LifetimeService.NewObject (ClientTransaction.Current, typeof (TCreated), ParamList.Empty);
-        setter (domainObject, relatedID != null ? (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true) : null);
-        ClientTransaction.Current.Commit ();
-
-        return domainObject.ID;
-      }
-    }
-
-    public static ObjectID SetRelationInOtherTransaction<TOriginating, TRelated> (ObjectID originatingID, ObjectID relatedID, Action<TOriginating, TRelated> setter)
-      where TOriginating : DomainObject
-      where TRelated : DomainObject
-    {
-      using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
-      {
-        var domainObject = (TOriginating) LifetimeService.GetObject (ClientTransaction.Current, originatingID, true);
-        setter (domainObject, relatedID != null ? (TRelated) LifetimeService.GetObject (ClientTransaction.Current, relatedID, true) : null);
-        ClientTransaction.Current.Commit ();
-
-        return domainObject.ID;
-      }
     }
   }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -15,7 +14,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
   {
     protected ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
     {
-      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) =>
+      return RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) =>
       {
         c.IndustrialSector = s;
         c.Ceo = Ceo.NewObject();
@@ -24,17 +23,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
     protected void SetIndustrialSectorInOtherTransaction (ObjectID companyID, ObjectID industrialSectorID)
     {
-      DomainObjectMother.SetRelationInOtherTransaction<Company, IndustrialSector> (companyID, industrialSectorID, (c, s) => c.IndustrialSector = s);
+      RelationInconcsistenciesTestHelper.SetRelationInOtherTransaction<Company, IndustrialSector> (companyID, industrialSectorID, (c, s) => c.IndustrialSector = s);
     }
 
     protected ObjectID CreateComputerAndSetEmployeeInOtherTransaction (ObjectID employeeID)
     {
-      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employeeID, (c, e) => c.Employee = e);
+      return RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (employeeID, (c, e) => c.Employee = e);
     }
 
     protected void SetEmployeeInOtherTransaction (ObjectID computerID, ObjectID employeeID)
     {
-      DomainObjectMother.SetRelationInOtherTransaction<Computer, Employee> (computerID, employeeID, (c, e) => c.Employee = e);
+      RelationInconcsistenciesTestHelper.SetRelationInOtherTransaction<Computer, Employee> (computerID, employeeID, (c, e) => c.Employee = e);
     }
 
     protected void CheckSyncState<TOriginating, TRelated> (
@@ -64,7 +63,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       {
         hadException = true;
         Assert.That (ex, Is.TypeOf (typeof (TException)));
-        var expectedMessage = string.Format (expectedMessageFormatString, formatArgs);
+        var expectedMessage = String.Format (expectedMessageFormatString, formatArgs);
         Assert.That (
             ex.Message, 
             Is.StringContaining(expectedMessage), 

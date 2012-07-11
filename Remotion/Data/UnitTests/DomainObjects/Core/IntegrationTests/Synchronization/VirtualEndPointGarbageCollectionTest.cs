@@ -75,7 +75,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (employee.Subordinates, Is.Empty);
 
       var unsynchronizedSubordinateID =
-          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Employee, Employee> (
+          RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Employee, Employee> (
             employee.ID,
             (subOrdinate, e) => subOrdinate.Supervisor = e);
       var unsynchronizedSubordinate = Employee.GetObject (unsynchronizedSubordinateID);
@@ -100,7 +100,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       TestableClientTransaction.EnsureDataComplete (virtualEndPointID);
 
       var unsynchronizedComputerID =
-          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (
+          RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (
             employee.ID,
             (c, e) => c.Employee = e);
       var unsynchronizedComputer = Computer.GetObject (unsynchronizedComputerID);
@@ -127,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
       Assert.That (employee.Computer, Is.Null);
 
       var unsynchronizedComputerID =
-          DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (
+          RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Computer, Employee> (
             employee.ID,
             (c, e) => c.Employee = e);
       var unsynchronizedComputer = Computer.GetObject (unsynchronizedComputerID);
@@ -264,7 +264,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Synchroniz
 
     protected ObjectID CreateCompanyAndSetIndustrialSectorInOtherTransaction (ObjectID industrialSectorID)
     {
-      return DomainObjectMother.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) =>
+      return RelationInconcsistenciesTestHelper.CreateObjectAndSetRelationInOtherTransaction<Company, IndustrialSector> (industrialSectorID, (c, s) =>
       {
         c.IndustrialSector = s;
         c.Ceo = Ceo.NewObject ();
