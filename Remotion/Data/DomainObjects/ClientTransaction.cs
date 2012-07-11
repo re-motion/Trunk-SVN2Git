@@ -1056,7 +1056,7 @@ public class ClientTransaction
 
     // this performs a bulk load operation, throwing on invalid IDs and unknown objects
     return EnsureDataAvailable (objectIDs, true)
-        .Select (dc => dc == null ? null : dc.DomainObject)
+        .Select (dc => dc.DomainObject)
         .Cast<T> ()
         .ToArray ();
   }
