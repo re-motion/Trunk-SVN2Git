@@ -98,6 +98,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
       // TODO 4920: Assert.That (result, Is.False);
       CheckObjectIsMarkedInvalid (instance.ID);
+
+      // After the object has been marked invalid
+      Assert.That (() => instance.EnsureDataAvailable (), ThrowsObjectInvalidException (_nonExistingObjectID));
     }
 
     [Test]
@@ -107,8 +110,34 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       {
         var instance = LifetimeService.GetObjectReference (ClientTransaction.Current, _nonExistingObjectIDForSubtransaction);
         CheckObjectIsMarkedInvalid (instance.ID);
+        
+        Assert.That (() => instance.EnsureDataAvailable (), ThrowsObjectInvalidException (_nonExistingObjectIDForSubtransaction));
+      }
+    }
 
-        Assert.That (() => instance.EnsureDataAvailable(), Throws.TypeOf<ObjectInvalidException>());
+    [Test]
+    [Ignore ("TODO 4920")]
+    public void EnsureDataAvailable_MultipleObjects_ShouldReturnFalse_AndMarkObjectNotFound ()
+    {
+      /* TODO 4920: var result = */ TestableClientTransaction.EnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order1 });
+      // TODO 4920: Assert.That (result, Is.False);
+      CheckObjectIsMarkedInvalid (_nonExistingObjectID);
+
+      // After the object has been marked invalid
+      Assert.That (
+          () => TestableClientTransaction.EnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order1 }), 
+          ThrowsObjectInvalidException (_nonExistingObjectID));
+    }
+
+    [Test]
+    public void EnsureDataAvailable_MultipleObjects_Subtransaction ()
+    {
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        CheckObjectIsMarkedInvalid (_nonExistingObjectIDForSubtransaction);
+        Assert.That (
+            () => ClientTransaction.Current.EnsureDataAvailable (new[] { _nonExistingObjectIDForSubtransaction, DomainObjectIDs.Order1 }),
+            ThrowsObjectInvalidException (_nonExistingObjectIDForSubtransaction));
       }
     }
 
