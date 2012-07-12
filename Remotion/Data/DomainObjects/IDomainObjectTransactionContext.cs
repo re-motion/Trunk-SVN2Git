@@ -76,6 +76,9 @@ namespace Remotion.Data.DomainObjects
     /// found in the data source.</exception>
     void EnsureDataAvailable ();
 
+    // TODO 4920: Doc, Test
+    bool TryEnsureDataAvailable ();
+
     /// <summary>
     /// Executes the specified delegate in the context of the <see cref="ClientTransaction"/> associated with this 
     /// <see cref="IDomainObjectTransactionContext"/>, returning the result of the delegate. While the

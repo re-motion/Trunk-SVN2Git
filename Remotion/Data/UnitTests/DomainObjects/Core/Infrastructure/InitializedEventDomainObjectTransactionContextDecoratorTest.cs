@@ -42,6 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       CheckForbidden (ctx => Dev.Null = ctx.Timestamp);
       CheckForbidden (ctx => ctx.MarkAsChanged ());
       CheckForbidden (ctx => ctx.EnsureDataAvailable ());
+      CheckForbidden (ctx => ctx.TryEnsureDataAvailable ());
     }
 
     private void CheckAllowed<T> (Func<IDomainObjectTransactionContext, T> func, T mockResult)

@@ -210,6 +210,9 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconcsistenciesTestHelper.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitRollbackFullEventChainTestBase.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\TryEnsureDataAvailableTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\EnsureDataAvailableTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\EnsureDataAvailableTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RegisterForAdditionalCommittingEventsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />

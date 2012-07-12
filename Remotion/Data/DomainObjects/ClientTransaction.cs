@@ -599,7 +599,7 @@ public class ClientTransaction
 
   /// <summary>
   /// Ensures that the data of the <see cref="DomainObject"/> with the given <see cref="ObjectID"/> has been loaded into this 
-  /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the object's data.
+  /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the object's data. If the object's data can't be found, an exception is thrown.
   /// </summary>
   /// <param name="objectID">The domain object whose data must be loaded.</param>
   /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null" />.</exception>
@@ -616,6 +616,7 @@ public class ClientTransaction
   /// <summary>
   /// Ensures that the data for the <see cref="DomainObject"/>s with the given <see cref="ObjectID"/> values has been loaded into this 
   /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the objects' data, performing a bulk load operation.
+  /// If any object's data can't be found, an exception is thrown.
   /// </summary>
   /// <param name="objectIDs">The <see cref="ObjectID"/> values whose data must be loaded.</param>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null" />.</exception>
@@ -629,6 +630,45 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
     EnsureDataAvailable (objectIDs, true);
+  }
+
+  /// <summary>
+  /// Ensures that the data of the <see cref="DomainObject"/> with the given <see cref="ObjectID"/> has been loaded into this
+  /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the object's data. The method returns a value indicating whether the
+  /// object's data was found.
+  /// </summary>
+  /// <param name="objectID">The domain object whose data must be loaded.</param>
+  /// <returns><see langword="true" /> if the object's data is now available in the <see cref="ClientTransaction"/>, <see langword="false" /> if the 
+  /// data couldn't be found.</returns>
+  /// <exception cref="ArgumentNullException">The <paramref name="objectID"/> parameter is <see langword="null"/>.</exception>
+  /// <exception cref="ObjectInvalidException">The given <paramref name="objectID"/> is invalid in this transaction.</exception>
+  public bool TryEnsureDataAvailable (ObjectID objectID)
+  {
+    ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+    // TODO 4920: Maybe add optional throwOnNotFound parameter to GetDataContainerWithLazyLoad() and use that instead
+    var dataContainers = EnsureDataAvailable (new[] { objectID }, false);
+    return dataContainers.Single() != null;
+  }
+
+  /// <summary>
+  /// Ensures that the data for the <see cref="DomainObject"/>s with the given <see cref="ObjectID"/> values has been loaded into this 
+  /// <see cref="ClientTransaction"/>. If it hasn't, this method loads the objects' data, performing a bulk load operation.
+  /// The method returns a value indicating whether the data of all the objects was found.
+  /// </summary>
+  /// <param name="objectIDs">The <see cref="ObjectID"/> values whose data must be loaded.</param>
+  /// <returns><see langword="true" /> if the data is now available in the <see cref="ClientTransaction"/> for all objects, <see langword="false" /> 
+  /// if the data couldn't be found for one or more objects.</returns>
+  /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null" />.</exception>
+  /// <exception cref="ClientTransactionsDifferException">One of the given <paramref name="objectIDs"/> cannot be used in this 
+  /// <see cref="ClientTransaction"/>.</exception>
+  /// <exception cref="ObjectInvalidException">One of the given <paramref name="objectIDs"/> is invalid in this transaction.</exception>
+  public bool TryEnsureDataAvailable (IEnumerable<ObjectID> objectIDs)
+  {
+    ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+
+    var dataContainers = EnsureDataAvailable (objectIDs, false);
+    return dataContainers.All (dc => dc != null);
   }
 
   private IEnumerable<DataContainer> EnsureDataAvailable (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)

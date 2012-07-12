@@ -101,10 +101,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       ClientTransaction.EnsureDataAvailable (DomainObject.ID);
 
-      var dataContainer = ClientTransaction.DataManager.DataContainers[DomainObject.ID];
-      Assertion.IsNotNull (dataContainer);
-      Assertion.IsTrue (dataContainer.DomainObject == DomainObject, "Guaranteed because CheckIfRightTransaction ensures that domainObject is enlisted");
+      DataContainer dataContainer;
+      Assertion.DebugAssert (
+          (dataContainer = ClientTransaction.DataManager.DataContainers[DomainObject.ID]) != null 
+          && dataContainer.DomainObject == DomainObject,
+          "Guaranteed because CheckIfRightTransaction ensures that DomainObject is enlisted.");
+    }
 
+    public bool TryEnsureDataAvailable ()
+    {
+      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
+
+      return ClientTransaction.TryEnsureDataAvailable (DomainObject.ID);
     }
 
     public T Execute<T> (Func<DomainObject, ClientTransaction, T> func)

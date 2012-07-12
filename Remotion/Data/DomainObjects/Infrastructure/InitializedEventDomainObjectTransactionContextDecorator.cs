@@ -77,6 +77,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
     }
 
+    public bool TryEnsureDataAvailable ()
+    {
+      throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
+    }
+
     public T Execute<T> (Func<DomainObject, ClientTransaction, T> func)
     {
       return _actualContext.Execute (func);

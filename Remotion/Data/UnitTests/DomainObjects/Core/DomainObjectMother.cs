@@ -86,14 +86,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var invalidInstance = LifetimeService.NewObject (transaction, typeof (Order), ParamList.Empty);
       LifetimeService.DeleteObject (transaction, invalidInstance);
-      Assert.That (invalidInstance.State, Is.EqualTo (StateType.Invalid));
+      Assert.That (invalidInstance.TransactionContext[transaction].State, Is.EqualTo (StateType.Invalid));
       return invalidInstance;
     }
 
     public static DomainObject GetNotLoadedObject (ClientTransaction transaction, ObjectID objectID)
     {
       var notLoadedInstance = LifetimeService.GetObjectReference (transaction, objectID);
-      Assert.That (notLoadedInstance.State, Is.EqualTo (StateType.NotLoadedYet));
+      Assert.That (notLoadedInstance.TransactionContext[transaction].State, Is.EqualTo (StateType.NotLoadedYet));
       return notLoadedInstance;
     }
 
@@ -108,8 +108,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       var deletedInstance = LifetimeService.GetObjectReference (transaction, objectID);
       LifetimeService.DeleteObject (transaction, deletedInstance);
-      Assert.That (deletedInstance.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (deletedInstance.TransactionContext[transaction].State, Is.EqualTo (StateType.Deleted));
       return deletedInstance;
+    }
+
+    public static DomainObject GetNotLoadedNonExistingObject (ClientTransaction transaction)
+    {
+      var objectID = new ObjectID (typeof (ClassWithAllDataTypes), Guid.NewGuid());
+      return GetNotLoadedObject (transaction, objectID);
     }
   }
 }

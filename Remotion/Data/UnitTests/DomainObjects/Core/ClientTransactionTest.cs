@@ -27,8 +27,8 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
@@ -577,171 +577,85 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void EnsureDataAvailable_AlreadyLoaded ()
+    public void EnsureDataAvailable ()
     {
-      var domainObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _dataManagerMock
+          .Expect (mock => mock.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1))
+          .Return (DataContainerObjectMother.CreateDataContainer());
+      _mockRepository.ReplayAll();
+      
+      _transactionWithMocks.EnsureDataAvailable (DomainObjectIDs.Order1);
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _transaction.EnsureDataAvailable (domainObject.ID);
-
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
-          Arg<ClientTransaction>.Is.Anything, 
-          Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _mockRepository.VerifyAll();
     }
 
     [Test]
-    public void EnsureDataAvailable_NotLoadedYet ()
+    public void EnsureDataAvailable_Many ()
     {
-      var domainObject = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+      _dataManagerMock
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
+          .Return (new DataContainer[0]);
+      _mockRepository.ReplayAll ();
 
-      _transaction.EnlistDomainObject (domainObject);
-      Assert.That (_dataManager.DataContainers[domainObject.ID], Is.Null);
+      _transactionWithMocks.EnsureDataAvailable (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _transaction.EnsureDataAvailable (domainObject.ID);
-
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
-          Arg.Is (_transaction), 
-          Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1 })));
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
-          Arg.Is (_transaction),
-          Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject })));
-      Assert.That (_dataManager.DataContainers[domainObject.ID], Is.Not.Null);
-      Assert.That (_dataManager.DataContainers[domainObject.ID].DomainObject, Is.SameAs (domainObject));
+      _mockRepository.VerifyAll ();
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void EnsureDataAvailable_Invalid ()
+    public void TryEnsureDataAvailable_True ()
     {
-      Order domainObject = _transaction.Execute (() =>Order.NewObject ());
-      _transaction.Execute (domainObject.Delete);
+      _dataManagerMock
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1 }, false))
+          .Return (new[] { DataContainerObjectMother.CreateDataContainer () });
+      _mockRepository.ReplayAll ();
 
-      _transaction.EnsureDataAvailable (domainObject.ID);
+      var result = _transactionWithMocks.TryEnsureDataAvailable (DomainObjectIDs.Order1);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException))]
-    public void EnsureDataAvailable_NotFound ()
+    public void TryEnsureDataAvailable_False ()
     {
-      var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
+      _dataManagerMock
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1 }, false))
+          .Return (new DataContainer[] { null });
+      _mockRepository.ReplayAll ();
 
-      _transaction.EnlistDomainObject (domainObject);
-      _transaction.EnsureDataAvailable (domainObject.ID);
+      var result = _transactionWithMocks.TryEnsureDataAvailable (DomainObjectIDs.Order1);
+
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.False);
     }
 
     [Test]
-    public void EnsureDataAvailable_NotEnlisted ()
+    public void TryEnsureDataAvailable_Many_True ()
     {
-      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
+      _dataManagerMock
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, false))
+          .Return (new[] { DataContainerObjectMother.CreateDataContainer(), DataContainerObjectMother.CreateDataContainer() });
+      _mockRepository.ReplayAll ();
 
-      _transaction.EnsureDataAvailable (DomainObjectIDs.Order1);
+      var result = _transactionWithMocks.TryEnsureDataAvailable (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
-      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.True);
     }
 
     [Test]
-    public void EnsureDataAvailable_Many_AlreadyLoaded ()
+    public void TryEnsureDataAvailable_Many_False ()
     {
-      var domainObject1 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      var domainObject2 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order2));
+      _dataManagerMock
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, false))
+          .Return (new[] { DataContainerObjectMother.CreateDataContainer (), null });
+      _mockRepository.ReplayAll ();
 
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
+      var result = _transactionWithMocks.TryEnsureDataAvailable (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
 
-      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
-
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-    }
-
-    [Test]
-    public void EnsureDataAvailable_Many_NotLoadedYet ()
-    {
-      var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-
-      _transaction.EnlistDomainObject (domainObject1);
-      _transaction.EnlistDomainObject (domainObject2);
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID });
-
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
-          Arg.Is (_transaction), 
-          Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })));
-    }
-
-    [Test]
-    public void EnsureDataAvailable_Many_SomeLoadedSomeNot ()
-    {
-      var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      var domainObject3 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
-
-      _transaction.EnlistDomainObject (domainObject1);
-      _transaction.EnlistDomainObject (domainObject2);
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
-
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoading (
-          Arg.Is (_transaction),
-          Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })));
-      listenerMock.AssertWasNotCalled (mock => mock.ObjectsLoading (
-          Arg<ClientTransaction>.Is.Anything, 
-          Arg<ReadOnlyCollection<ObjectID>>.List.ContainsAll (new[] { DomainObjectIDs.Order3 })));
-    }
-
-    [Test]
-    public void EnsureDataAvailable_Many_SomeLoadedSomeNot_PerformsBulkLoad ()
-    {
-      var domainObject1 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      var domainObject2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      var domainObject3 = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order3));
-
-      _transaction.EnlistDomainObject (domainObject1);
-      _transaction.EnlistDomainObject (domainObject2);
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-
-      _transaction.EnsureDataAvailable (new[] { domainObject1.ID, domainObject2.ID, domainObject3.ID });
-
-      listenerMock.AssertWasCalled (mock => mock.ObjectsLoaded (
-          Arg.Is (_transaction), 
-          Arg<ReadOnlyCollection<DomainObject>>.List.ContainsAll (new[] { domainObject1, domainObject2 })));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void EnsureDataAvailable_Many_Invalid ()
-    {
-      var domainObject = _transaction.Execute (() => Order.NewObject ());
-      _transaction.Execute (domainObject.Delete);
-
-      _transaction.EnsureDataAvailable (new[] { domainObject.ID });
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectsNotFoundException))]
-    public void EnsureDataAvailable_Many_NotFound ()
-    {
-      var domainObject = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
-
-      _transaction.EnlistDomainObject (domainObject);
-      _transaction.EnsureDataAvailable (new[] { domainObject.ID });
-    }
-
-    [Test]
-    public void EnsureDataAvailable_Many_NotEnlisted ()
-    {
-      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
-
-      _transaction.EnsureDataAvailable (new[] { DomainObjectIDs.Order1 });
-
-      Assert.That (_dataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
+      _mockRepository.VerifyAll ();
+      Assert.That (result, Is.False);
     }
 
     [Test]

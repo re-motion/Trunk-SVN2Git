@@ -554,6 +554,7 @@ namespace Remotion.Data.DomainObjects
     /// <summary>
     /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the object's data to be loaded.
+    /// If the object's data can't be found, an exception is thrown.
     /// </summary>
     /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
@@ -562,6 +563,20 @@ namespace Remotion.Data.DomainObjects
     public void EnsureDataAvailable ()
     {
       DefaultTransactionContext.EnsureDataAvailable ();
+    }
+
+    /// <summary>
+    /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
+    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the object's data to be loaded.
+    /// The method returns a value indicating whether the object's data was found.
+    /// </summary>
+    /// <returns><see langword="true" /> if the object's data is now available in the <see cref="ClientTransaction"/>, <see langword="false" /> if the 
+    /// data couldn't be found.</returns>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
+    public bool TryEnsureDataAvailable ()
+    {
+      return DefaultTransactionContext.TryEnsureDataAvailable ();
     }
 
     /// <summary>

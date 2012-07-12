@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -43,8 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _loadedOrder1 = Order.GetObject (DomainObjectIDs.Order1);
-      _notYetLoadedOrder2 = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order2);
-      TestableClientTransaction.EnlistDomainObject (_notYetLoadedOrder2);
+      _notYetLoadedOrder2 = (Order) LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order2);
       _newOrder = Order.NewObject();
 
       _loadedOrder1Context = new DomainObjectTransactionContext (_loadedOrder1, TestableClientTransaction);
@@ -243,6 +243,46 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void EnsureDataAvailable_InvalidTransaction ()
     {
       _invalidContext.EnsureDataAvailable();
+    }
+
+    [Test]
+    public void TryEnsureDataAvailable_True ()
+    {
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Null);
+
+      var result = _notYetLoadedOrder2Context.TryEnsureDataAvailable ();
+
+      Assert.That (result, Is.True);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[_notYetLoadedOrder2.ID], Is.Not.Null);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[_notYetLoadedOrder2.ID].DomainObject, Is.SameAs (_notYetLoadedOrder2));
+    }
+
+    [Test]
+    public void TryEnsureDataAvailable_False ()
+    {
+      var notFoundObjectReference = DomainObjectMother.GetNotLoadedNonExistingObject (TestableClientTransaction);
+      var notFoundContext = new DomainObjectTransactionContext (notFoundObjectReference, TestableClientTransaction);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[notFoundObjectReference.ID], Is.Null);
+
+      var result = notFoundContext.TryEnsureDataAvailable ();
+
+      Assert.That (result, Is.False);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers[notFoundObjectReference.ID], Is.Null);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ObjectInvalidException))]
+    public void TryEnsureDataAvailable_Discarded ()
+    {
+      _newOrder.Delete ();
+      _newOrderContext.TryEnsureDataAvailable ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
+    public void TryEnsureDataAvailable_InvalidTransaction ()
+    {
+      _invalidContext.TryEnsureDataAvailable ();
     }
 
     [Test]

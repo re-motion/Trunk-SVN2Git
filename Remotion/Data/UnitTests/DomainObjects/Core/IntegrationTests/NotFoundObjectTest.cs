@@ -89,14 +89,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     [Test]
     [Ignore ("TODO 4920")]
-    public void EnsureDataAvailable_ShouldReturnFalse_AndMarkObjectNotFound ()
+    public void EnsureDataAvailable_ShouldThrow_AndMarkObjectNotFound ()
     {
       var instance = LifetimeService.GetObjectReference (TestableClientTransaction, _nonExistingObjectID);
       Assert.That (instance.State, Is.EqualTo (StateType.NotLoadedYet));
 
-      /* TODO 4920: var result = */ instance.EnsureDataAvailable();
+      Assert.That (() => instance.EnsureDataAvailable(), ThrowsObjectInvalidExceptionForNotFoundObject (_nonExistingObjectID));
 
-      // TODO 4920: Assert.That (result, Is.False);
       CheckObjectIsMarkedInvalid (instance.ID);
 
       // After the object has been marked invalid
@@ -117,10 +116,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 
     [Test]
     [Ignore ("TODO 4920")]
-    public void EnsureDataAvailable_MultipleObjects_ShouldReturnFalse_AndMarkObjectNotFound ()
+    public void EnsureDataAvailable_MultipleObjects_ShouldThrow_AndMarkObjectNotFound ()
     {
-      /* TODO 4920: var result = */ TestableClientTransaction.EnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order1 });
-      // TODO 4920: Assert.That (result, Is.False);
+      Assert.That (
+          () => TestableClientTransaction.EnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order1 }),
+          ThrowsObjectInvalidExceptionForNotFoundObject (_nonExistingObjectID));
+
       CheckObjectIsMarkedInvalid (_nonExistingObjectID);
 
       // After the object has been marked invalid
@@ -137,6 +138,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         CheckObjectIsMarkedInvalid (_nonExistingObjectIDForSubtransaction);
         Assert.That (
             () => ClientTransaction.Current.EnsureDataAvailable (new[] { _nonExistingObjectIDForSubtransaction, DomainObjectIDs.Order1 }),
+            ThrowsObjectInvalidException (_nonExistingObjectIDForSubtransaction));
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO 4920")]
+    public void TryEnsureDataAvailable_ShouldReturnFalse_AndMarkObjectNotFound ()
+    {
+      var instance = LifetimeService.GetObjectReference (TestableClientTransaction, _nonExistingObjectID);
+      Assert.That (instance.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      var result = instance.TryEnsureDataAvailable ();
+
+      Assert.That (result, Is.False);
+      CheckObjectIsMarkedInvalid (instance.ID);
+
+      // After the object has been marked invalid
+      Assert.That (() => instance.TryEnsureDataAvailable (), ThrowsObjectInvalidException (_nonExistingObjectID));
+    }
+
+    [Test]
+    public void TryEnsureDataAvailable_Subtransaction ()
+    {
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var instance = LifetimeService.GetObjectReference (ClientTransaction.Current, _nonExistingObjectIDForSubtransaction);
+        CheckObjectIsMarkedInvalid (instance.ID);
+
+        Assert.That (() => instance.TryEnsureDataAvailable (), ThrowsObjectInvalidException (_nonExistingObjectIDForSubtransaction));
+      }
+    }
+
+    [Test]
+    [Ignore ("TODO 4920")]
+    public void TryEnsureDataAvailable_MultipleObjects_ShouldReturnFalse_AndMarkObjectNotFound ()
+    {
+      var result = TestableClientTransaction.TryEnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order1 });
+      Assert.That (result, Is.False);
+      CheckObjectIsMarkedInvalid (_nonExistingObjectID);
+
+      // After the object has been marked invalid
+      Assert.That (
+          () => TestableClientTransaction.TryEnsureDataAvailable (new[] { _nonExistingObjectID, DomainObjectIDs.Order1 }),
+          ThrowsObjectInvalidException (_nonExistingObjectID));
+    }
+
+    [Test]
+    public void TryEnsureDataAvailable_MultipleObjects_Subtransaction ()
+    {
+      using (TestableClientTransaction.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        CheckObjectIsMarkedInvalid (_nonExistingObjectIDForSubtransaction);
+        Assert.That (
+            () => ClientTransaction.Current.TryEnsureDataAvailable (new[] { _nonExistingObjectIDForSubtransaction, DomainObjectIDs.Order1 }),
             ThrowsObjectInvalidException (_nonExistingObjectIDForSubtransaction));
       }
     }

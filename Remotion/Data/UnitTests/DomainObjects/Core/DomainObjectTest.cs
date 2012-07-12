@@ -334,14 +334,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void EnsureDataAvailable ()
     {
-      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      _transaction.EnlistDomainObject (order);
+      var order = DomainObjectMother.GetNotLoadedObject (_transaction, DomainObjectIDs.Order1);
       Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Null);
       
       _transaction.Execute (order.EnsureDataAvailable);
 
       Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
       Assert.That (_transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
+    }
+
+    [Test]
+    public void TryEnsureDataAvailable ()
+    {
+      var order = DomainObjectMother.GetNotLoadedObject (_transaction, DomainObjectIDs.Order1);
+      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Null);
+
+      _transaction.Execute (() => Assert.That (() => order.TryEnsureDataAvailable(), Is.True));
+
+      Assert.That (_transaction.DataManager.DataContainers[order.ID], Is.Not.Null);
+      Assert.That (_transaction.DataManager.DataContainers[order.ID].DomainObject, Is.SameAs (order));
+
+      var nonExistingOrder = DomainObjectMother.GetNotLoadedNonExistingObject (_transaction);
+      Assert.That (_transaction.DataManager.DataContainers[nonExistingOrder.ID], Is.Null);
+
+      _transaction.Execute (() => Assert.That (() => nonExistingOrder.TryEnsureDataAvailable (), Is.False));
+
+      Assert.That (_transaction.DataManager.DataContainers[nonExistingOrder.ID], Is.Null);
     }
 
     [Test]
