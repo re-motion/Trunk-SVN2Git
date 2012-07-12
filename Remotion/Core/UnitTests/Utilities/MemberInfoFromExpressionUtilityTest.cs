@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -269,6 +268,18 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    [Ignore ("TODO 4957")]
+    public void GetMethod_Instance_BaseMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.BaseMethod ());
+
+      var expected = typeof (DomainType).GetMethod ("BaseMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    // TODO: Test for virtual-non overridden base method
+
+    [Test]
     public void GetGenericMethodDefinition_StaticVoid ()
     {
       var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition (() => DomainType.StaticVoidGenericMethod<Dev.T> (null));
@@ -411,7 +422,19 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore]
+    [Ignore ("TODO 4957")]
+    public void GetProperty_Instance_BaseProperty ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.BaseProperty);
+
+      var expected = typeof (DomainType).GetProperty ("BaseProperty");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    // TODO: Test for virtual-non overridden base property
+
+    [Test]
+    [Ignore ("TODO 4957")]
     public void GetProperty_Instance_OverridingProperty ()
     {
       var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.OverridingProperty);
@@ -422,11 +445,14 @@ namespace Remotion.UnitTests.Utilities
 
     public class DomainTypeBase
     {
+      public void BaseMethod () { }
+
       public virtual void OverridingVoidMethod () { }
       public virtual int OverridingMethod () { return 0; }
       public virtual void OverridingVoidGenericMethod<T> (T t) { }
       public virtual int OverridingGenericMethod<T> (T t) { return 0; }
 
+      public int BaseProperty { get; set; }
       public virtual int OverridingProperty { get; set; }
     }
 

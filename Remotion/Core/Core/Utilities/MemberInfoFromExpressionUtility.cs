@@ -26,16 +26,18 @@ namespace Remotion.Utilities
   /// </summary>
   public static class MemberInfoFromExpressionUtility
   {
+    private const BindingFlags AllBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+
     public static FieldInfo GetField<TFieldType> (Expression<Func<TFieldType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetTypedMemberInfoFromMemberExpression<FieldInfo> (expression.Body, "field");
+      return GetFieldInfoFromMemberExpression (expression.Body);
     }
 
     public static FieldInfo GetField<TSourceObject, TFieldType> (Expression<Func<TSourceObject, TFieldType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetTypedMemberInfoFromMemberExpression<FieldInfo> (expression.Body, "field");
+      return GetFieldInfoFromMemberExpression (expression.Body);
     }
 
     public static ConstructorInfo GetConstructor<TType> (Expression<Func<TType>> expression)
@@ -95,13 +97,13 @@ namespace Remotion.Utilities
     public static PropertyInfo GetProperty<TPropertyType> (Expression<Func<TPropertyType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression.Body, "property");
+      return GetPropertyInfoFromMemberExpression (null, expression.Body);
     }
 
     public static PropertyInfo GetProperty<TSourceObject, TPropertyType> (Expression<Func<TSourceObject, TPropertyType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression.Body, "property");
+      return GetPropertyInfoFromMemberExpression (typeof (TSourceObject), expression.Body);
     }
 
     private static T GetTypedMemberInfoFromMemberExpression<T> (Expression expression, string memberType)
@@ -119,7 +121,24 @@ namespace Remotion.Utilities
       }
 
       return member;
+    }  
+
+    private static FieldInfo GetFieldInfoFromMemberExpression (Expression expression)
+    {
+      return GetTypedMemberInfoFromMemberExpression<FieldInfo> (expression, "field");
     }
+
+    private static PropertyInfo GetPropertyInfoFromMemberExpression (Type sourceObjectType, Expression expression)
+    {
+      var property = GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression, "property");
+
+      return property;
+      // For redeclared properties (overridden in C#) the MemberExpression contains the root definition.
+      //if (sourceObjectType == null || sourceObjectType == property.DeclaringType)
+      //  return property;
+
+      //// TODO 4957: Retrieve most derived overriding property.
+    }  
 
     private static ConstructorInfo GetConstructorInfoFromNewExpression (Expression expression)
     {
@@ -136,8 +155,7 @@ namespace Remotion.Utilities
       if (methodCallExpression == null)
         throw new ArgumentException ("Must be a MethodCallExpression.", "expression");
 
-      var bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-      // For virtual methods the MethodCallExpression containts the root definition
+      // For virtual methods the MethodCallExpression containts the root definition.
       var method = methodCallExpression.Method;
 
       if (sourceObjectType == null)
@@ -150,7 +168,9 @@ namespace Remotion.Utilities
         method = method.GetGenericMethodDefinition();
       }
 
-      var methodOnSourceType = sourceObjectType.GetMethods (bindingFlags).Single (m => m.GetBaseDefinition().Equals (method.GetBaseDefinition()));
+      // TODO 4957: Use MemberInfoEqualityComparer instead of equals
+      var methodOnSourceType = sourceObjectType.GetMethods (AllBindingFlags).Single (m => m.GetBaseDefinition ().Equals (method.GetBaseDefinition ()));
+
       if (genericMethodArguments != null)
         return methodOnSourceType.MakeGenericMethod (genericMethodArguments);
 
