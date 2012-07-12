@@ -480,12 +480,24 @@ namespace Remotion.UnitTests.Utilities
       MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.InstanceField);
     }
 
+    [Test]
+    [Ignore]
+    public void GetProperty_Instance_OverridingProperty ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.OverridingProperty);
+
+      var expected = typeof (DomainType).GetProperty ("OverridingProperty");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
     public class DomainTypeBase
     {
       public virtual void OverridingVoidMethod () { }
       public virtual int OverridingMethod () { return 0; }
       public virtual void OverridingVoidGenericMethod<T> (T t) { }
       public virtual int OverridingGenericMethod<T> (T t) { return 0; }
+
+      public virtual int OverridingProperty { get; set; }
     }
 
     public class DomainType : DomainTypeBase
@@ -516,7 +528,7 @@ namespace Remotion.UnitTests.Utilities
 
       public static int StaticProperty { get; set; }
       public int InstanceProperty { get; set; }
-
+      public override int OverridingProperty { get; set; }
     }
   }
 }
