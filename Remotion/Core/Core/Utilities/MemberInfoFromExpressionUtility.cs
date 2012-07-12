@@ -26,18 +26,6 @@ namespace Remotion.Utilities
   /// </summary>
   public static class MemberInfoFromExpressionUtility
   {
-    public static MemberInfo GetMember<TMemberType> (Expression<Func<TMemberType>> expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMemberInfoFromExpression (null, expression.Body);
-    }
-
-    public static MemberInfo GetMember<TSourceObject, TMemberType> (Expression<Func<TSourceObject, TMemberType>> expression)
-    {
-      ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetMemberInfoFromExpression (typeof (TSourceObject), expression.Body);
-    }
-
     public static FieldInfo GetField<TFieldType> (Expression<Func<TFieldType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
@@ -114,18 +102,6 @@ namespace Remotion.Utilities
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       return GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression.Body, "property");
-    }
-
-    private static MemberInfo GetMemberInfoFromExpression (Type sourceObjectType, Expression expression)
-    {
-      if (expression is MemberExpression)
-        return GetTypedMemberInfoFromMemberExpression<MemberInfo> (expression, "member");
-      if (expression is MethodCallExpression)
-        return GetMethodInfoFromMethodCallExpression (sourceObjectType, expression);
-      if (expression is NewExpression)
-        return GetConstructorInfoFromNewExpression (expression);
-
-      throw new ArgumentException ("Must be a MemberExpression, MethodCallExpression or NewExpression.", "expression");
     }
 
     private static T GetTypedMemberInfoFromMemberExpression<T> (Expression expression, string memberType)
