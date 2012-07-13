@@ -15,12 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using NUnit.Framework;
 
-namespace Remotion.Data.DomainObjects.DataManagement
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
-  public interface IDataContainerLifetimeManager
+  [TestFixture]
+  public class DataContainerLifetimeManagerTest
   {
-    void RegisterDataContainer (DataContainer dataContainer);
-    void Discard (DataContainer dataContainer);
+    
   }
 }

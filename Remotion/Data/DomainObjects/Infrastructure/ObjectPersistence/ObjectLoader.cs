@@ -42,23 +42,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     private readonly IPersistenceStrategy _persistenceStrategy;
     private readonly ILoadedObjectDataRegistrationAgent _loadedObjectDataRegistrationAgent;
-    private readonly IDataContainerLifetimeManager _dataContainerLifetimeManager;
     private readonly ILoadedObjectDataProvider _loadedObjectDataProvider;
 
     public ObjectLoader (
         IPersistenceStrategy persistenceStrategy,
         ILoadedObjectDataRegistrationAgent loadedObjectDataRegistrationAgent,
-        IDataContainerLifetimeManager dataContainerLifetimeManager,
         ILoadedObjectDataProvider loadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("loadedObjectDataRegistrationAgent", loadedObjectDataRegistrationAgent);
-      ArgumentUtility.CheckNotNull ("dataContainerLifetimeManager", dataContainerLifetimeManager);
       ArgumentUtility.CheckNotNull ("loadedObjectDataProvider", loadedObjectDataProvider);
 
       _persistenceStrategy = persistenceStrategy;
       _loadedObjectDataRegistrationAgent = loadedObjectDataRegistrationAgent;
-      _dataContainerLifetimeManager = dataContainerLifetimeManager;
       _loadedObjectDataProvider = loadedObjectDataProvider;
     }
 
@@ -72,11 +68,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _loadedObjectDataRegistrationAgent; }
     }
 
-    public IDataContainerLifetimeManager DataContainerLifetimeManager
-    {
-      get { return _dataContainerLifetimeManager; }
-    }
-
     public ILoadedObjectDataProvider LoadedObjectDataProvider
     {
       get { return _loadedObjectDataProvider; }
@@ -87,7 +78,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("id", id);
 
       var loadedObjectData = _persistenceStrategy.LoadObjectData (id);
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
       return loadedObjectData;
     }
 
@@ -103,7 +94,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           loadedObjectData.Zip (idsToBeLoadedAsCollection).All (tuple => tuple.Item1.ObjectID == tuple.Item2), 
           "Persistence strategy result must be in the same order as the input IDs.");
 
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, throwOnNotFound);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, throwOnNotFound);
       
       return loadedObjectData;
     }
@@ -119,7 +110,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
       var loadedObjectData = _persistenceStrategy.ResolveObjectRelationData (relationEndPointID, _loadedObjectDataProvider);
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
       return loadedObjectData;
     }
 
@@ -131,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var loadedObjectData = _persistenceStrategy.ResolveCollectionRelationData (relationEndPointID, _loadedObjectDataProvider).ConvertToCollection();
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
       return loadedObjectData;
     }
 
@@ -140,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("query", query);
 
       var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, _loadedObjectDataProvider).ConvertToCollection();
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
       return loadedObjectData;
     }
   }

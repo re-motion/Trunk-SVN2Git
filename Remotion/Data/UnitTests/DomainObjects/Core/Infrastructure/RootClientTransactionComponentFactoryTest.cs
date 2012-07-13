@@ -256,8 +256,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           objectLoader.LoadedObjectDataRegistrationAgent,
           Is.TypeOf<LoadedObjectDataRegistrationAgent> ()
               .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
+              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.DataManager).SameAs (dataManager)
               .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
-      Assert.That (objectLoader.DataContainerLifetimeManager, Is.SameAs (dataManager));
 
       Assert.That (objectLoader.LoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ());
       var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;

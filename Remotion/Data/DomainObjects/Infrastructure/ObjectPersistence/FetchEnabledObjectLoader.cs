@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -35,9 +34,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     public FetchEnabledObjectLoader (
         IFetchEnabledPersistenceStrategy persistenceStrategy,
         ILoadedObjectDataRegistrationAgent loadedObjectDataRegistrationAgent,
-        IDataContainerLifetimeManager dataContainerLifetimeManager,
         ILoadedObjectDataProvider loadedObjectDataProvider)
-        : base (persistenceStrategy, loadedObjectDataRegistrationAgent, dataContainerLifetimeManager, loadedObjectDataProvider)
+        : base (persistenceStrategy, loadedObjectDataRegistrationAgent, loadedObjectDataProvider)
     {
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
 
@@ -54,7 +52,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("query", query);
 
       var loadedObjectData = _persistenceStrategy.ExecuteFetchQuery (query, LoadedObjectDataProvider).ConvertToCollection();
-      LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData.Select (data => data.LoadedObjectData), DataContainerLifetimeManager, true);
+      LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData.Select (data => data.LoadedObjectData), true);
       return loadedObjectData;
     }
   }

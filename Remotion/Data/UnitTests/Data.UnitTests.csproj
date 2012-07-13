@@ -200,6 +200,7 @@
     <Compile Include="DomainObjects\Core\ClientTransactionEventSinkWithMock.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\DataManagementCommandDecoratorBaseTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerIntegrationTest.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\DataContainerLifetimeManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />

@@ -186,7 +186,6 @@
     <Compile Include="DataManagement\DataManagementService.cs" />
     <Compile Include="DataManagement\DelegatingDataManager.cs" />
     <Compile Include="DataManagement\IDataContainerEventListener.cs" />
-    <Compile Include="DataManagement\IDataContainerLifetimeManager.cs" />
     <Compile Include="DataManagement\ILoadedDataContainerProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\IVirtualEndPointProvider.cs" />
     <Compile Include="DataManagement\RelationEndPoints\RelationEndPointFactoryExtensions.cs" />

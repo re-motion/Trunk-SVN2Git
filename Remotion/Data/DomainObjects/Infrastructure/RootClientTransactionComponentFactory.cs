@@ -199,11 +199,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
       var loadedObjectDataProvider = new LoadedObjectDataProvider (dataManager, invalidDomainObjectManager);
-      var loadedObjectDataRegistrationAgent = new LoadedObjectDataRegistrationAgent (constructedTransaction, eventSink);
+      var loadedObjectDataRegistrationAgent = new LoadedObjectDataRegistrationAgent (constructedTransaction, dataManager, eventSink);
       return new FetchEnabledObjectLoader (
           persistenceStrategy,
           loadedObjectDataRegistrationAgent,
-          dataManager,
           loadedObjectDataProvider);
     }
   }

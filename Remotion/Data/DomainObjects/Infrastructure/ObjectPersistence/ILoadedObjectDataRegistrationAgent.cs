@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
@@ -26,7 +25,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   /// </summary>
   public interface ILoadedObjectDataRegistrationAgent
   {
-    void RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound);
-    void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound);
+    void RegisterIfRequired (ILoadedObjectData loadedObjectData, bool throwOnNotFound);
+    void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, bool throwOnNotFound);
   }
 }

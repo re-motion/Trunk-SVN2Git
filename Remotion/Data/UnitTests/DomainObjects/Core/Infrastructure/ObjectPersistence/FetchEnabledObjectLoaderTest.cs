@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Rhino.Mocks;
@@ -33,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     private IFetchEnabledPersistenceStrategy _persistenceStrategyMock;
     private ILoadedObjectDataRegistrationAgent _loadedObjectDataRegistrationAgentMock;
     private ILoadedObjectDataProvider _loadedObjectDataProviderStub;
-    private IDataContainerLifetimeManager _lifetimeManagerStub;
 
     private FetchEnabledObjectLoader _fetchEnabledObjectLoader;
     
@@ -51,12 +49,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _persistenceStrategyMock = _mockRepository.StrictMock<IFetchEnabledPersistenceStrategy> ();
       _loadedObjectDataRegistrationAgentMock = _mockRepository.StrictMock<ILoadedObjectDataRegistrationAgent> ();
       _loadedObjectDataProviderStub = _mockRepository.Stub<ILoadedObjectDataProvider> ();
-      _lifetimeManagerStub = _mockRepository.StrictMock<IDataContainerLifetimeManager> ();
 
       _fetchEnabledObjectLoader = new FetchEnabledObjectLoader (
           _persistenceStrategyMock,
           _loadedObjectDataRegistrationAgentMock,
-          _lifetimeManagerStub,
           _loadedObjectDataProviderStub);
 
       _fakeQuery = CreateFakeQuery ();
@@ -74,7 +70,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
               Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _resultItem1.LoadedObjectData, _resultItem2.LoadedObjectData }),
-              Arg.Is (_lifetimeManagerStub), 
               Arg.Is (true)));
 
       _mockRepository.ReplayAll ();

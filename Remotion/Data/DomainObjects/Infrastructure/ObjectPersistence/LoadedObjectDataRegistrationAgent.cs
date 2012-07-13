@@ -64,12 +64,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       }
 
       public void RegisterAllDataContainers (
-          IDataContainerLifetimeManager lifetimeManager,
-          ClientTransaction clientTransaction,
-          IClientTransactionEventSink transactionEventSink,
-          bool throwOnNotFound)
+          ClientTransaction clientTransaction, IDataManager dataManager, IClientTransactionEventSink transactionEventSink, bool throwOnNotFound)
       {
-        ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
+        ArgumentUtility.CheckNotNull ("dataManager", dataManager);
         ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
         ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
@@ -95,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
           {
             var domainObject = clientTransaction.GetObjectReference (dataContainer.ID);
             dataContainer.SetDomainObject (domainObject);
-            lifetimeManager.RegisterDataContainer (dataContainer);
+            dataManager.RegisterDataContainer (dataContainer);
             loadedDomainObjects.Add (domainObject);
           }
         }
@@ -109,13 +106,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     }
 
     private readonly ClientTransaction _clientTransaction;
+    private readonly IDataManager _dataManager;
     private readonly IClientTransactionEventSink _transactionEventSink;
 
-    public LoadedObjectDataRegistrationAgent (ClientTransaction clientTransaction, IClientTransactionEventSink transactionEventSink)
+    public LoadedObjectDataRegistrationAgent (ClientTransaction clientTransaction, IDataManager dataManager, IClientTransactionEventSink transactionEventSink)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
+      _dataManager = dataManager;
       _clientTransaction = clientTransaction;
       _transactionEventSink = transactionEventSink;
     }
@@ -125,29 +125,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _clientTransaction; }
     }
 
+    public IDataManager DataManager
+    {
+      get { return _dataManager; }
+    }
+
     public IClientTransactionEventSink TransactionEventSink
     {
       get { return _transactionEventSink; }
     }
 
-    public void RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound)
+    public void RegisterIfRequired (ILoadedObjectData loadedObjectData, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
-      ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
 
-      RegisterIfRequired (new[] { loadedObjectData }, lifetimeManager, throwOnNotFound);
+      RegisterIfRequired (new[] { loadedObjectData }, throwOnNotFound);
     }
 
-    public void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound)
+    public void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
-      ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
 
       var visitor = new RegisteredDataContainerGatheringVisitor ();
       foreach (var loadedObject in loadedObjects)
         loadedObject.Accept (visitor);
 
-      visitor.RegisterAllDataContainers (lifetimeManager, _clientTransaction, _transactionEventSink, throwOnNotFound);
+      visitor.RegisterAllDataContainers (_clientTransaction, _dataManager, _transactionEventSink, throwOnNotFound);
     }
   }
 }
