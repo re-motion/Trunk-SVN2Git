@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -121,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       if (InnerProvider != null)
         return InnerProvider.LoadDataContainers (ids);
       else
-        throw new NotImplementedException();
+        return ids.Select (LoadDataContainer);
     }
 
     public override IEnumerable<DataContainer> ExecuteCollectionQuery (IQuery query)

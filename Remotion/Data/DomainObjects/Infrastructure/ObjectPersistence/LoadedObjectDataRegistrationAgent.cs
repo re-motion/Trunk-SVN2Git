@@ -16,9 +16,10 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
@@ -33,6 +34,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
     {
       private readonly List<DataContainer> _dataContainersToBeRegistered = new List<DataContainer> ();
+      private readonly List<ObjectID> _notFoundObjectIDs = new List<ObjectID> ();
 
       public void VisitFreshlyLoadedObject (FreshlyLoadedObjectData freshlyLoadedObjectData)
       {
@@ -55,12 +57,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         ArgumentUtility.CheckNotNull ("invalidLoadedObjectData", invalidLoadedObjectData);
       }
 
+      public void VisitNotFoundLoadedObject (NotFoundLoadedObjectData notFoundLoadedObjectData)
+      {
+        ArgumentUtility.CheckNotNull ("notFoundLoadedObjectData", notFoundLoadedObjectData);
+        _notFoundObjectIDs.Add (notFoundLoadedObjectData.ObjectID);
+      }
+
       public void RegisterAllDataContainers (
           IDataContainerLifetimeManager lifetimeManager,
           ClientTransaction clientTransaction,
-          IClientTransactionEventSink transactionEventSink)
+          IClientTransactionEventSink transactionEventSink,
+          bool throwOnNotFound)
       {
         ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
+        ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
+        ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+
+        if (_notFoundObjectIDs.Any ())
+        {
+          // TODO 4920: Mark not found objects invalid.
+
+          if (throwOnNotFound)
+            throw new ObjectsNotFoundException (_notFoundObjectIDs);
+        }
 
         if (_dataContainersToBeRegistered.Count == 0)
           return;
@@ -111,22 +130,24 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _transactionEventSink; }
     }
 
-    public void RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager)
+    public void RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("loadedObjectData", loadedObjectData);
+      ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
 
-      RegisterIfRequired (new[] { loadedObjectData }, lifetimeManager);
+      RegisterIfRequired (new[] { loadedObjectData }, lifetimeManager, throwOnNotFound);
     }
 
-    public void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager)
+    public void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
+      ArgumentUtility.CheckNotNull ("lifetimeManager", lifetimeManager);
 
       var visitor = new RegisteredDataContainerGatheringVisitor ();
       foreach (var loadedObject in loadedObjects)
         loadedObject.Accept (visitor);
 
-      visitor.RegisterAllDataContainers (lifetimeManager, _clientTransaction, _transactionEventSink);
+      visitor.RegisterAllDataContainers (lifetimeManager, _clientTransaction, _transactionEventSink, throwOnNotFound);
     }
   }
 }

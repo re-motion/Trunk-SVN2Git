@@ -961,7 +961,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.That (
           () => _dataManagerWithMocks.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true),
           Throws.TypeOf<ObjectInvalidException>());
+    }
 
+    [Test]
+    public void GetDataContainersWithLazyLoad_AllLoadedObjects ()
+    {
+      var loadedDataContainer = PrepareLoadedDataContainer (_dataManagerWithMocks);
+
+      var result = _dataManagerWithMocks.GetDataContainersWithLazyLoad (
+          new[] { loadedDataContainer.ID },
+          true);
+
+      _objectLoaderMock.AssertWasNotCalled (mock => mock.LoadObjects (Arg<IEnumerable<ObjectID>>.Is.Anything, Arg<bool>.Is.Anything));
+      Assert.That (result, Is.EqualTo (new[] { loadedDataContainer }));
     }
 
     [Test]

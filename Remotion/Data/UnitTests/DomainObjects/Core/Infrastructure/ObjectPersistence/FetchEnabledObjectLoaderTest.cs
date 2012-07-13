@@ -74,7 +74,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
               Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _resultItem1.LoadedObjectData, _resultItem2.LoadedObjectData }),
-              Arg.Is (_lifetimeManagerStub)));
+              Arg.Is (_lifetimeManagerStub), 
+              Arg.Is (true)));
 
       _mockRepository.ReplayAll ();
 

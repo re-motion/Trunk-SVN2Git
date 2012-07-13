@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -174,9 +175,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
         LifetimeService.NewObject (tx, typeof (HookedTargetClass), ParamList.Empty);
       }
 
-      Assert.IsFalse (mixinInstance.OnLoadedCalled);
-      Assert.IsTrue (mixinInstance.OnCreatedCalled);
-      Assert.IsTrue (mixinInstance.OnDomainObjectReferenceInitializingCalled);
+      Assert.That (mixinInstance.OnLoadedCalled, Is.False);
+      Assert.That (mixinInstance.OnCreatedCalled, Is.True);
+      Assert.That (mixinInstance.OnDomainObjectReferenceInitializingCalled, Is.True);
     }
 
     private ClientTransaction CreateTransactionWithStubbedLoading (ObjectID id)
@@ -188,6 +189,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
     {
       var persistenceStrategyStub = MockRepository.GenerateStub<IFetchEnabledPersistenceStrategy>();
       persistenceStrategyStub.Stub (stub => stub.LoadObjectData (loadableDataContainer.ID)).Return (new FreshlyLoadedObjectData (loadableDataContainer));
+      persistenceStrategyStub
+          .Stub (stub => stub.LoadObjectData (Arg<IEnumerable<ObjectID>>.List.Equal (new[] { loadableDataContainer.ID })))
+          .Return (new[] { new FreshlyLoadedObjectData (loadableDataContainer)});
       return ClientTransactionObjectMother.CreateTransactionWithPersistenceStrategy<ClientTransaction> (persistenceStrategyStub);
     }
   }

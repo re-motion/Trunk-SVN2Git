@@ -54,7 +54,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("query", query);
 
       var loadedObjectData = _persistenceStrategy.ExecuteFetchQuery (query, LoadedObjectDataProvider).ConvertToCollection();
-      LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData.Select (data => data.LoadedObjectData), DataContainerLifetimeManager);
+      LoadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData.Select (data => data.LoadedObjectData), DataContainerLifetimeManager, true);
       return loadedObjectData;
     }
   }

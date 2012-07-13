@@ -63,23 +63,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
       using (var persistenceManager = CreatePersistenceManager())
       {
-        var dataContainer = persistenceManager.LoadDataContainer (id);
-        Assertion.IsNotNull (dataContainer);
-        return new FreshlyLoadedObjectData (dataContainer);
+        var result = persistenceManager.LoadDataContainer (id);
+        return GetLoadedObjectDataForObjectLookupResult (result);
       }
     }
 
-    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
+    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       using (var persistenceManager = CreatePersistenceManager())
       {
-        var dataContainers = persistenceManager.LoadDataContainers (objectIDs, throwOnNotFound);
-        return dataContainers.Select (
-            dataContainer => dataContainer == null 
-                ? (ILoadedObjectData) new NullLoadedObjectData() 
-                : new FreshlyLoadedObjectData (dataContainer));
+        var results = persistenceManager.LoadDataContainers (objectIDs);
+        return results.Select (GetLoadedObjectDataForObjectLookupResult);
       }
     }
 
@@ -93,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       using (var persistenceManager = CreatePersistenceManager())
       {
         var dataContainer = persistenceManager.LoadRelatedDataContainer (relationEndPointID);
-        return GetLoadedObjectData (dataContainer, alreadyLoadedObjectDataProvider);
+        return GetLoadedObjectDataForDataContainer (dataContainer, alreadyLoadedObjectDataProvider);
       }
     }
 
@@ -106,7 +102,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       using (var persistenceManager = CreatePersistenceManager())
       {
         var dataContainers = persistenceManager.LoadRelatedDataContainers (relationEndPointID);
-        return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
+        return dataContainers.Select (dc => GetLoadedObjectDataForDataContainer (dc, alreadyLoadedObjectDataProvider));
       }
     }
 
@@ -119,7 +115,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("Only collection queries can be used to load data containers.", "query");
 
       var dataContainers = ExecuteDataContainerQuery(query);
-      return dataContainers.Select (dc => GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider));
+      return dataContainers.Select (dc => GetLoadedObjectDataForDataContainer (dc, alreadyLoadedObjectDataProvider));
     }
 
     public IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
@@ -191,7 +187,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("Only collection queries can be used for fetching.", "query");
 
       var dataContainers = ExecuteDataContainerQuery (query);
-      return dataContainers.Select (dc => new LoadedObjectDataWithDataSourceData (GetLoadedObjectData (dc, alreadyLoadedObjectDataProvider), dc));
+      return dataContainers.Select (dc => new LoadedObjectDataWithDataSourceData (GetLoadedObjectDataForDataContainer (dc, alreadyLoadedObjectDataProvider), dc));
 
     }
 
@@ -211,13 +207,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return new CompoundPersistenceExtension (listenerFactories.SelectMany (f => f.CreatePersistenceExtensions (_transactionID)));
     }
 
-    private ILoadedObjectData GetLoadedObjectData (DataContainer dataContainer,  ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    private ILoadedObjectData GetLoadedObjectDataForDataContainer (DataContainer dataContainer, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
     {
       if (dataContainer == null)
         return new NullLoadedObjectData();
 
       var knownLoadedObjectData = alreadyLoadedObjectDataProvider.GetLoadedObject (dataContainer.ID);
       return knownLoadedObjectData ?? new FreshlyLoadedObjectData (dataContainer);
+    }
+
+    private ILoadedObjectData GetLoadedObjectDataForObjectLookupResult (ObjectLookupResult<DataContainer> result)
+    {
+      if (result.LocatedObject == null)
+        return new NotFoundLoadedObjectData (result.ObjectID);
+      else
+        return new FreshlyLoadedObjectData (result.LocatedObject);
     }
   }
 }

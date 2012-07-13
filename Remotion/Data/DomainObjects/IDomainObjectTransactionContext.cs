@@ -69,6 +69,7 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Ensures that the <see cref="DomainObject"/>'s data has been loaded. If it hasn't, this method causes the object's data to be loaded.
+    /// If the object's data can't be found, an exception is thrown.
     /// </summary>
     /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
@@ -76,7 +77,14 @@ namespace Remotion.Data.DomainObjects
     /// found in the data source.</exception>
     void EnsureDataAvailable ();
 
-    // TODO 4920: Doc, Test
+    /// <summary>
+    /// Ensures that the <see cref="DomainObject"/>'s data has been loaded. If it hasn't, this method causes the object's data to be loaded.
+    /// The method returns a value indicating whether the object's data was found.
+    /// </summary>
+    /// <returns><see langword="true" /> if the object's data is now available in the <see cref="ClientTransaction"/>, <see langword="false" /> if the 
+    /// data couldn't be found.</returns>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
     bool TryEnsureDataAvailable ();
 
     /// <summary>

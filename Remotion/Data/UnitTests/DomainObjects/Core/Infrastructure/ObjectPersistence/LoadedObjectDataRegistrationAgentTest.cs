@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -60,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll();
 
-      _agent.RegisterIfRequired (alreadyExistingLoadedObject, _lifetimeManagerMock);
+      _agent.RegisterIfRequired (alreadyExistingLoadedObject, _lifetimeManagerMock, true);
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -88,7 +89,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       }
       _mockRepository.ReplayAll();
 
-      _agent.RegisterIfRequired (freshlyLoadedObject, _lifetimeManagerMock);
+      _agent.RegisterIfRequired (freshlyLoadedObject, _lifetimeManagerMock, true);
 
       _mockRepository.VerifyAll();
       Assert.That (_clientTransaction.IsDiscarded, Is.False);
@@ -101,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      _agent.RegisterIfRequired (nullLoadedObject, _lifetimeManagerMock);
+      _agent.RegisterIfRequired (nullLoadedObject, _lifetimeManagerMock, true);
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -115,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.ReplayAll ();
 
-      _agent.RegisterIfRequired (alreadyExistingLoadedObject, _lifetimeManagerMock);
+      _agent.RegisterIfRequired (alreadyExistingLoadedObject, _lifetimeManagerMock, true);
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -123,7 +124,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     }
 
     [Test]
-    public void RegisterIfRequired_Many_MultipleObjects ()
+    public void RegisterIfRequired_Single_NotFoundLoadedObject_ThrowOnNotFoundFalse ()
+    {
+      var notFoundLoadedObject = GetNotFoundLoadedObject ();
+
+      _mockRepository.ReplayAll ();
+
+      Assert.That (() => _agent.RegisterIfRequired (notFoundLoadedObject, _lifetimeManagerMock, false), Throws.Nothing);
+
+      _eventSinkWithMock.AssertWasNotCalledMock (
+          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
+    }
+
+    [Test]
+    public void RegisterIfRequired_Single_NotFoundLoadedObject_ThrowOnNotFoundTrue ()
+    {
+      var notFoundLoadedObject = GetNotFoundLoadedObject ();
+
+      _mockRepository.ReplayAll ();
+
+      Assert.That (
+          () => _agent.RegisterIfRequired (notFoundLoadedObject, _lifetimeManagerMock, true),
+          Throws.TypeOf<ObjectsNotFoundException> ().With.Message.EqualTo (
+              string.Format ("Object(s) could not be found: '{0}'.", notFoundLoadedObject.ObjectID)));
+
+      _eventSinkWithMock.AssertWasNotCalledMock (
+          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
+    }
+
+    [Test]
+    public void RegisterIfRequired_Many_MultipleObjects_ThrowOnNotFoundFalse ()
     {
       var freshlyLoadedObject1 = GetFreshlyLoadedObject ();
       var registerableDataContainer1 = freshlyLoadedObject1.FreshlyLoadedDataContainer;
@@ -136,6 +168,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       var alreadyExistingLoadedObject = GetAlreadyExistingLoadedObject ();
       var nullLoadedObject = GetNullLoadedObject ();
       var invalidLoadedObject = GetInvalidLoadedObject();
+      var notFoundLoadedObject1 = GetNotFoundLoadedObject();
+      var notFoundLoadedObject2 = GetNotFoundLoadedObject ();
 
       using (_mockRepository.Ordered ())
       {
@@ -157,12 +191,63 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       }
       _mockRepository.ReplayAll ();
 
-      _agent.RegisterIfRequired (
-          new ILoadedObjectData[] { freshlyLoadedObject1, alreadyExistingLoadedObject, freshlyLoadedObject2, nullLoadedObject, invalidLoadedObject },
-          _lifetimeManagerMock);
+      var allObjects =
+          new ILoadedObjectData[]
+          {
+              freshlyLoadedObject1,
+              alreadyExistingLoadedObject,
+              freshlyLoadedObject2,
+              nullLoadedObject,
+              invalidLoadedObject,
+              notFoundLoadedObject1,
+              notFoundLoadedObject2
+          };
+      _agent.RegisterIfRequired (allObjects, _lifetimeManagerMock,  false);
 
       _mockRepository.VerifyAll ();
       Assert.That (_clientTransaction.IsDiscarded, Is.False);
+    }
+
+    [Test]
+    public void RegisterIfRequired_Many_MultipleObjects_ThrowOnNotFoundTrue ()
+    {
+      var freshlyLoadedObject1 = GetFreshlyLoadedObject ();
+      var registerableDataContainer1 = freshlyLoadedObject1.FreshlyLoadedDataContainer;
+      Assert.That (registerableDataContainer1.HasDomainObject, Is.False);
+
+      var freshlyLoadedObject2 = GetFreshlyLoadedObject ();
+      var registerableDataContainer2 = freshlyLoadedObject2.FreshlyLoadedDataContainer;
+      Assert.That (registerableDataContainer2.HasDomainObject, Is.False);
+
+      var alreadyExistingLoadedObject = GetAlreadyExistingLoadedObject ();
+      var nullLoadedObject = GetNullLoadedObject ();
+      var invalidLoadedObject = GetInvalidLoadedObject ();
+      var notFoundLoadedObject1 = GetNotFoundLoadedObject ();
+      var notFoundLoadedObject2 = GetNotFoundLoadedObject ();
+
+      _mockRepository.ReplayAll ();
+
+      var allObjects =
+          new ILoadedObjectData[]
+          {
+              freshlyLoadedObject1,
+              alreadyExistingLoadedObject,
+              freshlyLoadedObject2,
+              nullLoadedObject,
+              invalidLoadedObject,
+              notFoundLoadedObject1,
+              notFoundLoadedObject2
+          };
+      Assert.That (
+          () => _agent.RegisterIfRequired (allObjects, _lifetimeManagerMock, true),
+          Throws.TypeOf<ObjectsNotFoundException>().With.Message.EqualTo (
+              string.Format ("Object(s) could not be found: '{0}', '{1}'.", notFoundLoadedObject1.ObjectID, notFoundLoadedObject2.ObjectID)));
+
+      _eventSinkWithMock.AssertWasNotCalledMock (
+          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _lifetimeManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
+      _eventSinkWithMock.AssertWasNotCalledMock (
+          mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
     }
 
     [Test]
@@ -170,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       _mockRepository.ReplayAll ();
 
-      _agent.RegisterIfRequired (new ILoadedObjectData[0], _lifetimeManagerMock);
+      _agent.RegisterIfRequired (new ILoadedObjectData[0], _lifetimeManagerMock, true);
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
@@ -211,7 +296,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.ReplayAll ();
 
       Assert.That (
-          () => _agent.RegisterIfRequired (new ILoadedObjectData[] { freshlyLoadedObject1, freshlyLoadedObject2 }, _lifetimeManagerMock), 
+          () => _agent.RegisterIfRequired (new ILoadedObjectData[] { freshlyLoadedObject1, freshlyLoadedObject2 }, _lifetimeManagerMock, true), 
           Throws.Exception.SameAs (exception));
 
       _mockRepository.VerifyAll ();
@@ -238,7 +323,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _mockRepository.ReplayAll();
 
       Assert.That (
-          () => _agent.RegisterIfRequired (new ILoadedObjectData[] { freshlyLoadedObject1 }, _lifetimeManagerMock),
+          () => _agent.RegisterIfRequired (new ILoadedObjectData[] { freshlyLoadedObject1 }, _lifetimeManagerMock, true),
           Throws.Exception.SameAs (exception));
 
       _eventSinkWithMock.AssertWasNotCalledMock (
@@ -282,6 +367,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       var domainObject = DomainObjectMother.CreateFakeObject<Order> ();
       return new InvalidLoadedObjectData (domainObject);
+    }
+
+    private NotFoundLoadedObjectData GetNotFoundLoadedObject ()
+    {
+      return new NotFoundLoadedObjectData (new ObjectID (typeof (Order), Guid.NewGuid()));
     }
 
     private void CheckHasEnlistedDomainObject (DataContainer dataContainer)

@@ -15,18 +15,42 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
+  // TODO 4920: Test
   /// <summary>
-  /// Provides an interface for classes registering <see cref="ILoadedObjectData"/> instances if required, depending on the concrete type of the 
-  /// <see cref="ILoadedObjectData"/> instances.
+  /// Represents an object that couldn't be found by an <see cref="IPersistenceStrategy"/>.
   /// </summary>
-  public interface ILoadedObjectDataRegistrationAgent
+  public class NotFoundLoadedObjectData : ILoadedObjectData
   {
-    void RegisterIfRequired (ILoadedObjectData loadedObjectData, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound);
-    void RegisterIfRequired (IEnumerable<ILoadedObjectData> loadedObjects, IDataContainerLifetimeManager lifetimeManager, bool throwOnNotFound);
+    private readonly ObjectID _objectID;
+
+    public NotFoundLoadedObjectData (ObjectID objectID)
+    {
+      _objectID = objectID;
+    }
+
+    public ObjectID ObjectID
+    {
+      get { return _objectID; }
+    }
+
+    public DomainObject GetDomainObjectReference ()
+    {
+      return null;
+    }
+
+    public void Accept (ILoadedObjectVisitor visitor)
+    {
+      ArgumentUtility.CheckNotNull ("visitor", visitor);
+      visitor.VisitNotFoundLoadedObject (this);
+    }
+
+    bool INullObject.IsNull
+    {
+      get { return true; }
+    }
   }
 }

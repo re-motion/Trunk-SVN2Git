@@ -9,5 +9,6 @@
     void VisitAlreadyExistingLoadedObject (AlreadyExistingLoadedObjectData alreadyExistingLoadedObjectData);
     void VisitNullLoadedObject (NullLoadedObjectData nullLoadedObjectData);
     void VisitInvalidLoadedObject (InvalidLoadedObjectData invalidLoadedObjectData);
+    void VisitNotFoundLoadedObject (NotFoundLoadedObjectData notFoundLoadedObjectData);
   }
 }

@@ -20,6 +20,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
@@ -86,7 +87,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("id", id);
 
       var loadedObjectData = _persistenceStrategy.LoadObjectData (id);
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
       return loadedObjectData;
     }
 
@@ -95,14 +96,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("idsToBeLoaded", idsToBeLoaded);
 
       var idsToBeLoadedAsCollection = idsToBeLoaded.ConvertToCollection();
-      var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoadedAsCollection, throwOnNotFound).ConvertToCollection();
+      var loadedObjectData = _persistenceStrategy.LoadObjectData (idsToBeLoadedAsCollection).ConvertToCollection();
 
       Assertion.IsTrue (loadedObjectData.Count == idsToBeLoadedAsCollection.Count, "Persistence strategy must return exactly as many items as requested.");
       Assertion.DebugAssert (
-          loadedObjectData.Zip (idsToBeLoadedAsCollection).All (tuple => tuple.Item1.ObjectID == null || tuple.Item1.ObjectID == tuple.Item2), 
-          "Persistence strategy result must be in the same order as the input IDs (with not found objects replaced with null).");
+          loadedObjectData.Zip (idsToBeLoadedAsCollection).All (tuple => tuple.Item1.ObjectID == tuple.Item2), 
+          "Persistence strategy result must be in the same order as the input IDs.");
 
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, throwOnNotFound);
+      
       return loadedObjectData;
     }
 
@@ -117,7 +119,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObject can only be used with one-valued end points.", "relationEndPointID");
 
       var loadedObjectData = _persistenceStrategy.ResolveObjectRelationData (relationEndPointID, _loadedObjectDataProvider);
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
       return loadedObjectData;
     }
 
@@ -129,7 +131,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         throw new ArgumentException ("GetOrLoadRelatedObjects can only be used with many-valued end points.", "relationEndPointID");
 
       var loadedObjectData = _persistenceStrategy.ResolveCollectionRelationData (relationEndPointID, _loadedObjectDataProvider).ConvertToCollection();
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
       return loadedObjectData;
     }
 
@@ -138,7 +140,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("query", query);
 
       var loadedObjectData = _persistenceStrategy.ExecuteCollectionQuery (query, _loadedObjectDataProvider).ConvertToCollection();
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, _dataContainerLifetimeManager, true);
       return loadedObjectData;
     }
   }

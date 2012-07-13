@@ -98,7 +98,9 @@ namespace Remotion.Data.DomainObjects.Persistence
         {
           provider.Rollback();
         }
+// ReSharper disable EmptyGeneralCatchClause
         catch
+// ReSharper restore EmptyGeneralCatchClause
         {
         }
 
@@ -106,7 +108,7 @@ namespace Remotion.Data.DomainObjects.Persistence
       }
     }
 
-    public DataContainer LoadDataContainer (ObjectID id)
+    public ObjectLookupResult<DataContainer> LoadDataContainer (ObjectID id)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("id", id);
@@ -115,38 +117,28 @@ namespace Remotion.Data.DomainObjects.Persistence
       var result = provider.LoadDataContainer (id);
 
       CheckClassIDOfLookupResult (result);
-      if (result.LocatedObject == null)
-        throw new ObjectsNotFoundException (new[] { id });
-
-      return result.LocatedObject;
+      return result;
     }
 
-    public IEnumerable<DataContainer> LoadDataContainers (IEnumerable<ObjectID> ids, bool throwOnNotFound)
+    public IEnumerable<ObjectLookupResult<DataContainer>> LoadDataContainers (IEnumerable<ObjectID> ids)
     {
       CheckDisposed();
       ArgumentUtility.CheckNotNull ("ids", ids);
 
       var idsByProvider = GroupIDsByProvider (ids);
-      var notFoundIDs = new List<ObjectID>();
 
-      var unorderedResultDictionary = new Dictionary<ObjectID, DataContainer>();
+      var unorderedResultDictionary = new Dictionary<ObjectID, ObjectLookupResult<DataContainer>>();
       foreach (var idGroup in idsByProvider)
       {
         var provider = _storageProviderManager.GetMandatory (idGroup.Key);
         foreach (var dataContainerLookupResult in provider.LoadDataContainers (idGroup.Value))
         {
           CheckClassIDOfLookupResult (dataContainerLookupResult);
-          if (dataContainerLookupResult.LocatedObject == null)
-            notFoundIDs.Add (dataContainerLookupResult.ObjectID);
-          else
-            unorderedResultDictionary.Add (dataContainerLookupResult.ObjectID, dataContainerLookupResult.LocatedObject);
+          unorderedResultDictionary.Add (dataContainerLookupResult.ObjectID, dataContainerLookupResult);
         }
       }
 
-      if (notFoundIDs.Count > 0 && throwOnNotFound)
-        throw new ObjectsNotFoundException (notFoundIDs);
-
-      return ids.Select (id => unorderedResultDictionary.GetValueOrDefault(id));
+      return ids.Select (id => unorderedResultDictionary[id]);
     }
 
     public DataContainerCollection LoadRelatedDataContainers (RelationEndPointID relationEndPointID)

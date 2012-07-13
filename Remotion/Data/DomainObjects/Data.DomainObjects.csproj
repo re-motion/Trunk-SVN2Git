@@ -214,6 +214,7 @@
     <Compile Include="Infrastructure\IClientTransactionEventDistributor.cs" />
     <Compile Include="ICommittingEventRegistrar.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\NotFoundLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\IFetchEnabledPersistenceStrategy.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FreshlyLoadedObjectData.cs" />

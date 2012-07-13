@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 
@@ -41,11 +40,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// Loads the data for the given <see cref="ObjectID"/> from the underlying data source.
     /// </summary>
     /// <param name="id">The id of the data to load.</param>
-    /// <returns>An <see cref="ILoadedObjectData"/> instance for the given <paramref name="id"/>.</returns>
+    /// <returns>An <see cref="ILoadedObjectData"/> instance for the given <paramref name="id"/>. Items that
+    /// couldn't be found are represented by <see cref="NotFoundLoadedObjectData"/> objects.</returns>
     /// <remarks>
     /// <para>
     /// This method should not set the <see cref="ClientTransaction"/> of the loaded data container, register the container in a 
-    /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container.
+    /// <see cref="DataContainerMap"/>, or set the  <see cref="DomainObject"/> of the container. 
     /// All of these activities are performed by the caller. 
     /// </para>
     /// <para>
@@ -59,13 +59,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// Loads the data for a number of <see cref="ObjectID"/> values from the underlying data source.
     /// </summary>
     /// <param name="objectIDs">The ids of the data to load.</param>
-    /// <param name="throwOnNotFound">If <see langword="true" />, this method should throw a <see cref="ObjectsNotFoundException"/> if a data container 
-    ///   cannot be found for an <see cref="ObjectID"/>. If <see langword="false" />, the method should represent the unknown ID as a 
-    ///   <see cref="NullLoadedObjectData"/> object.
-    /// </param>
     /// <returns>A sequence of <see cref="ILoadedObjectData"/> instances in the same order as in <paramref name="objectIDs"/>. Items that
-    /// couldn't be found are represented by a <see cref="NullLoadedObjectData"/> if <paramref name="throwOnNotFound"/> is set to 
-    /// <see langword="false" />.
+    /// couldn't be found are represented by <see cref="NotFoundLoadedObjectData"/> objects.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -78,7 +73,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     /// <see cref="IClientTransactionListener.ObjectsLoaded"/> events.
     /// </para>
     /// </remarks>
-    IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound);
+    IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs);
 
     /// <summary>
     /// Resolves the relation identified by the given <see cref="RelationEndPointID"/>, loading the related object's data unless already available.

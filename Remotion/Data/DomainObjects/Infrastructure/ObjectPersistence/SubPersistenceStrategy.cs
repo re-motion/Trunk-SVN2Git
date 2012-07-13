@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -59,37 +60,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        var parentObject = parentTransactionOperations.GetObject (id);
-        return TransferParentObject (parentObject.ID, parentTransactionOperations);
-      }
+      return LoadObjectData (new[] { id }).Single();
+
+      // TODO 4920: Consider adding a TryGetObject API or using GetObjectReference + TryEnsureDataAvailable here.
+      //using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction())
+      //{
+      //  // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
+      //  // TransferParentObject called by GetLoadedObjectDataForParentObject below will throw on invalid IDs.
+
+      //  var parentObject = Tuple.Create (id, parentTransactionOperations.TryGetObject (id));
+      //  return GetLoadedObjectDataForParentObject (parentObject, parentTransactionOperations);
+      //}
     }
 
-    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
+    public virtual IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
       {
-        IEnumerable<DomainObject> parentObjects;
-        if (throwOnNotFound)
-        {
-          parentObjects = parentTransactionOperations.GetObjects (objectIDs);
-        }
-        else
-        {
-          // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
-          // TransferParentObject below will throw on invalid IDs.
-          parentObjects = parentTransactionOperations.TryGetObjects (objectIDs);
-        }
+        // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
+        // TransferParentObject called by GetLoadedObjectDataForParentObject below will throw on invalid IDs.
+        var parentObjects = objectIDs.Zip (parentTransactionOperations.TryGetObjects (objectIDs));
 
         // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
         return parentObjects
-          .Select (parentObject => 
-              parentObject == null 
-              ? (ILoadedObjectData) new NullLoadedObjectData() 
-              : TransferParentObject (parentObject.ID, parentTransactionOperations))
+          .Select (parentObject => GetLoadedObjectDataForParentObject (parentObject, parentTransactionOperations))
           .ToList ();
       }
     }
@@ -337,6 +333,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         if (parentEndPoint != null)
           parentEndPoint.SetDataFromSubTransaction (endPoint);
       }
+    }
+
+    private ILoadedObjectData GetLoadedObjectDataForParentObject (Tuple<ObjectID, DomainObject> parentObject, IParentTransactionOperations parentTransactionOperations)
+    {
+      if (parentObject.Item2 == null)
+        return new NotFoundLoadedObjectData (parentObject.Item1);
+      else
+        return TransferParentObject (parentObject.Item1, parentTransactionOperations);
     }
   }
 }

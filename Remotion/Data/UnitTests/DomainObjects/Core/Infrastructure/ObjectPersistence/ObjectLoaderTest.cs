@@ -22,7 +22,6 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
@@ -38,9 +37,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     private IDataContainerLifetimeManager _lifetimeManagerStub;
 
     private ObjectLoader _objectLoader;
-
-    private DomainObject _domainObject1;
-    private DomainObject _domainObject2;
 
     private IQuery _fakeQuery;
     private ILoadedObjectData _loadedObjectDataStub1;
@@ -59,9 +55,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _objectLoader = new ObjectLoader (_persistenceStrategyMock, _loadedObjectDataRegistrationAgentMock, _lifetimeManagerStub, _loadedObjectDataProviderStub);
 
-      _domainObject1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      _domainObject2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
-
       _fakeQuery = CreateFakeQuery();
 
       _loadedObjectDataStub1 = MockRepository.GenerateStub<ILoadedObjectData> ();
@@ -71,12 +64,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     [Test]
     public void LoadObject ()
     {
-      _persistenceStrategyMock.Expect (mock => mock.LoadObjectData (_domainObject1.ID)).Return (_loadedObjectDataStub1);
-      _loadedObjectDataRegistrationAgentMock.Expect (mock => mock.RegisterIfRequired (Arg.Is (_loadedObjectDataStub1), Arg.Is (_lifetimeManagerStub)));
+      _persistenceStrategyMock.Expect (mock => mock.LoadObjectData (DomainObjectIDs.Order1)).Return (_loadedObjectDataStub1);
+      _loadedObjectDataRegistrationAgentMock.Expect (
+          mock => mock.RegisterIfRequired (Arg.Is (_loadedObjectDataStub1), Arg.Is (_lifetimeManagerStub), Arg.Is (true)));
 
       _mockRepository.ReplayAll();
 
-      var result = _objectLoader.LoadObject (_domainObject1.ID);
+      var result = _objectLoader.LoadObject (DomainObjectIDs.Order1);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.SameAs (_loadedObjectDataStub1));
@@ -85,22 +79,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     [Test]
     public void LoadObjects ()
     {
-      _loadedObjectDataStub1.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject1);
-      _loadedObjectDataStub2.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject2);
+      _loadedObjectDataStub1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
+      _loadedObjectDataStub2.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order2);
 
       _persistenceStrategyMock
           .Expect (mock => mock.LoadObjectData (
-              Arg<ICollection<ObjectID>>.List.Equal (new[] { _domainObject1.ID, _domainObject2.ID }), 
-              Arg.Is (true)))
+              Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 })))
           .Return (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 });
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
               Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 }),
-              Arg.Is (_lifetimeManagerStub)));
+              Arg.Is (_lifetimeManagerStub),
+              Arg.Is (true)));
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadObjects (new[] { _domainObject1.ID, _domainObject2.ID }, true);
+      var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 }));
@@ -109,26 +103,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     [Test]
     public void LoadObjects_WithNotFoundObjects ()
     {
-      _loadedObjectDataStub1.Stub (stub => stub.GetDomainObjectReference ()).Return (_domainObject1);
+      _loadedObjectDataStub1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
 
-      var nullLoadedObjectData1 = new NullLoadedObjectData ();
-      var nullLoadedObjectData2 = new NullLoadedObjectData ();
+      var notFoundLoadedObjectData1 = new NotFoundLoadedObjectData (DomainObjectIDs.Order2);
+      var notFoundLoadedObjectData2 = new NotFoundLoadedObjectData (DomainObjectIDs.Order3);
       _persistenceStrategyMock
           .Expect (mock => mock.LoadObjectData (
-              Arg<ICollection<ObjectID>>.List.Equal (new[] { _domainObject1.ID, _domainObject2.ID, DomainObjectIDs.Order3 }),
-              Arg.Is (false)))
-          .Return (new[] { _loadedObjectDataStub1, nullLoadedObjectData1, nullLoadedObjectData2 });
+              Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 })))
+          .Return (new[] { _loadedObjectDataStub1, notFoundLoadedObjectData1, notFoundLoadedObjectData2 });
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
-              Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _loadedObjectDataStub1, nullLoadedObjectData1, nullLoadedObjectData2 }), 
-              Arg.Is (_lifetimeManagerStub)));
+              Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _loadedObjectDataStub1, notFoundLoadedObjectData1, notFoundLoadedObjectData2 }),
+              Arg.Is (_lifetimeManagerStub), Arg.Is (false)));
 
       _mockRepository.ReplayAll ();
 
-      var result = _objectLoader.LoadObjects (new[] { _domainObject1.ID, _domainObject2.ID, DomainObjectIDs.Order3 }, false);
+      var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }, false);
 
       _mockRepository.VerifyAll ();
-      Assert.That (result, Is.EqualTo (new[] { _loadedObjectDataStub1, nullLoadedObjectData1, nullLoadedObjectData2 }));
+      Assert.That (result, Is.EqualTo (new[] { _loadedObjectDataStub1, notFoundLoadedObjectData1, notFoundLoadedObjectData2 }));
     }
 
     [Test]
@@ -140,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
           .Expect (mock => mock.ResolveObjectRelationData (endPointID, _loadedObjectDataProviderStub))
           .Return (_loadedObjectDataStub1);
       _loadedObjectDataRegistrationAgentMock
-          .Expect (mock => mock.RegisterIfRequired (_loadedObjectDataStub1, _lifetimeManagerStub));
+          .Expect (mock => mock.RegisterIfRequired (_loadedObjectDataStub1, _lifetimeManagerStub, true));
       _mockRepository.ReplayAll();
 
       var result = _objectLoader.GetOrLoadRelatedObject (endPointID);
@@ -163,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
         "GetOrLoadRelatedObject can only be used with one-valued end points.\r\nParameter name: relationEndPointID")]
     public void GetOrLoadRelatedObject_WrongCardinality ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_domainObject1.ID, "OrderItems");
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
       _objectLoader.GetOrLoadRelatedObject (endPointID);
     }
 
@@ -180,7 +173,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
               mock =>
               mock.RegisterIfRequired (
                   Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 }), 
-                  Arg.Is (_lifetimeManagerStub)));
+                  Arg.Is (_lifetimeManagerStub), 
+                  Arg.Is (true)));
 
       _mockRepository.ReplayAll ();
 
@@ -208,7 +202,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _loadedObjectDataRegistrationAgentMock
           .Expect (mock => mock.RegisterIfRequired (
               Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 }),
-              Arg.Is (_lifetimeManagerStub)));
+              Arg.Is (_lifetimeManagerStub), 
+              Arg.Is (true)));
 
       _mockRepository.ReplayAll ();
 
@@ -222,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       return QueryFactory.CreateCollectionQuery (
           "test",
-          _domainObject1.ID.StorageProviderDefinition,
+          UnitTestStorageProviderDefinition,
           "TEST",
           new QueryParameterCollection (),
           typeof (DomainObjectCollection));

@@ -259,7 +259,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
       var dataContainer = GetDataContainerWithoutLoading (objectID);
-      return dataContainer ?? LoadLazyDataContainer (objectID);
+      if (dataContainer != null)
+        return dataContainer;
+
+      _objectLoader.LoadObject (objectID);
+      dataContainer = GetDataContainerWithoutLoading (objectID);
+      Assertion.IsNotNull (dataContainer);
+      return dataContainer;
     }
 
     public IEnumerable<DataContainer> GetDataContainersWithLazyLoad (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
@@ -267,9 +273,12 @@ namespace Remotion.Data.DomainObjects.DataManagement
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
       var objectIDsAsCollection = objectIDs.ConvertToCollection();
+      // Note that the empty list check is just an "optimization": IObjectLoader works well with empty ObjectID lists, but it seems waste to go 
+      // through that whole call chain even if no IDs are to be loaded.
+      var idsToBeLoaded = objectIDsAsCollection.Where (id => GetDataContainerWithoutLoading (id) == null).ConvertToCollection();
+      if (idsToBeLoaded.Any())
+        _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound);
 
-      var idsToBeLoaded = objectIDsAsCollection.Where (id => GetDataContainerWithoutLoading (id) == null);
-      _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound);
       return objectIDsAsCollection.Select (GetDataContainerWithoutLoading);
     }
 
@@ -318,11 +327,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_dataContainerMap[objectID] != null)
         throw new InvalidOperationException ("The given DataContainer cannot be loaded, its data is already available.");
 
-      _objectLoader.LoadObject (objectID);
-
-      var dataContainer = _dataContainerMap[objectID];
-      Assertion.IsNotNull (dataContainer);
-      return dataContainer;
+      return GetDataContainerWithLazyLoad (objectID);
     }
 
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)
