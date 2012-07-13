@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -25,6 +26,76 @@ namespace Remotion.UnitTests.Utilities
   [TestFixture]
   public class MemberInfoFromExpressionUtilityTest
   {
+    [Test]
+    public void GetMember_Static_MemberExpression ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMember (() => DomainType.StaticField);
+
+      var expected = typeof (DomainType).GetMember ("StaticField").Single();
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMember_Static_MethodCallExpression ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMember (() => DomainType.StaticMethod ());
+
+      var expected = typeof (DomainType).GetMember ("StaticMethod").Single();
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMember_Static_NewExpression ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMember (() => new DomainType());
+
+      var expected = typeof (DomainType).GetMember (".ctor").Single();
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Must be a MemberExpression, MethodCallExpression or NewExpression.\r\nParameter name: expression")]
+    public void GetMember_Static_InvalidExpression ()
+    {
+      MemberInfoFromExpressionUtility.GetMember (() => 1);
+    }
+
+    [Test]
+    public void GetMember_Instance_MemberExpression ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMember ((DomainType obj) => obj.InstanceProperty);
+
+      var expected = typeof (DomainType).GetMember ("InstanceProperty").Single();
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMember_Instance_MethodCallExpression ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMember ((DomainType obj) => obj.InstanceMethod ());
+
+      var expected = typeof (DomainType).GetMember ("InstanceMethod").Single();
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMember_Instance_NewExpression ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMember ((DomainType obj) => new DomainType());
+
+      var expected = typeof (DomainType).GetMember (".ctor").Single();
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+        "Must be a MemberExpression, MethodCallExpression or NewExpression.\r\nParameter name: expression")]
+    public void GetMember_Instance_InvalidExpression ()
+    {
+      MemberInfoFromExpressionUtility.GetMember ((DomainType obj) => 1);
+    }
+
     [Test]
     public void GetField_Static ()
     {
