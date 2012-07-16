@@ -122,7 +122,11 @@ namespace Remotion.Utilities
     private static MemberInfo GetMemberInfoFromExpression (Type sourceObjectType, Expression expression)
     {
       if (expression is MemberExpression)
-        return GetTypedMemberInfoFromMemberExpression<MemberInfo> (expression, "member");
+        if (((MemberExpression) expression).Member is PropertyInfo)
+          return GetPropertyInfoFromMemberExpression (sourceObjectType, expression);
+        else
+          return GetFieldInfoFromMemberExpression (expression);
+
       if (expression is MethodCallExpression)
         return GetMethodInfoFromMethodCallExpression (sourceObjectType, expression);
       if (expression is NewExpression)

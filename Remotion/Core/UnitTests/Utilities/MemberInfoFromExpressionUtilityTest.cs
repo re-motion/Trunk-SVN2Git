@@ -71,7 +71,6 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore("TODO 4957")]
     public void GetMember_Instance_MemberExpression_OverridingProperty ()
     {
       var member = MemberInfoFromExpressionUtility.GetMember ((DomainType obj) => obj.OverridingProperty);
