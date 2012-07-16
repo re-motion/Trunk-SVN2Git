@@ -367,6 +367,24 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    public void GetMethod_Instance_InterfaceMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.InterfaceMethod());
+
+      var expected = typeof (DomainType).GetMethod ("InterfaceMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetMethod_FromInterface ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((IDomainInterface obj) => obj.InterfaceMethod());
+
+      var expected = typeof (IDomainInterface).GetMethod ("InterfaceMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
     public void GetGenericMethodDefinition_StaticVoid ()
     {
       var member = MemberInfoFromExpressionUtility.GetGenericMethodDefinition (() => DomainType.StaticVoidGenericMethod<Dev.T> (null));
@@ -544,6 +562,24 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (member, Is.EqualTo (expected));
     }
 
+    [Test]
+    public void GetProperty_Instance_InterfaceProperty ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.InterfaceProperty);
+
+      var expected = typeof (DomainType).GetProperty ("InterfaceProperty");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    public void GetProperty_FromInterface ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetProperty ((IDomainInterface obj) => obj.InterfaceProperty);
+
+      var expected = typeof (IDomainInterface).GetProperty ("InterfaceProperty");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
     public class DomainTypeBase
     {
       public void BaseMethod () { }
@@ -565,7 +601,7 @@ namespace Remotion.UnitTests.Utilities
       }
     }
 
-    public class DomainType : DomainTypeBase
+    public class DomainType : DomainTypeBase, IDomainInterface
     {
       public static int StaticField;
       public readonly int InstanceField;
@@ -600,6 +636,15 @@ namespace Remotion.UnitTests.Utilities
         // No accessor
         internal set { }
       }
+
+      public void InterfaceMethod () { }
+      public int InterfaceProperty { get; set; }
+    }
+
+    public interface IDomainInterface
+    {
+      void InterfaceMethod ();
+      int InterfaceProperty { get; set; }
     }
   }
 }
