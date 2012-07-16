@@ -384,7 +384,7 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Reflection
       Assert.That (member, Is.EqualTo (expected));
     }
 
-    [Ignore ("TODO 4957")]
+    [Ignore ("TODO: normalizing interfaces")]
     [Test]
     public void GetMethod_FromCastedInstance ()
     {
@@ -590,8 +590,8 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Reflection
       Assert.That (member, Is.EqualTo (expected));
     }
 
+    [Ignore ("TODO: normalizing interfaces")]
     [Test]
-    [Ignore ("TODO 4957")]
     public void GetProperty_FromCastedInstance ()
     {
       var member = NormalizingMemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => ((IDomainInterface) obj).InterfaceProperty);
