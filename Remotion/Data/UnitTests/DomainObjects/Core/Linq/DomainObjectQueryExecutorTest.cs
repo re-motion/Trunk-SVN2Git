@@ -24,6 +24,7 @@ using Remotion.Data.DomainObjects.Linq.ExecutableQueries;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
@@ -280,7 +281,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private FetchRequestBase AddFetchRequest (QueryModel queryModel)
     {
-      var relationMember = MemberInfoFromExpressionUtility.GetProperty ((Order o) => o.OrderTicket);
+      var relationMember = NormalizingMemberInfoFromExpressionUtility.GetProperty ((Order o) => o.OrderTicket);
       var fetchRequest = new FetchOneRequest (relationMember);
       queryModel.ResultOperators.Add (fetchRequest);
       return fetchRequest;

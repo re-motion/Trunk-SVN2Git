@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -89,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
     protected RelationEndPointDefinition GetRelationEndPointDefinition<TSource, TRelated> (Expression<Func<TSource, TRelated>> propertyAccessExpression)
     {
       var typeDefinition = MappingConfiguration.GetTypeDefinition (typeof (TSource));
-      var propertyInfoAdapter = PropertyInfoAdapter.Create (MemberInfoFromExpressionUtility.GetProperty (propertyAccessExpression));
+      var propertyInfoAdapter = PropertyInfoAdapter.Create (NormalizingMemberInfoFromExpressionUtility.GetProperty (propertyAccessExpression));
       return (RelationEndPointDefinition) typeDefinition.ResolveRelationEndPoint (propertyInfoAdapter);
     }
   }

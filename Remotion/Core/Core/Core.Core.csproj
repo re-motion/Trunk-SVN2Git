@@ -155,7 +155,6 @@
     <Compile Include="Reflection\MemberSignatures\MemberSignatureProvider.cs" />
     <Compile Include="Reflection\MemberSignatures\MethodSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignature.cs" />
-    <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="SafeContextSingleton.cs" />
     <Compile Include="Design\IDesignModeHelper.cs" />
     <Compile Include="Diagnostics\DebuggerInterface.cs" />
@@ -469,6 +468,7 @@
     <Compile Include="Utilities\DelegateBasedComparer.cs" />
     <Compile Include="Utilities\IUtcNowProvider.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparer.cs" />
+    <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="Utilities\NullableTypeUtility.cs" />
     <Compile Include="Utilities\NullValueConverter.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparer.cs" />

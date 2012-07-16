@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Linq;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.Expressions;
@@ -217,7 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
             var orderByClause = (OrderByClause) actualQueryModel.BodyClauses.Single ();
             var endPointDefinition = ((VirtualRelationEndPointDefinition) GetEndPointDefinition (typeof (Customer), "Orders"));
             Assert.That (endPointDefinition.SortExpressionText, Is.EqualTo ("OrderNumber asc"));
-            var orderNumberMember = MemberInfoFromExpressionUtility.GetProperty ((Order o) => o.OrderNumber);
+            var orderNumberMember = NormalizingMemberInfoFromExpressionUtility.GetProperty ((Order o) => o.OrderNumber);
             Assert.That (((MemberExpression) orderByClause.Orderings[0].Expression).Member, Is.SameAs (orderNumberMember));
             Assert.That (orderByClause.Orderings[0].OrderingDirection, Is.EqualTo (OrderingDirection.Asc));
           });
@@ -388,7 +389,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private FetchOneRequest CreateFetchOneRequest<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression)
     {
-      var relationMember = MemberInfoFromExpressionUtility.GetMember (memberExpression);
+      var relationMember = NormalizingMemberInfoFromExpressionUtility.GetMember (memberExpression);
       return new FetchOneRequest (relationMember);
     }
 
@@ -400,7 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
     private FetchManyRequest CreateFetchManyRequest<TSource, TDest> (Expression<Func<TSource, TDest>> memberExpression)
     {
-      var relationMember = MemberInfoFromExpressionUtility.GetProperty (memberExpression);
+      var relationMember = NormalizingMemberInfoFromExpressionUtility.GetProperty (memberExpression);
       return new FetchManyRequest (relationMember);
     }
 
