@@ -71,6 +71,12 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
+    [Ignore ("TODO 4957")]
+    public void GetMember_Instance_MemberExpression_OverriddenProperty ()
+    {
+    }
+
+    [Test]
     public void GetMember_Instance_MethodCallExpression ()
     {
       var member = MemberInfoFromExpressionUtility.GetMember ((DomainType obj) => obj.InstanceMethod ());
@@ -339,7 +345,6 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore ("TODO 4957")]
     public void GetMethod_Instance_BaseMethod ()
     {
       var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.BaseMethod ());
@@ -348,7 +353,14 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (member, Is.EqualTo (expected));
     }
 
-    // TODO: Test for virtual-non overridden base method
+    [Test]
+    public void GetMethod_Instance_VirtualBaseMethod ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.VirtualBaseMethod ());
+
+      var expected = typeof (DomainType).GetMethod ("VirtualBaseMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
 
     [Test]
     public void GetGenericMethodDefinition_StaticVoid ()
@@ -517,6 +529,7 @@ namespace Remotion.UnitTests.Utilities
     public class DomainTypeBase
     {
       public void BaseMethod () { }
+      public void VirtualBaseMethod () { }
 
       public virtual void OverridingVoidMethod () { }
       public virtual int OverridingMethod () { return 0; }

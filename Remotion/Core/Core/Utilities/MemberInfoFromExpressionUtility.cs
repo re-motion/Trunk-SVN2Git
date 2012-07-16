@@ -85,7 +85,7 @@ namespace Remotion.Utilities
     public static MethodInfo GetGenericMethodDefinition (Expression<Action> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetGenericMethodDefinition(null, expression.Body);
+      return GetGenericMethodDefinition (null, expression.Body);
     }
 
     public static MethodInfo GetGenericMethodDefinition<TReturnType> (Expression<Func<TReturnType>> expression)
@@ -103,7 +103,7 @@ namespace Remotion.Utilities
     public static MethodInfo GetGenericMethodDefinition<TSourceObject, TReturnType> (Expression<Func<TSourceObject, TReturnType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
-      return GetGenericMethodDefinition (typeof(TSourceObject), expression.Body);
+      return GetGenericMethodDefinition (typeof (TSourceObject), expression.Body);
     }
 
     public static PropertyInfo GetProperty<TPropertyType> (Expression<Func<TPropertyType>> expression)
@@ -145,7 +145,7 @@ namespace Remotion.Utilities
       }
 
       return member;
-    }  
+    }
 
     private static FieldInfo GetFieldInfoFromMemberExpression (Expression expression)
     {
@@ -162,7 +162,7 @@ namespace Remotion.Utilities
       //  return property;
 
       //// TODO 4957: Retrieve most derived overriding property.
-    }  
+    }
 
     private static ConstructorInfo GetConstructorInfoFromNewExpression (Expression expression)
     {
@@ -192,8 +192,10 @@ namespace Remotion.Utilities
         method = method.GetGenericMethodDefinition();
       }
 
-      // TODO 4957: Use MemberInfoEqualityComparer instead of equals
-      var methodOnSourceType = sourceObjectType.GetMethods (AllBindingFlags).Single (m => m.GetBaseDefinition ().Equals (method.GetBaseDefinition ()));
+      var methodComparer = MemberInfoEqualityComparer<MethodInfo>.Instance;
+      var baseDefinition = method.GetBaseDefinition();
+      var methodOnSourceType = sourceObjectType.GetMethods (AllBindingFlags)
+          .Single (m => methodComparer.Equals (m.GetBaseDefinition(), baseDefinition));
 
       if (genericMethodArguments != null)
         return methodOnSourceType.MakeGenericMethod (genericMethodArguments);
@@ -207,7 +209,7 @@ namespace Remotion.Utilities
       if (!methodInfo.IsGenericMethod)
         throw new ArgumentException ("Must hold a generic method access expression.", "expression");
 
-      return methodInfo.GetGenericMethodDefinition ();
+      return methodInfo.GetGenericMethodDefinition();
     }
   }
 }
