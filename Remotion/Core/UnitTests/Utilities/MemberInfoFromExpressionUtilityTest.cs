@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -534,6 +535,15 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (member, Is.EqualTo (expected));
     }
 
+    [Test]
+    public void GetProperty_Instance_SpecialOverridingProperty ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.SpecialOverridingProperty);
+
+      var expected = typeof (DomainType).GetProperty ("SpecialOverridingProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
     public class DomainTypeBase
     {
       public void BaseMethod () { }
@@ -547,6 +557,12 @@ namespace Remotion.UnitTests.Utilities
       public int BaseProperty { get; set; }
       public virtual int VirtualBaseProperty { get; set; }
       public virtual int OverridingProperty { get; set; }
+
+      public virtual int SpecialOverridingProperty
+      {
+        get { return 7; }
+        internal set { }
+      }
     }
 
     public class DomainType : DomainTypeBase
@@ -578,6 +594,12 @@ namespace Remotion.UnitTests.Utilities
       public static int StaticProperty { get; set; }
       public int InstanceProperty { get; set; }
       public override int OverridingProperty { get; set; }
+
+      public override int SpecialOverridingProperty
+      {
+        // No accessor
+        internal set { }
+      }
     }
   }
 }

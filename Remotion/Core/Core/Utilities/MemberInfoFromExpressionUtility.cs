@@ -28,6 +28,7 @@ namespace Remotion.Utilities
   public static class MemberInfoFromExpressionUtility
   {
     private const BindingFlags AllBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+    private static readonly MemberInfoEqualityComparer<MethodInfo> s_methodComparer = MemberInfoEqualityComparer<MethodInfo>.Instance;
 
     public static MemberInfo GetMember<TMemberType> (Expression<Func<TMemberType>> expression)
     {
@@ -171,15 +172,17 @@ namespace Remotion.Utilities
 
     private static bool IsPropertyOverride (PropertyInfo property, PropertyInfo baseDefinitionProperty)
     {
-      var getter = property.GetGetMethod();
-      var setter = property.GetSetMethod();
-      var getterBaseDefinition = baseDefinitionProperty.GetGetMethod();
-      var setterBaseDefinition = baseDefinitionProperty.GetSetMethod();
+      var getter = property.GetGetMethod (true);
+      var setter = property.GetSetMethod (true);
+      var getterBaseDefinition = baseDefinitionProperty.GetGetMethod (true);
+      var setterBaseDefinition = baseDefinitionProperty.GetSetMethod (true);
 
-      var methodComparer = MemberInfoEqualityComparer<MethodInfo>.Instance;
+      return SafeIsMethodOverride (getter, getterBaseDefinition) || SafeIsMethodOverride (setter, setterBaseDefinition);
+    }
 
-      return methodComparer.Equals (getter.GetBaseDefinition(), getterBaseDefinition)
-             || methodComparer.Equals (setter.GetBaseDefinition(), setterBaseDefinition);
+    private static bool SafeIsMethodOverride (MethodInfo accessorOrNull, MethodInfo accessorBaseDefinitionOrNull)
+    {
+      return accessorOrNull != null && s_methodComparer.Equals (accessorOrNull.GetBaseDefinition(), accessorBaseDefinitionOrNull);
     }
 
     private static ConstructorInfo GetConstructorInfoFromNewExpression (Expression expression)
@@ -210,10 +213,9 @@ namespace Remotion.Utilities
         method = method.GetGenericMethodDefinition();
       }
 
-      var methodComparer = MemberInfoEqualityComparer<MethodInfo>.Instance;
       var baseDefinition = method.GetBaseDefinition();
       var methodOnSourceType = sourceObjectType.GetMethods (AllBindingFlags)
-          .Single (m => methodComparer.Equals (m.GetBaseDefinition(), baseDefinition));
+          .Single (m => s_methodComparer.Equals (m.GetBaseDefinition(), baseDefinition));
 
       if (genericMethodArguments != null)
         return methodOnSourceType.MakeGenericMethod (genericMethodArguments);
