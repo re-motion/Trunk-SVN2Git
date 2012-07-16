@@ -384,6 +384,16 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (member, Is.EqualTo (expected));
     }
 
+    [Ignore ("TODO 4957")]
+    [Test]
+    public void GetMethod_FromCastedInstance ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => ((IDomainInterface) obj).InterfaceMethod ());
+
+      var expected = typeof (DomainType).GetMethod ("InterfaceMethod");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
     [Test]
     public void GetGenericMethodDefinition_StaticVoid ()
     {
@@ -577,6 +587,16 @@ namespace Remotion.UnitTests.Utilities
       var member = MemberInfoFromExpressionUtility.GetProperty ((IDomainInterface obj) => obj.InterfaceProperty);
 
       var expected = typeof (IDomainInterface).GetProperty ("InterfaceProperty");
+      Assert.That (member, Is.EqualTo (expected));
+    }
+
+    [Test]
+    [Ignore ("TODO 4957")]
+    public void GetProperty_FromCastedInstance ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => ((IDomainInterface) obj).InterfaceProperty);
+
+      var expected = typeof (DomainType).GetProperty ("InterfaceProperty");
       Assert.That (member, Is.EqualTo (expected));
     }
 
