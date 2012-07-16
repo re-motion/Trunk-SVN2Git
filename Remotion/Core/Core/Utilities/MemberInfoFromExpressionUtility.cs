@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Utilities
 {
@@ -154,14 +155,27 @@ namespace Remotion.Utilities
 
     private static PropertyInfo GetPropertyInfoFromMemberExpression (Type sourceObjectType, Expression expression)
     {
+      // For redeclared properties (overridden in C#) the MemberExpression contains the root definition.
       var property = GetTypedMemberInfoFromMemberExpression<PropertyInfo> (expression, "property");
 
-      return property;
-      // For redeclared properties (overridden in C#) the MemberExpression contains the root definition.
-      //if (sourceObjectType == null || sourceObjectType == property.DeclaringType)
-      //  return property;
+      if (sourceObjectType == null)
+        return property;
 
-      //// TODO 4957: Retrieve most derived overriding property.
+      var baseTypeSequence = sourceObjectType.CreateSequence (t => t.BaseType);
+      return baseTypeSequence.SelectMany (type => type.GetProperties (AllBindingFlags)).First (p => IsPropertyOverride (p, property));
+    }
+
+    private static bool IsPropertyOverride (PropertyInfo property, PropertyInfo baseDefinitionProperty)
+    {
+      var getter = property.GetGetMethod();
+      var setter = property.GetSetMethod();
+      var getterBaseDefinition = baseDefinitionProperty.GetGetMethod();
+      var setterBaseDefinition = baseDefinitionProperty.GetSetMethod();
+
+      var methodComparer = MemberInfoEqualityComparer<MethodInfo>.Instance;
+
+      return methodComparer.Equals (getter.GetBaseDefinition(), getterBaseDefinition)
+             || methodComparer.Equals (setter.GetBaseDefinition(), setterBaseDefinition);
     }
 
     private static ConstructorInfo GetConstructorInfoFromNewExpression (Expression expression)

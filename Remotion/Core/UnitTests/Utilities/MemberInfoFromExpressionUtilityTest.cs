@@ -71,9 +71,13 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore ("TODO 4957")]
-    public void GetMember_Instance_MemberExpression_OverriddenProperty ()
+    [Ignore("TODO 4957")]
+    public void GetMember_Instance_MemberExpression_OverridingProperty ()
     {
+      var member = MemberInfoFromExpressionUtility.GetMember ((DomainType obj) => obj.OverridingProperty);
+
+      var expected = typeof (DomainType).GetProperty ("OverridingProperty");
+      Assert.That (member, Is.EqualTo (expected));
     }
 
     [Test]
@@ -505,7 +509,6 @@ namespace Remotion.UnitTests.Utilities
     }
 
     [Test]
-    [Ignore ("TODO 4957")]
     public void GetProperty_Instance_BaseProperty ()
     {
       var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.BaseProperty);
@@ -514,10 +517,16 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (member, Is.EqualTo (expected));
     }
 
-    // TODO: Test for virtual-non overridden base property
+    [Test]
+    public void GetProperty_Instance_VirtualBaseProperty ()
+    {
+      var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.VirtualBaseProperty);
+
+      var expected = typeof (DomainType).GetProperty ("VirtualBaseProperty");
+      Assert.That (member, Is.EqualTo (expected));
+    }
 
     [Test]
-    [Ignore ("TODO 4957")]
     public void GetProperty_Instance_OverridingProperty ()
     {
       var member = MemberInfoFromExpressionUtility.GetProperty ((DomainType obj) => obj.OverridingProperty);
@@ -537,6 +546,7 @@ namespace Remotion.UnitTests.Utilities
       public virtual int OverridingGenericMethod<T> (T t) { return 0; }
 
       public int BaseProperty { get; set; }
+      public virtual int VirtualBaseProperty { get; set; }
       public virtual int OverridingProperty { get; set; }
     }
 
