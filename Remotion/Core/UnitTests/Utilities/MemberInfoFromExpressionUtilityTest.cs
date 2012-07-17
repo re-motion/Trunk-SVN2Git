@@ -17,7 +17,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Utilities;
@@ -580,6 +579,10 @@ namespace Remotion.UnitTests.Utilities
       Assert.That (member, Is.EqualTo (expected));
     }
 
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable ValueParameterNotUsed
+// ReSharper disable UnusedParameter.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
     public class DomainTypeBase
     {
       public void BaseMethod () { }
@@ -647,4 +650,8 @@ namespace Remotion.UnitTests.Utilities
       int InterfaceProperty { get; set; }
     }
   }
+// ReSharper restore UnusedMemberInSuper.Global
+// ReSharper restore ValueParameterNotUsed
+// ReSharper restore UnusedParameter.Global
+// ReSharper restore UnusedAutoPropertyAccessor.Global
 }

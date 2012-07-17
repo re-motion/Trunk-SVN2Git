@@ -600,6 +600,10 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Reflection
       Assert.That (member, Is.EqualTo (expected));
     }
 
+// ReSharper disable UnusedMemberInSuper.Global
+// ReSharper disable ValueParameterNotUsed
+// ReSharper disable UnusedParameter.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
     public class DomainTypeBase
     {
       public void BaseMethod () { }
@@ -667,4 +671,8 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Reflection
       int InterfaceProperty { get; set; }
     }
   }
+// ReSharper restore UnusedMemberInSuper.Global
+// ReSharper restore ValueParameterNotUsed
+// ReSharper restore UnusedParameter.Global
+// ReSharper restore UnusedAutoPropertyAccessor.Global
 }
