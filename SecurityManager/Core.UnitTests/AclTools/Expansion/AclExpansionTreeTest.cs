@@ -17,7 +17,7 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.ObjectMothers;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -35,9 +35,9 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (new CultureScope ("de-DE"))
       {
-        var users = ListObjectMother.New (User);
+        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
 
-        var acls = ListObjectMother.New<AccessControlList> (Acl);
+        var acls = ListMother.New<AccessControlList> (Acl);
 
         List<AclExpansionEntry> aclExpansion = GetAclExpansionEntryList (users, acls, false);
 
@@ -81,10 +81,10 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     {
       using (new CultureScope ("de-DE"))
       {
-        var users = ListObjectMother.New (User);
+        var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User);
         
         var statelessAcl = CreateStatelessAcl (Ace);
-        var acls = ListObjectMother.New (Acl, statelessAcl);
+        var acls = ListMother.New (Acl, statelessAcl);
 
         List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (users, acls, false);
 

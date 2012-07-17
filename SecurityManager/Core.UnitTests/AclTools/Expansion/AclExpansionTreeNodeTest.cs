@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.ObjectMothers;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 
@@ -31,7 +31,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void CtorTest ()
     {
-      List<Role> children = ListObjectMother.New (Role, Role2, Role3);
+      List<Role> children = ListMother.New (Role, Role2, Role3);
       var aclExpansionTreeNode = new AclExpansionTreeNode<User, Role> (User, 17, children);
       Assert.That (aclExpansionTreeNode.Key, Is.EqualTo (User));
       Assert.That (aclExpansionTreeNode.NumberLeafNodes, Is.EqualTo (17));
@@ -41,7 +41,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     [Test]
     public void FactoryTest ()
     {
-      List<Role> children = ListObjectMother.New (Role, Role2, Role3);
+      List<Role> children = ListMother.New (Role, Role2, Role3);
       var aclExpansionTreeNode = AclExpansionTreeNode.New (User, 17, children);
       Assert.That (aclExpansionTreeNode.Key, Is.EqualTo (User));
       Assert.That (aclExpansionTreeNode.NumberLeafNodes, Is.EqualTo (17));

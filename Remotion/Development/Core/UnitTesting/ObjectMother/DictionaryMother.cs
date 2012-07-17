@@ -14,19 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Collections.Generic;
 
-namespace Remotion.Development.UnitTesting.ObjectMothers
+namespace Remotion.Development.UnitTesting.ObjectMother
 {
   /// <summary>
   /// Supplies factories to easily create <see cref="Dictionary{TKey,TValue}"/> instances initialized with up to 4 key-value-pairs.
   /// </summary>
   /// <example><code>
   /// <![CDATA[  
-  /// var d = DictionaryObjectMother.New("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
+  /// var d = DictionaryMother.New("A",1, "B",2, "C",3); // d["A"]=1, d["B"]=2,...
   /// ]]>
   /// </code></example>
-  public class DictionaryObjectMother
+  public class DictionaryMother
   {
     public static Dictionary<TKey, TValue> New<TKey, TValue> ()
     {

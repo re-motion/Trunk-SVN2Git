@@ -18,7 +18,7 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting.ObjectMothers;
+using Remotion.Development.UnitTesting.ObjectMother;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -71,12 +71,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var aclExpansionEntry1 = new AclExpansionEntry (User3, Role, Acl, accessConditions, accessTypeDefinitions, accessTypeDefinitions);
       var aclExpansionEntry2 = new AclExpansionEntry (User, Role, Acl, accessConditions, accessTypeDefinitions, accessTypeDefinitions);
 
-      var aclExpansionEntryList = ListObjectMother.New (aclExpansionEntry0, aclExpansionEntry2, aclExpansionEntry1, aclExpansionEntry1, aclExpansionEntry0);
+      var aclExpansionEntryList = ListMother.New (aclExpansionEntry0, aclExpansionEntry2, aclExpansionEntry1, aclExpansionEntry1, aclExpansionEntry0);
 
       aclExpanderMock.Expect (x => x.GetAclExpansionEntryList ()).Return (aclExpansionEntryList);
       aclExpanderMock.Replay();
       var aclExpansionEntryListResult = aclExpanderMock.GetAclExpansionEntryListSortedAndDistinct();
-      var aclExpansionEntryListExpected = ListObjectMother.New (aclExpansionEntry1, aclExpansionEntry0, aclExpansionEntry2);
+      var aclExpansionEntryListExpected = ListMother.New (aclExpansionEntry1, aclExpansionEntry0, aclExpansionEntry2);
 
       Assert.That (aclExpansionEntryListResult, Is.EqualTo (aclExpansionEntryListExpected));
       aclExpanderMock.VerifyAllExpectations();
@@ -87,7 +87,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void GetAclExpansionEntryList_UserList_IUserRoleAclAceCombinations2 ()
     {
       var userRoleAclAceCombinationsMock = MockRepository.GenerateMock<IUserRoleAclAceCombinationFinder> ();
-      var myValues = ListObjectMother.New (new UserRoleAclAceCombination (Role, Ace));
+      var myValues = ListMother.New (new UserRoleAclAceCombination (Role, Ace));
       userRoleAclAceCombinationsMock.Expect (mock => mock.GetEnumerator ()).Return (myValues.GetEnumerator ());
 
       var aclExpander = new AclExpander (userRoleAclAceCombinationsMock);
@@ -140,8 +140,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (ace, true, null, true);
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          ListObjectMother.New (User), 
-          ListObjectMother.New(TestHelper.CreateStatefulAcl(ace)), false);
+          ListMother.New (User), 
+          ListMother.New(TestHelper.CreateStatefulAcl(ace)), false);
 
       var accessTypeDefinitionsExpected = new[] { ReadAccessType, DeleteAccessType };
       var accessConditions = new AclExpansionAccessConditions
@@ -169,8 +169,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          ListObjectMother.New (User),
-          ListObjectMother.New (TestHelper.CreateStatefulAcl (aceGroupOwning, aceAbstractRole, aceGroupAll)), false);
+          ListMother.New (User),
+          ListMother.New (TestHelper.CreateStatefulAcl (aceGroupOwning, aceAbstractRole, aceGroupAll)), false);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (3));
 
@@ -201,8 +201,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          ListObjectMother.New (otherTenantUser),
-          ListObjectMother.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant)), false);
+          ListMother.New (otherTenantUser),
+          ListMother.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant)), false);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (1));
 
@@ -229,8 +229,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          ListObjectMother.New (otherTenantUser),
-          ListObjectMother.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant, aceGroupOwningTenant)), false);
+          ListMother.New (otherTenantUser),
+          ListMother.New (TestHelper.CreateStatefulAcl (aceGroupSpecificTenant, aceGroupOwningTenant)), false);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
@@ -264,7 +264,7 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       List<AccessControlList> aclList = new List<AccessControlList> ();
       aclList.Add (acl);
 
-      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (ListObjectMother.New (User), aclList);
+      List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (ListMother.New (User), aclList);
 
       var owningTenant = aclExpansionEntryList[0].User.Tenant;
       var tenantHierarchyCondition = TenantHierarchyCondition.ThisAndParent;
@@ -304,8 +304,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          ListObjectMother.New (otherTenantUser, User),
-          ListObjectMother.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning)), 
+          ListMother.New (otherTenantUser, User),
+          ListMother.New (TestHelper.CreateStatefulAcl (aceSpecificTenantWithOtherTenant, aceGroupOwning)), 
           false);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
@@ -332,8 +332,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          ListObjectMother.New (User),
-          ListObjectMother.New (TestHelper.CreateStatefulAcl (aceOwningTenant, acePosition, aceGroupOwning)), false);
+          ListMother.New (User),
+          ListMother.New (TestHelper.CreateStatefulAcl (aceOwningTenant, acePosition, aceGroupOwning)), false);
 
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (2));
 
@@ -360,8 +360,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
 
       List<AclExpansionEntry> aclExpansionEntryList =
         GetAclExpansionEntryList (
-          ListObjectMother.New (User),
-          ListObjectMother.New (TestHelper.CreateStatefulAcl (aceOwningTenant), TestHelper.CreateStatefulAcl (aceSpecificTenant), 
+          ListMother.New (User),
+          ListMother.New (TestHelper.CreateStatefulAcl (aceOwningTenant), TestHelper.CreateStatefulAcl (aceSpecificTenant), 
                     TestHelper.CreateStatefulAcl (aceGroupOwning)), false);
 
       var aclExpansionEntryListEnumerator = aclExpansionEntryList.GetEnumerator ();
@@ -391,8 +391,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var testAce = TestHelper.CreateAceWithSpecificTenant (otherTenant);
       AttachAccessTypeReadWriteDelete (testAce, true, true, true);
       Assert.That (testAce.Validate ().IsValid);
-      var userList = ListObjectMother.New (User, User2);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (testAce));
+      var userList = ListMother.New (User, User2);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (testAce));
 
       // ACE with specific otherTenant should not match any AclProbe|s
       AssertIsNotInMatchingAces(userList, aclList);
@@ -410,8 +410,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (testAce, true, true, true);
       Assert.That (testAce.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (User2);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (testAce));
+      var userList = ListMother.New (User2);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (testAce));
 
       // ACE with specific position should not match any AclProbe|s
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
@@ -439,8 +439,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       var ace = TestHelper.CreateAceWithAbstractRole ();
       AttachAccessTypeReadWriteDelete (ace, true, true, true);
       Assert.That (ace.Validate ().IsValid);
-      var userList = ListObjectMother.New (User, User2);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (ace));
+      var userList = ListMother.New (User, User2);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (ace));
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
       Assert.That (aclExpansionEntryList.Count, Is.EqualTo (User.Roles.Count + User2.Roles.Count));
     }
@@ -459,8 +459,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceDeny, false, false, false);
       Assert.That (aceDeny.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (User, User2);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (ace, aceDeny));
+      var userList = ListMother.New (User, User2);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (ace, aceDeny));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
@@ -480,8 +480,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceDeny, false, true, false);
       Assert.That (aceDeny.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (User); 
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (ace, aceDeny));
+      var userList = ListMother.New (User); 
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (ace, aceDeny));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
@@ -517,8 +517,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceOwningGroup, null, null, true);
       Assert.That (aceOwningGroup.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (otherTenantUser);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (aceSpecificGroup, aceOwningGroup));
+      var userList = ListMother.New (otherTenantUser);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (aceSpecificGroup, aceOwningGroup));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
@@ -561,8 +561,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceSpecificGroupType2, null, null, true);
       Assert.That (aceSpecificGroupType2.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (otherTenantUser);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (aceSpecificGroupType1, aceSpecificGroupType2));
+      var userList = ListMother.New (otherTenantUser);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (aceSpecificGroupType1, aceSpecificGroupType2));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
@@ -628,8 +628,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceSpecificGroupType3, true, null, null);
       Assert.That (aceSpecificGroupType3.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (otherTenantUser);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (aceWithBranchOfOwningGroup, aceSpecificGroupType2, aceSpecificGroupType3));
+      var userList = ListMother.New (otherTenantUser);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (aceWithBranchOfOwningGroup, aceSpecificGroupType2, aceSpecificGroupType3));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
@@ -659,8 +659,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceOwningUser, null, null, true);
       Assert.That (aceOwningUser.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (User);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (aceSpecificUser, aceOwningUser));
+      var userList = ListMother.New (User);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (aceSpecificUser, aceOwningUser));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
@@ -690,8 +690,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       AttachAccessTypeReadWriteDelete (aceSpecificPosition2, null, true, null);
       Assert.That (aceSpecificPosition2.Validate ().IsValid);
 
-      var userList = ListObjectMother.New (User);
-      var aclList = ListObjectMother.New (TestHelper.CreateStatefulAcl (aceSpecificPosition, aceSpecificPosition2));
+      var userList = ListMother.New (User);
+      var aclList = ListMother.New (TestHelper.CreateStatefulAcl (aceSpecificPosition, aceSpecificPosition2));
 
       List<AclExpansionEntry> aclExpansionEntryList = GetAclExpansionEntryList (userList, aclList, false);
 
