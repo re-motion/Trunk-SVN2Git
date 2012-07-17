@@ -135,6 +135,7 @@
     <Compile Include="UnitTesting\Enumerables\EnumerableExtensions.cs" />
     <Compile Include="UnitTesting\Enumerables\OneTimeEnumerable.cs" />
     <Compile Include="UnitTesting\GCCounter.cs" />
+    <Compile Include="UnitTesting\ObjectMothers\BooleanObjectMother.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\CompoundPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigSystemHelper.cs" />
     <Compile Include="UnitTesting\Configuration\ConfigurationHelper.cs" />
@@ -153,9 +154,9 @@
     <Compile Include="UnitTesting\ISerializationEventReceiver.cs" />
     <Compile Include="UnitTesting\MethodNotFoundException.cs" />
     <Compile Include="UnitTesting\MixinWithSerializationCallbacks.cs" />
-    <Compile Include="UnitTesting\ObjectMother\DictionaryMother.cs" />
-    <Compile Include="UnitTesting\ObjectMother\ListMother.cs" />
-    <Compile Include="UnitTesting\ObjectMother\QueueMother.cs" />
+    <Compile Include="UnitTesting\ObjectMothers\DictionaryObjectMother.cs" />
+    <Compile Include="UnitTesting\ObjectMothers\ListObjectMother.cs" />
+    <Compile Include="UnitTesting\ObjectMothers\QueueObjectMother.cs" />
     <Compile Include="UnitTesting\PEVerifier.cs" />
     <Compile Include="UnitTesting\PEVerifyException.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\PEVerifyVersion.cs" />

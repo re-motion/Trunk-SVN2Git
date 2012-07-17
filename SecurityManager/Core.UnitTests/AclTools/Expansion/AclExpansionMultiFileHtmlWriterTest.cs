@@ -19,13 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.AclTools.Expansion.TextWriterFactory;
 using Remotion.SecurityManager.Domain.Metadata;
 using Remotion.SecurityManager.Domain.OrganizationalStructure;
 using Remotion.Utilities;
-using Remotion.Development.UnitTesting.ObjectMother;
 using Rhino.Mocks;
 
 namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
@@ -91,8 +91,8 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
       aclExpansionEntryList.Add (GetAclExpansionEntryWithUser (User2));
       
       var aclExpansionEntryListResult = AclExpansionMultiFileHtmlWriter.GetAccessControlEntriesForUser (aclExpansionEntryList, User);
-      Assert.That (aclExpansionEntryListResult, Is.EquivalentTo (ListMother.New( aclExpansionEntry0, aclExpansionEntry1, aclExpansionEntry2 )));
-      Assert.That (aclExpansionEntryListResult, Is.EquivalentTo (ListMother.New (aclExpansionEntry0, aclExpansionEntry1, aclExpansionEntry2)));
+      Assert.That (aclExpansionEntryListResult, Is.EquivalentTo (ListObjectMother.New( aclExpansionEntry0, aclExpansionEntry1, aclExpansionEntry2 )));
+      Assert.That (aclExpansionEntryListResult, Is.EquivalentTo (ListObjectMother.New (aclExpansionEntry0, aclExpansionEntry1, aclExpansionEntry2)));
     }
 
 

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Collections;
-using Remotion.Development.UnitTesting.ObjectMother;
+using Remotion.Development.UnitTesting.ObjectMothers;
 
 namespace Remotion.UnitTests.Collections
 {
@@ -47,7 +47,7 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void EnumerableTest ()
     {
-      var enumerable = ListMother.New (9, 7, 22, 1);
+      var enumerable = ListObjectMother.New (9, 7, 22, 1);
       var enumerableWrapped = NewEnumerableEqualsWrapper (enumerable);
       Assert.That (enumerableWrapped.Cast<object> ().SequenceEqual (enumerable.Cast<object> ()));
     }

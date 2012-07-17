@@ -22,7 +22,7 @@ using Castle.DynamicProxy;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Remotion.Development.UnitTesting;
-using Remotion.Development.UnitTesting.ObjectMother;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Scripting.StableBindingImplementation;
 using Remotion.Scripting.UnitTests.TestDomain;
 using Remotion.Utilities;
@@ -65,7 +65,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       //To.ConsoleLine.e (stringTimesMethod).nl ().e (stringTimesIAmbigous2InterfaceMethod);
 
       Assert.That (classMethodToInterfaceMethodsMap.Count, Is.EqualTo (1));
-      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous2ClassMethod].ToList(), Is.EquivalentTo (ListMother.New(stringTimesIAmbigous2InterfaceMethod)));
+      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous2ClassMethod].ToList(), Is.EquivalentTo (ListObjectMother.New(stringTimesIAmbigous2InterfaceMethod)));
     }
 
     [Test]
@@ -91,8 +91,8 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       Assert.That (stringTimesIAmbigous2InterfaceMethod, Is.Not.Null);
 
       Assert.That (classMethodToInterfaceMethodsMap.Count, Is.EqualTo (2));
-      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous1ClassMethod].ToList (), Is.EquivalentTo (ListMother.New (stringTimesIAmbigous1InterfaceMethod)));
-      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous2ClassMethod].ToList (), Is.EquivalentTo (ListMother.New (stringTimesIAmbigous2InterfaceMethod)));
+      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous1ClassMethod].ToList (), Is.EquivalentTo (ListObjectMother.New (stringTimesIAmbigous1InterfaceMethod)));
+      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIAmbigous2ClassMethod].ToList (), Is.EquivalentTo (ListObjectMother.New (stringTimesIAmbigous2InterfaceMethod)));
     }
 
     [Test]
@@ -116,7 +116,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       Assert.That (stringTimesIProcessText2InterfaceMethod, Is.Not.Null);
 
       Assert.That (classMethodToInterfaceMethodsMap.Count, Is.EqualTo (1));
-      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIProcessText1ClassMethod].ToList (), Is.EquivalentTo (ListMother.New (stringTimesIProcessText1InterfaceMethod, stringTimesIProcessText2InterfaceMethod)));
+      Assert.That (classMethodToInterfaceMethodsMap[stringTimesIProcessText1ClassMethod].ToList (), Is.EquivalentTo (ListObjectMother.New (stringTimesIProcessText1InterfaceMethod, stringTimesIProcessText2InterfaceMethod)));
     }
 
 
@@ -133,7 +133,7 @@ namespace Remotion.Scripting.UnitTests.StableBindingImplementation
       var stringTimesIAmbigous2InterfaceMethod = GetAnyInstanceMethod (typeIAmbigous2, "StringTimes");
      
       Assert.That (stableBindingProxyBuilder.GetInterfaceMethodsToClassMethod (stringTimesIAmbigous1ClassMethod).ToList (), Is.Empty);
-      Assert.That (stableBindingProxyBuilder.GetInterfaceMethodsToClassMethod (stringTimesIAmbigous2ClassMethod).ToList (), Is.EquivalentTo (ListMother.New (stringTimesIAmbigous2InterfaceMethod)));
+      Assert.That (stableBindingProxyBuilder.GetInterfaceMethodsToClassMethod (stringTimesIAmbigous2ClassMethod).ToList (), Is.EquivalentTo (ListObjectMother.New (stringTimesIAmbigous2InterfaceMethod)));
     }
 
 
