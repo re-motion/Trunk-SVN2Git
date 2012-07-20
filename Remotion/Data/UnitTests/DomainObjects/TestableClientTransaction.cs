@@ -46,6 +46,11 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return base.GetObject (id, includeDeleted);
     }
 
+    public new DomainObject TryGetObject (ObjectID id)
+    {
+      return base.TryGetObject (id);
+    }
+
     public new DomainObject GetRelatedObject (RelationEndPointID relationEndPointID)
     {
       return base.GetRelatedObject (relationEndPointID);

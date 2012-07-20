@@ -77,14 +77,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get
       {
         DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-        return ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID).Timestamp;
+        return ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true).Timestamp;
       }
     }
 
     public void MarkAsChanged()
     {
       DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-      DataContainer dataContainer = ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID);
+      DataContainer dataContainer = ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true);
       try
       {
         dataContainer.MarkAsChanged ();

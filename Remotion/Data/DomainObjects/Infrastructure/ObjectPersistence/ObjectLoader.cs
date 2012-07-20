@@ -73,12 +73,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _loadedObjectDataProvider; }
     }
 
-    public ILoadedObjectData LoadObject (ObjectID id)
+    public ILoadedObjectData LoadObject (ObjectID id, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
       var loadedObjectData = _persistenceStrategy.LoadObjectData (id);
-      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, true);
+      _loadedObjectDataRegistrationAgent.RegisterIfRequired (loadedObjectData, throwOnNotFound);
       return loadedObjectData;
     }
 

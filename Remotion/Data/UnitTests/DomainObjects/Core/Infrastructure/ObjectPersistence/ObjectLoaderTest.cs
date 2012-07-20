@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
@@ -62,12 +63,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     public void LoadObject ()
     {
       _persistenceStrategyMock.Expect (mock => mock.LoadObjectData (DomainObjectIDs.Order1)).Return (_loadedObjectDataStub1);
-      _loadedObjectDataRegistrationAgentMock.Expect (
-          mock => mock.RegisterIfRequired (Arg.Is (_loadedObjectDataStub1), Arg.Is (true)));
+      var throwOnNotFound = BooleanObjectMother.GetRandomBoolean();
+      _loadedObjectDataRegistrationAgentMock.Expect (mock => mock.RegisterIfRequired (Arg.Is (_loadedObjectDataStub1), Arg.Is (throwOnNotFound)));
 
       _mockRepository.ReplayAll();
 
-      var result = _objectLoader.LoadObject (DomainObjectIDs.Order1);
+      var result = _objectLoader.LoadObject (DomainObjectIDs.Order1, throwOnNotFound);
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.SameAs (_loadedObjectDataStub1));
@@ -94,30 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _mockRepository.VerifyAll();
       Assert.That (result, Is.EqualTo (new[] { _loadedObjectDataStub1, _loadedObjectDataStub2 }));
-    }
-
-    [Test]
-    public void LoadObjects_WithNotFoundObjects ()
-    {
-      _loadedObjectDataStub1.Stub (stub => stub.ObjectID).Return (DomainObjectIDs.Order1);
-
-      var notFoundLoadedObjectData1 = new NotFoundLoadedObjectData (DomainObjectIDs.Order2);
-      var notFoundLoadedObjectData2 = new NotFoundLoadedObjectData (DomainObjectIDs.Order3);
-      _persistenceStrategyMock
-          .Expect (mock => mock.LoadObjectData (
-              Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 })))
-          .Return (new[] { _loadedObjectDataStub1, notFoundLoadedObjectData1, notFoundLoadedObjectData2 });
-      _loadedObjectDataRegistrationAgentMock
-          .Expect (mock => mock.RegisterIfRequired (
-              Arg<IEnumerable<ILoadedObjectData>>.List.Equal (new[] { _loadedObjectDataStub1, notFoundLoadedObjectData1, notFoundLoadedObjectData2 }),
-              Arg.Is (false)));
-
-      _mockRepository.ReplayAll ();
-
-      var result = _objectLoader.LoadObjects (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3 }, false);
-
-      _mockRepository.VerifyAll ();
-      Assert.That (result, Is.EqualTo (new[] { _loadedObjectDataStub1, notFoundLoadedObjectData1, notFoundLoadedObjectData2 }));
     }
 
     [Test]

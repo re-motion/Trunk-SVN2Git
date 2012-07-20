@@ -19,7 +19,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
     private readonly IDisposable _scope;
 
-    private bool _disposed = false;
+    private bool _disposed;
 
     public ParentTransactionOperations (
         ClientTransaction parentTransaction,
@@ -67,6 +67,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       CheckDisposed ();
       
       return _parentTransaction.GetObjects<DomainObject> (objectIDs);
+    }
+
+    public DomainObject TryGetObject (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      CheckDisposed();
+
+      return _parentTransaction.TryGetObject (objectID);
     }
 
     public DomainObject[] TryGetObjects (IEnumerable<ObjectID> objectIDs)
@@ -125,12 +133,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _parentTransaction.DataManager.GetDataContainerWithoutLoading (objectID);
     }
 
-    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
+    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       CheckDisposed ();
       
-      return _parentTransaction.DataManager.GetDataContainerWithLazyLoad (objectID);
+      return _parentTransaction.DataManager.GetDataContainerWithLazyLoad (objectID, throwOnNotFound);
     }
 
     public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID relationEndPointID)

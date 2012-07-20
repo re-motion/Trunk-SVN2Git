@@ -17,9 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -34,7 +32,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// The <see cref="ClientTransaction"/> class uses this listener to implement its extension mechanism.
   /// </remarks>
   [Serializable]
-  public class ExtensionClientTransactionListener : IClientTransactionListener
+  public class ExtensionClientTransactionListener : ClientTransactionListenerBase
   {
     private readonly IClientTransactionExtension _extension;
 
@@ -48,197 +46,147 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       get { return _extension; }
     }
 
-    public void TransactionInitialize (ClientTransaction clientTransaction)
+    public override void TransactionInitialize (ClientTransaction clientTransaction)
     {
       _extension.TransactionInitialize (clientTransaction);
     }
 
-    public void TransactionDiscard (ClientTransaction clientTransaction)
+    public override void TransactionDiscard (ClientTransaction clientTransaction)
     {
       _extension.TransactionDiscard (clientTransaction);
     }
 
-    public void SubTransactionCreating (ClientTransaction clientTransaction)
+    public override void SubTransactionCreating (ClientTransaction clientTransaction)
     {
       _extension.SubTransactionCreating (clientTransaction);
     }
 
-    public void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    public override void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       _extension.SubTransactionInitialize (clientTransaction, subTransaction);
     }
 
-    public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
+    public override void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
       _extension.SubTransactionCreated (clientTransaction, subTransaction);
     }
 
-    public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
+    public override void NewObjectCreating (ClientTransaction clientTransaction, Type type)
     {
       _extension.NewObjectCreating (clientTransaction, type);
     }
 
-    public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
+    public override void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
       _extension.ObjectsLoading (clientTransaction, objectIDs);
     }
 
-    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public override void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       _extension.ObjectsUnloaded (clientTransaction, unloadedDomainObjects);
     }
 
-    public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public override void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       _extension.ObjectsLoaded (clientTransaction, domainObjects);
     }
 
-    public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    public override void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       _extension.ObjectsUnloading (clientTransaction, unloadedDomainObjects);
     }
 
-    public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
+    public override void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       _extension.ObjectDeleting (clientTransaction, domainObject);
     }
 
-    public void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
+    public override void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
     {
       _extension.ObjectDeleted (clientTransaction, domainObject);
     }
 
-    public void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
+    public override void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
       _extension.PropertyValueReading (clientTransaction, domainObject, propertyDefinition, valueAccess);
     }
 
-    public void PropertyValueRead (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
+    public override void PropertyValueRead (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
     {
       _extension.PropertyValueRead (clientTransaction, domainObject, propertyDefinition, value, valueAccess);
     }
 
-    public void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       if (!propertyDefinition.IsObjectID)
         _extension.PropertyValueChanging (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
-    public void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       if (!propertyDefinition.IsObjectID)
         _extension.PropertyValueChanged (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
-    public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    public override void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
       _extension.RelationReading (clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
     }
 
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
+    public override void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
     {
       _extension.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
     }
 
-    public void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
+    public override void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess)
     {
       _extension.RelationRead (clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
-    public void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public override void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       _extension.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
-    public void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public override void RelationChanged (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       _extension.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
-    public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
+    public override QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult)
     {
       return _extension.FilterQueryResult (clientTransaction, queryResult);
     }
 
-    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
+    public override IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
     {
       return _extension.FilterCustomQueryResult (clientTransaction, query, results);
     }
 
-    public void TransactionCommitting (
+    public override void TransactionCommitting (
         ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
     {
       _extension.Committing (clientTransaction, domainObjects, eventRegistrar);
     }
 
-    public void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
+    public override void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData)
     {
       _extension.CommitValidate (clientTransaction, committedData);
     }
 
-    public void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       _extension.Committed (clientTransaction, domainObjects);
     }
 
-    public void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       _extension.RollingBack (clientTransaction, domainObjects);
     }
 
-    public void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
+    public override void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       _extension.RolledBack (clientTransaction, domainObjects);
-    }
-
-    public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
-    {
-      // not handled by this listener
-    }
-
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
-    {
-      // not handled by this listener
-    }
-
-    public void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
-    {
-      // not handled by this listener
-    }
-
-    public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
-    {
-      // not handled by this listener
-    }
-
-    public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
-    {
-      // not handled by this listener
-    }
-
-    public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
-    {
-      // not handled by this listener
-    }
-
-    public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
-    {
-      // not handled by this listener
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return false; }
     }
   }
 }

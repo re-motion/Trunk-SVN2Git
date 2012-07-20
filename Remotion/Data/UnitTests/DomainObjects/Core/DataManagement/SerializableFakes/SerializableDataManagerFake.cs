@@ -88,7 +88,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       get { throw new NotImplementedException(); }
     }
 
-    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
+    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)
     {
       throw new NotImplementedException();
     }
@@ -119,6 +119,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     }
 
     public void MarkInvalid (DomainObject domainObject)
+    {
+      throw new NotImplementedException();
+    }
+
+    public void MarkNotInvalid (ObjectID objectID)
     {
       throw new NotImplementedException();
     }

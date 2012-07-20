@@ -82,9 +82,9 @@ namespace Remotion.Data.DomainObjects.DataManagement
       get { return SafeInnerDataManager.DomainObjectStateCache; }
     }
 
-    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
+    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)
     {
-      return SafeInnerDataManager.GetDataContainerWithLazyLoad (objectID);
+      return SafeInnerDataManager.GetDataContainerWithLazyLoad (objectID, throwOnNotFound);
     }
 
     public IEnumerable<DataContainer> GetDataContainersWithLazyLoad (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
@@ -115,6 +115,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void MarkInvalid (DomainObject domainObject)
     {
       SafeInnerDataManager.MarkInvalid (domainObject);
+    }
+
+    public void MarkNotInvalid (ObjectID objectID)
+    {
+      SafeInnerDataManager.MarkNotInvalid (objectID);
     }
 
     public void Commit ()

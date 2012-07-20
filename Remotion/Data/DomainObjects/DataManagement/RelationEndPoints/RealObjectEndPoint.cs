@@ -120,10 +120,16 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       if (OppositeObjectID == null)
         return null;
-      else if (ClientTransaction.IsInvalid (OppositeObjectID))
-        return ClientTransaction.GetInvalidObjectReference (OppositeObjectID);
       else
-        return ClientTransaction.GetObject (OppositeObjectID, true);
+      {
+        // Try to load the object, but do not throw if it doesn't work
+        // Note: TryGetObject would return null if the object isn't found, but we want to return the invalid reference instead.
+        // Therefore, use TryEnsureDataAvailable and GetObjectReference instead.
+        if (!ClientTransaction.IsInvalid (OppositeObjectID))
+          ClientTransaction.TryEnsureDataAvailable (OppositeObjectID);
+        
+        return ClientTransaction.GetObjectReference (OppositeObjectID);
+      }
     }
 
     public override DomainObject GetOriginalOppositeObject ()

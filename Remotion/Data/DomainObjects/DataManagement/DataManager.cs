@@ -208,14 +208,18 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new InvalidOperationException (message);
       }
 
-      if (RelationEndPointID.GetAllRelationEndPointIDs (domainObject.ID).Any (id => _relationEndPointManager.GetRelationEndPointWithoutLoading (id) != null))
+      _invalidDomainObjectManager.MarkInvalid (domainObject);
+    }
+
+    public void MarkNotInvalid (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      if (!_invalidDomainObjectManager.MarkNotInvalid (objectID))
       {
-        var message = string.Format (
-            "Cannot mark DomainObject '{0}' invalid because there are relation end-points registered for the object.", domainObject.ID);
+        var message = string.Format ("Cannot clear the invalid state from object '{0}' - it wasn't marked invalid in the first place.", objectID);
         throw new InvalidOperationException (message);
       }
-
-      _invalidDomainObjectManager.MarkInvalid (domainObject);
     }
 
     public void Commit ()
@@ -254,23 +258,26 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return DataContainers[objectID];
     }
 
-    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID)
+    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
+      // GetDataContainerWithoutLoading guards against invalid IDs.
       var dataContainer = GetDataContainerWithoutLoading (objectID);
       if (dataContainer != null)
         return dataContainer;
 
-      _objectLoader.LoadObject (objectID);
-      dataContainer = GetDataContainerWithoutLoading (objectID);
-      Assertion.IsNotNull (dataContainer);
-      return dataContainer;
+      _objectLoader.LoadObject (objectID, throwOnNotFound);
+
+      // Since LoadObjects might have marked IDs as invalid, we need to use DataContainers[...] instead of GetDataContainerWithoutLoading here.
+      return DataContainers[objectID];
     }
 
     public IEnumerable<DataContainer> GetDataContainersWithLazyLoad (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+
+      // GetDataContainerWithoutLoading below guards against invalid IDs.
 
       var objectIDsAsCollection = objectIDs.ConvertToCollection();
       // Note that the empty list check is just an "optimization": IObjectLoader works well with empty ObjectID lists, but it seems waste to go 
@@ -279,7 +286,8 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (idsToBeLoaded.Any())
         _objectLoader.LoadObjects (idsToBeLoaded, throwOnNotFound);
 
-      return objectIDsAsCollection.Select (GetDataContainerWithoutLoading);
+      // Since LoadObjects might have marked IDs as invalid, we need to use DataContainers[...] instead of GetDataContainerWithoutLoading here.
+      return objectIDsAsCollection.Select (id => DataContainers[id]);
     }
 
     public void LoadLazyCollectionEndPoint (RelationEndPointID endPointID)
@@ -327,7 +335,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_dataContainerMap[objectID] != null)
         throw new InvalidOperationException ("The given DataContainer cannot be loaded, its data is already available.");
 
-      return GetDataContainerWithLazyLoad (objectID);
+      return GetDataContainerWithLazyLoad (objectID, throwOnNotFound: true);
     }
 
     public IRelationEndPoint GetRelationEndPointWithLazyLoad (RelationEndPointID endPointID)

@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.ObjectBinding;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Reflection;
 using System.Runtime.Serialization;
 using Remotion.Utilities;
@@ -24,7 +25,7 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects
 {
   /// <summary>
-  /// Represents a <see cref="DomainObject"/> that can be instantiated (via <see cref="NewObject"/>), retrieved (via
+  /// Represents a <see cref="DomainObject"/> that can be instantiated (via <see cref="NewObject(Remotion.Reflection.ParamList)"/>), retrieved (via
   /// <see cref="GetObject(ObjectID)"/>), and deleted via public methods.
   /// </summary>
   /// <typeparam name="TDomainObject">The type derived from <see cref="SimpleDomainObject{TDomainObject}"/>.</typeparam>
@@ -45,11 +46,11 @@ namespace Remotion.Data.DomainObjects
     /// <returns>A new <typeparamref name="TDomainObject"/> instance.</returns>
     /// <remarks>
     /// <para>
-    /// This method is identical to <see cref="DomainObject.NewObject{T}"/>, but it can be called from any other class whereas
-    /// <see cref="DomainObject.NewObject{T}"/> can only be called from classes derived from <see cref="DomainObject"/>.
+    /// This method is identical to <see cref="DomainObject.NewObject{T}()"/>, but it can be called from any other class whereas
+    /// <see cref="DomainObject.NewObject{T}()"/> can only be called from classes derived from <see cref="DomainObject"/>.
     /// </para>
     /// </remarks>
-    /// <seealso cref="DomainObject.NewObject{T}"/>
+    /// <seealso cref="DomainObject.NewObject{T}()"/>
     /// <exception cref="ArgumentException">The type <typeparamref name="TDomainObject"/> cannot be extended to a proxy, for example because it is sealed
     /// or abstract and non-instantiable.</exception>
     /// <exception cref="MissingMethodException">The given type <typeparamref name="TDomainObject"/> does not implement the required protected
@@ -87,6 +88,8 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Gets a <see cref="SimpleDomainObject{TDomainObject}"/> that is already loaded or attempts to load it from the data source.
+    /// If the object's data can't be found, an 
+    /// exception is thrown, and the object is marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> of the <see cref="SimpleDomainObject{TDomainObject}"/> that should be loaded. Must not be 
     /// <see langword="null"/>.</param>
@@ -99,12 +102,19 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     /// <seealso cref="DomainObject.GetObject{T}(ObjectID)"/>
     /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ObjectsNotFoundException">
+    /// The object could not be found in the data source. Note that the <see cref="ClientTransaction"/> marks
+    /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
+    /// <see cref="ObjectInvalidException"/> being thrown.
+    /// </exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="Persistence.StorageProviderException">
     ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
     ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
     ///   An error occurred while accessing the data source.
     /// </exception>
     /// <exception cref="MissingMethodException">The concrete <see cref="DomainObject"/> doesn't implement the required constructor.</exception>
+    /// <exception cref="ObjectDeletedException">The object has already been deleted.</exception>
     /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="TDomainObject"/>.</exception>
     public static TDomainObject GetObject (ObjectID id)
     {
@@ -113,6 +123,8 @@ namespace Remotion.Data.DomainObjects
 
     /// <summary>
     /// Gets a <see cref="SimpleDomainObject{TDomainObject}"/> that is already loaded or attempts to load it from the data source.
+    /// If the object's data can't be found, an 
+    /// exception is thrown, and the object is marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>.
     /// </summary>
     /// <param name="id">The <see cref="ObjectID"/> of the <see cref="SimpleDomainObject{TDomainObject}"/> that should be loaded. Must not be <see langword="null"/>.</param>
     /// <param name="includeDeleted">Indicates if the method should return <see cref="SimpleDomainObject{TDomainObject}"/>s that are already deleted.</param>
@@ -125,16 +137,46 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     /// <seealso cref="DomainObject.GetObject{T}(ObjectID,bool)"/>
     /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ObjectsNotFoundException">
+    /// The object could not be found in the data source. Note that the <see cref="ClientTransaction"/> marks
+    /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
+    /// <see cref="ObjectInvalidException"/> being thrown.
+    /// </exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the <see cref="ClientTransaction"/>.</exception>
     /// <exception cref="Persistence.StorageProviderException">
     ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
     ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
     ///   An error occurred while accessing the data source.
     /// </exception>
     /// <exception cref="MissingMethodException">The concrete <see cref="DomainObject"/> doesn't implement the required constructor.</exception>
+    /// <exception cref="ObjectDeletedException">The object has already been deleted and the <paramref name="includeDeleted"/> flag is 
+    /// <see langword="false" />.</exception>
     /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="TDomainObject"/>.</exception>
     public static TDomainObject GetObject (ObjectID id, bool includeDeleted)
     {
       return DomainObject.GetObject<TDomainObject> (id, includeDeleted);
+    }
+
+    /// <summary>
+    /// Gets a <see cref="DomainObject"/> that already exists or attempts to load it from the data source. 
+    /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>, and the method will
+    /// return a <see langword="null" /> reference in its place.
+    /// </summary>
+    /// <param name="id">The <see cref="ObjectID"/> of the <see cref="DomainObject"/> that should be loaded. Must not be <see langword="null"/>.</param>
+    /// <returns>
+    /// The <see cref="DomainObject"/> with the specified <paramref name="id"/>, or <see langword="null" /> if it couldn't be found.
+    /// </returns>
+    /// <exception cref="System.ArgumentNullException"><paramref name="id"/> is <see langword="null"/>.</exception>
+    /// <exception cref="Persistence.StorageProviderException">
+    ///   The Mapping does not contain a class definition for the given <paramref name="id"/>.<br /> -or- <br />
+    ///   An error occurred while reading a <see cref="PropertyValue"/>.<br /> -or- <br />
+    ///   An error occurred while accessing the data source.
+    /// </exception>
+    /// <exception cref="InvalidCastException">The loaded <see cref="DomainObject"/> is not of the expected type <typeparamref name="TDomainObject"/>.</exception>
+    public static TDomainObject TryGetObject (ObjectID id)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+      return DomainObject.TryGetObject<TDomainObject> (id);
     }
 
     protected SimpleDomainObject ()

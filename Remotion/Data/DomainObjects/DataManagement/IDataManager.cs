@@ -33,7 +33,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     // TODO 4499: Remove
     DomainObjectStateCache DomainObjectStateCache { get; }
 
-    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
+    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound);
     IEnumerable<DataContainer> GetDataContainersWithLazyLoad (IEnumerable<ObjectID> objectIDs, bool throwOnNotFound);
 
     IEnumerable<PersistableData> GetLoadedDataByObjectState (params StateType[] domainObjectStates);
@@ -49,6 +49,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     void Discard (DataContainer dataContainer);
 
     void MarkInvalid (DomainObject domainObject);
+    void MarkNotInvalid (ObjectID objectID);
 
     void Commit ();
     void Rollback ();

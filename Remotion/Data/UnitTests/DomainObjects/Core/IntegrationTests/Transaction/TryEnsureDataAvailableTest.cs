@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var result = TestableClientTransaction.TryEnsureDataAvailable (NotLoadedNonExistingObject.ID);
 
-      // TODO 4920: CheckInvalid (NotLoadedNonExistingObject);
+      CheckInvalid (NotLoadedNonExistingObject);
       Assert.That (result, Is.False);
       // Note: More elaborate tests for not found objects are in NotFoundObjectTest
     }
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var result = TestableClientTransaction.TryEnsureDataAvailable (new[] { NotLoadedNonExistingObject.ID, NotLoadedObject1.ID });
 
       CheckLoaded (NotLoadedObject1);
-      // TODO 4920: CheckInvalid (NotLoadedNonExistingObject);
+      CheckInvalid (NotLoadedNonExistingObject);
       Assert.That (result, Is.False);
       // Note: More elaborate tests for not found objects are in NotFoundObjectTest
     }

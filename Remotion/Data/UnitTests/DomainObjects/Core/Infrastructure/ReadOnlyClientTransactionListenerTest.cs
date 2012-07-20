@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private MethodInfo[] _neverThrowingMethods;
     private MethodInfo[] _throwingMethods;
     private MethodInfo[] _methodsAssertingReadOnlyness;
-    private MethodInfo[] _methodsNotExpectingReadonlyness;
+    private MethodInfo[] _methodsNotAssertingReadonlyness;
 
     [SetUp]
     public void SetUp ()
@@ -73,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           .Where (n => !_neverThrowingMethodNames.Contains (n.Name))
           .Where (n => !_methodsExpectingReadOnlynessNames.Contains (n.Name)).ToArray ();
       _methodsAssertingReadOnlyness = _allMethods.Where (n => _methodsExpectingReadOnlynessNames.Contains (n.Name)).ToArray ();
-      _methodsNotExpectingReadonlyness = _allMethods.Except (_methodsAssertingReadOnlyness).ToArray ();
+      _methodsNotAssertingReadonlyness = _allMethods.Except (_methodsAssertingReadOnlyness).ToArray ();
     }
 
     [Test]
@@ -81,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = true;
 
-      Assert.That (_throwingMethods, Has.Length.EqualTo (20));
+      Assert.That (_throwingMethods, Has.Length.EqualTo (21));
       
       foreach (var method in _throwingMethods)
       {
@@ -127,9 +127,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = false;
 
-      Assert.That (_methodsNotExpectingReadonlyness, Has.Length.EqualTo (35));
+      Assert.That (_methodsNotAssertingReadonlyness, Has.Length.EqualTo (36));
 
-      foreach (var method in _methodsNotExpectingReadonlyness)
+      foreach (var method in _methodsNotAssertingReadonlyness)
       {
         var concreteMethod = GetCallableMethod (method);
         object[] arguments = Array.ConvertAll (concreteMethod.GetParameters (), p => GetDefaultValue (p.ParameterType));

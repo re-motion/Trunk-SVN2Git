@@ -202,6 +202,7 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\CollectionEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
+    <Compile Include="DomainImplementation\ResurrectionService.cs" />
     <Compile Include="DomainObjectCommittingEventArgs.cs" />
     <Compile Include="Infrastructure\CommitRollbackAgent.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Infrastructure\IClientTransactionEventBroker.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventDistributor.cs" />
     <Compile Include="ICommittingEventRegistrar.cs" />
+    <Compile Include="Infrastructure\NotFoundObjectsClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\NotFoundLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />

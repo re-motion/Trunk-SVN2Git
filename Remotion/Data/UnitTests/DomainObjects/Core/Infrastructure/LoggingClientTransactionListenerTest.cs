@@ -136,19 +136,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void ObjectsUnloaded ()
-    {
-      CheckLoggingMethod (
-          () => _listener.ObjectsUnloaded (_clientTransaction, new ReadOnlyCollection<DomainObject> (new List<DomainObject> { _domainObject })),
-          string.Format ("{0} ObjectsUnloaded: {1}", _clientTransaction.ID, _domainObject.ID));
-    }
-
-    [Test]
     public void ObjectsLoaded ()
     {
       CheckLoggingMethod (
           () => _listener.ObjectsLoaded (_clientTransaction, new ReadOnlyCollection<DomainObject> (new List<DomainObject> { _domainObject })),
           string.Format ("{0} ObjectsLoaded: {1}", _clientTransaction.ID, _domainObject.ID));
+    }
+
+    [Test]
+    public void ObjectsNotFound ()
+    {
+      CheckLoggingMethod (
+          () => _listener.ObjectsNotFound (_clientTransaction, new ReadOnlyCollection<ObjectID> (new List<ObjectID> ())),
+          string.Format ("{0} ObjectsNotFound: {1}", _clientTransaction.ID, ""));
+    }
+
+    [Test]
+    public void ObjectsUnloaded ()
+    {
+      CheckLoggingMethod (
+          () => _listener.ObjectsUnloaded (_clientTransaction, new ReadOnlyCollection<DomainObject> (new List<DomainObject> { _domainObject })),
+          string.Format ("{0} ObjectsUnloaded: {1}", _clientTransaction.ID, _domainObject.ID));
     }
 
     [Test]

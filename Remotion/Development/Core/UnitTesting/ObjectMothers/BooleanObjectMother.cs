@@ -14,42 +14,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
+using System;
+
+namespace Remotion.Development.UnitTesting.ObjectMothers
 {
   /// <summary>
-  /// Represents an object that couldn't be found by an <see cref="IPersistenceStrategy"/>.
+  /// Provides boolean values for unit tests.
   /// </summary>
-  public class NotFoundLoadedObjectData : ILoadedObjectData
+  public static class BooleanObjectMother
   {
-    private readonly ObjectID _objectID;
+    private static readonly Random s_random = new Random ();
 
-    public NotFoundLoadedObjectData (ObjectID objectID)
+    /// <summary>
+    /// Gets a random <see cref="bool"/> value. This is used by unit tests when they need code to work with arbitrary boolean values. Rather than
+    /// duplicating the test, once for <see langword="true" /> and once for <see langword="false" />, the test is written once and is executed 
+    /// with both <see langword="true" /> and <see langword="false" /> values chosen at random.
+    /// </summary>
+    /// <returns>A random <see cref="bool"/> value.</returns>
+    public static bool GetRandomBoolean ()
     {
-      _objectID = objectID;
-    }
-
-    public ObjectID ObjectID
-    {
-      get { return _objectID; }
-    }
-
-    public DomainObject GetDomainObjectReference ()
-    {
-      return null;
-    }
-
-    public void Accept (ILoadedObjectVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-      visitor.VisitNotFoundLoadedObject (this);
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return true; }
+      return s_random.Next (2) == 1;
     }
   }
 }

@@ -76,6 +76,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObject", objectID, includeDeleted);
     }
 
+    public static DomainObject CallTryGetObject (ClientTransaction clientTransaction, ObjectID objectID)
+    {
+      return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "TryGetObject", objectID);
+    }
+
     public static DomainObject CallGetObjectReference (ClientTransaction clientTransaction, ObjectID objectID)
     {
       return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "GetObjectReference", objectID);

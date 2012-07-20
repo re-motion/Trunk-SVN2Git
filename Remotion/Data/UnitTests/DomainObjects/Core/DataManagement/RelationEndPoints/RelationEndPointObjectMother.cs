@@ -59,7 +59,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public static RealObjectEndPoint CreateRealObjectEndPoint (RelationEndPointID endPointID)
     {
       var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (ClientTransaction.Current, "DataManager");
-      var dataContainer = dataManager.GetDataContainerWithLazyLoad (endPointID.ObjectID);
+      var dataContainer = dataManager.GetDataContainerWithLazyLoad (endPointID.ObjectID, true);
       return CreateRealObjectEndPoint (endPointID, dataContainer);
     }
 

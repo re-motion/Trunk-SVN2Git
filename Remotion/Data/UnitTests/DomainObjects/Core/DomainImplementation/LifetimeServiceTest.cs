@@ -111,6 +111,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
+    public void TryGetObject ()
+    {
+      var order = (Order) LifetimeService.TryGetObject (TestableClientTransaction, DomainObjectIDs.Order1);
+      Assert.That (order, Is.Not.Null);
+      Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (order.CtorCalled, Is.False);
+    }
+
+    [Test]
+    public void TryGetObject_Deleted ()
+    {
+      var order = Order.GetObject (DomainObjectIDs.Order1);
+      order.Delete ();
+
+      var orderAgain = LifetimeService.TryGetObject (TestableClientTransaction, DomainObjectIDs.Order1);
+
+      Assert.That (orderAgain, Is.SameAs (order));
+    }
+
+    [Test]
+    public void TryGetObject_Invalid ()
+    {
+      var instance = Order.NewObject ();
+      instance.Delete ();
+      Assert.That (instance.IsInvalid, Is.True);
+
+      var instanceAgain = LifetimeService.TryGetObject (TestableClientTransaction, instance.ID);
+
+      Assert.That (instanceAgain, Is.SameAs (instance));
+    }
+
+    [Test]
+    public void TryGetObject_NotFound ()
+    {
+      var id = new ObjectID (typeof (Order), Guid.NewGuid());
+      Assert.That (TestableClientTransaction.IsInvalid (id), Is.False);
+      
+      var result = LifetimeService.TryGetObject (TestableClientTransaction, id);
+
+      Assert.That (result, Is.Null);
+      Assert.That (TestableClientTransaction.IsInvalid (id), Is.True);
+    }
+
+    [Test]
     public void GetObjectReference ()
     {
       var result = LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order1);

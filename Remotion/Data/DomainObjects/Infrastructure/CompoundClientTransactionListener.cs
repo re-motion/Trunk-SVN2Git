@@ -109,6 +109,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.ObjectsLoaded (clientTransaction, domainObjects);
     }
 
+    public void ObjectsNotFound (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
+    {
+      foreach (var listener in _listeners)
+        listener.ObjectsNotFound (clientTransaction, objectIDs);
+    }
+
     public virtual void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       foreach (var listener in _listeners)

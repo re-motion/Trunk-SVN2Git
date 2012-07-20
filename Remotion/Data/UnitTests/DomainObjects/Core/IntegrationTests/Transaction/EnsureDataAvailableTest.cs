@@ -77,7 +77,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           () => TestableClientTransaction.EnsureDataAvailable (NotLoadedNonExistingObject.ID),
           Throws.TypeOf<ObjectsNotFoundException> ().With.Message.EqualTo ("Object(s) could not be found: '" + NotLoadedNonExistingObject.ID + "'."));
 
-      // TODO 4920: CheckInvalid (NotLoadedNonExistingObject);
+      CheckInvalid (NotLoadedNonExistingObject);
       // Note: More elaborate tests for not found objects are in NotFoundObjectTest
     }
 
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           () => TestableClientTransaction.EnsureDataAvailable (new[] { NotLoadedNonExistingObject.ID }),
           Throws.TypeOf<ObjectsNotFoundException>().With.Message.EqualTo ("Object(s) could not be found: '" + NotLoadedNonExistingObject.ID + "'."));
 
-      // TODO 4920: CheckInvalid (NotLoadedNonExistingObject);
+      CheckInvalid (NotLoadedNonExistingObject);
       // Note: More elaborate tests for not found objects are in NotFoundObjectTest
     }
 

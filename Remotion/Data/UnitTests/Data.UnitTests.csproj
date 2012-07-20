@@ -204,11 +204,14 @@
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
+    <Compile Include="DomainObjects\Core\DomainImplementation\ResurrectionServiceTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommitRollbackAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommittingEventRegistrarTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NotFoundLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\NotFoundObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\ResurrectInvalidObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\RelationInconcsistenciesTestHelper.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitRollbackFullEventChainTestBase.cs" />
@@ -606,7 +609,6 @@
     <Compile Include="DomainObjects\Core\Infrastructure\NewObjectHierarchyInvalidationClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\BigRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Synchronization\CollectionRelationInconsistenciesTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\GetObjectsTest.cs" />
     <Compile Include="DomainObjects\Core\LinqCastMethodAttributeTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\IntegrationTests\MethodCallsIntegrationTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\StorageSpecificExpressionResolverTest.cs" />

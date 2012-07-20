@@ -16,7 +16,8 @@
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
 using System;
-using NUnit.Framework; 
+using NUnit.Framework;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.SecurityManager.AclTools.Expansion;
 using Remotion.SecurityManager.AclTools.Expansion.Infrastructure;
 using Remotion.SecurityManager.Domain.AccessControl;
@@ -44,12 +45,12 @@ namespace Remotion.SecurityManager.UnitTests.AclTools.Expansion
     public void EnumeratorTest ()
     {
       // Prepare to serve some User|s
-      var users = Remotion.Development.UnitTesting.ObjectMother.ListMother.New (User, User2, User3);
+      var users = ListObjectMother.New (User, User2, User3);
       var userFinderStub = MockRepository.GenerateStub<IAclExpanderUserFinder> ();
       userFinderStub.Expect (stub => stub.FindUsers ()).Return (users);
 
       // Prepare to serve some Acl|s
-      var acls = Remotion.Development.UnitTesting.ObjectMother.ListMother.New<AccessControlList> (Acl, Acl2);
+      var acls = ListObjectMother.New<AccessControlList> (Acl, Acl2);
       var aclFinderStub = MockRepository.GenerateStub<IAclExpanderAclFinder> ();
       aclFinderStub.Expect (stub => stub.FindAccessControlLists ()).Return (acls);
 

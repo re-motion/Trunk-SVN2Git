@@ -15,10 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -39,9 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _eventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
     }
 
-
     [Test]
-    public void DataContainerMapLookUp ()
+    public void GetObject_Twice ()
     {
       DomainObject domainObject1 = TestableClientTransaction.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
       Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
@@ -58,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void LoadingOfMultipleSimpleObjects ()
+    public void GetObject_MultipleSimpleObjects ()
     {
       ObjectID id1 = DomainObjectIDs.ClassWithAllDataTypes1;
       ObjectID id2 = DomainObjectIDs.ClassWithAllDataTypes2;
@@ -79,6 +81,101 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (domainObjects[0], Is.SameAs (domainObject2));
 
       Assert.That (ReferenceEquals (domainObject1, domainObject2), Is.False);
+    }
+
+    [Test]
+    public void GetObject_NotFound_True ()
+    {
+      var notFoundID = new ObjectID (typeof (Order), Guid.NewGuid());
+
+      Assert.That (
+          () => TestableClientTransaction.GetObject (notFoundID, true), 
+          Throws.TypeOf<ObjectsNotFoundException> ().With.Property ("IDs").EqualTo (new[] { notFoundID }));
+    }
+
+    [Test]
+    public void GetObject_NotFound_False ()
+    {
+      var notFoundID = new ObjectID (typeof (Order), Guid.NewGuid ());
+
+      Assert.That (() => TestableClientTransaction.GetObject (notFoundID, false), Throws.TypeOf<ObjectsNotFoundException> ());
+    }
+
+    [Test]
+    public void GetObject_Deleted ()
+    {
+      var domainObject = TestableClientTransaction.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
+      LifetimeService.DeleteObject (TestableClientTransaction, domainObject);
+
+      Assert.That (
+          () => TestableClientTransaction.GetObject (domainObject.ID, false),
+          Throws.TypeOf<ObjectDeletedException> ().With.Message.EqualTo (
+              "Object 'ClassWithAllDataTypes|3f647d79-0caf-4a53-baa7-a56831f8ce2d|System.Guid' is already deleted."));
+      Assert.That (TestableClientTransaction.GetObject (domainObject.ID, true), Is.SameAs (domainObject));
+    }
+
+    [Test]
+    public void GetObject_Invalid ()
+    {
+      var domainObject = ClassWithAllDataTypes.NewObject();
+      domainObject.Delete();
+
+      var expectedMessage = string.Format ("Object '{0}' is invalid in this transaction.", domainObject.ID);
+      Assert.That (
+          () => TestableClientTransaction.GetObject (domainObject.ID, true),
+          Throws.TypeOf<ObjectInvalidException> ().With.Message.EqualTo (expectedMessage));
+      Assert.That (
+          () => TestableClientTransaction.GetObject (domainObject.ID, false), 
+          Throws.TypeOf<ObjectInvalidException> ().With.Message.EqualTo (expectedMessage));
+    }
+
+    [Test]
+    public void TryGetObject_Twice ()
+    {
+      DomainObject domainObject1 = TestableClientTransaction.TryGetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (1));
+
+      var domainObjects = _eventReceiver.LoadedDomainObjectLists[0];
+      Assert.That (domainObjects.Count, Is.EqualTo (1));
+      Assert.That (domainObjects[0], Is.SameAs (domainObject1));
+      _eventReceiver.Clear ();
+
+      DomainObject domainObject2 = TestableClientTransaction.TryGetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      Assert.That (_eventReceiver.LoadedDomainObjectLists.Count, Is.EqualTo (0));
+
+      Assert.That (domainObject2, Is.SameAs (domainObject1));
+    }
+
+    [Test]
+    public void TryGetObject_NotFound ()
+    {
+      var notFoundID = new ObjectID (typeof (Order), Guid.NewGuid ());
+
+      var domainObject = TestableClientTransaction.TryGetObject (notFoundID);
+      Assert.That (domainObject, Is.Null);
+
+      domainObject = TestableClientTransaction.TryGetObject (notFoundID);
+      Assert.That (domainObject, Is.Not.Null);
+      Assert.That (domainObject.IsInvalid, Is.True);
+    }
+
+    [Test]
+    public void TryGetObject_Deleted ()
+    {
+      var domainObject = TestableClientTransaction.GetObject (DomainObjectIDs.ClassWithAllDataTypes1, false);
+      LifetimeService.DeleteObject (TestableClientTransaction, domainObject);
+
+      Assert.That (TestableClientTransaction.TryGetObject (domainObject.ID), Is.SameAs (domainObject));
+    }
+
+    [Test]
+    public void TryGetObject_Invalid ()
+    {
+      var domainObject = ClassWithAllDataTypes.NewObject ();
+      domainObject.Delete ();
+      Assert.That (domainObject.IsInvalid, Is.True);
+
+      Assert.That (TestableClientTransaction.TryGetObject (domainObject.ID), Is.SameAs (domainObject));
     }
 
     [Test]
@@ -300,5 +397,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       Assert.That (TestableClientTransaction.TryGetObjects<Order> (order.ID), Is.EqualTo (new[] { order }));
     }
+
+    [Test]
+    public void TryGetObjects_WithMoreThan2100IDs ()
+    {
+      var ids = new List<ObjectID> ();
+      ids.Add (DomainObjectIDs.Order1);
+      ids.Add (DomainObjectIDs.Order2);
+      ids.AddRange (Enumerable.Range (0, 4000).Select (i => new ObjectID (DomainObjectIDs.Order1.ClassDefinition, Guid.NewGuid ())));
+
+      var result = TestableClientTransaction.TryGetObjects<Order> (ids.ToArray ());
+      Assert.That (result.Length, Is.EqualTo (4002));
+      Assert.That (result.Distinct ().ToArray (), Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2), null }));
+    }
+
   }
 }

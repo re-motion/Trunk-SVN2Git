@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var listener = new InvalidatedTransactionListener();
       MethodInfo[] methods =
           typeof (InvalidatedTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-      Assert.AreEqual (37, methods.Length);
+      Assert.AreEqual (38, methods.Length);
 
       foreach (var method in methods)
       {

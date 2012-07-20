@@ -61,6 +61,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
+    public virtual void ObjectsNotFound (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
+    {
+    }
+
     public virtual void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
     }

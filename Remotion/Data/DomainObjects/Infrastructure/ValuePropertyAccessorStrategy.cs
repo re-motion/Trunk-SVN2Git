@@ -85,7 +85,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private DataContainer GetDataContainer (PropertyAccessor propertyAccessor, ClientTransaction transaction)
     {
-      return transaction.DataManager.GetDataContainerWithLazyLoad (propertyAccessor.DomainObject.ID);
+      return transaction.DataManager.GetDataContainerWithLazyLoad (propertyAccessor.DomainObject.ID, throwOnNotFound: true);
     }
   }
 }

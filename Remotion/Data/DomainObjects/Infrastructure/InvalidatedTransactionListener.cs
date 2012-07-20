@@ -79,6 +79,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateException();
     }
 
+    public void ObjectsNotFound (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
+    {
+      throw CreateException ();
+    }
+
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       throw CreateException ();

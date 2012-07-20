@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       _clientTransaction = ClientTransaction.CreateRootTransaction();
 
       _mockRepository = new MockRepository();
-      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(_clientTransaction);
+      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock (_clientTransaction, _mockRepository);
       _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
 
       _agent = new LoadedObjectDataRegistrationAgent (_clientTransaction, _dataManagerMock, _eventSinkWithMock);
@@ -128,13 +128,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       var notFoundLoadedObject = GetNotFoundLoadedObject ();
 
+      _eventSinkWithMock
+            .ExpectMock (
+                mock => mock.ObjectsNotFound (
+                    Arg.Is (_clientTransaction), Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { notFoundLoadedObject.ObjectID })));
       _mockRepository.ReplayAll ();
 
       Assert.That (() => _agent.RegisterIfRequired (notFoundLoadedObject, false), Throws.Nothing);
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkWithMock.VerifyMock ();
+
       _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
+      _dataManagerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -142,6 +149,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       var notFoundLoadedObject = GetNotFoundLoadedObject ();
 
+      _eventSinkWithMock
+                  .ExpectMock (
+                      mock => mock.ObjectsNotFound (
+                          Arg.Is (_clientTransaction),
+                          Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { notFoundLoadedObject.ObjectID })));
       _mockRepository.ReplayAll ();
 
       Assert.That (
@@ -151,7 +163,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkWithMock.VerifyMock ();
+
       _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
+      _dataManagerMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -173,6 +188,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       using (_mockRepository.Ordered ())
       {
+        _eventSinkWithMock
+            .ExpectMock (
+                mock => mock.ObjectsNotFound (
+                    Arg.Is (_clientTransaction),
+                    Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { notFoundLoadedObject1.ObjectID, notFoundLoadedObject2.ObjectID })));
         _eventSinkWithMock.ExpectMock (mock => mock.ObjectsLoading (
             Arg.Is (_clientTransaction), 
             Arg<ReadOnlyCollection<ObjectID>>.Is.Equal (new[] { registerableDataContainer1.ID, registerableDataContainer2.ID })));
@@ -225,6 +245,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       var notFoundLoadedObject1 = GetNotFoundLoadedObject ();
       var notFoundLoadedObject2 = GetNotFoundLoadedObject ();
 
+      _eventSinkWithMock
+            .ExpectMock (
+                mock => mock.ObjectsNotFound (
+                    Arg.Is (_clientTransaction),
+                    Arg<ReadOnlyCollection<ObjectID>>.List.Equal (new[] { notFoundLoadedObject1.ObjectID, notFoundLoadedObject2.ObjectID })));
       _mockRepository.ReplayAll ();
 
       var allObjects =
@@ -245,9 +270,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-      _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _eventSinkWithMock.VerifyMock ();
+
+      _dataManagerMock.AssertWasNotCalled (mock => mock.RegisterDataContainer (Arg<DataContainer>.Is.Anything));
     }
 
     [Test]
@@ -328,6 +355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _eventSinkWithMock.AssertWasNotCalledMock (
           mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _eventSinkWithMock.VerifyMock ();
     }
 
     [Test]

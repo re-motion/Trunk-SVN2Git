@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.RealObjectEndPoints;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -180,8 +181,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, DomainObjectIDs.Order1);
 
-      var oppositeObject = _endPoint.GetOppositeObject ();
-      Assert.That (oppositeObject, Is.SameAs (Order.GetObject (DomainObjectIDs.Order1)));
+      DomainObject oppositeObject;
+      using (ClientTransactionScope.EnterNullScope ())
+      {
+        oppositeObject = _endPoint.GetOppositeObject ();
+      }
+
+      Assert.That (oppositeObject, Is.SameAs (LifetimeService.GetObjectReference (TestableClientTransaction, DomainObjectIDs.Order1)));
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Unchanged), "Data has been loaded");
     }
 
     [Test]
@@ -216,6 +223,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, oppositeObject.ID);
 
       Assert.That (_endPoint.GetOppositeObject (), Is.SameAs (oppositeObject));
+    }
+
+    [Test]
+    public void GetOppositeObject_NotFound ()
+    {
+      var objectID = new ObjectID (typeof (Order), Guid.NewGuid());
+      RealObjectEndPointTestHelper.SetOppositeObjectID (_endPoint, objectID);
+
+      var oppositeObject = _endPoint.GetOppositeObject ();
+      Assert.That (oppositeObject.ID, Is.EqualTo (objectID));
+      Assert.That (oppositeObject.State, Is.EqualTo (StateType.Invalid), "Data has not been found");
     }
 
     [Test]

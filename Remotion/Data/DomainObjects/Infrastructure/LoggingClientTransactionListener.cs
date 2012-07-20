@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -79,16 +78,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} ObjectsLoading: {1}", clientTransaction.ID, GetObjectIDString (objectIDs));
     }
 
-    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
-    {
-      if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} ObjectsUnloaded: {1}", clientTransaction.ID, GetDomainObjectsString (unloadedDomainObjects));
-    }
-
     public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       if (s_log.IsDebugEnabled)
         s_log.DebugFormat ("{0} ObjectsLoaded: {1}", clientTransaction.ID, GetDomainObjectsString (domainObjects));
+    }
+
+    public void ObjectsNotFound (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("{0} ObjectsNotFound: {1}", clientTransaction.ID, GetObjectIDString (objectIDs));
+    }
+
+    public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
+    {
+      if (s_log.IsDebugEnabled)
+        s_log.DebugFormat ("{0} ObjectsUnloaded: {1}", clientTransaction.ID, GetDomainObjectsString (unloadedDomainObjects));
     }
 
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)

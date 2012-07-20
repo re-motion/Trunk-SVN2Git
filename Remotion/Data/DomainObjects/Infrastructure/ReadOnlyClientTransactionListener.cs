@@ -74,6 +74,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       EnsureWriteable (clientTransaction, "ObjectsLoaded");
     }
 
+    public void ObjectsNotFound (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
+    {
+      EnsureWriteable (clientTransaction, "ObjectsNotFound");
+    }
+
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       // Allowed for read-only transactions (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction is made 

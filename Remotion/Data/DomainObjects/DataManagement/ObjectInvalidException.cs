@@ -20,85 +20,76 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.DataManagement
 {
-/// <summary>
-/// The exception that is thrown when properties or methods of an object are accessed in a transaction where that object is invalid.
-/// </summary>
-/// <remarks>
-/// A <see cref="DomainObject"/> is invalid in the following situations:
-/// <list type="buttons">
-///   <description>
-///     A new <see cref="DomainObject"/> has been created and the <see cref="ClientTransaction"/> has been rolled back.
-///   </description>
-///   <description>
-///     A new <see cref="DomainObject"/> has been created and deleted.
-///   </description>
-///   <description>
-///     An existing <see cref="DomainObject"/> has been deleted and the <see cref="ClientTransaction"/> has been committed.
-///   </description>
-///   <description>
-///     A new <see cref="DomainObject"/> has been created in a sub-transaction of the <see cref="ClientTransaction"/> and the sub-transaction
-///     has not yet been committed. When the sub-transaction is committed, the object becomes valid in the parent, but not in the parent's parent and
-///     above.
-///   </description>
-/// </list>
-/// The <see cref="DataContainer"/> that was associated with the invalid <see cref="DomainObject"/> is discarded.
-/// </remarks>
-[Serializable]
-public class ObjectInvalidException : DomainObjectException
-{
-  // types
-
-  // static members and constants
-
-  // member fields
-
-  private readonly ObjectID _id;
-
-  // construction and disposing
-
-  public ObjectInvalidException () : this ("Object is invalid in this transaction.") 
-  {
-  }
-
-  public ObjectInvalidException (string message) : base (message) 
-  {
-  }
-  
-  public ObjectInvalidException (string message, Exception inner) : base (message, inner) 
-  {
-  }
-
-  protected ObjectInvalidException (SerializationInfo info, StreamingContext context) : base (info, context) 
-  {
-    _id = (ObjectID) info.GetValue ("ID", typeof (ObjectID));
-  }
-
-  public ObjectInvalidException (ObjectID id) : this (string.Format ("Object '{0}' is invalid in this transaction.", id), id)
-  {
-  }
-
-  public ObjectInvalidException (string message, ObjectID id) : base (message) 
-  {
-    ArgumentUtility.CheckNotNull ("id", id);
-
-    _id = id;
-  }
-
-  // methods and properties
-
   /// <summary>
-  /// The <see cref="ObjectID"/> of the object that caused the exception.
+  /// The exception that is thrown when properties or methods of an object are accessed in a transaction where that object is invalid.
   /// </summary>
-  public ObjectID ID
+  /// <remarks>
+  /// A <see cref="DomainObject"/> is invalid in the following situations:
+  /// <list type="buttons">
+  ///   <description>
+  ///     A new <see cref="DomainObject"/> has been created and the <see cref="ClientTransaction"/> has been rolled back.
+  ///   </description>
+  ///   <description>
+  ///     A new <see cref="DomainObject"/> has been created and deleted.
+  ///   </description>
+  ///   <description>
+  ///     An existing <see cref="DomainObject"/> has been deleted and the <see cref="ClientTransaction"/> has been committed.
+  ///   </description>
+  ///   <description>
+  ///     A new <see cref="DomainObject"/> has been created in a sub-transaction of the <see cref="ClientTransaction"/> and the sub-transaction
+  ///     has not yet been committed. When the sub-transaction is committed, the object becomes valid in the parent, but not in the parent's parent and
+  ///     above.
+  ///   </description>
+  /// </list>
+  /// The <see cref="DataContainer"/> that was associated with the invalid <see cref="DomainObject"/> is discarded.
+  /// </remarks>
+  [Serializable]
+  public class ObjectInvalidException : DomainObjectException
   {
-    get { return _id; }
-  }
+    private readonly ObjectID _id;
 
-  public override void GetObjectData (SerializationInfo info, StreamingContext context)
-  {
-    base.GetObjectData (info, context);
+    public ObjectInvalidException (string message)
+        : base (message)
+    {
+    }
 
-    info.AddValue ("ID", _id);
+    public ObjectInvalidException (string message, Exception inner)
+        : base (message, inner)
+    {
+    }
+
+    protected ObjectInvalidException (SerializationInfo info, StreamingContext context)
+        : base (info, context)
+    {
+      _id = (ObjectID) info.GetValue ("ID", typeof (ObjectID));
+    }
+
+    public ObjectInvalidException (ObjectID id)
+        : this (string.Format ("Object '{0}' is invalid in this transaction.", id), id)
+    {
+    }
+
+    public ObjectInvalidException (string message, ObjectID id)
+        : base (message)
+    {
+      ArgumentUtility.CheckNotNull ("id", id);
+
+      _id = id;
+    }
+
+    /// <summary>
+    /// The <see cref="ObjectID"/> of the object that caused the exception.
+    /// </summary>
+    public ObjectID ID
+    {
+      get { return _id; }
+    }
+
+    public override void GetObjectData (SerializationInfo info, StreamingContext context)
+    {
+      base.GetObjectData (info, context);
+
+      info.AddValue ("ID", _id);
+    }
   }
-}
 }

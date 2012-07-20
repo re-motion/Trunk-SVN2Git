@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
@@ -133,6 +135,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var validationExtension = (CommitValidationClientTransactionExtension) extensions[0];
       var validator = validationExtension.ValidatorFactory (_fakeConstructedTransaction);
       Assert.That (validator, Is.TypeOf<MandatoryRelationValidator>());
+    }
+
+    [Test]
+    public void CreateListeners ()
+    {
+      var listeners =
+          ((IEnumerable<IClientTransactionListener>) PrivateInvoke.InvokeNonPublicMethod (_factory, "CreateListeners", _fakeConstructedTransaction))
+          .ToArray();
+      Assert.That (
+          listeners,
+          Has
+              .Length.EqualTo (4)
+              .And.Some.TypeOf<ReadOnlyClientTransactionListener> ()
+              .And.Some.TypeOf<LoggingClientTransactionListener> ()
+              .And.Some.TypeOf<NewObjectHierarchyInvalidationClientTransactionListener> ()
+              .And.Some.TypeOf<NotFoundObjectsClientTransactionListener> ());
     }
 
     [Test]

@@ -29,6 +29,8 @@ using Remotion.Data.DomainObjects.Validation;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using System.Linq;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -93,6 +95,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return templateTransaction => (ClientTransaction) TypesafeActivator
           .CreateInstance (templateTransaction.GetType (), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
           .With (this);
+    }
+
+    protected override IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      return base.CreateListeners (constructedTransaction)
+          .Concat (new NotFoundObjectsClientTransactionListener());
     }
 
     protected override IRelationEndPointManager CreateRelationEndPointManager (

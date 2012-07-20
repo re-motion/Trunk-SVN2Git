@@ -464,7 +464,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void GetObject_SetsNeedsLoadModeDataContainerOnly_True_ ()
+    public void GetObject_SetsNeedsLoadModeDataContainerOnly_ToTrue ()
     {
       var order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.True);
@@ -486,6 +486,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _transaction.Execute (() => Assert.That (Order.GetObject (DomainObjectIDs.Order1, true), Is.SameAs (order)));
       _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Deleted)));
+    }
+
+    [Test]
+    public void TryGetObject ()
+    {
+      Assert.That (_transaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Null);
+
+      var order = _transaction.Execute (() => Order.TryGetObject (DomainObjectIDs.Order1));
+
+      Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
+      Assert.That (_transaction.DataManager.DataContainers[DomainObjectIDs.Order1], Is.Not.Null);
+      Assert.That (order.TransactionContext[_transaction].State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void TryGetObject_NotFound ()
+    {
+      var objectID = new ObjectID (typeof (Order), Guid.NewGuid());
+      Assert.That (_transaction.IsInvalid (objectID), Is.False);
+
+      var order = _transaction.Execute (() => Order.TryGetObject (objectID));
+
+      Assert.That (order, Is.Null);
+      Assert.That (_transaction.IsInvalid (objectID), Is.True);
     }
 
     [Test]

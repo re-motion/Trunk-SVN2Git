@@ -41,6 +41,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return GetObject<TestDomainBase> (id, includeDeleted);
     }
 
+    public static TestDomainBase TryGetObject (ObjectID id)
+    {
+      return TryGetObject<TestDomainBase> (id);
+    }
+
     [NonSerialized]
     private IUnloadEventReceiver _unloadEventReceiver;
     [NonSerialized]
@@ -114,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
     public DataContainer GetInternalDataContainerForTransaction (ClientTransaction transaction)
     {
       var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (transaction, "DataManager");
-      return dataManager.GetDataContainerWithLazyLoad (ID);
+      return dataManager.GetDataContainerWithLazyLoad (ID, true);
     }
 
     public DomainObject GetRelatedObject (string propertyName)

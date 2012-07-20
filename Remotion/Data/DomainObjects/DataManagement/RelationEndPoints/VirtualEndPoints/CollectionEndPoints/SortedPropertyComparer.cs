@@ -75,7 +75,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
 
     private object GetComparedKey (DomainObject domainObject)
     {
-      var dataContainer = _dataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+      var dataContainer = _dataManager.GetDataContainerWithLazyLoad (domainObject.ID, throwOnNotFound: true);
       if (!_sortedPropertySpecification.PropertyDefinition.ClassDefinition.IsSameOrBaseClassOf (dataContainer.ClassDefinition))
         return null;
 

@@ -26,7 +26,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableObjectLoaderFake : IObjectLoader
   {
-    public ILoadedObjectData LoadObject (ObjectID id)
+    public ILoadedObjectData LoadObject (ObjectID id, bool throwOnNotFound)
     {
       throw new NotImplementedException();
     }

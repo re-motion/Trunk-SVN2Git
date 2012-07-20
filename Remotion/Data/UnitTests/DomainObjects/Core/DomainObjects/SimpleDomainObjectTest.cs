@@ -30,14 +30,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     public void NewObject ()
     {
       ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject();
-      Assert.IsNotNull (instance);
-      Assert.AreEqual (0, instance.IntProperty);
+      Assert.That (instance, Is.Not.Null);
+      Assert.That (instance.IntProperty, Is.EqualTo (0));
       instance.IntProperty = 5;
-      Assert.AreEqual (5, instance.IntProperty);
+      Assert.That (instance.IntProperty, Is.EqualTo (5));
     }
 
     [Test]
-    public void GetObject_WithoutDeleted ()
+    public void GetObject ()
     {
       ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
       instance.IntProperty = 7;
@@ -46,17 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
         ClassDerivedFromSimpleDomainObject gottenInstance = ClassDerivedFromSimpleDomainObject.GetObject (instance.ID);
         Assert.AreSame (instance, gottenInstance);
         Assert.AreEqual (7, gottenInstance.IntProperty);
-      }
-    }
-
-    [Test]
-    public void GetObject_IncludeDeletedFalse_NonDeleted ()
-    {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        ClassDerivedFromSimpleDomainObject gottenInstance = ClassDerivedFromSimpleDomainObject.GetObject (instance.ID, false);
-        Assert.AreSame (instance, gottenInstance);
       }
     }
 
@@ -73,17 +62,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void GetObject_IncludeDeletedTrue_NonDeleted ()
-    {
-      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        ClassDerivedFromSimpleDomainObject gottenInstance = ClassDerivedFromSimpleDomainObject.GetObject (instance.ID, true);
-        Assert.AreSame (instance, gottenInstance);
-      }
-    }
-
-    [Test]
     public void GetObject_IncludeDeletedTrue_Deleted ()
     {
       ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
@@ -91,9 +69,30 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
       {
         instance.Delete ();
         ClassDerivedFromSimpleDomainObject gottenInstance = ClassDerivedFromSimpleDomainObject.GetObject (instance.ID, true);
-        Assert.AreSame (instance, gottenInstance);
-        Assert.AreEqual (StateType.Deleted, gottenInstance.State);
+        Assert.That (gottenInstance, Is.SameAs (instance));
+        Assert.That (gottenInstance.State, Is.EqualTo (StateType.Deleted));
       }
+    }
+
+    [Test]
+    public void TryGetObject ()
+    {
+      ClassDerivedFromSimpleDomainObject instance = ClassDerivedFromSimpleDomainObject.NewObject ();
+      instance.IntProperty = 7;
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        var gottenInstance = ClassDerivedFromSimpleDomainObject.TryGetObject (instance.ID);
+        Assert.That (gottenInstance, Is.SameAs (instance));
+        Assert.That (gottenInstance.IntProperty, Is.EqualTo (7));
+      }
+    }
+
+    [Test]
+    public void TryGetObject_NotFound ()
+    {
+      var id = new ObjectID (typeof (Order), Guid.NewGuid());
+      var gottenInstance = ClassDerivedFromSimpleDomainObject.TryGetObject (id);
+      Assert.That (gottenInstance, Is.Null);
     }
 
     [Test]

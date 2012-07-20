@@ -235,11 +235,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Web.WxeTransactedFunctionIntegra
 
       Assert.That (transactionOfParentFunction.IsEnlisted (outParameter), Is.True);
       Assert.That (() => transactionOfParentFunction.Execute (() => outParameter.State), Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (() => transactionOfParentFunction.Execute (() => outParameter.EnsureDataAvailable ()), Throws.TypeOf<ObjectsNotFoundException> ());
 
       Assert.That (transactionOfParentFunction.IsEnlisted (outParameterArray[0]), Is.True);
       Assert.That (() => transactionOfParentFunction.Execute (() => outParameterArray[0].State), Is.EqualTo (StateType.NotLoadedYet));
-      Assert.That (() => transactionOfParentFunction.Execute (() => outParameterArray[0].EnsureDataAvailable ()), Throws.TypeOf<ObjectsNotFoundException> ());
     }
 
     [Test]

@@ -51,7 +51,7 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       // Note that we do not roll back any end points - this will cause us to create dangling end points. Doesn't matter, though, the transaction
       // is discarded after transport anyway.
 
-      var dataContainer = clientTransaction.DataManager.GetDataContainerWithLazyLoad (domainObject.ID);
+      var dataContainer = clientTransaction.DataManager.GetDataContainerWithLazyLoad (domainObject.ID, throwOnNotFound: true);
       if (dataContainer.State == StateType.New)
       {
         var deleteCommand = clientTransaction.DataManager.CreateDeleteCommand (domainObject);

@@ -215,8 +215,8 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     {
       var transaction = orderClass.HasBindingTransaction ? orderClass.GetBindingTransaction () : ClientTransaction.Current;
 
-      var dataManager = (DataManager) PrivateInvoke.GetNonPublicProperty (transaction, "DataManager");
-      var dataContainer = dataManager.GetDataContainerWithLazyLoad (orderClass.ID);
+      var dataManager = DataManagementService.GetDataManager (transaction);
+      var dataContainer = dataManager.GetDataContainerWithLazyLoad (orderClass.ID, true);
       return dataContainer.State;
     }
 

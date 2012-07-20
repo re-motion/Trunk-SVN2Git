@@ -72,7 +72,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
         if (_notFoundObjectIDs.Any ())
         {
-          // TODO 4920: Mark not found objects invalid.
+          transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsNotFound (tx, _notFoundObjectIDs.AsReadOnly()));
 
           if (throwOnNotFound)
             throw new ObjectsNotFoundException (_notFoundObjectIDs);

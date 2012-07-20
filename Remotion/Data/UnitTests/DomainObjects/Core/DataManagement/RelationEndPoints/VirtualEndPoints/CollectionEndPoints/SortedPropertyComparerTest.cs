@@ -141,7 +141,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private DataContainer PrepareDataContainer (IDataManager dataManagerStub, DomainObject domainObject)
     {
       var dataContainer = DataContainer.CreateNew (domainObject.ID);
-      dataManagerStub.Stub (stub => stub.GetDataContainerWithLazyLoad (domainObject.ID)).Return (dataContainer);
+      dataManagerStub.Stub (stub => stub.GetDataContainerWithLazyLoad (domainObject.ID, true)).Return (dataContainer);
       return dataContainer;
     }
 

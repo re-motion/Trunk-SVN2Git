@@ -52,10 +52,10 @@ namespace Remotion.Data.DomainObjects.Queries.EagerFetching
       get { return _eagerFetcher; }
     }
 
-    public ILoadedObjectData LoadObject (ObjectID id)
+    public ILoadedObjectData LoadObject (ObjectID id, bool throwOnNotFound)
     {
       ArgumentUtility.CheckNotNull ("id", id);
-      return _decoratedObjectLoader.LoadObject (id);
+      return _decoratedObjectLoader.LoadObject (id, throwOnNotFound);
     }
 
     public ICollection<ILoadedObjectData> LoadObjects (IEnumerable<ObjectID> idsToBeLoaded, bool throwOnNotFound)

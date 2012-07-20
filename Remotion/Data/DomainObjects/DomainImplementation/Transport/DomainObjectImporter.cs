@@ -88,14 +88,14 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       DomainObject existingObject;
       if (existingObjects.TryGetValue (transportItem.ID, out existingObject))
       {
-        return bindingTargetTransaction.DataManager.GetDataContainerWithLazyLoad (existingObject.ID);
+        return bindingTargetTransaction.DataManager.GetDataContainerWithLazyLoad (existingObject.ID, throwOnNotFound: true);
       }
       else
       {
         var id = transportItem.ID;
 
-        var creator = id.ClassDefinition.GetDomainObjectCreator ();
-        var instance = creator.CreateObjectReference (id, bindingTargetTransaction);
+        var instance = bindingTargetTransaction.GetInvalidObjectReference (id);
+        ResurrectionService.ResurrectInvalidObject (bindingTargetTransaction, id);
 
         var newDataContainer = DataContainer.CreateNew (id);
         newDataContainer.SetDomainObject (instance);

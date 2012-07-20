@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Mapping;
@@ -16,6 +17,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     DomainObject GetObject (ObjectID objectID);
     DomainObject[] GetObjects (IEnumerable<ObjectID> objectIDs);
+    DomainObject TryGetObject (ObjectID objectID);
     DomainObject[] TryGetObjects (IEnumerable<ObjectID> objectIDs);
 
     DomainObject GetRelatedObject (RelationEndPointID relationEndPointID);
@@ -26,7 +28,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     object ExecuteScalarQuery (IQuery query);
 
     DataContainer GetDataContainerWithoutLoading (ObjectID objectID);
-    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID);
+    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound);
     IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID relationEndPointID);
 
     bool IsInvalid (ObjectID objectID);
