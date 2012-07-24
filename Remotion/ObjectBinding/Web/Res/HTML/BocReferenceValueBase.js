@@ -42,7 +42,7 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
 
   oldCommand.replaceWith(newCommand);
 
-  if (iconServiceUrl != null && iconContext != null && businessObject != null)
+  if (iconServiceUrl != null && iconContext != null)
   {
     var pageRequestManager = Sys.WebForms.PageRequestManager.getInstance();
     if (pageRequestManager.get_isInAsyncPostBack())
