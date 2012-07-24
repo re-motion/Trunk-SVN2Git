@@ -474,13 +474,18 @@
     <Content Include="Doc\include\UI\Controls\BocEnumValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocList.xml" />
     <Content Include="Doc\include\UI\Controls\BocMultilineTextValue.xml" />
-    <Content Include="Doc\include\UI\Controls\BocReferenceValue.xml" />
+    <Content Include="Doc\include\UI\Controls\BocReferenceValue.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Doc\include\UI\Controls\BocReferenceValueBase.xml">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Doc\include\UI\Controls\BocTextValue.xml" />
     <Content Include="Doc\include\UI\Controls\BocTreeView.xml" />
     <Content Include="Doc\include\UI\Controls\BocLiteral.xml" />
+    <Content Include="Doc\include\UI\Controls\BocAutoCompleteReferenceValue.xml">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Doc\include\UI\Controls\IBusinessObjectDataSourceControl.xml" />
     <Content Include="Res\HTML\BocReferenceValueBase.js" />
     <Content Include="Res\Themes\ClassicBlue\HTML\BocBooleanValue.css" />

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <!-- This file is part of the re-motion Core Framework (www.re-motion.org)
  ! Copyright (c) rubicon IT GmbH, www.rubicon.eu
  ! 
@@ -15,7 +16,7 @@
  ! You should have received a copy of the GNU Lesser General Public License
  ! along with re-motion; if not, see http://www.gnu.org/licenses.
 -->
-<BocReferenceValue>
+<BocAutoCompleteReferenceValue>
   <Class>
     <remarks>
       <h4 class="dtH4">Supported Data Types</h4>
@@ -42,60 +43,36 @@
         </item>
         <item>
           <term>WAI WCAG 1.0</term>
-          <description>
-            <para> 
-              Level A conform if advanced features are turned off. This can be enforced by the 
-              <see cref="Remotion.Web.Configuration.WebConfiguration.Wcag"/> configuration entry.
-            </para>
-            <para> Priority 1 checkpoint 6.3 is not met by the following advacned features:</para>
-            <list type="bullet">
-              <item> An event or a WXE command is defined. </item>
-              <item> The drop down menu. </item>
-            </list>
-            <para>
-              Enabling auto post back can break compliance with priority 1 checkpoint 6.3 if the post back is 
-              required for using the page.
-            </para>
-            <para> Priority 2 checkpoints 6.5 and 10.1 are not met if the advanced features are enabled. </para>
-            <para> 
-              Priority 2 checkpoint 13.1 is not met by the command. The value is used to decribe the link's target.
-            </para>
-          </description>
-        </item>        
+          <description>not conform</description>
+        </item>
       </list>
 
-      <h4 class="dtH4">Usage Notes</h4>      
+      <h4 class="dtH4">Usage Notes</h4>
       <para>
         See the <see cref="BocReferenceValueBase.CreateValidators"/> method for the validators provided by this control.        
       </para><para>
         Provide the external resources for this control. See <see cref="T:Remotion.Web.ResourceUrlResolver"/> 
         for details on this subject.
       </para><para>
-        If the <see cref="BusinessObjectBoundWebControl.DataSource"/> and
-        the <see cref="BusinessObjectBoundWebControl.PropertyIdentifier"/> properties are not set, the
-        control is unbound. The <see cref="BocReferenceValueBase.Value"/> properties must be set programmatically.
+        If the <see cref="BusinessObjectBoundWebControl.DataSource"/> and 
+        the <see cref="BusinessObjectBoundWebControl.PropertyIdentifier"/> properties are not set, the 
+        control is unbound. The <see cref="BocReferenceValueBase.Value"/> properties must be set programmatically. 
         In order to get the value after the user has changed it, <see cref="BocReferenceValueBase.Value"/> must be read.
-      </para>
-      <para>
-        If the control is unbound, <see cref="BusinessObjectBoundWebControl.DataSource"/> must be set in order to get the
-        <see cref="BocReferenceValueBase.Value"/> after a postback.
       </para><para>
-        The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocReferenceValue</c>.
+        If the control is unbound, <see cref="BusinessObjectBoundWebControl.DataSource"/> must be set in order to get the 
+        <see cref="BocReferenceValueBase.Value"/> after a postback. 
       </para><para>
-        The control supports auto-postback. Use the <see cref="DropDownListStyle"/>'s 
-        <see cref="Remotion.ObjectBinding.Web.UI.Controls.DropDownListStyle.AutoPostBack"/> property to enable this
+        The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocAutoCompleteReferenceValue</c>.
+      </para><para>
+        The control supports auto-postback. Use the <see cref="TextBoxStyle"/>'s 
+        <see cref="Remotion.ObjectBinding.Web.UI.Controls.SingleRowTextBoxStyle.AutoPostBack"/> property to enable this
         behavior.
       </para><para>
-        Use the <see cref="SetBusinessObjectList"/> method to programmatically populate the list of 
-        <see cref="IBusinessObjectWithIdentity"/> objects. This call is only required during the first page life cycle. 
-        If the list has not been populated programmatically, the <see cref="Select"/> statement will be evaluated. 
-        This behavior can be deactivated by setting <see cref="IsSelectStatementEnabled"/> to 
-        <see langword="false"/>. Use <see cref="ClearBusinessObjectList"/> to remove all items from the
-        list <see cref="IBusinessObjectWithIdentity"/> objects. Use this method to progammatically clear the list, e.g.
-        in an event handler.
+        Use the <see cref="SearchServicePath"/> to specify the ASP.NET web service used to retrieve the values. 
+        This web service must implement the <see cref="ISearchAvailableObjectWebService" /> interface.
       </para><para>
         Use the <see cref="BocReferenceValueBase.IconServicePath"/> to specify the ASP.NET web service used to retrieve the icon after a value selection
-        without requiring an auto-postback. This web service must implement the <see cref="Remotion.ObjectBinding.Web.Services.IBusinessObjectIconWebService" /> interface.
+        without requiring an auto-postback. This web service must implement the <see cref="IBusinessObjectIconWebService" /> interface.
       </para>
 
       <h4 class="dtH4">Localization Support</h4>
@@ -104,7 +81,7 @@
         <see cref="BocReferenceValue.ResourceIdentifier"/> enum. See the <b>ResourceIdentifier</b>'s documentation
         for details on localization.
       </para><para>
-        The control supports resource dispatching to its properties through the <see cref="ResourceDispatcher"/>.
+        The control supports resource dispatching to its properties through the <see cref="Remotion.Web.UI.Globalization.ResourceDispatcher"/>.
         Use the following resource identifiers for dispatching strings to the <b>BocReferenceValue</b>
         or use the <b>global resource identifier</b> syntax for setting the resource identifier in the propery.
       </para>
@@ -179,7 +156,7 @@
             Edit Mode / <see cref="BocReferenceValueBase.Value"/> is not <see langword="null"/>
           </term>
           <description>
-            Text is automatically provided by the <see cref="DropDownList"/>.
+            Text is automatically provided by the <see cref="TextBox"/>.
             Displays the icon returned by <see cref="IBusinessObjectWebUIService.GetIcon"/>, 
             if <see cref="BocReferenceValueBase.EnableIcon"/> is <see langword="true"/>.
           </description>
@@ -190,12 +167,9 @@
           </term>
           <description>
             <para>
-              Text is automatically provided by the <see cref="DropDownList"/>.
+              The <see cref="TextBox"/> is displayed as empty until a selection is made.
               Displays the icon returned by <see cref="IBusinessObjectWebUIService.GetIcon"/> for
               <see langword="null"/>, if <see cref="BocReferenceValueBase.EnableIcon"/> is <see langword="true"/>.
-            </para><para>
-              If the control is required, the undefined item is removed once a valid item is
-              selected.
             </para>
           </description>
         </item>
@@ -205,11 +179,10 @@
           </term>
           <description>
             <para>
-              The new item is added to the list and displayed in the <see cref="DropDownList"/>. 
+              The new item is displayed when the page is rendered. If the user changes the selection, the item cannot be selected again by the user.
             </para><para>
-              If <see cref="BocReferenceValueBase.Value"/> is <see langword="null"/> but the control is required, the undefined item is
-              added to the <see cref="DropDownList"/> unitl the selection is again changed to a
-              valid item.
+              If <see cref="BocReferenceValueBase.Value"/> is <see langword="null"/> but the control is required, 
+              the <see cref="TextBox" /> is displayed as empty.
             </para>
           </description>
         </item>
@@ -268,4 +241,4 @@
     <seealso cref="IBusinessObjectBoundEditableControl.SaveValue">IBusinessObjectBoundEditableControl.SaveValue</seealso>
   </SaveValue>
   
-</BocReferenceValue>
+</BocAutoCompleteReferenceValue>
