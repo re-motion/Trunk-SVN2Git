@@ -35,7 +35,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  /// <summary> This control can be used to display or select references as the value of a property. </summary>
+  /// <summary> This control can be used to display or select references as the value of a property using an auto-completing text box. </summary>
   /// <include file='..\..\doc\include\UI\Controls\BocAutoCompleteReferenceValue.xml' path='BocAutoCompleteReferenceValue/Class/*' />
   [ValidationProperty ("ValidationValue")]
   [DefaultEvent ("SelectionChanged")]

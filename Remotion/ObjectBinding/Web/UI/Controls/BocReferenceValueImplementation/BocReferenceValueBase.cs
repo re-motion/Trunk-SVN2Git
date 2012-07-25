@@ -39,6 +39,7 @@ using Remotion.Web.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 {
+  /// <summary> Base class for controls that can be used to display or select references as the value of a property. </summary>
   public abstract class BocReferenceValueBase :
       BusinessObjectBoundEditableWebControl,
       IBocReferenceValueBase,

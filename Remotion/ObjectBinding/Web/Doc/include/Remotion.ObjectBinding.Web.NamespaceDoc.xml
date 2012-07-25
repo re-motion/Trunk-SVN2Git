@@ -47,16 +47,16 @@
           <td><see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValue" /></td>
           <td>
             Use this control for displaying and editing the value of an 
-            <see cref="T:Remotion.ObjectBinding.IBusinessObjectBooleanProperty" />, 
-            a <see cref="T:System.Boolean" /> value and <see langword="null" /> using a tri-state check-box.
+            <see cref="T:Remotion.ObjectBinding.IBusinessObjectBooleanProperty" />
+            or a (nullable) <see cref="T:System.Boolean" /> value using a tri-state check-box.
           </td>
         </tr>
         <tr>
           <td><see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocCheckBox" /></td>
           <td>
             Use this control for displaying and editing the value of an 
-            <see cref="T:Remotion.ObjectBinding.IBusinessObjectBooleanProperty" />, 
-            a <see cref="T:System.Boolean" /> value and <see langword="null" /> using a regular check-box.
+            <see cref="T:Remotion.ObjectBinding.IBusinessObjectBooleanProperty" />,
+            or a (nullable) <see cref="T:System.Boolean" /> value using a regular check-box.
           </td>
         </tr>
         <tr>
@@ -64,16 +64,16 @@
           <td>
             Use this control for displaying and editing the value of an 
             <see cref="T:Remotion.ObjectBinding.IBusinessObjectDateProperty" />, 
-            <see cref="T:Remotion.ObjectBinding.IBusinessObjectDateTimeProperty" />, 
-            a <see cref="T:System.DateTime" /> and <see langword="null" />.
+            an <see cref="T:Remotion.ObjectBinding.IBusinessObjectDateTimeProperty" />,
+            or a (nullable) <see cref="T:System.DateTime" /> value.
           </td>
         </tr>
         <tr>
           <td><see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocEnumValue" /></td>
           <td>
             Use this control for displaying and editing the value of an 
-            <see cref="T:Remotion.ObjectBinding.IBusinessObjectEnumerationProperty" />, 
-            an <see cref="T:System.Enum" /> value and <see langword="null" />.
+            <see cref="T:Remotion.ObjectBinding.IBusinessObjectEnumerationProperty" />,
+            or a (nullable) <see cref="T:System.Enum" /> value.
           </td>
         </tr>
         <tr>
@@ -82,8 +82,7 @@
             <para>
               Use this control for displaying the value of an <see cref="T:Remotion.ObjectBinding.IBusinessObjectReferenceProperty" /> 
               having <see cref="P:Remotion.ObjectBinding.IBusinessObjectProperty.IsList" /> set <see langword="true" /> 
-              or an <see cref="T:System.Collections.IList" /> of <see cref="T:Remotion.ObjectBinding.IBusinessObject" /> 
-              objects and <see langword="null" />.
+              or an <see cref="T:System.Collections.IList" /> of <see cref="T:Remotion.ObjectBinding.IBusinessObject" /> objects.
             </para><para>
               The <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocList" /> supports editing the the values the 
               individual rows, attatching hyperlinks, events, or an 
@@ -96,9 +95,13 @@
             <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocLiteral" />
           </td>
           <td>
+            <para>
             Use this control for displaying the value of an <see cref="T:Remotion.ObjectBinding.IBusinessObjectStringProperty" /> 
-            when used with data binding if the property contains HTML formatted content. 
-            It can also be assigned a <see cref="T:System.String" /> and <see langword="null" />.
+            or an arbitrary <see cref="T:System.String" /> value.
+            </para><para>
+            The value is not HTML encoded during rendering. Therefor, the <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocLiteral" /> control 
+            should only be used when the intention is to display HTML stored in the domain layer and the source of the HTML can be trusted.
+            </para>
           </td>
         </tr>
         <tr>
@@ -107,23 +110,46 @@
             Use this control for displaying and editing the value of an 
             <see cref="T:Remotion.ObjectBinding.IBusinessObjectStringProperty" /> 
             having <see cref="P:Remotion.ObjectBinding.IBusinessObjectProperty.IsList" /> set <see langword="true" /> 
-            or a <see cref="T:System.String" /> array and <see langword="null" />.
+            or a <see cref="T:System.String" /> array.
           </td>
         </tr>
         <tr>
-          <td><see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue" /></td>
+          <td><see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue" /></td>
           <td>
             <para>
               Use this control for displaying and editing the value of an 
-              <see cref="T:Remotion.ObjectBinding.IBusinessObjectReferenceProperty" /> 
-              populated with an <see cref="T:Remotion.ObjectBinding.IBusinessObjectWithIdentity" />, 
-              or <see cref="T:Remotion.ObjectBinding.IBusinessObjectWithIdentity" /> and <see langword="null" /> if used 
-              without data binding.
+              <see cref="T:Remotion.ObjectBinding.IBusinessObjectReferenceProperty" /> referencing a type that implements
+              <see cref="T:Remotion.ObjectBinding.IBusinessObjectClassWithIdentity" /> 
+              or a value of type <see cref="T:Remotion.ObjectBinding.IBusinessObjectWithIdentity" />.
+            </para>
+            <para>
+              The value is picked using a text-box with auto-completion behavior.
             </para><para>
-              The <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue" /> supports attaching hyperlinks, 
+              The <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue" /> supports attaching hyperlinks, 
               events, or an <see cref="T:Remotion.Web.ExecutionEngine.WxeFunction" /> to the currently selected value
               or the control itself.
             </para> 
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue" />
+          </td>
+          <td>
+            <para>
+              Use this control for displaying and editing the value of an
+              <see cref="T:Remotion.ObjectBinding.IBusinessObjectReferenceProperty" /> referencing a type that implements
+              <see cref="T:Remotion.ObjectBinding.IBusinessObjectClassWithIdentity" />
+              or a value of type <see cref="T:Remotion.ObjectBinding.IBusinessObjectWithIdentity" />.
+            </para>
+            <para>
+              The value is picked using a drop-down list.
+            </para>
+            <para>
+              The <see cref="T:Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue" /> supports attaching hyperlinks,
+              events, or an <see cref="T:Remotion.Web.ExecutionEngine.WxeFunction" /> to the currently selected value
+              or the control itself.
+            </para>
           </td>
         </tr>
         <tr>

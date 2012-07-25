@@ -30,7 +30,7 @@ using Remotion.Web.UI.Globalization;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  /// <summary> This control can be used to display or select references as the value of a property. </summary>
+  /// <summary> This control can be used to display or select references as the value of a property using a drop-down list. </summary>
   /// <include file='..\..\doc\include\UI\Controls\BocReferenceValue.xml' path='BocReferenceValue/Class/*' />
   // TODO: see "Doc\Bugs and ToDos.txt"
   [ValidationProperty ("ValidationValue")]
