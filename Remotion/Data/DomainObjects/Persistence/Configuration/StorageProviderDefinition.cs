@@ -16,9 +16,13 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Configuration;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Configuration;
+using Remotion.Mixins;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Persistence.Configuration
 {
@@ -37,8 +41,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
       ArgumentUtility.CheckNotNull ("config", config);
 
       var factoryTypeName = GetAndRemoveNonEmptyStringAttribute (config, "factoryType", name, true);
-      var factoryType = TypeUtility.GetType (factoryTypeName, true);
-      _factory = (IStorageObjectFactory) SafeServiceLocator.Current.GetInstance (factoryType);
+      var configuredFactoryType = TypeUtility.GetType (factoryTypeName, true);
+      _factory = CreateStorageObjectFactory (configuredFactoryType);
     }
 
     protected StorageProviderDefinition (string name, IStorageObjectFactory factory)
@@ -65,6 +69,50 @@ namespace Remotion.Data.DomainObjects.Persistence.Configuration
     public override string ToString ()
     {
       return string.Format ("{0}: '{1}'", GetType().Name, Name);
+    }
+
+    private IStorageObjectFactory CreateStorageObjectFactory (Type configuredFactoryType)
+    {
+      try
+      {
+        var registeredService = (IStorageObjectFactory) SafeServiceLocator.Current.GetAllInstances (configuredFactoryType).FirstOrDefault ();
+        if (registeredService != null)
+          return registeredService;
+      }
+      catch (ActivationException ex)
+      {
+        var message = string.Format (
+            "The factory type '{0}' specified in the configuration of the '{1}' StorageProvider definition cannot be resolved: {2}",
+            configuredFactoryType,
+            Name,
+            ex.Message);
+        throw new ConfigurationErrorsException (message, ex);
+      }
+
+      if (configuredFactoryType.IsAbstract)
+      {
+        var message = string.Format (
+            "The factory type '{0}' specified in the configuration of the '{1}' StorageProvider definition cannot be instantiated because it is "
+            + "abstract. Either register an implementation of '{2}' in the configured service locator, or specify a non-abstract type.",
+            configuredFactoryType,
+            Name,
+            configuredFactoryType.Name);
+        throw new ConfigurationErrorsException (message);
+      }
+
+      try
+      {
+        return (IStorageObjectFactory) ObjectFactory.Create (configuredFactoryType);
+      }
+      catch (Exception ex)
+      {
+        var message = string.Format (
+            "The factory type '{0}' specified in the configuration of the '{1}' StorageProvider definition cannot be instantiated: {2}",
+            configuredFactoryType,
+            Name,
+            ex.Message);
+        throw new ConfigurationErrorsException (message, ex);
+      }
     }
   }
 }

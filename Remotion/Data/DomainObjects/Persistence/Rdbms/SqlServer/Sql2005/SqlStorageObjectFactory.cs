@@ -36,7 +36,6 @@ using Remotion.Linq.SqlBackend.SqlGeneration;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
@@ -44,7 +43,6 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005
   /// <summary>
   /// The <see cref="SqlStorageObjectFactory"/> is responsible to create SQL Server-specific storage provider instances.
   /// </summary>
-  [ConcreteImplementation (typeof (SqlStorageObjectFactory))]
   public class SqlStorageObjectFactory : IRdbmsStorageObjectFactory
   {
     public StorageProvider CreateStorageProvider (StorageProviderDefinition storageProviderDefinition, IPersistenceExtension persistenceExtension)

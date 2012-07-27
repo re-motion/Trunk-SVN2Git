@@ -222,6 +222,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />
     <Compile Include="DomainObjects\Core\NoRdbmsUnitTestStorageProviderStubDefinition.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\Configuration\TestableStorageProviderDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ClassIDsInAllForeignKeysBehaviorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\ClassWithRelations.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\DefaultBehaviorTest.cs" />
@@ -1981,6 +1982,9 @@
     <Content Include="DomainObjects\Core\QueriesForLoaderTestDuplicate.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithResolvedInterfaceStorageObjectFactory.xml" />
+    <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithUnresolvedInterfaceStorageObjectFactory.xml" />
+    <EmbeddedResource Include="DomainObjects\Core\Resources\DomainObjectsConfigurationWithMixedStorageObjectFactory.xml" />
     <Content Include="DomainObjects\Database\DataDomainObjects_CreateTableInheritanceTestData.sql" />
     <Content Include="DomainObjects\Database\DataDomainObjects_CreateDB.sql" />
     <Content Include="DomainObjects\Database\DataDomainObjects_CreateTestData.sql">

@@ -15,17 +15,24 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Configuration;
 using NUnit.Framework;
 using Remotion.Configuration;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Development;
 using Remotion.Data.DomainObjects.Mapping.Configuration;
+using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Data.DomainObjects.Persistence.Rdbms.SqlServer.Sql2005;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Resources;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.IO;
+using Remotion.Mixins;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
 {
@@ -75,8 +82,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
         Assert.That (domainObjectsConfiguration.MappingLoader, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition, Is.Not.Null);
+        Assert.That (domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition.Factory, Is.TypeOf<SqlStorageObjectFactory>());
         Assert.That (domainObjectsConfiguration.Storage.StorageProviderDefinitions.Count, Is.EqualTo (1));
         Assert.That (domainObjectsConfiguration.Storage.StorageGroups, Is.Empty);
+      }
+    }
+
+    [Test]
+    public void Initialize_WithResolvedInterfaceStorageObjectFactory ()
+    {
+      using (TempFile configFile = new TempFile ())
+      {
+        SetUpConfigurationWrapper (
+            ConfigurationFactory.LoadConfigurationFromFile (
+                configFile, ResourceManager.GetDomainObjectsConfigurationWithResolvedInterfaceStorageObjectFactory()));
+
+        DomainObjectsConfiguration domainObjectsConfiguration = new DomainObjectsConfiguration ();
+
+        Assert.That (domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition.Factory, Is.TypeOf<CustomStorageObjectFactory>());
+        Assert.That (domainObjectsConfiguration.Storage.StorageGroups, Is.Empty);
+      }
+    }
+
+    [Test]
+    public void Initialize_WithUnresolvedInterfaceStorageObjectFactory ()
+    {
+      using (TempFile configFile = new TempFile ())
+      {
+        SetUpConfigurationWrapper (
+            ConfigurationFactory.LoadConfigurationFromFile (
+                configFile, ResourceManager.GetDomainObjectsConfigurationWithUnresolvedInterfaceStorageObjectFactory()));
+
+        DomainObjectsConfiguration domainObjectsConfiguration = new DomainObjectsConfiguration ();
+
+        Assert.That (
+            () => domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition, 
+            Throws.TypeOf<ConfigurationErrorsException>().With.Message.StringStarting (
+                "The factory type 'Remotion.Data.UnitTests.DomainObjects.Core.Configuration.DomainObjectsConfigurationTest+IUnresolvedCustomStorageObjectFactory' "
+                + "specified in the configuration of the 'Test' StorageProvider definition cannot be instantiated because it is abstract. Either "
+                + "register an implementation of 'IUnresolvedCustomStorageObjectFactory' in the configured service locator, or specify a non-abstract "
+                + "type."));
+      }
+    }
+
+    [Test]
+    public void Initialize_WithMixedStorageObjectFactory ()
+    {
+      using (TempFile configFile = new TempFile ())
+      {
+        SetUpConfigurationWrapper (
+            ConfigurationFactory.LoadConfigurationFromFile (
+                configFile, ResourceManager.GetDomainObjectsConfigurationWithMixedStorageObjectFactory ()));
+
+        DomainObjectsConfiguration domainObjectsConfiguration = new DomainObjectsConfiguration ();
+
+        Assert.That (Mixin.Get<FakeMixin> (domainObjectsConfiguration.Storage.DefaultStorageProviderDefinition.Factory), Is.Not.Null);
       }
     }
 
@@ -109,7 +169,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
         SetUpConfigurationWrapper (configuration);
 
         DomainObjectsConfiguration domainObjectsConfiguration = (DomainObjectsConfiguration) configuration.GetSectionGroup ("domainObjects");
-
+        // For ReSharper's sake
+        Assertion.IsNotNull (domainObjectsConfiguration);
+        
         Assert.That (domainObjectsConfiguration.SectionGroupName, Is.EqualTo ("domainObjects"));
         Assert.That (domainObjectsConfiguration.MappingLoader, Is.Not.Null);
         Assert.That (domainObjectsConfiguration.Storage, Is.Not.Null);
@@ -139,5 +201,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
     {
       ConfigurationWrapper.SetCurrent (ConfigurationWrapper.CreateFromConfigurationObject (configuration));
     }
+
+    [ConcreteImplementation(typeof (CustomStorageObjectFactory))]
+    public interface ICustomStorageObjectFactory : IStorageObjectFactory
+    {
+    }
+
+    public class CustomStorageObjectFactory : SqlStorageObjectFactory
+    {
+    }
+
+    public interface IUnresolvedCustomStorageObjectFactory : IRdbmsStorageObjectFactory
+    {
+    }
+
+    [Uses (typeof (FakeMixin))]
+    public class MixedCustomStorageObjectFactory : SqlStorageObjectFactory
+    {
+    }
+
+    public class FakeMixin { }
   }
 }
