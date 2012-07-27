@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -236,7 +237,7 @@ namespace Remotion.UnitTests.Reflection
     public void FindInterfaceDeclaration_DeclaringTypeIsInterface ()
     {
       var methodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
-      MethodInfoAdapter.Create(methodInfo).FindInterfaceDeclaration();
+      MethodInfoAdapter.Create(methodInfo).FindInterfaceDeclarations();
     }
 
     [Test]
@@ -245,10 +246,10 @@ namespace Remotion.UnitTests.Reflection
       var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
       var adapter = MethodInfoAdapter.Create(methodInfo);
 
-      var result = adapter.FindInterfaceDeclaration();
+      var result = adapter.FindInterfaceDeclarations();
 
-      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar");
-      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
+      var expectedMethodInfos = new[] { typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ImplicitInterfaceScalar") };
+      CheckUnorderedMethodInfos (expectedMethodInfos, result.Cast<MethodInfoAdapter> ());
     }
 
     [Test]
@@ -259,24 +260,41 @@ namespace Remotion.UnitTests.Reflection
           BindingFlags.Instance | BindingFlags.NonPublic);
       var adapter = MethodInfoAdapter.Create(methodInfo);
 
-      var result = adapter.FindInterfaceDeclaration();
+      var result = adapter.FindInterfaceDeclarations();
 
-      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar");
-      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
+      var expectedMethodInfos = new[] { typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar") };
+      CheckUnorderedMethodInfos (expectedMethodInfos, result.Cast<MethodInfoAdapter> ());
     }
 
     [Test]
     public void FindInterfaceDeclaration_ExplicitImplementation_FromBaseType ()
     {
-      var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod (
+      var methodInfo = typeof (DerivedClassWithReferenceType<object>).GetMethod (
           "Remotion.UnitTests.Reflection.TestDomain.MemberInfoAdapter.IInterfaceWithReferenceType<T>.get_ExplicitInterfaceScalar",
           BindingFlags.Instance | BindingFlags.NonPublic);
       var adapter = MethodInfoAdapter.Create(methodInfo);
 
-      var result = adapter.FindInterfaceDeclaration();
+      var result = adapter.FindInterfaceDeclarations();
 
-      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar");
-      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
+      var expectedMethodInfos = new[] { typeof (IInterfaceWithReferenceType<object>).GetMethod ("get_ExplicitInterfaceScalar") };
+      CheckUnorderedMethodInfos (expectedMethodInfos, result.Cast<MethodInfoAdapter> ());
+    }
+
+    [Test]
+    public void FindInterfaceDeclaration_MultipleDeclarations ()
+    {
+      var methodInfo = MemberInfoFromExpressionUtility.GetMethod ((DomainType obj) => obj.MethodDeclaredByMultipleInterfaces());
+      var adapter = MethodInfoAdapter.Create (methodInfo);
+
+      var result = adapter.FindInterfaceDeclarations ();
+
+      var expectedMethodInfos =
+          new[]
+          {
+            MemberInfoFromExpressionUtility.GetMethod ((IInterface1 obj) => obj.MethodDeclaredByMultipleInterfaces()),
+            MemberInfoFromExpressionUtility.GetMethod ((IInterface2 obj) => obj.MethodDeclaredByMultipleInterfaces())
+          };
+      CheckUnorderedMethodInfos (expectedMethodInfos, result.Cast<MethodInfoAdapter>());
     }
 
     [Test]
@@ -287,10 +305,10 @@ namespace Remotion.UnitTests.Reflection
 
       Assert.That (methodInfo.ReflectedType, Is.Not.SameAs (methodInfo.DeclaringType));
 
-      var result = adapter.FindInterfaceDeclaration();
+      var result = adapter.FindInterfaceDeclarations();
 
-      var expectedMethodInfo = typeof (IInterfaceWithReferenceType<object>).GetMethod ("ImplicitInterfaceMethod");
-      CheckMethodInfo (expectedMethodInfo, (MethodInfoAdapter) result);
+      var expectedMethodInfos = new[] { typeof (IInterfaceWithReferenceType<object>).GetMethod ("ImplicitInterfaceMethod") };
+      CheckUnorderedMethodInfos (expectedMethodInfos, result.Cast<MethodInfoAdapter> ());
     }
 
     [Test]
@@ -299,9 +317,9 @@ namespace Remotion.UnitTests.Reflection
       var methodInfo = typeof (ClassWithReferenceType<object>).GetMethod ("TestMethod");
       var adapter = MethodInfoAdapter.Create(methodInfo);
 
-      var result = adapter.FindInterfaceDeclaration();
+      var result = adapter.FindInterfaceDeclarations();
 
-      Assert.That (result, Is.Null);
+      Assert.That (result, Is.Empty);
     }
 
     [Test]
@@ -541,6 +559,34 @@ namespace Remotion.UnitTests.Reflection
     {
       var actualMethodInfo = methodInfoAdapter.MethodInfo;
       Assert.That (MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (expectedMethodInfo, actualMethodInfo), Is.True);
+    }
+
+    private void CheckUnorderedMethodInfos (IEnumerable<MethodInfo> expectedMethodInfos, IEnumerable<MethodInfoAdapter> actualMethodInfoAdapters)
+    {
+      var orderedExpected = expectedMethodInfos.OrderBy (mi => mi.DeclaringType.FullName).ToArray ();
+      var orderedActual = actualMethodInfoAdapters.OrderBy (mi => mi.DeclaringType.FullName).ToArray ();
+
+      Assert.That (orderedActual, Has.Length.EqualTo (orderedExpected.Length));
+      for (int i = 0; i < orderedActual.Length; i++)
+        CheckMethodInfo (orderedExpected[i], orderedActual[i]);
+    }
+
+    public class DomainType : IInterface1, IInterface2
+    {
+      public void MethodDeclaredByMultipleInterfaces ()
+      {
+        throw new NotImplementedException ();
+      }
+    }
+
+    public interface IInterface1
+    {
+      void MethodDeclaredByMultipleInterfaces ();
+    }
+
+    public interface IInterface2
+    {
+      void MethodDeclaredByMultipleInterfaces ();
     }
   }
 }

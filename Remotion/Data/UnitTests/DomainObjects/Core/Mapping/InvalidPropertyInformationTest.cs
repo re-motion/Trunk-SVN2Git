@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void FindInterfaceDeclaration ()
     {
-      Assert.That (_propertyInformation.FindInterfaceDeclaration (), Is.Null);
+      Assert.That (_propertyInformation.FindInterfaceDeclarations (), Is.Null);
     }
 
     [Test]

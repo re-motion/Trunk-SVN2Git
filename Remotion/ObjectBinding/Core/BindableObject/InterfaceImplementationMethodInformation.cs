@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -76,9 +78,9 @@ namespace Remotion.ObjectBinding.BindableObject
       return _implementationMethodInfo.FindInterfaceImplementation (implementationType);
     }
 
-    public IMethodInformation FindInterfaceDeclaration ()
+    public IEnumerable<IMethodInformation> FindInterfaceDeclarations ()
     {
-      return _declarationMethodInfo;
+      return EnumerableUtility.Singleton (_declarationMethodInfo);
     }
 
     public T GetFastInvoker<T> () where T: class

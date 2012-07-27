@@ -132,7 +132,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       
       Assert.That (interfaceImplProperty, Is.TypeOf (typeof (InterfaceImplementationPropertyInformation)));
       Assert.That (interfaceImplProperty.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (TestTypeWithInterfaces))));
-      Assert.That (interfaceImplProperty.FindInterfaceDeclaration().DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (ITestInterface))));
+      Assert.That (interfaceImplProperty.FindInterfaceDeclarations().Single().DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (ITestInterface))));
     }
 
     [Test]
@@ -147,7 +147,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       
       Assert.That (interfaceImplProperty, Is.TypeOf (typeof (InterfaceImplementationPropertyInformation)));
       Assert.That (interfaceImplProperty.DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (TestTypeWithInterfaces))));
-      Assert.That (interfaceImplProperty.FindInterfaceDeclaration ().DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (IExplicitTestInterface))));
+      Assert.That (interfaceImplProperty.FindInterfaceDeclarations ().Single ().DeclaringType, Is.SameAs (TypeAdapter.Create (typeof (IExplicitTestInterface))));
     }
 
     [Test]

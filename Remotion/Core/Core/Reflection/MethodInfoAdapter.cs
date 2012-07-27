@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -114,18 +115,16 @@ namespace Remotion.Reflection
       return Create(interfaceMap.TargetMethods[methodIndex]);
     }
 
-    public IMethodInformation FindInterfaceDeclaration ()
+    public IEnumerable<IMethodInformation> FindInterfaceDeclarations ()
     {
       if (_methodInfo.DeclaringType.IsInterface)
         throw new InvalidOperationException ("This method is itself an interface member, so it cannot have an interface declaration.");
 
-      var resultMethodInfo =
-          (from ifc in _methodInfo.DeclaringType.GetInterfaces ()
-           let map = _methodInfo.DeclaringType.GetInterfaceMap (ifc)
-           from index in Enumerable.Range (0, map.TargetMethods.Length)
-           where MemberInfoEqualityComparer<MethodInfo>.Instance.Equals(map.TargetMethods[index], _methodInfo)
-           select map.InterfaceMethods[index]).FirstOrDefault();
-      return Maybe.ForValue (resultMethodInfo).Select (Create).ValueOrDefault();
+      return from interfaceType in _methodInfo.DeclaringType.GetInterfaces ()
+             let map = _methodInfo.DeclaringType.GetInterfaceMap (interfaceType)
+             from index in Enumerable.Range (0, map.TargetMethods.Length)
+             where MemberInfoEqualityComparer<MethodInfo>.Instance.Equals (map.TargetMethods[index], _methodInfo)
+             select (IMethodInformation) Create (map.InterfaceMethods[index]);
     }
 
     public T GetFastInvoker<T> () where T: class

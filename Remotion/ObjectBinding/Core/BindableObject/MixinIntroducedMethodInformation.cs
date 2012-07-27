@@ -15,9 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -35,14 +37,15 @@ namespace Remotion.ObjectBinding.BindableObject
   public class MixinIntroducedMethodInformation : IMethodInformation
   {
     private readonly InterfaceImplementationMethodInformation _mixinMethodInfo;
-    private readonly DoubleCheckedLockingContainer<IMethodInformation> _methodInterfaceDeclarationCache;
+    private readonly DoubleCheckedLockingContainer<ICollection<IMethodInformation>> _methodInterfaceDeclarationCache;
 
     public MixinIntroducedMethodInformation (InterfaceImplementationMethodInformation mixinMethodInfo)
     {
       ArgumentUtility.CheckNotNull ("mixinMethodInfo", mixinMethodInfo);
 
       _mixinMethodInfo = mixinMethodInfo;
-      _methodInterfaceDeclarationCache = new DoubleCheckedLockingContainer<IMethodInformation> (_mixinMethodInfo.FindInterfaceDeclaration);
+      _methodInterfaceDeclarationCache = 
+          new DoubleCheckedLockingContainer<ICollection<IMethodInformation>> (() => _mixinMethodInfo.FindInterfaceDeclarations().ConvertToCollection());
     }
 
     public string Name
@@ -82,7 +85,7 @@ namespace Remotion.ObjectBinding.BindableObject
       return _mixinMethodInfo.FindInterfaceImplementation (implementationType);
     }
 
-    public IMethodInformation FindInterfaceDeclaration ()
+    public IEnumerable<IMethodInformation> FindInterfaceDeclarations ()
     {
       return _methodInterfaceDeclarationCache.Value;
     }

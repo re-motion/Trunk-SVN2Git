@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Remotion.Reflection
@@ -88,7 +89,7 @@ namespace Remotion.Reflection
       throw new InvalidOperationException("FindInterfaceImplementation can only be called on inteface properties.");
     }
 
-    public IPropertyInformation FindInterfaceDeclaration ()
+    public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
     {
       return null;
     }

@@ -17,6 +17,8 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Enumerables;
+using Remotion.FunctionalProgramming;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -105,10 +107,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindInterfaceDeclaration ()
     {
-      var methodInfoAdapter = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
-      _declarationMethodInformationStub.Stub (stub => stub.FindInterfaceDeclaration()).Return (methodInfoAdapter);
+      IMethodInformation methodInformation = MethodInfoAdapter.Create(typeof (object).GetMethod ("ToString"));
+      _declarationMethodInformationStub
+          .Stub (stub => stub.FindInterfaceDeclarations())
+          .Return (EnumerableUtility.Singleton (methodInformation).AsOneTime());
 
-      Assert.That (_mixinIntroducedMethodInformation.FindInterfaceDeclaration(), Is.SameAs (_declarationMethodInformationStub));
+      Assert.That (_mixinIntroducedMethodInformation.FindInterfaceDeclarations (), Is.EqualTo (new[] { _declarationMethodInformationStub }));
+      Assert.That (_mixinIntroducedMethodInformation.FindInterfaceDeclarations (), Is.EqualTo (new[] { _declarationMethodInformationStub }));
     }
 
     [Test]

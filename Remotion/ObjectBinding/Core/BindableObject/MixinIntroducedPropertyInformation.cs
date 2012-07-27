@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
@@ -81,9 +82,9 @@ namespace Remotion.ObjectBinding.BindableObject
       return _mixinPropertyInfo.FindInterfaceImplementation (implementationType);
     }
 
-    public IPropertyInformation FindInterfaceDeclaration ()
+    public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
     {
-      return _mixinPropertyInfo.FindInterfaceDeclaration();
+      return _mixinPropertyInfo.FindInterfaceDeclarations();
     }
 
     public ParameterInfo[] GetIndexParameters ()

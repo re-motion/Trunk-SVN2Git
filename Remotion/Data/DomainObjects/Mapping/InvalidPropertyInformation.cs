@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -88,7 +89,7 @@ namespace Remotion.Data.DomainObjects.Mapping
       throw new InvalidOperationException ("FindInterfaceImplementation can only be called on inteface properties.");
     }
 
-    public IPropertyInformation FindInterfaceDeclaration ()
+    public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
     {
       return null;
     }

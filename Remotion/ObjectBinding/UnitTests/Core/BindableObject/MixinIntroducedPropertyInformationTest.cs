@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindInterfaceDeclaration ()
     {
-      Assert.That (_mixinIntroducedPropertyInformation.FindInterfaceDeclaration(), Is.SameAs (_declarationPropertyInformationStub));
+      Assert.That (_mixinIntroducedPropertyInformation.FindInterfaceDeclarations(), Is.EqualTo (new[] { _declarationPropertyInformationStub }));
     }
 
     [Test]

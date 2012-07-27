@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Remotion.Reflection
@@ -65,7 +66,7 @@ namespace Remotion.Reflection
     /// <see langword="null" /> if this <see cref="IMethodInformation"/> is not an implementation of an interface member.</returns>
     /// <exception cref="InvalidOperationException">This <see cref="IMethodInformation"/> is itself an interface member, so it cannot have an 
     /// interface declaration.</exception>
-    IMethodInformation FindInterfaceDeclaration ();
+    IEnumerable<IMethodInformation> FindInterfaceDeclarations ();
 
     /// <summary>
     /// Returns a delegate invoking the method described by this <see cref="IMethodInformation"/>.

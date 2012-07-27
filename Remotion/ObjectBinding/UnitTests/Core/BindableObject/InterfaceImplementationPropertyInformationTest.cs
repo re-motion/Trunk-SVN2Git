@@ -103,7 +103,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     [Test]
     public void FindInterfaceDeclaration ()
     {
-      Assert.That (_interfaceImplementationPropertyInformation.FindInterfaceDeclaration(), Is.SameAs (_declarationPropertyInformationStub));
+      Assert.That (_interfaceImplementationPropertyInformation.FindInterfaceDeclarations(), Is.EqualTo (new[] { _declarationPropertyInformationStub }));
     }
 
     [Test]

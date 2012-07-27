@@ -113,7 +113,7 @@ namespace Remotion.UnitTests.Reflection
     [Test]
     public void FindInterfaceDeclaration ()
     {
-      Assert.That (_nullPropertyInformation.FindInterfaceDeclaration (), Is.Null);
+      Assert.That (_nullPropertyInformation.FindInterfaceDeclarations (), Is.Null);
     }
 
     [Test]

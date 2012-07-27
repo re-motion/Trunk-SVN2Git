@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
@@ -78,9 +79,9 @@ namespace Remotion.ObjectBinding.BindableObject
       return _implementationPropertyInfo.FindInterfaceImplementation (implementationType);
     }
 
-    public IPropertyInformation FindInterfaceDeclaration ()
+    public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
     {
-      return _declarationPropertyInfo;
+      return EnumerableUtility.Singleton (_declarationPropertyInfo);
     }
 
     public ParameterInfo[] GetIndexParameters ()

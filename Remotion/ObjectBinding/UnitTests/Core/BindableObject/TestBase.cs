@@ -25,6 +25,7 @@ using Remotion.ObjectBinding.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
 using Remotion.Security;
 using Rhino.Mocks;
+using System.Linq;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
 {
@@ -79,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
       else
       {
         var propertyInfoAdapter = PropertyInfoAdapter.Create(propertyInfo);
-        var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
+        var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclarations().SingleOrDefault();
         if (interfaceDeclaration != null)
           return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);
         else

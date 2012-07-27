@@ -23,6 +23,7 @@ using Remotion.Mixins;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.ObjectBinding.BindableObject
 {
@@ -96,7 +97,7 @@ namespace Remotion.ObjectBinding.BindableObject
       else
       {
         var propertyInfoAdapter = PropertyInfoAdapter.Create(propertyInfo);
-        var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclaration();
+        var interfaceDeclaration = propertyInfoAdapter.FindInterfaceDeclarations().FirstOrDefault();
         if (interfaceDeclaration != null)
           return new InterfaceImplementationPropertyInformation (propertyInfoAdapter, interfaceDeclaration);
         else

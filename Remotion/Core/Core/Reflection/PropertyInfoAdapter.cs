@@ -15,11 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Reflection
 {
@@ -150,17 +152,14 @@ namespace Remotion.Reflection
       return implementationProperty;
     }
 
-    public IPropertyInformation FindInterfaceDeclaration ()
+    public IEnumerable<IPropertyInformation> FindInterfaceDeclarations ()
     {
       if (DeclaringType.IsInterface)
         throw new InvalidOperationException ("This property is itself an interface member, so it cannot have an interface declaration.");
 
       var accessorMethod = GetGetMethod (true) ?? GetSetMethod (true);
-      var interfaceAccessorMethod = accessorMethod.FindInterfaceDeclaration ();
-      if (interfaceAccessorMethod == null)
-        return null;
-
-      return interfaceAccessorMethod.FindDeclaringProperty ();
+      var interfaceAccessorMethods = accessorMethod.FindInterfaceDeclarations ();
+      return interfaceAccessorMethods.Select (m => m.FindDeclaringProperty());
     }
 
     public override bool Equals (object obj)
