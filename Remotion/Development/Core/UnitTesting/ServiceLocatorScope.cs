@@ -15,7 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
+using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTesting
 {
@@ -25,6 +28,18 @@ namespace Remotion.Development.UnitTesting
   /// </summary>
   public class ServiceLocatorScope : IDisposable
   {
+    private static IServiceLocator CreateStubServiceLocator (IEnumerable<ServiceConfigurationEntry> configuration)
+    {
+      ArgumentUtility.CheckNotNull ("configuration", configuration);
+
+      var defaultServiceLocator = new DefaultServiceLocator ();
+      foreach (var stubbedRegistration in configuration)
+      {
+        defaultServiceLocator.Register (stubbedRegistration);
+      }
+      return defaultServiceLocator;
+    }
+
     private readonly ServiceLocatorProvider _previousLocatorProvider;
 
     public ServiceLocatorScope (IServiceLocator temporaryServiceLocator)
@@ -40,6 +55,18 @@ namespace Remotion.Development.UnitTesting
       }
 
       ServiceLocator.SetLocatorProvider (() => temporaryServiceLocator);
+    }
+
+    public ServiceLocatorScope (params ServiceConfigurationEntry[] temporaryConfiguration)
+      : this (CreateStubServiceLocator (temporaryConfiguration))
+    {
+    }
+
+    public ServiceLocatorScope (Type serviceType, Type implementationType, LifetimeKind lifetimeKind = LifetimeKind.Instance)
+        : this (
+            CreateStubServiceLocator (
+                new[] { new ServiceConfigurationEntry (serviceType, new ServiceImplementationInfo (implementationType, lifetimeKind)) }))
+    {
     }
 
     public void Dispose ()
