@@ -16,6 +16,7 @@
 // 
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Web;
 using System.Web.SessionState;
 using Remotion.Logging;
@@ -213,13 +214,19 @@ namespace Remotion.Web.ExecutionEngine
       ArgumentUtility.CheckNotNullOrEmpty ("typeName", typeName);
       try
       {
-        return WebTypeUtility.GetType (typeName, true, true);
+        var type = WebTypeUtility.GetType (typeName, true, true);
+        if (!typeof (WxeFunction).IsAssignableFrom (type))
+        {
+          throw new WxeException (
+              string.Format ("The function type '{0}' is invalid. Wxe functions must be derived from '{1}'.", typeName, typeof (WxeFunction).FullName));
+        }
+        return type;
       }
       catch (TypeLoadException e)
       {
         throw new WxeException (string.Format ("The function type '{0}' is invalid.", typeName), e);
       }
-      catch (System.IO.FileNotFoundException e)
+      catch (FileNotFoundException e)
       {
         throw new WxeException (string.Format ("The function type '{0}' is invalid.", typeName), e);
       }
