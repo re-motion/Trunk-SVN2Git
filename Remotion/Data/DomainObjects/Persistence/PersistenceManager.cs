@@ -116,7 +116,6 @@ namespace Remotion.Data.DomainObjects.Persistence
       var provider = _storageProviderManager.GetMandatory (id.StorageProviderDefinition.Name);
       var result = provider.LoadDataContainer (id);
 
-      CheckClassIDOfLookupResult (result);
       return result;
     }
 
@@ -127,17 +126,9 @@ namespace Remotion.Data.DomainObjects.Persistence
 
       var idsByProvider = GroupIDsByProvider (ids);
 
-      var unorderedResultDictionary = new Dictionary<ObjectID, ObjectLookupResult<DataContainer>>();
-      foreach (var idGroup in idsByProvider)
-      {
-        var provider = _storageProviderManager.GetMandatory (idGroup.Key);
-        foreach (var dataContainerLookupResult in provider.LoadDataContainers (idGroup.Value))
-        {
-          CheckClassIDOfLookupResult (dataContainerLookupResult);
-          unorderedResultDictionary.Add (dataContainerLookupResult.ObjectID, dataContainerLookupResult);
-        }
-      }
-
+      var unorderedResultDictionary = idsByProvider
+          .SelectMany (idGroup => _storageProviderManager.GetMandatory (idGroup.Key).LoadDataContainers (idGroup.Value))
+          .ToDictionary (dataContainerLookupResult => dataContainerLookupResult.ObjectID);
       return ids.Select (id => unorderedResultDictionary[id]);
     }
 
@@ -275,20 +266,6 @@ namespace Remotion.Data.DomainObjects.Persistence
     {
       if (_disposed)
         throw new ObjectDisposedException ("PersistenceManager", "A disposed PersistenceManager cannot be accessed.");
-    }
-
-    private void CheckClassIDOfLookupResult (ObjectLookupResult<DataContainer> lookupResult)
-    {
-      if (lookupResult.LocatedObject != null)
-      {
-        if (lookupResult.ObjectID.ClassID != lookupResult.LocatedObject.ID.ClassID)
-        {
-          throw CreatePersistenceException (
-              "The ClassID of the provided ObjectID '{0}' and the ClassID of the loaded DataContainer '{1}' differ.",
-              lookupResult.ObjectID,
-              lookupResult.LocatedObject.ID);
-        }
-      }
     }
 
     private IEnumerable<KeyValuePair<string, List<ObjectID>>> GroupIDsByProvider (IEnumerable<ObjectID> ids)

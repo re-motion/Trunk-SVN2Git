@@ -87,16 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
     }
 
     [Test]
-    [ExpectedException (typeof (PersistenceException),
-        ExpectedMessage = "The ClassID of the provided ObjectID 'Distributor|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid'"
-                          + " and the ClassID of the loaded DataContainer 'Partner|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid' differ.")]
-    public void LoadDataContainer_WithInvalidClassID ()
-    {
-      ObjectID id = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
-      _persistenceManager.LoadDataContainer (id);
-    }
-
-    [Test]
     public void LoadDataContainers ()
     {
       Assert.AreNotEqual (DomainObjectIDs.Order1.StorageProviderDefinition.Name, DomainObjectIDs.Official1, "Different storage providers");
@@ -157,17 +147,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
       Assert.That (dataContainers[1].LocatedObject, Is.Null);
       Assert.That (dataContainers[2].ObjectID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (dataContainers[2].LocatedObject.ID, Is.EqualTo (DomainObjectIDs.Order1));
-    }
-
-    [Test]
-    [Ignore ("TODO 4536")]
-    [ExpectedException (typeof (PersistenceException),
-        ExpectedMessage = "The ClassID of the provided ObjectID 'Distributor|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid'"
-                          + " and the ClassID of the loaded DataContainer 'Partner|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid' differ.")]
-    public void LoadDataContainers_WithInvalidClassID ()
-    {
-      ObjectID id = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
-      _persistenceManager.LoadDataContainers (new[] { id });
     }
 
     [Test]

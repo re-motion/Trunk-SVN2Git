@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using System.Linq;
+using Remotion.Data.DomainObjects.Persistence;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer.IntegrationTests
 {
@@ -69,6 +70,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.SqlServer
       var result = Provider.LoadDataContainers (new ObjectID[0]).ToList();
 
       Assert.That (result, Is.Empty);
+    }
+
+    [Test]
+    [ExpectedException (typeof (PersistenceException),
+        ExpectedMessage = "The ClassID of the provided ObjectID 'Distributor|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid'"
+                          + " and the ClassID of the loaded DataContainer 'Partner|5587a9c0-be53-477d-8c0a-4803c7fae1a9|System.Guid' differ.")]
+    [Ignore ("TODO 4536")]
+    public void LoadDataContainers_WithInvalidClassID ()
+    {
+      ObjectID id = new ObjectID ("Distributor", (Guid) DomainObjectIDs.Partner1.Value);
+      Provider.LoadDataContainers (new[] { id });
     }
   }
 }
