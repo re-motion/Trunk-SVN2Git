@@ -223,6 +223,7 @@
     <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />
     <Compile Include="DomainObjects\Core\NoRdbmsUnitTestStorageProviderStubDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\TestableStorageProviderDefinition.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\SingleDataContainerAssociateWithIDCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ClassIDsInAllForeignKeysBehaviorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\ClassWithRelations.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\DefaultBehaviorTest.cs" />

@@ -21,7 +21,6 @@ using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
@@ -116,9 +115,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = _factory.CreateForSingleIDLookup (_objectID1);
 
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
-      var innerCommand = CheckDelegateBasedCommandAndReturnInnerCommand<DataContainer, ObjectLookupResult<DataContainer>> (result);
-      Assert.That (innerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
-      var loadCommand = ((SingleObjectLoadCommand<DataContainer>) innerCommand);
+
+      Assert.That (result, Is.TypeOf<SingleDataContainerAssociateWithIDCommand<IRdbmsProviderCommandExecutionContext>>());
+      
+      var associateCommand = (SingleDataContainerAssociateWithIDCommand<IRdbmsProviderCommandExecutionContext>) result;
+      Assert.That (associateCommand.ExpectedObjectID, Is.EqualTo (_objectID1));
+      Assert.That (associateCommand.InnerCommand, Is.TypeOf (typeof (SingleObjectLoadCommand<DataContainer>)));
+
+      var loadCommand = ((SingleObjectLoadCommand<DataContainer>) associateCommand.InnerCommand);
       Assert.That (loadCommand.DbCommandBuilder, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (loadCommand.ObjectReader, Is.SameAs (_dataContainerReader1Stub));
     }

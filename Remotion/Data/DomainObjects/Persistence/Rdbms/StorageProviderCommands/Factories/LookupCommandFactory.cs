@@ -84,9 +84,8 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
       var comparedColumns = tableDefinition.ObjectIDProperty.SplitValueForComparison (objectID);
       var dbCommandBuilder = _dbCommandBuilderFactory.CreateForSelect (tableDefinition, selectedColumns, comparedColumns, new OrderedColumn[0]);
 
-      var singleDataContainerLoadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
-      return DelegateBasedStorageProviderCommand.Create (
-          singleDataContainerLoadCommand, result => new ObjectLookupResult<DataContainer> (objectID, result));
+      var loadCommand = new SingleObjectLoadCommand<DataContainer> (dbCommandBuilder, dataContainerReader);
+      return new SingleDataContainerAssociateWithIDCommand<IRdbmsProviderCommandExecutionContext> (objectID, loadCommand);
     }
 
     public virtual IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext> CreateForSortedMultiIDLookup (

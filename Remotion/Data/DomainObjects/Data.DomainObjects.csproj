@@ -255,6 +255,7 @@
     <Compile Include="Persistence\Rdbms\Model\Building\IValueStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\RelationStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\ValueStoragePropertyDefinitionFactory.cs" />
+    <Compile Include="Persistence\SingleDataContainerAssociateWithIDCommand.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
     <Compile Include="Queries\IQueryResultRow.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
