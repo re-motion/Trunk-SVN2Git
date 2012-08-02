@@ -255,7 +255,7 @@
     <Compile Include="Persistence\Rdbms\Model\Building\IValueStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\RelationStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\Rdbms\Model\Building\ValueStoragePropertyDefinitionFactory.cs" />
-    <Compile Include="Persistence\SingleDataContainerAssociateWithIDCommand.cs" />
+    <Compile Include="Persistence\StorageProviderCommands\SingleDataContainerAssociateWithIDCommand.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
     <Compile Include="Queries\IQueryResultRow.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
@@ -321,7 +321,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlEmptyViewScriptElementFactory.cs" />
     <Compile Include="Persistence\StorageEntityBasedStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\ObjectLookupResult.cs" />
-    <Compile Include="Persistence\FixedValueStorageProviderCommand.cs" />
+    <Compile Include="Persistence\StorageProviderCommands\FixedValueStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\DataContainerReader.cs" />
@@ -538,10 +538,10 @@
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSaveCommand.cs" />
-    <Compile Include="Persistence\MultiDataContainerAssociateWithIDsCommand.cs" />
+    <Compile Include="Persistence\StorageProviderCommands\MultiDataContainerAssociateWithIDsCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleObjectLoadCommand.cs" />
-    <Compile Include="Persistence\DelegateBasedStorageProviderCommand.cs" />
+    <Compile Include="Persistence\StorageProviderCommands\DelegateBasedStorageProviderCommand.cs" />
     <Compile Include="Persistence\StorageGroupBasedStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />

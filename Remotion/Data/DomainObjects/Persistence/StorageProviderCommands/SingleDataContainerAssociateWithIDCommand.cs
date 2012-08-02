@@ -15,11 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-using System;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.StorageProviderCommands
 {
   /// <summary>
   /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and associates the result with a given <see cref="ObjectID"/>, 

@@ -17,9 +17,10 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.DomainObjects.Persistence.StorageProviderCommands;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProviderCommands
 {
   [TestFixture]
   public class DelegateBasedStorageProviderCommandTest

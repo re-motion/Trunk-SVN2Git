@@ -17,7 +17,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.StorageProviderCommands
 {
   /// <summary>
   /// Creates instances of <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>. Use this factory class to avoid having

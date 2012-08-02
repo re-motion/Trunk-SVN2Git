@@ -23,7 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence
+namespace Remotion.Data.DomainObjects.Persistence.StorageProviderCommands
 {
   /// <summary>
   /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and associates the resulting <see cref="DataContainer"/> instances

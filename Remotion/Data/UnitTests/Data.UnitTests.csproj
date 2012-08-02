@@ -223,7 +223,7 @@
     <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />
     <Compile Include="DomainObjects\Core\NoRdbmsUnitTestStorageProviderStubDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\TestableStorageProviderDefinition.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\SingleDataContainerAssociateWithIDCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\StorageProviderCommands\SingleDataContainerAssociateWithIDCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\ClassIDsInAllForeignKeysBehaviorTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\ClassWithRelations.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\DefaultBehaviorTest.cs" />
@@ -453,7 +453,7 @@
     <Compile Include="DomainObjects\Core\Mapping\PropertyDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationDefinitionCollectionFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Mapping\RelationEndPointDefinitionCollectionFactoryTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\FixedValueStorageProviderCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\StorageProviderCommands\FixedValueStorageProviderCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\CompositeScriptBuilderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\ColumnValueReaderTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\DataReaders\DataContainerReaderTest.cs" />
@@ -547,10 +547,10 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\IndirectDataContainerLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiObjectLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiDataContainerSaveCommandTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\MultiDataContainerAssociateWithIDsCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\StorageProviderCommands\MultiDataContainerAssociateWithIDsCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\StorageProviderCommands\SingleObjectLoadCommandTest.cs" />
-    <Compile Include="DomainObjects\Core\Persistence\DelegateBasedStorageProviderCommandTest.cs" />
+    <Compile Include="DomainObjects\Core\Persistence\StorageProviderCommands\DelegateBasedStorageProviderCommandTest.cs" />
     <Compile Include="DomainObjects\Core\Persistence\StorageEntityBasedStorageProviderDefinitionFinderTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedRealObjectRelationDataRegistrationAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgentTest.cs" />
