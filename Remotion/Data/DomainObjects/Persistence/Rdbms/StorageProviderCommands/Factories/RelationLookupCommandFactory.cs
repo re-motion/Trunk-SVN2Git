@@ -124,7 +124,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
 
       var objectIDLoadCommand = new MultiObjectIDLoadCommand (new[] { dbCommandBuilder }, objectIDReader);
       var indirectDataContainerLoadCommand = new IndirectDataContainerLoadCommand (objectIDLoadCommand, _storageProviderCommandFactory);
-      return DelegateBasedStorageProviderCommand.Create (
+      return DelegateBasedCommand.Create (
           indirectDataContainerLoadCommand,
           lookupResults => lookupResults.Select (
               result =>
@@ -136,10 +136,10 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
               }));
     }
 
-    protected virtual FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForEmptyRelationLookup ()
+    protected virtual FixedValueCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> CreateForEmptyRelationLookup ()
     {
       return
-          new FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> (Enumerable.Empty<DataContainer> ());
+          new FixedValueCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> (Enumerable.Empty<DataContainer> ());
     }
 
     protected virtual IEnumerable<ColumnValue> GetComparedColumns (RelationEndPointDefinition foreignKeyEndPoint, ObjectID foreignKeyValue)

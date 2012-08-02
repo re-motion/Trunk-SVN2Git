@@ -321,7 +321,7 @@
     <Compile Include="Persistence\Rdbms\SqlServer\SchemaGeneration\SqlEmptyViewScriptElementFactory.cs" />
     <Compile Include="Persistence\StorageEntityBasedStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\ObjectLookupResult.cs" />
-    <Compile Include="Persistence\StorageProviderCommands\FixedValueStorageProviderCommand.cs" />
+    <Compile Include="Persistence\StorageProviderCommands\FixedValueCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommand.cs" />
     <Compile Include="Persistence\IStorageProviderCommandFactory.cs" />
     <Compile Include="Persistence\Rdbms\DataReaders\DataContainerReader.cs" />
@@ -541,7 +541,7 @@
     <Compile Include="Persistence\StorageProviderCommands\MultiDataContainerAssociateWithIDsCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\MultiObjectIDLoadCommand.cs" />
     <Compile Include="Persistence\Rdbms\StorageProviderCommands\SingleObjectLoadCommand.cs" />
-    <Compile Include="Persistence\StorageProviderCommands\DelegateBasedStorageProviderCommand.cs" />
+    <Compile Include="Persistence\StorageProviderCommands\DelegateBasedCommand.cs" />
     <Compile Include="Persistence\StorageGroupBasedStorageProviderDefinitionFinder.cs" />
     <Compile Include="Persistence\IStorageObjectFactory.cs" />
     <Compile Include="Persistence\Model\IPersistenceModelLoader.cs" />

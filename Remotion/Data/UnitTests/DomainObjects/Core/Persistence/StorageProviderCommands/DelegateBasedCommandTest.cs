@@ -23,14 +23,14 @@ using Rhino.Mocks;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProviderCommands
 {
   [TestFixture]
-  public class DelegateBasedStorageProviderCommandTest
+  public class DelegateBasedCommandTest
   {
     [Test]
     public void Execute ()
     {
       var executionContext = new object();
       var innerCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<string, object>>();
-      var delegateBasedCommand = new DelegateBasedStorageProviderCommand<string, int, object> (innerCommandStub, s => s.Length);
+      var delegateBasedCommand = new DelegateBasedCommand<string, int, object> (innerCommandStub, s => s.Length);
 
       innerCommandStub.Stub (stub => stub.Execute (executionContext)).Return ("Test1");
 
@@ -44,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProvider
     {
       var innerCommandStub = MockRepository.GenerateStub<IStorageProviderCommand<string, object>>();
       Func<string, int> operation = s => s.Length;
-      var instance = DelegateBasedStorageProviderCommand.Create (innerCommandStub, operation);
+      var instance = DelegateBasedCommand.Create (innerCommandStub, operation);
 
-      Assert.That (instance, Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<string, int, object>)));
+      Assert.That (instance, Is.TypeOf (typeof (DelegateBasedCommand<string, int, object>)));
       Assert.That (instance.Command, Is.SameAs (innerCommandStub));
       Assert.That (instance.Operation, Is.SameAs (operation));
     }

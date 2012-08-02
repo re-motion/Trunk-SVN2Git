@@ -289,8 +289,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       var result = _factory.CreateForRelationLookup (relationEndPointDefinition, _foreignKeyValue, null);
 
-      Assert.That (result, Is.TypeOf (typeof (FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>)));
-      var fixedValueCommand = (FixedValueStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>) result;
+      Assert.That (result, Is.TypeOf (typeof (FixedValueCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>)));
+      var fixedValueCommand = (FixedValueCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>) result;
       Assert.That (fixedValueCommand.Value, Is.EqualTo (Enumerable.Empty<DataContainer>()));
     }
 
@@ -307,8 +307,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     {
       Assert.That (
           command,
-          Is.TypeOf (typeof (DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>)));
-      return ((DelegateBasedStorageProviderCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>) command).Command;
+          Is.TypeOf (typeof (DelegateBasedCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>)));
+      return ((DelegateBasedCommand<TIn, TResult, IRdbmsProviderCommandExecutionContext>) command).Command;
     }
 
     private SortedPropertySpecification CreateSortedPropertySpecification (

@@ -14,23 +14,30 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using NUnit.Framework;
-using Remotion.Data.DomainObjects.Persistence.StorageProviderCommands;
-
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProviderCommands
+namespace Remotion.Data.DomainObjects.Persistence.StorageProviderCommands
 {
-  [TestFixture]
-  public class FixedValueStorageProviderCommandTest
+  /// <summary>
+  /// Implements <see cref="IStorageProviderCommand{T,TExecutionContext}"/> by always returning the same, fixed value.
+  /// </summary>
+  /// <typeparam name="T">The type of the value to return.</typeparam>
+  /// <typeparam name="TExecutionContext">The type of the execution context. This is not actually used by this command.</typeparam>
+  public class FixedValueCommand<T, TExecutionContext> : IStorageProviderCommand<T, TExecutionContext>
   {
-    [Test]
-    public void Execute ()
+    private readonly T _value;
+
+    public FixedValueCommand (T value)
     {
-      var value = new object();
-      var command = new FixedValueStorageProviderCommand<object, object>(value);
+      _value = value;
+    }
 
-      var result = command.Execute (new object());
+    public T Value
+    {
+      get { return _value; }
+    }
 
-      Assert.That (result, Is.SameAs (value));
+    public T Execute (TExecutionContext executionContext)
+    {
+      return _value;
     }
   }
 }

@@ -20,33 +20,33 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Persistence.StorageProviderCommands
 {
   /// <summary>
-  /// Creates instances of <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>. Use this factory class to avoid having
-  /// to pass all generic arguments to <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>'s constructor by hand.
+  /// Creates instances of <see cref="DelegateBasedCommand{TIn,TOut,TExecutionContext}"/>. Use this factory class to avoid having
+  /// to pass all generic arguments to <see cref="DelegateBasedCommand{TIn,TOut,TExecutionContext}"/>'s constructor by hand.
   /// </summary>
-  public static class DelegateBasedStorageProviderCommand
+  public static class DelegateBasedCommand
   {
     /// <summary>
-    /// Creates instances of <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>. Use this factory method to avoid having
-    /// to pass all generic arguments to <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/>'s constructor by hand.
+    /// Creates instances of <see cref="DelegateBasedCommand{TIn,TOut,TExecutionContext}"/>. Use this factory method to avoid having
+    /// to pass all generic arguments to <see cref="DelegateBasedCommand{TIn,TOut,TExecutionContext}"/>'s constructor by hand.
     /// </summary>
-    public static DelegateBasedStorageProviderCommand<TIn, TOut, TExecutionContext> Create<TIn, TOut, TExecutionContext> (
+    public static DelegateBasedCommand<TIn, TOut, TExecutionContext> Create<TIn, TOut, TExecutionContext> (
         IStorageProviderCommand<TIn, TExecutionContext> command, 
         Func<TIn, TOut> operation)
     {
-      return new DelegateBasedStorageProviderCommand<TIn, TOut, TExecutionContext> (command, operation);
+      return new DelegateBasedCommand<TIn, TOut, TExecutionContext> (command, operation);
     }
   }
 
   /// <summary>
-  /// The <see cref="DelegateBasedStorageProviderCommand{TIn,TOut,TExecutionContext}"/> executes an <see cref="IStorageProviderCommand{T, TExecutionContext}"/>
+  /// The <see cref="DelegateBasedCommand{TIn,TOut,TExecutionContext}"/> executes an <see cref="IStorageProviderCommand{T, TExecutionContext}"/>
   /// and applies a specified operation-transformation to the result.
   /// </summary>
-  public class DelegateBasedStorageProviderCommand<TIn, TOut, TExecutionContext> : IStorageProviderCommand<TOut, TExecutionContext>
+  public class DelegateBasedCommand<TIn, TOut, TExecutionContext> : IStorageProviderCommand<TOut, TExecutionContext>
   {
     private readonly IStorageProviderCommand<TIn, TExecutionContext> _command;
     private readonly Func<TIn, TOut> _operation;
 
-    public DelegateBasedStorageProviderCommand (IStorageProviderCommand<TIn, TExecutionContext> command, Func<TIn, TOut> operation)
+    public DelegateBasedCommand (IStorageProviderCommand<TIn, TExecutionContext> command, Func<TIn, TOut> operation)
     {
       ArgumentUtility.CheckNotNull ("command", command);
       ArgumentUtility.CheckNotNull ("operation", operation);
