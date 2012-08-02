@@ -17,6 +17,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Web;
 using System.Web.UI;
 using Remotion.ObjectBinding.Web.UI.Design;
 using Remotion.Utilities;
@@ -159,7 +160,7 @@ public class BocDropDownMenu : BusinessObjectBoundWebControl, IBocMenuItemContai
     if (Value != null)
     {
       _dropDownMenu.GetSelectionCount = "function() { return 1; }";
-      _dropDownMenu.TitleText = Value.DisplayNameSafe;
+      _dropDownMenu.TitleText = HttpUtility.HtmlEncode (Value.DisplayNameSafe);
 
      if (_enableIcon)
      {
