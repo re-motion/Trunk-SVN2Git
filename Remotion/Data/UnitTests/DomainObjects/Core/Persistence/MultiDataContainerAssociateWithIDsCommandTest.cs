@@ -17,22 +17,25 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Persistence;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Linq;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StorageProviderCommands
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence
 {
   [TestFixture]
-  public class MultiDataContainerSortCommandTest : StandardMappingTest
+  public class MultiDataContainerAssociateWithIDsCommandTest : StandardMappingTest
   {
     private IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> _commandStub;
     private IRdbmsProviderCommandExecutionContext _executionContext;
     private DataContainer _order1Container;
     private DataContainer _order2Container;
+    private DataContainer _order3Container;
 
     public override void SetUp ()
     {
@@ -41,14 +44,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       _commandStub = MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>>();
       _executionContext = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
 
-      _order1Container = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      _order2Container = DataContainer.CreateNew (DomainObjectIDs.Order2);
+      _order1Container = DataContainerObjectMother.CreateDataContainer (DomainObjectIDs.Order1);
+      _order2Container = DataContainerObjectMother.CreateDataContainer (DomainObjectIDs.Order2);
+      _order3Container = DataContainerObjectMother.CreateDataContainer (DomainObjectIDs.Order3);
     }
 
     [Test]
     public void Execute ()
     {
-      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }, _commandStub);
+      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.OrderItem1 }, _commandStub);
       _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order2Container, _order1Container });
 
       var result = command.Execute (_executionContext).ToList ();
@@ -65,9 +69,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_DuplicatedObjectID ()
     {
-      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order1 }, _commandStub);
+      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order1 }, _commandStub);
 
-      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order2Container });
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container });
 
       var result = command.Execute (_executionContext).ToList ();
 
@@ -81,9 +85,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_DuplicatedDataContainer ()
     {
-      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
+      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
 
-      var otherOrder1DataContainer = DataContainer.CreateNew (_order1Container.ID);
+      var otherOrder1DataContainer = DataContainerObjectMother.CreateDataContainer (_order1Container.ID);
 
       _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, otherOrder1DataContainer });
 
@@ -97,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_NullDataContainer ()
     {
-      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
+      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
 
       _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, null });
 
@@ -111,7 +115,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
     [Test]
     public void Execute_NullObjectID ()
     {
-      var command = new MultiDataContainerSortCommand (new[] { DomainObjectIDs.Order1, null }, _commandStub);
+      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1, null }, _commandStub);
 
       _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container });
 
@@ -122,6 +126,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       Assert.That (result[0].ObjectID, Is.EqualTo (DomainObjectIDs.Order1));
       Assert.That (result[1].LocatedObject, Is.Null);
       Assert.That (result[1].ObjectID, Is.Null);
+    }
+
+    [Test]
+    public void Execute_DataContainersNotMatchingAnyID ()
+    {
+      var wrongID1 = new ObjectID (typeof (OrderItem), _order1Container.ID.Value);
+      var wrongID2 = new ObjectID (typeof (OrderTicket), _order1Container.ID.Value);
+
+      var command = new MultiDataContainerAssociateWithIDsCommand (new[] { wrongID1, wrongID1, wrongID2, _order3Container.ID }, _commandStub);
+
+      _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, _order2Container, _order3Container });
+
+      Assert.That (
+          () => command.Execute (_executionContext).ToList(), 
+          Throws.TypeOf<PersistenceException>().With.Message.EqualTo (
+              "The ObjectID of one or more loaded DataContainers does not match the expected ObjectIDs:\r\n"
+              + "Loaded DataContainer ID: Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid, expected ObjectID(s): "
+              + "OrderItem|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid, OrderTicket|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid\r\n"
+              + "Loaded DataContainer ID: Order|83445473-844a-4d3f-a8c3-c27f8d98e8ba|System.Guid, expected ObjectID(s): none"));
     }
   }
 }

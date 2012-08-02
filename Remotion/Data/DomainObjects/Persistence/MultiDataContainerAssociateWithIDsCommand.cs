@@ -19,21 +19,24 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Persistence.Rdbms;
+using Remotion.Text;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
+namespace Remotion.Data.DomainObjects.Persistence
 {
   /// <summary>
-  /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and sorts the resulting <see cref="DataContainer"/> instances
-  /// according to a given list of <see cref="ObjectID"/> values.
+  /// Executes a given <see cref="IStorageProviderCommand{T,TExecutionContext}"/> and associates the resulting <see cref="DataContainer"/> instances
+  /// with a given list of <see cref="ObjectID"/> values. If any <see cref="DataContainer"/> has a non-matching <see cref="ObjectID"/>, an exception
+  /// is thrown.
   /// </summary>
-  public class MultiDataContainerSortCommand
+  public class MultiDataContainerAssociateWithIDsCommand
       : IStorageProviderCommand<IEnumerable<ObjectLookupResult<DataContainer>>, IRdbmsProviderCommandExecutionContext>
   {
     private readonly ObjectID[] _objectIDs;
     private readonly IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> _command;
 
-    public MultiDataContainerSortCommand (
+    public MultiDataContainerAssociateWithIDsCommand (
         IEnumerable<ObjectID> objectIDs,
         IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext> command)
     {
@@ -58,13 +61,39 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands
     {
       ArgumentUtility.CheckNotNull ("executionContext", executionContext);
 
-      var dataContainersByID = new Dictionary<ObjectID, DataContainer>();
       var dataContainers = _command.Execute (executionContext);
-      foreach (var dataContainer in dataContainers.Where (dc => dc != null))
-        dataContainersByID[dataContainer.ID] = dataContainer;
 
-      return
-          _objectIDs.Select (id => CreateLookupResult (id, dataContainersByID));
+      var dataContainersByID =  new Dictionary<ObjectID, DataContainer> ();
+      foreach (var dataContainer in dataContainers.Where (dc => dc != null))
+      {
+        // Duplicates overwrite the previous DataContainer
+        dataContainersByID[dataContainer.ID] = dataContainer;
+      }
+
+      var unassociatedDataContainerIDs = new HashSet<ObjectID> (dataContainersByID.Keys);
+      foreach (var objectID in _objectIDs)
+      {
+        var lookupResult = CreateLookupResult (objectID, dataContainersByID);
+        unassociatedDataContainerIDs.Remove (lookupResult.ObjectID);
+        yield return lookupResult;
+      }
+
+      if (unassociatedDataContainerIDs.Count > 0)
+      {
+        var objectIDsByValue = _objectIDs.ToLookup (id => id.Value);
+        var nonMatchingIDDescriptions = unassociatedDataContainerIDs
+            .Select (loadedID => new { LoadedID = loadedID, ExpectedIDs = objectIDsByValue[loadedID.Value] })
+            .Select (
+                t => string.Format (
+                    "Loaded DataContainer ID: {0}, expected ObjectID(s): {1}",
+                    t.LoadedID,
+                    t.ExpectedIDs.Any() ? SeparatedStringBuilder.Build (", ", t.ExpectedIDs.Distinct()) : "none"));
+        var message = string.Format (
+            "The ObjectID of one or more loaded DataContainers does not match the expected ObjectIDs:{0}{1}",
+            Environment.NewLine,
+            SeparatedStringBuilder.Build (Environment.NewLine, nonMatchingIDDescriptions));
+        throw new PersistenceException (message);
+      }
     }
 
     private ObjectLookupResult<DataContainer> CreateLookupResult (ObjectID id, Dictionary<ObjectID, DataContainer> dataContainersByID)

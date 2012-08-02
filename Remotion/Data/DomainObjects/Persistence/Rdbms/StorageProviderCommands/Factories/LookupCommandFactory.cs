@@ -105,7 +105,7 @@ namespace Remotion.Data.DomainObjects.Persistence.Rdbms.StorageProviderCommands.
           select Tuple.Create (dbCommandBuilder, dataContainerReader);
 
       var loadCommand = new MultiObjectLoadCommand<DataContainer> (dbCommandBuildersAndReaders);
-      return new MultiDataContainerSortCommand (objectIDList, loadCommand);
+      return new MultiDataContainerAssociateWithIDsCommand (objectIDList, loadCommand);
     }
 
     public virtual IStorageProviderCommand<IEnumerable<ObjectLookupResult<object>>, IRdbmsProviderCommandExecutionContext> CreateForMultiTimestampLookup (

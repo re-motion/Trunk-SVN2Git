@@ -153,11 +153,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
       var result = _factory.CreateForSortedMultiIDLookup (new[] { _objectID1 });
 
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
-      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerAssociateWithIDsCommand)));
+      Assert.That (((MultiDataContainerAssociateWithIDsCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
 
       var dbCommandBuilderTuples =
-          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
+          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerAssociateWithIDsCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (1));
       Assert.That (dbCommandBuilderTuples[0].Item1, Is.SameAs (_dbCommandBuilder1Stub));
       Assert.That (dbCommandBuilderTuples[0].Item2, Is.SameAs (_dataContainerReader1Stub));
@@ -216,11 +216,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.StoragePr
 
       _objectReaderFactoryStrictMock.VerifyAllExpectations();
       _dbCommandBuilderFactoryStrictMock.VerifyAllExpectations ();
-      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerSortCommand)));
-      Assert.That (((MultiDataContainerSortCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
+      Assert.That (result, Is.TypeOf (typeof (MultiDataContainerAssociateWithIDsCommand)));
+      Assert.That (((MultiDataContainerAssociateWithIDsCommand) result).Command, Is.TypeOf (typeof (MultiObjectLoadCommand<DataContainer>)));
 
       var dbCommandBuilderTuples =
-          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerSortCommand) result).Command).DbCommandBuildersAndReaders;
+          ((MultiObjectLoadCommand<DataContainer>) ((MultiDataContainerAssociateWithIDsCommand) result).Command).DbCommandBuildersAndReaders;
       Assert.That (dbCommandBuilderTuples.Length, Is.EqualTo (2));
 
       // Convert to Dictionary because the order of tuples is not defined
