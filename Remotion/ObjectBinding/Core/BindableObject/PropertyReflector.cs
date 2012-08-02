@@ -68,7 +68,7 @@ namespace Remotion.ObjectBinding.BindableObject
         return new BooleanProperty (parameters);
       else if (underlyingType == typeof (Byte))
         return new ByteProperty (parameters);
-      else if (underlyingType == typeof (DateTime) && _propertyInfo.IsDefined<DatePropertyAttribute> (true))
+      else if (underlyingType == typeof (DateTime) && GetDateTimeType() == DateTimeType.Date)
         return new DateProperty (parameters);
       else if (underlyingType == typeof (DateTime))
         return new DateTimeProperty (parameters);
@@ -169,6 +169,11 @@ namespace Remotion.ObjectBinding.BindableObject
     protected virtual int? GetMaxLength ()
     {
       return null;
+    }
+
+    protected virtual DateTimeType GetDateTimeType ()
+    {
+      return _propertyInfo.IsDefined<DatePropertyAttribute> (true) ? DateTimeType.Date : DateTimeType.DateTime;
     }
 
     protected virtual bool IsListProperty ()
