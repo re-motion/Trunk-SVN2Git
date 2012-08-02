@@ -105,28 +105,49 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Interception
         return;
 
       var property = (PropertyInfo) _typeConversionProvider.Convert (propertyInformation.GetType(), typeof (PropertyInfo), propertyInformation);
+      var isMixinProperty = !property.DeclaringType.IsAssignableFrom (_baseType);
 
-      if (!property.DeclaringType.IsAssignableFrom (_baseType)) // we cannot intercept properties added from another class (mixin)
-        return;
-        
-      MethodInfo getMethod = property.GetGetMethod (true);
-      MethodInfo setMethod = property.GetSetMethod (true);
-
+      var getMethod = property.GetGetMethod (true);
+      var setMethod = property.GetSetMethod (true);
+      
       if (getMethod != null)
-      {
-        ValidateAccessor (property, getMethod, "get accessor");
-        _validatedMethods.Add (getMethod.GetBaseDefinition());
-      }
-      if (setMethod != null)
-      {
-        ValidateAccessor (property, setMethod, "set accessor");
-        _validatedMethods.Add (setMethod.GetBaseDefinition());
-      }
+        ValidateAccessor(property, getMethod, isMixinProperty, "get accessor");
 
-      _properties.Add (new Tuple<PropertyInfo, string> (property, propertyIdentifier));
+      if (setMethod != null)
+        ValidateAccessor (property, setMethod, isMixinProperty, "set accessor");
+
+      if (!isMixinProperty)
+        _properties.Add (new Tuple<PropertyInfo, string> (property, propertyIdentifier));
     }
 
-    private void ValidateAccessor (PropertyInfo property, MethodInfo accessor, string accessorDescription)
+    private void ValidateAccessor (PropertyInfo property, MethodInfo accessor, bool isMixinProperty, string accessorDescription)
+    {
+      if (isMixinProperty)
+      {
+        ValidateMixinAccessor (property, accessor);
+      }
+      else
+      {
+        ValidateNonMixinAccessor (property, accessor, accessorDescription);
+        _validatedMethods.Add (accessor.GetBaseDefinition ());
+      }
+    }
+
+    private void ValidateMixinAccessor (PropertyInfo property, MethodInfo accessor)
+    {
+      if (IsAutomaticPropertyAccessor (accessor))
+      {
+        var message = string.Format (
+            "Cannot instantiate type '{0}' because the mixin member '{1}.{2}' is an automatic property. "
+            + "Mixins must implement their persistent members by using 'Properties' to get and set property values.",
+            _baseType.FullName,
+            property.DeclaringType.Name,
+            property.Name);
+        throw new NonInterceptableTypeException (message, _baseType);
+      }
+    }
+
+    private void ValidateNonMixinAccessor (PropertyInfo property, MethodInfo accessor, string accessorDescription)
     {
       if (IsAutomaticPropertyAccessor (accessor) && !IsOverridable (accessor))
       {

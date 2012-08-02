@@ -19,11 +19,13 @@ using System.IO;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
 using File = System.IO.File;
+using Throws = NUnit.Framework.Throws;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 {
@@ -112,55 +114,71 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.TestDomain.AbstractClass as it is abstract; "
-        + "for classes with automatic properties, InstantiableAttribute must be used.\r\nParameter name: baseType")]
-    public void AbstractWithoutInstantiableAttributeCannotBeInstantiated ()
+        + "for classes with automatic properties, InstantiableAttribute must be used.")]
+    public void AbstractWithoutInstantiableAttribute_CannotBeInstantiated ()
     {
       Factory.GetConcreteDomainObjectType (typeof (AbstractClass));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.TestDomain.AbstractClass as it is abstract; "
-        + "for classes with automatic properties, InstantiableAttribute must be used.\r\nParameter name: baseTypeClassDefinition")]
-    public void AbstractWithoutInstantiableAttributeCannotBeInstantiated_WithSpecificType ()
+        + "for classes with automatic properties, InstantiableAttribute must be used.")]
+    public void AbstractWithoutInstantiableAttribute_CannotBeInstantiated_WithSpecificType ()
     {
       Factory.GetConcreteDomainObjectType (
           MappingConfiguration.Current.GetTypeDefinition (typeof (AbstractClass)), typeof (AbstractClass));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableAbstractClass "
-        + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an automatic property).\r\nParameter name: baseType")]
-    public void AbstractWithMethodCannotBeInstantiated ()
+        + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an automatic property).")]
+    public void AbstractWithMethod_CannotBeInstantiated ()
     {
       Factory.GetConcreteDomainObjectType (typeof (NonInstantiableAbstractClass));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableAbstractClassWithProps as its "
-        + "member get_Foo (on type NonInstantiableAbstractClassWithProps) is abstract (and not an automatic property)."
-        + "\r\nParameter name: baseType")]
-    public void AbstractWithNonAutoPropertiesCannotBeInstantiated ()
+        + "member get_Foo (on type NonInstantiableAbstractClassWithProps) is abstract (and not an automatic property).")]
+    public void AbstractWithNonAutoProperties_CannotBeInstantiated ()
     {
       Factory.GetConcreteDomainObjectType (typeof (NonInstantiableAbstractClassWithProps));
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
+        "Cannot instantiate type " 
+        + "'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableClassWithMixinWithPersistentAutoProperties' "
+        + "because the mixin member 'MixinWithAutoProperties.PersistentAutoProperty' is an automatic property. Mixins must implement their "
+        + "persistent members by using 'Properties' to get and set property values.")]
+    public void ClassWithMixinWithAutoProperties_CannotBeInstantiated ()
+    {
+      Factory.GetConcreteDomainObjectType (typeof (NonInstantiableClassWithMixinWithPersistentAutoProperties));
+    }
+
+    [Test]
+    public void ClassWithMixinWithStorageClassNoneAutoProperties_CanBeInstantiated ()
+    {
+      Assert.That (() => Factory.GetConcreteDomainObjectType (typeof (InstantiableClassWithMixinWithStorageClassNoneAutoProperties)), Throws.Nothing);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableSealedClass as it "
-        + "is sealed.\r\nParameter name: baseType")]
-    public void SealedCannotBeInstantiated ()
+        + "is sealed.")]
+    public void Sealed_CannotBeInstantiated ()
     {
       Factory.GetConcreteDomainObjectType (typeof (NonInstantiableSealedClass));
     }
 
     [Test]
     [ExpectedException (typeof (ArgumentTypeException))]
-    public void NonDomainCannotBeInstantiated ()
+    public void NonDomain_CannotBeInstantiated ()
     {
       Factory.GetConcreteDomainObjectType (typeof (NonInstantiableNonDomainClass));
     }

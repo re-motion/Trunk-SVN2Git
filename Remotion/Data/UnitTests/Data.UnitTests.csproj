@@ -208,6 +208,9 @@
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommitRollbackAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommittingEventRegistrarTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\Interception\NonInterceptableTypeExceptionTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\InstantiableClassWithMixinWithStorageClassNoneAutoProperties.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NotFoundLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\NotFoundObjectTest.cs" />

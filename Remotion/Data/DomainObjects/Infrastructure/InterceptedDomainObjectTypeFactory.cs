@@ -83,7 +83,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>A domain object type which intercepts property calls.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="baseType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentTypeException"><paramref name="baseType"/> cannot be assigned to <see cref="DomainObject"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="baseType"/> is an abstract, non-instantiable type.</exception>
+    /// <exception cref="NonInterceptableTypeException"><paramref name="baseType"/> is an abstract, non-instantiable type.</exception>
     /// <exception cref="MappingException">The given <paramref name="baseType"/> is not part of the mapping.</exception>
     public Type GetConcreteDomainObjectType (Type baseType)
     {
@@ -92,7 +92,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ClassDefinition classDefinition = MappingConfiguration.Current.GetTypeDefinition (baseType);
       Type concreteBaseType = DomainObjectMixinCodeGenerationBridge.GetConcreteType (baseType);
       
-      return GetConcreteDomainObjectType (classDefinition, concreteBaseType, "baseType");
+      return GetConcreteDomainObjectType (classDefinition, concreteBaseType);
     }
 
     /// <summary>
@@ -103,13 +103,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <returns>A domain object type which intercepts property calls.</returns>
     /// <exception cref="ArgumentNullException">One of the parameters passed to this method is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentTypeException"><paramref name="concreteBaseType"/> cannot be assigned to the type specified by <paramref name="baseTypeClassDefinition"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="baseTypeClassDefinition"/> denotes an abstract, non-instantiable type.</exception>
+    /// <exception cref="NonInterceptableTypeException"><paramref name="baseTypeClassDefinition"/> denotes an abstract, non-instantiable type.</exception>
     public Type GetConcreteDomainObjectType (ClassDefinition baseTypeClassDefinition, Type concreteBaseType)
     {
       ArgumentUtility.CheckNotNull ("baseTypeClassDefinition", baseTypeClassDefinition);
       ArgumentUtility.CheckNotNullAndTypeIsAssignableFrom ("concreteBaseType", concreteBaseType, baseTypeClassDefinition.ClassType);
 
-      return GetConcreteDomainObjectType(baseTypeClassDefinition, concreteBaseType, "baseTypeClassDefinition");
+      if (baseTypeClassDefinition.IsAbstract)
+      {
+        string message = string.Format (
+            "Cannot instantiate type {0} as it is abstract; for classes with automatic properties, InstantiableAttribute must be used.",
+            baseTypeClassDefinition.ClassType.FullName);
+        throw new NonInterceptableTypeException (message, baseTypeClassDefinition.ClassType);
+      }
+
+      return _typeCache.GetOrCreateValue (new CodeGenerationKeys (baseTypeClassDefinition.ClassType, concreteBaseType), CreateConcreteDomainObjectType);
     }
 
     /// <summary>
@@ -140,27 +148,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
               type.FullName), "instance");
 
       DomainObjectMixinCodeGenerationBridge.PrepareUnconstructedInstance (instance);
-    }
-
-    private Type GetConcreteDomainObjectType (ClassDefinition baseTypeClassDefinition, Type concreteBaseType, string argumentNameForExceptions)
-    {
-      if (baseTypeClassDefinition.IsAbstract)
-      {
-        string message = string.Format (
-          "Cannot instantiate type {0} as it is abstract; for classes with automatic properties, InstantiableAttribute must be used.",
-          baseTypeClassDefinition.ClassType.FullName);
-        throw new ArgumentException (message, argumentNameForExceptions);
-      }
-
-      try
-      {
-        return _typeCache.GetOrCreateValue (new CodeGenerationKeys (baseTypeClassDefinition.ClassType, concreteBaseType),
-            CreateConcreteDomainObjectType);
-      }
-      catch (NonInterceptableTypeException ex)
-      {
-        throw new ArgumentException (ex.Message, argumentNameForExceptions, ex);
-      }
     }
 
     private Type CreateConcreteDomainObjectType (CodeGenerationKeys codeGenerationData)

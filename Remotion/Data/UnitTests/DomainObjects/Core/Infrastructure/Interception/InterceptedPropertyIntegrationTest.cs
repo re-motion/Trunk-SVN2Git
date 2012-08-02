@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -118,29 +119,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableAbstractClass "
         + "as its member Foo (on type NonInstantiableAbstractClass) is abstract (and not an "
-        + "automatic property).", MatchType = MessageMatch.Contains)]
+        + "automatic property).")]
     public void AbstractWithMethodCannotBeInstantiated ()
     {
       NonInstantiableAbstractClass.NewObject();
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableAbstractClassWithProps "
-        + "as its member get_Foo (on type NonInstantiableAbstractClassWithProps) is abstract (and not an automatic property).",
-        MatchType = MessageMatch.Contains)]
+        + "as its member get_Foo (on type NonInstantiableAbstractClassWithProps) is abstract (and not an automatic property).")]
     public void AbstractWithNonAutoPropertiesCannotBeInstantiated ()
     {
       NonInstantiableAbstractClassWithProps.NewObject();
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableSealedClass as it is sealed.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
+        "Cannot instantiate type "
+        + "'Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableClassWithMixinWithPersistentAutoProperties' "
+        + "because the mixin member 'MixinWithAutoProperties.PersistentAutoProperty' is an automatic property. Mixins must implement their persistent "
+        + "members by using 'Properties' to get and set property values.")]
+    public void ClassWithMixinWithAutoPropertiesCannotBeInstantiated ()
+    {
+      NonInstantiableClassWithMixinWithPersistentAutoProperties.NewObject ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
+        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain.NonInstantiableSealedClass as it is sealed.")]
     public void SealedCannotBeInstantiated ()
     {
       NonInstantiableSealedClass.NewObject();
@@ -254,8 +264,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is no current property or it hasn't been properly initialized.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void PropertyAccessWithoutBeingInMappingThrows ()
     {
       Order order = Order.NewObject();
@@ -263,8 +273,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is no current property or it hasn't been properly initialized.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void RelatedAccessWithoutBeingInMappingThrows ()
     {
       Order order = Order.NewObject();
@@ -272,8 +282,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is no current property or it hasn't been properly initialized.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void RelatedObjectsAccessWithoutBeingInMappingThrows ()
     {
       Order order = Order.NewObject();
@@ -282,8 +292,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
 
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is no current property or it hasn't been properly initialized.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void PropertySetAccessWithoutBeingInMappingThrows ()
     {
       Order order = Order.NewObject();
@@ -291,8 +301,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is no current property or it hasn't been properly initialized.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void RelatedSetAccessWithoutBeingInMappingThrows ()
     {
       Order order = Order.NewObject();
@@ -314,17 +324,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
+    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
         "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.TestDomain."
-        + "AbstractClass as it is abstract; for classes with automatic properties, InstantiableAttribute must be used.\r\nParameter name: baseType")]
+        + "AbstractClass as it is abstract; for classes with automatic properties, InstantiableAttribute must be used.")]
     public void CannotInstantiateReallyAbstractClass ()
     {
       AbstractClass.NewObject();
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "There is no current property or it hasn't been properly initialized.",
-        MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void ExplicitInterfaceProperty ()
     {
       IPropertyInterface domainObject = ClassWithExplicitInterfaceProperty.NewObject();
@@ -333,7 +343,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "no current property", MatchType = MessageMatch.Contains)]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "There is no current property or it hasn't been properly initialized. Is the surrounding property virtual?")]
     public void CurrentPropertyThrowsWhenNotInitializes ()
     {
       Order order = Order.NewObject();

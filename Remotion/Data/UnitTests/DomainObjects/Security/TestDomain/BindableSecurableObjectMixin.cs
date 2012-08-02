@@ -44,14 +44,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
       set { Properties[typeof (BindableSecurableObjectMixin), "MixedPropertyWithWritePermission"].SetValue (value); }
     }
 
-    public string DefaultPermissionMixedProperty { get; set; }
+    public string DefaultPermissionMixedProperty
+    {
+      get { return Properties[typeof (BindableSecurableObjectMixin), "DefaultPermissionMixedProperty"].GetValue<string>(); }
+      set { Properties[typeof (BindableSecurableObjectMixin), "DefaultPermissionMixedProperty"].SetValue (value); }
+    }
 
     public string CustomPermissionMixedProperty
     {
       [DemandPermission (TestAccessTypes.First)]
-      get;
+      get { return Properties[typeof (BindableSecurableObjectMixin), "CustomPermissionMixedProperty"].GetValue<string>(); }
       [DemandPermission (TestAccessTypes.Second)]
-      set;
+      set { Properties[typeof (BindableSecurableObjectMixin), "CustomPermissionMixedProperty"].SetValue (value); }
     }
   }
 }

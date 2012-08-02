@@ -17,9 +17,12 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
+using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
