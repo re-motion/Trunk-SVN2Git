@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
 {
@@ -26,11 +25,11 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   public interface IRootAssemblyFinder
   {
     /// <summary>
-    /// Finds root assemblies using the given <see cref="IAssemblyLoader"/>.
+    /// Finds root assemblies as defined by the concrete implementation. Root assemblies are used by <see cref="AssemblyFinder"/> as an entry
+    /// point into assembly discovery.
     /// </summary>
-    /// <param name="loader">The <see cref="IAssemblyLoader"/> to load the assemblies with.</param>
     /// <returns>An array of <see cref="RootAssembly"/> instances holding distinct, non-<see langword="null" /> <see cref="Assembly"/> objects
     /// as well as flags indicating whether to follow the references of the respective assembly or not.</returns>
-    RootAssembly[] FindRootAssemblies (IAssemblyLoader loader);
+    RootAssembly[] FindRootAssemblies ();
   }
 }

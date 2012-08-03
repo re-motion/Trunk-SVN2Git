@@ -255,8 +255,11 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
 
       var assemblyFinder = (AssemblyFinder) ((CachingAssemblyFinderDecorator) service.AssemblyFinder).InnerFinder;
       Assert.That (assemblyFinder.RootAssemblyFinder, Is.TypeOf (typeof (SearchPathRootAssemblyFinder)));
-      Assert.That (((SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder).BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
-      Assert.That (((SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder).ConsiderDynamicDirectory, Is.False);
+      var rootAssemblyFinder = ((SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder);
+      Assert.That (rootAssemblyFinder.BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+      Assert.That (rootAssemblyFinder.ConsiderDynamicDirectory, Is.False);
+      Assert.That (rootAssemblyFinder.AssemblyLoader, Is.TypeOf (typeof (FilteringAssemblyLoader)));
+      Assert.That (((FilteringAssemblyLoader) rootAssemblyFinder.AssemblyLoader).Filter, Is.TypeOf (typeof (LoadAllAssemblyLoaderFilter)));
 
       Assert.That (assemblyFinder.AssemblyLoader, Is.TypeOf (typeof (FilteringAssemblyLoader)));
       Assert.That (((FilteringAssemblyLoader) assemblyFinder.AssemblyLoader).Filter, Is.TypeOf (typeof (LoadAllAssemblyLoaderFilter)));

@@ -18,6 +18,7 @@ using System;
 using System.Configuration;
 using System.Reflection;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -51,10 +52,10 @@ namespace Remotion.Configuration.TypeDiscovery
     /// <see cref="ByFile"/>.
     /// </summary>
     /// <returns>A <see cref="CompositeRootAssemblyFinder"/> for the assembly specifications.</returns>
-    public CompositeRootAssemblyFinder CreateRootAssemblyFinder ()
+    public CompositeRootAssemblyFinder CreateRootAssemblyFinder (IAssemblyLoader assemblyLoader)
     {
-      var namedFinder = ByName.CreateRootAssemblyFinder ();
-      var filePatternFinder = ByFile.CreateRootAssemblyFinder ();
+      var namedFinder = ByName.CreateRootAssemblyFinder (assemblyLoader);
+      var filePatternFinder = ByFile.CreateRootAssemblyFinder (assemblyLoader);
 
       return new CompositeRootAssemblyFinder (new IRootAssemblyFinder[] { namedFinder, filePatternFinder });
     }

@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
@@ -28,7 +27,6 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     private RootAssembly _root1;
     private RootAssembly _root2;
     private RootAssembly _root3;
-    private IAssemblyLoader _loaderStub;
 
     [SetUp]
     public void SetUp ()
@@ -36,7 +34,6 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       _root1 = new RootAssembly (typeof (object).Assembly, true);
       _root2 = new RootAssembly (typeof (CompositeRootAssemblyFinder).Assembly, true);
       _root3 = new RootAssembly (typeof (CompositeRootAssemblyFinderTest).Assembly, true);
-      _loaderStub = MockRepository.GenerateStub<IAssemblyLoader> ();
     }
 
     [Test]
@@ -44,7 +41,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     {
       var finder = new CompositeRootAssemblyFinder (new IRootAssemblyFinder[0]);
 
-      var rootAssemblies = finder.FindRootAssemblies(_loaderStub);
+      var rootAssemblies = finder.FindRootAssemblies();
       Assert.That (rootAssemblies, Is.Empty);
     }
 
@@ -54,7 +51,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       IRootAssemblyFinder innerFinderStub = CreateInnerFinderStub (_root1, _root2);
       var finder = new CompositeRootAssemblyFinder (new[] { innerFinderStub });
 
-      var rootAssemblies = finder.FindRootAssemblies (_loaderStub);
+      var rootAssemblies = finder.FindRootAssemblies ();
       Assert.That (rootAssemblies, Is.EquivalentTo (new[] { _root1, _root2 }));
     }
 
@@ -66,7 +63,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = new CompositeRootAssemblyFinder (new[] { innerFinderStub1, innerFinderStub2 });
 
-      var rootAssemblies = finder.FindRootAssemblies (_loaderStub);
+      var rootAssemblies = finder.FindRootAssemblies ();
       Assert.That (rootAssemblies, Is.EquivalentTo (new[] { _root1, _root2, _root3 }));
     }
 
@@ -78,14 +75,14 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var finder = new CompositeRootAssemblyFinder (new[] { innerFinderStub1, innerFinderStub2 });
 
-      var rootAssemblies = finder.FindRootAssemblies (_loaderStub);
+      var rootAssemblies = finder.FindRootAssemblies ();
       Assert.That (rootAssemblies, Is.EquivalentTo (new[] { _root1, _root2, _root3 }));
     }
 
     private IRootAssemblyFinder CreateInnerFinderStub (params RootAssembly[] assemblies)
     {
       var innerFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-      innerFinderStub.Stub (stub => stub.FindRootAssemblies (_loaderStub)).Return (assemblies);
+      innerFinderStub.Stub (stub => stub.FindRootAssemblies ()).Return (assemblies);
       innerFinderStub.Replay ();
       return innerFinderStub;
     }

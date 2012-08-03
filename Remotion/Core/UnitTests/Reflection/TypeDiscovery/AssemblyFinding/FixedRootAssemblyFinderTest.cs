@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var finder = new FixedRootAssemblyFinder (fixedSet);
 
       var loaderStub = MockRepository.GenerateStub<IAssemblyLoader> ();
-      Assert.That (finder.FindRootAssemblies (loaderStub), Is.SameAs (fixedSet));
+      Assert.That (finder.FindRootAssemblies (), Is.SameAs (fixedSet));
     }
   }
 }

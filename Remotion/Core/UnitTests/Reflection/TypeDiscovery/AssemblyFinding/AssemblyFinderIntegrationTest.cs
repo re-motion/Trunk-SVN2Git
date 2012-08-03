@@ -102,9 +102,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
         InitializeDynamicDirectory ();
 
-        FilteringAssemblyLoader loader = CreateLoaderForMarkedAssemblies ();
-        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true);
-        var rootAssemblies = rootAssemblyFinder.FindRootAssemblies (loader);
+        var assemblyLoader = CreateLoaderForMarkedAssemblies ();
+        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true, assemblyLoader);
+        var rootAssemblies = rootAssemblyFinder.FindRootAssemblies ();
 
         Assert.That (rootAssemblies, Has.No.Member(firstInMemoryAssembly));
         Assert.That (rootAssemblies, Has.No.Member(secondInMemoryAssembly));
@@ -138,9 +138,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
         InitializeDynamicDirectory ();
 
-        FilteringAssemblyLoader loader = CreateLoaderForMarkedAssemblies ();
-        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
-        var rootAssemblies = rootAssemblyFinder.FindRootAssemblies (loader);
+        var assemblyLoader = CreateLoaderForMarkedAssemblies ();
+        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false, assemblyLoader);
+        var rootAssemblies = rootAssemblyFinder.FindRootAssemblies ();
 
         Assert.That (rootAssemblies, Has.No.Member(firstInMemoryAssembly));
         Assert.That (rootAssemblies, Has.No.Member(secondInMemoryAssembly));
@@ -170,7 +170,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
         var loader = CreateLoaderForMarkedAssemblies ();
         var rootAssemblyFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loader)).Return (new[] { new RootAssembly (markedAssembly, true) });
+        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies ()).Return (new[] { new RootAssembly (markedAssembly, true) });
         rootAssemblyFinderStub.Replay ();
 
         var assemblyFinder = new AssemblyFinder (rootAssemblyFinderStub, loader);
@@ -191,9 +191,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
         filterMock.Expect (mock => mock.ShouldConsiderAssembly (Arg<AssemblyName>.Is.Anything)).Return (false).Repeat.AtLeastOnce ();
         filterMock.Replay ();
 
-        var loader = new FilteringAssemblyLoader (filterMock);
-        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true);
-        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, loader);
+        var assemblyLoader = new FilteringAssemblyLoader (filterMock);
+        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true, assemblyLoader);
+        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
         
         Assembly[] assemblies = assemblyFinder.FindAssemblies ();
 
@@ -214,9 +214,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
         filterMock.Expect (mock => mock.ShouldIncludeAssembly (Arg<Assembly>.Is.NotNull)).Return (false).Repeat.AtLeastOnce ();
         filterMock.Replay ();
 
-        var loader = new FilteringAssemblyLoader (filterMock);
-        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true);
-        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, loader);
+        var assemblyLoader = new FilteringAssemblyLoader (filterMock);
+        var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true, assemblyLoader);
+        var assemblyFinder = new AssemblyFinder (rootAssemblyFinder, assemblyLoader);
 
         Assembly[] assemblies = assemblyFinder.FindAssemblies ();
 

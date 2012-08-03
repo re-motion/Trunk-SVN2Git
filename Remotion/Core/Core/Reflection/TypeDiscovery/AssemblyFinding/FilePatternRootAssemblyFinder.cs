@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
@@ -57,18 +58,25 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     }
 
     private readonly string _searchPath;
-    private readonly IEnumerable<FilePatternSpecification> _specifications;
+    private readonly FilePatternSpecification[] _specifications;
     private readonly IFileSearchService _fileSearchService;
+    private readonly IAssemblyLoader _assemblyLoader;
 
-    public FilePatternRootAssemblyFinder (string searchPath, IEnumerable<FilePatternSpecification> specifications, IFileSearchService fileSearchService)
+    public FilePatternRootAssemblyFinder (
+        string searchPath, 
+        IEnumerable<FilePatternSpecification> specifications, 
+        IFileSearchService fileSearchService, 
+        IAssemblyLoader assemblyLoader)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("searchPath", searchPath);
       ArgumentUtility.CheckNotNull ("specifications", specifications);
       ArgumentUtility.CheckNotNull ("fileSearchService", fileSearchService);
+      ArgumentUtility.CheckNotNull ("assemblyLoader", assemblyLoader);
 
       _searchPath = searchPath;
-      _specifications = specifications;
+      _specifications = specifications.ToArray();
       _fileSearchService = fileSearchService;
+      _assemblyLoader = assemblyLoader;
     }
 
     public string SearchPath
@@ -76,9 +84,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _searchPath; }
     }
 
-    public IEnumerable<FilePatternSpecification> Specifications
+    public ReadOnlyCollection<FilePatternSpecification> Specifications
     {
-      get { return _specifications; }
+      get { return Array.AsReadOnly (_specifications); }
     }
 
     public IFileSearchService FileSearchService
@@ -86,12 +94,17 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _fileSearchService; }
     }
 
-    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public IAssemblyLoader AssemblyLoader
+    {
+      get { return _assemblyLoader; }
+    }
+
+    public RootAssembly[] FindRootAssemblies ()
     {
       var fileDescriptions = ConsolidateSpecifications ();
 
       var rootAssemblies = from fileDescription in fileDescriptions
-                           let assembly = loader.TryLoadAssembly (fileDescription.FilePath)
+                           let assembly = _assemblyLoader.TryLoadAssembly (fileDescription.FilePath)
                            where assembly != null
                            select new RootAssembly (assembly, fileDescription.FollowReferences);
       return rootAssemblies.Distinct ().ToArray ();

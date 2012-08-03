@@ -22,7 +22,7 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
 {
   public class FakeRootAssemblyFinder : IRootAssemblyFinder
   {
-    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public RootAssembly[] FindRootAssemblies ()
     {
       throw new NotImplementedException();
     }

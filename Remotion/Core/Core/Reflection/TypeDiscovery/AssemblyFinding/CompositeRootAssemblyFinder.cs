@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.Generic;
-using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -40,11 +39,9 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _innerFinders; }
     }
 
-    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public RootAssembly[] FindRootAssemblies ()
     {
-      ArgumentUtility.CheckNotNull ("loader", loader);
-
-      return _innerFinders.SelectMany (finder => finder.FindRootAssemblies (loader)).Distinct().ToArray();
+      return _innerFinders.SelectMany (finder => finder.FindRootAssemblies ()).Distinct().ToArray();
     }
   }
 }

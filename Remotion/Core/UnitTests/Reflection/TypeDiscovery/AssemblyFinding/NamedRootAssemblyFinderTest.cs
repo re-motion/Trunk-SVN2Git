@@ -69,8 +69,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
           .Return (_assembly3);
       _loaderMock.Replay ();
 
-      var finder = new NamedRootAssemblyFinder (new[] { _specification1, _specification2, _specification3 });
-      var assemblies = finder.FindRootAssemblies (_loaderMock);
+      var finder = CreateRootAssemblyFinder (_specification1, _specification2, _specification3);
+      var assemblies = finder.FindRootAssemblies ();
 
       _loaderMock.VerifyAllExpectations ();
       Assert.That (assemblies.Select (a => a.Assembly).ToArray(), Is.EquivalentTo (new[] { _assembly1, _assembly2, _assembly3 }));
@@ -84,8 +84,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       _loaderMock.Expect (mock => mock.TryLoadAssembly (Arg.Is (_name3), Arg<string>.Is.Anything)).Return (_assembly3);
       _loaderMock.Replay ();
 
-      var finder = new NamedRootAssemblyFinder (new[] { _specification1, _specification2, _specification3 });
-      var assemblies = finder.FindRootAssemblies (_loaderMock);
+      var finder = CreateRootAssemblyFinder (_specification1, _specification2, _specification3);
+      var assemblies = finder.FindRootAssemblies ();
 
       _loaderMock.VerifyAllExpectations ();
       Assert.That (assemblies.Length, Is.EqualTo (2));
@@ -99,8 +99,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       _loaderMock.Expect (mock => mock.TryLoadAssembly (Arg.Is (_name2), Arg<string>.Is.Anything)).Return (_assembly1);
       _loaderMock.Replay ();
 
-      var finder = new NamedRootAssemblyFinder (new[] { _specification1, _specification2 });
-      var assemblies = finder.FindRootAssemblies (_loaderMock);
+      var finder = CreateRootAssemblyFinder (_specification1, _specification2);
+      var assemblies = finder.FindRootAssemblies ();
 
       _loaderMock.VerifyAllExpectations ();
       Assert.That (assemblies.Length, Is.EqualTo (1));
@@ -114,13 +114,17 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       _loaderMock.Expect (mock => mock.TryLoadAssembly (Arg.Is (_name2), Arg<string>.Is.Anything)).Return (_assembly2);
       _loaderMock.Replay ();
 
-      var finder = new NamedRootAssemblyFinder (new[] { _specification1, _specification2 });
-      var assemblies = finder.FindRootAssemblies (_loaderMock).ToDictionary (ra => ra.Assembly);
+      var finder = CreateRootAssemblyFinder (_specification1, _specification2);
+      var assemblies = finder.FindRootAssemblies ().ToDictionary (ra => ra.Assembly);
 
       _loaderMock.VerifyAllExpectations ();
       Assert.That (assemblies[_assembly1].FollowReferences, Is.True);
       Assert.That (assemblies[_assembly2].FollowReferences, Is.False);
     }
 
+    private NamedRootAssemblyFinder CreateRootAssemblyFinder (params AssemblyNameSpecification[] specifications)
+    {
+      return new NamedRootAssemblyFinder (specifications, _loaderMock);
+    }
   }
 }

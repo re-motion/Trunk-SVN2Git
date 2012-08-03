@@ -49,7 +49,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var rootAssemblyFinderMock = MockRepository.GenerateMock<IRootAssemblyFinder> ();
       rootAssemblyFinderMock
-          .Expect (mock => mock.FindRootAssemblies (loaderStub))
+          .Expect (mock => mock.FindRootAssemblies ())
           .Return (new[] { new RootAssembly (_assembly1, true), new RootAssembly(_assembly2, true) });
       rootAssemblyFinderMock.Replay ();
       
@@ -73,7 +73,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       loaderMock.Replay ();
       
       var rootAssemblyFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-      rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loaderMock)).Return (new[] { new RootAssembly (_assembly3, true) });
+      rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies ()).Return (new[] { new RootAssembly (_assembly3, true) });
       rootAssemblyFinderStub.Replay ();
       
       var finder = new AssemblyFinder (rootAssemblyFinderStub, loaderMock);
@@ -110,7 +110,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
         loaderMock.Replay();
 
         var rootAssemblyFinderStub = MockRepository.GenerateMock<IRootAssemblyFinder>();
-        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loaderMock)).Return (
+        rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies ()).Return (
             new[] { new RootAssembly (referencingAssembly, true) });
         rootAssemblyFinderStub.Replay();
 
@@ -152,7 +152,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       loaderMock.Replay ();
       
       var rootAssemblyFinderStub = MockRepository.GenerateMock<IRootAssemblyFinder> ();
-      rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loaderMock)).Return (new[] { new RootAssembly (_assembly3, true) });
+      rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies ()).Return (new[] { new RootAssembly (_assembly3, true) });
       rootAssemblyFinderStub.Replay ();
 
       var finder = new AssemblyFinder (rootAssemblyFinderStub, loaderMock);
@@ -167,7 +167,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       var loaderMock = MockRepository.GenerateMock<IAssemblyLoader> ();
 
       var rootAssemblyFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
-      rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies (loaderMock)).Return (new[] { new RootAssembly(_assembly3, false) });
+      rootAssemblyFinderStub.Stub (stub => stub.FindRootAssemblies ()).Return (new[] { new RootAssembly(_assembly3, false) });
       rootAssemblyFinderStub.Replay ();
 
       var finder = new AssemblyFinder (rootAssemblyFinderStub, loaderMock);
@@ -188,7 +188,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
 
       var rootAssemblyFinderStub = MockRepository.GenerateMock<IRootAssemblyFinder> ();
       rootAssemblyFinderStub
-          .Stub (stub => stub.FindRootAssemblies (loaderMock))
+          .Stub (stub => stub.FindRootAssemblies ())
           .Return (new[] { new RootAssembly (_assembly3, true), new RootAssembly (_assembly2, true) });
       rootAssemblyFinderStub.Replay ();
 

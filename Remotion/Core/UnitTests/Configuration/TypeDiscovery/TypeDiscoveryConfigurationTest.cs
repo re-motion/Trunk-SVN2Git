@@ -18,7 +18,6 @@ using System;
 using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Configuration;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
 using Remotion.Reflection.TypeDiscovery;
@@ -113,11 +112,11 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
 
       var searchPathRootAssemblyFinder = (SearchPathRootAssemblyFinder) assemblyFinder.RootAssemblyFinder;
       Assert.That (searchPathRootAssemblyFinder.BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
+      Assert.That (searchPathRootAssemblyFinder.AssemblyLoader, Is.TypeOf<FilteringAssemblyLoader> ());
+      Assert.That (((FilteringAssemblyLoader) searchPathRootAssemblyFinder.AssemblyLoader).Filter, Is.SameAs (ApplicationAssemblyLoaderFilter.Instance));
 
-      Assert.That (assemblyFinder.AssemblyLoader, Is.InstanceOf (typeof (FilteringAssemblyLoader)));
-
-      var castLoader = (FilteringAssemblyLoader) assemblyFinder.AssemblyLoader;
-      Assert.That (castLoader.Filter, Is.SameAs (ApplicationAssemblyLoaderFilter.Instance));
+      Assert.That (assemblyFinder.AssemblyLoader, Is.TypeOf<FilteringAssemblyLoader>());
+      Assert.That (((FilteringAssemblyLoader) assemblyFinder.AssemblyLoader).Filter, Is.SameAs (ApplicationAssemblyLoaderFilter.Instance));
     }
 
     [Test]
@@ -160,10 +159,14 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
       Assert.That (rootAssemblyFinder.InnerFinders[0], Is.InstanceOf (typeof (NamedRootAssemblyFinder)));
 
       var namedFinder = ((NamedRootAssemblyFinder) rootAssemblyFinder.InnerFinders[0]);
-      Assert.That (namedFinder.Specifications.First().AssemblyName.ToString(), Is.EqualTo ("mscorlib"));
+      Assert.That (namedFinder.Specifications.First ().AssemblyName.ToString (), Is.EqualTo ("mscorlib"));
+      Assert.That (namedFinder.AssemblyLoader, Is.TypeOf<FilteringAssemblyLoader> ());
+      Assert.That (((FilteringAssemblyLoader) namedFinder.AssemblyLoader).Filter, Is.TypeOf<LoadAllAssemblyLoaderFilter> ());
 
       var filePatternFinder = ((FilePatternRootAssemblyFinder) rootAssemblyFinder.InnerFinders[1]);
       Assert.That (filePatternFinder.Specifications.ToArray(), Is.Empty);
+      Assert.That (filePatternFinder.AssemblyLoader, Is.TypeOf<FilteringAssemblyLoader> ());
+      Assert.That (((FilteringAssemblyLoader) filePatternFinder.AssemblyLoader).Filter, Is.TypeOf<LoadAllAssemblyLoaderFilter> ());
     }
 
     [Test]

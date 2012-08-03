@@ -21,6 +21,8 @@ using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
 using System.Linq;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
+using Rhino.Mocks;
 
 namespace Remotion.UnitTests.Configuration.TypeDiscovery
 {
@@ -143,10 +145,12 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery
     public void CreateRootAssemblyFinder ()
     {
       var collection = DeserializeFromXmlFragment (_xmlFragment);
-      var finder = collection.CreateRootAssemblyFinder ();
+      var loaderStub = MockRepository.GenerateStub<IAssemblyLoader>();
+      var finder = collection.CreateRootAssemblyFinder (loaderStub);
 
       Assert.That (finder.SearchPath, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
       Assert.That (finder.FileSearchService, Is.InstanceOf (typeof (FileSystemSearchService)));
+      Assert.That (finder.AssemblyLoader, Is.SameAs (loaderStub));
 
       var specs = finder.Specifications.ToArray();
 

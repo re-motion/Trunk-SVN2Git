@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 
@@ -28,17 +29,28 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchPathRootAssemblyFinder"/> type to look for assemblies within the current
-    /// <see cref="AppDomain"/>'s <see cref="AppDomain.BaseDirectory"/> as well as its <see cref="AppDomain.RelativeSearchPath"/>.
+    /// <see cref="AppDomain"/>'s <see cref="AppDomain.BaseDirectory"/> as well as its <see cref="AppDomain.RelativeSearchPath"/>
+    /// (and, optionally, dynamic directory).
     /// </summary>
     /// <param name="considerDynamicDirectory">Specifies whether to search the <see cref="AppDomain.DynamicDirectory"/> as well as the base
     /// directory.</param>
-    public static SearchPathRootAssemblyFinder CreateForCurrentAppDomain (bool considerDynamicDirectory)
+    /// <param name="assemblyLoader">
+    /// The <see cref="IAssemblyLoader"/> to use for loading the root assemblies. This object determines any filtering made on the assemblies
+    /// to be loaded.
+    /// </param>
+    /// <returns>An instance of the <see cref="SearchPathRootAssemblyFinder"/> type looking for assemblies within the current
+    /// <see cref="AppDomain"/>'s <see cref="AppDomain.BaseDirectory"/> as well as its <see cref="AppDomain.RelativeSearchPath"/>.
+    /// </returns>
+    public static SearchPathRootAssemblyFinder CreateForCurrentAppDomain (bool considerDynamicDirectory, IAssemblyLoader assemblyLoader)
     {
+      ArgumentUtility.CheckNotNull ("assemblyLoader", assemblyLoader);
+
       var searchPathRootAssemblyFinder = new SearchPathRootAssemblyFinder (
           AppDomain.CurrentDomain.BaseDirectory,
           AppDomain.CurrentDomain.RelativeSearchPath,
           considerDynamicDirectory,
-          AppDomain.CurrentDomain.DynamicDirectory);
+          AppDomain.CurrentDomain.DynamicDirectory,
+          assemblyLoader);
       return searchPathRootAssemblyFinder;
     }
 
@@ -46,19 +58,23 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
     private readonly string _relativeSearchPath;
     private readonly bool _considerDynamicDirectory;
     private readonly string _dynamicDirectory;
+    private readonly IAssemblyLoader _assemblyLoader;
 
     public SearchPathRootAssemblyFinder (
         string baseDirectory, 
         string relativeSearchPath, 
         bool considerDynamicDirectory, 
-        string dynamicDirectory)
+        string dynamicDirectory, 
+        IAssemblyLoader assemblyLoader)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("baseDirectory", baseDirectory);
+      ArgumentUtility.CheckNotNull ("assemblyLoader", assemblyLoader);
 
       _baseDirectory = baseDirectory;
       _relativeSearchPath = relativeSearchPath;
       _considerDynamicDirectory = considerDynamicDirectory;
       _dynamicDirectory = dynamicDirectory;
+      _assemblyLoader = assemblyLoader;
     }
 
     public string BaseDirectory
@@ -81,11 +97,15 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       get { return _dynamicDirectory; }
     }
 
-    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public IAssemblyLoader AssemblyLoader
     {
-      ArgumentUtility.CheckNotNull ("loader", loader);
+      get { return _assemblyLoader; }
+    }
+
+    public RootAssembly[] FindRootAssemblies ()
+    {
       var combinedFinder = CreateCombinedFinder ();
-      return combinedFinder.FindRootAssemblies (loader);
+      return combinedFinder.FindRootAssemblies ();
     }
 
     public virtual CompositeRootAssemblyFinder CreateCombinedFinder ()
@@ -96,16 +116,19 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
           new FilePatternSpecification ("*.dll", FilePatternSpecificationKind.IncludeFollowReferences) 
       };
 
-      var finders = new List<IRootAssemblyFinder> { new FilePatternRootAssemblyFinder (_baseDirectory, specifications, fileSearchService) };
+      var finders = new List<IRootAssemblyFinder> { new FilePatternRootAssemblyFinder (_baseDirectory, specifications, fileSearchService, _assemblyLoader) };
 
       if (!string.IsNullOrEmpty (_relativeSearchPath))
       {
-        foreach (string privateBinPath in _relativeSearchPath.Split (';'))
-          finders.Add (new FilePatternRootAssemblyFinder (privateBinPath, specifications, fileSearchService));
+        var privateBinPaths = _relativeSearchPath.Split (';');
+        var rootAssemblyFinders = privateBinPaths
+            .Select (privateBinPath => new FilePatternRootAssemblyFinder (privateBinPath, specifications, fileSearchService, _assemblyLoader))
+            .Cast<IRootAssemblyFinder>();
+        finders.AddRange (rootAssemblyFinders);
       }
 
       if (_considerDynamicDirectory && !string.IsNullOrEmpty (_dynamicDirectory))
-        finders.Add (new FilePatternRootAssemblyFinder (_dynamicDirectory, specifications, fileSearchService));
+        finders.Add (new FilePatternRootAssemblyFinder (_dynamicDirectory, specifications, fileSearchService, _assemblyLoader));
 
       return new CompositeRootAssemblyFinder (finders);
     }

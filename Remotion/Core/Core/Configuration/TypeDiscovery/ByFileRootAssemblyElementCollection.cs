@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.Configuration.TypeDiscovery
 {
@@ -84,12 +85,13 @@ namespace Remotion.Configuration.TypeDiscovery
       BaseClear ();
     }
 
-    public FilePatternRootAssemblyFinder CreateRootAssemblyFinder ()
+    public FilePatternRootAssemblyFinder CreateRootAssemblyFinder (IAssemblyLoader assemblyLoader)
     {
       return new FilePatternRootAssemblyFinder (
           AppDomain.CurrentDomain.BaseDirectory, 
           this.Select (element => element.CreateSpecification ()),
-          new FileSystemSearchService());
+          new FileSystemSearchService(),
+          assemblyLoader);
     }
   }
 }

@@ -157,7 +157,8 @@ namespace Remotion.Configuration.TypeDiscovery
 
     private ITypeDiscoveryService CreateServiceWithSpecificRootAssemblies ()
     {
-      var rootAssemblyFinder = SpecificRootAssemblies.CreateRootAssemblyFinder ();
+      var assemblyLoader = CreateAllAssemblyLoader();
+      var rootAssemblyFinder = SpecificRootAssemblies.CreateRootAssemblyFinder (assemblyLoader);
       return CreateServiceWithAssemblyFinder (rootAssemblyFinder);
     }
 
@@ -178,17 +179,18 @@ namespace Remotion.Configuration.TypeDiscovery
 
     private ITypeDiscoveryService CreateServiceWithAutomaticDiscovery ()
     {
-      var searchPathRootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
+      var assemblyLoader = CreateApplicationAssemblyLoader();
+      var searchPathRootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false, assemblyLoader);
       return CreateServiceWithAssemblyFinder (searchPathRootAssemblyFinder);
     }
 
     private ITypeDiscoveryService CreateServiceWithAssemblyFinder (IRootAssemblyFinder customRootAssemblyFinder)
     {
-      var assemblyLoader = new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
-      var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (customRootAssemblyFinder, assemblyLoader));
+      var filteringAssemblyLoader = CreateApplicationAssemblyLoader();
+      var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (customRootAssemblyFinder, filteringAssemblyLoader));
       return new AssemblyFinderTypeDiscoveryService (assemblyFinder);
     }
-    
+
     private string GetConfigurationBodyErrorMessage (string modeValue, string modeSpecificBodyElement)
     {
       var message = Environment.NewLine + Environment.NewLine
@@ -203,6 +205,16 @@ namespace Remotion.Configuration.TypeDiscovery
                     + "  </remotion.typeDiscovery>" + Environment.NewLine
                     + "</configuration>";
       return message;
+    }
+
+    private IAssemblyLoader CreateApplicationAssemblyLoader ()
+    {
+      return new FilteringAssemblyLoader (ApplicationAssemblyLoaderFilter.Instance);
+    }
+
+    private IAssemblyLoader CreateAllAssemblyLoader ()
+    {
+      return new FilteringAssemblyLoader (new LoadAllAssemblyLoaderFilter());
     }
   }
 }

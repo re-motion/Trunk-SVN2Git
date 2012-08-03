@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Rhino.Mocks;
@@ -37,7 +38,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateCombinedFinder_HoldsBaseDirectory ()
     {
-      var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
+      var finder = CreateRootAssemblyFinder("relativeSearchPath", false);
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
       Assert.That (finderDirectories, Has.Member("baseDirectory"));
@@ -46,7 +47,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateCombinedFinder_HoldsRelativeSearchPath ()
     {
-      var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
+      var finder = CreateRootAssemblyFinder ("relativeSearchPath", false);
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
       Assert.That (finderDirectories, Has.Member("relativeSearchPath"));
@@ -55,7 +56,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateCombinedFinder_HoldsRelativeSearchPath_Split ()
     {
-      var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath1;relativeSearchPath2", false, "dynamicDirectory");
+      var finder = CreateRootAssemblyFinder ("relativeSearchPath1;relativeSearchPath2", false);
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
       Assert.That (finderDirectories, Has.Member("relativeSearchPath1"));
@@ -65,8 +66,8 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateCombinedFinder_Specifications ()
     {
-      var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
-      var finderSpecs = GetSpecificationsForCombinedFinder(finder);
+      var finder = CreateRootAssemblyFinder ("relativeSearchPath", false);
+      var finderSpecs = CheckCombinedFinderAndGetSpecifications(finder);
 
       Assert.That (finderSpecs, Is.EquivalentTo (new[] { 
           new FilePatternSpecification ("*.exe", FilePatternSpecificationKind.IncludeFollowReferences), 
@@ -76,7 +77,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateCombinedFinder_SearchService ()
     {
-      var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
+      var finder = CreateRootAssemblyFinder ("relativeSearchPath", false);
       var finderService = GetSearchServiceForCombinedFinder (finder);
 
       Assert.That (finderService, Is.InstanceOf (typeof (FileSystemSearchService)));
@@ -85,7 +86,7 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateCombinedFinder_ConsiderDynamicDirectory_False ()
     {
-      var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", false, "dynamicDirectory");
+      var finder = CreateRootAssemblyFinder ("relativeSearchPath", false);
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
 
       Assert.That (finderDirectories, Has.No.Member ("dynamicDirectory"));
@@ -94,9 +95,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateCombinedFinder_ConsiderDynamicDirectory_True ()
     {
-      var finder = new SearchPathRootAssemblyFinder ("baseDirectory", "relativeSearchPath", true, "dynamicDirectory");
+      var finder = CreateRootAssemblyFinder ("relativeSearchPath", true);
       var finderDirectories = GetDirectoriesForCombinedFinder (finder);
-      var finderSpecs = GetSpecificationsForCombinedFinder (finder);
+      var finderSpecs = CheckCombinedFinderAndGetSpecifications (finder);
       var finderService = GetSearchServiceForCombinedFinder (finder);
 
       Assert.That (finderDirectories, Has.Member("dynamicDirectory"));
@@ -111,18 +112,19 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     {
       var innerFinderStub = MockRepository.GenerateStub<IRootAssemblyFinder> ();
       var rootAssembly = new RootAssembly (typeof (object).Assembly, true);
-      innerFinderStub.Stub (stub => stub.FindRootAssemblies (_loaderStub)).Return (new[] { rootAssembly });
+      innerFinderStub.Stub (stub => stub.FindRootAssemblies ()).Return (new[] { rootAssembly });
       innerFinderStub.Replay ();
 
       var finderMock = new MockRepository ().PartialMock<SearchPathRootAssemblyFinder> (
           "baseDirectory",
           "relativeSearchPath",
           false,
-          "dynamicDirectory");
+          "dynamicDirectory",
+          _loaderStub);
       finderMock.Expect (mock => mock.CreateCombinedFinder ()).Return (new CompositeRootAssemblyFinder (new[] { innerFinderStub }));
       finderMock.Replay ();
 
-      var result = finderMock.FindRootAssemblies (_loaderStub);
+      var result = finderMock.FindRootAssemblies ();
       Assert.That (result, Is.EqualTo (new[] { rootAssembly }));
 
       finderMock.VerifyAllExpectations ();
@@ -131,25 +133,15 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
     [Test]
     public void CreateForCurrentAppDomain ()
     {
-      var finder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true);
+      var considerDynamicDirectory = BooleanObjectMother.GetRandomBoolean();
+
+      var finder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (considerDynamicDirectory, _loaderStub);
 
       Assert.That (finder.BaseDirectory, Is.EqualTo (AppDomain.CurrentDomain.BaseDirectory));
       Assert.That (finder.RelativeSearchPath, Is.EqualTo (AppDomain.CurrentDomain.RelativeSearchPath));
       Assert.That (finder.DynamicDirectory, Is.EqualTo (AppDomain.CurrentDomain.DynamicDirectory));
-    }
-
-    [Test]
-    public void CreateForCurrentAppDomain_ConsiderDynamicDirectoryTrue ()
-    {
-      var finder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (true);
-      Assert.That (finder.ConsiderDynamicDirectory, Is.True);
-    }
-
-    [Test]
-    public void CreateForCurrentAppDomain_ConsiderDynamicDirectoryFalse ()
-    {
-      var finder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
-      Assert.That (finder.ConsiderDynamicDirectory, Is.False);
+      Assert.That (finder.AssemblyLoader, Is.SameAs (_loaderStub));
+      Assert.That (finder.ConsiderDynamicDirectory, Is.EqualTo (considerDynamicDirectory));
     }
 
     private string[] GetDirectoriesForCombinedFinder (SearchPathRootAssemblyFinder finder)
@@ -158,11 +150,16 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
       return combinedFinder.InnerFinders.Cast<FilePatternRootAssemblyFinder> ().Select (f => f.SearchPath).ToArray ();
     }
 
-    private FilePatternSpecification[] GetSpecificationsForCombinedFinder (SearchPathRootAssemblyFinder finder)
+    private FilePatternSpecification[] CheckCombinedFinderAndGetSpecifications (SearchPathRootAssemblyFinder finder)
     {
-      return finder.CreateCombinedFinder ()
+      var innerFinders = finder.CreateCombinedFinder ()
           .InnerFinders
-          .Cast<FilePatternRootAssemblyFinder> ()
+          .Cast<FilePatternRootAssemblyFinder> ();
+
+      foreach (var innerFinder in innerFinders)
+        Assert.That (innerFinder.AssemblyLoader, Is.SameAs (_loaderStub));
+
+      return innerFinders
           .SelectMany (inner => inner.Specifications)
           .Distinct ()
           .ToArray ();
@@ -178,5 +175,9 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyFinding
           .Single();
     }
 
+    private SearchPathRootAssemblyFinder CreateRootAssemblyFinder (string relativeSearchPath, bool considerDynamicDirectory)
+    {
+      return new SearchPathRootAssemblyFinder ("baseDirectory", relativeSearchPath, considerDynamicDirectory, "dynamicDirectory", _loaderStub);
+    }
   }
 }

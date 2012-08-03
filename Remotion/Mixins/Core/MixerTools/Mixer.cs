@@ -48,8 +48,8 @@ namespace Remotion.Mixins.MixerTools
     {
       var builderFactory = new ConcreteTypeBuilderFactory (typeNameProvider, signedAssemblyName, unsignedAssemblyName);
 
-      var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false);
-      var assemblyLoader = new FilteringAssemblyLoader (new LoadAllAssemblyLoaderFilter());
+      var assemblyLoader = new FilteringAssemblyLoader (new LoadAllAssemblyLoaderFilter ());
+      var rootAssemblyFinder = SearchPathRootAssemblyFinder.CreateForCurrentAppDomain (false, assemblyLoader);
       var assemblyFinder = new CachingAssemblyFinderDecorator (new AssemblyFinder (rootAssemblyFinder, assemblyLoader));
       var typeDiscoveryService = new AssemblyFinderTypeDiscoveryService (assemblyFinder);
 

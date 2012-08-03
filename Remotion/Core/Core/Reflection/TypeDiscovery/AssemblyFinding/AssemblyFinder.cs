@@ -83,7 +83,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       s_log.Debug ("Finding root assemblies...");
       using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time spent for finding and loading root assemblies: {elapsed}."))
       {
-        return _rootAssemblyFinder.FindRootAssemblies (_assemblyLoader)
+        return _rootAssemblyFinder.FindRootAssemblies ()
             .LogAndReturn (s_log, LogLevel.Debug, result => string.Format ("Found {0} root assemblies.", result.Length));
       }
     }

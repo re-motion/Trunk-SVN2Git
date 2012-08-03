@@ -18,13 +18,14 @@ using System;
 using NUnit.Framework;
 using Remotion.Configuration.TypeDiscovery;
 using Remotion.Development.UnitTesting.Configuration;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 
 namespace Remotion.UnitTests.Configuration.TypeDiscovery.IntegrationTests.SpecificRootAssemblies
 {
   [TestFixture]
   public class SpecificRootAssembliesAreNotSubjectToApplicationFilterTest
   {
-    private const string _xmlFragmentWithMscorlib = @"<typeDiscovery mode=""SpecificRootAssemblies"" xmlns=""..."">
+    private const string _xmlFragmentWithMscorlibByName = @"<typeDiscovery mode=""SpecificRootAssemblies"" xmlns=""..."">
         <specificRootAssemblies>
           <byName>
             <include name=""mscorlib""/>
@@ -32,11 +33,19 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery.IntegrationTests.Specif
         </specificRootAssemblies>
       </typeDiscovery>";
 
+    private static readonly string _xmlFragmentWithAssemblyByFilePattern =
+        @"<typeDiscovery mode=""SpecificRootAssemblies"" xmlns=""..."">
+        <specificRootAssemblies>
+          <byFile>
+            <include filePattern=""" + GetTestAssemblyName() + @".*""/>
+          </byFile>
+        </specificRootAssemblies>
+      </typeDiscovery>";
+
     [Test]
-    [Ignore ("TODO 2572")]
-    public void Deserialization_SpecificRootAssemblies ()
+    public void Deserialization_SpecificRootAssemblies_ByName ()
     {
-      var section = Deserialize (_xmlFragmentWithMscorlib);
+      var section = Deserialize (_xmlFragmentWithMscorlibByName);
 
       var service = section.CreateTypeDiscoveryService();
       
@@ -44,11 +53,35 @@ namespace Remotion.UnitTests.Configuration.TypeDiscovery.IntegrationTests.Specif
       Assert.That (types, Has.Member (typeof (object)));
     }
 
+    [Test]
+    public void Deserialization_SpecificRootAssemblies_ByFilePattern ()
+    {
+      ApplicationAssemblyLoaderFilter.Instance.AddIgnoredAssembly (GetTestAssemblyName());
+      try
+      {
+        var section = Deserialize (_xmlFragmentWithAssemblyByFilePattern);
+
+        var service = section.CreateTypeDiscoveryService ();
+
+        var types = service.GetTypes (null, false);
+        Assert.That (types, Has.Member (typeof (SpecificRootAssembliesAreNotSubjectToApplicationFilterTest)));
+      }
+      finally
+      {
+        ApplicationAssemblyLoaderFilter.Instance.Reset();
+      }
+    }
+
     private TypeDiscoveryConfiguration Deserialize (string xmlFragment)
     {
       var section = new TypeDiscoveryConfiguration ();
       ConfigurationHelper.DeserializeSection (section, xmlFragment);
       return section;
+    }
+
+    private static string GetTestAssemblyName ()
+    {
+      return typeof (SpecificRootAssembliesAreNotSubjectToApplicationFilterTest).Assembly.GetName ().Name;
     }
   }
 }

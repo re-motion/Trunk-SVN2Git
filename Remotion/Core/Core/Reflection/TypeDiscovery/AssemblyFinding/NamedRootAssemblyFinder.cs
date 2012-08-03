@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using System.Linq;
@@ -27,25 +28,32 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
   /// </summary>
   public class NamedRootAssemblyFinder : IRootAssemblyFinder
   {
-    private readonly IEnumerable<AssemblyNameSpecification> _specifications;
+    private readonly AssemblyNameSpecification[] _specifications;
+    private readonly IAssemblyLoader _assemblyLoader;
 
-    public NamedRootAssemblyFinder (IEnumerable<AssemblyNameSpecification> specifications)
+    public NamedRootAssemblyFinder (IEnumerable<AssemblyNameSpecification> specifications, IAssemblyLoader assemblyLoader)
     {
       ArgumentUtility.CheckNotNull ("specifications", specifications);
-      _specifications = specifications;
+      ArgumentUtility.CheckNotNull ("assemblyLoader", assemblyLoader);
+
+      _specifications = specifications.ToArray();
+      _assemblyLoader = assemblyLoader;
     }
 
-    public IEnumerable<AssemblyNameSpecification> Specifications
+    public ReadOnlyCollection<AssemblyNameSpecification> Specifications
     {
-      get { return _specifications; }
+      get { return Array.AsReadOnly (_specifications); }
     }
 
-    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public IAssemblyLoader AssemblyLoader
     {
-      ArgumentUtility.CheckNotNull ("loader", loader);
+      get { return _assemblyLoader; }
+    }
 
+    public RootAssembly[] FindRootAssemblies ()
+    {
       var rootAssemblies = from specification in _specifications
-                           let assembly = loader.TryLoadAssembly (specification.AssemblyName, specification.ToString())
+                           let assembly = _assemblyLoader.TryLoadAssembly (specification.AssemblyName, specification.ToString())
                            where assembly != null
                            select new RootAssembly(assembly, specification.FollowReferences);
       return rootAssemblies.Distinct().ToArray ();

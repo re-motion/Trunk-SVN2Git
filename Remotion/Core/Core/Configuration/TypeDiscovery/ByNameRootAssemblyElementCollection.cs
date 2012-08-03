@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
+using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.Utilities;
 using System.Linq;
 
@@ -84,9 +85,10 @@ namespace Remotion.Configuration.TypeDiscovery
       BaseClear ();
     }
 
-    public NamedRootAssemblyFinder CreateRootAssemblyFinder ()
+    public NamedRootAssemblyFinder CreateRootAssemblyFinder (IAssemblyLoader assemblyLoader)
     {
-      return new NamedRootAssemblyFinder (this.Select (element => element.CreateSpecification()));
+      ArgumentUtility.CheckNotNull ("assemblyLoader", assemblyLoader);
+      return new NamedRootAssemblyFinder (this.Select (element => element.CreateSpecification()), assemblyLoader);
     }
   }
 }

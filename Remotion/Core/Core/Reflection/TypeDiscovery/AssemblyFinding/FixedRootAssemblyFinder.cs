@@ -31,7 +31,7 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyFinding
       _rootAssemblies = rootAssemblies;
     }
 
-    public RootAssembly[] FindRootAssemblies (IAssemblyLoader loader)
+    public RootAssembly[] FindRootAssemblies ()
     {
       return _rootAssemblies;
     }
