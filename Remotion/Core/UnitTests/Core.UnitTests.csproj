@@ -163,6 +163,7 @@
     <Compile Include="Collections\LockingDataStoreDecoratorTestHelper.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecoratorTest.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicyTest.cs" />
+    <Compile Include="Configuration\TypeDiscovery\IntegrationTests\SpecificRootAssemblies\SpecificRootAssembliesAreNotSubjectToApplicationFilterTest.cs" />
     <Compile Include="Context\SafeContextIntegrationTest.cs" />
     <Compile Include="Context\SafeContextTest.cs" />
     <Compile Include="ExtensibleEnums\TestDomain\ExtensibleEnumWithDuplicateAttribute.cs" />
