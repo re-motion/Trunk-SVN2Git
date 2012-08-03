@@ -498,8 +498,8 @@
 
             previousValue = currentValue;
 
-            var openFromInput = !dropDownTriggered && currentValue.match(options.searchStringValidationParams.inputRegex);
-            var openFromTrigger = dropDownTriggered && currentValue.match(options.searchStringValidationParams.dropDownTriggerRegex);
+            var openFromInput = !dropDownTriggered && options.searchStringValidationParams.inputRegex.test (currentValue);
+            var openFromTrigger = dropDownTriggered && options.searchStringValidationParams.dropDownTriggerRegex.test (currentValue);
 
             if (openFromInput || openFromTrigger) {
                 startLoading();
