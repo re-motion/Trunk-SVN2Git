@@ -227,7 +227,6 @@
                     return;
             }
         }).bind ('keyup paste', function(event) { // re-motion
-            clearTimeout(timeout);
             var handleInput = function() {
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
@@ -243,21 +242,30 @@
             };
 
             if (event.type == 'keyup') {
-              var isControlKey = 
-                       event.altKey 
-                    || event.ctrlKey
-                    || event.keyCode < KEY.FIRSTTEXTCHARACTER
+              var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER;
+
+                var isTextChangeKey =
+                       event.keyCode >= KEY.FIRSTTEXTCHARACTER
                     || event.keyCode == KEY.BACKSPACE
                     || event.keyCode == KEY.DEL
                     || event.keyCode == KEY.SPACE;
-                var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode ==  KEY.COMMA;
+
+                var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode == KEY.COMMA;
+
+                if (isTextChangeKey) {
+                    clearTimeout(timeout);
+                    console.log(event.keyCode + ' ' + "'" + event.originalEvent.char + "'");
+                }
+
                 if (!isControlKey && !isValueSeparatorKey) {
                     handleInput();
                 }
             } else if (event.type == 'paste') {
+                clearTimeout(timeout);
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
+                clearTimeout(timeout);
                 throw 'Unexpected event match occurred.';
             }
 
