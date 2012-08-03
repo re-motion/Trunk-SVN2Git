@@ -254,7 +254,6 @@
 
                 if (isTextChangeKey) {
                     clearTimeout(timeout);
-                    console.log(event.keyCode + ' ' + "'" + event.originalEvent.char + "'");
                 }
 
                 if (!isControlKey && !isValueSeparatorKey) {
