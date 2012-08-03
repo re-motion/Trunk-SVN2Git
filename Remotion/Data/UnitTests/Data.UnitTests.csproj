@@ -255,6 +255,7 @@
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\RelationTargetWithoutInheritanceHierarchy.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\EnablingClassIDsInAllForeignKeys\TestDomain\SubclassOfRelationTargetWithInheritanceHierarchy.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Rdbms\SqlServer\IntegrationTests\SqlProviderExecuteCustomQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\Queries\LinqProviderComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\TestComponentFactoryWithSpecificQueryManager.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\EndPointModifications\VirtualEndPointStateUpdatedRaisingCommandDecoratorTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\Commands\UnloadAllCommandTest.cs" />

@@ -23,12 +23,7 @@ using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Linq;
 using Remotion.Linq.EagerFetching;
-using Remotion.Linq.EagerFetching.Parsing;
-using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
 using Remotion.Linq.Parsing.Structure;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
-using Remotion.Linq.Parsing.Structure.NodeTypeProviders;
-using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
@@ -42,14 +37,10 @@ namespace Remotion.Data.DomainObjects.Queries
   {
     // Use DoubleCheckedLockingContainers to ensure that the registries are created as lazily as possible in order to allow users to register
     // customizers via IoC
+    private static readonly DoubleCheckedLockingContainer<ILinqProviderComponentFactory> s_linqProviderComponentFactory =
+        new DoubleCheckedLockingContainer<ILinqProviderComponentFactory> (() => SafeServiceLocator.Current.GetInstance<ILinqProviderComponentFactory> ());
     private static readonly DoubleCheckedLockingContainer<IQueryParser> s_queryParser =
-        new DoubleCheckedLockingContainer<IQueryParser> (CreateQueryParser);
-
-    private static readonly DoubleCheckedLockingContainer<IMethodCallTransformerProvider> s_methodCallTransformerProvider =
-        new DoubleCheckedLockingContainer<IMethodCallTransformerProvider> (CreateMethodCallTransformerProvider);
-
-    private static readonly DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> s_resultOperatorHandlerRegistry =
-        new DoubleCheckedLockingContainer<ResultOperatorHandlerRegistry> (CreateResultOperatorHandlerRegistry);
+        new DoubleCheckedLockingContainer<IQueryParser> (() => s_linqProviderComponentFactory.Value.CreateQueryParser());
 
     /// <summary>
     /// Creates a <see cref="DomainObjectQueryable{T}"/> used as the entry point to a LINQ query with the default implementation of the SQL 
@@ -70,19 +61,13 @@ namespace Remotion.Data.DomainObjects.Queries
     /// var result = query.ToArray();
     /// </code>
     /// </example>
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> ()
+    public static IQueryable<T> CreateLinqQuery<T> ()
         where T: DomainObject
     {
       var startingClassDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (T));
       var providerDefinition = startingClassDefinition.StorageEntityDefinition.StorageProviderDefinition;
 
-      var queryGenerator = providerDefinition.Factory.CreateDomainObjectQueryGenerator (
-          providerDefinition, 
-          s_methodCallTransformerProvider.Value, 
-          s_resultOperatorHandlerRegistry.Value,
-          MappingConfiguration.Current);
-      var executor = new DomainObjectQueryExecutor (providerDefinition, queryGenerator);
-      
+      var executor = s_linqProviderComponentFactory.Value.CreateQueryExecutor (providerDefinition);
       return CreateLinqQuery<T> (s_queryParser.Value, executor);
     }
 
@@ -96,13 +81,13 @@ namespace Remotion.Data.DomainObjects.Queries
     /// <param name="executor">The <see cref="IQueryExecutor"/> that is used for the query. Specify an instance of 
     ///   <see cref="DomainObjectQueryExecutor"/> for default behavior.</param>
     /// <returns>A <see cref="DomainObjectQueryable{T}"/> object as an entry point to a LINQ query.</returns>
-    public static DomainObjectQueryable<T> CreateLinqQuery<T> (IQueryParser queryParser, IQueryExecutor executor)
+    public static IQueryable<T> CreateLinqQuery<T> (IQueryParser queryParser, IQueryExecutor executor)
         where T: DomainObject
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("queryParser", queryParser);
 
-      return new DomainObjectQueryable<T> (queryParser, executor);
+      return s_linqProviderComponentFactory.Value.CreateQueryable<T> (queryParser, executor);
     }
 
     /// <summary>
@@ -279,69 +264,6 @@ namespace Remotion.Data.DomainObjects.Queries
     {
       var definition = new QueryDefinition (id, storageProviderDefinition, statement, QueryType.Custom, null);
       return new Query (definition, queryParameterCollection);
-    }
-
-    private static IQueryParser CreateQueryParser ()
-    {
-      var customNodeTypeRegistry = new MethodInfoBasedNodeTypeRegistry();
-
-      customNodeTypeRegistry.Register (
-          new[] { MemberInfoFromExpressionUtility.GetMethod ((DomainObjectCollection obj) => obj.ContainsObject (null)) },
-          typeof (ContainsExpressionNode));
-      customNodeTypeRegistry.Register (
-          new[] { MemberInfoFromExpressionUtility.GetProperty ((DomainObjectCollection obj) => obj.Count).GetGetMethod() },
-          typeof (CountExpressionNode));
-
-      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchOne") }, typeof (FetchOneExpressionNode));
-      customNodeTypeRegistry.Register (new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("FetchMany") }, typeof (FetchManyExpressionNode));
-      customNodeTypeRegistry.Register (
-          new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchOne") }, typeof (ThenFetchOneExpressionNode));
-      customNodeTypeRegistry.Register (
-          new[] { typeof (EagerFetchingExtensionMethods).GetMethod ("ThenFetchMany") }, typeof (ThenFetchManyExpressionNode));
-
-      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
-      var customNodeTypes = customizers.SelectMany (c => c.GetCustomNodeTypes());
-      foreach (var customNodeType in customNodeTypes)
-        customNodeTypeRegistry.Register (customNodeType.Item1, customNodeType.Item2);
-
-      var nodeTypeProvider = ExpressionTreeParser.CreateDefaultNodeTypeProvider();
-      nodeTypeProvider.InnerProviders.Insert (0, customNodeTypeRegistry);
-
-      var transformerRegistry = ExpressionTransformerRegistry.CreateDefault();
-      var processor = ExpressionTreeParser.CreateDefaultProcessor (transformerRegistry);
-      var expressionTreeParser = new ExpressionTreeParser (nodeTypeProvider, processor);
-      var queryParser = new QueryParser (expressionTreeParser);
-
-      return queryParser;
-    }
-
-    private static IMethodCallTransformerProvider CreateMethodCallTransformerProvider ()
-    {
-      var methodInfoBasedRegistry = MethodInfoBasedMethodCallTransformerRegistry.CreateDefault();
-      var attributeBaseProvider = new AttributeBasedMethodCallTransformerProvider();
-      var nameBasedRegistry = NameBasedMethodCallTransformerRegistry.CreateDefault();
-
-      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
-      var customTransformers = customizers.SelectMany (c => c.GetCustomMethodCallTransformers());
-      foreach (var customNodeType in customTransformers)
-        methodInfoBasedRegistry.Register (customNodeType.Item1, customNodeType.Item2);
-
-      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, attributeBaseProvider, nameBasedRegistry);
-    }
-
-    private static ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()
-    {
-      var resultOperatorHandlerRegistry = ResultOperatorHandlerRegistry.CreateDefault();
-
-      var handler = new FetchResultOperatorHandler();
-      resultOperatorHandlerRegistry.Register (handler.SupportedResultOperatorType, handler);
-
-      var customizers = SafeServiceLocator.Current.GetAllInstances<ILinqParserCustomizer>();
-      var customHandlers = customizers.SelectMany (c => c.GetCustomResultOperatorHandlers());
-      foreach (var customNodeType in customHandlers)
-        resultOperatorHandlerRegistry.Register (customNodeType.Item1, customNodeType.Item2);
-
-      return resultOperatorHandlerRegistry;
     }
   }
 }

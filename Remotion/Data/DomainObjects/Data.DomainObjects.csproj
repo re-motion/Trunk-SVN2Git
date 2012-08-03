@@ -257,7 +257,9 @@
     <Compile Include="Persistence\Rdbms\Model\Building\ValueStoragePropertyDefinitionFactory.cs" />
     <Compile Include="Persistence\StorageProviderCommands\SingleDataContainerAssociateWithIDCommand.cs" />
     <Compile Include="Queries\EagerFetching\EagerFetcher.cs" />
+    <Compile Include="Queries\ILinqProviderComponentFactory.cs" />
     <Compile Include="Queries\IQueryResultRow.cs" />
+    <Compile Include="Queries\LinqProviderComponentFactory.cs" />
     <Compile Include="Validation\DomainObjectValidationException.cs" />
     <Compile Include="IClientTransactionExtensionFactory.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\PersistableData.cs" />
@@ -590,7 +592,6 @@
     <Compile Include="Queries\EagerFetching\DelegatingFetchedRelationDataRegistrationAgent.cs" />
     <Compile Include="Queries\EagerFetching\FetchedVirtualObjectRelationDataRegistrationAgent.cs" />
     <Compile Include="Queries\EagerFetching\IFetchedRelationDataRegistrationAgent.cs" />
-    <Compile Include="Queries\ILinqParserCustomizer.cs" />
     <Compile Include="Queries\EagerFetching\IEagerFetcher.cs" />
     <Compile Include="Queries\EagerFetching\FetchedRelationDataRegistrationAgentBase.cs" />
     <Compile Include="Queries\QueryParameterWithType.cs" />

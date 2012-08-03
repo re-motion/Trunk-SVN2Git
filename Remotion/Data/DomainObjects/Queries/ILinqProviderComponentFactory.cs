@@ -15,23 +15,23 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Microsoft.Practices.ServiceLocation;
-using Remotion.Collections;
-using Remotion.Linq.SqlBackend.SqlPreparation;
+using System.Linq;
+using Remotion.Data.DomainObjects.Linq;
+using Remotion.Data.DomainObjects.Persistence.Configuration;
+using Remotion.Linq;
+using Remotion.Linq.Parsing.Structure;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Data.DomainObjects.Queries
 {
   /// <summary>
-  /// Defines an interface for classes needing to customize the re-store LINQ provider. Instances of types 
-  /// implementing this interface are retrieved from the <see cref="ServiceLocator"/> by the <see cref="QueryFactory"/> when the first LINQ query is
-  /// executed. They are then used to customize the LINQ provider for the rest of the application.
+  /// Provides an interface for classes creating the components required to initialize the LINQ provider.
   /// </summary>
-  public interface ILinqParserCustomizer
+  [ConcreteImplementation (typeof (LinqProviderComponentFactory))]
+  public interface ILinqProviderComponentFactory
   {
-    IEnumerable<Tuple<IEnumerable<MethodInfo>, Type>> GetCustomNodeTypes ();
-    IEnumerable<Tuple<IEnumerable<MethodInfo>, IMethodCallTransformer>> GetCustomMethodCallTransformers ();
-    IEnumerable<Tuple<IEnumerable<Type>, IResultOperatorHandler>> GetCustomResultOperatorHandlers ();
+    IQueryable<T> CreateQueryable<T> (IQueryParser queryParser, IQueryExecutor executor);
+    IQueryParser CreateQueryParser ();
+    IQueryExecutor CreateQueryExecutor (StorageProviderDefinition providerDefinition);
   }
 }

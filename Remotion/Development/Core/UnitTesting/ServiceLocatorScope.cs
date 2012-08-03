@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -28,15 +29,20 @@ namespace Remotion.Development.UnitTesting
   /// </summary>
   public class ServiceLocatorScope : IDisposable
   {
-    private static IServiceLocator CreateStubServiceLocator (IEnumerable<ServiceConfigurationEntry> configuration)
+    private static DefaultServiceLocator CreateServiceLocator (IEnumerable<ServiceConfigurationEntry> configuration)
     {
       ArgumentUtility.CheckNotNull ("configuration", configuration);
 
       var defaultServiceLocator = new DefaultServiceLocator ();
       foreach (var stubbedRegistration in configuration)
-      {
         defaultServiceLocator.Register (stubbedRegistration);
-      }
+      return defaultServiceLocator;
+    }
+
+    private static DefaultServiceLocator CreateServiceLocator (Type serviceType, Func<object> creator)
+    {
+      var defaultServiceLocator = CreateServiceLocator (Enumerable.Empty<ServiceConfigurationEntry>());
+      defaultServiceLocator.Register (serviceType, creator);
       return defaultServiceLocator;
     }
 
@@ -58,14 +64,19 @@ namespace Remotion.Development.UnitTesting
     }
 
     public ServiceLocatorScope (params ServiceConfigurationEntry[] temporaryConfiguration)
-      : this (CreateStubServiceLocator (temporaryConfiguration))
+      : this (CreateServiceLocator (temporaryConfiguration))
     {
     }
 
     public ServiceLocatorScope (Type serviceType, Type implementationType, LifetimeKind lifetimeKind = LifetimeKind.Instance)
         : this (
-            CreateStubServiceLocator (
+            CreateServiceLocator (
                 new[] { new ServiceConfigurationEntry (serviceType, new ServiceImplementationInfo (implementationType, lifetimeKind)) }))
+    {
+    }
+
+    public ServiceLocatorScope (Type serviceType, Func<object> creator)
+      : this (CreateServiceLocator (serviceType, creator))
     {
     }
 
