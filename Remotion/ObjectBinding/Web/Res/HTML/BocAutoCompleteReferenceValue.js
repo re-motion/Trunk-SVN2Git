@@ -49,6 +49,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
   ArgumentUtility.CheckNotNullAndTypeIsObject('resources', resources);
 
   var _itemBackUp = null;
+  var _isInvalidated = false;
   BackupItemData ($ (hiddenField).val(), $ (textbox).val());
 
   textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact',
@@ -128,18 +129,47 @@ BocAutoCompleteReferenceValue.Initialize = function (
         }
     ).invalidateResult(function (e, item)
     {
-      if (hiddenField.val() == nullValueString)
+      if (_isInvalidated)
         return;
+
+      _isInvalidated = true;
 
       hiddenField.val(nullValueString);
       UpdateCommand(nullValueString);
       //Do not fire change-event
     }).updateResult(function (e, item)
     {
-      hiddenField.val(item.UniqueIdentifier);
-      BackupItemData (item.UniqueIdentifier, item.DisplayName);
-      UpdateCommand(item.UniqueIdentifier);
-      hiddenField.trigger('change');
+      try
+      {
+        var actualItem = item;
+
+        if (_itemBackUp != null
+          && item.DisplayName.toLowerCase() == _itemBackUp.DisplayName.toLowerCase()
+          && (item.UniqueIdentifier == _itemBackUp.UniqueIdentifier || item.UniqueIdentifier == nullValueString))
+        {
+          actualItem = _itemBackUp;
+          textbox.val (actualItem.DisplayName);
+        }
+
+        if (!_isInvalidated)
+        {
+          return;
+        }
+        var hasChanged = _itemBackUp != actualItem;
+
+        hiddenField.val (actualItem.UniqueIdentifier);
+        BackupItemData (actualItem.UniqueIdentifier, actualItem.DisplayName);
+        UpdateCommand (actualItem.UniqueIdentifier);
+
+        if (hasChanged)
+        {
+          hiddenField.trigger ('change');
+        }
+      }
+      finally
+      {
+        _isInvalidated = false;
+      }
     });
 
   function UpdateCommand(selectedValue)

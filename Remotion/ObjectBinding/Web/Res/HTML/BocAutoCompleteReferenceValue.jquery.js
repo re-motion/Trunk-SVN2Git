@@ -231,9 +231,6 @@
                 var currentValue = $input.val();
                 var dropDownDelay = select.visible() ? options.dropDownRefreshDelay : options.dropDownDisplayDelay;
 
-                if (currentValue.toLowerCase() != previousValue.toLowerCase())
-                    $input.trigger("invalidateResult");
-
                 timeout = setTimeout(
                     function () { 
                         onChange(false, currentValue); 
@@ -254,13 +251,15 @@
 
                 if (isTextChangeKey) {
                     clearTimeout(timeout);
-                }
+                    $input.trigger("invalidateResult");
+                  }
 
                 if (!isControlKey && !isValueSeparatorKey) {
                     handleInput();
                 }
             } else if (event.type == 'paste') {
                 clearTimeout(timeout);
+                $input.trigger("invalidateResult");
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
