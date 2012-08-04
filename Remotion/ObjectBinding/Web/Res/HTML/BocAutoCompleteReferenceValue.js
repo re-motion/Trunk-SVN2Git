@@ -50,7 +50,9 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
   var _itemBackUp = null;
   var _isInvalidated = false;
-  BackupItemData ($ (hiddenField).val(), $ (textbox).val());
+  BackupItemData($(hiddenField).val(), $(textbox).val());
+  var _command = command;
+  var _commandBackUp = command;
 
   textbox.autocomplete(searchServiceUrl, 'Search', 'SearchExact',
         {
@@ -159,11 +161,16 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
         hiddenField.val (actualItem.UniqueIdentifier);
         BackupItemData (actualItem.UniqueIdentifier, actualItem.DisplayName);
-        UpdateCommand (actualItem.UniqueIdentifier);
 
         if (hasChanged)
         {
-          hiddenField.trigger ('change');
+          UpdateCommand(actualItem.UniqueIdentifier);
+          _commandBackUp = _command;
+          hiddenField.trigger('change');
+        }
+        else
+        {
+          RestoreCommand();
         }
       }
       finally
@@ -172,14 +179,26 @@ BocAutoCompleteReferenceValue.Initialize = function (
       }
     });
 
+  function RestoreCommand()
+  {
+    if (_commandBackUp == null || _commandBackUp.length == 0)
+      return;
+
+    if (_command == null || _command.length == 0)
+      return;
+
+    _command.replaceWith(_commandBackUp);
+    _command = _commandBackUp;
+  }
+
   function UpdateCommand(selectedValue)
   {
-    if (command == null || command.length == 0)
+    if (_command == null || _command.length == 0)
       return;
 
     if (isAutoPostBackEnabled)
     {
-      command = BocReferenceValueBase.UpdateCommand(command, null, null, null, null, function () { });
+      _command = BocReferenceValueBase.UpdateCommand(_command, null, null, null, null, function () { });
     }
     else
     {
@@ -192,8 +211,8 @@ BocAutoCompleteReferenceValue.Initialize = function (
         SetError (resources.LoadIconFailedErrorMessage);
       };
 
-      command = BocReferenceValueBase.UpdateCommand(command, businessObject, iconServiceUrl, iconContext, commandInfo, errorHandler);
-    } 
+      _command = BocReferenceValueBase.UpdateCommand(_command, businessObject, iconServiceUrl, iconContext, commandInfo, errorHandler);
+    }
   }
 
   function ClearError()
