@@ -279,6 +279,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     {
       Assert.That (clientTransaction.IsInvalid (domainObject.ID), Is.True);
       Assert.That (domainObject.TransactionContext[clientTransaction].IsInvalid, Is.True);
+      Assert.That (domainObject.TransactionContext[clientTransaction].State, Is.EqualTo (StateType.Invalid));
     }
   }
 }

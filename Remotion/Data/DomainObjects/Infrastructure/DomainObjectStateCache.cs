@@ -66,6 +66,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         _cache.HandleStateUpdate (domainObject.ID);
       }
+
+      public override void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
+      {
+        _cache.HandleStateUpdate (domainObject.ID);
+      }
     }
 
     public DomainObjectStateCache (ClientTransaction clientTransaction)
@@ -176,6 +181,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   // New => New: [don't care]
   // New => Invalid: DataContainerMapUnregistering, ObjectMarkedInvalid
   //
-  // Invalid => New: DataContainerMapRegistering (when committing a subtransaction where an object was New)
-  // Invalid => *: It's currently not possible to resurrect an invalid object. When it becomes possible, use ObjectMarkedNotInvalid.
+  // Invalid => New: ObjectMarkedNotInvalid, DataContainerMapRegistering (when committing a subtransaction where an object was New)
+  // Invalid => NotLoadedYet: ObjectMarkedNotInvalid (when resurrecting an object)
+  // Invalid => *: (not possible)
 }

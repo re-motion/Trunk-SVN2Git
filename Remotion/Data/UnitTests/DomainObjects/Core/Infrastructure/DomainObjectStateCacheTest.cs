@@ -261,6 +261,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void GetState_Invalidated_AfterMarkNotInvalid ()
+    {
+      _transaction.Execute (() => _newOrder.Delete());
+      var stateBeforeChange = _cachingListener.GetState (_newOrder.ID);
+
+      _transaction.Execute (() => DataManagementService.GetDataManager (_transaction).MarkNotInvalid (_newOrder.ID));
+      var stateAfterChange = _cachingListener.GetState (_newOrder.ID);
+
+      Assert.That (stateBeforeChange, Is.EqualTo (StateType.Invalid));
+      Assert.That (stateAfterChange, Is.EqualTo (StateType.NotLoadedYet));
+    }
+
+    [Test]
     public void Serialization ()
     {
       var deserializedTuple = Serializer.SerializeAndDeserialize (Tuple.Create (_cachingListener, _transaction, _existingOrder));
