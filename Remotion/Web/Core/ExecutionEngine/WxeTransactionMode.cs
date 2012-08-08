@@ -67,6 +67,6 @@ namespace Remotion.Web.ExecutionEngine
     {
     }
 
-    internal abstract void BlockInstantiableInheritance ();
+    internal abstract void OnlyAllowAbstractInheritance();
   }
 }
