@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
@@ -85,20 +84,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       return _parentTransaction.TryGetObjects<DomainObject> (objectIDs);
     }
 
-    public DomainObject GetRelatedObject (RelationEndPointID relationEndPointID)
+    public DomainObject ResolveRelatedObject (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       CheckDisposed ();
-      
-      return _parentTransaction.GetRelatedObject (relationEndPointID);
+      if (!relationEndPointID.Definition.IsVirtual || relationEndPointID.Definition.Cardinality != CardinalityType.One)
+        throw new ArgumentException ("EndPoint ID must denote a virtual relation end-point with cardinality one.", "relationEndPointID");
+
+      var endPoint = (IVirtualObjectEndPoint) _parentTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      return endPoint.GetData();
     }
 
     public IEnumerable<DomainObject> GetRelatedObjects (RelationEndPointID relationEndPointID)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       CheckDisposed ();
-      
-      return _parentTransaction.GetRelatedObjects (relationEndPointID).Cast<DomainObject> ();
+      if (!relationEndPointID.Definition.IsVirtual || relationEndPointID.Definition.Cardinality != CardinalityType.Many)
+        throw new ArgumentException ("EndPoint ID must denote a virtual relation end-point with cardinality many.", "relationEndPointID");
+
+      var endPoint = (ICollectionEndPoint) _parentTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      return endPoint.GetData();
     }
 
     public QueryResult<DomainObject> ExecuteCollectionQuery (IQuery query)

@@ -85,7 +85,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4991")]
     public void RelationReadEvents_OnlyRaisedInActiveSub_VirtualEndPoint_One ()
     {
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
@@ -101,7 +100,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4991")]
     public void RelationReadEvents_OnlyRaisedInActiveSub_VirtualEndPoint_Many ()
     {
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");

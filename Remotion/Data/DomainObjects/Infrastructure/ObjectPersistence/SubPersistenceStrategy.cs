@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
       {
         // parentRelatedObject may be null
-        var parentRelatedObject = parentTransactionOperations.GetRelatedObject (relationEndPointID);
+        var parentRelatedObject = parentTransactionOperations.ResolveRelatedObject (relationEndPointID);
         return TransferParentObject (parentRelatedObject, alreadyLoadedObjectDataProvider, parentTransactionOperations);
       }
     }
