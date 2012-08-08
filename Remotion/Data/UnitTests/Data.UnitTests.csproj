@@ -231,7 +231,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\CustomQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\GetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\CommitTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\Copy of CreateSubTransactionTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\DiscardTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\VirtualCollectionRelationPropertyWriteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\VirtualObjectRelationPropertyWriteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\NonVirtualRelationPropertyWriteTest.cs" />
