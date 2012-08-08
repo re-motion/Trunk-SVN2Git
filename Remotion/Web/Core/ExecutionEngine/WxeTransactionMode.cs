@@ -54,11 +54,13 @@ namespace Remotion.Web.ExecutionEngine
     /// </summary>
     public static readonly ITransactionMode CreateChildIfParent = new CreateChildIfParentTransactionMode(false, new TTransactionFactory());
 
+    /// <summary>
     /// Indicates that a <see cref="WxeFunction"/> will create a new transaction when executed. If a <see cref="WxeStep.ParentFunction"/> exists which 
     /// has an associated transaction, the new transaction will be created as a child of that transaction. If no parent transaction exists, a root
     /// transaction will be created. The new transaction can be explicitly committed, and
     /// it will be committed automatically when the function successfuly finishes execution. When the function finishes with an exception, the
     /// transaction will not be committed automatically.
+    /// </summary>
     public static readonly ITransactionMode CreateChildIfParentWithAutoCommit = new CreateChildIfParentTransactionMode (true, new TTransactionFactory());
 
     protected WxeTransactionMode ()
