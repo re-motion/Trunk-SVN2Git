@@ -27,12 +27,8 @@ using Remotion.Data.UnitTests.UnitTesting;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction.InactiveTransactions
 {
   [TestFixture]
-  public class RelationReadEventsTest : StandardMappingTest
+  public class RelationReadEventsTest : InactiveTransactionsTestBase
   {
-    private ClientTransaction _rootTransaction;
-    private ClientTransaction _inactiveSubTransaction;
-    private ClientTransaction _activeSubTransaction;
-
     private IClientTransactionListener _listenerDynamicMock;
     private IClientTransactionExtension _extensionStrictMock;
 
@@ -46,39 +42,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _rootTransaction = ClientTransaction.CreateRootTransaction();
-      _inactiveSubTransaction = _rootTransaction.CreateSubTransaction();
-      _activeSubTransaction = _inactiveSubTransaction.CreateSubTransaction();
-
-      _loadedOrder = _activeSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _relatedCustomer = _activeSubTransaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1));
-      _relatedOrderTicket = _activeSubTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
-      _relatedOrderItem1 = _activeSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
-      _relatedOrderItem2 = _activeSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2));
+      _loadedOrder = ActiveSubTransaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _relatedCustomer = ActiveSubTransaction.Execute (() => Customer.GetObject (DomainObjectIDs.Customer1));
+      _relatedOrderTicket = ActiveSubTransaction.Execute (() => OrderTicket.GetObject (DomainObjectIDs.OrderTicket1));
+      _relatedOrderItem1 = ActiveSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
+      _relatedOrderItem2 = ActiveSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2));
 
       _listenerDynamicMock = MockRepository.GenerateMock<IClientTransactionListener>();
       _extensionStrictMock = MockRepository.GenerateStrictMock<IClientTransactionExtension>();
 
-      ClientTransactionTestHelper.AddListener (_rootTransaction, _listenerDynamicMock);
-      ClientTransactionTestHelper.AddListener (_inactiveSubTransaction, _listenerDynamicMock);
-      ClientTransactionTestHelper.AddListener (_activeSubTransaction, _listenerDynamicMock);
+      ClientTransactionTestHelper.AddListener (InactiveRootTransaction, _listenerDynamicMock);
+      ClientTransactionTestHelper.AddListener (InactiveMiddleTransaction, _listenerDynamicMock);
+      ClientTransactionTestHelper.AddListener (ActiveSubTransaction, _listenerDynamicMock);
 
       _extensionStrictMock.Stub (stub => stub.Key).Return ("test");
-      _rootTransaction.Extensions.Add (_extensionStrictMock);
-      _inactiveSubTransaction.Extensions.Add (_extensionStrictMock);
-      _activeSubTransaction.Extensions.Add (_extensionStrictMock);
+      InactiveRootTransaction.Extensions.Add (_extensionStrictMock);
+      InactiveMiddleTransaction.Extensions.Add (_extensionStrictMock);
+      ActiveSubTransaction.Extensions.Add (_extensionStrictMock);
     }
 
     [Test]
     public void RelationReadEvents_OnlyRaisedInActiveSub_NonVirtualEndPoint ()
     {
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "Customer");
-      ExpectRelationReadEvents (_activeSubTransaction, _loadedOrder, endPointDefinition, _relatedCustomer);
+      ExpectRelationReadEvents (ActiveSubTransaction, _loadedOrder, endPointDefinition, _relatedCustomer);
 
-      Dev.Null = _activeSubTransaction.Execute (() => _loadedOrder.Customer);
+      Dev.Null = ActiveSubTransaction.Execute (() => _loadedOrder.Customer);
 
-      AssertNoRelationReadEvents (_inactiveSubTransaction);
-      AssertNoRelationReadEvents (_rootTransaction);
+      AssertNoRelationReadEvents (InactiveMiddleTransaction);
+      AssertNoRelationReadEvents (InactiveRootTransaction);
 
       _listenerDynamicMock.VerifyAllExpectations();
       _extensionStrictMock.VerifyAllExpectations();
@@ -88,12 +80,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RelationReadEvents_OnlyRaisedInActiveSub_VirtualEndPoint_One ()
     {
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderTicket");
-      ExpectRelationReadEvents (_activeSubTransaction, _loadedOrder, endPointDefinition, _relatedOrderTicket);
+      ExpectRelationReadEvents (ActiveSubTransaction, _loadedOrder, endPointDefinition, _relatedOrderTicket);
 
-      Dev.Null = _activeSubTransaction.Execute (() => _loadedOrder.OrderTicket);
+      Dev.Null = ActiveSubTransaction.Execute (() => _loadedOrder.OrderTicket);
 
-      AssertNoRelationReadEvents (_inactiveSubTransaction);
-      AssertNoRelationReadEvents (_rootTransaction);
+      AssertNoRelationReadEvents (InactiveMiddleTransaction);
+      AssertNoRelationReadEvents (InactiveRootTransaction);
 
       _listenerDynamicMock.VerifyAllExpectations ();
       _extensionStrictMock.VerifyAllExpectations ();
@@ -103,12 +95,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void RelationReadEvents_OnlyRaisedInActiveSub_VirtualEndPoint_Many ()
     {
       var endPointDefinition = GetEndPointDefinition (typeof (Order), "OrderItems");
-      ExpectRelationReadEvents (_activeSubTransaction, _loadedOrder, endPointDefinition, new[] { _relatedOrderItem1, _relatedOrderItem2 });
+      ExpectRelationReadEvents (ActiveSubTransaction, _loadedOrder, endPointDefinition, new[] { _relatedOrderItem1, _relatedOrderItem2 });
 
-      _activeSubTransaction.Execute (() => _loadedOrder.OrderItems.EnsureDataComplete());
+      ActiveSubTransaction.Execute (() => _loadedOrder.OrderItems.EnsureDataComplete());
 
-      AssertNoRelationReadEvents (_inactiveSubTransaction);
-      AssertNoRelationReadEvents (_rootTransaction);
+      AssertNoRelationReadEvents (InactiveMiddleTransaction);
+      AssertNoRelationReadEvents (InactiveRootTransaction);
 
       _listenerDynamicMock.VerifyAllExpectations ();
       _extensionStrictMock.VerifyAllExpectations ();
