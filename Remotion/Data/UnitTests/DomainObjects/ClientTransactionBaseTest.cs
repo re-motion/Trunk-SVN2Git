@@ -32,7 +32,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
     // member fields
 
     private TestableClientTransaction _testableClientTransaction;
-    private ClientTransactionScope _transactionScope;
     private TestDataContainerObjectMother _testDataContainerObjectMother;
 
     // construction and disposing
@@ -69,15 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
 
     private void DisposeTransaction ()
     {
-      if (_transactionScope != null)
-      {
-        if (ClientTransactionScope.ActiveScope == _transactionScope)
-          _transactionScope.Leave();
-        else
-          ClientTransactionScope.ResetActiveScope();
-        _transactionScope = null;
-        _testableClientTransaction = null;
-      }
+      ClientTransactionScope.ResetActiveScope ();
     }
 
     protected void ReInitializeTransaction ()
@@ -85,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects
       DisposeTransaction();
 
       _testableClientTransaction = new TestableClientTransaction();
-      _transactionScope = _testableClientTransaction.EnterDiscardingScope();
+      _testableClientTransaction.EnterDiscardingScope();
       _testDataContainerObjectMother = new TestDataContainerObjectMother ();
     }
 
