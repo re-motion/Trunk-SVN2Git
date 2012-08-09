@@ -633,7 +633,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\NullClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\ObjectLoaderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\DomainObjectStateCacheTest.cs" />
-    <Compile Include="DomainObjects\Core\Infrastructure\ReadOnlyClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\InactiveClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\RootClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\SubClientTransactionComponentFactoryTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NewObjectHierarchyInvalidationClientTransactionListenerTest.cs" />

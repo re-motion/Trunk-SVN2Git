@@ -99,7 +99,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Initialization_OrderOfFactoryCalls ()
     {
       var fakeParentTransaction = ClientTransaction.CreateRootTransaction();
-      ClientTransactionTestHelper.SetIsReadOnly (fakeParentTransaction, true);
+      ClientTransactionTestHelper.SetIsActive (fakeParentTransaction, false);
 
       var componentFactoryMock = _mockRepository.StrictMock<IClientTransactionComponentFactory>();
       var listenerManagerMock = _mockRepository.StrictMock<IClientTransactionEventBroker>();
@@ -865,12 +865,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void CreateSubTransaction_WithDefaultComponentFactory ()
     {
-      Assert.That (_transaction.IsReadOnly, Is.False);
+      Assert.That (_transaction.IsActive, Is.True);
       
       var subTransaction = _transaction.CreateSubTransaction ();
       Assert.That (subTransaction, Is.TypeOf (typeof (ClientTransaction)));
       Assert.That (subTransaction.ParentTransaction, Is.SameAs (_transaction));
-      Assert.That (_transaction.IsReadOnly, Is.True);
+      Assert.That (_transaction.IsActive, Is.False);
       Assert.That (_transaction.SubTransaction, Is.SameAs (subTransaction));
 
       Assert.That (subTransaction.Extensions, Is.Empty);
@@ -899,11 +899,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             return fakeSubTransaction;
           };
 
-      Assert.That (_transaction.IsReadOnly, Is.False);
+      Assert.That (_transaction.IsActive, Is.True);
 
       var subTransaction = _transaction.CreateSubTransaction (factoryMock);
 
-      Assert.That (_transaction.IsReadOnly, Is.True);
+      Assert.That (_transaction.IsActive, Is.False);
       Assert.That (subTransaction, Is.SameAs (fakeSubTransaction));
       Assert.That (_transaction.SubTransaction, Is.SameAs (subTransaction));
     }
@@ -923,7 +923,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       {
         listenerMock
             .Expect (mock => mock.SubTransactionCreating (_transaction))
-            .WhenCalled (mi => Assert.That (_transaction.IsReadOnly, Is.False));
+            .WhenCalled (mi => Assert.That (_transaction.IsActive, Is.True));
         componentFactoryPartialMock
             .Expect (mock => mock.GetParentTransaction (Arg<ClientTransaction>.Is.Anything))
             .Return (_transaction);
@@ -934,7 +934,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .WhenCalled (mi =>
             {
               Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
-              Assert.That (_transaction.IsReadOnly, Is.True);
+              Assert.That (_transaction.IsActive, Is.False);
             });
         listenerMock
             .Expect (mock => mock.SubTransactionCreated (
@@ -982,7 +982,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       eventReceiverMock.AssertWasNotCalled (mock => mock.SubTransactionCreated (Arg<object>.Is.Anything, Arg<SubTransactionCreatedEventArgs>.Is.Anything));
 
-      Assert.That (_transaction.IsReadOnly, Is.False);
+      Assert.That (_transaction.IsActive, Is.True);
     }
 
     [Test]
@@ -1002,7 +1002,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         Assert.That (ex, Is.SameAs (exception));
       }
 
-      Assert.That (_transaction.IsReadOnly, Is.False);
+      Assert.That (_transaction.IsActive, Is.True);
     }
 
     [Test]
@@ -1016,7 +1016,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       }
       catch (InvalidOperationException)
       {
-        Assert.That (_transaction.IsReadOnly, Is.False);
+        Assert.That (_transaction.IsActive, Is.True);
         throw;
       }
     }
@@ -1041,7 +1041,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Discard_WithParentTransaction ()
     {
       var parentTransaction = ClientTransaction.CreateRootTransaction ();
-      ClientTransactionTestHelper.SetIsReadOnly (parentTransaction, true);
+      ClientTransactionTestHelper.SetIsActive (parentTransaction, false);
 
       var subTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, subTransaction);
@@ -1050,12 +1050,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _eventBrokerMock.Stub (stub => stub.AddListener (Arg<IClientTransactionListener>.Is.Anything));
       _mockRepository.ReplayAll ();
 
-      Assert.That (parentTransaction.IsReadOnly, Is.True);
+      Assert.That (parentTransaction.IsActive, Is.False);
       Assert.That (parentTransaction.SubTransaction, Is.Not.Null);
 
       subTransaction.Discard ();
 
-      Assert.That (parentTransaction.IsReadOnly, Is.False);
+      Assert.That (parentTransaction.IsActive, Is.True);
       Assert.That (parentTransaction.SubTransaction, Is.Null);
     }
 
@@ -1063,7 +1063,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Discard_Twice ()
     {
       var parentTransaction = ClientTransaction.CreateRootTransaction ();
-      ClientTransactionTestHelper.SetIsReadOnly (parentTransaction, true);
+      ClientTransactionTestHelper.SetIsActive (parentTransaction, false);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, _transactionWithMocks);
 
       var subTransaction = CreateTransactionInHierarchy (parentTransaction);
@@ -1072,7 +1072,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       subTransaction.Discard();
 
-      ClientTransactionTestHelper.SetIsReadOnly (parentTransaction, true);
+      ClientTransactionTestHelper.SetIsActive (parentTransaction, false);
       var otherSubTransaction = CreateTransactionInHierarchy (parentTransaction);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, otherSubTransaction);
 
@@ -1082,7 +1082,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       subTransaction.Discard ();
 
       _eventBrokerMock.AssertWasNotCalled (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
-      Assert.That (parentTransaction.IsReadOnly, Is.True);
+      Assert.That (parentTransaction.IsActive, Is.False);
       Assert.That (parentTransaction.SubTransaction, Is.SameAs (otherSubTransaction));
     }
 

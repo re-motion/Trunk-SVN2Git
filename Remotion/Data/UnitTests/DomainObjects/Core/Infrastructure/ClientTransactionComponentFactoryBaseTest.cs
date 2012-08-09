@@ -71,7 +71,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           listeners,
           Has
               .Length.EqualTo (3)
-              .And.Some.TypeOf<ReadOnlyClientTransactionListener> ()
+              .And.Some.TypeOf<InactiveClientTransactionListener> ()
               .And.Some.TypeOf<LoggingClientTransactionListener> ()
               .And.Some.TypeOf<NewObjectHierarchyInvalidationClientTransactionListener> ());
     }

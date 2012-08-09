@@ -25,9 +25,9 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   [TestFixture]
-  public class ReadOnlyClientTransactionListenerTest
+  public class InactiveClientTransactionListenerTest
   {
-    private ReadOnlyClientTransactionListener _listener;
+    private InactiveClientTransactionListener _listener;
     private TestableClientTransaction _clientTransaction;
 
     private readonly string[] _neverThrowingMethodNames =
@@ -67,10 +67,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [SetUp]
     public void SetUp ()
     {
-      _listener = new ReadOnlyClientTransactionListener();
+      _listener = new InactiveClientTransactionListener();
       _clientTransaction = new TestableClientTransaction();
 
-      _allMethods = typeof (ReadOnlyClientTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+      _allMethods = typeof (InactiveClientTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
       _neverThrowingMethods = _allMethods.Where (n => _neverThrowingMethodNames.Contains (n.Name)).ToArray();
       _throwingMethods = _allMethods
           .Where (n => !_neverThrowingMethodNames.Contains (n.Name))
@@ -82,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void ClientTransactionReadOnly_ThrowingMethods ()
     {
-      _clientTransaction.IsReadOnly = true;
+      _clientTransaction.IsActive = false;
 
       Assert.That (_throwingMethods, Has.Length.EqualTo (17));
       
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void ClientTransactionReadOnly_MethodsExpectingReadOnly ()
     {
-      _clientTransaction.IsReadOnly = false;
+      _clientTransaction.IsActive = true;
 
       Assert.That (_methodsAssertingReadOnlyness, Has.Length.EqualTo (2));
 
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void ClientTransactionReadOnly_NotThrowingMethods ()
     {
-      _clientTransaction.IsReadOnly = true;
+      _clientTransaction.IsActive = false;
 
       Assert.That (_neverThrowingMethods, Has.Length.EqualTo (19));
 
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void ClientTransactionNotReadOnly_NoMethodThrows ()
     {
-      _clientTransaction.IsReadOnly = false;
+      _clientTransaction.IsActive = true;
 
       Assert.That (_methodsNotAssertingReadonlyness, Has.Length.EqualTo (36));
 
@@ -144,7 +144,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private void ExpectException (MethodInfo method, object[] arguments)
     {
       string message = string.Format (
-            "The operation cannot be executed because the ClientTransaction is read-only. "
+            "The operation cannot be executed because the ClientTransaction is inactive. "
             + "Offending transaction modification: {0}.",
             method.Name);
 
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private void ExpectAssertException (MethodInfo method, object[] arguments)
     {
-      string message = "Assertion failed: Expression evaluates to false.";
+      string message = "Assertion failed: Expression evaluates to true.";
 
       Assert.That (
         () => method.Invoke (_listener, arguments),

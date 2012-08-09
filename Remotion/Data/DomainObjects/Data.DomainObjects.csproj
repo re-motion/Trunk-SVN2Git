@@ -709,7 +709,7 @@
     <Compile Include="Infrastructure\Interception\ModuleManager.cs" />
     <Compile Include="Infrastructure\InvalidatedTransactionListener.cs" />
     <Compile Include="Infrastructure\LoggingClientTransactionListener.cs" />
-    <Compile Include="Infrastructure\ReadOnlyClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\InactiveClientTransactionListener.cs" />
     <Compile Include="Infrastructure\RelatedObjectCollectionPropertyAccessorStrategy.cs" />
     <Compile Include="Infrastructure\IPropertyAccessorStrategy.cs" />
     <Compile Include="Infrastructure\PropertyIndexer.cs" />

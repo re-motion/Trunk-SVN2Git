@@ -113,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     protected void CheckForbidden (Action func, string operation)
     {
       var expectedMessage = string.Format (
-          "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: {0}.", operation);
+          "The operation cannot be executed because the ClientTransaction is inactive. Offending transaction modification: {0}.", operation);
       Assert.That (() => func (), Throws.TypeOf<ClientTransactionReadOnlyException> ().With.Message.EqualTo (expectedMessage));
     }
 
@@ -125,10 +125,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         TValue expectedOriginalValue)
         where TDomainObject : DomainObject
     {
-      var isReadOnlyTransaction = clientTransaction.IsReadOnly;
-      if (isReadOnlyTransaction)
-        ClientTransactionTestHelper.SetIsReadOnly (clientTransaction, false);
-      
+      var isInactiveTransaction = !clientTransaction.IsActive;
+      if (isInactiveTransaction)
+      {
+        ClientTransactionTestHelper.SetIsActive (clientTransaction, true);
+      }
+
       try
       {
         var propertyIndexer = new PropertyIndexer (domainObject);
@@ -141,8 +143,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
       finally
       {
-        if (isReadOnlyTransaction)
-          ClientTransactionTestHelper.SetIsReadOnly (clientTransaction, true);
+        if (isInactiveTransaction)
+        {
+          ClientTransactionTestHelper.SetIsActive (clientTransaction, false);
+        }
       }
     }
 
@@ -154,9 +158,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         IEnumerable<TValue> expectedOriginalValue)
         where TDomainObject : DomainObject
     {
-      var isReadOnlyTransaction = clientTransaction.IsReadOnly;
-      if (isReadOnlyTransaction)
-        ClientTransactionTestHelper.SetIsReadOnly (clientTransaction, false);
+      var isInactiveTransaction = !clientTransaction.IsActive;
+      if (isInactiveTransaction)
+      {
+        ClientTransactionTestHelper.SetIsActive (clientTransaction, true);
+      }
 
       try
       {
@@ -170,8 +176,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       }
       finally
       {
-        if (isReadOnlyTransaction)
-          ClientTransactionTestHelper.SetIsReadOnly (clientTransaction, true);
+        if (isInactiveTransaction)
+        {
+          ClientTransactionTestHelper.SetIsActive (clientTransaction, false);
+        }
       }
     }
   }

@@ -64,7 +64,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       var allCommands = from tx in clientTransaction.LeafTransaction.CreateSequence (tx => tx.ParentTransaction)
                         let command = _commandFactory (tx)
-                        select tx.IsReadOnly ? new UnlockingCommandDecorator (command, tx) : command;
+                        select tx.IsActive ? command : new UnlockingCommandDecorator (command, tx);
       return new CompositeCommand (allCommands);
     }
 

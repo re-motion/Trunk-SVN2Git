@@ -118,7 +118,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <remarks>Implementations that do not support read-only transactions should always return false.</remarks>
     public virtual bool IsReadOnly
     {
-      get { return _wrappedInstance.IsReadOnly; }
+      get { return !_wrappedInstance.IsActive; }
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public virtual void Reset ()
     {
-      if (_wrappedInstance.IsReadOnly)
+      if (!_wrappedInstance.IsActive)
       {
         throw new InvalidOperationException (
             "The transaction cannot be reset as it is read-only. The reason might be an open child transaction.");

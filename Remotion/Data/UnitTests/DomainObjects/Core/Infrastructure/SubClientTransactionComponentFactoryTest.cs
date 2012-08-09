@@ -109,7 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreatePersistenceStrategy ()
     {
-      _parentTransaction.IsReadOnly = true;
+      _parentTransaction.IsActive = false;
 
       var result = _factory.CreatePersistenceStrategy (_fakeConstructedTransaction);
 
@@ -125,7 +125,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreatePersistenceStrategy_CanBeMixed ()
     {
-      _parentTransaction.IsReadOnly = true;
+      _parentTransaction.IsActive = false;
 
       using (MixinConfiguration.BuildNew ().ForClass<SubPersistenceStrategy> ().AddMixin<NullMixin> ().EnterScope ())
       {

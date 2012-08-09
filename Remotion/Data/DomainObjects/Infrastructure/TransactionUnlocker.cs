@@ -31,21 +31,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public static IDisposable MakeWriteableIfRequired (ClientTransaction transaction)
     {
-      return transaction.IsReadOnly ? new TransactionUnlocker (transaction) : (IDisposable) null;
+      return transaction.IsActive ? (IDisposable) null : new TransactionUnlocker (transaction);
     }
 
     private ClientTransaction _transaction;
 
     private TransactionUnlocker (ClientTransaction transaction)
     {
-      if (!transaction.IsReadOnly)
+      if (transaction.IsActive)
       {
         string message = string.Format ("The {0} cannot be made writeable twice. A common reason for this error is that a subtransaction is accessed " 
             + "while its parent transaction is engaged in a load operation. During such an operation, the subtransaction cannot be used.",
             transaction.GetType().Name);
         throw new InvalidOperationException (message);
       }
-      transaction.IsReadOnly = false;
+      transaction.IsActive = true;
       _transaction = transaction;
     }
 
@@ -53,8 +53,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       if (_transaction != null)
       {
-        Assertion.IsFalse (_transaction.IsReadOnly);
-        _transaction.IsReadOnly = true;
+        Assertion.IsTrue (_transaction.IsActive);
+        _transaction.IsActive = false;
         _transaction = null;
       }
     }

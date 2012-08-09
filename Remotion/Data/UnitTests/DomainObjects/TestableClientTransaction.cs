@@ -77,10 +77,10 @@ namespace Remotion.Data.UnitTests.DomainObjects
       get { return (DataManager) base.DataManager; }
     }
 
-    public new bool IsReadOnly
+    public new bool IsActive
     {
-      get { return base.IsReadOnly; }
-      set { base.IsReadOnly = value; }
+      get { return base.IsActive; }
+      set { base.IsActive = value; }
     }
 
     public new void AddListener (IClientTransactionListener listener)

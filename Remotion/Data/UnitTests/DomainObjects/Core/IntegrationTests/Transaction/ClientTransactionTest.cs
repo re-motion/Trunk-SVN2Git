@@ -350,9 +350,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void ReadOnly ()
     {
       var clientTransaction = new TestableClientTransaction ();
-      Assert.That (clientTransaction.IsReadOnly, Is.False);
-      clientTransaction.IsReadOnly = true;
-      Assert.That (clientTransaction.IsReadOnly, Is.True);
+      Assert.That (clientTransaction.IsActive, Is.True);
+      clientTransaction.IsActive = false;
+      Assert.That (clientTransaction.IsActive, Is.False);
     }
 
     [Test]

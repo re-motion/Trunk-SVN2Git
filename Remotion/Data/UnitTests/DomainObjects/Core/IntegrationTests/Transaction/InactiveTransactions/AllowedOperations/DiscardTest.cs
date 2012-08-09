@@ -52,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (ActiveSubTransaction.IsDiscarded, Is.True);
 
       Assert.That (InactiveRootTransaction.SubTransaction, Is.Null);
-      Assert.That (InactiveRootTransaction.IsReadOnly, Is.False);
+      Assert.That (InactiveRootTransaction.IsActive, Is.True);
     }
   }
 }

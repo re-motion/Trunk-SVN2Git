@@ -152,7 +152,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       listener
           .Stub (stub => stub.ObjectMarkedInvalid (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything))
           .WhenCalled (
-              mi => Assert.That (((ClientTransaction) mi.Arguments[0]).IsReadOnly, Is.False, "MarkInvalid requires the transaction to be unlocked."));
+              mi => Assert.That (((ClientTransaction) mi.Arguments[0]).IsActive, Is.True, "MarkInvalid requires the transaction to be unlocked."));
     }
   }
 }

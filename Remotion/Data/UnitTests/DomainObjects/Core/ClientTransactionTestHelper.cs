@@ -161,9 +161,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       dataManager.RegisterDataContainer (dataContainer);
     }
 
-    public static void SetIsReadOnly (ClientTransaction transaction, bool value)
+    public static void SetIsActive (ClientTransaction transaction, bool value)
     {
-      PrivateInvoke.SetPublicProperty (transaction, "IsReadOnly", value);
+      PrivateInvoke.SetPublicProperty (transaction, "IsActive", value);
     }
 
     public static void SetActiveSubTransaction (ClientTransaction clientTransaction, ClientTransaction subTransaction)

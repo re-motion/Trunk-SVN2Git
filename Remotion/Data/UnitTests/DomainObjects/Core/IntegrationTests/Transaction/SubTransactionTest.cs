@@ -47,14 +47,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void CreateSubTransaction_SetsParentReadonly ()
     {
-      Assert.That (TestableClientTransaction.IsReadOnly, Is.False);
+      Assert.That (TestableClientTransaction.IsActive, Is.True);
       ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
-      Assert.That (TestableClientTransaction.IsReadOnly, Is.True);
-      Assert.That (subTransaction.IsReadOnly, Is.False);
+      Assert.That (TestableClientTransaction.IsActive, Is.False);
+      Assert.That (subTransaction.IsActive, Is.True);
 
       ClientTransaction subTransaction2 = subTransaction.CreateSubTransaction();
-      Assert.That (subTransaction.IsReadOnly, Is.True);
-      Assert.That (subTransaction2.IsReadOnly, Is.False);
+      Assert.That (subTransaction.IsActive, Is.False);
+      Assert.That (subTransaction2.IsActive, Is.True);
     }
 
     [Test]
@@ -240,8 +240,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     [Test]
     [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = 
-      "The operation cannot be executed because the ClientTransaction is read-only. Offending transaction modification: SubTransactionCreating."
-        )]
+      "The operation cannot be executed because the ClientTransaction is inactive. Offending transaction modification: SubTransactionCreating.")]
     public void NoTwoSubTransactionsAtSameTime ()
     {
       TestableClientTransaction.CreateSubTransaction();

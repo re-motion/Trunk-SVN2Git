@@ -29,10 +29,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
   /// An implementation of <see cref="IClientTransactionListener"/> which throws an exception if the <see cref="ClientTransaction"/> is about
-  /// to be modified while in a read-only state.
+  /// to be modified while inactive.
   /// </summary>
   [Serializable]
-  public class ReadOnlyClientTransactionListener : IClientTransactionListener
+  public class InactiveClientTransactionListener : IClientTransactionListener
   {
     public void TransactionInitialize (ClientTransaction clientTransaction)
     {
@@ -51,12 +51,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
-      Assertion.IsTrue (clientTransaction.IsReadOnly); // while a subtransaction is being created, the parent must be read-only
+      Assertion.IsFalse (clientTransaction.IsActive); // while a subtransaction is being created, the parent must already be inactive
     }
 
     public void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
-      Assertion.IsTrue (clientTransaction.IsReadOnly); // after a subtransaction has been created, the parent must be read-only
+      Assertion.IsFalse (clientTransaction.IsActive); // after a subtransaction has been created, the parent must already be inactive
     }
 
     public void NewObjectCreating (ClientTransaction clientTransaction, Type type)
@@ -206,7 +206,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // Safe assuming the subtransaction does not have a complete end-point for the same ID (subtransaction needs to be loaded later)
       // (or when it has been unlocked - during subtx.Commit)
       Assertion.IsTrue (
-          !clientTransaction.IsReadOnly
+          clientTransaction.IsActive
           || clientTransaction.SubTransaction == null
           || IsNullOrIncomplete (clientTransaction.SubTransaction.DataManager.RelationEndPoints[endPoint.ID]));
     }
@@ -216,7 +216,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // Safe assuming the subtransaction does not have a complete end-point for the same ID (subtransaction needs to be unloaded first)
       // (or when it has been unlocked - during subtx.Commit)
       Assertion.IsTrue (
-          !clientTransaction.IsReadOnly
+          clientTransaction.IsActive
           || clientTransaction.SubTransaction == null
           || IsNullOrIncomplete (clientTransaction.SubTransaction.DataManager.RelationEndPoints[endPointID]));
     }
@@ -244,7 +244,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // Safe assuming the subtransaction cannot already have a DataContainer for the same object (subtransaction needs to be loaded later)
       // (or when it has been unlocked - during subtx.Commit)
       Assertion.IsTrue (
-          !clientTransaction.IsReadOnly
+          clientTransaction.IsActive
           || clientTransaction.SubTransaction == null
           || clientTransaction.SubTransaction.DataManager.DataContainers[container.ID] == null);
     }
@@ -254,7 +254,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       // Safe assuming the subtransaction does not have a DataContainer for the same object (subtransaction needs to be unloaded first)
       // (or when it has been unlocked - during subtx.Commit)
       Assertion.IsTrue (
-          !clientTransaction.IsReadOnly
+          clientTransaction.IsActive
           || clientTransaction.SubTransaction == null 
           || clientTransaction.SubTransaction.DataManager.DataContainers[container.ID] == null);
     }
@@ -276,10 +276,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void EnsureWriteable (ClientTransaction clientTransaction, string operation)
     {
-      if (clientTransaction.IsReadOnly)
+      if (!clientTransaction.IsActive)
       {
         string message = string.Format (
-            "The operation cannot be executed because the ClientTransaction is read-only. "
+            "The operation cannot be executed because the ClientTransaction is inactive. "
             + "Offending transaction modification: {0}.",
             operation);
         throw new ClientTransactionReadOnlyException (message);

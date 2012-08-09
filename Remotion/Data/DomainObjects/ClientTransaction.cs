@@ -154,6 +154,7 @@ public class ClientTransaction
 
   private ClientTransaction _subTransaction;
 
+  private bool _isActive = true;
   private bool _isDiscarded;
 
   private readonly Guid _id = Guid.NewGuid ();
@@ -257,14 +258,29 @@ public class ClientTransaction
   }
 
   /// <summary>
-  /// Indicates whether this transaction is set read-only.
+  /// Indicates whether this transaction is active, i.e., it has no <see cref="SubTransaction"/>.
+  /// Inactive transactions can only be used to read and load data, not change it.
   /// </summary>
-  /// <value>True if this instance is set read-only; otherwise, false.</value>
-  /// <remarks>Transactions are set read-only while there exist open subtransactions for them. A read-only transaction can only be used for
-  /// operations that do not cause any change of transaction state. Most reading operations that do not require objects to be loaded
-  /// from the data store are safe to be used on read-only transactions, but any method that would cause a state change will throw an exception.
+  /// <value><see langword="true" /> if this instance is active; otherwise, <see langword="false" />.</value>
+  /// <remarks>
+  /// <para>
+  /// Transactions are made inactive while there exist open subtransactions for them. An inactive transaction can only be used for
+  /// operations that do not cause any change of transaction state. Reading, loading, and querying objects is okay with inactive transactions,
+  /// but any method that would cause a state change will throw an exception.
+  /// </para>
+  /// <para>
+  /// Most of the time, this property returns <see langword="true" /> as long as <see cref="SubTransaction"/> is <see langword="null" />. However,
+  /// while 
+  /// <see cref="CreateSubTransaction(System.Func{Remotion.Data.DomainObjects.ClientTransaction,Remotion.Data.DomainObjects.Infrastructure.InvalidObjects.IInvalidDomainObjectManager,Remotion.Data.DomainObjects.Infrastructure.Enlistment.IEnlistedDomainObjectManager,Remotion.Data.DomainObjects.ClientTransaction})"/>
+  /// is executing, there is a small time frame where this property already returns <see langword="false" /> while <see cref="SubTransaction"/> is 
+  /// still <see langword="null" />.
+  /// </para>
   /// </remarks>
-  public bool IsReadOnly { get; protected internal set; }
+  public bool IsActive
+  {
+    get { return _isActive; }
+    protected internal set { _isActive = value; }
+  }
 
   /// <summary>
   /// Returns whether this <see cref="ClientTransaction"/> has been discarded. A transaction is discarded when its <see cref="Discard"/> or
@@ -376,7 +392,7 @@ public class ClientTransaction
 
       if (ParentTransaction != null)
       {
-        ParentTransaction.IsReadOnly = false;
+        ParentTransaction.IsActive = true;
         ParentTransaction._subTransaction = null;
       }
 
@@ -806,7 +822,7 @@ public class ClientTransaction
 
     RaiseListenerEvent ((tx, l) => l.SubTransactionCreating (tx));
 
-    IsReadOnly = true;
+    IsActive = false;
 
     ClientTransaction subTransaction;
     try
@@ -817,7 +833,7 @@ public class ClientTransaction
     }
     catch
     {
-      IsReadOnly = false;
+      IsActive = true;
       throw;
     }
 

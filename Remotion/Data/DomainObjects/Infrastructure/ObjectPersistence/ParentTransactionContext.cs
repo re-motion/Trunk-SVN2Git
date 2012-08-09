@@ -35,11 +35,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
       ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
 
-      if (!parentTransaction.IsReadOnly)
+      if (parentTransaction.IsActive)
       {
         throw new ArgumentException (
-            "In order for the parent transaction access to work correctly, the parent transaction needs to be read-only. "
-            + "Use ClientTransaction.CreateSubTransaction() to create a subtransaction and automatically set the parent transaction read-only.",
+            "In order for the parent transaction access to work correctly, the parent transaction needs to be inactive. "
+            + "Use ClientTransaction.CreateSubTransaction() to create a subtransaction and automatically set the parent transaction inactive.",
             "parentTransaction");
       }
 
