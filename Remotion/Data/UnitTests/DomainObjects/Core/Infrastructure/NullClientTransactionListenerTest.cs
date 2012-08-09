@@ -238,9 +238,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void RelationEndPointUnloading ()
+    public void RelationEndPointBecomingIncomplete ()
     {
-      _listener.RelationEndPointUnloading (TestableClientTransaction, _relationEndPoint.ID);
+      _listener.RelationEndPointBecomingIncomplete (TestableClientTransaction, _relationEndPoint.ID);
     }
 
     [Test]

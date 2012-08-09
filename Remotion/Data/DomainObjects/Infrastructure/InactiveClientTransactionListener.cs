@@ -221,7 +221,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           || IsNullOrIncomplete (clientTransaction.SubTransaction.DataManager.RelationEndPoints[endPointID]));
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public void RelationEndPointBecomingIncomplete (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       // Safe assuming the subtransaction does not have a complete end-point for the same ID (subtransaction needs to be unloaded first)
       Assertion.IsTrue (

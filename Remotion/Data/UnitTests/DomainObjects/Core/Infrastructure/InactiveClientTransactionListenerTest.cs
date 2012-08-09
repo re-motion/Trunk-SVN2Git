@@ -48,7 +48,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
             "ObjectsUnloaded",
             "RelationEndPointMapRegistering",
             "RelationEndPointMapUnregistering",
-            "RelationEndPointUnloading",
+            "RelationEndPointBecomingIncomplete",
             "DataContainerMapRegistering",
             "DataContainerMapUnregistering",
         };

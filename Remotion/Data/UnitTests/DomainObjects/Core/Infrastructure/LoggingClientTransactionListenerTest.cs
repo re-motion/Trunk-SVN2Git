@@ -427,14 +427,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void RelationEndPointUnloading ()
+    public void RelationEndPointBecomingIncomplete ()
     {
       var relationEndPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_domainObject.ID, "ParentClient");
 
       CheckLoggingMethod (
-          () => _listener.RelationEndPointUnloading (_clientTransaction, relationEndPointID),
+          () => _listener.RelationEndPointBecomingIncomplete (_clientTransaction, relationEndPointID),
           string.Format (
-              "{0} RelationEndPointUnloading: {1}",
+              "{0} RelationEndPointBecomingIncomplete: {1}",
               _clientTransaction.ID,
               relationEndPointID));
     }

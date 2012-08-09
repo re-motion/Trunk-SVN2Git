@@ -119,7 +119,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
         throw new InvalidOperationException (message);
       }
 
-      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationEndPointUnloading (tx, endPoint.ID));
+      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationEndPointBecomingIncomplete (tx, endPoint.ID));
 
       stateSetter ();
 

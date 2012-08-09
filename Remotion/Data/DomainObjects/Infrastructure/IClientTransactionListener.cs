@@ -180,7 +180,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     // Infrastructure event
     void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID);
     // Infrastructure event
-    void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID);
+    void RelationEndPointBecomingIncomplete (ClientTransaction clientTransaction, RelationEndPointID endPointID);
 
     // Infrastructure event
     void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject);

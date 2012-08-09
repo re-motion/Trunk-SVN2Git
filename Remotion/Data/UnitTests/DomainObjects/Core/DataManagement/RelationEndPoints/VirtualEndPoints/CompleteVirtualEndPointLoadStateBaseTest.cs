@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadState.StubOriginalOppositeEndPoints (new IRealObjectEndPoint[0]);
 
-      _transactionEventSinkWithMock.ExpectMock (mock => mock.RelationEndPointUnloading (_transactionEventSinkWithMock.ClientTransaction, endPointID));
+      _transactionEventSinkWithMock.ExpectMock (mock => mock.RelationEndPointBecomingIncomplete (_transactionEventSinkWithMock.ClientTransaction, endPointID));
       _transactionEventSinkWithMock.ReplayMock();
 
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => { });
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataManagerMock.Replay ();
 
-      _transactionEventSinkWithMock.StubMock (mock => mock.RelationEndPointUnloading (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
+      _transactionEventSinkWithMock.StubMock (mock => mock.RelationEndPointBecomingIncomplete (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
 
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => stateSetterCalled = true);
 
@@ -187,7 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           + "because it has been changed."));
 
       _transactionEventSinkWithMock.AssertWasNotCalledMock (
-          mock => mock.RelationEndPointUnloading (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
+          mock => mock.RelationEndPointBecomingIncomplete (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
     }
 
     [Test]

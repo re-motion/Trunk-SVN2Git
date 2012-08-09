@@ -239,10 +239,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         listener.RelationEndPointMapUnregistering (clientTransaction, endPointID);
     }
 
-    public virtual void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public virtual void RelationEndPointBecomingIncomplete (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       foreach (var listener in _listeners)
-        listener.RelationEndPointUnloading (clientTransaction, endPointID);
+        listener.RelationEndPointBecomingIncomplete (clientTransaction, endPointID);
     }
 
     public virtual void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)

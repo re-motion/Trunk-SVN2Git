@@ -524,14 +524,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
                     Assert.That (rootTransaction.IsActive, Is.False);
                   });
 
-          subListenerMock.Expect (mock => mock.RelationEndPointUnloading (_subTransaction, endPointID));
+          subListenerMock.Expect (mock => mock.RelationEndPointBecomingIncomplete (_subTransaction, endPointID));
           subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (_subTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemA.ID)));
           subListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (_subTransaction, oppositeEndPointIDA));
           subListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (_subTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemB.ID)));
           subListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (_subTransaction, endPointID));
           subListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (_subTransaction, oppositeEndPointIDB));
 
-          rootListenerMock.Expect (mock => mock.RelationEndPointUnloading (rootTransaction, endPointID));
+          rootListenerMock.Expect (mock => mock.RelationEndPointBecomingIncomplete (rootTransaction, endPointID));
           rootListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemA.ID)));
           rootListenerMock.Expect (mock => mock.RelationEndPointMapUnregistering (rootTransaction, oppositeEndPointIDA));
           rootListenerMock.Expect (mock => mock.DataContainerMapUnregistering (Arg.Is (rootTransaction), Arg<DataContainer>.Matches (dc => dc.ID == orderItemB.ID)));

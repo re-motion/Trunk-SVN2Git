@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public virtual void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public virtual void RelationEndPointBecomingIncomplete (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
     }
 

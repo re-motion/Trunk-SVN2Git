@@ -332,10 +332,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         s_log.DebugFormat ("{0} RelationEndPointMapUnregistering: {1}", clientTransaction.ID, endPointID);
     }
 
-    public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
+    public void RelationEndPointBecomingIncomplete (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
       if (s_log.IsDebugEnabled)
-        s_log.DebugFormat ("{0} RelationEndPointUnloading: {1}", clientTransaction.ID, endPointID);
+        s_log.DebugFormat ("{0} RelationEndPointBecomingIncomplete: {1}", clientTransaction.ID, endPointID);
     }
 
     public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
