@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -175,6 +176,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerManager = GetEventBroker (clientTransaction);
       foreach (var listener in listenerManager.Listeners.ToArray ().Reverse ())
         listenerManager.RemoveListener (listener);
+    }
+
+    public static IEnumerable<IClientTransactionListener> GetListeners (ClientTransaction clientTransaction)
+    {
+      var listenerManager = GetEventBroker (clientTransaction);
+      return listenerManager.Listeners;
     }
   }
 }

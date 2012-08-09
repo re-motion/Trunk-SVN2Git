@@ -41,13 +41,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </remarks>
   public interface IClientTransactionListener : INullObject
   {
+    // User event
     void TransactionInitialize (ClientTransaction clientTransaction);
+    // User event
     void TransactionDiscard (ClientTransaction clientTransaction);
 
+    // User event
     void SubTransactionCreating (ClientTransaction clientTransaction);
+    // User event
     void SubTransactionInitialize (ClientTransaction clientTransaction, ClientTransaction subTransaction);
+    // User event
     void SubTransactionCreated (ClientTransaction clientTransaction, ClientTransaction subTransaction);
-    
+
+    // User event
     /// <summary>
     /// Indicates a new <see cref="DomainObject"/> instance is being created. This event is called while the <see cref="DomainObject"/> base 
     /// constructor is executing before the subclass constructors have run and before the object has got its <see cref="ObjectID"/> or 
@@ -55,23 +61,36 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </summary>
     void NewObjectCreating (ClientTransaction clientTransaction, Type type);
 
+    // User event
     void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs);
+    // User event
     void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
+    // Infrastructure event
     void ObjectsNotFound (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs);
 
+    // User event
     void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
+    // User event
     void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects);
 
+    // User event
     void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject);
+    // User event
     void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject);
 
+    // User event
     void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess);
+    // User event
     void PropertyValueRead (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess);
+    // User event
     void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
+    // User event
     void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue);
 
+    // User event
     void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);
-    
+
+    // User event
     /// <summary>
     /// Indicates that a scalar-value relation has been read.
     /// </summary>
@@ -82,6 +101,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
 
+    // User event
     /// <summary>
     /// Indicates that a collection-value relation has been read.
     /// </summary>
@@ -96,6 +116,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// <param name="valueAccess">An indicator whether the current or original values have been read.</param>
     void RelationRead (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
 
+    // User event
     /// <summary>
     /// Indicates that a relation is about to change. 
     /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
@@ -116,6 +137,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject);
 
+    // User event
     /// <summary>
     /// Indicates that a relation has been changed. 
     /// This method might be invoked more than once for a given relation change operation. For example, when a whole related object collection is 
@@ -136,27 +158,43 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         DomainObject oldRelatedObject,
         DomainObject newRelatedObject);
 
-    QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject;
+    // User event
+    QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject;
+    // User event
     IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results);
 
+    // User event
     void TransactionCommitting (
         ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar);
+    // User event
     void TransactionCommitValidate (ClientTransaction clientTransaction, ReadOnlyCollection<PersistableData> committedData);
+    // User event
     void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
+    // User event
     void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
+    // User event
     void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects);
 
+    // Infrastructure event
     void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint);
+    // Infrastructure event
     void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID);
+    // Infrastructure event
     void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID);
 
+    // Infrastructure event
     void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject);
+    // Infrastructure event
     void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject);
 
+    // Infrastructure event
     void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container);
+    // Infrastructure event
     void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container);
 
+    // Infrastructure event
     void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState);
+    // Infrastructure event
     void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState);
     
   }

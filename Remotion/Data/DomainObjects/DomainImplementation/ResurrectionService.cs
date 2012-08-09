@@ -18,8 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.DomainImplementation
 {
@@ -64,6 +65,46 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
   /// </remarks>
   public static class ResurrectionService
   {
+    private class MarkNotInvalidCommand : IDataManagementCommand
+    {
+      private readonly IDataManager _dataManager;
+      private readonly ObjectID _objectID;
+
+      public MarkNotInvalidCommand (IDataManager dataManager, ObjectID objectID)
+      {
+        ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+        ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+        _dataManager = dataManager;
+        _objectID = objectID;
+      }
+
+      public IEnumerable<Exception> GetAllExceptions ()
+      {
+        return Enumerable.Empty<Exception>();
+      }
+
+      public void Begin ()
+      {
+        // Nothing to do - there is no Begin command for MarkNotInvalid.
+      }
+
+      public void Perform ()
+      {
+        _dataManager.MarkNotInvalid (_objectID);
+      }
+
+      public void End ()
+      {
+        // Nothing to do - there is no End command for MarkNotInvalid.
+      }
+
+      public ExpandedCommand ExpandToAllRelatedObjects ()
+      {
+        return new ExpandedCommand (this);
+      }
+    }
+
     /// <summary>
     /// Resurrects the invalid <see cref="DomainObject"/> with the given <paramref name="objectID"/> in the hierarchy of the given 
     /// <paramref name="clientTransaction"/>, throwing an exception if resurrection is not possible.
@@ -78,20 +119,8 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var allTransactions = GetAllTransactions (clientTransaction);
-      var blockingTransaction = GetFirstBlockingTransaction (objectID, allTransactions);
-      if (blockingTransaction != null)
-      {
-        var message = string.Format (
-            "Cannot resurrect object '{0}' because it is not invalid within the whole transaction hierarchy. In transaction '{1}', the object has "
-            + "state '{2}'.",
-                objectID,
-                blockingTransaction,
-                blockingTransaction.GetObjectReference (objectID).TransactionContext[blockingTransaction].State);
-        throw new InvalidOperationException (message);
-      }
-
-      MarkNotInvalidInAllTransactions (objectID, allTransactions);
+      var executor = new TransactionHierarchyCommandExecutor (tx => CreateMarkNotInvalidCommand (tx, objectID));
+      executor.ExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
     /// <summary>
@@ -110,29 +139,25 @@ namespace Remotion.Data.DomainObjects.DomainImplementation
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      var allTransactions = GetAllTransactions (clientTransaction);
-      var blockingTransaction = GetFirstBlockingTransaction (objectID, allTransactions);
-      if (blockingTransaction != null)
-        return false;
-
-      MarkNotInvalidInAllTransactions (objectID, allTransactions);
-      return true;
+      var executor = new TransactionHierarchyCommandExecutor (tx => CreateMarkNotInvalidCommand (tx, objectID));
+      return executor.TryExecuteCommandForTransactionHierarchy (clientTransaction);
     }
 
-    private static IEnumerable<ClientTransaction> GetAllTransactions (ClientTransaction clientTransaction)
+    private static IDataManagementCommand CreateMarkNotInvalidCommand (ClientTransaction tx, ObjectID objectID)
     {
-      return clientTransaction.RootTransaction.CreateSequence (tx => tx.SubTransaction);
-    }
+      if (!tx.IsInvalid (objectID))
+      {
+        var message = string.Format (
+            "Cannot resurrect object '{0}' because it is not invalid within the whole transaction hierarchy. In transaction '{1}', the object has "
+            + "state '{2}'.",
+            objectID,
+            tx,
+            tx.GetObjectReference (objectID).TransactionContext[tx].State);
+        var exception = new InvalidOperationException (message);
+        return new ExceptionCommand (exception);
+      }
 
-    private static ClientTransaction GetFirstBlockingTransaction (ObjectID objectID, IEnumerable<ClientTransaction> allTransactions)
-    {
-      return allTransactions.FirstOrDefault (tx => !tx.IsInvalid (objectID));
-    }
-
-    private static void MarkNotInvalidInAllTransactions (ObjectID objectID, IEnumerable<ClientTransaction> allTransactions)
-    {
-      foreach (var transaction in allTransactions)
-        transaction.DataManager.MarkNotInvalid (objectID);
+      return new MarkNotInvalidCommand (tx.DataManager, objectID);
     }
   }
 }

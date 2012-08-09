@@ -34,16 +34,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         {
             "TransactionInitialize",
             "TransactionDiscard",
-            "DataContainerStateUpdated",
-            "VirtualRelationEndPointStateUpdated",
             "PropertyValueReading",
             "PropertyValueRead",
             "RelationReading",
             "RelationRead",
-            "ObjectMarkedInvalid",
-            "ObjectMarkedNotInvalid",
-            "DataContainerStateUpdated",
-            "VirtualRelationEndPointStateUpdated",
+            "RelationRead",
             "FilterQueryResult",
             "FilterCustomQueryResult",
             "ObjectsUnloading",
@@ -81,7 +76,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = true;
 
-      Assert.That (_throwingMethods, Has.Length.EqualTo (21));
+      Assert.That (_throwingMethods, Has.Length.EqualTo (25));
       
       foreach (var method in _throwingMethods)
       {
@@ -111,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = true;
 
-      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (15));
+      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (11));
 
       foreach (var method in _neverThrowingMethods)
       {

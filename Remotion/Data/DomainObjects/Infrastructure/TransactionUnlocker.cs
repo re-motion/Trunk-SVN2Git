@@ -24,9 +24,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   internal struct TransactionUnlocker : IDisposable
   {
-    public static TransactionUnlocker MakeWriteable (ClientTransaction transaction)
+    public static IDisposable MakeWriteable (ClientTransaction transaction)
     {
       return new TransactionUnlocker (transaction);
+    }
+
+    public static IDisposable MakeWriteableIfRequired (ClientTransaction transaction)
+    {
+      return transaction.IsReadOnly ? new TransactionUnlocker (transaction) : (IDisposable) null;
     }
 
     private ClientTransaction _transaction;

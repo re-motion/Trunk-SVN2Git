@@ -37,7 +37,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         var objectReference = clientTransaction.GetObjectReference (objectID);
         for (var tx = clientTransaction; tx != null; tx = tx.SubTransaction)
-          tx.DataManager.MarkInvalid (objectReference);
+        {
+          using (TransactionUnlocker.MakeWriteableIfRequired (tx))
+          {
+            tx.DataManager.MarkInvalid (objectReference);
+          }
+        }
       }
     }
   }

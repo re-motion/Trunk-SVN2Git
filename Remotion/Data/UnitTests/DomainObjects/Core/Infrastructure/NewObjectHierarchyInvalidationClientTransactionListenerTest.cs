@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -38,6 +39,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       _rootTransaction = ClientTransaction.CreateRootTransaction ();
       ClientTransactionTestHelper.ClearAllListeners (_rootTransaction);
+      InstallUnlockWatcher(_rootTransaction);
 
       _listener = new NewObjectHierarchyInvalidationClientTransactionListener ();
     }
@@ -140,7 +142,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var subTransaction = parentTransaction.CreateSubTransaction ();
       ClientTransactionTestHelper.ClearAllListeners (subTransaction);
+      InstallUnlockWatcher (subTransaction);
       return subTransaction;
+    }
+
+    private void InstallUnlockWatcher (ClientTransaction clientTransaction)
+    {
+      var listener = ClientTransactionTestHelper.CreateAndAddListenerMock (clientTransaction);
+      listener
+          .Stub (stub => stub.ObjectMarkedInvalid (Arg<ClientTransaction>.Is.Anything, Arg<DomainObject>.Is.Anything))
+          .WhenCalled (
+              mi => Assert.That (((ClientTransaction) mi.Arguments[0]).IsReadOnly, Is.False, "MarkInvalid requires the transaction to be unlocked."));
     }
   }
 }

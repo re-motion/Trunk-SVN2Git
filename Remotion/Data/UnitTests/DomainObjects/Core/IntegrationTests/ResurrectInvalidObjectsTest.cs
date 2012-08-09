@@ -175,7 +175,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
             () => ResurrectionService.ResurrectInvalidObject (TestableClientTransaction, notInvalidObject.ID),
             Throws.InvalidOperationException.With.Message.EqualTo (
                 "Cannot resurrect object '" + notInvalidObject.ID + "' because it is not invalid within the whole transaction hierarchy. "
-                + "In transaction '" + TestableClientTransaction + "', the object has state 'Unchanged'."));
+                + "In transaction '" + subTransaction + "', the object has state 'NotLoadedYet'."));
 
         var result = ResurrectionService.TryResurrectInvalidObject (TestableClientTransaction, notInvalidObject.ID);
         Assert.That (result, Is.False);

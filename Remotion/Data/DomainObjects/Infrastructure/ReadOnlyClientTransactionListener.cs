@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Remotion.Collections;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -41,7 +40,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void TransactionDiscard (ClientTransaction clientTransaction)
     {
-      // not handled by this listener
+      // allowed (but TODO RM-5001)
     }
 
     public void SubTransactionCreating (ClientTransaction clientTransaction)
@@ -81,14 +80,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      // Allowed for read-only transactions (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction is made 
-      // writeable on the actual modification, though)
+      // Allowed for read-only transactions, as the end-user API always affects the whole hierarchy
+      // (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction is made writeable on the actual modification, though)
     }
 
     public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
-      // Allowed for read-only transactions (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction was made 
-      // writeable on the actual modification, though)
+      // Allowed for read-only transactions, as the end-user API always affects the whole hierarchy
+      // (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction is made writeable on the actual modification, though)
     }
 
     public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
@@ -103,10 +102,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void PropertyValueReading (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, ValueAccess valueAccess)
     {
+      // Allowed
     }
 
     public void PropertyValueRead (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object value, ValueAccess valueAccess)
     {
+      // Allowed
     }
 
     public void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
@@ -121,6 +122,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
     {
+      // Allowed
     }
 
     public void RelationRead (
@@ -130,6 +132,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         DomainObject relatedObject,
         ValueAccess valueAccess)
     {
+      // Allowed
     }
 
     public void RelationRead (
@@ -139,6 +142,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
         ValueAccess valueAccess)
     {
+      // Allowed
     }
 
     public void RelationChanging (
@@ -158,11 +162,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T: DomainObject
     {
+      // Allowed
       return queryResult;
     }
 
     public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
     {
+      // Allowed
       return results;
     }
 
@@ -208,12 +214,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
     {
-      // also allowed for read-only transactions
+      EnsureWriteable (clientTransaction, "ObjectMarkedInvalid");
     }
 
     public void ObjectMarkedNotInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
     {
-      // also allowed for read-only transactions
+      EnsureWriteable (clientTransaction, "ObjectMarkedNotInvalid");
     }
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
@@ -228,12 +234,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
     {
-      // low-level event also allowed for read-only transactions
+      EnsureWriteable (clientTransaction, "DataContainerStateUpdated");
     }
 
     public void VirtualRelationEndPointStateUpdated (ClientTransaction clientTransaction, RelationEndPointID endPointID, bool? newEndPointChangeState)
     {
-      // low-level event also allowed for read-only transactions
+      EnsureWriteable (clientTransaction, "VirtualRelationEndPointStateUpdated");
     }
 
     bool INullObject.IsNull

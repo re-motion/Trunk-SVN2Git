@@ -46,7 +46,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         foreach (var ancestor in clientTransaction.ParentTransaction.CreateSequence (tx => tx.ParentTransaction))
         {
           Assertion.IsNull (ancestor.DataManager.DataContainers[container.ID]);
-          ancestor.DataManager.MarkInvalid (container.DomainObject);
+          using (TransactionUnlocker.MakeWriteable (ancestor))
+          {
+            ancestor.DataManager.MarkInvalid (container.DomainObject);
+          }
         }
       }
     }
@@ -63,8 +66,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           var descendantDataContainer = descendant.DataManager.DataContainers[container.ID];
           if (descendantDataContainer != null)
             return;
-          
-          descendant.DataManager.MarkInvalid (container.DomainObject);
+
+          using (TransactionUnlocker.MakeWriteableIfRequired (descendant))
+          {
+            descendant.DataManager.MarkInvalid (container.DomainObject);
+          }
         }
       }
     }
