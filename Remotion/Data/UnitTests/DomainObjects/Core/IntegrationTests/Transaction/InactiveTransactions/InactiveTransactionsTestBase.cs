@@ -103,6 +103,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (relationEndPoint.IsDataComplete, Is.True);
     }
 
+    protected void CheckEndPointIncomplete (ClientTransaction clientTransaction, RelationEndPointID relationEndPointID)
+    {
+      var relationEndPoint = ClientTransactionTestHelper.GetIDataManager (clientTransaction).RelationEndPoints[relationEndPointID];
+      Assert.That (relationEndPoint, Is.Not.Null);
+      Assert.That (relationEndPoint.IsDataComplete, Is.False);
+    }
+
     protected void CheckForbidden (Action func, string operation)
     {
       var expectedMessage = string.Format (

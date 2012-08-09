@@ -25,41 +25,76 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
   [TestFixture]
   public class DeleteTest : InactiveTransactionsTestBase
   {
-    private ClassWithAllDataTypes _classWithAllDataTypes;
+    private ClassWithAllDataTypes _loadedClassWithAllDataTypes;
+    private Order _orderNewInRootTransaction;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _classWithAllDataTypes = ActiveSubTransaction.Execute (() => ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1));
+      _loadedClassWithAllDataTypes = ActiveSubTransaction.Execute (() => ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1));
+    }
+
+    protected override void InitializeInactiveRootTransaction ()
+    {
+      base.InitializeInactiveRootTransaction ();
+      _orderNewInRootTransaction = Order.NewObject();
     }
 
     [Test]
-    public void DeleteInInactiveRootTransaction_IsForbidden ()
+    public void DeleteInInactiveRootTransaction_IsForbidden_Loaded ()
     {
-      CheckState (InactiveRootTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (InactiveMiddleTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (ActiveSubTransaction, _classWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveRootTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveMiddleTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (ActiveSubTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
 
-      CheckForbidden (() => InactiveRootTransaction.Execute (() => _classWithAllDataTypes.Delete()), "ObjectDeleting");
+      CheckForbidden (() => InactiveRootTransaction.Execute (() => _loadedClassWithAllDataTypes.Delete()), "ObjectDeleting");
 
-      CheckState (InactiveRootTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (InactiveMiddleTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (ActiveSubTransaction, _classWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveRootTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveMiddleTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (ActiveSubTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
     }
 
     [Test]
-    public void DeleteInInactiveMiddleTransaction_IsForbidden ()
+    public void DeleteInInactiveMiddleTransaction_IsForbidden_Loaded ()
     {
-      CheckState (InactiveRootTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (InactiveMiddleTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (ActiveSubTransaction, _classWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveRootTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveMiddleTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (ActiveSubTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
 
-      CheckForbidden (() => InactiveMiddleTransaction.Execute (() => _classWithAllDataTypes.Delete ()), "ObjectDeleting");
+      CheckForbidden (() => InactiveMiddleTransaction.Execute (() => _loadedClassWithAllDataTypes.Delete ()), "ObjectDeleting");
 
-      CheckState (InactiveRootTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (InactiveMiddleTransaction, _classWithAllDataTypes, StateType.Unchanged);
-      CheckState (ActiveSubTransaction, _classWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveRootTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (InactiveMiddleTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+      CheckState (ActiveSubTransaction, _loadedClassWithAllDataTypes, StateType.Unchanged);
+    }
+
+    [Test]
+    public void DeleteInInactiveRootTransaction_IsForbidden_New ()
+    {
+      CheckState (InactiveRootTransaction, _orderNewInRootTransaction, StateType.New);
+      CheckState (InactiveMiddleTransaction, _orderNewInRootTransaction, StateType.NotLoadedYet);
+      CheckState (ActiveSubTransaction, _orderNewInRootTransaction, StateType.NotLoadedYet);
+
+      CheckForbidden (() => InactiveRootTransaction.Execute (() => _orderNewInRootTransaction.Delete ()), "ObjectDeleting");
+
+      CheckState (InactiveRootTransaction, _orderNewInRootTransaction, StateType.New);
+      CheckState (InactiveMiddleTransaction, _orderNewInRootTransaction, StateType.NotLoadedYet);
+      CheckState (ActiveSubTransaction, _orderNewInRootTransaction, StateType.NotLoadedYet);
+    }
+
+    [Test]
+    public void DeleteInInactiveMiddleTransaction_IsForbidden_New ()
+    {
+      CheckState (InactiveRootTransaction, _orderNewInRootTransaction, StateType.New);
+      CheckState (InactiveMiddleTransaction, _orderNewInRootTransaction, StateType.NotLoadedYet);
+      CheckState (ActiveSubTransaction, _orderNewInRootTransaction, StateType.NotLoadedYet);
+
+      CheckForbidden (() => InactiveMiddleTransaction.Execute (() => _orderNewInRootTransaction.Delete ()), "ObjectDeleting");
+
+      CheckState (InactiveRootTransaction, _orderNewInRootTransaction, StateType.New);
+      CheckState (InactiveMiddleTransaction, _orderNewInRootTransaction, StateType.Unchanged);
+      CheckState (ActiveSubTransaction, _orderNewInRootTransaction, StateType.NotLoadedYet);
     }
   }
 }

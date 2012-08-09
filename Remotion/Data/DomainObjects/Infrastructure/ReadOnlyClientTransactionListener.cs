@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
@@ -65,29 +66,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void ObjectsLoading (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
-      EnsureWriteable (clientTransaction, "ObjectsLoading");
+      // Allowed - this should be safe since the subtransaction can't have data for this object
+      Assertion.DebugAssert (
+          clientTransaction.SubTransaction == null
+          || objectIDs.All (id => clientTransaction.SubTransaction.DataManager.DataContainers[id] == null));
     }
 
     public void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
-      EnsureWriteable (clientTransaction, "ObjectsLoaded");
+      // Allowed
     }
 
     public void ObjectsNotFound (ClientTransaction clientTransaction, ReadOnlyCollection<ObjectID> objectIDs)
     {
-      EnsureWriteable (clientTransaction, "ObjectsNotFound");
+      // Allowed
     }
 
     public void ObjectsUnloading (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       // Allowed for read-only transactions, as the end-user API always affects the whole hierarchy
-      // (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction is made writeable on the actual modification, though)
+      // (DataContainerUnregistering and RelationEndPointUnregistering assert on the actual modification, though)
     }
 
     public void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
     {
       // Allowed for read-only transactions, as the end-user API always affects the whole hierarchy
-      // (DataContainerUnregistering and RelationEndPointUnregistering will ensure the transaction is made writeable on the actual modification, though)
+      // (DataContainerUnregistering and RelationEndPointUnregistering assert on the actual modification, though)
     }
 
     public void ObjectDeleting (ClientTransaction clientTransaction, DomainObject domainObject)
@@ -199,17 +203,30 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void RelationEndPointMapRegistering (ClientTransaction clientTransaction, IRelationEndPoint endPoint)
     {
-      EnsureWriteable (clientTransaction, "RelationEndPointMapRegistering");
+      // Safe assuming the subtransaction does not have a complete end-point for the same ID (subtransaction needs to be loaded later)
+      // (or when it has been unlocked - during subtx.Commit)
+      Assertion.IsTrue (
+          !clientTransaction.IsReadOnly
+          || clientTransaction.SubTransaction == null
+          || IsNullOrIncomplete (clientTransaction.SubTransaction.DataManager.RelationEndPoints[endPoint.ID]));
     }
 
     public void RelationEndPointMapUnregistering (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      EnsureWriteable (clientTransaction, "RelationEndPointMapUnregistering");
+      // Safe assuming the subtransaction does not have a complete end-point for the same ID (subtransaction needs to be unloaded first)
+      // (or when it has been unlocked - during subtx.Commit)
+      Assertion.IsTrue (
+          !clientTransaction.IsReadOnly
+          || clientTransaction.SubTransaction == null
+          || IsNullOrIncomplete (clientTransaction.SubTransaction.DataManager.RelationEndPoints[endPointID]));
     }
 
     public void RelationEndPointUnloading (ClientTransaction clientTransaction, RelationEndPointID endPointID)
     {
-      EnsureWriteable (clientTransaction, "RelationEndPointUnloading");
+      // Safe assuming the subtransaction does not have a complete end-point for the same ID (subtransaction needs to be unloaded first)
+      Assertion.IsTrue (
+          clientTransaction.SubTransaction == null 
+          || IsNullOrIncomplete (clientTransaction.SubTransaction.DataManager.RelationEndPoints[endPointID]));
     }
 
     public void ObjectMarkedInvalid (ClientTransaction clientTransaction, DomainObject domainObject)
@@ -224,12 +241,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public void DataContainerMapRegistering (ClientTransaction clientTransaction, DataContainer container)
     {
-      EnsureWriteable (clientTransaction, "DataContainerMapRegistering");
+      // Safe assuming the subtransaction cannot already have a DataContainer for the same object (subtransaction needs to be loaded later)
+      // (or when it has been unlocked - during subtx.Commit)
+      Assertion.IsTrue (
+          !clientTransaction.IsReadOnly
+          || clientTransaction.SubTransaction == null
+          || clientTransaction.SubTransaction.DataManager.DataContainers[container.ID] == null);
     }
 
     public void DataContainerMapUnregistering (ClientTransaction clientTransaction, DataContainer container)
     {
-      EnsureWriteable (clientTransaction, "DataContainerMapUnregistering");
+      // Safe assuming the subtransaction does not have a DataContainer for the same object (subtransaction needs to be unloaded first)
+      // (or when it has been unlocked - during subtx.Commit)
+      Assertion.IsTrue (
+          !clientTransaction.IsReadOnly
+          || clientTransaction.SubTransaction == null 
+          || clientTransaction.SubTransaction.DataManager.DataContainers[container.ID] == null);
     }
 
     public void DataContainerStateUpdated (ClientTransaction clientTransaction, DataContainer container, StateType newDataContainerState)
@@ -257,6 +284,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             operation);
         throw new ClientTransactionReadOnlyException (message);
       }
+    }
+
+    private bool IsNullOrIncomplete (IRelationEndPoint relationEndPoint)
+    {
+      return relationEndPoint == null || !relationEndPoint.IsDataComplete;
     }
   }
 }

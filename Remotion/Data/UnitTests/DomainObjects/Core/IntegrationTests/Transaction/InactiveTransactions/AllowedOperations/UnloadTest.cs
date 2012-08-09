@@ -96,9 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     protected void CheckEndPointUnloaded (ClientTransaction clientTransaction, RelationEndPointID relationEndPointID)
     {
-      var relationEndPoint = ClientTransactionTestHelper.GetIDataManager (clientTransaction).RelationEndPoints[relationEndPointID];
-      Assert.That (relationEndPoint, Is.Not.Null);
-      Assert.That (relationEndPoint.IsDataComplete, Is.False);
+      CheckEndPointIncomplete(clientTransaction, relationEndPointID);
     }
   }
 }

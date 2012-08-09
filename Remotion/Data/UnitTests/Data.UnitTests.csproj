@@ -231,7 +231,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\CustomQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\GetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\CommitTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\DiscardTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\DiscardTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\VirtualCollectionRelationPropertyWriteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\VirtualObjectRelationPropertyWriteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\NonVirtualRelationPropertyWriteTest.cs" />
@@ -1930,7 +1930,6 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitStateTransitionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InvalidatedTransactionListenerTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ReadOnlyClientTransactionTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackEventsWithExistingObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackEventsWithNewObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitRollbackTest.cs" />

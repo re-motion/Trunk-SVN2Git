@@ -34,6 +34,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         {
             "TransactionInitialize",
             "TransactionDiscard",
+            "ObjectsLoading",
+            "ObjectsLoaded",
+            "ObjectsNotFound",
             "PropertyValueReading",
             "PropertyValueRead",
             "RelationReading",
@@ -43,6 +46,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
             "FilterCustomQueryResult",
             "ObjectsUnloading",
             "ObjectsUnloaded",
+            "RelationEndPointMapRegistering",
+            "RelationEndPointMapUnregistering",
+            "RelationEndPointUnloading",
+            "DataContainerMapRegistering",
+            "DataContainerMapUnregistering",
         };
 
     private readonly string[] _methodsExpectingReadOnlynessNames = {
@@ -76,7 +84,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = true;
 
-      Assert.That (_throwingMethods, Has.Length.EqualTo (25));
+      Assert.That (_throwingMethods, Has.Length.EqualTo (17));
       
       foreach (var method in _throwingMethods)
       {
@@ -106,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       _clientTransaction.IsReadOnly = true;
 
-      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (11));
+      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (19));
 
       foreach (var method in _neverThrowingMethods)
       {

@@ -49,7 +49,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4992")]
     public void QueryInInactiveRootTransaction_WithLoading_IsAllowed ()
     {
       CheckDataNotLoaded (InactiveRootTransaction, DomainObjectIDs.Order1);
@@ -67,7 +66,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4992")]
     public void QueryInInactiveMiddleTransaction_WithLoading_IsAllowed ()
     {
       CheckDataNotLoaded (InactiveRootTransaction, DomainObjectIDs.Order1);

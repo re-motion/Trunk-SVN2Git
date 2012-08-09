@@ -15,42 +15,44 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-using System;
 using NUnit.Framework;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction.InactiveTransactions.ForbiddenOperations
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction.InactiveTransactions.AllowedOperations
 {
   [TestFixture]
   public class DiscardTest : InactiveTransactionsTestBase
   {
     [Test]
-    [Ignore ("TODO 4992")]
-    public void DiscardInactiveRootTransaction_IsForbidden ()
+    [Ignore ("TODO 5001")]
+    public void DiscardInactiveRootTransaction_IsAllowed ()
     {
       Assert.That (InactiveRootTransaction.IsDiscarded, Is.False);
       Assert.That (InactiveMiddleTransaction.IsDiscarded, Is.False);
       Assert.That (ActiveSubTransaction.IsDiscarded, Is.False);
 
-      CheckForbidden (() => InactiveRootTransaction.Discard(), "TransactionDiscard");
+      InactiveRootTransaction.Discard();
 
-      Assert.That (InactiveRootTransaction.IsDiscarded, Is.False);
-      Assert.That (InactiveMiddleTransaction.IsDiscarded, Is.False);
-      Assert.That (ActiveSubTransaction.IsDiscarded, Is.False);
+      Assert.That (InactiveRootTransaction.IsDiscarded, Is.True);
+      Assert.That (InactiveMiddleTransaction.IsDiscarded, Is.True);
+      Assert.That (ActiveSubTransaction.IsDiscarded, Is.True);
     }
 
     [Test]
-    [Ignore ("TODO 4992")]
+    [Ignore ("TODO 5001")]
     public void CreateSubTransactionInInactiveMiddleTransaction_IsForbidden ()
     {
       Assert.That (InactiveRootTransaction.IsDiscarded, Is.False);
       Assert.That (InactiveMiddleTransaction.IsDiscarded, Is.False);
       Assert.That (ActiveSubTransaction.IsDiscarded, Is.False);
 
-      CheckForbidden (() => InactiveMiddleTransaction.Discard (), "TransactionDiscard");
+      InactiveMiddleTransaction.Discard ();
 
       Assert.That (InactiveRootTransaction.IsDiscarded, Is.False);
-      Assert.That (InactiveMiddleTransaction.IsDiscarded, Is.False);
-      Assert.That (ActiveSubTransaction.IsDiscarded, Is.False);
+      Assert.That (InactiveMiddleTransaction.IsDiscarded, Is.True);
+      Assert.That (ActiveSubTransaction.IsDiscarded, Is.True);
+
+      Assert.That (InactiveRootTransaction.SubTransaction, Is.Null);
+      Assert.That (InactiveRootTransaction.IsReadOnly, Is.False);
     }
   }
 }

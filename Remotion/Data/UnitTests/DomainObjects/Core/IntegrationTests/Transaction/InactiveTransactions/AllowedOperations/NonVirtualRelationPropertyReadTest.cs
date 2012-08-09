@@ -64,7 +64,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [Ignore ("TODO 4992")]
     public void RelationReadInInactiveRootTransaction_WithLoading_IsAllowed ()
     {
       CheckDataNotLoaded (InactiveRootTransaction, DomainObjectIDs.Order1);
@@ -99,13 +98,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckEndPointNull (InactiveMiddleTransaction, _relationEndPointID);
       CheckEndPointNull (ActiveSubTransaction, _relationEndPointID);
 
-      CheckEndPointComplete (InactiveRootTransaction, _oppositeRelationEndPointID);
+      CheckEndPointIncomplete (InactiveRootTransaction, _oppositeRelationEndPointID);
       CheckEndPointNull (InactiveMiddleTransaction, _oppositeRelationEndPointID);
       CheckEndPointNull (ActiveSubTransaction, _oppositeRelationEndPointID);
     }
 
     [Test]
-    [Ignore ("TODO 4992")]
     public void RelationReadInInactiveMiddleTransaction_WithLoading_IsAllowed ()
     {
       CheckDataNotLoaded (InactiveRootTransaction, DomainObjectIDs.Order1);
@@ -140,8 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       CheckEndPointComplete (InactiveMiddleTransaction, _relationEndPointID);
       CheckEndPointNull (ActiveSubTransaction, _relationEndPointID);
 
-      CheckEndPointComplete (InactiveRootTransaction, _oppositeRelationEndPointID);
-      CheckEndPointComplete (InactiveMiddleTransaction, _oppositeRelationEndPointID);
+      CheckEndPointIncomplete (InactiveRootTransaction, _oppositeRelationEndPointID);
+      CheckEndPointIncomplete (InactiveMiddleTransaction, _oppositeRelationEndPointID);
       CheckEndPointNull (ActiveSubTransaction, _oppositeRelationEndPointID);
     }
   }
