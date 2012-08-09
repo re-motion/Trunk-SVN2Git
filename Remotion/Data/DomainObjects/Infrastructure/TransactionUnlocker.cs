@@ -20,9 +20,10 @@ using Remotion.Utilities;
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Temporarily makes a read-only transaction writeable.
+  /// Temporarily makes an inactive <see cref="ClientTransaction"/> writeable. This can destroy the integrity of a <see cref="ClientTransaction"/> 
+  /// hierarchy. Use at your own risk.
   /// </summary>
-  internal struct TransactionUnlocker : IDisposable
+  public struct TransactionUnlocker : IDisposable
   {
     public static IDisposable MakeWriteable (ClientTransaction transaction)
     {
