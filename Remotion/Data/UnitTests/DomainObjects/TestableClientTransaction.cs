@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.UnitTests.DomainObjects.Core;
 using Remotion.Development.UnitTesting;
 
 namespace Remotion.Data.UnitTests.DomainObjects
@@ -75,12 +76,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
     public new DataManager DataManager
     {
       get { return (DataManager) base.DataManager; }
-    }
-
-    public new bool IsActive
-    {
-      get { return base.IsActive; }
-      set { base.IsActive = value; }
     }
 
     public new void AddListener (IClientTransactionListener listener)

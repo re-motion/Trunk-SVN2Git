@@ -15,21 +15,29 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.Serialization;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
   /// <summary>
-  /// Thrown when a client transaction's state is tried to be modified and the ClientTransaction's internal state is set to read-only,
-  /// usually because there is an active nested transaction.
+  /// Thrown when code tries to modify a <see cref="ClientTransaction"/>'s state and the <see cref="ClientTransaction"/> is inactive 
+  /// (see <see cref="ClientTransaction.IsActive"/>) due to an active <see cref="ClientTransaction.SubTransaction"/>. While there is a
+  /// <see cref="ClientTransaction.SubTransaction"/>, the parent <see cref="ClientTransaction"/> can only be read.
   /// </summary>
-  public class ClientTransactionReadOnlyException : DomainObjectException
+  [Serializable]
+  public class ClientTransactionInactiveException : DomainObjectException
   {
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClientTransactionReadOnlyException"/> class, specifying an exception message.
+    /// Initializes a new instance of the <see cref="ClientTransactionInactiveException"/> class, specifying an exception message.
     /// </summary>
     /// <param name="message">The exception message.</param>
-    public ClientTransactionReadOnlyException (string message)
+    public ClientTransactionInactiveException (string message)
         : base (message)
+    {
+    }
+
+    protected ClientTransactionInactiveException (SerializationInfo info, StreamingContext context)
+        : base(info, context)
     {
     }
   }

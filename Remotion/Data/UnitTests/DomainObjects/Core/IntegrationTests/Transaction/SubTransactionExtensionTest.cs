@@ -1124,9 +1124,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       QueryResult<DomainObject> subFilteredQueryResult = TestQueryFactory.CreateTestQueryResult<DomainObject> ();
 
       UnloadService.UnloadData (_subTransaction, _order1.ID); // unload _order1 to force Load events
-      TestableClientTransaction.IsActive = true;
+      ClientTransactionTestHelper.SetIsActive (TestableClientTransaction, true);
       TestableClientTransaction.EnsureDataAvailable (DomainObjectIDs.Order1); // we only want Load events in the sub-transaction
-      TestableClientTransaction.IsActive = false;
+      ClientTransactionTestHelper.SetIsActive (TestableClientTransaction, false);
 
       _mockRepository.BackToRecordAll ();
 

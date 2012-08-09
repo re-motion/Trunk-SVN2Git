@@ -696,7 +696,7 @@
     <Compile Include="DomainImplementation\Transport\DomainObjectImporter.cs" />
     <Compile Include="DomainImplementation\Transport\DomainObjectTransporter.cs" />
     <Compile Include="IDomainObjectMixin.cs" />
-    <Compile Include="Infrastructure\ClientTransactionReadOnlyException.cs" />
+    <Compile Include="Infrastructure\ClientTransactionInactiveException.cs" />
     <Compile Include="Infrastructure\CompoundClientTransactionListener.cs" />
     <Compile Include="Infrastructure\DomainObjectMixinCodeGenerationBridge.cs" />
     <Compile Include="Infrastructure\ExtensionClientTransactionListener.cs" />

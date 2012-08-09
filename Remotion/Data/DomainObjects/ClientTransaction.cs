@@ -273,13 +273,14 @@ public class ClientTransaction
   /// while 
   /// <see cref="CreateSubTransaction(System.Func{Remotion.Data.DomainObjects.ClientTransaction,Remotion.Data.DomainObjects.Infrastructure.InvalidObjects.IInvalidDomainObjectManager,Remotion.Data.DomainObjects.Infrastructure.Enlistment.IEnlistedDomainObjectManager,Remotion.Data.DomainObjects.ClientTransaction})"/>
   /// is executing, there is a small time frame where this property already returns <see langword="false" /> while <see cref="SubTransaction"/> is 
-  /// still <see langword="null" />.
+  /// still <see langword="null" />. In addition, infrastructure code might temporarily set a transaction active for internal operations even though
+  /// a <see cref="SubTransaction"/> exists.
   /// </para>
   /// </remarks>
   public bool IsActive
   {
     get { return _isActive; }
-    protected internal set { _isActive = value; }
+    internal set { _isActive = value; }
   }
 
   /// <summary>
@@ -392,7 +393,7 @@ public class ClientTransaction
 
       if (ParentTransaction != null)
       {
-        ParentTransaction.IsActive = true;
+        ParentTransaction._isActive = true;
         ParentTransaction._subTransaction = null;
       }
 
@@ -822,7 +823,7 @@ public class ClientTransaction
 
     RaiseListenerEvent ((tx, l) => l.SubTransactionCreating (tx));
 
-    IsActive = false;
+    _isActive = false;
 
     ClientTransaction subTransaction;
     try
@@ -833,7 +834,7 @@ public class ClientTransaction
     }
     catch
     {
-      IsActive = true;
+      _isActive = true;
       throw;
     }
 

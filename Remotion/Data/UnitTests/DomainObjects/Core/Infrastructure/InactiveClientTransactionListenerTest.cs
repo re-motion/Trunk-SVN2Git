@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
             "DataContainerMapUnregistering",
         };
 
-    private readonly string[] _methodsExpectingReadOnlynessNames = {
+    private readonly string[] _methodsExpectingInactivenessNames = {
           "SubTransactionCreated", 
           "SubTransactionInitialize"
     };
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private MethodInfo[] _allMethods;
     private MethodInfo[] _neverThrowingMethods;
     private MethodInfo[] _throwingMethods;
-    private MethodInfo[] _methodsAssertingReadOnlyness;
+    private MethodInfo[] _methodsAssertingInactiveness;
     private MethodInfo[] _methodsNotAssertingReadonlyness;
 
     [SetUp]
@@ -74,15 +74,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _neverThrowingMethods = _allMethods.Where (n => _neverThrowingMethodNames.Contains (n.Name)).ToArray();
       _throwingMethods = _allMethods
           .Where (n => !_neverThrowingMethodNames.Contains (n.Name))
-          .Where (n => !_methodsExpectingReadOnlynessNames.Contains (n.Name)).ToArray ();
-      _methodsAssertingReadOnlyness = _allMethods.Where (n => _methodsExpectingReadOnlynessNames.Contains (n.Name)).ToArray ();
-      _methodsNotAssertingReadonlyness = _allMethods.Except (_methodsAssertingReadOnlyness).ToArray ();
+          .Where (n => !_methodsExpectingInactivenessNames.Contains (n.Name)).ToArray ();
+      _methodsAssertingInactiveness = _allMethods.Where (n => _methodsExpectingInactivenessNames.Contains (n.Name)).ToArray ();
+      _methodsNotAssertingReadonlyness = _allMethods.Except (_methodsAssertingInactiveness).ToArray ();
     }
 
     [Test]
-    public void ClientTransactionReadOnly_ThrowingMethods ()
+    public void ClientTransactionInactive_ThrowingMethods ()
     {
-      _clientTransaction.IsActive = false;
+      ClientTransactionTestHelper.SetIsActive (_clientTransaction, false);
 
       Assert.That (_throwingMethods, Has.Length.EqualTo (17));
       
@@ -95,13 +95,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void ClientTransactionReadOnly_MethodsExpectingReadOnly ()
+    public void ClientTransactionInactive_MethodsExpectingInactive ()
     {
-      _clientTransaction.IsActive = true;
+      ClientTransactionTestHelper.SetIsActive (_clientTransaction, true);
 
-      Assert.That (_methodsAssertingReadOnlyness, Has.Length.EqualTo (2));
+      Assert.That (_methodsAssertingInactiveness, Has.Length.EqualTo (2));
 
-      foreach (var method in _methodsAssertingReadOnlyness)
+      foreach (var method in _methodsAssertingInactiveness)
       {
         object[] arguments = Array.ConvertAll (method.GetParameters (), p => GetDefaultValue (p.ParameterType));
 
@@ -110,9 +110,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void ClientTransactionReadOnly_NotThrowingMethods ()
+    public void ClientTransactionInactive_NotThrowingMethods ()
     {
-      _clientTransaction.IsActive = false;
+      ClientTransactionTestHelper.SetIsActive (_clientTransaction, true);
 
       Assert.That (_neverThrowingMethods, Has.Length.EqualTo (19));
 
@@ -126,9 +126,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void ClientTransactionNotReadOnly_NoMethodThrows ()
+    public void ClientTransactionNotInactive_NoMethodThrows ()
     {
-      _clientTransaction.IsActive = true;
+      ClientTransactionTestHelper.SetIsActive (_clientTransaction, true);
 
       Assert.That (_methodsNotAssertingReadonlyness, Has.Length.EqualTo (36));
 
@@ -150,7 +150,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       Assert.That (
         () => method.Invoke (_listener, arguments),
-        Throws.TargetInvocationException.With.InnerException.TypeOf<ClientTransactionReadOnlyException> ().And.InnerException.Message.EqualTo (message),
+        Throws.TargetInvocationException.With.InnerException.TypeOf<ClientTransactionInactiveException> ().And.InnerException.Message.EqualTo (message),
         "Expected exception to be thrown by method '{0}'.",
         method.Name);
     }

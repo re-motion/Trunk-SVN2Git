@@ -347,11 +347,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void ReadOnly ()
+    public void IsActive ()
     {
       var clientTransaction = new TestableClientTransaction ();
       Assert.That (clientTransaction.IsActive, Is.True);
-      clientTransaction.IsActive = false;
+      ClientTransactionTestHelper.SetIsActive (clientTransaction, false);
       Assert.That (clientTransaction.IsActive, Is.False);
     }
 

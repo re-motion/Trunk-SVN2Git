@@ -282,7 +282,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
             "The operation cannot be executed because the ClientTransaction is inactive. "
             + "Offending transaction modification: {0}.",
             operation);
-        throw new ClientTransactionReadOnlyException (message);
+        throw new ClientTransactionInactiveException (message);
       }
     }
 

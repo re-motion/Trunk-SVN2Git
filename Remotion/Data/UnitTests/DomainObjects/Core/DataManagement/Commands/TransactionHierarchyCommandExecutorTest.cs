@@ -53,7 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _rootTransactionWithSub = ClientTransaction.CreateRootTransaction ();
       _leafSubTransaction = _rootTransactionWithSub.CreateSubTransaction();
 
-      _inactiveTransaction = new TestableClientTransaction { IsActive = false };
+      _inactiveTransaction = new TestableClientTransaction();
+      ClientTransactionTestHelper.SetIsActive (_inactiveTransaction, false);
 
       _mockRepository = new MockRepository();
       _commandFactoryMock = _mockRepository.StrictMock<ICommandFactory>();

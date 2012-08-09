@@ -114,7 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var expectedMessage = string.Format (
           "The operation cannot be executed because the ClientTransaction is inactive. Offending transaction modification: {0}.", operation);
-      Assert.That (() => func (), Throws.TypeOf<ClientTransactionReadOnlyException> ().With.Message.EqualTo (expectedMessage));
+      Assert.That (() => func (), Throws.TypeOf<ClientTransactionInactiveException> ().With.Message.EqualTo (expectedMessage));
     }
 
     protected void CheckProperty<TDomainObject, TValue> (

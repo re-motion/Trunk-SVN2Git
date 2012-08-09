@@ -239,7 +239,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    [ExpectedException (typeof (ClientTransactionReadOnlyException), ExpectedMessage = 
+    [ExpectedException (typeof (ClientTransactionInactiveException), ExpectedMessage = 
       "The operation cannot be executed because the ClientTransaction is inactive. Offending transaction modification: SubTransactionCreating.")]
     public void NoTwoSubTransactionsAtSameTime ()
     {
