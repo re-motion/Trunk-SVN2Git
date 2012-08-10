@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </remarks>
   public interface IClientTransactionComponentFactory
   {
-    ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction);
+    ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
     Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
     IClientTransactionEventBroker CreateEventBroker (ClientTransaction constructedTransaction);
     IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);

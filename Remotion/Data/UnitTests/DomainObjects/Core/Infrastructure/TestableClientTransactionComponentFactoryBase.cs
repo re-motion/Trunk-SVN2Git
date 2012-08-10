@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   public class TestableClientTransactionComponentFactoryBase : ClientTransactionComponentFactoryBase
   {
-    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction)
+    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink)
     {
       throw new NotImplementedException();
     }

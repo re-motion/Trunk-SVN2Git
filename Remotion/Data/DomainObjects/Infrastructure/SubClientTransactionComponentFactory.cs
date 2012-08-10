@@ -41,38 +41,50 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction parentTransaction,
         IInvalidDomainObjectManager parentInvalidDomainObjectManager,
         IEnlistedDomainObjectManager parentEnlistedDomainObjectManager,
-        ITransactionHierarchyManager parentTransactionHierarchyManager)
+        ITransactionHierarchyManager parentTransactionHierarchyManager,
+        IClientTransactionEventSink parentEventSink)
     {
       return ObjectFactory.Create<SubClientTransactionComponentFactory> (
           true,
-          ParamList.Create (parentTransaction, parentInvalidDomainObjectManager, parentEnlistedDomainObjectManager, parentTransactionHierarchyManager));
+          ParamList.Create (
+              parentTransaction,
+              parentInvalidDomainObjectManager,
+              parentEnlistedDomainObjectManager,
+              parentTransactionHierarchyManager,
+              parentEventSink));
     }
 
     private readonly ClientTransaction _parentTransaction;
     private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
     private readonly IEnlistedDomainObjectManager _parentEnlistedDomainObjectManager;
     private readonly ITransactionHierarchyManager _parentHierarchyManager;
+    private readonly IClientTransactionEventSink _parentEventSink;
 
     protected SubClientTransactionComponentFactory (
         ClientTransaction parentTransaction,
         IInvalidDomainObjectManager parentInvalidDomainObjectManager,
         IEnlistedDomainObjectManager parentEnlistedDomainObjectManager, 
-      ITransactionHierarchyManager parentHierarchyManager)
+        ITransactionHierarchyManager parentHierarchyManager, 
+        IClientTransactionEventSink parentEventSink)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
       ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("parentEnlistedDomainObjectManager", parentEnlistedDomainObjectManager);
       ArgumentUtility.CheckNotNull ("parentHierarchyManager", parentHierarchyManager);
+      ArgumentUtility.CheckNotNull ("parentEventSink", parentEventSink);
 
       _parentTransaction = parentTransaction;
       _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
       _parentEnlistedDomainObjectManager = parentEnlistedDomainObjectManager;
       _parentHierarchyManager = parentHierarchyManager;
+      _parentEventSink = parentEventSink;
     }
 
-    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction)
+    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink)
     {
-      return new TransactionHierarchyManager (constructedTransaction, _parentTransaction, _parentHierarchyManager);
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      return new TransactionHierarchyManager (constructedTransaction, eventSink, _parentTransaction, _parentHierarchyManager, _parentEventSink);
     }
 
     public override Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)

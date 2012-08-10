@@ -56,11 +56,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateTransactionHierarchyManager ()
     {
-      var transactionHierarchyManager = _factory.CreateTransactionHierarchyManager (_fakeConstructedTransaction);
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
+
+      var transactionHierarchyManager = _factory.CreateTransactionHierarchyManager (_fakeConstructedTransaction, eventSink);
+      
       Assert.That (transactionHierarchyManager, Is.TypeOf<TransactionHierarchyManager> ());
       Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ThisTransaction, Is.SameAs (_fakeConstructedTransaction));
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ThisEventSink, Is.SameAs (eventSink));
       Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ParentTransaction, Is.Null);
       Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ParentHierarchyManager, Is.Null);
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ParentEventSink, Is.Null);
     }
 
     [Test]

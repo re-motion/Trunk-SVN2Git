@@ -35,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public abstract class ClientTransactionComponentFactoryBase : IClientTransactionComponentFactory
   {
-    public abstract ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction);
+    public abstract ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
     public abstract Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
     public abstract IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
     public abstract IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);

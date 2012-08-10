@@ -34,7 +34,7 @@ using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects
 {
-  using SubTransactionFactory = Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ITransactionHierarchyManager, ClientTransaction>;
+  using SubTransactionFactory = Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ITransactionHierarchyManager, IClientTransactionEventSink, ClientTransaction>;
 
 /// <summary>
 /// Represents an in-memory transaction.
@@ -141,11 +141,9 @@ public class ClientTransaction
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
   private readonly IClientTransactionComponentFactory _componentFactory;
-  private readonly ITransactionHierarchyManager _hierarchyManager;
 
   private readonly Dictionary<Enum, object> _applicationData;
-  private readonly ClientTransactionExtensionCollection _extensions;
-
+  private readonly ITransactionHierarchyManager _hierarchyManager;
   private readonly IClientTransactionEventBroker _eventBroker;
 
   private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
@@ -154,6 +152,7 @@ public class ClientTransaction
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IQueryManager _queryManager;
   private readonly ICommitRollbackAgent _commitRollbackAgent;
+  private readonly ClientTransactionExtensionCollection _extensions;
 
   private bool _isDiscarded;
 
@@ -164,11 +163,9 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
     
     _componentFactory = componentFactory;
-    _hierarchyManager = componentFactory.CreateTransactionHierarchyManager (this);
-
     _applicationData = componentFactory.CreateApplicationData (this);
-
     _eventBroker = componentFactory.CreateEventBroker (this);
+    _hierarchyManager = componentFactory.CreateTransactionHierarchyManager (this, _eventBroker);
     _enlistedDomainObjectManager = componentFactory.CreateEnlistedObjectManager (this);
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this, _eventBroker);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
@@ -365,7 +362,7 @@ public class ClientTransaction
     _eventBroker.RemoveListener (listener);
   }
 
-  protected internal void RaiseListenerEvent (Action<ClientTransaction, IClientTransactionListener> eventRaiser)
+  protected void RaiseListenerEvent (Action<ClientTransaction, IClientTransactionListener> eventRaiser)
   {
     ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
     _eventBroker.RaiseEvent (eventRaiser);
@@ -793,9 +790,9 @@ public class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    return CreateSubTransaction ((parentTx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager) =>
+    return CreateSubTransaction ((parentTx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager, eventSink) =>
     {
-      var componentFactory = SubClientTransactionComponentFactory.Create (parentTx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager);
+      var componentFactory = SubClientTransactionComponentFactory.Create (parentTx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager, eventSink);
       return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
     });
   }
@@ -820,7 +817,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 
     return _hierarchyManager.CreateSubTransaction (
-        tx => subTransactionFactory (tx, _invalidDomainObjectManager, _enlistedDomainObjectManager, _hierarchyManager));
+        tx => subTransactionFactory (tx, _invalidDomainObjectManager, _enlistedDomainObjectManager, _hierarchyManager, _eventBroker));
   }
 
   /// <summary>

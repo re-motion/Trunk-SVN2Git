@@ -65,20 +65,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     }
 
     private readonly ClientTransaction _thisTransaction;
+    private readonly IClientTransactionEventSink _thisEventSink;
     private readonly ClientTransaction _parentTransaction;
     private readonly ITransactionHierarchyManager _parentHierarchyManager;
+    private readonly IClientTransactionEventSink _parentEventSink;
 
     private bool _isActive = true;
     private ClientTransaction _subTransaction;
 
     public TransactionHierarchyManager (
-        ClientTransaction thisTransaction, ClientTransaction parentTransaction, ITransactionHierarchyManager parentHierarchyManager)
+        ClientTransaction thisTransaction,
+        IClientTransactionEventSink thisEventSink,
+        ClientTransaction parentTransaction,
+        ITransactionHierarchyManager parentHierarchyManager,
+        IClientTransactionEventSink parentEventSink)
     {
       ArgumentUtility.CheckNotNull ("thisTransaction", thisTransaction);
+      ArgumentUtility.CheckNotNull ("thisEventSink", thisEventSink);
 
       _thisTransaction = thisTransaction;
+      _thisEventSink = thisEventSink;
       _parentTransaction = parentTransaction;
       _parentHierarchyManager = parentHierarchyManager;
+      _parentEventSink = parentEventSink;
 
       // TODO 4993: Add InactiveClientTransactionListener and NewObject...Listener here. To do so, initialize event broker before the hierarchy manager, and pass in the event broker as a ctor arg.
     }
@@ -88,9 +97,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       get { return _thisTransaction; }
     }
 
+    public IClientTransactionEventSink ThisEventSink
+    {
+      get { return _thisEventSink; }
+    }
+
     public ClientTransaction ParentTransaction
     {
       get { return _parentTransaction; }
+    }
+
+    public IClientTransactionEventSink ParentEventSink
+    {
+      get { return _parentEventSink; }
     }
 
     public ITransactionHierarchyManager ParentHierarchyManager
@@ -111,7 +130,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     public void OnBeforeTransactionInitialize ()
     {
       if (_parentTransaction != null)
-        _parentTransaction.RaiseListenerEvent ((tx, l) => l.SubTransactionInitialize (tx, _thisTransaction));
+        _parentEventSink.RaiseEvent ((tx, l) => l.SubTransactionInitialize (tx, _thisTransaction));
     }
 
     public void OnTransactionDiscard ()
@@ -122,7 +141,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     
     public ClientTransaction CreateSubTransaction (Func<ClientTransaction, ClientTransaction> subTransactionFactory)
     {
-      _thisTransaction.RaiseListenerEvent ((tx, l) => l.SubTransactionCreating (tx));
+      _thisEventSink.RaiseEvent ((tx, l) => l.SubTransactionCreating (tx));
 
       _isActive = false;
 
@@ -141,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 
       _subTransaction = subTransaction;
 
-      _thisTransaction.RaiseListenerEvent ((tx, l) => l.SubTransactionCreated (tx, subTransaction));
+      _thisEventSink.RaiseEvent ((tx, l) => l.SubTransactionCreated (tx, subTransaction));
       return subTransaction;
     }
 

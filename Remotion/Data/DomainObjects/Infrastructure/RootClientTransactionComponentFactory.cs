@@ -30,7 +30,6 @@ using Remotion.Data.DomainObjects.Validation;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using System.Linq;
 using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
@@ -50,10 +49,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
     }
 
-    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction)
+    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (
+        ClientTransaction constructedTransaction, 
+        IClientTransactionEventSink eventSink)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return new TransactionHierarchyManager (constructedTransaction, null, null);
+      return new TransactionHierarchyManager (constructedTransaction, eventSink, null, null, null);
     }
 
     public override Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)

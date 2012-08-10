@@ -127,8 +127,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       commitRollbackAgent = commitRollbackAgent ?? MockRepository.GenerateStub<ICommitRollbackAgent> ();
       
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
-      componentFactoryStub.Stub (stub => stub.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Is.Anything)).Return (transactionHierarchyManager);
       componentFactoryStub.Stub (stub => stub.CreateApplicationData (Arg<ClientTransaction>.Is.Anything)).Return (applicationData);
+      componentFactoryStub.Stub (stub => stub.CreateEventBroker (Arg<ClientTransaction>.Is.Anything)).Return (eventBroker);
+      componentFactoryStub
+          .Stub (stub => stub.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Is.Anything, Arg<IClientTransactionEventSink>.Is.Anything))
+          .Return (transactionHierarchyManager);
       componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (cloneFactory);
       componentFactoryStub
           .Stub (stub => stub.CreateDataManager(
@@ -142,7 +145,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryStub
           .Stub (stub => stub.CreateInvalidDomainObjectManager (Arg<ClientTransaction>.Is.Anything, Arg<IClientTransactionEventSink>.Is.Anything))
           .Return (invalidDomainObjectManager);
-      componentFactoryStub.Stub (stub => stub.CreateEventBroker (Arg<ClientTransaction>.Is.Anything)).Return (eventBroker);
       componentFactoryStub.Stub (stub => stub.CreatePersistenceStrategy (Arg<ClientTransaction>.Is.Anything)).Return (persistenceStrategy);
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (

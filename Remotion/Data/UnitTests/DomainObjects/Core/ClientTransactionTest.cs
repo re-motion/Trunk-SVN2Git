@@ -102,8 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void Initialization_OrderOfFactoryCalls ()
     {
       var componentFactoryMock = _mockRepository.StrictMock<IClientTransactionComponentFactory>();
-      var listenerManagerMock = _mockRepository.StrictMock<IClientTransactionEventBroker>();
-      
+
       var fakeExtensionCollection = new ClientTransactionExtensionCollection ("test");
 
       ClientTransaction constructedTransaction = null;
@@ -111,8 +110,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       using (_mockRepository.Ordered ())
       {
         componentFactoryMock
-            .Expect (mock => mock.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Is.Anything))
-            .Return (_hierarchyManagerMock)
+            .Expect (mock => mock.CreateApplicationData (Arg<ClientTransaction>.Is.Anything))
+            .Return (_fakeApplicationData)
             .WhenCalled (
                 mi =>
                 {
@@ -120,21 +119,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                   Assert.That (constructedTransaction.ID, Is.Not.EqualTo (Guid.Empty));
                 });
         componentFactoryMock
-            .Expect (mock => mock.CreateApplicationData (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
-            .Return (_fakeApplicationData)
-            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetHierarchyManager (constructedTransaction) == _hierarchyManagerMock));
-        componentFactoryMock
             .Expect (mock => mock.CreateEventBroker (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
-            .Return (listenerManagerMock)
+            .Return (_eventBrokerMock)
             .WhenCalled (mi => Assert.That (constructedTransaction.ApplicationData, Is.SameAs (_fakeApplicationData)));
+        componentFactoryMock
+            .Expect (mock => mock.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), Arg.Is (_eventBrokerMock)))
+            .Return (_hierarchyManagerMock)
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetEventBroker (constructedTransaction), Is.SameAs (_eventBrokerMock)));
         componentFactoryMock
             .Expect (mock => mock.CreateEnlistedObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_enlistedObjectManagerMock)
-            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetEventBroker (constructedTransaction), Is.SameAs (listenerManagerMock)));
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetHierarchyManager (constructedTransaction) == _hierarchyManagerMock));
         componentFactoryMock
             .Expect (mock => mock.CreateInvalidDomainObjectManager (
                 Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
-                Arg.Is (listenerManagerMock)))
+                Arg.Is (_eventBrokerMock)))
             .Return (_invalidDomainObjectManagerMock)
             .WhenCalled (
                 mi => Assert.That (
@@ -150,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 mock =>
                 mock.CreateDataManager (
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), 
-                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == listenerManagerMock),
+                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == _eventBrokerMock),
                     Arg.Is (_invalidDomainObjectManagerMock), 
                     Arg.Is (_persistenceStrategyMock)))
             .Return (_dataManagerMock)
@@ -161,7 +160,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 mock =>
                 mock.CreateQueryManager (
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
-                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == listenerManagerMock), 
+                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == _eventBrokerMock), 
                     Arg.Is (_invalidDomainObjectManagerMock), 
                     Arg.Is (_persistenceStrategyMock), 
                     Arg.Is (_dataManagerMock)))
@@ -172,7 +171,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 mock =>
                 mock.CreateCommitRollbackAgent (
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
-                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == listenerManagerMock),
+                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == _eventBrokerMock),
                     Arg.Is (_persistenceStrategyMock),
                     Arg.Is (_dataManagerMock)))
             .Return (_commitRollbackAgentMock)
@@ -181,7 +180,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Expect (mock => mock.CreateExtensionCollection (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (fakeExtensionCollection)
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetCommitRollbackAgent (constructedTransaction), Is.SameAs (_commitRollbackAgentMock)));
-        listenerManagerMock
+        _eventBrokerMock
             .Expect (mock => mock.AddListener (Arg<ExtensionClientTransactionListener>.Is.TypeOf))
             .WhenCalled (
                 mi =>
@@ -191,7 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                 });
 
         _hierarchyManagerMock.Expect (mock => mock.OnBeforeTransactionInitialize());
-        listenerManagerMock
+        _eventBrokerMock
             .Expect (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything))
             .WhenCalled (
                 mi => CheckRaisedEvent (
@@ -899,13 +898,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Return (fakeSubTransaction);
 
       ClientTransaction fakeSubTransaction2 = ClientTransactionObjectMother.Create ();
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ITransactionHierarchyManager, ClientTransaction> factoryMock =
-        (tx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager) =>
+      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ITransactionHierarchyManager, IClientTransactionEventSink, ClientTransaction> factoryMock =
+        (tx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager, eventSink) =>
         {
           Assert.That (tx, Is.SameAs (_transactionWithMocks));
           Assert.That (invalidDomainObjectManager, Is.SameAs (_invalidDomainObjectManagerMock));
           Assert.That (enlistedDomainObjectManager, Is.SameAs (_enlistedObjectManagerMock));
           Assert.That (hierarchyManager, Is.SameAs (_hierarchyManagerMock));
+          Assert.That (eventSink, Is.SameAs (_eventBrokerMock));
           return fakeSubTransaction2;
         };
 
@@ -921,7 +921,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (actualFactoryFuncResult, Is.SameAs (fakeSubTransaction2));
     }
 
-    // TODO 4993: Simplify with hierarchy manager mock
     [Test]
     public void Discard ()
     {
