@@ -210,6 +210,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionInactiveExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommitRollbackAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommittingEventRegistrarTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\NonInterceptableTypeExceptionTest.cs" />

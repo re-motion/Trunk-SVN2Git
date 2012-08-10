@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static ITransactionHierarchyManager GetHierarchyManager (ClientTransaction clientTransaction)
     {
-      return (ITransactionHierarchyManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "HierarchyManager");
+      return TransactionHierarchyManagerService.GetTransactionHierarchyManager (clientTransaction);
     }
 
     public static DataManager GetDataManager (ClientTransaction clientTransaction)
