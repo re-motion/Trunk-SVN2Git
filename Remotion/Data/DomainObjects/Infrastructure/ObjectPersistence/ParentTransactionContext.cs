@@ -59,7 +59,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 
     public IParentTransactionOperations AccessParentTransaction ()
     {
-      var scope = TransactionUnlocker.MakeWriteable (_parentTransaction);
+      var scope = _parentTransaction.HierarchyManager.Unlock();
       return new ParentTransactionOperations (_parentTransaction, _parentInvalidDomainObjectManager, scope);
     }
   }

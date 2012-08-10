@@ -1,0 +1,326 @@
+// This file is part of the re-motion Core Framework (www.re-motion.org)
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// 
+// The re-motion Core Framework is free software; you can redistribute it 
+// and/or modify it under the terms of the GNU Lesser General Public License 
+// as published by the Free Software Foundation; either version 2.1 of the 
+// License, or (at your option) any later version.
+// 
+// re-motion is distributed in the hope that it will be useful, 
+// but WITHOUT ANY WARRANTY; without even the implied warranty of 
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with re-motion; if not, see http://www.gnu.org/licenses.
+// 
+using System;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
+using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyManagement
+{
+  [TestFixture]
+  public class TransactionHierarchyManagerTest
+  {
+    private ClientTransaction _thisTransaction;
+    private IClientTransactionListener _thisListenerStrictMock;
+
+    private ClientTransaction _parentTransaction;
+    private ITransactionHierarchyManager _parentHierarchyManagerStrictMock;
+    private IClientTransactionListener _parentListenerStrictMock;
+
+    private TransactionHierarchyManager _manager;
+    private TransactionHierarchyManager _managerWithNullParent;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _thisTransaction = ClientTransactionObjectMother.Create ();
+      _thisListenerStrictMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_thisTransaction);
+      _parentTransaction = ClientTransactionObjectMother.Create ();
+      _parentHierarchyManagerStrictMock = MockRepository.GenerateStrictMock<ITransactionHierarchyManager>();
+      _parentListenerStrictMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_parentTransaction);
+
+      _manager = new TransactionHierarchyManager (_thisTransaction, _parentTransaction, _parentHierarchyManagerStrictMock);
+      _managerWithNullParent = new TransactionHierarchyManager (_thisTransaction, null, null);
+    }
+
+    [Test]
+    public void Initialization ()
+    {
+      Assert.That (_manager.ThisTransaction, Is.SameAs (_thisTransaction));
+      Assert.That (_manager.ParentTransaction, Is.SameAs (_parentTransaction));
+      Assert.That (_manager.ParentHierarchyManager, Is.SameAs (_parentHierarchyManagerStrictMock));
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void Initialization_NullParent ()
+    {
+      Assert.That (_managerWithNullParent.ThisTransaction, Is.SameAs (_thisTransaction));
+      Assert.That (_managerWithNullParent.ParentTransaction, Is.Null);
+      Assert.That (_managerWithNullParent.ParentHierarchyManager, Is.Null);
+      Assert.That (_managerWithNullParent.IsActive, Is.True);
+      Assert.That (_managerWithNullParent.SubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void OnBeforeTransactionInitialize ()
+    {
+      _parentListenerStrictMock.Expect (mock => mock.SubTransactionInitialize (_parentTransaction, _thisTransaction));
+      ClientTransactionTestHelper.SetIsActive (_parentTransaction, false); // required by assertion in InactiveClientTransactionListener
+
+      _manager.OnBeforeTransactionInitialize();
+
+      _parentListenerStrictMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void OnBeforeTransactionInitialize_NullParent ()
+    {
+      Assert.That (() => _managerWithNullParent.OnBeforeTransactionInitialize(), Throws.Nothing);
+    }
+
+    [Test]
+    public void OnTransactionDiscard ()
+    {
+      _parentHierarchyManagerStrictMock.Expect (mock => mock.RemoveSubTransaction());
+
+      _manager.OnTransactionDiscard ();
+
+      _parentHierarchyManagerStrictMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void OnTransactionDiscard_NullParent ()
+    {
+      Assert.That (() => _managerWithNullParent.OnTransactionDiscard (), Throws.Nothing);
+    }
+
+    [Test]
+    public void CreateSubTransaction ()
+    {
+      bool subTransactionCreatingCalled = false;
+      _thisListenerStrictMock
+          .Expect (mock => mock.SubTransactionCreating (_thisTransaction))
+          .WhenCalled (mi =>
+          {
+            Assert.That (_manager.IsActive, Is.True);
+            subTransactionCreatingCalled = true;
+          });
+
+      ClientTransaction fakeSubTransaction = null;
+      Func<ClientTransaction, ClientTransaction> factory = tx =>
+      {
+        Assert.That (tx, Is.SameAs (_thisTransaction));
+        Assert.That (subTransactionCreatingCalled, Is.True);
+        Assert.That (_manager.IsActive, Is.False, "IsActive needs to be set before the factory is called.");
+        ClientTransactionTestHelper.SetIsActive (_thisTransaction, false); // required by assertion in InactiveClientTransactionListener
+        return fakeSubTransaction = ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (parentTransaction: _thisTransaction);
+      };
+
+      _thisListenerStrictMock.Expect (mock => mock.SubTransactionCreated (_thisTransaction, fakeSubTransaction));
+
+      var result = _manager.CreateSubTransaction (factory);
+
+      Assert.That (result, Is.Not.Null.And.SameAs (fakeSubTransaction));
+      Assert.That (_manager.SubTransaction, Is.SameAs (fakeSubTransaction));
+      Assert.That (_manager.IsActive, Is.False);
+    }
+
+    [Test]
+    public void CreateSubTransaction_InvalidFactory ()
+    {
+      _thisListenerStrictMock.Expect (mock => mock.SubTransactionCreating (_thisTransaction));
+
+      var fakeSubTransaction = ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (parentTransaction: null);
+      Func<ClientTransaction, ClientTransaction> factory = tx => fakeSubTransaction;
+
+      Assert.That (
+          () => _manager.CreateSubTransaction (factory), 
+          Throws.InvalidOperationException.With.Message.EqualTo ("The given factory did not create a sub-transaction for this transaction."));
+
+      _thisListenerStrictMock.AssertWasNotCalled (
+          mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
+      _thisListenerStrictMock.VerifyAllExpectations ();
+
+      Assert.That (_manager.SubTransaction, Is.Null);
+      Assert.That (_manager.IsActive, Is.True);
+    }
+
+    [Test]
+    public void CreateSubTransaction_ThrowingFactory ()
+    {
+      _thisListenerStrictMock.Expect (mock => mock.SubTransactionCreating (_thisTransaction));
+
+      var exception = new Exception();
+      Func<ClientTransaction, ClientTransaction> factory = tx => { throw exception; };
+
+      Assert.That (
+          () => _manager.CreateSubTransaction (factory),
+          Throws.Exception.SameAs (exception));
+
+      _thisListenerStrictMock.AssertWasNotCalled (
+          mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
+      _thisListenerStrictMock.VerifyAllExpectations ();
+
+      Assert.That (_manager.SubTransaction, Is.Null);
+      Assert.That (_manager.IsActive, Is.True);
+    }
+
+    [Test]
+    public void CreateSubTransaction_BeginEventAbortsOperation ()
+    {
+      var exception = new Exception ();
+      _thisListenerStrictMock.Expect (mock => mock.SubTransactionCreating (_thisTransaction)).Throw (exception);
+
+      Func<ClientTransaction, ClientTransaction> factory = tx => { Assert.Fail ("Must not be called."); return null; };
+
+      Assert.That (
+          () => _manager.CreateSubTransaction (factory),
+          Throws.Exception.SameAs (exception));
+
+      _thisListenerStrictMock.AssertWasNotCalled (
+          mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
+      _thisListenerStrictMock.VerifyAllExpectations ();
+
+      Assert.That (_manager.SubTransaction, Is.Null);
+      Assert.That (_manager.IsActive, Is.True);
+    }
+
+    [Test]
+    public void RemoveSubTransaction_NoSubtransaction ()
+    {
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+
+      _manager.RemoveSubTransaction();
+
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void RemoveSubTransaction_WithSubtransaction ()
+    {
+      FakeManagerWithSubtransaction (_manager);
+
+      Assert.That (_manager.IsActive, Is.False);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+
+      _manager.RemoveSubTransaction ();
+
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void Unlock_Active ()
+    {
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+
+      Assert.That (
+          () => _manager.Unlock(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              _thisTransaction + " cannot be made writeable twice. A common reason for this error is that a subtransaction is accessed "
+              + "while its parent transaction is engaged in a load operation. During such an operation, the subtransaction cannot be used."));
+
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void Unlock_Inactive ()
+    {
+      FakeManagerWithSubtransaction (_manager);
+      
+      Assert.That (_manager.IsActive, Is.False);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+
+      var result = _manager.Unlock();
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+
+      result.Dispose();
+
+      Assert.That (_manager.IsActive, Is.False);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+
+      result.Dispose ();
+
+      Assert.That (_manager.IsActive, Is.False);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+    }
+
+    [Test]
+    public void UnlockIfRequired_Active ()
+    {
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+
+      var result = _manager.UnlockIfRequired();
+      Assert.That (result, Is.Null);
+
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void UnlockIfRequired_Inactive ()
+    {
+      FakeManagerWithSubtransaction (_manager);
+
+      Assert.That (_manager.IsActive, Is.False);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+
+      var result = _manager.UnlockIfRequired ();
+
+      Assert.That (result, Is.Not.Null);
+      Assert.That (_manager.IsActive, Is.True);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+
+      result.Dispose ();
+
+      Assert.That (_manager.IsActive, Is.False);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+
+      result.Dispose ();
+
+      Assert.That (_manager.IsActive, Is.False);
+      Assert.That (_manager.SubTransaction, Is.Not.Null);
+    }
+
+    [Test]
+    public void Serializable ()
+    {
+      var instance = new TransactionHierarchyManager (
+          ClientTransactionObjectMother.Create(), 
+          ClientTransactionObjectMother.Create(), 
+          new SerializableTransactionHierarchyManagerFake());
+      var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (deserializedInstance.IsActive, Is.True);
+      Assert.That (deserializedInstance.SubTransaction, Is.Null);
+      Assert.That (deserializedInstance.ThisTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.ParentTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.ParentHierarchyManager, Is.Not.Null);
+    }
+
+    private void FakeManagerWithSubtransaction (TransactionHierarchyManager transactionHierarchyManager)
+    {
+      TransactionHierarchyManagerTestHelper.SetIsActive (transactionHierarchyManager, false);
+      var fakeSubTransaction = ClientTransactionObjectMother.Create ();
+      TransactionHierarchyManagerTestHelper.SetSubtransaction (transactionHierarchyManager, fakeSubTransaction);
+    }
+  }
+}

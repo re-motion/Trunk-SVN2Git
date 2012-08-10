@@ -204,11 +204,14 @@
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTransactionHierarchyManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\ResurrectionServiceTest.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionInactiveExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommitRollbackAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommittingEventRegistrarTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTestHelper.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\NonInterceptableTypeExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\InstantiableClassWithMixinWithStorageClassNoneAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />

@@ -15,10 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.FunctionalProgramming;
 using Remotion.Utilities;
 
@@ -64,8 +62,8 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       var allCommands = from tx in clientTransaction.LeafTransaction.CreateSequence (tx => tx.ParentTransaction)
                         let command = _commandFactory (tx)
-                        select tx.IsActive ? command : new UnlockingCommandDecorator (command, tx);
-      return new CompositeCommand (allCommands);
+                        select new UnlockingCommandDecorator (command, tx);
+      return new CompositeCommand (allCommands.Cast<IDataManagementCommand>());
     }
 
     private class UnlockingCommandDecorator : DataManagementCommandDecoratorBase
@@ -80,7 +78,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
       public override void Perform ()
       {
-        using (TransactionUnlocker.MakeWriteable (_transactionToBeUnlocked))
+        using (_transactionToBeUnlocked.HierarchyManager.UnlockIfRequired())
         {
           base.Perform();
         }

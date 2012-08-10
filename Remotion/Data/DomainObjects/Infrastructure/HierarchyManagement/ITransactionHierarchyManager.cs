@@ -15,9 +15,22 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 {
-  
+  /// <summary>
+  /// Defines an interface for classes managing the position and state of a <see cref="ClientTransaction"/> in a transaction hierarchy.
+  /// </summary>
+  public interface ITransactionHierarchyManager
+  {
+    ClientTransaction ParentTransaction { get; }
+    bool IsActive { get; }
+    ClientTransaction SubTransaction { get; }
+    void OnBeforeTransactionInitialize ();
+    void OnTransactionDiscard ();
+    ClientTransaction CreateSubTransaction (Func<ClientTransaction, ClientTransaction> subTransactionFactory);
+    void RemoveSubTransaction ();
+    IDisposable Unlock ();
+    IDisposable UnlockIfRequired ();
+  }
 }

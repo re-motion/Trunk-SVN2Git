@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
@@ -138,7 +139,7 @@ public class ClientTransaction
   public event EventHandler<ClientTransactionEventArgs> RolledBack;
 
   private readonly IClientTransactionComponentFactory _componentFactory;
-  private readonly ClientTransaction _parentTransaction;
+  private readonly ITransactionHierarchyManager _hierarchyManager;
 
   private readonly Dictionary<Enum, object> _applicationData;
   private readonly ClientTransactionExtensionCollection _extensions;
@@ -152,9 +153,6 @@ public class ClientTransaction
   private readonly IQueryManager _queryManager;
   private readonly ICommitRollbackAgent _commitRollbackAgent;
 
-  private ClientTransaction _subTransaction;
-
-  private bool _isActive = true;
   private bool _isDiscarded;
 
   private readonly Guid _id = Guid.NewGuid ();
@@ -164,7 +162,9 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
     
     _componentFactory = componentFactory;
-    _parentTransaction = componentFactory.GetParentTransaction (this);
+    // TODO 4993: componentFactory.CreateHierarchyManager(); adapt subtransaction to receive the parent hierarchy manager
+    var parentTransaction = componentFactory.GetParentTransaction (this);
+    _hierarchyManager = new TransactionHierarchyManager (this, parentTransaction, parentTransaction != null ? parentTransaction.HierarchyManager : null);
 
     _applicationData = componentFactory.CreateApplicationData (this);
 
@@ -179,9 +179,14 @@ public class ClientTransaction
     _extensions = componentFactory.CreateExtensionCollection (this);
     AddListener (new ExtensionClientTransactionListener (_extensions));
 
-    if (_parentTransaction != null)
-      _parentTransaction.RaiseListenerEvent ((tx, l) => l.SubTransactionInitialize (tx, this));
+    _hierarchyManager.OnBeforeTransactionInitialize();
     RaiseListenerEvent ((tx, l) => l.TransactionInitialize (tx));
+  }
+
+  // TODO 4993: Eliminate; instead, pass the hierarchy manager to all components that need it.
+  internal ITransactionHierarchyManager HierarchyManager
+  {
+    get { return _hierarchyManager; }
   }
 
   /// <summary>
@@ -190,7 +195,7 @@ public class ClientTransaction
   /// <value>The parent transaction, or <see langword="null" /> if this transaction is a root transaction.</value>
   public ClientTransaction ParentTransaction 
   { 
-    get { return _parentTransaction; }
+    get { return _hierarchyManager.ParentTransaction; }
   }
 
   /// <summary>
@@ -200,7 +205,7 @@ public class ClientTransaction
   /// <remarks>When the <see cref="SubTransaction"/> is discarded, this property is automatically set to <see langword="null" />.</remarks>
   public ClientTransaction SubTransaction
   {
-    get { return _subTransaction; }
+    get { return _hierarchyManager.SubTransaction; }
   }
 
   /// <summary>
@@ -279,8 +284,7 @@ public class ClientTransaction
   /// </remarks>
   public bool IsActive
   {
-    get { return _isActive; }
-    internal set { _isActive = value; }
+    get { return _hierarchyManager.IsActive; }
   }
 
   /// <summary>
@@ -361,7 +365,7 @@ public class ClientTransaction
     _eventBroker.RemoveListener (listener);
   }
 
-  protected void RaiseListenerEvent (Action<ClientTransaction, IClientTransactionListener> eventRaiser)
+  protected internal void RaiseListenerEvent (Action<ClientTransaction, IClientTransactionListener> eventRaiser)
   {
     ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
     _eventBroker.RaiseEvent (eventRaiser);
@@ -390,12 +394,7 @@ public class ClientTransaction
     if (!_isDiscarded)
     {
       RaiseListenerEvent ((tx, l) => l.TransactionDiscard (tx));
-
-      if (ParentTransaction != null)
-      {
-        ParentTransaction._isActive = true;
-        ParentTransaction._subTransaction = null;
-      }
+      _hierarchyManager.OnTransactionDiscard();
 
       _isDiscarded = true;
       AddListener (new InvalidatedTransactionListener());
@@ -821,27 +820,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 
-    RaiseListenerEvent ((tx, l) => l.SubTransactionCreating (tx));
-
-    _isActive = false;
-
-    ClientTransaction subTransaction;
-    try
-    {
-      subTransaction = subTransactionFactory (this, _invalidDomainObjectManager, _enlistedDomainObjectManager);
-      if (subTransaction.ParentTransaction != this)
-        throw new InvalidOperationException ("The given component factory did not create a sub-transaction for this transaction.");
-    }
-    catch
-    {
-      _isActive = true;
-      throw;
-    }
-
-    _subTransaction = subTransaction;
-
-    RaiseListenerEvent ((tx, l) => l.SubTransactionCreated (tx, subTransaction));
-    return subTransaction;
+    return _hierarchyManager.CreateSubTransaction (tx => subTransactionFactory (tx, _invalidDomainObjectManager, _enlistedDomainObjectManager));
   }
 
   /// <summary>

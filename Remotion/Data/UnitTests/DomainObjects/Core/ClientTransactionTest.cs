@@ -863,7 +863,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void CreateSubTransaction_WithDefaultComponentFactory ()
+    public void CreateSubTransaction_WithDefaultFactory ()
     {
       Assert.That (_transaction.IsActive, Is.True);
       
@@ -884,6 +884,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var persistenceStrategy = ClientTransactionTestHelper.GetPersistenceStrategy (subTransaction);
       Assert.That (persistenceStrategy, Is.TypeOf (typeof (SubPersistenceStrategy)));
     }
+
+    // TODO 4993: Simplify with hierarchy manager mock
 
     [Test]
     public void CreateSubTransaction_WithCustomFactory ()
@@ -1007,7 +1009,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "The given component factory did not create a sub-transaction for this transaction.")]
+        "The given factory did not create a sub-transaction for this transaction.")]
     public void CreateSubTransaction_Throws_WhenParentTransactionDoesNotMatch ()
     {
       try
@@ -1021,6 +1023,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       }
     }
 
+    // TODO 4993: Simplify with hierarchy manager mock
     [Test]
     public void Discard ()
     {

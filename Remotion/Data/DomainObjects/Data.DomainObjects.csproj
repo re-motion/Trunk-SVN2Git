@@ -208,6 +208,8 @@
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />
     <Compile Include="Infrastructure\ClientTransactionEventBroker.cs" />
     <Compile Include="Infrastructure\CommittingEventRegistrar.cs" />
+    <Compile Include="Infrastructure\HierarchyManagement\ITransactionHierarchyManager.cs" />
+    <Compile Include="Infrastructure\HierarchyManagement\TransactionHierarchyManager.cs" />
     <Compile Include="Infrastructure\ICommitRollbackAgent.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventSink.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventBroker.cs" />

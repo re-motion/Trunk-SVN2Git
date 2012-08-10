@@ -16,14 +16,15 @@
 // 
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyManagement;
 using Remotion.Development.UnitTesting;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -36,6 +37,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static IClientTransactionComponentFactory GetComponentFactory (ClientTransaction clientTransaction)
     {
       return (IClientTransactionComponentFactory) PrivateInvoke.GetNonPublicField (clientTransaction, "_componentFactory");
+    }
+
+    public static ITransactionHierarchyManager GetHierarchyManager (ClientTransaction clientTransaction)
+    {
+      return (ITransactionHierarchyManager) PrivateInvoke.GetNonPublicProperty (clientTransaction, "HierarchyManager");
     }
 
     public static DataManager GetDataManager (ClientTransaction clientTransaction)
@@ -129,9 +135,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void EnsureTransactionThrowsOnEvents (ClientTransaction clientTransaction)
     {
-      var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
+      IClientTransactionListener listenerMock = CreateAndAddListenerStrictMock (clientTransaction);
       listenerMock.Stub (stub => stub.TransactionDiscard (clientTransaction)); // allow TransactionDicarding to be called
-      AddListener (clientTransaction, listenerMock);
       listenerMock.Replay (); // no events expected
     }
 
@@ -145,6 +150,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static IClientTransactionListener CreateAndAddListenerMock (ClientTransaction clientTransaction)
     {
       var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
+      AddListener (clientTransaction, listenerMock);
+      return listenerMock;
+    }
+
+    public static IClientTransactionListener CreateAndAddListenerStrictMock (ClientTransaction clientTransaction)
+    {
+      var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener> ();
       AddListener (clientTransaction, listenerMock);
       return listenerMock;
     }
@@ -163,12 +175,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static void SetIsActive (ClientTransaction transaction, bool value)
     {
-      PrivateInvoke.SetPublicProperty (transaction, "IsActive", value);
+      var hierarchyManager = (TransactionHierarchyManager) GetHierarchyManager (transaction);
+      TransactionHierarchyManagerTestHelper.SetIsActive (hierarchyManager, value);
     }
 
     public static void SetActiveSubTransaction (ClientTransaction clientTransaction, ClientTransaction subTransaction)
     {
-      PrivateInvoke.SetNonPublicField (clientTransaction, "_subTransaction", subTransaction);
+      var hierarchyManager = (TransactionHierarchyManager) GetHierarchyManager (clientTransaction);
+      TransactionHierarchyManagerTestHelper.SetSubtransaction(hierarchyManager, subTransaction);
     }
 
     public static void ClearAllListeners (ClientTransaction clientTransaction)
