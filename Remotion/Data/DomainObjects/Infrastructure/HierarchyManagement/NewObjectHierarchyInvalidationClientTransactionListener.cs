@@ -19,7 +19,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 {
   /// <summary>
   /// Propagates <see cref="StateType.Invalid"/> state for New objects over the <see cref="ClientTransaction"/> hierarchy.

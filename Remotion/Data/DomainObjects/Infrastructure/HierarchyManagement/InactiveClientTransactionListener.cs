@@ -25,7 +25,7 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 using System.Linq;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 {
   /// <summary>
   /// An implementation of <see cref="IClientTransactionListener"/> which throws an exception if the <see cref="ClientTransaction"/> is about
