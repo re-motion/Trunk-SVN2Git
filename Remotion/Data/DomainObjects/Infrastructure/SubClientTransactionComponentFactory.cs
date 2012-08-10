@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Mixins;
@@ -39,35 +40,39 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public static SubClientTransactionComponentFactory Create (
         ClientTransaction parentTransaction,
         IInvalidDomainObjectManager parentInvalidDomainObjectManager,
-        IEnlistedDomainObjectManager parentEnlistedDomainObjectManager)
+        IEnlistedDomainObjectManager parentEnlistedDomainObjectManager,
+        ITransactionHierarchyManager parentTransactionHierarchyManager)
     {
       return ObjectFactory.Create<SubClientTransactionComponentFactory> (
-          true, 
-          ParamList.Create (parentTransaction, parentInvalidDomainObjectManager, parentEnlistedDomainObjectManager));
+          true,
+          ParamList.Create (parentTransaction, parentInvalidDomainObjectManager, parentEnlistedDomainObjectManager, parentTransactionHierarchyManager));
     }
 
     private readonly ClientTransaction _parentTransaction;
     private readonly IInvalidDomainObjectManager _parentInvalidDomainObjectManager;
     private readonly IEnlistedDomainObjectManager _parentEnlistedDomainObjectManager;
+    private readonly ITransactionHierarchyManager _parentHierarchyManager;
 
     protected SubClientTransactionComponentFactory (
         ClientTransaction parentTransaction,
         IInvalidDomainObjectManager parentInvalidDomainObjectManager,
-        IEnlistedDomainObjectManager parentEnlistedDomainObjectManager)
+        IEnlistedDomainObjectManager parentEnlistedDomainObjectManager, 
+      ITransactionHierarchyManager parentHierarchyManager)
     {
       ArgumentUtility.CheckNotNull ("parentTransaction", parentTransaction);
       ArgumentUtility.CheckNotNull ("parentInvalidDomainObjectManager", parentInvalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("parentEnlistedDomainObjectManager", parentEnlistedDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("parentHierarchyManager", parentHierarchyManager);
 
       _parentTransaction = parentTransaction;
       _parentInvalidDomainObjectManager = parentInvalidDomainObjectManager;
       _parentEnlistedDomainObjectManager = parentEnlistedDomainObjectManager;
+      _parentHierarchyManager = parentHierarchyManager;
     }
 
-    public override ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction)
+    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction)
     {
-      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      return _parentTransaction;
+      return new TransactionHierarchyManager (constructedTransaction, _parentTransaction, _parentHierarchyManager);
     }
 
     public override Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction)

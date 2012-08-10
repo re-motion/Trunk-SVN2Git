@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
@@ -41,6 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     private TestableClientTransaction _parentTransaction;
     private IInvalidDomainObjectManager _parentInvalidDomainObjectManagerStub;
     private IEnlistedDomainObjectManager _parentEnlistedDomainObjectManagerStub;
+    private ITransactionHierarchyManager _parentTransactionHierarchyManagerStub;
     private SubClientTransactionComponentFactory _factory;
     private TestableClientTransaction _fakeConstructedTransaction;
 
@@ -51,15 +53,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _parentTransaction = new TestableClientTransaction ();
       _parentInvalidDomainObjectManagerStub = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       _parentEnlistedDomainObjectManagerStub = MockRepository.GenerateStub<IEnlistedDomainObjectManager> ();
+      _parentTransactionHierarchyManagerStub = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
       _factory = SubClientTransactionComponentFactory.Create (
-          _parentTransaction, _parentInvalidDomainObjectManagerStub, _parentEnlistedDomainObjectManagerStub);
+          _parentTransaction, _parentInvalidDomainObjectManagerStub, _parentEnlistedDomainObjectManagerStub, _parentTransactionHierarchyManagerStub);
       _fakeConstructedTransaction = new TestableClientTransaction ();
     }
 
     [Test]
-    public void GetParentTransaction ()
+    public void CreateTransactionHierarchyManager ()
     {
-      Assert.That (_factory.GetParentTransaction (_fakeConstructedTransaction), Is.SameAs (_parentTransaction));
+      var transactionHierarchyManager = _factory.CreateTransactionHierarchyManager (_fakeConstructedTransaction);
+      Assert.That (transactionHierarchyManager, Is.TypeOf<TransactionHierarchyManager> ());
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ThisTransaction, Is.SameAs (_fakeConstructedTransaction));
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ParentTransaction, Is.SameAs (_parentTransaction));
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ParentHierarchyManager, Is.SameAs (_parentTransactionHierarchyManagerStub));
     }
 
     [Test]
@@ -194,7 +201,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var factoryPartialMock = MockRepository.GeneratePartialMock<SubClientTransactionComponentFactory> (
           _parentTransaction, 
           _parentInvalidDomainObjectManagerStub,
-          _parentEnlistedDomainObjectManagerStub);
+          _parentEnlistedDomainObjectManagerStub,
+          _parentTransactionHierarchyManagerStub);
       factoryPartialMock
           .Expect (mock => CallCreateBasicObjectLoader(mock, _fakeConstructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager))
           .Return (fakeBasicObjectLoader);

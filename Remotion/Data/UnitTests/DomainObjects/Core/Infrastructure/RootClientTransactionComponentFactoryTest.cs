@@ -26,6 +26,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoi
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.VirtualObjectEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
@@ -53,9 +54,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void GetParentTransaction ()
+    public void CreateTransactionHierarchyManager ()
     {
-      Assert.That (_factory.GetParentTransaction (_fakeConstructedTransaction), Is.Null);
+      var transactionHierarchyManager = _factory.CreateTransactionHierarchyManager (_fakeConstructedTransaction);
+      Assert.That (transactionHierarchyManager, Is.TypeOf<TransactionHierarchyManager> ());
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ThisTransaction, Is.SameAs (_fakeConstructedTransaction));
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ParentTransaction, Is.Null);
+      Assert.That (((TransactionHierarchyManager) transactionHierarchyManager).ParentHierarchyManager, Is.Null);
     }
 
     [Test]

@@ -123,7 +123,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
         Assert.That (subTransactionCreatingCalled, Is.True);
         Assert.That (_manager.IsActive, Is.False, "IsActive needs to be set before the factory is called.");
         ClientTransactionTestHelper.SetIsActive (_thisTransaction, false); // required by assertion in InactiveClientTransactionListener
-        return fakeSubTransaction = ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (parentTransaction: _thisTransaction);
+        return fakeSubTransaction = ClientTransactionObjectMother.CreateWithParent (_thisTransaction);
       };
 
       _thisListenerStrictMock.Expect (mock => mock.SubTransactionCreated (_thisTransaction, fakeSubTransaction));
@@ -140,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     {
       _thisListenerStrictMock.Expect (mock => mock.SubTransactionCreating (_thisTransaction));
 
-      var fakeSubTransaction = ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (parentTransaction: null);
+      var fakeSubTransaction = ClientTransactionObjectMother.CreateWithParent (null);
       Func<ClientTransaction, ClientTransaction> factory = tx => fakeSubTransaction;
 
       Assert.That (

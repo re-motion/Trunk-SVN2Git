@@ -34,6 +34,8 @@ using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects
 {
+  using SubTransactionFactory = Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ITransactionHierarchyManager, ClientTransaction>;
+
 /// <summary>
 /// Represents an in-memory transaction.
 /// </summary>
@@ -162,9 +164,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("componentFactory", componentFactory);
     
     _componentFactory = componentFactory;
-    // TODO 4993: componentFactory.CreateHierarchyManager(); adapt subtransaction to receive the parent hierarchy manager
-    var parentTransaction = componentFactory.GetParentTransaction (this);
-    _hierarchyManager = new TransactionHierarchyManager (this, parentTransaction, parentTransaction != null ? parentTransaction.HierarchyManager : null);
+    _hierarchyManager = componentFactory.CreateTransactionHierarchyManager (this);
 
     _applicationData = componentFactory.CreateApplicationData (this);
 
@@ -276,7 +276,7 @@ public class ClientTransaction
   /// <para>
   /// Most of the time, this property returns <see langword="true" /> as long as <see cref="SubTransaction"/> is <see langword="null" />. However,
   /// while 
-  /// <see cref="CreateSubTransaction(System.Func{Remotion.Data.DomainObjects.ClientTransaction,Remotion.Data.DomainObjects.Infrastructure.InvalidObjects.IInvalidDomainObjectManager,Remotion.Data.DomainObjects.Infrastructure.Enlistment.IEnlistedDomainObjectManager,Remotion.Data.DomainObjects.ClientTransaction})"/>
+  /// <see cref="CreateSubTransaction()"/>
   /// is executing, there is a small time frame where this property already returns <see langword="false" /> while <see cref="SubTransaction"/> is 
   /// still <see langword="null" />. In addition, infrastructure code might temporarily set a transaction active for internal operations even though
   /// a <see cref="SubTransaction"/> exists.
@@ -793,9 +793,9 @@ public class ClientTransaction
   /// </remarks>
   public virtual ClientTransaction CreateSubTransaction ()
   {
-    return CreateSubTransaction ((parentTx, invalidDomainObjectManager, enlistedDomainObjectManager) =>
+    return CreateSubTransaction ((parentTx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager) =>
     {
-      var componentFactory = SubClientTransactionComponentFactory.Create (parentTx, invalidDomainObjectManager, enlistedDomainObjectManager);
+      var componentFactory = SubClientTransactionComponentFactory.Create (parentTx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager);
       return ObjectFactory.Create<ClientTransaction> (true, ParamList.Create (componentFactory));
     });
   }
@@ -815,12 +815,12 @@ public class ClientTransaction
   /// scope created by <see cref="EnterDiscardingScope"/> is left.
   /// </para>
   /// </remarks>
-  public virtual ClientTransaction CreateSubTransaction (
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> subTransactionFactory)
+  public virtual ClientTransaction CreateSubTransaction (SubTransactionFactory subTransactionFactory)
   {
     ArgumentUtility.CheckNotNull ("subTransactionFactory", subTransactionFactory);
 
-    return _hierarchyManager.CreateSubTransaction (tx => subTransactionFactory (tx, _invalidDomainObjectManager, _enlistedDomainObjectManager));
+    return _hierarchyManager.CreateSubTransaction (
+        tx => subTransactionFactory (tx, _invalidDomainObjectManager, _enlistedDomainObjectManager, _hierarchyManager));
   }
 
   /// <summary>

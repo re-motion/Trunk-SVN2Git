@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -36,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </remarks>
   public interface IClientTransactionComponentFactory
   {
-    ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction);
+    ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction);
     Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
     IClientTransactionEventBroker CreateEventBroker (ClientTransaction constructedTransaction);
     IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);

@@ -20,6 +20,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -34,7 +35,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public abstract class ClientTransactionComponentFactoryBase : IClientTransactionComponentFactory
   {
-    public abstract ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction);
+    public abstract ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction);
     public abstract Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
     public abstract IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
     public abstract IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);

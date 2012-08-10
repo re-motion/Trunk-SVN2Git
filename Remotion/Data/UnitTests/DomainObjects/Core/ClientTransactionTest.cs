@@ -25,12 +25,12 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Data.UnitTests.UnitTesting;
@@ -49,6 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private DataManager _dataManager;
 
     private MockRepository _mockRepository;
+    private ITransactionHierarchyManager _hierarchyManagerMock;
     private Dictionary<Enum, object> _fakeApplicationData;
     private IDataManager _dataManagerMock;
     private IEnlistedDomainObjectManager _enlistedObjectManagerMock;
@@ -69,7 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _dataManager = ClientTransactionTestHelper.GetDataManager (_transaction);
 
       _mockRepository = new MockRepository();
-      _fakeApplicationData = new Dictionary<Enum, object>();
+      _hierarchyManagerMock = _mockRepository.StrictMock<ITransactionHierarchyManager> ();
+      _fakeApplicationData = new Dictionary<Enum, object> ();
       _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
       _enlistedObjectManagerMock = _mockRepository.StrictMock<IEnlistedDomainObjectManager> ();
       _fakeExtensions = new ClientTransactionExtensionCollection("test");
@@ -80,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _commitRollbackAgentMock = _mockRepository.StrictMock<ICommitRollbackAgent>();
 
       _transactionWithMocks = ClientTransactionObjectMother.CreateWithComponents<TestableClientTransaction> (
-          null,
+          _hierarchyManagerMock,
           _fakeApplicationData,
           tx => { throw new NotImplementedException(); },
           _dataManagerMock,
@@ -92,30 +94,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           _queryManagerMock,
           _commitRollbackAgentMock);
       // Ignore calls made by ctor
-      _eventBrokerMock.BackToRecord();
+      _hierarchyManagerMock.BackToRecord ();
+      _eventBrokerMock.BackToRecord ();
     }
 
     [Test]
     public void Initialization_OrderOfFactoryCalls ()
     {
-      var fakeParentTransaction = ClientTransaction.CreateRootTransaction();
-      ClientTransactionTestHelper.SetIsActive (fakeParentTransaction, false);
-
       var componentFactoryMock = _mockRepository.StrictMock<IClientTransactionComponentFactory>();
       var listenerManagerMock = _mockRepository.StrictMock<IClientTransactionEventBroker>();
       
       var fakeExtensionCollection = new ClientTransactionExtensionCollection ("test");
-
-      var parentListenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      ClientTransactionTestHelper.AddListener (fakeParentTransaction, parentListenerMock);
 
       ClientTransaction constructedTransaction = null;
 
       using (_mockRepository.Ordered ())
       {
         componentFactoryMock
-            .Expect (mock => mock.GetParentTransaction (Arg<ClientTransaction>.Is.Anything))
-            .Return (fakeParentTransaction)
+            .Expect (mock => mock.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Is.Anything))
+            .Return (_hierarchyManagerMock)
             .WhenCalled (
                 mi =>
                 {
@@ -125,7 +122,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         componentFactoryMock
             .Expect (mock => mock.CreateApplicationData (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_fakeApplicationData)
-            .WhenCalled (mi => Assert.That (constructedTransaction.ParentTransaction == fakeParentTransaction));
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetHierarchyManager (constructedTransaction) == _hierarchyManagerMock));
         componentFactoryMock
             .Expect (mock => mock.CreateEventBroker (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (listenerManagerMock)
@@ -193,10 +190,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                   Assert.That (((ExtensionClientTransactionListener) mi.Arguments[0]).Extension, Is.SameAs (constructedTransaction.Extensions)); 
                 });
 
-        parentListenerMock.Expect (
-            mock => mock.SubTransactionInitialize (
-                Arg.Is (fakeParentTransaction), 
-                Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)));
+        _hierarchyManagerMock.Expect (mock => mock.OnBeforeTransactionInitialize());
         listenerManagerMock
             .Expect (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything))
             .WhenCalled (
@@ -222,52 +216,61 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void ParentTransaction ()
     {
-      var subTransaction = _transaction.CreateSubTransaction();
+      var fakeParent = ClientTransactionObjectMother.Create();
+      _hierarchyManagerMock.Stub (mock => mock.ParentTransaction).Return (fakeParent);
+      _hierarchyManagerMock.Replay ();
 
-      Assert.That (subTransaction.ParentTransaction, Is.SameAs (_transaction));
+      Assert.That (_transactionWithMocks.ParentTransaction, Is.SameAs (fakeParent));
     }
 
     [Test]
-    public void ParentTransaction_Null ()
+    public void SubTransaction ()
     {
-      Assert.That (_transaction.ParentTransaction, Is.Null);
-    }
+      var fakeSub = ClientTransactionObjectMother.Create ();
+      _hierarchyManagerMock.Stub (mock => mock.SubTransaction).Return (fakeSub);
+      _hierarchyManagerMock.Replay ();
 
-    [Test]
-    public void ActiveSubTransaction_Null ()
-    {
-      Assert.That (_transaction.SubTransaction, Is.Null);
+      Assert.That (_transactionWithMocks.SubTransaction, Is.SameAs (fakeSub));
     }
 
     [Test]
     public void RootTransaction_Same ()
     {
-      Assert.That (_transaction.RootTransaction, Is.SameAs (_transaction));
+      _hierarchyManagerMock.Stub (mock => mock.ParentTransaction).Return (null);
+      _hierarchyManagerMock.Replay ();
+
+      Assert.That (_transactionWithMocks.RootTransaction, Is.SameAs (_transactionWithMocks));
     }
 
     [Test]
-    public void RootTransaction_NotSame ()
+    public void RootTransaction_MultipleSteps ()
     {
-      var grandParentTransaction = _transaction;
-      var parentTransaction = grandParentTransaction.CreateSubTransaction();
-      var transaction = parentTransaction.CreateSubTransaction();
+      var fakeParent1 = ClientTransactionObjectMother.Create ();
+      var fakeParent2 = ClientTransactionObjectMother.CreateWithParent (fakeParent1);
+      _hierarchyManagerMock.Stub (mock => mock.ParentTransaction).Return (fakeParent2);
+      _hierarchyManagerMock.Replay ();
 
-      Assert.That (transaction.RootTransaction, Is.SameAs (grandParentTransaction));
+      Assert.That (_transactionWithMocks.RootTransaction, Is.SameAs (fakeParent1));
     }
 
     [Test]
     public void LeafTransaction_Same ()
     {
-      Assert.That (_transaction.LeafTransaction, Is.SameAs (_transaction));
+      _hierarchyManagerMock.Stub (mock => mock.SubTransaction).Return (null);
+      _hierarchyManagerMock.Replay ();
+
+      Assert.That (_transactionWithMocks.LeafTransaction, Is.SameAs (_transactionWithMocks));
     }
 
     [Test]
-    public void LeafTransaction_NotSame ()
+    public void LeafTransaction_MultipleSteps ()
     {
-      var subTransaction1 = _transaction.CreateSubTransaction ();
-      var subTransaction2 = subTransaction1.CreateSubTransaction ();
+      var fakeSub1 = ClientTransactionObjectMother.Create ();
+      var fakeSub2 = ClientTransactionObjectMother.CreateWithSub (fakeSub1);
+      _hierarchyManagerMock.Stub (mock => mock.SubTransaction).Return (fakeSub2);
+      _hierarchyManagerMock.Replay();
 
-      Assert.That (_transaction.LeafTransaction, Is.SameAs (subTransaction2));
+      Assert.That (_transactionWithMocks.LeafTransaction, Is.SameAs (fakeSub1));
     }
 
     [Test]
@@ -885,151 +888,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (persistenceStrategy, Is.TypeOf (typeof (SubPersistenceStrategy)));
     }
 
-    // TODO 4993: Simplify with hierarchy manager mock
-
     [Test]
     public void CreateSubTransaction_WithCustomFactory ()
     {
-      ClientTransaction fakeSubTransaction = null;
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> factoryMock =
-          (tx, invalidDomainObjectManager, enlistedDomainObjectManager) =>
-          {
-            fakeSubTransaction = CreateTransactionInHierarchy (_transaction);
-            Assert.That (tx, Is.SameAs (_transaction));
-            Assert.That (invalidDomainObjectManager, Is.SameAs (ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction)));
-            Assert.That (enlistedDomainObjectManager, Is.SameAs (ClientTransactionTestHelper.GetEnlistedDomainObjectManager (_transaction)));
-            return fakeSubTransaction;
-          };
+      ClientTransaction fakeSubTransaction = ClientTransactionObjectMother.Create();
+      Func<ClientTransaction, ClientTransaction> actualFactoryFunc = null;
+      _hierarchyManagerMock
+          .Expect (mock => mock.CreateSubTransaction (Arg<Func<ClientTransaction, ClientTransaction>>.Is.Anything))
+          .WhenCalled (mi => actualFactoryFunc = (Func<ClientTransaction, ClientTransaction>) mi.Arguments[0])
+          .Return (fakeSubTransaction);
 
-      Assert.That (_transaction.IsActive, Is.True);
+      ClientTransaction fakeSubTransaction2 = ClientTransactionObjectMother.Create ();
+      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ITransactionHierarchyManager, ClientTransaction> factoryMock =
+        (tx, invalidDomainObjectManager, enlistedDomainObjectManager, hierarchyManager) =>
+        {
+          Assert.That (tx, Is.SameAs (_transactionWithMocks));
+          Assert.That (invalidDomainObjectManager, Is.SameAs (_invalidDomainObjectManagerMock));
+          Assert.That (enlistedDomainObjectManager, Is.SameAs (_enlistedObjectManagerMock));
+          Assert.That (hierarchyManager, Is.SameAs (_hierarchyManagerMock));
+          return fakeSubTransaction2;
+        };
 
-      var subTransaction = _transaction.CreateSubTransaction (factoryMock);
+      _mockRepository.ReplayAll();
+      
+      var result = _transactionWithMocks.CreateSubTransaction (factoryMock);
 
-      Assert.That (_transaction.IsActive, Is.False);
-      Assert.That (subTransaction, Is.SameAs (fakeSubTransaction));
-      Assert.That (_transaction.SubTransaction, Is.SameAs (subTransaction));
-    }
+      _hierarchyManagerMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (fakeSubTransaction));
 
-    [Test]
-    public void CreateSubTransaction_Events ()
-    {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-      var mockRepository = listenerMock.GetMockRepository();
-      var componentFactoryPartialMock = mockRepository.PartialMock<SubClientTransactionComponentFactory> (
-          _transaction,
-          ClientTransactionTestHelper.GetInvalidDomainObjectManager (_transaction),
-          ClientTransactionTestHelper.GetEnlistedDomainObjectManager (_transaction));
-      var eventReceiverMock = mockRepository.StrictMock<ClientTransactionMockEventReceiver> (_transaction);
-
-      using (mockRepository.Ordered ())
-      {
-        listenerMock
-            .Expect (mock => mock.SubTransactionCreating (_transaction))
-            .WhenCalled (mi => Assert.That (_transaction.IsActive, Is.True));
-        componentFactoryPartialMock
-            .Expect (mock => mock.GetParentTransaction (Arg<ClientTransaction>.Is.Anything))
-            .Return (_transaction);
-        eventReceiverMock
-            .Expect (mock => mock.SubTransactionCreated (
-                Arg.Is (_transaction), 
-                Arg<SubTransactionCreatedEventArgs>.Matches (arg => arg.SubTransaction.ParentTransaction == _transaction)))
-            .WhenCalled (mi =>
-            {
-              Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
-              Assert.That (_transaction.IsActive, Is.False);
-            });
-        listenerMock
-            .Expect (mock => mock.SubTransactionCreated (
-                Arg.Is (_transaction), 
-                Arg<ClientTransaction>.Matches (subTx => subTx.ParentTransaction == _transaction)));
-      }
-
-      mockRepository.ReplayAll ();
-
-      _transaction.CreateSubTransaction ((tx, invalidDomainObjectManager, enlistedDomainObjectManager) => 
-          ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (componentFactoryPartialMock));
-      mockRepository.VerifyAll ();
-    }
-
-    [Test]
-    public void CreateSubTransaction_CancellationInCreatingNotification ()
-    {
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-      var eventReceiverMock = MockRepository.GenerateStrictMock<ClientTransactionMockEventReceiver> (_transaction);
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> factoryMock = 
-          (tx, invalidDomainObjectManager, enlistedDomainobjectManager) =>
-          {
-            Assert.Fail ("Must not be called.");
-            return null;
-          };
-
-      var exception = new InvalidOperationException ("Canceled");
-      listenerMock
-          .Expect (mock => mock.SubTransactionCreating (_transaction))
-          .Throw (exception);
-      listenerMock.Replay ();
-      eventReceiverMock.Replay ();
-
-      try
-      {
-        _transaction.CreateSubTransaction (factoryMock);
-        Assert.Fail ("Expected exception");
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (ex, Is.SameAs (exception));
-      }
-
-      listenerMock.AssertWasNotCalled (mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
-
-      eventReceiverMock.AssertWasNotCalled (mock => mock.SubTransactionCreated (Arg<object>.Is.Anything, Arg<SubTransactionCreatedEventArgs>.Is.Anything));
-
-      Assert.That (_transaction.IsActive, Is.True);
-    }
-
-    [Test]
-    public void CreateSubTransaction_ExceptionInFactory ()
-    {
-      var exception = new InvalidOperationException ("Canceled");
-      Func<ClientTransaction, IInvalidDomainObjectManager, IEnlistedDomainObjectManager, ClientTransaction> factoryMock = 
-          (tx, invalidDomainObjectManager, enlistedDomainObjectManager) => { throw (exception); };
-
-      try
-      {
-        _transaction.CreateSubTransaction (factoryMock);
-        Assert.Fail ("Expected exception");
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (ex, Is.SameAs (exception));
-      }
-
-      Assert.That (_transaction.IsActive, Is.True);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
-        "The given factory did not create a sub-transaction for this transaction.")]
-    public void CreateSubTransaction_Throws_WhenParentTransactionDoesNotMatch ()
-    {
-      try
-      {
-        _transaction.CreateSubTransaction ((tx, invalidDomainObjectManager, enlistedDomainObjectManager) => ClientTransaction.CreateRootTransaction());
-      }
-      catch (InvalidOperationException)
-      {
-        Assert.That (_transaction.IsActive, Is.True);
-        throw;
-      }
+      // Check the actualfactoryFunc that was passed from CreateSubTransaction to _hierarchyManagerMock by invoking it.
+      var actualFactoryFuncResult = actualFactoryFunc (_transactionWithMocks);
+      Assert.That (actualFactoryFuncResult, Is.SameAs (fakeSubTransaction2));
     }
 
     // TODO 4993: Simplify with hierarchy manager mock
     [Test]
     public void Discard ()
     {
-      var listenerMock = SetupEventForwardingToListenerMock (_eventBrokerMock, _transactionWithMocks);
-      listenerMock.Expect (mock => mock.TransactionDiscard (_transactionWithMocks));
-      _eventBrokerMock.Expect (mock => mock.AddListener (Arg<InvalidatedTransactionListener>.Is.TypeOf));
+      using (_mockRepository.Ordered ())
+      {
+        var listenerMock = SetupEventForwardingToListenerMock (_eventBrokerMock, _transactionWithMocks);
+        listenerMock.Expect (mock => mock.TransactionDiscard (_transactionWithMocks));
+        _hierarchyManagerMock.Expect (mock => mock.OnTransactionDiscard());
+        _eventBrokerMock.Expect (mock => mock.AddListener (Arg<InvalidatedTransactionListener>.Is.TypeOf));
+      }
       _mockRepository.ReplayAll();
 
       Assert.That (_transactionWithMocks.IsDiscarded, Is.False);
@@ -1041,52 +943,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void Discard_WithParentTransaction ()
-    {
-      var parentTransaction = ClientTransaction.CreateRootTransaction ();
-      ClientTransactionTestHelper.SetIsActive (parentTransaction, false);
-
-      var subTransaction = CreateTransactionInHierarchy (parentTransaction);
-      ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, subTransaction);
-
-      _eventBrokerMock.Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
-      _eventBrokerMock.Stub (stub => stub.AddListener (Arg<IClientTransactionListener>.Is.Anything));
-      _mockRepository.ReplayAll ();
-
-      Assert.That (parentTransaction.IsActive, Is.False);
-      Assert.That (parentTransaction.SubTransaction, Is.Not.Null);
-
-      subTransaction.Discard ();
-
-      Assert.That (parentTransaction.IsActive, Is.True);
-      Assert.That (parentTransaction.SubTransaction, Is.Null);
-    }
-
-    [Test]
     public void Discard_Twice ()
     {
       var parentTransaction = ClientTransaction.CreateRootTransaction ();
       ClientTransactionTestHelper.SetIsActive (parentTransaction, false);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, _transactionWithMocks);
 
-      var subTransaction = CreateTransactionInHierarchy (parentTransaction);
-      ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, subTransaction);
       _eventBrokerMock.Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
+      _hierarchyManagerMock.Stub (mock => mock.OnTransactionDiscard ());
+      
+      _transactionWithMocks.Discard();
 
-      subTransaction.Discard();
+      _mockRepository.BackToRecordAll();
+      _mockRepository.ReplayAll ();
 
-      ClientTransactionTestHelper.SetIsActive (parentTransaction, false);
-      var otherSubTransaction = CreateTransactionInHierarchy (parentTransaction);
-      ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, otherSubTransaction);
-
-      _eventBrokerMock.BackToRecord();
-      _eventBrokerMock.Replay();
-
-      subTransaction.Discard ();
+      _transactionWithMocks.Discard ();
 
       _eventBrokerMock.AssertWasNotCalled (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
-      Assert.That (parentTransaction.IsActive, Is.False);
-      Assert.That (parentTransaction.SubTransaction, Is.SameAs (otherSubTransaction));
+      _hierarchyManagerMock.AssertWasNotCalled (mock => mock.OnTransactionDiscard ());
     }
 
     [Test]
@@ -1402,21 +1276,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var deserializedDiscardedTransaction = Serializer.SerializeAndDeserialize (clientTransaction);
 
       Assert.That (deserializedDiscardedTransaction.IsDiscarded, Is.True);
-    }
-
-    private ClientTransaction CreateTransactionInHierarchy (ClientTransaction parent)
-    {
-      return ClientTransactionObjectMother.CreateWithComponents<ClientTransaction> (
-          parent,
-          _fakeApplicationData,
-          tx => { throw new NotImplementedException (); },
-          _dataManagerMock,
-          _enlistedObjectManagerMock,
-          _fakeExtensions,
-          _invalidDomainObjectManagerMock,
-          _eventBrokerMock,
-          _persistenceStrategyMock,
-          _queryManagerMock);
     }
 
     private void CheckRaisedEvent (Action<ClientTransaction, IClientTransactionListener> raiseAction, Action<ClientTransaction, IClientTransactionListener> expectedEvent)

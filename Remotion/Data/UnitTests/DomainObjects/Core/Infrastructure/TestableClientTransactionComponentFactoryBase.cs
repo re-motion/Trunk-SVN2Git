@@ -21,6 +21,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 
@@ -28,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
   public class TestableClientTransactionComponentFactoryBase : ClientTransactionComponentFactoryBase
   {
-    public override ClientTransaction GetParentTransaction (ClientTransaction constructedTransaction)
+    public override ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction)
     {
       throw new NotImplementedException();
     }

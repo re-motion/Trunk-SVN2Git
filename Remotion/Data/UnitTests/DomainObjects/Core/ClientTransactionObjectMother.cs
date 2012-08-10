@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -71,7 +72,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     public static T CreateWithComponents<T> (
-        ClientTransaction parentTransaction = null,
+        ITransactionHierarchyManager transactionHierarchyManager = null,
         Dictionary<Enum, object> applicationData = null,
         Func<ClientTransaction, ClientTransaction> cloneFactory = null,
         IDataManager dataManager = null,
@@ -85,7 +86,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       where T : ClientTransaction
     {
       var componentFactoryStub = CreateComponentFactory (
-          parentTransaction,
+          transactionHierarchyManager,
           applicationData,
           cloneFactory,
           dataManager,
@@ -101,7 +102,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     public static IClientTransactionComponentFactory CreateComponentFactory (
-        ClientTransaction parentTransaction = null,
+        ITransactionHierarchyManager transactionHierarchyManager = null,
         Dictionary<Enum, object> applicationData = null,
         Func<ClientTransaction, ClientTransaction> cloneFactory = null,
         IDataManager dataManager = null,
@@ -113,6 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         IQueryManager queryManager = null,
         ICommitRollbackAgent commitRollbackAgent = null)
     {
+      transactionHierarchyManager = transactionHierarchyManager ?? MockRepository.GenerateStub<ITransactionHierarchyManager>();
       applicationData = applicationData ?? new Dictionary<Enum, object>();
       cloneFactory = cloneFactory ?? (tx => { throw new Exception ("Should not be called."); });
       dataManager = dataManager ?? MockRepository.GenerateStub<IDataManager> ();
@@ -125,7 +127,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       commitRollbackAgent = commitRollbackAgent ?? MockRepository.GenerateStub<ICommitRollbackAgent> ();
       
       var componentFactoryStub = MockRepository.GenerateStub<IClientTransactionComponentFactory>();
-      componentFactoryStub.Stub (stub => stub.GetParentTransaction (Arg<ClientTransaction>.Is.Anything)).Return (parentTransaction);
+      componentFactoryStub.Stub (stub => stub.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Is.Anything)).Return (transactionHierarchyManager);
       componentFactoryStub.Stub (stub => stub.CreateApplicationData (Arg<ClientTransaction>.Is.Anything)).Return (applicationData);
       componentFactoryStub.Stub (stub => stub.CreateCloneFactory ()).Return (cloneFactory);
       componentFactoryStub
@@ -169,6 +171,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       componentFactoryPartialMock.Replay ();
 
       return CreateWithComponents<ClientTransaction> (componentFactoryPartialMock);
+    }
+
+    public static ClientTransaction CreateWithParent (ClientTransaction parent)
+    {
+      var hierarchyManagerStub = MockRepository.GenerateStub<ITransactionHierarchyManager>();
+      hierarchyManagerStub.Stub (stub => stub.ParentTransaction).Return (parent);
+      return CreateWithComponents<ClientTransaction> (transactionHierarchyManager: hierarchyManagerStub);
+    }
+
+    public static ClientTransaction CreateWithSub (ClientTransaction sub)
+    {
+      var hierarchyManagerStub = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
+      hierarchyManagerStub.Stub (stub => stub.SubTransaction).Return (sub);
+      hierarchyManagerStub.Stub (stub => stub.IsActive).Return (false);
+      return CreateWithComponents<ClientTransaction> (transactionHierarchyManager: hierarchyManagerStub);
     }
   }
 }
