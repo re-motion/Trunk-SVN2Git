@@ -166,6 +166,7 @@ public class ClientTransaction
     _applicationData = componentFactory.CreateApplicationData (this);
     _eventBroker = componentFactory.CreateEventBroker (this);
     _hierarchyManager = componentFactory.CreateTransactionHierarchyManager (this, _eventBroker);
+    _hierarchyManager.InstallListeners (_eventBroker);
     _enlistedDomainObjectManager = componentFactory.CreateEnlistedObjectManager (this);
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this, _eventBroker);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);

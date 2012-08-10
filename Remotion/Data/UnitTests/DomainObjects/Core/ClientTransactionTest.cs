@@ -126,6 +126,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
             .Expect (mock => mock.CreateTransactionHierarchyManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction), Arg.Is (_eventBrokerMock)))
             .Return (_hierarchyManagerMock)
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetEventBroker (constructedTransaction), Is.SameAs (_eventBrokerMock)));
+        _hierarchyManagerMock
+            .Expect (mock => mock.InstallListeners (_eventBrokerMock));
         componentFactoryMock
             .Expect (mock => mock.CreateEnlistedObjectManager (Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction)))
             .Return (_enlistedObjectManagerMock)

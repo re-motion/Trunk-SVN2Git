@@ -156,10 +156,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (
           listeners,
           Has
-              .Length.EqualTo (4)
-              .And.Some.TypeOf<InactiveClientTransactionListener> ()
+              .Length.EqualTo (2)
               .And.Some.TypeOf<LoggingClientTransactionListener> ()
-              .And.Some.TypeOf<NewObjectHierarchyInvalidationClientTransactionListener> ()
               .And.Some.TypeOf<NotFoundObjectsClientTransactionListener> ());
     }
 

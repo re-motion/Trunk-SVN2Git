@@ -68,9 +68,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     protected virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      yield return new InactiveClientTransactionListener ();
       yield return new LoggingClientTransactionListener ();
-      yield return new NewObjectHierarchyInvalidationClientTransactionListener();
     }
 
     public virtual IDataManager CreateDataManager (

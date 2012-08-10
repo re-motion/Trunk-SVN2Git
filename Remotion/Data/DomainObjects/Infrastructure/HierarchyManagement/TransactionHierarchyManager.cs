@@ -88,8 +88,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       _parentTransaction = parentTransaction;
       _parentHierarchyManager = parentHierarchyManager;
       _parentEventSink = parentEventSink;
-
-      // TODO 4993: Add InactiveClientTransactionListener and NewObject...Listener here. To do so, initialize event broker before the hierarchy manager, and pass in the event broker as a ctor arg.
     }
 
     public ClientTransaction ThisTransaction
@@ -125,6 +123,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     public ClientTransaction SubTransaction
     {
       get { return _subTransaction; }
+    }
+
+    public void InstallListeners (IClientTransactionEventBroker eventBroker)
+    {
+      ArgumentUtility.CheckNotNull ("eventBroker", eventBroker);
+      eventBroker.AddListener (new InactiveClientTransactionListener());
+      eventBroker.AddListener (new NewObjectHierarchyInvalidationClientTransactionListener());
     }
 
     public void OnBeforeTransactionInitialize ()

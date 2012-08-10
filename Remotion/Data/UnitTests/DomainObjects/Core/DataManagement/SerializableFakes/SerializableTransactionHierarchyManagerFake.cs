@@ -17,6 +17,7 @@
 
 using System;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
@@ -65,6 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     }
 
     public IDisposable UnlockIfRequired ()
+    {
+      throw new NotImplementedException();
+    }
+
+    public void InstallListeners (IClientTransactionEventBroker eventBroker)
     {
       throw new NotImplementedException();
     }

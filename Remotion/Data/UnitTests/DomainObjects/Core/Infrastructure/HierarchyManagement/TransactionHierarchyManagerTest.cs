@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Development.UnitTesting;
@@ -73,6 +74,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
       Assert.That (_managerWithNullParent.ParentEventSink, Is.Null);
       Assert.That (_managerWithNullParent.IsActive, Is.True);
       Assert.That (_managerWithNullParent.SubTransaction, Is.Null);
+    }
+
+    [Test]
+    public void InstallListeners ()
+    {
+      var eventBrokerMock = MockRepository.GenerateStrictMock<IClientTransactionEventBroker>();
+      eventBrokerMock.Expect (mock => mock.AddListener (Arg<InactiveClientTransactionListener>.Is.TypeOf));
+      eventBrokerMock.Expect (mock => mock.AddListener (Arg<NewObjectHierarchyInvalidationClientTransactionListener>.Is.TypeOf));
+
+      _manager.InstallListeners (eventBrokerMock);
     }
 
     [Test]

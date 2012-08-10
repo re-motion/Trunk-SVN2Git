@@ -32,5 +32,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     void RemoveSubTransaction ();
     IDisposable Unlock ();
     IDisposable UnlockIfRequired ();
+    void InstallListeners (IClientTransactionEventBroker eventBroker);
   }
 }
