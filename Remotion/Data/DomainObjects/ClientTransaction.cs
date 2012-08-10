@@ -181,7 +181,6 @@ public class ClientTransaction
     RaiseListenerEvent ((tx, l) => l.TransactionInitialize (tx));
   }
 
-  // TODO 4993: Eliminate; instead, pass the hierarchy manager to all components that need it.
   internal ITransactionHierarchyManager HierarchyManager
   {
     get { return _hierarchyManager; }
