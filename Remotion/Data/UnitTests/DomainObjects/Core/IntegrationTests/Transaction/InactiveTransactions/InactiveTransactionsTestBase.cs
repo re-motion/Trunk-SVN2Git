@@ -125,29 +125,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         TValue expectedOriginalValue)
         where TDomainObject : DomainObject
     {
-      var isInactiveTransaction = !clientTransaction.IsActive;
-      if (isInactiveTransaction)
-      {
-        ClientTransactionTestHelper.SetIsActive (clientTransaction, true);
-      }
+      var propertyAccessor = GetPropertyAccessor (domainObject, propertyExpression, clientTransaction);
+      Assert.That (propertyAccessor.GetValueWithoutTypeCheck(), Is.EqualTo (expectedCurrentValue));
+      Assert.That (propertyAccessor.GetOriginalValueWithoutTypeCheck(), Is.EqualTo (expectedOriginalValue));
+    }
 
-      try
-      {
-        var propertyIndexer = new PropertyIndexer (domainObject);
-        var propertyAccessorData = domainObject.ID.ClassDefinition.PropertyAccessorDataCache.ResolveMandatoryPropertyAccessorData (propertyExpression);
-        Assert.That (
-            propertyIndexer[propertyAccessorData.PropertyIdentifier, clientTransaction].GetValueWithoutTypeCheck(), Is.EqualTo (expectedCurrentValue));
-        Assert.That (
-            propertyIndexer[propertyAccessorData.PropertyIdentifier, clientTransaction].GetOriginalValueWithoutTypeCheck(),
-            Is.EqualTo (expectedOriginalValue));
-      }
-      finally
-      {
-        if (isInactiveTransaction)
-        {
-          ClientTransactionTestHelper.SetIsActive (clientTransaction, false);
-        }
-      }
+    protected void SetProperty<TDomainObject, TValue> (
+        ClientTransaction clientTransaction, TDomainObject domainObject, Expression<Func<TDomainObject, TValue>> propertyExpression, TValue newValue)
+        where TDomainObject : DomainObject
+    {
+      var propertyAccessor = GetPropertyAccessor(domainObject, propertyExpression, clientTransaction);
+      propertyAccessor.SetValue (newValue);
     }
 
     protected void CheckPropertyEquivalent<TDomainObject, TValue> (

@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq.Expressions;
 using Remotion.Configuration;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms;
 using Remotion.Data.UnitTests.DomainObjects.Core;
@@ -150,6 +153,15 @@ namespace Remotion.Data.UnitTests.DomainObjects
       dataContainer.SetValue (GetPropertyDefinition (declaringType, shortPropertyName), value);
     }
 
+    protected PropertyAccessor GetPropertyAccessor<TDomainObject, TValue> (
+        TDomainObject domainObject, Expression<Func<TDomainObject, TValue>> propertyExpression, ClientTransaction clientTransaction)
+        where TDomainObject: DomainObject
+    {
+      var propertyIndexer = new PropertyIndexer (domainObject);
+      var propertyAccessorData = domainObject.ID.ClassDefinition.PropertyAccessorDataCache.ResolveMandatoryPropertyAccessorData (propertyExpression);
+      return propertyIndexer[propertyAccessorData.PropertyIdentifier, clientTransaction];
+    }
+
     protected string GetPropertyIdentifier (Type declaringType, string shortPropertyName)
     {
       return declaringType.FullName + "." + shortPropertyName;
@@ -159,5 +171,6 @@ namespace Remotion.Data.UnitTests.DomainObjects
     {
       return Configuration.GetTypeDefinition (classType);
     }
+
   }
 }

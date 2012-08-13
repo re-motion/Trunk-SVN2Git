@@ -224,6 +224,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CommitRollbackFullEventChainTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\CollectionQueryTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\ModificationsInLoadEventTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\ResurrectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\UnloadTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\VirtualCollectionRelationPropertyReadTest.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\GetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\CommitTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\DiscardTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\ModificationsInLoadEventTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\VirtualCollectionRelationPropertyWriteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\VirtualObjectRelationPropertyWriteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\NonVirtualRelationPropertyWriteTest.cs" />
