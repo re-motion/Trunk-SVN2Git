@@ -28,6 +28,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
@@ -104,8 +105,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       }
     }
 
-    public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID, string shortPropertyName)
+    public static RelationEndPointID CreateRelationEndPointID (ObjectID objectID = null, string shortPropertyName = null)
     {
+      objectID = objectID ?? new ObjectID (typeof (Order), Guid.NewGuid());
+      shortPropertyName = shortPropertyName ?? "OrderItems";
       return RelationEndPointID.Create (objectID, objectID.ClassDefinition.ClassType, shortPropertyName);
     }
 
@@ -131,5 +134,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       return CreateCollectionEndPoint (customerEndPointID, initialContents);
     }
 
+    public static IRelationEndPoint CreateStub (RelationEndPointID endPointID = null)
+    {
+      endPointID = endPointID ?? CreateRelationEndPointID();
+      var endPoint = MockRepository.GenerateStub<IRelationEndPoint>();
+      endPoint.Stub (stub => stub.ID).Return (endPointID);
+      endPoint.Stub (stub => stub.Definition).Return (endPointID.Definition);
+      endPoint.Stub (stub => stub.ObjectID).Return (endPointID.ObjectID);
+      return endPoint;
+    }
   }
 }

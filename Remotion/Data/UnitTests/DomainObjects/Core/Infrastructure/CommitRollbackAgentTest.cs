@@ -72,9 +72,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _fakeNewDomainObject = LifetimeService.NewObject (_clientTransaction, typeof (Order), ParamList.Empty);
       _fakeDeletedDomainObject = LifetimeService.NewObject (_clientTransaction, typeof (Order), ParamList.Empty);
 
-      var fakeDataContainer1 = DataContainerObjectMother.CreateDataContainer();
-      var fakeDataContainer2 = DataContainerObjectMother.CreateDataContainer();
-      var fakeDataContainer3 = DataContainerObjectMother.CreateDataContainer();
+      var fakeDataContainer1 = DataContainerObjectMother.Create();
+      var fakeDataContainer2 = DataContainerObjectMother.Create();
+      var fakeDataContainer3 = DataContainerObjectMother.Create();
 
       _fakeChangedPersistableItem = new PersistableData (_fakeChangedDomainObject, StateType.Changed, fakeDataContainer1, new IRelationEndPoint[0]);
       _fakeNewPersistableItem = new PersistableData (_fakeNewDomainObject, StateType.New, fakeDataContainer2, new IRelationEndPoint[0]);

@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction.InactiveTransactions
 {
@@ -29,6 +30,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     private ClientTransaction _inactiveRootTransaction;
     private ClientTransaction _inactiveMiddleTransaction;
     private ClientTransaction _activeSubTransaction;
+    private IClientTransactionListener _listenerDynamicMock;
+    private IClientTransactionExtension _extensionStrictMock;
 
     protected ClientTransaction InactiveRootTransaction
     {
@@ -45,9 +48,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       get { return _activeSubTransaction; }
     }
 
+    protected IClientTransactionListener ListenerDynamicMock
+    {
+      get { return _listenerDynamicMock; }
+    }
+
+    protected IClientTransactionExtension ExtensionStrictMock
+    {
+      get { return _extensionStrictMock; }
+    }
+
     public override void SetUp ()
     {
       base.SetUp ();
+
+      _listenerDynamicMock = MockRepository.GenerateMock<IClientTransactionListener> ();
+      _extensionStrictMock = MockRepository.GenerateStrictMock<IClientTransactionExtension> ();
 
       _inactiveRootTransaction = ClientTransaction.CreateRootTransaction ();
       _inactiveRootTransaction.Execute (InitializeInactiveRootTransaction);
@@ -68,6 +84,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     protected virtual void InitializeActiveSubTransaction ()
     {
     }
+
+    protected void InstallExtensionMock ()
+    {
+      ExtensionStrictMock.Stub (stub => stub.Key).Return ("test");
+      InactiveRootTransaction.Extensions.Add (ExtensionStrictMock);
+      InactiveMiddleTransaction.Extensions.Add (ExtensionStrictMock);
+      ActiveSubTransaction.Extensions.Add (ExtensionStrictMock);
+    }
+
+    protected void InstallListenerMock ()
+    {
+      ClientTransactionTestHelper.AddListener (InactiveRootTransaction, ListenerDynamicMock);
+      ClientTransactionTestHelper.AddListener (InactiveMiddleTransaction, ListenerDynamicMock);
+      ClientTransactionTestHelper.AddListener (ActiveSubTransaction, ListenerDynamicMock);
+    }
+
 
     protected void CheckDataLoaded (ClientTransaction clientTransaction, DomainObject domainObject)
     {

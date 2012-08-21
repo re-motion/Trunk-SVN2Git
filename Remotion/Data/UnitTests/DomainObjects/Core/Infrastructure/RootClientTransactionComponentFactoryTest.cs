@@ -215,6 +215,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
+      var hierarchyManager = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
 
       var fakeBasicObjectLoader = MockRepository.GenerateStub<IFetchEnabledObjectLoader> ();
 
@@ -226,7 +227,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
               eventSink,
               persistenceStrategy,
               invalidDomainObjectManager,
-              dataManager))
+              dataManager, 
+              hierarchyManager))
           .Return (fakeBasicObjectLoader);
       factoryPartialMock.Replay ();
 
@@ -237,7 +239,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           eventSink,
           persistenceStrategy,
           invalidDomainObjectManager,
-          dataManager);
+          dataManager,
+          hierarchyManager);
 
       Assert.That (result, Is.TypeOf (typeof (EagerFetchingObjectLoaderDecorator)));
       var objectLoader = (EagerFetchingObjectLoaderDecorator) result;
@@ -266,6 +269,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
+      var hierarchyManager = MockRepository.GenerateStub<ITransactionHierarchyManager>();
 
       var result = CallCreateBasicObjectLoader (
           _factory,
@@ -273,7 +277,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           eventSink,
           persistenceStrategy,
           invalidDomainObjectManager,
-          dataManager);
+          dataManager,
+          hierarchyManager);
 
       Assert.That (result, Is.TypeOf (typeof (FetchEnabledObjectLoader)));
       var objectLoader = (ObjectLoader) result;
@@ -282,8 +287,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           objectLoader.LoadedObjectDataRegistrationAgent,
           Is.TypeOf<LoadedObjectDataRegistrationAgent> ()
               .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.ClientTransaction).SameAs (_fakeConstructedTransaction)
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.DataManager).SameAs (dataManager)
-              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.TransactionEventSink).SameAs (eventSink));
+              .With.Property ((LoadedObjectDataRegistrationAgent agent) => agent.DataManager).SameAs (dataManager));
+
+      var registrationListener = ((LoadedObjectDataRegistrationAgent) objectLoader.LoadedObjectDataRegistrationAgent).RegistrationListener;
+      Assert.That (registrationListener, Is.TypeOf<LoadedObjectDataRegistrationListener> ());
+      Assert.That (((LoadedObjectDataRegistrationListener) registrationListener).EventSink, Is.SameAs (eventSink));
+      Assert.That (((LoadedObjectDataRegistrationListener) registrationListener).HierarchyManager, Is.SameAs (hierarchyManager));
 
       Assert.That (objectLoader.LoadedObjectDataProvider, Is.TypeOf<LoadedObjectDataProvider> ());
       var loadedObjectDataProvider = (LoadedObjectDataProvider) objectLoader.LoadedObjectDataProvider;
@@ -297,7 +306,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         IClientTransactionEventSink eventSink,
         IFetchEnabledPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager)
+        IDataManager dataManager,
+        ITransactionHierarchyManager hierarchyManager)
     {
       return PrivateInvoke.InvokeNonPublicMethod (
           factory,
@@ -306,7 +316,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           eventSink,
           persistenceStrategy,
           invalidDomainObjectManager,
-          dataManager);
+          dataManager,
+          hierarchyManager);
     }
   }
 }

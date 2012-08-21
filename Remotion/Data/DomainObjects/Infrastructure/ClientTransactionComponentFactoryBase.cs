@@ -48,12 +48,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ILazyLoader lazyLoader,
         IClientTransactionEventSink eventSink);
 
-    protected abstract IObjectLoader CreateObjectLoader (
-        ClientTransaction constructedTransaction,
-        IClientTransactionEventSink eventSink,
-        IPersistenceStrategy persistenceStrategy,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager);
+    protected abstract IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager, ITransactionHierarchyManager hierarchyManager);
 
     public virtual IClientTransactionEventBroker CreateEventBroker (ClientTransaction constructedTransaction)
     {
@@ -75,15 +70,20 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ClientTransaction constructedTransaction,
         IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        IPersistenceStrategy persistenceStrategy)
+        IPersistenceStrategy persistenceStrategy,
+        ITransactionHierarchyManager hierarchyManager)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("hierarchyManager", hierarchyManager);
     
       var dataContainerEventListener = CreateDataContainerEventListener (eventSink);
 
       var delegatingDataManager = new DelegatingDataManager ();
-      var objectLoader = CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, delegatingDataManager);
+      var objectLoader = CreateObjectLoader (
+          constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, delegatingDataManager, hierarchyManager);
 
       var endPointManager = CreateRelationEndPointManager (
           constructedTransaction,
@@ -101,7 +101,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IPersistenceStrategy persistenceStrategy,
-        IDataManager dataManager)
+        IDataManager dataManager,
+        ITransactionHierarchyManager hierarchyManager)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
@@ -109,7 +110,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
 
-      var objectLoader = CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
+      var objectLoader = CreateObjectLoader (
+          constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager, hierarchyManager);
       return new QueryManager (persistenceStrategy, objectLoader, eventSink);
     }
 

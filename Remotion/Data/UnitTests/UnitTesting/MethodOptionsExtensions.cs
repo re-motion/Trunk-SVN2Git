@@ -31,9 +31,9 @@ namespace Remotion.Data.UnitTests.UnitTesting
     /// Uses <see cref="IMethodOptions{T}.WhenCalled"/> internally; use <see cref="WhenCalledOrdered{T}"/> when you need to specify your own
     /// <see cref="IMethodOptions{T}.WhenCalled"/> handler.
     /// </summary>
-    public static IMethodOptions<T> Ordered<T> (this IMethodOptions<T> options, OrderedExpectationCounter counter)
+    public static IMethodOptions<T> Ordered<T> (this IMethodOptions<T> options, OrderedExpectationCounter counter, string message = null)
     {
-      return WhenCalledOrdered (options, counter, mi => { });
+      return WhenCalledOrdered (options, counter, mi => { }, message);
     }
 
     /// <summary>
@@ -45,13 +45,14 @@ namespace Remotion.Data.UnitTests.UnitTesting
     public static IMethodOptions<T> WhenCalledOrdered<T> (
         this IMethodOptions<T> options, 
         OrderedExpectationCounter counter, 
-        Action<MethodInvocation> whenCalledAction)
+        Action<MethodInvocation> whenCalledAction,
+        string message = null)
     {
       var expectedPosition = counter.GetNextExpectedPosition ();
       return options.WhenCalled (
           mi =>
           {
-            counter.CheckPosition (mi.Method.ToString(), expectedPosition);
+            counter.CheckPosition (mi.Method.ToString(), expectedPosition, message);
             whenCalledAction (mi);
           });
     }

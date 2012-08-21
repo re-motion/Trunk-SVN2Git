@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _eventListener = new DataContainerEventListener (EventSinkWithMock);
 
       _domainObject = DomainObjectMother.CreateFakeObject();
-      _dataContainer = DataContainerObjectMother.CreateWithDomainObject (_domainObject);
+      _dataContainer = DataContainerObjectMother.Create (domainObject: _domainObject);
       _propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo();
     }
 

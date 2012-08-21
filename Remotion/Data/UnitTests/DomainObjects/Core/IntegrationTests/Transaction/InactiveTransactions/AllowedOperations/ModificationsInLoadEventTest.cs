@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void OnLoaded_CanModifyThisObject_PropertyValues ()
     {
-      using (_loadEventReceiverMock.GetMockRepository().Ordered())
+      using (_loadEventReceiverMock.GetMockRepository ().Ordered ())
       {
         _loadEventReceiverMock
             .Expect (mock => mock.OnLoaded (_order))
@@ -68,15 +68,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _loadEventReceiverMock
             .Expect (mock => mock.OnLoaded (_order))
             .WhenCalled (mi => CheckTransactionAndSetProperty (ActiveSubTransaction, _order, o => o.OrderNumber, expectedValue: 3, newValue: 4));
-
-        ActiveSubTransaction.EnsureDataAvailable (_order.ID);
-
-        _loadEventReceiverMock.VerifyAllExpectations();
-
-        CheckProperty (InactiveRootTransaction, _order, o => o.OrderNumber, expectedOriginalValue: 1, expectedCurrentValue: 2);
-        CheckProperty (InactiveMiddleTransaction, _order, o => o.OrderNumber, expectedOriginalValue: 2, expectedCurrentValue: 3);
-        CheckProperty (ActiveSubTransaction, _order, o => o.OrderNumber, expectedOriginalValue: 3, expectedCurrentValue: 4);
       }
+      ActiveSubTransaction.EnsureDataAvailable (_order.ID);
+
+      _loadEventReceiverMock.VerifyAllExpectations();
+
+      CheckProperty (InactiveRootTransaction, _order, o => o.OrderNumber, expectedOriginalValue: 1, expectedCurrentValue: 2);
+      CheckProperty (InactiveMiddleTransaction, _order, o => o.OrderNumber, expectedOriginalValue: 2, expectedCurrentValue: 3);
+      CheckProperty (ActiveSubTransaction, _order, o => o.OrderNumber, expectedOriginalValue: 3, expectedCurrentValue: 4);
     }
 
     [Test]
@@ -93,15 +92,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _loadEventReceiverMock
             .Expect (mock => mock.OnLoaded (_location))
             .WhenCalled (mi => CheckTransactionAndSetProperty (ActiveSubTransaction, _location, l => l.Client, expectedValue: _client3, newValue: _client4));
-
-        ActiveSubTransaction.EnsureDataAvailable (_location.ID);
-
-        _loadEventReceiverMock.VerifyAllExpectations();
-
-        CheckProperty (InactiveRootTransaction, _location, l => l.Client, expectedOriginalValue: _client1, expectedCurrentValue: _client2);
-        CheckProperty (InactiveMiddleTransaction, _location, l => l.Client, expectedOriginalValue: _client2, expectedCurrentValue: _client3);
-        CheckProperty (ActiveSubTransaction, _location, l => l.Client, expectedOriginalValue: _client3, expectedCurrentValue: _client4);
       }
+
+      ActiveSubTransaction.EnsureDataAvailable (_location.ID);
+
+      _loadEventReceiverMock.VerifyAllExpectations();
+
+      CheckProperty (InactiveRootTransaction, _location, l => l.Client, expectedOriginalValue: _client1, expectedCurrentValue: _client2);
+      CheckProperty (InactiveMiddleTransaction, _location, l => l.Client, expectedOriginalValue: _client2, expectedCurrentValue: _client3);
+      CheckProperty (ActiveSubTransaction, _location, l => l.Client, expectedOriginalValue: _client3, expectedCurrentValue: _client4);
     }
 
     private void CheckTransactionAndSetProperty<TDomainObject, TValue> (

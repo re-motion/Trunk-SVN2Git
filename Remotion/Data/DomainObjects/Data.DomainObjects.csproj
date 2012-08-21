@@ -209,6 +209,7 @@
     <Compile Include="Infrastructure\ClientTransactionEventBroker.cs" />
     <Compile Include="Infrastructure\CommittingEventRegistrar.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\ITransactionHierarchyManager.cs" />
+    <Compile Include="Infrastructure\HierarchyManagement\InactiveClientTransactionListenerWithLoadRules.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\TransactionHierarchyManager.cs" />
     <Compile Include="Infrastructure\HierarchyManagement\TransactionHierarchyManagerService.cs" />
     <Compile Include="Infrastructure\ICommitRollbackAgent.cs" />
@@ -218,6 +219,8 @@
     <Compile Include="ICommittingEventRegistrar.cs" />
     <Compile Include="Infrastructure\NotFoundObjectsClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListener.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectDataRegistrationListener.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\NotFoundLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\FetchEnabledObjectLoader.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\IFetchEnabledPersistenceStrategy.cs" />
@@ -230,12 +233,12 @@
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectVisitor.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\InvalidLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\IParentTransactionContext.cs" />
-    <Compile Include="Infrastructure\ObjectPersistence\IParentTransactionOperations.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\IUnlockedParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataProvider.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationAgent.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\NullLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionContext.cs" />
-    <Compile Include="Infrastructure\ObjectPersistence\ParentTransactionOperations.cs" />
+    <Compile Include="Infrastructure\ObjectPersistence\UnlockedParentTransactionContext.cs" />
     <Compile Include="Infrastructure\ClientTransactionEventDistributor.cs" />
     <Compile Include="Linq\ExecutableQueries\CustomSequenceQueryAdapter.cs" />
     <Compile Include="Linq\DomainObjectQueryGenerator.cs" />

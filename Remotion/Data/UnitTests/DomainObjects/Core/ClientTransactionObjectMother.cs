@@ -138,7 +138,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<ClientTransaction>.Is.Anything,
               Arg<IClientTransactionEventSink>.Is.Anything, 
               Arg<IInvalidDomainObjectManager>.Is.Anything, 
-              Arg<IPersistenceStrategy>.Is.Anything))
+              Arg<IPersistenceStrategy>.Is.Anything, 
+              Arg<ITransactionHierarchyManager>.Is.Anything))
           .Return (dataManager);
       componentFactoryStub.Stub (stub => stub.CreateEnlistedObjectManager (Arg<ClientTransaction>.Is.Anything)).Return (enlistedDomainObjectManager);
       componentFactoryStub.Stub (stub => stub.CreateExtensionCollection (Arg<ClientTransaction>.Is.Anything)).Return (extensions);
@@ -152,7 +153,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
               Arg<IClientTransactionEventSink>.Is.Anything,
               Arg<IInvalidDomainObjectManager>.Is.Anything,
               Arg<IPersistenceStrategy>.Is.Anything,
-              Arg<IDataManager>.Is.Anything))
+              Arg<IDataManager>.Is.Anything,
+              Arg<ITransactionHierarchyManager>.Is.Anything))
           .Return (queryManager);
       componentFactoryStub
           .Stub (stub => stub.CreateCommitRollbackAgent (

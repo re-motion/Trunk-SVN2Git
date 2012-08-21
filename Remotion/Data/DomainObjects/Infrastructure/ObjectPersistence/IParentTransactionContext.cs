@@ -14,14 +14,39 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries;
+
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Provides access to the parent transaction for <see cref="SubPersistenceStrategy"/>, opening a scope in which modifying operations are supported 
-  /// even when the parent transaction is read-only.
+  /// Provides access to the parent transaction for <see cref="SubPersistenceStrategy"/>.
   /// </summary>
   public interface IParentTransactionContext
   {
-    IParentTransactionOperations AccessParentTransaction ();
+    ObjectID CreateNewObjectID (ClassDefinition classDefinition);
+
+    DomainObject GetObject (ObjectID objectID);
+    DomainObject[] GetObjects (IEnumerable<ObjectID> objectIDs);
+    DomainObject TryGetObject (ObjectID objectID);
+    DomainObject[] TryGetObjects (IEnumerable<ObjectID> objectIDs);
+
+    DomainObject ResolveRelatedObject (RelationEndPointID relationEndPointID);
+    IEnumerable<DomainObject> ResolveRelatedObjects (RelationEndPointID relationEndPointID);
+
+    QueryResult<DomainObject> ExecuteCollectionQuery (IQuery query);
+    IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query);
+    object ExecuteScalarQuery (IQuery query);
+
+    DataContainer GetDataContainerWithoutLoading (ObjectID objectID);
+    DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound);
+    IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID relationEndPointID);
+
+    bool IsInvalid (ObjectID objectID);
+
+    IUnlockedParentTransactionContext UnlockParentTransaction ();
   }
 }

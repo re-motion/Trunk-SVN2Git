@@ -203,6 +203,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerLifetimeManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedObjectDataRegistrationListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTransactionHierarchyManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\ResurrectionServiceTest.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionInactiveExceptionTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommitRollbackAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\CommittingEventRegistrarTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\InactiveClientTransactionListenerWithLoadRulesTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerServiceTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\HierarchyManagement\TransactionHierarchyManagerTestHelper.cs" />
@@ -217,6 +219,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\InstantiableClassWithMixinWithStorageClassNoneAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NotFoundLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\NotFoundObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\ResurrectInvalidObjectsTest.cs" />
@@ -236,6 +239,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\ScalarQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\CustomQueryTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\GetObjectTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\LoadEventsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\CommitTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\AllowedOperations\DiscardTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\ModificationsInLoadEventTest.cs" />
@@ -249,6 +253,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\ForbiddenOperations\NewObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\InactiveTransactionsTestBase.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\RelationReadEventsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\InactiveTransactions\FilterQueryResultEventsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\TryEnsureDataAvailableTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\EnsureDataAvailableTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\EnsureDataAvailableTestBase.cs" />

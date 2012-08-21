@@ -87,6 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var fakeLazyLoader = MockRepository.GenerateStub<ILazyLoader> ();
       var fakeRelationEndPointManager = MockRepository.GenerateStub<IRelationEndPointManager> ();
       var fakeObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
+      var fakeHierarchyManager = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
 
       DelegatingDataManager endPointProviderDataManager = null;
       DelegatingDataManager lazyLoaderDataManager = null;
@@ -115,7 +116,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                   Arg.Is (fakeEventSink),
                   Arg.Is (fakePersistenceStrategy),
                   Arg.Is (fakeInvalidDomainObjectManager),
-                  Arg<DelegatingDataManager>.Is.TypeOf))
+                  Arg<DelegatingDataManager>.Is.TypeOf,
+                  Arg.Is (fakeHierarchyManager)))
           .Return (fakeObjectLoader)
           .WhenCalled (mi => objectLoaderDataManager = (DelegatingDataManager) mi.Arguments[4]);
       factoryPartialMock.Replay();
@@ -124,7 +126,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           _fakeConstructedTransaction, 
           fakeEventSink, 
           fakeInvalidDomainObjectManager, 
-          fakePersistenceStrategy);
+          fakePersistenceStrategy,
+          fakeHierarchyManager);
 
       factoryPartialMock.VerifyAllExpectations();
       Assert.That (endPointProviderDataManager.InnerDataManager, Is.SameAs (dataManager));
@@ -146,17 +149,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var dataManager = MockRepository.GenerateStub<IDataManager> ();
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
+      var hierarchyManager = MockRepository.GenerateStub<ITransactionHierarchyManager> ();
 
       var fakeObjectLoader = MockRepository.GenerateStub<IObjectLoader> ();
 
       var factoryPartialMock = MockRepository.GeneratePartialMock<TestableClientTransactionComponentFactoryBase> ();
       factoryPartialMock
           .Expect (
-              mock => mock.CallCreateObjectLoader (_fakeConstructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager))
+              mock => mock.CallCreateObjectLoader (
+                  _fakeConstructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager, hierarchyManager))
           .Return (fakeObjectLoader);
       factoryPartialMock.Replay ();
 
-      var result = factoryPartialMock.CreateQueryManager (_fakeConstructedTransaction, eventSink, invalidDomainObjectManager, persistenceStrategy, dataManager);
+      var result = factoryPartialMock.CreateQueryManager (
+          _fakeConstructedTransaction, eventSink, invalidDomainObjectManager, persistenceStrategy, dataManager, hierarchyManager);
 
       factoryPartialMock.VerifyAllExpectations();
 

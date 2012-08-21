@@ -158,8 +158,14 @@ namespace Remotion.Data.UnitTests.DomainObjects
         where TDomainObject: DomainObject
     {
       var propertyIndexer = new PropertyIndexer (domainObject);
-      var propertyAccessorData = domainObject.ID.ClassDefinition.PropertyAccessorDataCache.ResolveMandatoryPropertyAccessorData (propertyExpression);
+      var propertyAccessorData = GetPropertyAccessorData(domainObject, propertyExpression);
       return propertyIndexer[propertyAccessorData.PropertyIdentifier, clientTransaction];
+    }
+
+    protected PropertyAccessorData GetPropertyAccessorData<TDomainObject, TValue> (TDomainObject domainObject, Expression<Func<TDomainObject, TValue>> propertyExpression)
+      where TDomainObject : DomainObject
+    {
+      return domainObject.ID.ClassDefinition.PropertyAccessorDataCache.ResolveMandatoryPropertyAccessorData (propertyExpression);
     }
 
     protected string GetPropertyIdentifier (Type declaringType, string shortPropertyName)

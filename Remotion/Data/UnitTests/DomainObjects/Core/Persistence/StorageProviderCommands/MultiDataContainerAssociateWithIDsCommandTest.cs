@@ -44,9 +44,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProvider
       _commandStub = MockRepository.GenerateStub<IStorageProviderCommand<IEnumerable<DataContainer>, IRdbmsProviderCommandExecutionContext>>();
       _executionContext = MockRepository.GenerateStub<IRdbmsProviderCommandExecutionContext>();
 
-      _order1Container = DataContainerObjectMother.CreateDataContainer (DomainObjectIDs.Order1);
-      _order2Container = DataContainerObjectMother.CreateDataContainer (DomainObjectIDs.Order2);
-      _order3Container = DataContainerObjectMother.CreateDataContainer (DomainObjectIDs.Order3);
+      _order1Container = DataContainerObjectMother.Create (DomainObjectIDs.Order1);
+      _order2Container = DataContainerObjectMother.Create (DomainObjectIDs.Order2);
+      _order3Container = DataContainerObjectMother.Create (DomainObjectIDs.Order3);
     }
 
     [Test]
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProvider
     {
       var command = new MultiDataContainerAssociateWithIDsCommand (new[] { DomainObjectIDs.Order1 }, _commandStub);
 
-      var otherOrder1DataContainer = DataContainerObjectMother.CreateDataContainer (_order1Container.ID);
+      var otherOrder1DataContainer = DataContainerObjectMother.Create (_order1Container.ID);
 
       _commandStub.Stub (stub => stub.Execute (_executionContext)).Return (new[] { _order1Container, otherOrder1DataContainer });
 

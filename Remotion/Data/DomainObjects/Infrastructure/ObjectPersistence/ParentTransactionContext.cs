@@ -15,14 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
+using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.DomainObjects.Queries;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Provides access to the parent transaction for <see cref="SubPersistenceStrategy"/>, opening a scope in which modifying operations are supported 
-  /// even when the parent transaction is read-only.
+  /// Provides access to the parent transaction for <see cref="SubPersistenceStrategy"/>.
   /// </summary>
   [Serializable]
   public class ParentTransactionContext : IParentTransactionContext
@@ -57,10 +61,102 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _parentInvalidDomainObjectManager; }
     }
 
-    public IParentTransactionOperations AccessParentTransaction ()
+    public ObjectID CreateNewObjectID (ClassDefinition classDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
+      return _parentTransaction.CreateNewObjectID (classDefinition);
+    }
+
+    public DomainObject GetObject (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _parentTransaction.GetObject (objectID, false);
+    }
+
+    public DomainObject[] GetObjects (IEnumerable<ObjectID> objectIDs)
+    {
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+      return _parentTransaction.GetObjects<DomainObject> (objectIDs);
+    }
+
+    public DomainObject TryGetObject (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _parentTransaction.TryGetObject (objectID);
+    }
+
+    public DomainObject[] TryGetObjects (IEnumerable<ObjectID> objectIDs)
+    {
+      ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
+      return _parentTransaction.TryGetObjects<DomainObject> (objectIDs);
+    }
+
+    public DomainObject ResolveRelatedObject (RelationEndPointID relationEndPointID)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      if (!relationEndPointID.Definition.IsVirtual || relationEndPointID.Definition.Cardinality != CardinalityType.One)
+        throw new ArgumentException ("EndPoint ID must denote a virtual relation end-point with cardinality one.", "relationEndPointID");
+
+      var endPoint = (IVirtualObjectEndPoint) _parentTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      return endPoint.GetData ();
+    }
+
+    public IEnumerable<DomainObject> ResolveRelatedObjects (RelationEndPointID relationEndPointID)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      if (!relationEndPointID.Definition.IsVirtual || relationEndPointID.Definition.Cardinality != CardinalityType.Many)
+        throw new ArgumentException ("EndPoint ID must denote a virtual relation end-point with cardinality many.", "relationEndPointID");
+
+      var endPoint = (ICollectionEndPoint) _parentTransaction.DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
+      return endPoint.GetData ();
+    }
+
+    public QueryResult<DomainObject> ExecuteCollectionQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      return _parentTransaction.QueryManager.GetCollection (query);
+    }
+
+    public IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      return _parentTransaction.QueryManager.GetCustom (query, qrr => qrr);
+    }
+
+    public object ExecuteScalarQuery (IQuery query)
+    {
+      ArgumentUtility.CheckNotNull ("query", query);
+      return _parentTransaction.QueryManager.GetScalar (query);
+    }
+
+    public DataContainer GetDataContainerWithoutLoading (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _parentTransaction.DataManager.GetDataContainerWithoutLoading (objectID);
+    }
+
+    public DataContainer GetDataContainerWithLazyLoad (ObjectID objectID, bool throwOnNotFound)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _parentTransaction.DataManager.GetDataContainerWithLazyLoad (objectID, throwOnNotFound);
+    }
+
+    public IRelationEndPoint GetRelationEndPointWithoutLoading (RelationEndPointID relationEndPointID)
+    {
+      ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
+      return _parentTransaction.DataManager.GetRelationEndPointWithoutLoading (relationEndPointID);
+    }
+
+    public bool IsInvalid (ObjectID objectID)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+      return _parentInvalidDomainObjectManager.IsInvalid (objectID);
+    }
+
+    public IUnlockedParentTransactionContext UnlockParentTransaction ()
     {
       var scope = _parentTransaction.HierarchyManager.Unlock();
-      return new ParentTransactionOperations (_parentTransaction, _parentInvalidDomainObjectManager, scope);
+      return new UnlockedParentTransactionContext (_parentTransaction, _parentInvalidDomainObjectManager, scope);
     }
   }
 }

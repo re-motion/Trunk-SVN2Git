@@ -279,21 +279,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (subTransactionFromEvent, Is.Not.Null);
       Assert.That (subTransactionFromEvent, Is.SameAs (subTransaction));
     }
-
-    [Test]
-    public void Throws_WhenUsedWhileParentIsWriteable ()
-    {
-      ClientTransaction subTransaction = TestableClientTransaction.CreateSubTransaction();
-      using (subTransaction.EnterDiscardingScope())
-      {
-        TestableClientTransaction.Loaded += delegate { subTransaction.GetObjects<Order> (DomainObjectIDs.Order1); };
-        Assert.That (
-            () => Order.GetObject (DomainObjectIDs.Order2),
-            Throws.InvalidOperationException.With.Message.EqualTo (
-                TestableClientTransaction + " cannot be made writeable twice. A common reason for this error is "
-                + "that a subtransaction is accessed while its parent transaction is engaged in a load operation. During such an operation, the "
-                + "subtransaction cannot be used."));
-      }
-    }
   }
 }

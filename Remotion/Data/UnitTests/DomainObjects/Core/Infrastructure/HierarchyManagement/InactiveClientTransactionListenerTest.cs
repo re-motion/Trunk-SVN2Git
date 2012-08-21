@@ -35,18 +35,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
         {
             "TransactionInitialize",
             "TransactionDiscard",
+            "SubTransactionInitialize",
+            "SubTransactionCreated",
             "ObjectsLoading",
             "ObjectsLoaded",
             "ObjectsNotFound",
+            "ObjectsUnloading",
+            "ObjectsUnloaded",
+            "ObjectDeleted",
             "PropertyValueReading",
             "PropertyValueRead",
+            "PropertyValueChanged",
             "RelationReading",
             "RelationRead",
             "RelationRead",
+            "RelationChanged",
             "FilterQueryResult",
             "FilterCustomQueryResult",
-            "ObjectsUnloading",
-            "ObjectsUnloaded",
+            "TransactionCommitValidate",
+            "TransactionCommitted",
+            "TransactionRolledBack",
             "RelationEndPointMapRegistering",
             "RelationEndPointMapUnregistering",
             "RelationEndPointBecomingIncomplete",
@@ -54,16 +62,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
             "DataContainerMapUnregistering",
         };
 
-    private readonly string[] _methodsExpectingInactivenessNames = {
-          "SubTransactionCreated", 
-          "SubTransactionInitialize"
-    };
-
     private MethodInfo[] _allMethods;
     private MethodInfo[] _neverThrowingMethods;
     private MethodInfo[] _throwingMethods;
-    private MethodInfo[] _methodsAssertingInactiveness;
-    private MethodInfo[] _methodsNotAssertingReadonlyness;
 
     [SetUp]
     public void SetUp ()
@@ -72,12 +73,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
       _clientTransaction = new TestableClientTransaction();
 
       _allMethods = typeof (InactiveClientTransactionListener).GetMethods (BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+      Assert.That (_allMethods, Has.Length.EqualTo (38));
+
       _neverThrowingMethods = _allMethods.Where (n => _neverThrowingMethodNames.Contains (n.Name)).ToArray();
-      _throwingMethods = _allMethods
-          .Where (n => !_neverThrowingMethodNames.Contains (n.Name))
-          .Where (n => !_methodsExpectingInactivenessNames.Contains (n.Name)).ToArray ();
-      _methodsAssertingInactiveness = _allMethods.Where (n => _methodsExpectingInactivenessNames.Contains (n.Name)).ToArray ();
-      _methodsNotAssertingReadonlyness = _allMethods.Except (_methodsAssertingInactiveness).ToArray ();
+      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (_neverThrowingMethodNames.Length));
+
+      _throwingMethods = _allMethods.Where (n => !_neverThrowingMethodNames.Contains (n.Name)).ToArray ();
+      Assert.That (_throwingMethods, Has.Length.EqualTo (_allMethods.Length - _neverThrowingMethods.Length));
     }
 
     [Test]
@@ -85,8 +87,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     {
       ClientTransactionTestHelper.SetIsActive (_clientTransaction, false);
 
-      Assert.That (_throwingMethods, Has.Length.EqualTo (17));
-      
       foreach (var method in _throwingMethods)
       {
         object[] arguments = Array.ConvertAll (method.GetParameters (), p => GetDefaultValue (p.ParameterType));
@@ -96,26 +96,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     }
 
     [Test]
-    public void ClientTransactionInactive_MethodsExpectingInactive ()
-    {
-      ClientTransactionTestHelper.SetIsActive (_clientTransaction, true);
-
-      Assert.That (_methodsAssertingInactiveness, Has.Length.EqualTo (2));
-
-      foreach (var method in _methodsAssertingInactiveness)
-      {
-        object[] arguments = Array.ConvertAll (method.GetParameters (), p => GetDefaultValue (p.ParameterType));
-
-        ExpectAssertException (method, arguments);
-      }
-    }
-
-    [Test]
     public void ClientTransactionInactive_NotThrowingMethods ()
     {
       ClientTransactionTestHelper.SetIsActive (_clientTransaction, true);
-
-      Assert.That (_neverThrowingMethods, Has.Length.EqualTo (19));
 
       foreach (var method in _neverThrowingMethods)
       {
@@ -131,9 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     {
       ClientTransactionTestHelper.SetIsActive (_clientTransaction, true);
 
-      Assert.That (_methodsNotAssertingReadonlyness, Has.Length.EqualTo (36));
-
-      foreach (var method in _methodsNotAssertingReadonlyness)
+      foreach (var method in _allMethods)
       {
         var concreteMethod = GetCallableMethod (method);
         object[] arguments = Array.ConvertAll (concreteMethod.GetParameters (), p => GetDefaultValue (p.ParameterType));
@@ -162,18 +143,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
         () => method.Invoke (_listener, arguments),
         Throws.Nothing,
         "Expected no exception to be thrown by method '{0}'.",
-        method.Name);
-    }
-
-    private void ExpectAssertException (MethodInfo method, object[] arguments)
-    {
-      string message = "Assertion failed: Expression evaluates to true.";
-
-      Assert.That (
-        () => method.Invoke (_listener, arguments),
-        Throws.TargetInvocationException.With.InnerException.TypeOf<Remotion.Utilities.AssertionException> ()
-            .And.InnerException.Message.EqualTo (message),
-        "Expected AssertionException to be thrown by method '{0}'.",
         method.Name);
     }
 

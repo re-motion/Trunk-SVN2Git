@@ -33,8 +33,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
   {
     private class RegisteredDataContainerGatheringVisitor : ILoadedObjectVisitor
     {
+      private readonly ILoadedObjectDataRegistrationListener _registrationListener;
+
       private readonly List<DataContainer> _dataContainersToBeRegistered = new List<DataContainer> ();
       private readonly List<ObjectID> _notFoundObjectIDs = new List<ObjectID> ();
+
+      public RegisteredDataContainerGatheringVisitor (ILoadedObjectDataRegistrationListener registrationListener)
+      {
+        ArgumentUtility.CheckNotNull ("registrationListener", registrationListener);
+        _registrationListener = registrationListener;
+      }
 
       public void VisitFreshlyLoadedObject (FreshlyLoadedObjectData freshlyLoadedObjectData)
       {
@@ -63,16 +71,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         _notFoundObjectIDs.Add (notFoundLoadedObjectData.ObjectID);
       }
 
-      public void RegisterAllDataContainers (
-          ClientTransaction clientTransaction, IDataManager dataManager, IClientTransactionEventSink transactionEventSink, bool throwOnNotFound)
+      public void RegisterAllDataContainers (ClientTransaction clientTransaction, IDataManager dataManager, bool throwOnNotFound)
       {
         ArgumentUtility.CheckNotNull ("dataManager", dataManager);
         ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
-        ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
 
         if (_notFoundObjectIDs.Any ())
         {
-          transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsNotFound (tx, _notFoundObjectIDs.AsReadOnly()));
+          _registrationListener.OnObjectsNotFound (_notFoundObjectIDs.AsReadOnly ());
 
           if (throwOnNotFound)
             throw new ObjectsNotFoundException (_notFoundObjectIDs);
@@ -81,11 +87,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         if (_dataContainersToBeRegistered.Count == 0)
           return;
 
-        var objectIDs = ListAdapter.AdaptReadOnly (_dataContainersToBeRegistered, dc => dc.ID);
-        transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsLoading (tx, objectIDs));
 
+        var objectIDs = ListAdapter.AdaptReadOnly (_dataContainersToBeRegistered, dc => dc.ID);
         var loadedDomainObjects = new List<DomainObject> (_dataContainersToBeRegistered.Count);
 
+        _registrationListener.OnBeforeObjectRegistration (objectIDs);
         try
         {
           foreach (var dataContainer in _dataContainersToBeRegistered)
@@ -98,26 +104,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         }
         finally
         {
-          var domainObjects = loadedDomainObjects.AsReadOnly();
-          if (domainObjects.Count > 0)
-            transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsLoaded (tx, domainObjects));
+          _registrationListener.OnAfterObjectRegistration (objectIDs, loadedDomainObjects.AsReadOnly ());
         }
       }
     }
 
     private readonly ClientTransaction _clientTransaction;
     private readonly IDataManager _dataManager;
-    private readonly IClientTransactionEventSink _transactionEventSink;
+    private readonly ILoadedObjectDataRegistrationListener _registrationListener;
 
-    public LoadedObjectDataRegistrationAgent (ClientTransaction clientTransaction, IDataManager dataManager, IClientTransactionEventSink transactionEventSink)
+    public LoadedObjectDataRegistrationAgent (
+        ClientTransaction clientTransaction,
+        IDataManager dataManager,
+        ILoadedObjectDataRegistrationListener registrationListener)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
-      ArgumentUtility.CheckNotNull ("transactionEventSink", transactionEventSink);
+      ArgumentUtility.CheckNotNull ("registrationListener", registrationListener);
 
       _dataManager = dataManager;
       _clientTransaction = clientTransaction;
-      _transactionEventSink = transactionEventSink;
+      _registrationListener = registrationListener;
     }
 
     public ClientTransaction ClientTransaction
@@ -130,9 +137,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       get { return _dataManager; }
     }
 
-    public IClientTransactionEventSink TransactionEventSink
+    public ILoadedObjectDataRegistrationListener RegistrationListener
     {
-      get { return _transactionEventSink; }
+      get { return _registrationListener; }
     }
 
     public void RegisterIfRequired (ILoadedObjectData loadedObjectData, bool throwOnNotFound)
@@ -146,11 +153,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("loadedObjects", loadedObjects);
 
-      var visitor = new RegisteredDataContainerGatheringVisitor ();
+      var visitor = new RegisteredDataContainerGatheringVisitor (_registrationListener);
       foreach (var loadedObject in loadedObjects)
         loadedObject.Accept (visitor);
 
-      visitor.RegisterAllDataContainers (_clientTransaction, _dataManager, _transactionEventSink, throwOnNotFound);
+      visitor.RegisterAllDataContainers (_clientTransaction, _dataManager, throwOnNotFound);
     }
   }
 }

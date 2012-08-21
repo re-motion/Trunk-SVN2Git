@@ -49,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProvider
     [Test]
     public void Execute_MatchingDataContainer ()
     {
-      var dataContainer = DataContainerObjectMother.CreateDataContainer (_expectedID);
+      var dataContainer = DataContainerObjectMother.Create (_expectedID);
       _innerCommandMock.Expect (mock => mock.Execute (_fakeContext)).Return (dataContainer);
 
       var result = _associateCommand.Execute (_fakeContext);
@@ -62,7 +62,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.StorageProvider
     [Test]
     public void Execute_NonMatchingDataContainer ()
     {
-      var dataContainer = DataContainerObjectMother.CreateDataContainer (DomainObjectIDs.Order2);
+      var dataContainer = DataContainerObjectMother.Create (DomainObjectIDs.Order2);
       _innerCommandMock.Expect (mock => mock.Execute (_fakeContext)).Return (dataContainer);
 
       Assert.That (

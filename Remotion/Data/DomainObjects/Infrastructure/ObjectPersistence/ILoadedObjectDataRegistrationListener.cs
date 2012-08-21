@@ -14,32 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using System.Collections.Generic;
+
 using System.Collections.ObjectModel;
 
-namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
+namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
 {
   /// <summary>
-  /// Defines an interface for classes managing the position and state of a <see cref="ClientTransaction"/> in a transaction hierarchy.
+  /// Defines an interface for objects reacting on objects being registered within a <see cref="ClientTransaction"/>.
   /// </summary>
-  public interface ITransactionHierarchyManager
+  public interface ILoadedObjectDataRegistrationListener
   {
-    ClientTransaction ParentTransaction { get; }
-    bool IsActive { get; }
-    ClientTransaction SubTransaction { get; }
-    
-    void OnBeforeTransactionInitialize ();
-    void OnTransactionDiscard ();
     void OnBeforeObjectRegistration (ReadOnlyCollection<ObjectID> loadedObjectIDs);
     // Calls to OnAfterObjectRegistration must be exactly matched with OnBeforeObjectRegistration; they must not be swallowed in case of exceptions.
-    void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> objectIDsToBeLoaded);
-    void OnBeforeSubTransactionObjectRegistration (ICollection<ObjectID> loadedObjectIDs);
-
-    ClientTransaction CreateSubTransaction (Func<ClientTransaction, ClientTransaction> subTransactionFactory);
-    void RemoveSubTransaction ();
-    IDisposable Unlock ();
-    IDisposable UnlockIfRequired ();
-    void InstallListeners (IClientTransactionEventBroker eventBroker);
+    void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> objectIDsToBeLoaded, ReadOnlyCollection<DomainObject> actuallyLoadedDomainObjects);
+    void OnObjectsNotFound (ReadOnlyCollection<ObjectID> notFoundObjectIDs);
   }
 }

@@ -50,42 +50,31 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        return parentTransactionOperations.CreateNewObjectID (classDefinition);
-      }
+      return _parentTransactionContext.CreateNewObjectID (classDefinition);
     }
 
     public virtual ILoadedObjectData LoadObjectData (ObjectID id)
     {
       ArgumentUtility.CheckNotNull ("id", id);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
-        // TransferParentObject called by GetLoadedObjectDataForParentObject below will throw on invalid IDs.
-        var parentObject = Tuple.Create (id, parentTransactionOperations.TryGetObject (id));
+      // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
+      // TransferParentObject called by GetLoadedObjectDataForParentObject below will indirectly throw on invalid IDs.
+      var parentObject = Tuple.Create (id, _parentTransactionContext.TryGetObject (id));
 
-        // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
-        return GetLoadedObjectDataForParentObject (parentObject, parentTransactionOperations);
-      }
+      return GetLoadedObjectDataForParentObject (parentObject);
     }
 
     public virtual IEnumerable<ILoadedObjectData> LoadObjectData (IEnumerable<ObjectID> objectIDs)
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
-        // TransferParentObject called by GetLoadedObjectDataForParentObject below will throw on invalid IDs.
-        var parentObjects = objectIDs.Zip (parentTransactionOperations.TryGetObjects (objectIDs));
+      var objectIDsAsCollection = objectIDs.ConvertToCollection();
 
-        // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
-        return parentObjects
-          .Select (parentObject => GetLoadedObjectDataForParentObject (parentObject, parentTransactionOperations))
-          .ToList ();
-      }
+      // In theory, this might return invalid objects (in practice we won't be called with invalid IDs). 
+      // TransferParentObject called by GetLoadedObjectDataForParentObject below will throw on invalid IDs.
+      var parentObjects = objectIDsAsCollection.Zip (_parentTransactionContext.TryGetObjects (objectIDsAsCollection));
+
+      return parentObjects.Select (GetLoadedObjectDataForParentObject);
     }
 
     public virtual ILoadedObjectData ResolveObjectRelationData (
@@ -94,16 +83,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
-      
-      if (!relationEndPointID.Definition.IsVirtual)
-        throw new ArgumentException ("ResolveObjectRelationData can only be called for virtual end points.", "relationEndPointID");
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        // parentRelatedObject may be null
-        var parentRelatedObject = parentTransactionOperations.ResolveRelatedObject (relationEndPointID);
-        return TransferParentObject (parentRelatedObject, alreadyLoadedObjectDataProvider, parentTransactionOperations);
-      }
+      if (!relationEndPointID.Definition.IsVirtual || relationEndPointID.Definition.Cardinality != CardinalityType.One)
+        throw new ArgumentException ("ResolveObjectRelationData can only be called for virtual object end points.", "relationEndPointID");
+
+      // parentRelatedObject may be null
+      var parentRelatedObject = _parentTransactionContext.ResolveRelatedObject (relationEndPointID);
+      return TransferParentObject (parentRelatedObject, alreadyLoadedObjectDataProvider);
     }
 
     public virtual IEnumerable<ILoadedObjectData> ResolveCollectionRelationData (
@@ -112,19 +98,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("relationEndPointID", relationEndPointID);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
+
+      if (relationEndPointID.Definition.Cardinality != CardinalityType.Many)
+        throw new ArgumentException ("ResolveCollectionRelationData can only be called for CollectionEndPoints.", "relationEndPointID");
       
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        var parentObjects = parentTransactionOperations.GetRelatedObjects (relationEndPointID);
-        // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
-        return parentObjects
-            .Select (parentObject =>
-            {
-              Assertion.IsNotNull (parentObject);
-              return TransferParentObject (parentObject, alreadyLoadedObjectDataProvider, parentTransactionOperations);
-            })
-            .ToList ();
-      }
+      var parentObjects = _parentTransactionContext.ResolveRelatedObjects (relationEndPointID);
+      return parentObjects
+          .Select (parentObject =>
+          {
+            Assertion.IsNotNull (parentObject);
+            return TransferParentObject (parentObject, alreadyLoadedObjectDataProvider);
+          });
     }
 
     public virtual IEnumerable<ILoadedObjectData> ExecuteCollectionQuery (IQuery query, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
@@ -132,77 +116,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("query", query);
       ArgumentUtility.CheckNotNull ("alreadyLoadedObjectDataProvider", alreadyLoadedObjectDataProvider);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        var queryResult = parentTransactionOperations.ExecuteCollectionQuery (query);
-        Assertion.IsNotNull (queryResult, "Parent transaction never returns a null query result for collection query.");
+      var queryResult = _parentTransactionContext.ExecuteCollectionQuery (query);
+      Assertion.IsNotNull (queryResult, "Parent transaction never returns a null query result for collection query.");
 
-        var parentObjects = queryResult.AsEnumerable ();
+      var parentObjects = queryResult.AsEnumerable ();
 
-        // Eager evaluation of sequence to keep parent transaction writeable as shortly as possible
-        return parentObjects
-          .Select (parentObject => TransferParentObject (parentObject, alreadyLoadedObjectDataProvider, parentTransactionOperations))
-          .ToList ();
-      }
+      return parentObjects.Select (parentObject => TransferParentObject (parentObject, alreadyLoadedObjectDataProvider));
     }
 
     public IEnumerable<IQueryResultRow> ExecuteCustomQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        return parentTransactionOperations.ExecuteCustomQuery (query);
-      }
+      return _parentTransactionContext.ExecuteCustomQuery (query);
     }
 
     public virtual object ExecuteScalarQuery (IQuery query)
     {
       ArgumentUtility.CheckNotNull ("query", query);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
-      {
-        return parentTransactionOperations.ExecuteScalarQuery (query);
-      }
-    }
-
-    private ILoadedObjectData TransferParentObject (
-        DomainObject parentObject,
-        ILoadedObjectDataProvider alreadyLoadedObjectDataProvider,
-        IParentTransactionOperations parentTransactionOperations)
-    {
-      if (parentObject == null)
-        return new NullLoadedObjectData();
-
-      var existingLoadedObject = alreadyLoadedObjectDataProvider.GetLoadedObject (parentObject.ID);
-      if (existingLoadedObject != null)
-        return existingLoadedObject;
-      else
-        return TransferParentObject (parentObject.ID, parentTransactionOperations);
-    }
-
-    private FreshlyLoadedObjectData TransferParentObject (ObjectID objectID, IParentTransactionOperations parentTransactionOperations)
-    {
-      var parentDataContainer = parentTransactionOperations.GetDataContainerWithLazyLoad (objectID, throwOnNotFound: true);
-      var dataContainer = TransferParentContainer (parentDataContainer);
-      return new FreshlyLoadedObjectData (dataContainer);
-    }
-
-    private DataContainer TransferParentContainer (DataContainer parentDataContainer)
-    {
-      if (parentDataContainer.State == StateType.Deleted)
-      {
-        var message = string.Format ("Object '{0}' is already deleted in the parent transaction.", parentDataContainer.ID);
-        throw new ObjectDeletedException (message, parentDataContainer.ID);
-      }
-
-      var thisDataContainer = DataContainer.CreateForExisting (
-          parentDataContainer.ID, 
-          parentDataContainer.Timestamp, 
-          pd => parentDataContainer.GetValueWithoutEvents (pd, ValueAccess.Current));
-
-      Assertion.IsTrue (thisDataContainer.State == StateType.Unchanged);
-      return thisDataContainer;
+      return _parentTransactionContext.ExecuteScalarQuery (query);
     }
 
     public virtual void PersistData (IEnumerable<PersistableData> data)
@@ -216,21 +149,68 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       // only handle changed end-points; end-points of new and deleted objects will implicitly be handled by PersistDataContainers
       var endPoints = dataAsCollection.SelectMany (item => item.GetAssociatedEndPoints ()).Where (ep => ep.HasChanged);
 
-      using (var parentTransactionOperations = _parentTransactionContext.AccessParentTransaction ())
+      // The parent transaction needs to be unlocked for modifications to be allowed
+      using (var unlockedParentTransactionContext = _parentTransactionContext.UnlockParentTransaction ())
       {
         // Handle new DataContainers _before_ end-point changes - that way we can be sure that all new end-points have already been registered
-        PersistDataContainers (dataContainersByState[StateType.New], parentTransactionOperations);
-        PersistDataContainers (dataContainersByState[StateType.Changed], parentTransactionOperations);
+        PersistDataContainers (dataContainersByState[StateType.New], unlockedParentTransactionContext);
+        PersistDataContainers (dataContainersByState[StateType.Changed], unlockedParentTransactionContext);
 
-        PersistRelationEndPoints (endPoints, parentTransactionOperations);
+        PersistRelationEndPoints (endPoints);
 
         // Handle deleted DataContainers _after_ end-point changes - that way we can be sure that all end-points have already been decoupled 
         // (i.e., been set to empty)
-        PersistDataContainers (dataContainersByState[StateType.Deleted], parentTransactionOperations);
+        PersistDataContainers (dataContainersByState[StateType.Deleted], unlockedParentTransactionContext);
       }
     }
 
-    private void PersistDataContainers (IEnumerable<DataContainer> dataContainers, IParentTransactionOperations parentTransactionOperations)
+    private ILoadedObjectData GetLoadedObjectDataForParentObject (Tuple<ObjectID, DomainObject> parentObject)
+    {
+      if (parentObject.Item2 == null)
+        return new NotFoundLoadedObjectData (parentObject.Item1);
+      else
+        return TransferParentObject (parentObject.Item1);
+    }
+
+    private ILoadedObjectData TransferParentObject (DomainObject parentObject, ILoadedObjectDataProvider alreadyLoadedObjectDataProvider)
+    {
+      if (parentObject == null)
+        return new NullLoadedObjectData ();
+
+      var existingLoadedObject = alreadyLoadedObjectDataProvider.GetLoadedObject (parentObject.ID);
+      if (existingLoadedObject != null)
+        return existingLoadedObject;
+      else
+        return TransferParentObject (parentObject.ID);
+    }
+
+    private FreshlyLoadedObjectData TransferParentObject (ObjectID objectID)
+    {
+      // This will throw if objectID is invalid in the parent transaction, which is just what we want - we can't transfer invalid objects.
+      var parentDataContainer = _parentTransactionContext.GetDataContainerWithLazyLoad (objectID, throwOnNotFound: true);
+      Assertion.IsNotNull (parentDataContainer);
+      var dataContainer = TransferParentContainer (parentDataContainer);
+      return new FreshlyLoadedObjectData (dataContainer);
+    }
+
+    private DataContainer TransferParentContainer (DataContainer parentDataContainer)
+    {
+      if (parentDataContainer.State == StateType.Deleted)
+      {
+        var message = string.Format ("Object '{0}' is already deleted in the parent transaction.", parentDataContainer.ID);
+        throw new ObjectDeletedException (message, parentDataContainer.ID);
+      }
+
+      var thisDataContainer = DataContainer.CreateForExisting (
+          parentDataContainer.ID,
+          parentDataContainer.Timestamp,
+          pd => parentDataContainer.GetValueWithoutEvents (pd, ValueAccess.Current));
+
+      Assertion.IsTrue (thisDataContainer.State == StateType.Unchanged);
+      return thisDataContainer;
+    }
+
+    private void PersistDataContainers (IEnumerable<DataContainer> dataContainers, IUnlockedParentTransactionContext unlockedParentTransactionContext)
     {
       foreach (var dataContainer in dataContainers)
       {
@@ -248,25 +228,25 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         switch (dataContainer.State)
         {
           case StateType.New:
-            PersistNewDataContainer (dataContainer, parentTransactionOperations);
+            PersistNewDataContainer (dataContainer, unlockedParentTransactionContext);
             break;
           case StateType.Changed:
-            PersistChangedDataContainer (dataContainer, parentTransactionOperations);
+            PersistChangedDataContainer (dataContainer);
             break;
           case StateType.Deleted:
-            PersistDeletedDataContainer (dataContainer, parentTransactionOperations);
+            PersistDeletedDataContainer (dataContainer, unlockedParentTransactionContext);
             break;
         }
       }
     }
 
-    private void PersistNewDataContainer (DataContainer dataContainer, IParentTransactionOperations parentTransactionOperations)
+    private void PersistNewDataContainer (DataContainer dataContainer, IUnlockedParentTransactionContext unlockedParentTransactionContext)
     {
-      Assertion.IsTrue (parentTransactionOperations.IsInvalid (dataContainer.ID));
-      parentTransactionOperations.MarkNotInvalid (dataContainer.ID);
+      Assertion.IsTrue (_parentTransactionContext.IsInvalid (dataContainer.ID));
+      unlockedParentTransactionContext.MarkNotInvalid (dataContainer.ID);
 
       Assertion.IsNull (
-          parentTransactionOperations.GetDataContainerWithoutLoading (dataContainer.ID), 
+          _parentTransactionContext.GetDataContainerWithoutLoading (dataContainer.ID), 
           "a new data container cannot be known to the parent");
       Assertion.IsFalse (dataContainer.IsDiscarded);
 
@@ -278,12 +258,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       Assertion.IsFalse (dataContainer.HasBeenMarkedChanged);
       Assertion.IsNull (dataContainer.Timestamp);
 
-      parentTransactionOperations.RegisterDataContainer (parentDataContainer);
+      unlockedParentTransactionContext.RegisterDataContainer (parentDataContainer);
     }
 
-    private void PersistChangedDataContainer (DataContainer dataContainer, IParentTransactionOperations parentTransactionOperations)
+    private void PersistChangedDataContainer (DataContainer dataContainer)
     {
-      DataContainer parentDataContainer = parentTransactionOperations.GetDataContainerWithoutLoading (dataContainer.ID);
+      DataContainer parentDataContainer = _parentTransactionContext.GetDataContainerWithoutLoading (dataContainer.ID);
       Assertion.IsNotNull (
           parentDataContainer,
           "a changed DataContainer must have been loaded through ParentTransaction, so the "
@@ -299,9 +279,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         parentDataContainer.MarkAsChanged ();
     }
 
-    private void PersistDeletedDataContainer (DataContainer dataContainer, IParentTransactionOperations parentTransactionOperations)
+    private void PersistDeletedDataContainer (DataContainer dataContainer, IUnlockedParentTransactionContext unlockedParentTransactionContext)
     {
-      DataContainer parentDataContainer = parentTransactionOperations.GetDataContainerWithoutLoading (dataContainer.ID);
+      var parentDataContainer = _parentTransactionContext.GetDataContainerWithoutLoading (dataContainer.ID);
       Assertion.IsNotNull (
           parentDataContainer,
           "a deleted DataContainer must have been loaded through ParentTransaction, so the ParentTransaction must know it");
@@ -312,16 +292,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       Assertion.IsTrue (parentDataContainer.DomainObject == dataContainer.DomainObject, "invariant");
 
       if (parentDataContainer.State == StateType.New)
-        parentTransactionOperations.Discard (parentDataContainer);
+        unlockedParentTransactionContext.Discard (parentDataContainer);
       else
         parentDataContainer.Delete();
     }
 
-    private void PersistRelationEndPoints (IEnumerable<IRelationEndPoint> endPoints, IParentTransactionOperations parentTransactionOperations)
+    private void PersistRelationEndPoints (IEnumerable<IRelationEndPoint> endPoints)
     {
       foreach (var endPoint in endPoints)
       {
-        var parentEndPoint = parentTransactionOperations.GetRelationEndPointWithoutLoading (endPoint.ID);
+        var parentEndPoint = _parentTransactionContext.GetRelationEndPointWithoutLoading (endPoint.ID);
 
         // Because the DataContainers are processed before the RelationEndPoints, the RelationEndPointMaps of both parent and child transaction now
         // contain end points for the same end point IDs. The only scenario in which the ParentTransaction doesn't know an end point known
@@ -331,14 +311,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
         if (parentEndPoint != null)
           parentEndPoint.SetDataFromSubTransaction (endPoint);
       }
-    }
-
-    private ILoadedObjectData GetLoadedObjectDataForParentObject (Tuple<ObjectID, DomainObject> parentObject, IParentTransactionOperations parentTransactionOperations)
-    {
-      if (parentObject.Item2 == null)
-        return new NotFoundLoadedObjectData (parentObject.Item1);
-      else
-        return TransferParentObject (parentObject.Item1, parentTransactionOperations);
     }
   }
 }

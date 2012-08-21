@@ -18,6 +18,7 @@ using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
@@ -33,12 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _queryManager = queryManager;
     }
 
-    public override IQueryManager CreateQueryManager (
-        ClientTransaction constructedTransaction,
-        IClientTransactionEventSink eventSink,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IPersistenceStrategy persistenceStrategy,
-        IDataManager dataManager)
+    public override IQueryManager CreateQueryManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink, IInvalidDomainObjectManager invalidDomainObjectManager, IPersistenceStrategy persistenceStrategy, IDataManager dataManager, ITransactionHierarchyManager hierarchyManager)
     {
       return _queryManager;
     }

@@ -14,9 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Remotion.Text;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 {
@@ -70,6 +74,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     private readonly ITransactionHierarchyManager _parentHierarchyManager;
     private readonly IClientTransactionEventSink _parentEventSink;
 
+    private readonly InactiveClientTransactionListenerWithLoadRules _inactiveClientTransactionListener;
+    private readonly NewObjectHierarchyInvalidationClientTransactionListener _newObjectHierarchyInvalidationClientTransactionListener;
+
     private bool _isActive = true;
     private ClientTransaction _subTransaction;
 
@@ -88,6 +95,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       _parentTransaction = parentTransaction;
       _parentHierarchyManager = parentHierarchyManager;
       _parentEventSink = parentEventSink;
+
+      _inactiveClientTransactionListener = new InactiveClientTransactionListenerWithLoadRules ();
+      _newObjectHierarchyInvalidationClientTransactionListener = new NewObjectHierarchyInvalidationClientTransactionListener();
     }
 
     public ClientTransaction ThisTransaction
@@ -125,11 +135,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       get { return _subTransaction; }
     }
 
+    public InactiveClientTransactionListenerWithLoadRules InactiveClientTransactionListener
+    {
+      get { return _inactiveClientTransactionListener; }
+    }
+
+    public NewObjectHierarchyInvalidationClientTransactionListener NewObjectHierarchyInvalidationClientTransactionListener
+    {
+      get { return _newObjectHierarchyInvalidationClientTransactionListener; }
+    }
+
     public void InstallListeners (IClientTransactionEventBroker eventBroker)
     {
       ArgumentUtility.CheckNotNull ("eventBroker", eventBroker);
-      eventBroker.AddListener (new InactiveClientTransactionListener());
-      eventBroker.AddListener (new NewObjectHierarchyInvalidationClientTransactionListener());
+      eventBroker.AddListener (_inactiveClientTransactionListener);
+      eventBroker.AddListener (_newObjectHierarchyInvalidationClientTransactionListener);
     }
 
     public void OnBeforeTransactionInitialize ()
@@ -143,7 +163,36 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
       if (_parentHierarchyManager != null)
         _parentHierarchyManager.RemoveSubTransaction();
     }
-    
+
+    public void OnBeforeObjectRegistration (ReadOnlyCollection<ObjectID> loadedObjectIDs)
+    {
+      ArgumentUtility.CheckNotNull ("loadedObjectIDs", loadedObjectIDs);
+      if (_parentHierarchyManager != null)
+        _parentHierarchyManager.OnBeforeSubTransactionObjectRegistration (loadedObjectIDs);
+      _inactiveClientTransactionListener.AddCurrentlyLoadingObjectIDs (loadedObjectIDs);
+    }
+
+    public void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> objectIDsToBeLoaded)
+    {
+      ArgumentUtility.CheckNotNull ("objectIDsToBeLoaded", objectIDsToBeLoaded);
+      _inactiveClientTransactionListener.RemoveCurrentlyLoadingObjectIDs (objectIDsToBeLoaded);
+    }
+
+    public void OnBeforeSubTransactionObjectRegistration (ICollection<ObjectID> loadedObjectIDs)
+    {
+      ArgumentUtility.CheckNotNull ("loadedObjectIDs", loadedObjectIDs);
+
+      var conflictingIDs = loadedObjectIDs.Intersect (_inactiveClientTransactionListener.CurrentlyLoadingObjectIDs).ConvertToCollection ();
+      if (conflictingIDs.Any ())
+      {
+        var message =
+            string.Format (
+                "It's not possible to load objects into a subtransaction while they are being loaded into a parent transaction: {0}.",
+                SeparatedStringBuilder.Build (", ", conflictingIDs, id => "'" + id + "'"));
+        throw new InvalidOperationException (message);
+      }
+    }
+
     public ClientTransaction CreateSubTransaction (Func<ClientTransaction, ClientTransaction> subTransactionFactory)
     {
       _thisEventSink.RaiseEvent ((tx, l) => l.SubTransactionCreating (tx));

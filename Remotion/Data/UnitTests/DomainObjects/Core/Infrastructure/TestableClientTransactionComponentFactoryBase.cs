@@ -68,12 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       throw new NotImplementedException();
     }
 
-    protected override IObjectLoader CreateObjectLoader (
-        ClientTransaction constructedTransaction,
-        IClientTransactionEventSink eventSink,
-        IPersistenceStrategy persistenceStrategy,
-        IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager)
+    protected override IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager, ITransactionHierarchyManager hierarchyManager)
     {
       throw new NotImplementedException();
     }
@@ -97,9 +92,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
         IClientTransactionEventSink eventSink,
         IPersistenceStrategy persistenceStrategy,
         IInvalidDomainObjectManager invalidDomainObjectManager,
-        IDataManager dataManager)
+        IDataManager dataManager,
+        ITransactionHierarchyManager hierarchyManager)
     {
-      return CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager);
+      return CreateObjectLoader (constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, dataManager, hierarchyManager);
     }
 
     public IDataContainerEventListener CallCreateDataContainerEventListener (IClientTransactionEventSink eventSink)

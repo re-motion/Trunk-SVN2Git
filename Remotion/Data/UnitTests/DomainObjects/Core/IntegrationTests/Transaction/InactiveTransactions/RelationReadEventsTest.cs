@@ -29,9 +29,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
   [TestFixture]
   public class RelationReadEventsTest : InactiveTransactionsTestBase
   {
-    private IClientTransactionListener _listenerDynamicMock;
-    private IClientTransactionExtension _extensionStrictMock;
-
     private Order _loadedOrder;
     private Customer _relatedCustomer;
     private OrderTicket _relatedOrderTicket;
@@ -48,18 +45,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _relatedOrderItem1 = ActiveSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem1));
       _relatedOrderItem2 = ActiveSubTransaction.Execute (() => OrderItem.GetObject (DomainObjectIDs.OrderItem2));
 
-      _listenerDynamicMock = MockRepository.GenerateMock<IClientTransactionListener>();
-      _extensionStrictMock = MockRepository.GenerateStrictMock<IClientTransactionExtension>();
-
-      ClientTransactionTestHelper.AddListener (InactiveRootTransaction, _listenerDynamicMock);
-      ClientTransactionTestHelper.AddListener (InactiveMiddleTransaction, _listenerDynamicMock);
-      ClientTransactionTestHelper.AddListener (ActiveSubTransaction, _listenerDynamicMock);
-
-      _extensionStrictMock.Stub (stub => stub.Key).Return ("test");
-      InactiveRootTransaction.Extensions.Add (_extensionStrictMock);
-      InactiveMiddleTransaction.Extensions.Add (_extensionStrictMock);
-      ActiveSubTransaction.Extensions.Add (_extensionStrictMock);
+      InstallListenerMock();
+      InstallExtensionMock();
     }
+
 
     [Test]
     public void RelationReadEvents_OnlyRaisedInActiveSub_NonVirtualEndPoint ()
@@ -72,8 +61,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       AssertNoRelationReadEvents (InactiveMiddleTransaction);
       AssertNoRelationReadEvents (InactiveRootTransaction);
 
-      _listenerDynamicMock.VerifyAllExpectations();
-      _extensionStrictMock.VerifyAllExpectations();
+      ListenerDynamicMock.VerifyAllExpectations();
+      ExtensionStrictMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -87,8 +76,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       AssertNoRelationReadEvents (InactiveMiddleTransaction);
       AssertNoRelationReadEvents (InactiveRootTransaction);
 
-      _listenerDynamicMock.VerifyAllExpectations ();
-      _extensionStrictMock.VerifyAllExpectations ();
+      ListenerDynamicMock.VerifyAllExpectations ();
+      ExtensionStrictMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -102,8 +91,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       AssertNoRelationReadEvents (InactiveMiddleTransaction);
       AssertNoRelationReadEvents (InactiveRootTransaction);
 
-      _listenerDynamicMock.VerifyAllExpectations ();
-      _extensionStrictMock.VerifyAllExpectations ();
+      ListenerDynamicMock.VerifyAllExpectations ();
+      ExtensionStrictMock.VerifyAllExpectations ();
     }
 
     private void ExpectRelationReadEvents (
@@ -112,17 +101,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         IRelationEndPointDefinition endPointDefinition,
         DomainObject relatedDomainObject)
     {
-      using (_listenerDynamicMock.GetMockRepository().Ordered())
+      using (ListenerDynamicMock.GetMockRepository().Ordered())
       {
-        _listenerDynamicMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
-        _listenerDynamicMock.Expect (
+        ListenerDynamicMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
+        ListenerDynamicMock.Expect (
             mock => mock.RelationRead (clientTransaction, domainObject, endPointDefinition, relatedDomainObject, ValueAccess.Current));
       }
 
-      using (_extensionStrictMock.GetMockRepository().Ordered())
+      using (ExtensionStrictMock.GetMockRepository().Ordered())
       {
-        _extensionStrictMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
-        _extensionStrictMock.Expect (
+        ExtensionStrictMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
+        ExtensionStrictMock.Expect (
             mock => mock.RelationRead (clientTransaction, domainObject, endPointDefinition, relatedDomainObject, ValueAccess.Current));
       }
     }
@@ -133,10 +122,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         IRelationEndPointDefinition endPointDefinition,
         DomainObject[] relatedDomainObjects)
     {
-      using (_listenerDynamicMock.GetMockRepository ().Ordered ())
+      using (ListenerDynamicMock.GetMockRepository ().Ordered ())
       {
-        _listenerDynamicMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
-        _listenerDynamicMock.Expect (
+        ListenerDynamicMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
+        ListenerDynamicMock.Expect (
             mock => mock.RelationRead (
                 Arg.Is (clientTransaction),
                 Arg.Is (domainObject),
@@ -145,10 +134,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
                 Arg.Is (ValueAccess.Current)));
       }
 
-      using (_extensionStrictMock.GetMockRepository ().Ordered ())
+      using (ExtensionStrictMock.GetMockRepository ().Ordered ())
       {
-        _extensionStrictMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
-        _extensionStrictMock.Expect (
+        ExtensionStrictMock.Expect (mock => mock.RelationReading (clientTransaction, domainObject, endPointDefinition, ValueAccess.Current));
+        ExtensionStrictMock.Expect (
             mock => mock.RelationRead (
                 Arg.Is (clientTransaction),
                 Arg.Is (domainObject),
@@ -160,20 +149,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
     private void AssertNoRelationReadEvents (ClientTransaction clientTransaction)
     {
-      _listenerDynamicMock.AssertWasNotCalled (
+      ListenerDynamicMock.AssertWasNotCalled (
           mock => mock.RelationReading (
               Arg.Is (clientTransaction),
               Arg<DomainObject>.Is.Anything,
               Arg<IRelationEndPointDefinition>.Is.Anything,
               Arg<ValueAccess>.Is.Anything));
-      _listenerDynamicMock.AssertWasNotCalled (
+      ListenerDynamicMock.AssertWasNotCalled (
           mock => mock.RelationRead (
               Arg.Is (clientTransaction),
               Arg<DomainObject>.Is.Anything,
               Arg<IRelationEndPointDefinition>.Is.Anything,
               Arg<DomainObject>.Is.Anything,
               Arg<ValueAccess>.Is.Anything));
-      _listenerDynamicMock.AssertWasNotCalled (
+      ListenerDynamicMock.AssertWasNotCalled (
           mock => mock.RelationRead (
               Arg.Is (clientTransaction),
               Arg<DomainObject>.Is.Anything,
@@ -181,20 +170,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
               Arg<ReadOnlyDomainObjectCollectionAdapter<DomainObject>>.Is.Anything,
               Arg<ValueAccess>.Is.Anything));
 
-      _extensionStrictMock.AssertWasNotCalled (
+      ExtensionStrictMock.AssertWasNotCalled (
           mock => mock.RelationReading (
               Arg.Is (clientTransaction),
               Arg<DomainObject>.Is.Anything,
               Arg<IRelationEndPointDefinition>.Is.Anything,
               Arg<ValueAccess>.Is.Anything));
-      _extensionStrictMock.AssertWasNotCalled (
+      ExtensionStrictMock.AssertWasNotCalled (
           mock => mock.RelationRead (
               Arg.Is (clientTransaction),
               Arg<DomainObject>.Is.Anything,
               Arg<IRelationEndPointDefinition>.Is.Anything,
               Arg<DomainObject>.Is.Anything,
               Arg<ValueAccess>.Is.Anything));
-      _extensionStrictMock.AssertWasNotCalled (
+      ExtensionStrictMock.AssertWasNotCalled (
           mock => mock.RelationRead (
               Arg.Is (clientTransaction),
               Arg<DomainObject>.Is.Anything,

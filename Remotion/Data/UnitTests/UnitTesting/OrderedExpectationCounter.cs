@@ -33,15 +33,16 @@ namespace Remotion.Data.UnitTests.UnitTesting
       return _nextExpectedPosition++;
     }
 
-    public void CheckPosition (string operationName, int expectedPosition)
+    public void CheckPosition (string operationName, int expectedPosition, string message = null)
     {
       Assert.That (
           _currentPosition,
           Is.EqualTo (expectedPosition),
-          "Expected operation '{0}' at sequence number {1}, but was {2}.",
+          "Expected operation '{0}' at sequence number {1}, but was {2}. {3}",
           operationName,
           expectedPosition,
-          _currentPosition);
+          _currentPosition,
+          message);
       ++_currentPosition;
     }
   }
