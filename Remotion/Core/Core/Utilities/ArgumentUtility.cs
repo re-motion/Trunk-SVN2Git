@@ -50,7 +50,7 @@ namespace Remotion.Utilities
   /// </remarks>
   public static class ArgumentUtility
   {
-    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
+    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     [AssertionMethod]
     public static T CheckNotNull<T> (
         [InvokerParameterName] string argumentName, 
@@ -64,7 +64,7 @@ namespace Remotion.Utilities
       return actualValue;
     }
 
-    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
+    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     [AssertionMethod]
     public static string CheckNotNullOrEmpty (
         [InvokerParameterName] string argumentName, 
@@ -206,7 +206,7 @@ namespace Remotion.Utilities
     /// <typeparam name="TExpected"> The type that <paramref name="actualValue"/> must have. </typeparam>
     /// <exception cref="ArgumentNullException">The <paramref name="actualValue"/> is a <see langword="null"/>.</exception>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualValue"/> is an instance of another type.</exception>
-    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
+    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     public static TExpected CheckNotNullAndType<TExpected> (
         [InvokerParameterName] string argumentName, 
         [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] object actualValue)
@@ -281,7 +281,7 @@ namespace Remotion.Utilities
 
     /// <summary>Checks whether <paramref name="actualType"/> can be assigned to <paramref name="expectedType"/>.</summary>
     /// <exception cref="ArgumentTypeException">The <paramref name="actualType"/> cannot be assigned to <paramref name="expectedType"/>.</exception>
-    // Duplicated in Remotion.Data.Linq.Utilities.ArgumentUtility
+    // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     public static Type CheckTypeIsAssignableFrom (
         [InvokerParameterName] string argumentName, 
         Type actualType, 

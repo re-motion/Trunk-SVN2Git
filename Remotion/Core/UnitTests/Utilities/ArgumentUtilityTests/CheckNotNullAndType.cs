@@ -20,7 +20,7 @@ using Remotion.Utilities;
 
 namespace Remotion.UnitTests.Utilities.ArgumentUtilityTests
 {
-  //Remotion.Data.Linq.UnitTests.Utilities.ArgumentUtilityTests.CheckNotNullAndType
+  //Remotion.Linq.UnitTests.Utilities.ArgumentUtilityTests.CheckNotNullAndType
   [TestFixture]
 	public class CheckNotNullAndType
 	{
