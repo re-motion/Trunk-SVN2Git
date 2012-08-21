@@ -76,6 +76,41 @@
     {
       text-decoration:none;
     }
+
+          .bocCheckBoxStyled
+      {
+        display: inline-block;
+        position: relative;
+      }
+      .bocCheckBoxStyled input[type=checkbox]
+      {
+        opacity: 0;
+        float: left;
+        width: 16px;
+        height: 16px;
+        padding: 0px;
+      }
+      .bocCheckBoxStyled input[type=checkbox] + img
+      {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: -1;
+        width: 16px;
+        height: 16px;
+        padding: 0px;
+        background-position: center;
+        background-image: url('res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxFalse.gif');
+      }
+      .bocCheckBoxStyled input[type=checkbox]:checked + img
+      {
+        background-image: url('res/Remotion.ObjectBinding.Web/Themes/NovaBlue/Image/CheckBoxTrue.gif');
+      }
+      .bocCheckBoxStyled input[type=checkbox]:focus + img
+      {
+        outline-style: dotted;
+        outline-width: 1px;
+      }
   </style>
 </head>
 <body>
@@ -112,6 +147,13 @@
   M
   <br />
   Multiline tooltip: <span title="Line 1&#13&#10Line 2">The Tooltip Target</span><br/>
+  Checkbox using transparent image: 
+    <span class="bocCheckBoxStyled">
+      <input type="checkbox"/>
+      <img src="res/Remotion.Web/Themes/NovaBlue/Image/Spacer.gif"/>
+    </span>
+    M
+    <br/>
   </form>
 </body>
 </html>
