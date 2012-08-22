@@ -106,7 +106,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     private DataContainerStateType _state;
     private bool _isDiscarded;
     private bool _hasBeenMarkedChanged;
-    private bool _hasBeenChanged;
+    private bool? _hasBeenChanged;
 
     // construction and disposing
 
@@ -172,7 +172,13 @@ namespace Remotion.Data.DomainObjects.DataManagement
       // - we were not changed before this event (now we must be - the property only fires this event when it was set to a different value)
       // - the property indicates that it doesn't have the original value ("HasChanged")
       // - recalculation of all property change states indicates another property doesn't have its original value
-      _hasBeenChanged = !_hasBeenChanged || propertyValue.HasChanged || CalculatePropertyValueChangeState ();
+      if (_hasBeenChanged != null && !_hasBeenChanged.Value)
+        _hasBeenChanged = true;
+      else if (propertyValue.HasChanged)
+        _hasBeenChanged = true;
+      else
+        _hasBeenChanged = null;
+
       RaiseStateUpdatedNotification (State);
       RaisePropertyValueChangedNotification(propertyDefinition, oldValue, value);
     }
@@ -348,7 +354,10 @@ namespace Remotion.Data.DomainObjects.DataManagement
           default:
             Assertion.IsTrue (_state == DataContainerStateType.Existing);
 
-            if (_hasBeenMarkedChanged || _hasBeenChanged)
+            if (!_hasBeenChanged.HasValue)
+              _hasBeenChanged = CalculatePropertyValueChangeState();
+
+            if (_hasBeenMarkedChanged || _hasBeenChanged.Value)
               return StateType.Changed;
             else
               return StateType.Unchanged;
@@ -635,7 +644,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _state = (DataContainerStateType) info.GetIntValue ();
       _domainObject = info.GetValueForHandle<DomainObject> ();
       _hasBeenMarkedChanged = info.GetBoolValue ();
-      _hasBeenChanged = info.GetBoolValue();
+      _hasBeenChanged = info.GetValue<bool?>();
     }
     // ReSharper restore UnusedMember.Local
 
@@ -658,7 +667,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       info.AddIntValue ((int) _state);
       info.AddHandle (_domainObject);
       info.AddBoolValue(_hasBeenMarkedChanged);
-      info.AddBoolValue(_hasBeenChanged);
+      info.AddValue (_hasBeenChanged);
     }
 
     #endregion Serialization
