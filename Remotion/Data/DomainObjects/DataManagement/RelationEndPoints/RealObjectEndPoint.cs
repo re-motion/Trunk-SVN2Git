@@ -185,14 +185,14 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
 
     public override void Commit ()
     {
-      ForeignKeyDataContainer.GetPropertyValue (PropertyDefinition).CommitState();
+      ForeignKeyDataContainer.CommitValue (PropertyDefinition);
       Assertion.IsFalse (HasBeenTouched);
       Assertion.IsFalse (HasChanged);
     }
 
     public override void Rollback ()
     {
-      ForeignKeyDataContainer.GetPropertyValue (PropertyDefinition).RollbackState();
+      ForeignKeyDataContainer.RollbackValue (PropertyDefinition);
       Assertion.IsFalse (HasBeenTouched);
       Assertion.IsFalse (HasChanged);
     }
@@ -200,8 +200,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     protected override void SetOppositeObjectDataFromSubTransaction (IObjectEndPoint sourceObjectEndPoint)
     {
       var sourceAsRealObjectEndPoint = ArgumentUtility.CheckNotNullAndType<RealObjectEndPoint> ("sourceObjectEndPoint", sourceObjectEndPoint);
-      var sourcePropertyValue = sourceAsRealObjectEndPoint.ForeignKeyDataContainer.GetPropertyValue (sourceAsRealObjectEndPoint.PropertyDefinition);
-      ForeignKeyDataContainer.GetPropertyValue (PropertyDefinition).SetDataFromSubTransaction (sourcePropertyValue);
+      ForeignKeyDataContainer.SetValueDataFromSubTransaction (PropertyDefinition, sourceAsRealObjectEndPoint.ForeignKeyDataContainer);
     }
 
     private void SetOppositeObjectID (ObjectID value)
