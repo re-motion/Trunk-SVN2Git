@@ -227,6 +227,47 @@ namespace Remotion.Data.DomainObjects.DataManagement
       return propertyValue.HasChanged;
     }
 
+    public void CommitValue (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      CheckNotDiscarded ();
+
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      propertyValue.CommitState();
+      
+      // Invalidate state rather than recalculating it - CommitValue might be called multiple times.
+      _hasBeenChanged = null;
+    }
+
+    public void RollbackValue (PropertyDefinition propertyDefinition)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      CheckNotDiscarded ();
+
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      propertyValue.RollbackState();
+
+      // Invalidate state rather than recalculating it - RollbackValue might be called multiple times.
+      _hasBeenChanged = null;
+    }
+
+    public void SetValueDataFromSubTransaction (PropertyDefinition propertyDefinition, DataContainer sourceContainer)
+    {
+      ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
+      ArgumentUtility.CheckNotNull ("sourceContainer", sourceContainer);
+
+      CheckNotDiscarded();
+      sourceContainer.CheckNotDiscarded ();
+      CheckSourceForSetDataFromSubTransaction (sourceContainer);
+
+      var propertyValue = GetPropertyValue (propertyDefinition);
+      var sourcePropertyValue = sourceContainer.GetPropertyValue (propertyDefinition);
+      propertyValue.SetDataFromSubTransaction (sourcePropertyValue);
+
+      // Invalidate state rather than recalculating it - SetValueDataFromSubTransaction might be called multiple times.
+      _hasBeenChanged = null;
+    }
+
     /// <summary>
     /// Gets the <see cref="Remotion.Data.DomainObjects.ClientTransaction"/> which the <see cref="DataContainer"/> is part of.
     /// </summary>
@@ -432,12 +473,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_state == DataContainerStateType.Deleted)
         throw new InvalidOperationException ("Deleted data containers cannot be committed, they have to be discarded.");
       
-      _hasBeenMarkedChanged = false;
-      _hasBeenChanged = false;
-
       foreach (PropertyValue propertyValue in _propertyValues.Values)
         propertyValue.CommitState ();
 
+      _hasBeenMarkedChanged = false;
+      _hasBeenChanged = false;
       _state = DataContainerStateType.Existing;
       RaiseStateUpdatedNotification (StateType.Unchanged);
     }
@@ -449,12 +489,11 @@ namespace Remotion.Data.DomainObjects.DataManagement
       if (_state == DataContainerStateType.New)
         throw new InvalidOperationException ("New data containers cannot be rolled back, they have to be discarded.");
 
-      _hasBeenMarkedChanged = false;
-      _hasBeenChanged = false;
-
       foreach (PropertyValue propertyValue in _propertyValues.Values)
         propertyValue.RollbackState ();
 
+      _hasBeenMarkedChanged = false;
+      _hasBeenChanged = false;
       _state = DataContainerStateType.Existing;
       RaiseStateUpdatedNotification (StateType.Unchanged);
     }
@@ -487,19 +526,15 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       CheckNotDiscarded ();
       source.CheckNotDiscarded ();
-
-      if (source.ClassDefinition != ClassDefinition)
-      {
-        var message = string.Format (
-            "Cannot set this data container's property values from '{0}'; the data containers do not have the same class definition.",
-            source.ID);
-        throw new ArgumentException (message, "source");
-      }
+      CheckSourceForSetDataFromSubTransaction(source);
 
       foreach (var propertyValue in _propertyValues.Values)
-        propertyValue.SetDataFromSubTransaction (source.GetPropertyValue (propertyValue.Definition));
+      {
+        var sourcePropertyValue = source.GetPropertyValue (propertyValue.Definition);
+        propertyValue.SetDataFromSubTransaction (sourcePropertyValue);
+      }
 
-      _hasBeenChanged = CalculatePropertyValueChangeState ();
+      _hasBeenChanged = null;
       RaiseStateUpdatedNotification (State);
     }
 
@@ -558,7 +593,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _clientTransaction = clientTransaction;
     }
 
-    internal PropertyValue GetPropertyValue (PropertyDefinition propertyDefinition)
+    private PropertyValue GetPropertyValue (PropertyDefinition propertyDefinition)
     {
       try
       {
@@ -612,6 +647,17 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
       if (_eventListener != null)
         _eventListener.StateUpdated (this, state);
+    }
+
+    private void CheckSourceForSetDataFromSubTransaction (DataContainer source)
+    {
+      if (source.ClassDefinition != ClassDefinition)
+      {
+        var message = string.Format (
+            "Cannot set this data container's property values from '{0}'; the data containers do not have the same class definition.",
+            source.ID);
+        throw new ArgumentException (message, "source");
+      }
     }
 
     #region Serialization

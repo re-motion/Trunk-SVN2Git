@@ -40,6 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     private IDataContainerEventListener _eventListenerMock;
 
     private PropertyDefinition _orderNumberProperty;
+    private PropertyDefinition _deliveryDateProperty;
     private PropertyDefinition _nonOrderProperty;
 
     public override void SetUp ()
@@ -67,10 +68,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       _eventListenerMock = MockRepository.GenerateMock<IDataContainerEventListener>();
 
       _orderNumberProperty = GetPropertyDefinition (typeof (Order), "OrderNumber");
+      _deliveryDateProperty = GetPropertyDefinition (typeof (Order), "DeliveryDate");
       _nonOrderProperty = GetPropertyDefinition (typeof (OrderItem), "Order");
     }
 
-        [Test]
+    [Test]
     public void CreateNew_IncludesStorageClassPersistentProperties ()
     {
       DataContainer dc = DataContainer.CreateNew (new ObjectID (typeof (ClassWithPropertiesHavingStorageClassAttribute), Guid.NewGuid()));
@@ -480,6 +482,162 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     {
       _existingDataContainer.SetValue (_orderNumberProperty, 5);
       CheckStateNotification (_existingDataContainer, dc => dc.SetValue (_orderNumberProperty, 0), StateType.Unchanged);
+    }
+
+    [Test]
+    public void CommitValue_CommitsOnlyGivenPropertyValue_AndUpdatesState ()
+    {
+      _existingDataContainer.SetValue (_orderNumberProperty, 10);
+      _existingDataContainer.SetValue (_deliveryDateProperty, new DateTime (2012, 05, 13));
+
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (10));
+
+      Assert.That (_existingDataContainer.HasValueChanged (_deliveryDateProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty, ValueAccess.Original), Is.EqualTo (new DateTime()));
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty), Is.EqualTo (new DateTime (2012, 05, 13)));
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      _existingDataContainer.CommitValue (_orderNumberProperty);
+
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (10));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (10));
+
+      Assert.That (_existingDataContainer.HasValueChanged (_deliveryDateProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty, ValueAccess.Original), Is.EqualTo (new DateTime ()));
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty), Is.EqualTo (new DateTime (2012, 05, 13)));
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      _existingDataContainer.CommitValue (_deliveryDateProperty);
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void CommitValue_Discarded ()
+    {
+      _existingDataContainer.Discard ();
+
+      Assert.That (() => _existingDataContainer.CommitValue (_orderNumberProperty), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void CommitValue_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.CommitValue (_nonOrderProperty),
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void RollbackValue_RollsBackOnlyGivenPropertyValue_AndUpdatesState ()
+    {
+      _existingDataContainer.SetValue (_orderNumberProperty, 10);
+      _existingDataContainer.SetValue (_deliveryDateProperty, new DateTime (2012, 05, 13));
+
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (10));
+
+      Assert.That (_existingDataContainer.HasValueChanged (_deliveryDateProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty, ValueAccess.Original), Is.EqualTo (new DateTime ()));
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty), Is.EqualTo (new DateTime (2012, 05, 13)));
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      _existingDataContainer.RollbackValue (_orderNumberProperty);
+
+      Assert.That (_existingDataContainer.HasValueChanged (_orderNumberProperty), Is.False);
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty, ValueAccess.Original), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (0));
+
+      Assert.That (_existingDataContainer.HasValueChanged (_deliveryDateProperty), Is.True);
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty, ValueAccess.Original), Is.EqualTo (new DateTime ()));
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty), Is.EqualTo (new DateTime (2012, 05, 13)));
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+
+      _existingDataContainer.RollbackValue (_deliveryDateProperty);
+
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+    }
+
+    [Test]
+    public void RollbackValue_Discarded ()
+    {
+      _existingDataContainer.Discard ();
+
+      Assert.That (() => _existingDataContainer.RollbackValue (_orderNumberProperty), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void RollbackValue_InvalidProperty ()
+    {
+      Assert.That (
+          () => _existingDataContainer.RollbackValue (_nonOrderProperty),
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void SetValueDataFromSubTransaction_SetsOnlyGivenPropertyValue_AndUpdatesState ()
+    {
+      var sourceDataContainer = DataContainerObjectMother.CreateExisting (_existingDataContainer.ID);
+      sourceDataContainer.SetValue (_orderNumberProperty, 17);
+      sourceDataContainer.SetValue (_deliveryDateProperty, new DateTime (2012, 05, 13));
+
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (0));
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty), Is.EqualTo (new DateTime()));
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Unchanged));
+
+      _existingDataContainer.SetValueDataFromSubTransaction (_orderNumberProperty, sourceDataContainer);
+
+      Assert.That (_existingDataContainer.GetValue (_orderNumberProperty), Is.EqualTo (17));
+      Assert.That (_existingDataContainer.GetValue (_deliveryDateProperty), Is.EqualTo (new DateTime ()));
+      Assert.That (_existingDataContainer.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void SetValueDataFromSubTransaction_Discarded ()
+    {
+      var sourceDataContainer = DataContainerObjectMother.Create (_existingDataContainer.ID);
+      _existingDataContainer.Discard ();
+      Assert.That (
+          () => _existingDataContainer.SetValueDataFromSubTransaction (_orderNumberProperty, sourceDataContainer), 
+          Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void SetValueDataFromSubTransaction_DiscardedSource ()
+    {
+      var sourceDataContainer = DataContainerObjectMother.Create (_existingDataContainer.ID);
+      sourceDataContainer.Discard ();
+      Assert.That (
+          () => _existingDataContainer.SetValueDataFromSubTransaction (_orderNumberProperty, sourceDataContainer),
+          Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void SetValueDataFromSubTransaction_InvalidProperty ()
+    {
+      var sourceDataContainer = DataContainerObjectMother.Create (_existingDataContainer.ID);
+      Assert.That (
+          () => _existingDataContainer.SetValueDataFromSubTransaction (_nonOrderProperty, sourceDataContainer),
+          Throws.ArgumentException.With.Message.StringContaining ("Parameter name: propertyDefinition"));
+    }
+
+    [Test]
+    public void SetValueDataFromSubTransaction_InvalidSource ()
+    {
+      var sourceDataContainer = DataContainerObjectMother.Create (DomainObjectIDs.Customer1);
+      Assert.That (
+          () => _existingDataContainer.SetValueDataFromSubTransaction (_orderNumberProperty, sourceDataContainer),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Cannot set this data container's property values from 'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid'; the data " 
+              + "containers do not have the same class definition.\r\nParameter name: source"));
     }
 
     [Test]
