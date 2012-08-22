@@ -484,7 +484,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.IsTrue (propertyValue.HasChanged);
       Assert.IsTrue (propertyValue.HasBeenTouched);
 
-      PrivateInvoke.InvokeNonPublicMethod (propertyValue, "CommitState");
+      propertyValue.CommitState();
 
       Assert.AreEqual (5, propertyValue.OriginalValue);
       Assert.AreEqual (5, propertyValue.Value);
@@ -502,7 +502,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       Assert.IsTrue (propertyValue.HasChanged);
       Assert.IsTrue (propertyValue.HasBeenTouched);
 
-      PrivateInvoke.InvokeNonPublicMethod (propertyValue, "RollbackState");
+      propertyValue.RollbackState();
 
       Assert.AreEqual (0, propertyValue.OriginalValue);
       Assert.AreEqual (0, propertyValue.Value);

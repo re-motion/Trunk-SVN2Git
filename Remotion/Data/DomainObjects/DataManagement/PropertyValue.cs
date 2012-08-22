@@ -212,7 +212,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         Touch ();
     }
 
-    internal void CommitState ()
+    public void CommitState ()
     {
       if (HasChanged)
         _originalValue = _value;
@@ -220,7 +220,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
       _hasBeenTouched = false;
     }
 
-    internal void RollbackState ()
+    public void RollbackState ()
     {
       if (HasChanged)
         _value = _originalValue;
