@@ -241,6 +241,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     {
       ValidateMapping ("NotSupportedRelations.ManyToManyBidirectionalRelation");
     }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = "TBD")]
+    [Ignore ("TODO 4369")]
+    public void BidirectionalRelation_ReferencingDomainObjectType ()
+    {
+      ValidateMapping ("NotSupportedRelations.BidirectionalRelation_ReferencingDomainObjectType");
+    }
     
   }
 }
