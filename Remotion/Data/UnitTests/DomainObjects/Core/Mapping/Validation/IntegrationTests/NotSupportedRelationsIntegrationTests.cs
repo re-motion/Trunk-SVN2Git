@@ -243,12 +243,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     }
 
     [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "TBD")]
-    [Ignore ("TODO 4369")]
+    [ExpectedException (typeof (MappingException), ExpectedMessage = 
+        "The relation property 'BidirectionalRelationProperty' has return type 'DomainObject', which is not a part of the mapping. "
+        + "Relation properties must not point to classes above the inheritance root.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.BidirectionalRelation_ReferencingDomainObjectType.ClassReferencingDomainObjectType\r\n"
+        + "Property: BidirectionalRelationProperty",
+        MatchType = MessageMatch.Contains)]
     public void BidirectionalRelation_ReferencingDomainObjectType ()
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelation_ReferencingDomainObjectType");
     }
-    
   }
 }
