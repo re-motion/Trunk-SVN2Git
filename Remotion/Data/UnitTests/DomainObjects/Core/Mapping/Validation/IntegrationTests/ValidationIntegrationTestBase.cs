@@ -18,11 +18,10 @@ using System;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Reflection;
-using Remotion.Data.DomainObjects.Configuration;
-using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
 using Remotion.Reflection.TypeDiscovery;
@@ -36,8 +35,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     protected void ValidateMapping (string testDomainNamespaceSuffix)
     {
       var testDomainNamespace = "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration." + testDomainNamespaceSuffix;
+      var typeDiscoveryService = GetTypeDiscoveryService (testDomainNamespace, GetType ().Assembly);
+      Assert.That (typeDiscoveryService.GetTypes (typeof (DomainObject), true), Is.Not.Empty, "Namespace '{0}' has no DomainObjects.", testDomainNamespaceSuffix);
       new MappingConfiguration (
-          MappingReflectorObjectMother.CreateMappingReflector (GetTypeDiscoveryService (testDomainNamespace, GetType ().Assembly)),
+          MappingReflectorObjectMother.CreateMappingReflector (typeDiscoveryService),
           new PersistenceModelLoader (new StorageGroupBasedStorageProviderDefinitionFinder (StandardConfiguration.Instance.GetPersistenceConfiguration())));
     }
 

@@ -253,5 +253,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Integrat
     {
       ValidateMapping ("NotSupportedRelations.BidirectionalRelation_ReferencingDomainObjectType");
     }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "The 'DBBidirectionalRelationAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.BidirectionalRelation_ReferencingNonDomainObject.ClassReferencingNonDomainObject\r\n"
+        + "Property: BidirectionalRelationProperty")]
+    public void BidirectionalRelation_ReferencingNonDomainObject ()
+    {
+      ValidateMapping ("NotSupportedRelations.BidirectionalRelation_ReferencingNonDomainObject");
+    }
+
+    [Test]
+    [ExpectedException (typeof (MappingException), ExpectedMessage =
+        "The 'DBBidirectionalRelationAttribute' may be only applied to properties assignable to types 'DomainObject' or 'ObjectList`1'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.BidirectionalRelation_ReferencingObject.ClassReferencingObject\r\n"
+        + "Property: BidirectionalRelationProperty\r\n"
+        + "----------\r\n"
+        + "The property type 'Object' is not supported. If you meant to declare a relation, 'Object' must be derived from 'DomainObject'.\r\n\r\n"
+        + "Declaring type: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Integration.NotSupportedRelations.BidirectionalRelation_ReferencingObject.ClassReferencingObject\r\n"
+        + "Property: BidirectionalRelationProperty")]
+    public void BidirectionalRelation_ReferencingObjectType ()
+    {
+      ValidateMapping ("NotSupportedRelations.BidirectionalRelation_ReferencingObject");
+    }
   }
 }

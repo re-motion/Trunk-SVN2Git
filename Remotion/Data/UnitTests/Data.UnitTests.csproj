@@ -261,6 +261,8 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\RollbackFullEventChainTest.cs" />
     <Compile Include="DomainObjects\Core\Linq\ExecutableQueries\TestableQueryAdapterBase.cs" />
     <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_ReferencingDomainObjectType\ClassReferencingDomainObjectType.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_ReferencingNonDomainObject\ClassReferencingNonDomainObject.cs" />
+    <Compile Include="DomainObjects\Core\Mapping\TestDomain\Validation\Integration\NotSupportedRelations\BidirectionalRelation_ReferencingObject\ClassReferencingObjectType.cs" />
     <Compile Include="DomainObjects\Core\NoRdbmsUnitTestStorageProviderStubDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\Configuration\TestableStorageProviderDefinition.cs" />
     <Compile Include="DomainObjects\Core\Persistence\StorageProviderCommands\SingleDataContainerAssociateWithIDCommandTest.cs" />
