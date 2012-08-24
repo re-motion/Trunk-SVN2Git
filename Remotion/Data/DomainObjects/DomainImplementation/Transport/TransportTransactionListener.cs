@@ -16,7 +16,6 @@
 // 
 using System;
 using System.Collections.ObjectModel;
-using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Utilities;
@@ -37,15 +36,13 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
 
     public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      if (_transporter == null)
-        throw new InvalidOperationException ("Cannot use the transported transaction for changing properties after it has been deserialized.");
+      CheckDomainObjectForChangedProperty(domainObject);
+    }
 
-      if (!_transporter.IsLoaded (domainObject.ID))
-      {
-        string message = string.Format ("Object '{0}' cannot be modified for transportation because it hasn't been loaded yet. Load it before "
-            + "manipulating it.", domainObject.ID);
-        throw new InvalidOperationException(message);
-      }
+    public override void RelationChanging (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    {
+      if (!relationEndPointDefinition.IsVirtual)
+        CheckDomainObjectForChangedProperty (domainObject);
     }
 
     public override void TransactionCommitting (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects, ICommittingEventRegistrar eventRegistrar)
@@ -56,6 +53,19 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
     public override void TransactionRollingBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       throw new InvalidOperationException ("The transport transaction cannot be rolled back.");
+    }
+
+    private void CheckDomainObjectForChangedProperty (DomainObject domainObject)
+    {
+      if (_transporter == null)
+        throw new InvalidOperationException ("Cannot use the transported transaction for changing properties after it has been deserialized.");
+
+      if (!_transporter.IsLoaded (domainObject.ID))
+      {
+        string message = string.Format ("Object '{0}' cannot be modified for transportation because it hasn't been loaded yet. Load it before "
+                                        + "manipulating it.", domainObject.ID);
+        throw new InvalidOperationException (message);
+      }
     }
   }
 }

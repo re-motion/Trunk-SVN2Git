@@ -197,22 +197,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void PropertyValueChanging_WithObjectIDProperty ()
-    {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID();
-      object oldValue = "old";
-      object newValue = "new";
-
-      CheckEventWithListenersFirst (
-          l => l.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
-          () => 
-              _order1EventReceiverMock
-                  .Expect (mock => mock.PropertyChanging (Arg<object>.Is.Anything, Arg<PropertyChangeEventArgs>.Is.Anything))
-                  .Repeat.Never()
-                  .Message ("No DomainObject event for foreign key properties."));
-    }
-
-    [Test]
     public void PropertyValueChanging_WithNulls ()
     {
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
@@ -239,22 +223,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           _order1EventReceiverMock
               .Expect (mock => mock.PropertyChanged (_order1, propertyDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
-    }
-
-    [Test]
-    public void PropertyValueChanged_WithObjectIDProperty ()
-    {
-      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID();
-      object oldValue = "old";
-      object newValue = "new";
-
-      CheckEventWithListenersLast (
-          l => l.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
-          () =>
-              _order1EventReceiverMock
-                  .Expect (mock => mock.PropertyChanged (Arg<object>.Is.Anything, Arg<PropertyChangeEventArgs>.Is.Anything))
-                  .Repeat.Never ()
-                  .Message ("No DomainObject event for foreign key properties."));
     }
 
     [Test]

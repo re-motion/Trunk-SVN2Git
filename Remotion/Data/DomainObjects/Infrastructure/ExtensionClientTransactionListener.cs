@@ -118,14 +118,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      if (!propertyDefinition.IsObjectID)
-        _extension.PropertyValueChanging (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
+      _extension.PropertyValueChanging (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
     public override void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
-      if (!propertyDefinition.IsObjectID)
-        _extension.PropertyValueChanged (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
+      _extension.PropertyValueChanged (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
     public override void RelationReading (ClientTransaction clientTransaction, DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)

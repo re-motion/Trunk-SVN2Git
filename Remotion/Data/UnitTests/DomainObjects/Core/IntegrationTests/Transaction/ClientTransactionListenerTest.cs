@@ -307,21 +307,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             oldCustomerEndPointID.Definition,
             order, 
             null));
-        _strictListenerMock.Expect (
-            mock => mock.PropertyValueChanging (
-                TestableClientTransaction, 
-                order,
-                customerPropertyDefinition,
-                oldCustomer.ID,
-                newCustomer.ID));
         _strictListenerMock.Expect (mock => mock.DataContainerStateUpdated (TestableClientTransaction, order.InternalDataContainer, StateType.Changed));
-        _strictListenerMock.Expect (
-            mock => mock.PropertyValueChanged (
-                TestableClientTransaction, 
-                order,
-                customerPropertyDefinition,
-                oldCustomer.ID,
-                newCustomer.ID));
         _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (TestableClientTransaction, newCustomerEndPointID, null));
         _strictListenerMock.Expect (mock => mock.VirtualRelationEndPointStateUpdated (TestableClientTransaction, oldCustomerEndPointID, null));
         _strictListenerMock.Expect (mock => mock.RelationChanged (

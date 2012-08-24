@@ -117,10 +117,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
       base.PropertyValueChanging (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
 
-      if (!propertyDefinition.IsObjectID)
-      {
-        clientTransaction.Execute (() => domainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
-      }
+      clientTransaction.Execute (() => domainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
     }
 
     public override void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
@@ -129,10 +126,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      if (!propertyDefinition.IsObjectID)
-      {
-        clientTransaction.Execute (() => domainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
-      }
+      clientTransaction.Execute (() => domainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
       
       base.PropertyValueChanged (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }

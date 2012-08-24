@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 
       _domainObject = DomainObjectMother.CreateFakeObject();
       _dataContainer = DataContainerObjectMother.Create (domainObject: _domainObject);
-      _propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo();
+      _propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo ();
     }
 
     protected override DataContainerEventListener EventListener
@@ -53,7 +53,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void PropertyValueReading ()
     {
-      CheckEventDelegation (
+      CheckEventDelegated (
           l => l.PropertyValueReading (_dataContainer, _propertyDefinition, ValueAccess.Original), 
           (tx, mock) => mock.PropertyValueReading (tx, _domainObject, _propertyDefinition, ValueAccess.Original));
     }
@@ -61,7 +61,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void PropertyValueRead ()
     {
-      CheckEventDelegation (
+      CheckEventDelegated (
           l => l.PropertyValueRead (_dataContainer, _propertyDefinition, "value", ValueAccess.Original),
           (tx, mock) => mock.PropertyValueRead (tx, _domainObject, _propertyDefinition, "value", ValueAccess.Original));
     }
@@ -69,23 +69,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void PropertyValueChanging ()
     {
-      CheckEventDelegation (
+      CheckEventDelegated (
           l => l.PropertyValueChanging (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
           (tx, mock) => mock.PropertyValueChanging (tx, _domainObject, _propertyDefinition, "oldValue", "newValue"));
     }
 
     [Test]
+    public void PropertyValueChanging_WithObjectIDProperty ()
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID ();
+      CheckEventNotDelegated (l => l.PropertyValueChanging (_dataContainer, propertyDefinition, "oldValue", "newValue"));
+    }
+
+    [Test]
     public void PropertyValueChanged ()
     {
-      CheckEventDelegation (
+      CheckEventDelegated (
           l => l.PropertyValueChanged (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
           (tx, mock) => mock.PropertyValueChanged (tx, _domainObject, _propertyDefinition, "oldValue", "newValue"));
     }
 
     [Test]
+    public void PropertyValueChanged_WithObjectIDProperty ()
+    {
+      var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID ();
+      CheckEventNotDelegated (l => l.PropertyValueChanged (_dataContainer, propertyDefinition, "oldValue", "newValue"));
+    }
+
+    [Test]
     public void StateUpdated ()
     {
-      CheckEventDelegation (
+      CheckEventDelegated (
           l => l.StateUpdated (_dataContainer, StateType.New),
           (tx, mock) => mock.DataContainerStateUpdated (tx, _dataContainer, StateType.New));
     }

@@ -38,9 +38,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       get { return _eventSinkWithMock; }
     }
 
-    protected void CheckEventDelegation (Action<TEventListener> action, Action<ClientTransaction, IClientTransactionListener> expectedEvent)
+    protected void CheckEventDelegated (Action<TEventListener> action, Action<ClientTransaction, IClientTransactionListener> expectedEvent)
     {
       _eventSinkWithMock.ExpectMock (mock => expectedEvent (_eventSinkWithMock.ClientTransaction, mock));
+      _eventSinkWithMock.ReplayMock ();
+
+      action (EventListener);
+
+      _eventSinkWithMock.VerifyMock ();
+    }
+
+    protected void CheckEventNotDelegated (Action<TEventListener> action)
+    {
       _eventSinkWithMock.ReplayMock ();
 
       action (EventListener);
