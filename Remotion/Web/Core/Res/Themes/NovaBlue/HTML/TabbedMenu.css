@@ -61,7 +61,6 @@ div.tabbedMainMenu span.tabStripTab
 div.tabbedMainMenu span.tabStripTab a
 {  
   border: none;
-  border-bottom: none;
   background-color: #DDDDDD;
   background-image: url(../Image/TabbedMenuTabBackground.gif);
   background-repeat: repeat-x;
