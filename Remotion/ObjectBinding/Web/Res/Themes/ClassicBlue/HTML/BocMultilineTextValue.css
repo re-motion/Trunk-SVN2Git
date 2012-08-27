@@ -12,12 +12,7 @@ span.bocMultilineTextValue
   
 .bocMultilineTextValue.readOnly
 {
-  min-height: inherit;
-}
-
-body.msie7 .bocMultilineTextValue.readOnly
-{
-  min-height: auto;
+  min-height: 0;
 }
 
 .bocMultilineTextValue.disabled

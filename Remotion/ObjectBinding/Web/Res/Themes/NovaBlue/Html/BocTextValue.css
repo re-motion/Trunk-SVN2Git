@@ -12,12 +12,7 @@ span.bocTextValue
   
 .bocTextValue.readOnly
 {
-  min-height: inherit;
-}
-
-body.msie7 .bocTextValue.readOnly
-{
-  min-height: auto;
+  min-height: 0;
 }
 
 .bocTextValue.disabled
