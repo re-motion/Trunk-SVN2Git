@@ -7,6 +7,10 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip/=88CA7395_002DA63D_002D4934_002DADA7_002D7D0600C85DA3/@EntryIndexedValue">88CA7395-A63D-4934-ADA7-7D0600C85DA3</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip/=DF8BA786_002D9679_002D4879_002D8757_002D16AE2709D83A_002Fd_003ARes_002Fd_003AUI_002Ff_003AWxeHandler_002Eashx/@EntryIndexedValue">DF8BA786-9679-4879-8757-16AE2709D83A/d:Res/d:UI/f:WxeHandler.ashx</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip/=DF8BA786_002D9679_002D4879_002D8757_002D16AE2709D83A_002Fd_003ARes_002Fd_003AUI_002Ff_003AWxeLauncher_002Eashx/@EntryIndexedValue">DF8BA786-9679-4879-8757-16AE2709D83A/d:Res/d:UI/f:WxeLauncher.ashx</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=1FF52B13_002DC212_002D4ADA_002D86E0_002D04E49A808FE0_002Ff_003AWxeHandler_002Eashx/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=558839F6_002DD762_002D47BA_002DA26C_002D1D4AA75D0994_002Ff_003AWxeHandler_002Eashx/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=DF8BA786_002D9679_002D4879_002D8757_002D16AE2709D83A_002Fd_003ARes_002Fd_003AUI_002Ff_003AWxeHandler_002Eashx/@EntryIndexedValue">ExplicitlyExcluded</s:String>
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=DF8BA786_002D9679_002D4879_002D8757_002D16AE2709D83A_002Fd_003ARes_002Fd_003AUI_002Ff_003AWxeLauncher_002Eashx/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=FE98ED8D_002DE645_002D4E11_002D9431_002DFA5EE8ED7C86_002Fd_003AExperimental/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	
 	<s:Boolean x:Key="/Default/CodeInspection/Highlighting/IdentifierHighlightingEnabled/@EntryValue">True</s:Boolean>
