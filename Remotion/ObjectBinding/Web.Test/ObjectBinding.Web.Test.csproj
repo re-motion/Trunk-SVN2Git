@@ -35,6 +35,10 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
@@ -442,7 +446,7 @@
     <Content Include="CompleteBocTestForm.aspx" />
     <Content Include="CompleteBocTestUserControl.ascx" />
     <Content Include="CompleteBocTestUserControlForm.aspx" />
-    <Content Include="ExperimentalControlLayout.htm" />
+    <Content Include="Experimental\ControlLayout-v1.htm" />
     <Content Include="ControlLayoutTests\Form.aspx" />
     <Content Include="FlexLayout.htm" />
     <Content Include="IFrameContainer.html" />
@@ -588,6 +592,7 @@
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
