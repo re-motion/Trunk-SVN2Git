@@ -173,7 +173,6 @@ div.tabbedMultiViewTabStrip span.tabStripTab a
 {
   border: none;
   background-color: #e1ecfc;
-  background-image: url(../Image/TabbedMultiViewTabBackground.gif);
   background-repeat: repeat-x;
   background-position: top;
   color: blue;
@@ -187,7 +186,6 @@ body.msie7 div.tabbedMultiViewTabStrip span.tabStripTab a
 div.tabbedMultiViewTabStrip span.tabStripTab a:hover
 {
   background-color: #e1ecfc;
-  background-image: url(../Image/TabbedMultiViewTabBackgroundHover.gif);
   background-repeat: repeat-x;
   background-position: bottom;
   color: blue;

@@ -61,10 +61,10 @@ div.tabbedMainMenu span.tabStripTab
 div.tabbedMainMenu span.tabStripTab a
 {  
   border: none;
-  border-bottom: 1px solid 083779;
+  border-bottom: none;
   background-color: #DDDDDD;
   background-image: url(../Image/TabbedMenuTabBackground.gif);
-  background-repeat: repeat-x;	
+  background-repeat: repeat-x;
   background-position: center;
   color: Black;
   font-size: 120%;
@@ -75,7 +75,7 @@ div.tabbedMainMenu span.tabStripTab a:hover
 {
   background-color: #FEFFFF;
   background-image: url(../Image/TabbedMenuTabBackgroundHover.gif);
-  background-repeat: repeat-x;	
+  background-repeat: repeat-x;
   background-position: top;
   color: Black;
   cursor: pointer;
