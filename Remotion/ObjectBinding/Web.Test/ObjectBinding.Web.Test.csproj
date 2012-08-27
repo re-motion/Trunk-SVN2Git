@@ -448,7 +448,7 @@
     <Content Include="CompleteBocTestUserControlForm.aspx" />
     <Content Include="Experimental\ControlLayout-v1.htm" />
     <Content Include="ControlLayoutTests\Form.aspx" />
-    <Content Include="FlexLayout.htm" />
+    <Content Include="Experimental\FlexLayout.htm" />
     <Content Include="IFrameContainer.html" />
     <Content Include="Design\DesignTestBooleanValueForm.aspx" />
     <Content Include="Design\DesignTestCheckBoxForm.aspx" />
