@@ -24,7 +24,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
 {
   [TestFixture]
-  public class CLientTransactionGetRelationsTest : ClientTransactionBaseTest
+  public class ClientTransactionGetRelationsTest : ClientTransactionBaseTest
   {
     private ClientTransactionEventReceiver _eventReceiver;
 

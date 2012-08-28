@@ -344,7 +344,7 @@
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionSortTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\ObjectWithInvalidForeignKeyTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionCommitValidationTest.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\CLientTransactionGetRelationsTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionGetRelationsTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\ClientTransactionGetObjectTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Transaction\SubTransactionCommitValidationTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\SubTransactionEagerFetchingTest.cs" />
