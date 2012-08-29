@@ -338,7 +338,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NullLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionEventDistributorTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\TestableClientTransactionComponentFactoryBase.cs" />
-    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\CascadedDeleteTest.cs" />
+    <Compile Include="DomainObjects\Core\IntegrationTests\Delete\CascadedDeleteTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\EagerFetching\EagerFetchingTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\PersistableDataObjectMother.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionSortTest.cs" />
@@ -1524,22 +1524,22 @@
     <Compile Include="DomainObjects\Core\DomainObjects\CommitDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Delete\DeleteDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithLazyLoadTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Delete\DeleteDomainObjectWithLazyLoadTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithManyToOneRelationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Delete\DeleteDomainObjectWithManyToOneRelationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithOneToManyRelationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Delete\DeleteDomainObjectWithOneToManyRelationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteDomainObjectWithOneToOneRelationTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Delete\DeleteDomainObjectWithOneToOneRelationTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DomainObjects\Core\IntegrationTests\Deleting\DeleteNewDomainObjectTest.cs">
+    <Compile Include="DomainObjects\Core\IntegrationTests\Delete\DeleteNewDomainObjectTest.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DomainObjects\Core\IntegrationTests\Relations\DomainObjectCollectionsWithDifferentClientTransactionsTest.cs">
@@ -2072,6 +2072,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DomainObjects\Core\IntegrationTests\NewObject\" />
     <Folder Include="DomainObjects\Core\Mapping\Validation\Persistence\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

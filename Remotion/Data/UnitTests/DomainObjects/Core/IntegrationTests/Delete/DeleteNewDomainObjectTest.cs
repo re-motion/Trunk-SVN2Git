@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -24,7 +23,7 @@ using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 {
   [TestFixture]
   public class DeleteNewDomainObjectTest : ClientTransactionBaseTest

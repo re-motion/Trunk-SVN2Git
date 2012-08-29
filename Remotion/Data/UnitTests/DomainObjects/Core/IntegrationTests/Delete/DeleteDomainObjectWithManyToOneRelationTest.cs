@@ -20,7 +20,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 {
   [TestFixture]
   public class DeleteDomainObjectWithManyToOneRelationTest : ClientTransactionBaseTest

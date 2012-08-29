@@ -18,7 +18,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Deleting
+namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Delete
 {
   [TestFixture]
   public class DeleteDomainObjectWithLazyLoadTest : ClientTransactionBaseTest
