@@ -29,11 +29,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
   [Uses (typeof (SecurableObjectMixin))]
   public abstract class SecurableObject : DomainObject, ISecurableObject, ISecurityContextFactory
   {
-    public static SecurableObject NewObject (ClientTransaction clientTransaction, IObjectSecurityStrategy securityStrategy)
+    private static Action<SecurableObject> _ctorHandler;
+
+    public static SecurableObject NewObject (ClientTransaction clientTransaction, IObjectSecurityStrategy securityStrategy, Action<SecurableObject> ctorHandler = null)
     {
-      using (clientTransaction.EnterNonDiscardingScope())
+      var previousCtorHandler = _ctorHandler;
+      _ctorHandler = ctorHandler;
+
+      try
       {
-        return NewObject<SecurableObject>(ParamList.Create (securityStrategy));
+        using (clientTransaction.EnterNonDiscardingScope ())
+        {
+          return NewObject<SecurableObject> (ParamList.Create (securityStrategy));
+        }
+      }
+      finally
+      {
+        _ctorHandler = previousCtorHandler;
       }
     }
 
@@ -42,6 +54,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security.TestDomain
     protected SecurableObject (IObjectSecurityStrategy securityStrategy)
     {
       _securityStrategy = securityStrategy;
+      if (_ctorHandler != null)
+        _ctorHandler (this);
     }
 
     protected override void OnLoaded (LoadMode loadMode)
