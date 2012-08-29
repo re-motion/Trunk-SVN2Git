@@ -27,8 +27,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
   [Serializable]
   public abstract class TestDomainBase : DomainObject
   {
+    public static event EventHandler StaticCtorHandler;
     public static event EventHandler StaticLoadHandler;
-    public event EventHandler ProtectedLoaded;
     public static event EventHandler StaticInitializationHandler;
 
     public static TestDomainBase GetObject (ObjectID id)
@@ -46,10 +46,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
       return TryGetObject<TestDomainBase> (id);
     }
 
+    public static void ClearStaticCtorHandlers ()
+    {
+      if (StaticCtorHandler != null)
+      {
+        var registeredHandlers = StaticCtorHandler.GetInvocationList();
+        foreach (EventHandler registeredHandler in registeredHandlers)
+          StaticCtorHandler -= registeredHandler;
+      }
+    }
+
     [NonSerialized]
     private IUnloadEventReceiver _unloadEventReceiver;
     [NonSerialized]
     private ILoadEventReceiver _loadEventReceiver;
+
+    public event EventHandler ProtectedLoaded;
 
     [NonSerialized]
     public bool CtorCalled;
@@ -96,6 +108,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.TestDomain
 
     protected TestDomainBase()
     {
+      if (StaticCtorHandler != null)
+        StaticCtorHandler (this, EventArgs.Empty);
       CtorCalled = true;
       CtorTx = ClientTransaction.Current;
       OnReferenceInitializingCalledBeforeCtor = OnReferenceInitializingCalled;

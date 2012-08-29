@@ -218,6 +218,7 @@
     <Compile Include="Infrastructure\IClientTransactionEventDistributor.cs" />
     <Compile Include="ICommittingEventRegistrar.cs" />
     <Compile Include="Infrastructure\NotFoundObjectsClientTransactionListener.cs" />
+    <Compile Include="Infrastructure\ObjectCleanupException.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListener.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\ILoadedObjectDataRegistrationListener.cs" />
