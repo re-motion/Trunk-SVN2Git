@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
@@ -42,10 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
 
-      DomainObject domainObject;
-      _enlistedObjects.TryGetValue (objectID, out domainObject);
-      
-      return domainObject;
+      return _enlistedObjects.GetValueOrDefault (objectID);
     }
 
     public bool EnlistDomainObject (DomainObject domainObject)

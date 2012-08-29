@@ -613,9 +613,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-      listenerMock
-          .Expect (mock => mock.NewObjectCreating (_transaction, typeof (OrderItem)))
-          .WhenCalled (mi => Assert.That (ClientTransaction.Current, Is.SameAs (_transaction)));
+      listenerMock.Expect (mock => mock.NewObjectCreating (_transaction, typeof (OrderItem)));
 
       var result = ClientTransactionTestHelper.CallNewObject (_transaction, typeof (OrderItem), ParamList.Create ("Some Product"));
 

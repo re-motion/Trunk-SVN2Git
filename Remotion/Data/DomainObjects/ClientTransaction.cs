@@ -30,7 +30,6 @@ using Remotion.Data.DomainObjects.Queries;
 using Remotion.Mixins;
 using Remotion.Reflection;
 using Remotion.Utilities;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.Data.DomainObjects
 {
@@ -965,15 +964,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("id", id);
 
-    if (IsInvalid (id))
-      throw new ObjectInvalidException (id);
-
-    var dataContainer = _dataManager.GetDataContainerWithLazyLoad (id, throwOnNotFound: true);
-    
-    if (dataContainer.State == StateType.Deleted && !includeDeleted)
-      throw new ObjectDeletedException (id);
-
-    return dataContainer.DomainObject;
+    return CreateObjectLifetimeAgent().GetObject (id, includeDeleted);
   }
 
   /// <summary>
@@ -994,15 +985,7 @@ public class ClientTransaction
   protected internal virtual DomainObject TryGetObject (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-    if (IsInvalid (objectID))
-      return GetInvalidObjectReference (objectID);
-
-    var dataContainer = _dataManager.GetDataContainerWithLazyLoad (objectID, throwOnNotFound: false);
-    if (dataContainer == null)
-      return null;
-
-    return dataContainer.DomainObject;
+    return CreateObjectLifetimeAgent().TryGetObject (objectID);
   }
 
   /// <summary>
@@ -1027,21 +1010,7 @@ public class ClientTransaction
   protected internal virtual DomainObject GetObjectReference (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-    if (IsInvalid (objectID))
-      return GetInvalidObjectReference (objectID);
-
-    var enlistedObject = GetEnlistedDomainObject (objectID);
-    if (enlistedObject != null)
-    {
-      return enlistedObject;
-    }
-    else
-    {
-      var creator = objectID.ClassDefinition.GetDomainObjectCreator ();
-
-      return creator.CreateObjectReference (objectID, this);
-    }
+    return CreateObjectLifetimeAgent().GetObjectReference (objectID);
   }
 
   /// <summary>
@@ -1075,17 +1044,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
     ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-    using (EnterNonDiscardingScope ())
-    {
-      RaiseListenerEvent ((tx, l) => l.NewObjectCreating (tx, domainObjectType));
-
-      var creator = MappingConfiguration.Current.GetTypeDefinition (domainObjectType).GetDomainObjectCreator ();
-      var ctorInfo = creator.GetConstructorLookupInfo (domainObjectType);
-
-      var instance = (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
-      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
-      return instance;
-    }
+    return CreateObjectLifetimeAgent().NewObject (domainObjectType, constructorParameters);
   }
 
   /// <summary>
@@ -1132,13 +1091,7 @@ public class ClientTransaction
   public T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {
-    ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-
-    // this performs a bulk load operation, throwing on invalid IDs and unknown objects
-    return DataManager.GetDataContainersWithLazyLoad (objectIDs, throwOnNotFound: true)
-        .Select (dc => dc.DomainObject)
-        .Cast<T> ()
-        .ToArray ();
+    return CreateObjectLifetimeAgent().GetObjects<T> (objectIDs);
   }
 
   /// <summary>
@@ -1173,28 +1126,7 @@ public class ClientTransaction
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-
-    var objectIDsAsCollection = objectIDs.ConvertToCollection();
-    
-    var validObjectIDs = objectIDsAsCollection.Where (id => !IsInvalid (id)).ConvertToCollection ();
-    
-    // this performs a bulk load operation
-    var dataContainersByID = validObjectIDs.Zip (DataManager.GetDataContainersWithLazyLoad (validObjectIDs, false)).ToDictionary (t => t.Item1, t => t.Item2);
-
-    var result = objectIDsAsCollection.Select (
-        id =>
-        {
-          DataContainer loadResult;
-          if (dataContainersByID.TryGetValue (id, out loadResult))
-            return loadResult == null ? null : (T) loadResult.DomainObject;
-          else
-          {
-            Assertion.IsTrue (
-                IsInvalid (id), "All valid IDs have been passed to EnsureDataAvailable, so if its not in the loadResult, it must be invalid.");
-            return (T) GetInvalidObjectReference (id);
-          }
-        });
-    return result.ToArray ();
+    return CreateObjectLifetimeAgent().TryGetObjects<T> (objectIDs);
   }
 
   /// <summary>
@@ -1320,10 +1252,7 @@ public class ClientTransaction
   protected internal virtual void Delete (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-
-    var command = _dataManager.CreateDeleteCommand (domainObject);
-    var fullCommand = command.ExpandToAllRelatedObjects ();
-    fullCommand.NotifyAndPerform ();
+    CreateObjectLifetimeAgent().Delete (domainObject);
   }
 
   /// <summary>
@@ -1428,6 +1357,11 @@ public class ClientTransaction
   public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
+  }
+
+  private ObjectLifetimeAgent CreateObjectLifetimeAgent ()
+  {
+    return new ObjectLifetimeAgent (this, _eventBroker, _invalidDomainObjectManager, _dataManager, _enlistedDomainObjectManager);
   }
 
   // ReSharper disable UnusedParameter.Global
