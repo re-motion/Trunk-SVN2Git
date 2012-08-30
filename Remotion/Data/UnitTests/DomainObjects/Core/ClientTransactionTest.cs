@@ -32,6 +32,8 @@ using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.ObjectMothers;
+using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -57,6 +59,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private ClientTransactionExtensionCollection _fakeExtensions;
 
     private TestableClientTransaction _transactionWithMocks;
+
+    private ObjectID _objectID1;
+    private DomainObject _fakeDomainObject1;
+    private ObjectID _objectID2;
+    private DomainObject _fakeDomainObject2;
 
     public override void SetUp ()
     {
@@ -94,6 +101,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       // Ignore calls made by ctor
       _hierarchyManagerMock.BackToRecord ();
       _eventBrokerMock.BackToRecord ();
+
+      _objectID1 = DomainObjectIDs.Order1;
+      _fakeDomainObject1 = DomainObjectMother.CreateFakeObject (_objectID1);
+      _objectID2 = DomainObjectIDs.Order2;
+      _fakeDomainObject2 = DomainObjectMother.CreateFakeObject (_objectID2);
     }
 
     [Test]
@@ -379,9 +391,48 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository.VerifyAll ();
     }
 
-    // TODO 5016: GetObject test using mock
-    // TODO 5016: TryGetObject test using mock
-    // TODO 5016: GetObjectReference test using mock
+    [Test]
+    public void GetObject ()
+    {
+      var includeDeleted = BooleanObjectMother.GetRandomBoolean();
+      _objectLifetimeAgentMock
+          .Expect (mock => mock.GetObject (_objectID1, includeDeleted))
+          .Return (_fakeDomainObject1);
+      _objectLifetimeAgentMock.Replay();
+
+      var result = ClientTransactionTestHelper.CallGetObject (_transactionWithMocks, _objectID1, includeDeleted);
+
+      _objectLifetimeAgentMock.VerifyAllExpectations();
+      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+    }
+
+    [Test]
+    public void TryGetObject ()
+    {
+      _objectLifetimeAgentMock
+          .Expect (mock => mock.TryGetObject (_objectID1))
+          .Return (_fakeDomainObject1);
+      _objectLifetimeAgentMock.Replay ();
+
+      var result = ClientTransactionTestHelper.CallTryGetObject (_transactionWithMocks, _objectID1);
+
+      _objectLifetimeAgentMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+    }
+
+    [Test]
+    public void GetObjectReference ()
+    {
+      _objectLifetimeAgentMock
+          .Expect (mock => mock.GetObjectReference (_objectID1))
+          .Return (_fakeDomainObject1);
+      _objectLifetimeAgentMock.Replay ();
+
+      var result = ClientTransactionTestHelper.CallGetObjectReference (_transactionWithMocks, _objectID1);
+
+      _objectLifetimeAgentMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+    }
 
     [Test]
     public void GetInvalidObjectReference ()
@@ -401,7 +452,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         + "not been marked invalid.\r\nParameter name: id")]
     public void GetInvalidObjectReference_ThrowsWhenNotInvalid ()
     {
-      ClientTransactionTestHelper.CallGetInvalidObjectReference (_transaction, DomainObjectIDs.Order1);
+      ClientTransactionTestHelper.CallGetInvalidObjectReference (_transaction, _objectID1);
     }
 
     [Test]
@@ -415,17 +466,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (_transaction.IsInvalid (domainObject.ID), Is.True);
     }
 
-    // TODO 5016: NewObject test using mock
+    [Test]
+    public void NewObject ()
+    {
+      var domainObjectType = typeof (Order);
+      var constructorParameters = ParamList.Create (_fakeDomainObject1);
+      _objectLifetimeAgentMock
+          .Expect (mock => mock.NewObject (domainObjectType, constructorParameters))
+          .Return (_fakeDomainObject1);
+      _objectLifetimeAgentMock.Replay ();
+
+      var result = ClientTransactionTestHelper.CallNewObject (_transactionWithMocks, domainObjectType, constructorParameters);
+
+      _objectLifetimeAgentMock.VerifyAllExpectations ();
+      Assert.That (result, Is.SameAs (_fakeDomainObject1));
+    }
 
     [Test]
     public void EnsureDataAvailable ()
     {
       _dataManagerMock
-          .Expect (mock => mock.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1, true))
+          .Expect (mock => mock.GetDataContainerWithLazyLoad (_objectID1, true))
           .Return (DataContainerObjectMother.Create());
       _mockRepository.ReplayAll();
       
-      _transactionWithMocks.EnsureDataAvailable (DomainObjectIDs.Order1);
+      _transactionWithMocks.EnsureDataAvailable (_objectID1);
 
       _mockRepository.VerifyAll();
     }
@@ -434,11 +499,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void EnsureDataAvailable_Many ()
     {
       _dataManagerMock
-          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, true))
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { _objectID1, _objectID2 }, true))
           .Return (new DataContainer[0]);
       _mockRepository.ReplayAll ();
 
-      _transactionWithMocks.EnsureDataAvailable (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      _transactionWithMocks.EnsureDataAvailable (new[] { _objectID1, _objectID2 });
 
       _mockRepository.VerifyAll ();
     }
@@ -447,11 +512,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void TryEnsureDataAvailable_True ()
     {
       _dataManagerMock
-          .Expect (mock => mock.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1, false))
+          .Expect (mock => mock.GetDataContainerWithLazyLoad (_objectID1, false))
           .Return (DataContainerObjectMother.Create ());
       _mockRepository.ReplayAll ();
 
-      var result = _transactionWithMocks.TryEnsureDataAvailable (DomainObjectIDs.Order1);
+      var result = _transactionWithMocks.TryEnsureDataAvailable (_objectID1);
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.True);
@@ -461,11 +526,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void TryEnsureDataAvailable_False ()
     {
       _dataManagerMock
-          .Expect (mock => mock.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1, false))
+          .Expect (mock => mock.GetDataContainerWithLazyLoad (_objectID1, false))
           .Return (null);
       _mockRepository.ReplayAll ();
 
-      var result = _transactionWithMocks.TryEnsureDataAvailable (DomainObjectIDs.Order1);
+      var result = _transactionWithMocks.TryEnsureDataAvailable (_objectID1);
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.False);
@@ -475,11 +540,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void TryEnsureDataAvailable_Many_True ()
     {
       _dataManagerMock
-          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, false))
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { _objectID1, _objectID2 }, false))
           .Return (new[] { DataContainerObjectMother.Create(), DataContainerObjectMother.Create() });
       _mockRepository.ReplayAll ();
 
-      var result = _transactionWithMocks.TryEnsureDataAvailable (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var result = _transactionWithMocks.TryEnsureDataAvailable (new[] { _objectID1, _objectID2 });
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.True);
@@ -489,11 +554,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void TryEnsureDataAvailable_Many_False ()
     {
       _dataManagerMock
-          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }, false))
+          .Expect (mock => mock.GetDataContainersWithLazyLoad (new[] { _objectID1, _objectID2 }, false))
           .Return (new[] { DataContainerObjectMother.Create (), null });
       _mockRepository.ReplayAll ();
 
-      var result = _transactionWithMocks.TryEnsureDataAvailable (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
+      var result = _transactionWithMocks.TryEnsureDataAvailable (new[] { _objectID1, _objectID2 });
 
       _mockRepository.VerifyAll ();
       Assert.That (result, Is.False);
@@ -513,7 +578,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void EnsureDataComplete_EndPoint_Real ()
     {
-      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "Customer");
+      var endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (_objectID1, "Customer");
       Assert.That (_dataManager.GetRelationEndPointWithoutLoading (endPointID), Is.Null);
 
       _transaction.EnsureDataComplete (endPointID);
@@ -582,7 +647,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void EnlistDomainObject ()
     {
-      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (_objectID1);
       Assert.That (_transaction.IsEnlisted (order), Is.False);
 
       _transaction.EnlistDomainObject (order);
@@ -593,7 +658,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void EnlistDomainObject_DoesntLoad ()
     {
-      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
+      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (_objectID1);
       Assert.That (_transaction.IsEnlisted (order), Is.False);
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
@@ -621,7 +686,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void CopyCollectionEventHandlers ()
     {
-      var order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      var order = _transaction.Execute (() => Order.GetObject (_objectID1));
       
       bool orderItemAdded = false;
       _transaction.Execute (() => order.OrderItems.Added += delegate { orderItemAdded = true; });
@@ -737,7 +802,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetRelatedObject ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
 
       var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
       _transaction.Execute (() => order.OrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2));
@@ -782,7 +847,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ExpectedMessage = "The given end-point ID does not denote a related object (cardinality one).\r\nParameter name: relationEndPointID")]
     public void GetRelatedObject_WrongCardinality ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
 
       ClientTransactionTestHelper.CallGetRelatedObject (
           _transaction, 
@@ -792,7 +857,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetOriginalRelatedObject ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
       var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket");
 
       _transaction.Execute (() => order.OrderTicket = OrderTicket.GetObject (DomainObjectIDs.OrderTicket2));
@@ -808,7 +873,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ExpectedMessage = "The given end-point ID does not denote a related object (cardinality one).\r\nParameter name: relationEndPointID")]
     public void GetOriginalRelatedObject_WrongCardinality ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
 
       ClientTransactionTestHelper.CallGetOriginalRelatedObject (
           _transaction,
@@ -818,7 +883,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetRelatedObjects ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
       
       var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       var endPoint = ((ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
@@ -843,7 +908,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ExpectedMessage = "The given end-point ID does not denote a related object collection (cardinality many).\r\nParameter name: relationEndPointID")]
     public void GetRelatedObjects_WrongCardinality ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
 
       ClientTransactionTestHelper.CallGetRelatedObjects (
           _transaction,
@@ -853,7 +918,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetOriginalRelatedObjects ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
 
       var endPointID = RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderItems");
       var endPoint = ((ICollectionEndPoint) ClientTransactionTestHelper.GetDataManager (_transaction).GetRelationEndPointWithLazyLoad (endPointID));
@@ -877,15 +942,40 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         ExpectedMessage = "The given end-point ID does not denote a related object collection (cardinality many).\r\nParameter name: relationEndPointID")]
     public void GetOriginalRelatedObjects_WrongCardinality ()
     {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      Order order = _transaction.Execute (() => Order.GetObject (_objectID1));
 
       ClientTransactionTestHelper.CallGetOriginalRelatedObjects (
           _transaction,
           RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
-    // TODO 5016: GetObjects test using mock
-    // TODO 5016: TryGetObjects test using mock
+    [Test]
+    public void GetObjects ()
+    {
+      _objectLifetimeAgentMock
+          .Expect (mock => mock.GetObjects<DomainObject> (new[] { _objectID1, _objectID2 }))
+          .Return (new[] { _fakeDomainObject1, _fakeDomainObject2 });
+      _objectLifetimeAgentMock.Replay ();
+
+      var result = _transactionWithMocks.GetObjects<DomainObject> (_objectID1, _objectID2);
+
+      _objectLifetimeAgentMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (new[] { _fakeDomainObject1, _fakeDomainObject2 }));
+    }
+
+    [Test]
+    public void TryGetObjects ()
+    {
+      _objectLifetimeAgentMock
+          .Expect (mock => mock.TryGetObjects<DomainObject> (new[] { _objectID1, _objectID2 }))
+          .Return (new[] { _fakeDomainObject1, _fakeDomainObject2 });
+      _objectLifetimeAgentMock.Replay ();
+
+      var result = _transactionWithMocks.TryGetObjects<DomainObject> (_objectID1, _objectID2);
+
+      _objectLifetimeAgentMock.VerifyAllExpectations ();
+      Assert.That (result, Is.EqualTo (new[] { _fakeDomainObject1, _fakeDomainObject2 }));
+    }
     
     [Test]
     public void Serialization ()
