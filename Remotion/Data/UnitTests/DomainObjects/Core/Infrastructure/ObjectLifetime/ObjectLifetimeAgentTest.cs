@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects.DataManagement.Commands;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
@@ -34,7 +35,7 @@ using Remotion.Reflection;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.UnitTesting;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime
 {
   [TestFixture]
   public class ObjectLifetimeAgentTest : StandardMappingTest

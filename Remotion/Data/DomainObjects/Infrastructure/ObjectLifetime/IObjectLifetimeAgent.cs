@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using Remotion.Reflection;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 {
   /// <summary>
   /// Provides an interface for classes implementing creation, retrieval, and deletion of <see cref="DomainObject"/> references.

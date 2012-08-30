@@ -20,7 +20,7 @@ using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 {
   [Serializable]
   public class ObjectCleanupException : Exception

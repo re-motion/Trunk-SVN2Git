@@ -16,10 +16,10 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Development.UnitTesting;
 
-namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
+namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime
 {
   [TestFixture]
   public class ObjectCleanupExceptionTest : StandardMappingTest

@@ -26,7 +26,7 @@ using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
 using Remotion.Utilities;
 
-namespace Remotion.Data.DomainObjects.Infrastructure
+namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 {
   /// <summary>
   /// Implements creation, retrieval, and deletion of <see cref="DomainObject"/> references.
