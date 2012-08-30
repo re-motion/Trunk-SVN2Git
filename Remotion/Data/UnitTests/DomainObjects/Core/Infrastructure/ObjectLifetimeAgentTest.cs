@@ -24,8 +24,10 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -336,6 +338,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _dataManagerMock.VerifyAllExpectations();
       commandMock1.VerifyAllExpectations();
       commandMock2.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void Serialization ()
+    {
+      var instance = new ObjectLifetimeAgent (
+          _transaction,
+          new SerializableClientTransactionEventSinkFake(),
+          new SerializableInvalidDomainObjectManagerFake(),
+          new SerializableDataManagerFake(),
+          new SerializableEnlistedDomainObjectManagerFake());
+
+      var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
+
+      Assert.That (deserializedInstance.ClientTransaction, Is.Not.Null);
+      Assert.That (deserializedInstance.EventSink, Is.Not.Null);
+      Assert.That (deserializedInstance.InvalidDomainObjectManager, Is.Not.Null);
+      Assert.That (deserializedInstance.DataManager, Is.Not.Null);
+      Assert.That (deserializedInstance.EnlistedDomainObjectManager, Is.Not.Null);
     }
 
   }

@@ -35,10 +35,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   [Serializable]
   public abstract class ClientTransactionComponentFactoryBase : IClientTransactionComponentFactory
   {
-    public abstract ITransactionHierarchyManager CreateTransactionHierarchyManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
+    public abstract ITransactionHierarchyManager CreateTransactionHierarchyManager (
+        ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
+
     public abstract Dictionary<Enum, object> CreateApplicationData (ClientTransaction constructedTransaction);
     public abstract IEnlistedDomainObjectManager CreateEnlistedObjectManager (ClientTransaction constructedTransaction);
-    public abstract IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
+
+    public abstract IInvalidDomainObjectManager CreateInvalidDomainObjectManager (
+        ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
+
     public abstract IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
     public abstract Func<ClientTransaction, ClientTransaction> CreateCloneFactory ();
 
@@ -48,13 +53,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         ILazyLoader lazyLoader,
         IClientTransactionEventSink eventSink);
 
-    protected abstract IObjectLoader CreateObjectLoader (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink, IPersistenceStrategy persistenceStrategy, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager, ITransactionHierarchyManager hierarchyManager);
+    protected abstract IObjectLoader CreateObjectLoader (
+        ClientTransaction constructedTransaction,
+        IClientTransactionEventSink eventSink,
+        IPersistenceStrategy persistenceStrategy,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager,
+        ITransactionHierarchyManager hierarchyManager);
 
     public virtual IClientTransactionEventBroker CreateEventBroker (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 
-      var listenerManager = new ClientTransactionEventBroker (constructedTransaction, new ClientTransactionEventDistributor ());
+      var listenerManager = new ClientTransactionEventBroker (constructedTransaction, new ClientTransactionEventDistributor());
       foreach (var listener in CreateListeners (constructedTransaction))
         listenerManager.AddListener (listener);
       return listenerManager;
@@ -63,7 +74,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     protected virtual IEnumerable<IClientTransactionListener> CreateListeners (ClientTransaction constructedTransaction)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
-      yield return new LoggingClientTransactionListener ();
+      yield return new LoggingClientTransactionListener();
     }
 
     public virtual IDataManager CreateDataManager (
@@ -78,10 +89,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
       ArgumentUtility.CheckNotNull ("hierarchyManager", hierarchyManager);
-    
+
       var dataContainerEventListener = CreateDataContainerEventListener (eventSink);
 
-      var delegatingDataManager = new DelegatingDataManager ();
+      var delegatingDataManager = new DelegatingDataManager();
       var objectLoader = CreateObjectLoader (
           constructedTransaction, eventSink, persistenceStrategy, invalidDomainObjectManager, delegatingDataManager, hierarchyManager);
 
@@ -90,10 +101,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           GetEndPointProvider (delegatingDataManager),
           GetLazyLoader (delegatingDataManager),
           eventSink);
-      
-      var dataManager = new DataManager (constructedTransaction, eventSink, dataContainerEventListener, invalidDomainObjectManager, objectLoader, endPointManager);
+
+      var dataManager = new DataManager (
+          constructedTransaction, eventSink, dataContainerEventListener, invalidDomainObjectManager, objectLoader, endPointManager);
       delegatingDataManager.InnerDataManager = dataManager;
       return dataManager;
+    }
+
+    public virtual IObjectLifetimeAgent CreateObjectLifetimeAgent (
+        ClientTransaction constructedTransaction,
+        IClientTransactionEventSink eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager)
+    {
+      ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
+      ArgumentUtility.CheckNotNull ("eventSink", eventSink);
+      ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("enlistedDomainObjectManager", enlistedDomainObjectManager);
+      
+      return new ObjectLifetimeAgent (constructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager);
     }
 
     public virtual IQueryManager CreateQueryManager (
@@ -133,7 +161,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
 
-      var extensionFactories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionExtensionFactory> ();
+      var extensionFactories = SafeServiceLocator.Current.GetAllInstances<IClientTransactionExtensionFactory>();
       var extensions = extensionFactories.SelectMany (f => f.CreateClientTransactionExtensions (constructedTransaction));
 
       var extensionCollection = new ClientTransactionExtensionCollection ("root");

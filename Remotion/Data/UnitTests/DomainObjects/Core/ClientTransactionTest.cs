@@ -44,16 +44,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     private DataManager _dataManager;
 
     private MockRepository _mockRepository;
-    private ITransactionHierarchyManager _hierarchyManagerMock;
     private Dictionary<Enum, object> _fakeApplicationData;
-    private IDataManager _dataManagerMock;
-    private IEnlistedDomainObjectManager _enlistedObjectManagerMock;
-    private ClientTransactionExtensionCollection _fakeExtensions;
-    private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
     private IClientTransactionEventBroker _eventBrokerMock;
+    private ITransactionHierarchyManager _hierarchyManagerMock;
+    private IEnlistedDomainObjectManager _enlistedObjectManagerMock;
+    private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
     private IPersistenceStrategy _persistenceStrategyMock;
+    private IDataManager _dataManagerMock;
+    private IObjectLifetimeAgent _objectLifetimeAgentMock;
     private IQueryManager _queryManagerMock;
     private ICommitRollbackAgent _commitRollbackAgentMock;
+    private ClientTransactionExtensionCollection _fakeExtensions;
 
     private TestableClientTransaction _transactionWithMocks;
 
@@ -65,29 +66,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _dataManager = ClientTransactionTestHelper.GetDataManager (_transaction);
 
       _mockRepository = new MockRepository();
-      _hierarchyManagerMock = _mockRepository.StrictMock<ITransactionHierarchyManager> ();
       _fakeApplicationData = new Dictionary<Enum, object> ();
-      _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
+      _eventBrokerMock = _mockRepository.StrictMock<IClientTransactionEventBroker> ();
+      _hierarchyManagerMock = _mockRepository.StrictMock<ITransactionHierarchyManager> ();
       _enlistedObjectManagerMock = _mockRepository.StrictMock<IEnlistedDomainObjectManager> ();
-      _fakeExtensions = new ClientTransactionExtensionCollection("test");
       _invalidDomainObjectManagerMock = _mockRepository.StrictMock<IInvalidDomainObjectManager> ();
-      _eventBrokerMock = _mockRepository.StrictMock<IClientTransactionEventBroker>();
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
+      _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
+      _objectLifetimeAgentMock = _mockRepository.StrictMock<IObjectLifetimeAgent> ();
       _queryManagerMock = _mockRepository.StrictMock<IQueryManager> ();
-      _commitRollbackAgentMock = _mockRepository.StrictMock<ICommitRollbackAgent>();
+      _commitRollbackAgentMock = _mockRepository.StrictMock<ICommitRollbackAgent> ();
+      _fakeExtensions = new ClientTransactionExtensionCollection("test");
 
       _transactionWithMocks = ClientTransactionObjectMother.CreateWithComponents<TestableClientTransaction> (
-          _hierarchyManagerMock,
           _fakeApplicationData,
-          tx => { throw new NotImplementedException(); },
-          _dataManagerMock,
-          _enlistedObjectManagerMock,
-          _fakeExtensions,
-          _invalidDomainObjectManagerMock,
           _eventBrokerMock,
+          _hierarchyManagerMock,
+          _enlistedObjectManagerMock,
+          _invalidDomainObjectManagerMock,
           _persistenceStrategyMock,
+          _dataManagerMock,
+          _objectLifetimeAgentMock,
           _queryManagerMock,
-          _commitRollbackAgentMock);
+          _commitRollbackAgentMock,
+          _fakeExtensions,
+          tx => { throw new NotImplementedException(); });
       // Ignore calls made by ctor
       _hierarchyManagerMock.BackToRecord ();
       _eventBrokerMock.BackToRecord ();
@@ -156,6 +159,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
         componentFactoryMock
             .Expect (
                 mock =>
+                mock.CreateObjectLifetimeAgent (
+                    Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
+                    Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == _eventBrokerMock),
+                    Arg.Is (_invalidDomainObjectManagerMock),
+                    Arg.Is (_dataManagerMock),
+                    Arg.Is (_enlistedObjectManagerMock)))
+            .Return (_objectLifetimeAgentMock)
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetIDataManager (constructedTransaction), Is.SameAs (_dataManagerMock)));
+        componentFactoryMock
+            .Expect (
+                mock =>
                 mock.CreateQueryManager (
                     Arg<ClientTransaction>.Matches (tx => tx == constructedTransaction),
                     Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == _eventBrokerMock), 
@@ -164,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                     Arg.Is (_dataManagerMock),
                     Arg.Is (_hierarchyManagerMock)))
             .Return (_queryManagerMock)
-            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetIDataManager (constructedTransaction), Is.SameAs (_dataManagerMock)));
+            .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetObjectLifetimeAgent (constructedTransaction), Is.SameAs (_objectLifetimeAgentMock)));
         componentFactoryMock
             .Expect (
                 mock =>

@@ -31,6 +31,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// <summary>
   /// Implements creation, retrieval, and deletion of <see cref="DomainObject"/> references.
   /// </summary>
+  [Serializable]
   public class ObjectLifetimeAgent : IObjectLifetimeAgent
   {
     private readonly ClientTransaction _clientTransaction;
@@ -39,7 +40,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private readonly IDataManager _dataManager;
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
 
-    public ObjectLifetimeAgent (ClientTransaction clientTransaction, IClientTransactionEventSink eventSink, IInvalidDomainObjectManager invalidDomainObjectManager, IDataManager dataManager, IEnlistedDomainObjectManager enlistedDomainObjectManager)
+    public ObjectLifetimeAgent (
+        ClientTransaction clientTransaction,
+        IClientTransactionEventSink eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
@@ -61,6 +67,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public IClientTransactionEventSink EventSink
     {
       get { return _eventSink; }
+    }
+
+    public IInvalidDomainObjectManager InvalidDomainObjectManager
+    {
+      get { return _invalidDomainObjectManager; }
+    }
+
+    public IDataManager DataManager
+    {
+      get { return _dataManager; }
+    }
+
+    public IEnlistedDomainObjectManager EnlistedDomainObjectManager
+    {
+      get { return _enlistedDomainObjectManager; }
     }
 
     public DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
@@ -52,6 +53,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static IDataManager GetIDataManager (ClientTransaction clientTransaction)
     {
       return DataManagementService.GetDataManager (clientTransaction);
+    }
+
+    public static IObjectLifetimeAgent GetObjectLifetimeAgent (ClientTransaction clientTransaction)
+    {
+      return (IObjectLifetimeAgent) PrivateInvoke.GetNonPublicField (clientTransaction, "_objectLifetimeAgent");
     }
 
     public static IEnlistedDomainObjectManager GetEnlistedDomainObjectManager (ClientTransaction clientTransaction)
@@ -197,5 +203,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerManager = GetEventBroker (clientTransaction);
       return listenerManager.Listeners;
     }
+
   }
 }

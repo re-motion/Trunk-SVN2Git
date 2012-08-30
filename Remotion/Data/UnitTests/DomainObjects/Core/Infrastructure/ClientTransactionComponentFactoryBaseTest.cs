@@ -23,6 +23,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -140,6 +141,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (DataManagerTestHelper.GetInvalidDomainObjectManager (dataManager), Is.SameAs (fakeInvalidDomainObjectManager));
       Assert.That (DataManagerTestHelper.GetObjectLoader (dataManager), Is.SameAs (fakeObjectLoader));
       Assert.That (DataManagerTestHelper.GetRelationEndPointManager (dataManager), Is.SameAs (fakeRelationEndPointManager));
+    }
+
+    [Test]
+    public void CreateObjectLifetimeAgent ()
+    {
+      var dataManager = MockRepository.GenerateStub<IDataManager> ();
+      var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
+      var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
+      var enlistedDomainObjectManager = MockRepository.GenerateStub<IEnlistedDomainObjectManager> ();
+
+      var result = _factory.CreateObjectLifetimeAgent (
+          _fakeConstructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager);
+
+      Assert.That (result, Is.TypeOf (typeof (ObjectLifetimeAgent)));
+      Assert.That (((ObjectLifetimeAgent) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
+      Assert.That (((ObjectLifetimeAgent) result).EventSink, Is.SameAs (eventSink));
+      Assert.That (((ObjectLifetimeAgent) result).InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
+      Assert.That (((ObjectLifetimeAgent) result).DataManager, Is.SameAs (dataManager));
+      Assert.That (((ObjectLifetimeAgent) result).EnlistedDomainObjectManager, Is.SameAs (enlistedDomainObjectManager));
     }
 
     [Test]

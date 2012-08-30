@@ -203,6 +203,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\DataContainerLifetimeManagerTest.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\ForwardingEventListenerTestBase.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableEnlistedDomainObjectManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedObjectDataRegistrationListenerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTransactionHierarchyManagerFake.cs" />

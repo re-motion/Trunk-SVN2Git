@@ -44,9 +44,27 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     IInvalidDomainObjectManager CreateInvalidDomainObjectManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink);
     IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction);
 
-    IDataManager CreateDataManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink, IInvalidDomainObjectManager invalidDomainObjectManager, IPersistenceStrategy persistenceStrategy, ITransactionHierarchyManager hierarchyManager);
+    IDataManager CreateDataManager (
+        ClientTransaction constructedTransaction,
+        IClientTransactionEventSink eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy,
+        ITransactionHierarchyManager hierarchyManager);
 
-    IQueryManager CreateQueryManager (ClientTransaction constructedTransaction, IClientTransactionEventSink eventSink, IInvalidDomainObjectManager invalidDomainObjectManager, IPersistenceStrategy persistenceStrategy, IDataManager dataManager, ITransactionHierarchyManager hierarchyManager);
+    IObjectLifetimeAgent CreateObjectLifetimeAgent (
+        ClientTransaction constructedTransaction,
+        IClientTransactionEventSink eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IDataManager dataManager,
+        IEnlistedDomainObjectManager enlistedDomainObjectManager);
+
+    IQueryManager CreateQueryManager (
+        ClientTransaction constructedTransaction,
+        IClientTransactionEventSink eventSink,
+        IInvalidDomainObjectManager invalidDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy,
+        IDataManager dataManager,
+        ITransactionHierarchyManager hierarchyManager);
 
     ICommitRollbackAgent CreateCommitRollbackAgent (
         ClientTransaction constructedTransaction,

@@ -148,6 +148,7 @@ public class ClientTransaction
   private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
   private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
   private readonly IDataManager _dataManager;
+  private readonly IObjectLifetimeAgent _objectLifetimeAgent;
   private readonly IPersistenceStrategy _persistenceStrategy;
   private readonly IQueryManager _queryManager;
   private readonly ICommitRollbackAgent _commitRollbackAgent;
@@ -170,6 +171,8 @@ public class ClientTransaction
     _invalidDomainObjectManager = componentFactory.CreateInvalidDomainObjectManager (this, _eventBroker);
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
     _dataManager = componentFactory.CreateDataManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy, _hierarchyManager);
+    _objectLifetimeAgent = componentFactory.CreateObjectLifetimeAgent (
+        this, _eventBroker, _invalidDomainObjectManager, _dataManager, _enlistedDomainObjectManager);
     _queryManager = componentFactory.CreateQueryManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy, _dataManager, _hierarchyManager);
     _commitRollbackAgent = componentFactory.CreateCommitRollbackAgent (this, _eventBroker, _persistenceStrategy, _dataManager);
 
@@ -964,7 +967,7 @@ public class ClientTransaction
   {
     ArgumentUtility.CheckNotNull ("id", id);
 
-    return CreateObjectLifetimeAgent().GetObject (id, includeDeleted);
+    return _objectLifetimeAgent.GetObject (id, includeDeleted);
   }
 
   /// <summary>
@@ -985,7 +988,7 @@ public class ClientTransaction
   protected internal virtual DomainObject TryGetObject (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return CreateObjectLifetimeAgent().TryGetObject (objectID);
+    return _objectLifetimeAgent.TryGetObject (objectID);
   }
 
   /// <summary>
@@ -1010,7 +1013,7 @@ public class ClientTransaction
   protected internal virtual DomainObject GetObjectReference (ObjectID objectID)
   {
     ArgumentUtility.CheckNotNull ("objectID", objectID);
-    return CreateObjectLifetimeAgent().GetObjectReference (objectID);
+    return _objectLifetimeAgent.GetObjectReference (objectID);
   }
 
   /// <summary>
@@ -1044,7 +1047,7 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
     ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-    return CreateObjectLifetimeAgent().NewObject (domainObjectType, constructorParameters);
+    return _objectLifetimeAgent.NewObject (domainObjectType, constructorParameters);
   }
 
   /// <summary>
@@ -1091,7 +1094,7 @@ public class ClientTransaction
   public T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {
-    return CreateObjectLifetimeAgent().GetObjects<T> (objectIDs);
+    return _objectLifetimeAgent.GetObjects<T> (objectIDs);
   }
 
   /// <summary>
@@ -1126,7 +1129,7 @@ public class ClientTransaction
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
-    return CreateObjectLifetimeAgent().TryGetObjects<T> (objectIDs);
+    return _objectLifetimeAgent.TryGetObjects<T> (objectIDs);
   }
 
   /// <summary>
@@ -1252,7 +1255,7 @@ public class ClientTransaction
   protected internal virtual void Delete (DomainObject domainObject)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
-    CreateObjectLifetimeAgent().Delete (domainObject);
+    _objectLifetimeAgent.Delete (domainObject);
   }
 
   /// <summary>
@@ -1357,11 +1360,6 @@ public class ClientTransaction
   public virtual ITransaction ToITransation ()
   {
     return new ClientTransactionWrapper (this);
-  }
-
-  private ObjectLifetimeAgent CreateObjectLifetimeAgent ()
-  {
-    return new ObjectLifetimeAgent (this, _eventBroker, _invalidDomainObjectManager, _dataManager, _enlistedDomainObjectManager);
   }
 
   // ReSharper disable UnusedParameter.Global
