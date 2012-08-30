@@ -28,8 +28,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   {
     DomainObject NewObject (Type domainObjectType, ParamList constructorParameters);
 
-    DomainObject GetObject (ObjectID objectID, bool includeDeleted);
     DomainObject GetObjectReference (ObjectID objectID);
+
+    DomainObject GetObject (ObjectID objectID, bool includeDeleted);
     DomainObject TryGetObject (ObjectID objectID);
 
     T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs);

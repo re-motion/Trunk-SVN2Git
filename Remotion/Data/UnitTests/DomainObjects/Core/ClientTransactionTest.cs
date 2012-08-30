@@ -22,7 +22,6 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
-using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
@@ -31,12 +30,8 @@ using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
-using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
-using Remotion.Mixins;
-using Remotion.Reflection;
 using Rhino.Mocks;
 using System.Linq;
 
@@ -370,210 +365,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       _mockRepository.VerifyAll ();
     }
 
-    [Test]
-    public void GetObject_UnknownObject_IsLoaded ()
-    {
-      var result = ClientTransactionTestHelper.CallGetObject (_transaction, DomainObjectIDs.Order1, false);
-
-      Assert.That (result, Is.InstanceOf (typeof (Order)));
-      Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (result.TransactionContext[_transaction].State, Is.EqualTo (StateType.Unchanged));
-    }
-
-    [Test]
-    public void GetObject_KnownObject_IsReturned ()
-    {
-      var order = _transaction.Execute (() => Order.NewObject ());
-
-      var result = ClientTransactionTestHelper.CallGetObject (_transaction, order.ID, false);
-
-      Assert.That (result, Is.SameAs (order));
-    }
-
-    [Test]
-    public void GetObject_EnlistedButNotLoadedObject_LoadsObject ()
-    {
-      var order = DomainObjectMother.GetObjectInOtherTransaction<Order> (DomainObjectIDs.Order1);
-      _transaction.EnlistDomainObject (order);
-
-      Assert.That (order.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
-
-      var result = ClientTransactionTestHelper.CallGetObject (_transaction, order.ID, false);
-
-      Assert.That (result, Is.SameAs (order));
-      Assert.That (result.TransactionContext[_transaction].State, Is.EqualTo (StateType.Unchanged));
-    }
-
-    [Test]
-    public void GetObject_InvalidObject_ThrowsWithoutGoingToDatabase ()
-    {
-      var invalidObject = _transaction.Execute (() => Official.NewObject ());
-      LifetimeService.DeleteObject (_transaction, invalidObject);
-
-      Assert.That (invalidObject.TransactionContext[_transaction].IsInvalid, Is.True);
-
-      var storageProviderMock = UnitTestStorageProviderStub.CreateStorageProviderMockForOfficial ();
-      try
-      {
-        UnitTestStorageProviderStub.ExecuteWithMock (storageProviderMock, () => 
-            ClientTransactionTestHelper.CallGetObject (_transaction, invalidObject.ID, false));
-        Assert.Fail ("Expected ObjectsNotFoundException.");
-      }
-      catch (ObjectInvalidException)
-      {
-        // ok
-      }
-
-      storageProviderMock.AssertWasNotCalled (mock => mock.LoadDataContainer (invalidObject.ID));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectDeletedException))]
-    public void GetObject_DeletedObject_IncludeDeletedFalse_Throws ()
-    {
-      var deletedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      LifetimeService.DeleteObject (_transaction, deletedObject);
-
-      Assert.That (deletedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.Deleted));
-
-      ClientTransactionTestHelper.CallGetObject (_transaction, deletedObject.ID, false);
-    }
-
-    [Test]
-    public void GetObject_DeletedObject_IncludeDeletedTrue_Returns ()
-    {
-      var deletedObject = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      LifetimeService.DeleteObject (_transaction, deletedObject);
-
-      Assert.That (deletedObject.TransactionContext[_transaction].State, Is.EqualTo (StateType.Deleted));
-
-      var result = ClientTransactionTestHelper.CallGetObject (_transaction, deletedObject.ID, true);
-
-      Assert.That (result, Is.SameAs (deletedObject));
-    }
-
-    [Test]
-    public void TryGetObject ()
-    {
-      var fakeOrder = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainer.SetDomainObject (fakeOrder);
-
-      var counter = new OrderedExpectationCounter ();
-
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
-      _enlistedObjectManagerMock.Stub (stub => stub.GetEnlistedDomainObject (DomainObjectIDs.Order1)).Return (fakeOrder);
-
-      _dataManagerMock
-          .Expect (mock => mock.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1, false))
-          .Return (dataContainer)
-          .Ordered (counter);
-
-      _mockRepository.ReplayAll ();
-
-      var result = ClientTransactionTestHelper.CallTryGetObject (_transactionWithMocks, DomainObjectIDs.Order1);
-
-      _mockRepository.VerifyAll ();
-      Assert.That (result, Is.SameAs (fakeOrder));
-    }
-
-    [Test]
-    public void TryGetObject_WithNotFoundObject ()
-    {
-      var fakeOrder = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-
-      var counter = new OrderedExpectationCounter ();
-
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
-      _enlistedObjectManagerMock.Stub (stub => stub.GetEnlistedDomainObject (DomainObjectIDs.Order1)).Return (fakeOrder);
-
-      _dataManagerMock
-          .Expect (mock => mock.GetDataContainerWithLazyLoad (DomainObjectIDs.Order1, false))
-          .Return (null)
-          .Ordered (counter);
-
-      _mockRepository.ReplayAll ();
-
-      var result = ClientTransactionTestHelper.CallTryGetObject (_transactionWithMocks, DomainObjectIDs.Order1);
-
-      _mockRepository.VerifyAll ();
-      Assert.That (result, Is.Null);
-    }
-
-    [Test]
-    public void TryGetObject_WithInvalidObjects ()
-    {
-      var fakeOrder = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.GetInvalidObjectReference (DomainObjectIDs.Order1)).Return (fakeOrder);
-
-      _dataManagerMock
-          .Expect (mock => mock.GetDataContainersWithLazyLoad (Arg<ICollection<ObjectID>>.List.Equal (new ObjectID[0]), Arg.Is (false)))
-          .Return (new DataContainer[0]);
-      _mockRepository.ReplayAll ();
-
-      var result = ClientTransactionTestHelper.CallTryGetObject (_transactionWithMocks, DomainObjectIDs.Order1);
-
-      Assert.That (result, Is.SameAs (fakeOrder));
-    }
-
-    [Test]
-    public void GetObjectReference_KnownObject_ReturnedWithoutLoading ()
-    {
-      var instance = DomainObjectMother.CreateObjectInOtherTransaction<Order> ();
-      _transaction.EnlistDomainObject (instance);
-
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
-          _transaction,
-          mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-
-      var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
-
-      Assert.That (result, Is.SameAs (instance));
-    }
-
-    [Test]
-    public void GetObjectReference_KnownObject_Invalid_Works ()
-    {
-      var instance = DomainObjectMother.CreateObjectInTransaction<Order> (_transaction);
-      LifetimeService.DeleteObject (_transaction, instance);
-      Assert.That (instance.TransactionContext[_transaction].IsInvalid, Is.True);
-
-      var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, instance.ID);
-
-      Assert.That (result, Is.SameAs (instance));
-    }
-
-    [Test]
-    public void GetObjectReference_UnknownObject_ReturnsUnloadedObject ()
-    {
-      ClientTransactionTestHelper.EnsureTransactionThrowsOnEvent (
-        _transaction,
-        mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
-      
-      var result = ClientTransactionTestHelper.CallGetObjectReference (_transaction, DomainObjectIDs.Order1);
-
-      Assert.That (result, Is.Not.Null);
-      Assert.That (result, Is.InstanceOf (typeof (Order)));
-      Assert.That (InterceptedDomainObjectCreator.Instance.Factory.WasCreatedByFactory (((object) result).GetType()), Is.True);
-      Assert.That (result.ID, Is.EqualTo (DomainObjectIDs.Order1));
-      Assert.That (_transaction.IsEnlisted (result), Is.True);
-      Assert.That (result.TransactionContext[_transaction].State, Is.EqualTo (StateType.NotLoadedYet));
-    }
-
-    [Test]
-    public void GetObjectReference_UnknownObject_BindsToBindingClientTransactionOnly ()
-    {
-      var unboundResult = ClientTransactionTestHelper.CallGetObjectReference (_transaction, DomainObjectIDs.Order1);
-      Assert.That (unboundResult.HasBindingTransaction, Is.False);
-
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      var boundResult = ClientTransactionTestHelper.CallGetObjectReference (bindingTransaction, DomainObjectIDs.Order1);
-      Assert.That (boundResult.HasBindingTransaction, Is.True);
-      Assert.That (boundResult.GetBindingTransaction(), Is.SameAs (bindingTransaction));
-    }
+    // TODO 5016: GetObject test using mock
+    // TODO 5016: TryGetObject test using mock
+    // TODO 5016: GetObjectReference test using mock
 
     [Test]
     public void GetInvalidObjectReference ()
@@ -607,45 +401,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       Assert.That (_transaction.IsInvalid (domainObject.ID), Is.True);
     }
 
-    [Test]
-    public void NewObject ()
-    {
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-
-      var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-      listenerMock.Expect (mock => mock.NewObjectCreating (_transaction, typeof (OrderItem)));
-
-      var result = ClientTransactionTestHelper.CallNewObject (_transaction, typeof (OrderItem), ParamList.Create ("Some Product"));
-
-      listenerMock.VerifyAllExpectations();
-      ClientTransactionTestHelper.RemoveListener (_transaction, listenerMock);
-      Assert.That (result, Is.Not.Null);
-
-      Assert.That (result, Is.AssignableTo<OrderItem> ());
-      Assert.That (result, Is.Not.TypeOf<OrderItem> ());
-      var typeDefinition = GetTypeDefinition (typeof (OrderItem));
-      var interceptedDomainObjectCreator = ((InterceptedDomainObjectCreator) typeDefinition.GetDomainObjectCreator ());
-      var interceptedDomainObjectTypeFactory = interceptedDomainObjectCreator.Factory;
-      Assert.That (interceptedDomainObjectTypeFactory.WasCreatedByFactory (((object) result).GetType()), Is.True);
-
-      Assert.That (((OrderItem) result).CtorCalled, Is.True);
-      Assert.That (((OrderItem) result).CtorTx, Is.SameAs (_transaction));
-      Assert.That (_transaction.Execute (() => ((OrderItem) result).Product), Is.EqualTo ("Some Product"));
-
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-    }
-
-    [Test]
-    public void NewObject_InitializesMixins ()
-    {
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      var result = ClientTransactionTestHelper.CallNewObject (_transaction, typeof (ClassWithAllDataTypes), ParamList.Empty);
-
-      var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
-      Assert.That (mixin, Is.Not.Null);
-      Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
-      Assert.That (mixin.OnDomainObjectCreatedTx, Is.SameAs (_transaction));
-    }
+    // TODO 5016: NewObject test using mock
 
     [Test]
     public void EnsureDataAvailable ()
@@ -1114,135 +870,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           RelationEndPointID.Create (order.ID, "Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderTicket"));
     }
 
-    [Test]
-    public void TryGetObjects ()
-    {
-      var fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
-
-      var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainer1.SetDomainObject (fakeOrder1);
-
-      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      dataContainer2.SetDomainObject (fakeOrder2);
-
-      var counter = new OrderedExpectationCounter();
-      
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
-
-      _dataManagerMock
-          .Expect (
-              mock => mock.GetDataContainersWithLazyLoad (
-                  Arg<IEnumerable<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }),
-                  Arg.Is (false)))
-          .Return (new[] { dataContainer1, dataContainer2 })
-          .Ordered (counter);
-
-      _mockRepository.ReplayAll();
-
-      var result = _transactionWithMocks.TryGetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-
-      _mockRepository.VerifyAll();
-      Assert.That (result, Is.EqualTo (new[] { fakeOrder1, fakeOrder2 }));
-    }
-
-    [Test]
-    public void TryGetObjects_WithNotFoundObjects ()
-    {
-      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
-
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      dataContainer.SetDomainObject (fakeOrder2);
-
-      var counter = new OrderedExpectationCounter ();
-
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (false);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
-
-      _dataManagerMock
-          .Expect (mock => mock.GetDataContainersWithLazyLoad (
-              Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }),
-              Arg.Is (false)))
-          .Return (new[] { null, dataContainer })
-          .Ordered (counter);
-
-      _mockRepository.ReplayAll ();
-
-      var result = _transactionWithMocks.TryGetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-
-      _mockRepository.VerifyAll ();
-      Assert.That (result, Is.EqualTo (new[] { null, fakeOrder2 }));
-    }
-
-    [Test]
-    public void TryGetObjects_WithInvalidObjects ()
-    {
-      var fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
-
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      dataContainer.SetDomainObject (fakeOrder2);
-
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order1)).Return (true);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.IsInvalid (DomainObjectIDs.Order2)).Return (false);
-      _invalidDomainObjectManagerMock.Stub (stub => stub.GetInvalidObjectReference (DomainObjectIDs.Order1)).Return (fakeOrder1);
-
-      _dataManagerMock
-            .Stub (mock => mock.GetDataContainersWithLazyLoad (
-                Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order2 }),
-                Arg.Is (false)))
-            .Return (new[] { dataContainer });
-
-      _mockRepository.ReplayAll ();
-
-      var result = _transactionWithMocks.TryGetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-      Assert.That (result, Is.EqualTo (new[] { fakeOrder1, fakeOrder2 }));
-    }
-
-    [Test]
-    public void GetObjects ()
-    {
-      var fakeOrder1 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      var fakeOrder2 = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order2);
-
-      var dataContainer1 = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainer1.SetDomainObject (fakeOrder1);
-
-      var dataContainer2 = DataContainer.CreateNew (DomainObjectIDs.Order2);
-      dataContainer2.SetDomainObject (fakeOrder2);
-
-      _dataManagerMock
-          .Expect (mock => mock.GetDataContainersWithLazyLoad (
-              Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 }),
-              Arg.Is (true)))
-          .Return (new[] { dataContainer1, dataContainer2 });
-
-      _mockRepository.ReplayAll ();
-
-      var result = _transactionWithMocks.GetObjects<Order> (DomainObjectIDs.Order1, DomainObjectIDs.Order2);
-
-      _mockRepository.VerifyAll ();
-      Assert.That (result, Is.EqualTo (new[] { fakeOrder1, fakeOrder2 }));
-    }
-
-    [Test]
-    public void GetObjects_InvalidType ()
-    {
-      var fakeOrder = DomainObjectMother.CreateFakeObject<Order> (DomainObjectIDs.Order1);
-      var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
-      dataContainer.SetDomainObject (fakeOrder);
-
-      _dataManagerMock
-          .Stub (mock => mock.GetDataContainersWithLazyLoad (Arg<ICollection<ObjectID>>.List.Equal (new[] { DomainObjectIDs.Order1 }), Arg.Is (true)))
-          .Return (new[] { dataContainer });
-      _mockRepository.ReplayAll ();
-
-      Assert.That (() => _transactionWithMocks.GetObjects<Customer> (DomainObjectIDs.Order1), Throws.TypeOf<InvalidCastException>());
-
-      _mockRepository.VerifyAll ();
-    }
-
+    // TODO 5016: GetObjects test using mock
+    // TODO 5016: TryGetObjects test using mock
+    
     [Test]
     public void Serialization ()
     {

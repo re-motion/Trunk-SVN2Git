@@ -220,6 +220,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectCleanupExceptionTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetimeAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectPersistence\NotFoundLoadedObjectDataTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\NewObject\ObjectsThrowingInCtorTest.cs" />

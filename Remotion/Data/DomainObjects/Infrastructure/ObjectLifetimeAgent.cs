@@ -28,7 +28,6 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure
 {
-  // TODO 5016: Test
   /// <summary>
   /// Implements creation, retrieval, and deletion of <see cref="DomainObject"/> references.
   /// </summary>
@@ -83,21 +82,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
           });
     }
 
-    public DomainObject GetObject (ObjectID objectID, bool includeDeleted)
-    {
-      ArgumentUtility.CheckNotNull ("objectID", objectID);
-
-      if (_invalidDomainObjectManager.IsInvalid (objectID))
-        throw new ObjectInvalidException (objectID);
-
-      var dataContainer = _dataManager.GetDataContainerWithLazyLoad (objectID, throwOnNotFound: true);
-
-      if (dataContainer.State == StateType.Deleted && !includeDeleted)
-        throw new ObjectDeletedException (objectID);
-
-      return dataContainer.DomainObject;
-    }
-
     public DomainObject GetObjectReference (ObjectID objectID)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
@@ -108,9 +92,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       var enlistedObject = _enlistedDomainObjectManager.GetEnlistedDomainObject (objectID);
       if (enlistedObject != null)
         return enlistedObject;
-      
+
       var creator = objectID.ClassDefinition.GetDomainObjectCreator ();
       return creator.CreateObjectReference (objectID, _clientTransaction);
+    }
+
+    public DomainObject GetObject (ObjectID objectID, bool includeDeleted)
+    {
+      ArgumentUtility.CheckNotNull ("objectID", objectID);
+
+      // GetDataContainerWithLazyLoad throws on invalid objectID
+      var dataContainer = _dataManager.GetDataContainerWithLazyLoad (objectID, throwOnNotFound: true);
+
+      if (dataContainer.State == StateType.Deleted && !includeDeleted)
+        throw new ObjectDeletedException (objectID);
+
+      return dataContainer.DomainObject;
     }
 
     public DomainObject TryGetObject (ObjectID objectID)
@@ -131,6 +128,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
 
+      // GetDataContainersWithLazyLoad throws on invalid objectID
       return _dataManager.GetDataContainersWithLazyLoad (objectIDs, throwOnNotFound: true)
           .Select (dc => dc.DomainObject)
           .Cast<T> ()
@@ -173,6 +171,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
+      // DataManager checks that object is enlisted and not invalid
       var command = _dataManager.CreateDeleteCommand (domainObject);
       var fullCommand = command.ExpandToAllRelatedObjects ();
       fullCommand.NotifyAndPerform ();

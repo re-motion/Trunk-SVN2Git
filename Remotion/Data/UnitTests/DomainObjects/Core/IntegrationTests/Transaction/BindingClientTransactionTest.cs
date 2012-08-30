@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transaction
@@ -39,6 +40,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void BindingTransactionCannotCreateSubtransaction ()
     {
       _bindingTransaction.CreateSubTransaction();
+    }
+
+    [Test]
+    public void GetObjectReference ()
+    {
+      var boundResult = LifetimeService.GetObjectReference (_bindingTransaction, DomainObjectIDs.Order1);
+      
+      Assert.That (boundResult.HasBindingTransaction, Is.True);
+      Assert.That (boundResult.GetBindingTransaction (), Is.SameAs (_bindingTransaction));
     }
 
     [Test]
