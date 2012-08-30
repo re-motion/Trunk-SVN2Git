@@ -57,14 +57,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       _parentTransaction.DataManager.RegisterDataContainer (dataContainer);
     }
 
-    public IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject)
-    {
-      ArgumentUtility.CheckNotNull ("deletedObject", deletedObject);
-      CheckDisposed ();
-
-      return _parentTransaction.DataManager.CreateDeleteCommand (deletedObject);
-    }
-
     public void Discard (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);

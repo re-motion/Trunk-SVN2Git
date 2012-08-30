@@ -12,7 +12,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     void MarkNotInvalid (ObjectID objectID);
 
     void RegisterDataContainer (DataContainer dataContainer);
-    IDataManagementCommand CreateDeleteCommand (DomainObject deletedObject);
     void Discard (DataContainer dataContainer);
   }
 }
