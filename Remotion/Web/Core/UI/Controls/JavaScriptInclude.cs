@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls
   public class JavaScriptInclude : HtmlHeadElement
   {
     private static readonly string s_tagName = HtmlTextWriterTag.Script.ToString().ToLower();
-    private static readonly string s_typeAttribute = HtmlTextWriterAttribute.Type.ToString ().ToLower ();
+    private static readonly string s_typeAttribute = HtmlTextWriterAttribute.Type.ToString().ToLower();
     private static readonly string s_srcAttribute = HtmlTextWriterAttribute.Src.ToString().ToLower();
 
     private readonly IResourceUrl _resourceUrl;
