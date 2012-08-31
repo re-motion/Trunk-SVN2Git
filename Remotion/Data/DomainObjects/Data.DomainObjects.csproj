@@ -217,9 +217,11 @@
     <Compile Include="Infrastructure\IClientTransactionEventBroker.cs" />
     <Compile Include="Infrastructure\IClientTransactionEventDistributor.cs" />
     <Compile Include="ICommittingEventRegistrar.cs" />
+    <Compile Include="Infrastructure\ObjectLifetime\IObjectInitializationContext.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\IObjectLifetimeAgent.cs" />
     <Compile Include="Infrastructure\NotFoundObjectsClientTransactionListener.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectCleanupException.cs" />
+    <Compile Include="Infrastructure\ObjectLifetime\ObjectInitializationContext.cs" />
     <Compile Include="Infrastructure\ObjectLifetime\ObjectLifetimeAgent.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\AlreadyExistingLoadedObjectData.cs" />
     <Compile Include="Infrastructure\ObjectPersistence\LoadedObjectDataRegistrationListener.cs" />

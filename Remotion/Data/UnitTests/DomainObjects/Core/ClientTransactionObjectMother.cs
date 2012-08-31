@@ -206,5 +206,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       hierarchyManagerStub.Stub (stub => stub.IsActive).Return (false);
       return CreateWithComponents<ClientTransaction> (transactionHierarchyManager: hierarchyManagerStub);
     }
+
+    public static BindingClientTransaction CreateBinding ()
+    {
+      return (BindingClientTransaction) ClientTransaction.CreateBindingTransaction();
+    }
   }
 }

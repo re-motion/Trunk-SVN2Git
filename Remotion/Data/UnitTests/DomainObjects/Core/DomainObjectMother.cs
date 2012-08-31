@@ -66,6 +66,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (T) LifetimeService.GetObjectReference (clientTransaction, objectID);
     }
 
+    public static DomainObject GetObjectReference (ClientTransaction clientTransaction, ObjectID objectID)
+    {
+      return GetObjectReference<DomainObject> (clientTransaction, objectID);
+    }
+
     public static DomainObject GetChangedObject (ClientTransaction transaction, ObjectID objectID)
     {
       var changedInstance = LifetimeService.GetObject (transaction, objectID, false);
