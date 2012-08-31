@@ -114,15 +114,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager,
-        IEnlistedDomainObjectManager enlistedDomainObjectManager)
+        IEnlistedDomainObjectManager enlistedDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy)
     {
       ArgumentUtility.CheckNotNull ("constructedTransaction", constructedTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("enlistedDomainObjectManager", enlistedDomainObjectManager);
-      
-      return new ObjectLifetimeAgent (constructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+
+      return new ObjectLifetimeAgent (
+          constructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager, persistenceStrategy);
     }
 
     public virtual IQueryManager CreateQueryManager (

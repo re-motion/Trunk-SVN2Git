@@ -177,7 +177,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                     Arg<IClientTransactionEventSink>.Matches (eventSink => eventSink == _eventBrokerMock),
                     Arg.Is (_invalidDomainObjectManagerMock),
                     Arg.Is (_dataManagerMock),
-                    Arg.Is (_enlistedObjectManagerMock)))
+                    Arg.Is (_enlistedObjectManagerMock), 
+                    Arg.Is (_persistenceStrategyMock)))
             .Return (_objectLifetimeAgentMock)
             .WhenCalled (mi => Assert.That (ClientTransactionTestHelper.GetIDataManager (constructedTransaction), Is.SameAs (_dataManagerMock)));
         componentFactoryMock

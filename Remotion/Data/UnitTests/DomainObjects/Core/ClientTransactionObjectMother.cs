@@ -158,7 +158,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
                   Arg<IClientTransactionEventSink>.Is.Anything,
                   Arg<IInvalidDomainObjectManager>.Is.Anything,
                   Arg<IDataManager>.Is.Anything,
-                  Arg<IEnlistedDomainObjectManager>.Is.Anything))
+                  Arg<IEnlistedDomainObjectManager>.Is.Anything, 
+                  Arg<IPersistenceStrategy>.Is.Anything))
           .Return (objectLifetimeAgent);
       componentFactoryStub
           .Stub (stub => stub.CreateQueryManager (

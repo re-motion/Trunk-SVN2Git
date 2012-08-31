@@ -21,6 +21,7 @@ using System.Linq;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.FunctionalProgramming;
 using Remotion.Reflection;
@@ -39,22 +40,29 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
     private readonly IInvalidDomainObjectManager _invalidDomainObjectManager;
     private readonly IDataManager _dataManager;
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
+    private readonly IPersistenceStrategy _persistenceStrategy;
+
+    [ThreadStatic]
+    private static ObjectInitializationContext _currentInitializationContext;
 
     public ObjectLifetimeAgent (
         ClientTransaction clientTransaction,
         IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager,
-        IEnlistedDomainObjectManager enlistedDomainObjectManager)
+        IEnlistedDomainObjectManager enlistedDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
+      ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
 
       _clientTransaction = clientTransaction;
       _dataManager = dataManager;
       _enlistedDomainObjectManager = enlistedDomainObjectManager;
+      _persistenceStrategy = persistenceStrategy;
       _eventSink = eventSink;
       _invalidDomainObjectManager = invalidDomainObjectManager;
     }
@@ -84,9 +92,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _enlistedDomainObjectManager; }
     }
 
+    public IPersistenceStrategy PersistenceStrategy
+    {
+      get { return _persistenceStrategy; }
+    }
+
     public IObjectInitializationContext CurrentInitializationContext
     {
-      get { return null; }
+      get { return _currentInitializationContext; }
     }
 
     public DomainObject NewObject (ClassDefinition classDefinition, ParamList constructorParameters)
@@ -94,10 +107,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
+      if (classDefinition.IsAbstract)
+        throw new InvalidOperationException (
+            string.Format (
+                "Cannot instantiate type '{0}' because it is abstract. For classes with automatic properties, InstantiableAttribute must be used.",
+                classDefinition.ClassType));
+
       _eventSink.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, classDefinition.ClassType));
 
-      var creator = classDefinition.InstanceCreator;
-      return _clientTransaction.Execute (() => creator.CreateNewObject (classDefinition.ClassType, constructorParameters));
+      var objectID = _persistenceStrategy.CreateNewObjectID (classDefinition);
+      var bindingClientTransaction = _clientTransaction as BindingClientTransaction;
+
+      var previousInitializationContext = _currentInitializationContext;
+      _currentInitializationContext = new ObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingClientTransaction);
+
+      try
+      {
+        return _clientTransaction.Execute (() => classDefinition.InstanceCreator.CreateNewObject (classDefinition.ClassType, constructorParameters));
+      }
+      finally
+      {
+        _currentInitializationContext = previousInitializationContext;
+      }
     }
 
     public DomainObject GetObjectReference (ObjectID objectID)

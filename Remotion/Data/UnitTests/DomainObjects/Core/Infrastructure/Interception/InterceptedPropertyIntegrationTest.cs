@@ -321,9 +321,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     }
 
     [Test]
-    [ExpectedException (typeof (NonInterceptableTypeException), ExpectedMessage =
-        "Cannot instantiate type Remotion.Data.UnitTests.DomainObjects.TestDomain."
-        + "AbstractClass as it is abstract; for classes with automatic properties, InstantiableAttribute must be used.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.AbstractClass' because it is abstract. " 
+        + "For classes with automatic properties, InstantiableAttribute must be used.")]
     public void CannotInstantiateReallyAbstractClass ()
     {
       AbstractClass.NewObject();

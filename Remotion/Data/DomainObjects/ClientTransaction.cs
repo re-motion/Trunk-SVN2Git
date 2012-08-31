@@ -173,7 +173,7 @@ public class ClientTransaction
     _persistenceStrategy = componentFactory.CreatePersistenceStrategy (this);
     _dataManager = componentFactory.CreateDataManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy, _hierarchyManager);
     _objectLifetimeAgent = componentFactory.CreateObjectLifetimeAgent (
-        this, _eventBroker, _invalidDomainObjectManager, _dataManager, _enlistedDomainObjectManager);
+        this, _eventBroker, _invalidDomainObjectManager, _dataManager, _enlistedDomainObjectManager, _persistenceStrategy);
     _queryManager = componentFactory.CreateQueryManager (this, _eventBroker, _invalidDomainObjectManager, _persistenceStrategy, _dataManager, _hierarchyManager);
     _commitRollbackAgent = componentFactory.CreateCommitRollbackAgent (this, _eventBroker, _persistenceStrategy, _dataManager);
 

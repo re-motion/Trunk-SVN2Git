@@ -151,9 +151,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var invalidDomainObjectManager = MockRepository.GenerateStub<IInvalidDomainObjectManager> ();
       var eventSink = MockRepository.GenerateStub<IClientTransactionEventSink> ();
       var enlistedDomainObjectManager = MockRepository.GenerateStub<IEnlistedDomainObjectManager> ();
+      var persistenceStrategy = MockRepository.GenerateStub<IPersistenceStrategy> ();
 
       var result = _factory.CreateObjectLifetimeAgent (
-          _fakeConstructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager);
+          _fakeConstructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager, persistenceStrategy);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectLifetimeAgent)));
       Assert.That (((ObjectLifetimeAgent) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
@@ -161,6 +162,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       Assert.That (((ObjectLifetimeAgent) result).InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
       Assert.That (((ObjectLifetimeAgent) result).DataManager, Is.SameAs (dataManager));
       Assert.That (((ObjectLifetimeAgent) result).EnlistedDomainObjectManager, Is.SameAs (enlistedDomainObjectManager));
+      Assert.That (((ObjectLifetimeAgent) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
     }
 
     [Test]

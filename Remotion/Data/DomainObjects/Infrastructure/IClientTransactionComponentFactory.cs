@@ -57,7 +57,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         IClientTransactionEventSink eventSink,
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager,
-        IEnlistedDomainObjectManager enlistedDomainObjectManager);
+        IEnlistedDomainObjectManager enlistedDomainObjectManager,
+        IPersistenceStrategy persistenceStrategy);
 
     IQueryManager CreateQueryManager (
         ClientTransaction constructedTransaction,
