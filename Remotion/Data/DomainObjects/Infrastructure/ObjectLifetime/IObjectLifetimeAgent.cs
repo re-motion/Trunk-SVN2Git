@@ -28,6 +28,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
   {
     DomainObject NewObject (Type domainObjectType, ParamList constructorParameters);
 
+    /// <summary>
+    /// While <see cref="NewObject"/> is executing, <see cref="CurrentInitializationContext"/> returns a thread-local instance of 
+    /// <see cref="IObjectInitializationContext"/> allowing the constructed object to register itself.
+    /// </summary>
+    IObjectInitializationContext CurrentInitializationContext { get; }
+
     DomainObject GetObjectReference (ObjectID objectID);
 
     DomainObject GetObject (ObjectID objectID, bool includeDeleted);

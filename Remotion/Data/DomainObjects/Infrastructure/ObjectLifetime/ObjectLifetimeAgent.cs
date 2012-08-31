@@ -84,6 +84,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _enlistedDomainObjectManager; }
     }
 
+    public IObjectInitializationContext CurrentInitializationContext
+    {
+      get { return null; }
+    }
+
     public DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
@@ -92,15 +97,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       _eventSink.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, domainObjectType));
 
       var creator = MappingConfiguration.Current.GetTypeDefinition (domainObjectType).GetDomainObjectCreator ();
-      var ctorInfo = creator.GetConstructorLookupInfo (domainObjectType);
 
-      return _clientTransaction.Execute (
-          () =>
-          {
-            var instance = (DomainObject) constructorParameters.InvokeConstructor (ctorInfo);
-            DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
-            return instance;
-          });
+      return _clientTransaction.Execute (() => creator.CreateNewObject (domainObjectType, constructorParameters));
     }
 
     public DomainObject GetObjectReference (ObjectID objectID)

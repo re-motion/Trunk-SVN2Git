@@ -59,7 +59,18 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       return instance;
     }
 
-    public IConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType)
+    public DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters)
+    {
+      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+      ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
+
+      var constructorLookupInfo = GetConstructorLookupInfo (domainObjectType);
+      var instance = (DomainObject) constructorParameters.InvokeConstructor (constructorLookupInfo);
+      DomainObjectMixinCodeGenerationBridge.OnDomainObjectCreated (instance);
+      return instance;
+    }
+
+    private IConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType)
     {
       ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
 

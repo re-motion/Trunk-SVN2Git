@@ -15,15 +15,14 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
-using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 {
@@ -31,18 +30,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   public class InterceptedDomainObjectCreatorTest : StandardMappingTest
   {
     private ClientTransaction _transaction;
+    private InterceptedDomainObjectCreator _interceptedDomainObjectCreator;
 
     public override void SetUp ()
     {
       base.SetUp();
 
       _transaction = ClientTransaction.CreateRootTransaction();
+      _interceptedDomainObjectCreator = InterceptedDomainObjectCreator.Instance;
     }
 
     [Test]
     public void CreateObjectReference ()
     {
-      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var order = _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
       Assert.That (order, Is.InstanceOf (typeof (Order)));
       Assert.That (order.ID, Is.EqualTo (DomainObjectIDs.Order1));
@@ -51,16 +52,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_UsesFactoryGeneratedType ()
     {
-      var order = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var order = _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
-      var factory = InterceptedDomainObjectCreator.Instance.Factory;
+      var factory = _interceptedDomainObjectCreator.Factory;
       Assert.That (factory.WasCreatedByFactory ((((object) order).GetType())), Is.True);
     }
 
     [Test]
     public void CreateObjectReference_CallsNoCtor ()
     {
-      var order = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var order = (Order) _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (order.CtorCalled, Is.False);
     }
 
@@ -68,21 +69,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     public void CreateObjectReference_PreparesMixins ()
     {
       var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid());
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, _transaction);
+      var instance = _interceptedDomainObjectCreator.CreateObjectReference (objectID, _transaction);
       Assert.That (Mixin.Get<MixinAddingPersistentProperties> (instance), Is.Not.Null);
     }
 
     [Test]
     public void CreateObjectReference_InitializesObjectID ()
     {
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var instance = _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (instance.ID, Is.EqualTo (DomainObjectIDs.Order1));
     }
 
     [Test]
     public void CreateObjectReference_EnlistsObjectInTransaction ()
     {
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var instance = _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (_transaction.GetEnlistedDomainObject (instance.ID), Is.SameAs (instance));
     }
 
@@ -91,7 +92,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var bindingTransaction = ClientTransaction.CreateBindingTransaction();
 
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, bindingTransaction);
+      var instance = _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, bindingTransaction);
 
       Assert.That (instance.HasBindingTransaction, Is.True);
       Assert.That (instance.GetBindingTransaction(), Is.SameAs (bindingTransaction));
@@ -100,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateObjectReference_NoBindingTransaction ()
     {
-      var instance = InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var instance = _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (instance.HasBindingTransaction, Is.False);
     }
 
@@ -111,53 +112,84 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       using (MixinConfiguration.BuildNew().EnterScope())
       {
         var objectID = new ObjectID (typeof (TargetClassForPersistentMixin), Guid.NewGuid());
-        InterceptedDomainObjectCreator.Instance.CreateObjectReference (objectID, _transaction);
+        _interceptedDomainObjectCreator.CreateObjectReference (objectID, _transaction);
       }
     }
 
     [Test]
     public void CreateObjectReference_CallsReferenceInitializing ()
     {
-      var domainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var domainObject = (Order) _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (domainObject.OnReferenceInitializingCalled, Is.True);
     }
 
     [Test]
     public void CreateObjectReference_CallsReferenceInitializing_InRightTransaction ()
     {
-      var domainObject = (Order) InterceptedDomainObjectCreator.Instance.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
+      var domainObject = (Order) _interceptedDomainObjectCreator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (domainObject.OnReferenceInitializingTx, Is.SameAs (_transaction));
     }
 
     [Test]
-    public void GetConstructorLookupInfo_UsesFactoryGeneratedType ()
+    public void CreateNewObject ()
     {
-      var info = InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
-      var factory = InterceptedDomainObjectCreator.Instance.Factory;
-      Assert.That (factory.WasCreatedByFactory (info.DefiningType), Is.True);
-    }
+      using (_transaction.EnterNonDiscardingScope())
+      {
+        var result = _interceptedDomainObjectCreator.CreateNewObject (typeof (OrderItem), ParamList.Create ("A product"));
 
-    [Test]
-    public void GetConstructorLookupInfo_SpecifiesCorrectPublicType ()
-    {
-      var info = (DomainObjectConstructorLookupInfo) InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
-      Assert.That (info.PublicDomainObjectType, Is.EqualTo (typeof (Order)));
-    }
-
-    [Test]
-    public void GetConstructorLookupInfo_BindingFlags ()
-    {
-      var info = (DomainObjectConstructorLookupInfo) InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (Order));
-      Assert.That (info.BindingFlags, Is.EqualTo (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance));
+        Assert.That (_interceptedDomainObjectCreator.Factory.WasCreatedByFactory (((object) result).GetType ()), Is.True);
+        Assert.That (result, Is.AssignableTo<OrderItem> ());
+        Assert.That (((OrderItem) result).Product, Is.EqualTo ("A product"));
+      }
     }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage = "mixin", MatchType = MessageMatch.Contains)]
-    public void GetConstructorLookupInfo_ValidatesMixinConfiguration ()
+    public void CreateNewObject_ValidatesMixinConfiguration ()
     {
-      using (MixinConfiguration.BuildNew().EnterScope())
+      using (MixinConfiguration.BuildNew ().EnterScope ())
       {
-        InterceptedDomainObjectCreator.Instance.GetConstructorLookupInfo (typeof (TargetClassForPersistentMixin));
+        _interceptedDomainObjectCreator.CreateNewObject (typeof (TargetClassForPersistentMixin), ParamList.Empty);
+      }
+    }
+
+    [Test]
+    public void CreateNewObject_InitializesMixins ()
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        var result = _interceptedDomainObjectCreator.CreateNewObject (typeof (ClassWithAllDataTypes), ParamList.Empty);
+      
+        var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
+        Assert.That (mixin, Is.Not.Null);
+        Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
+        Assert.That (mixin.OnDomainObjectCreatedTx, Is.SameAs (_transaction));
+      }
+    }
+
+    [Test]
+    public void CreateNewObject_AllowsPublicAndNonPublicCtors ()
+    {
+      using (_transaction.EnterNonDiscardingScope ())
+      {
+        Assert.That (_interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithPublicCtor), ParamList.Empty), Is.Not.Null);
+        Assert.That (_interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithProtectedCtor), ParamList.Empty), Is.Not.Null);
+      }
+    }
+
+    [DBTable]
+    public class DomainObjectWithPublicCtor : DomainObject
+    {
+      public DomainObjectWithPublicCtor ()
+      {
+      }
+    }
+
+    [DBTable]
+    public class DomainObjectWithProtectedCtor : DomainObject
+    {
+      protected DomainObjectWithProtectedCtor ()
+      {
       }
     }
   }

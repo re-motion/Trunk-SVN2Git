@@ -37,17 +37,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     DomainObject CreateObjectReference (ObjectID objectID, ClientTransaction clientTransaction);
 
     /// <summary>
-    /// Gets a <see cref="ConstructorLookupInfo"/> that can be used to construct a <see cref="DomainObject"/> of the given 
-    /// <paramref name="domainObjectType"/>. The <see cref="ConstructorLookupInfo"/> returned by this method does not raise the events normally 
-    /// raised when a <see cref="DomainObject"/> is constructed. Use <see cref="ClientTransaction.NewObject"/> to create a <see cref="DomainObject"/>
-    /// with the right events being fired.
+    /// Creates a new <see cref="DomainObject"/> instance of the given <paramref name="domainObjectType"/> by calling its constructor.
+    /// This method <see cref="ConstructorLookupInfo"/> does not raise the events notmally raised when a <see cref="DomainObject"/> is constructed. 
+    /// Use <see cref="ClientTransaction.NewObject"/> to create a <see cref="DomainObject"/> with the right events being fired.
     /// </summary>
     /// <param name="domainObjectType">Type of the domain object.</param>
-    /// <returns>A <see cref="ConstructorLookupInfo"/> that can be used to instantiate a <see cref="DomainObject"/> of the given type.</returns>
+    /// <param name="constructorParameters">The constructor parameters.</param>
+    /// <returns>A <see cref="DomainObject"/> instance of the given <paramref name="domainObjectType"/> with its constructor executed.</returns>
     /// <remarks>
-    /// The <see cref="ConstructorLookupInfo"/> returned by this method might not directly represent the given type; instead, it might represent a 
-    /// proxy type compatible with <paramref name="domainObjectType"/>.
+    /// The returned object might be an instance of a proxy type compatible with <paramref name="domainObjectType"/>.
     /// </remarks>
-    IConstructorLookupInfo GetConstructorLookupInfo (Type domainObjectType);
+    DomainObject CreateNewObject (Type domainObjectType, ParamList constructorParameters);
   }
 }
