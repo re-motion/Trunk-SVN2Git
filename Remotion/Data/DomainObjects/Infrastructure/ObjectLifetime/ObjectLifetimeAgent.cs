@@ -97,7 +97,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       _eventSink.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, classDefinition.ClassType));
 
       var creator = classDefinition.InstanceCreator;
-
       return _clientTransaction.Execute (() => creator.CreateNewObject (classDefinition.ClassType, constructorParameters));
     }
 

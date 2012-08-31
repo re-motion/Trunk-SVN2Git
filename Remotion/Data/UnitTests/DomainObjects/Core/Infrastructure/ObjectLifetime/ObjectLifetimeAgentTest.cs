@@ -26,11 +26,10 @@ using Remotion.Data.DomainObjects.Infrastructure.InvalidObjects;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
-using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMothers;
-using Remotion.Mixins;
 using Remotion.Reflection;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.UnitTesting;
@@ -85,43 +84,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void NewObject ()
     {
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      _eventSinkWithMock.ExpectMock (mock => mock.NewObjectCreating (_eventSinkWithMock.ClientTransaction, typeof (OrderItem)));
-      var typeDefinition = GetTypeDefinition (typeof (OrderItem));
+      var creatorMock = MockRepository.GenerateStrictMock<IDomainObjectCreator>();
+      var typeDefinition = ClassDefinitionObjectMother.CreateClassDefinition (instanceCreator: creatorMock);
+      var constructorParameters = ParamList.Create ("Some Product");
 
-      var result = _agent.NewObject (typeDefinition, ParamList.Create ("Some Product"));
+      _eventSinkWithMock.ExpectMock (mock => mock.NewObjectCreating (_eventSinkWithMock.ClientTransaction, typeDefinition.ClassType));
+
+      creatorMock
+          .Expect (mock => mock.CreateNewObject (typeDefinition.ClassType, constructorParameters))
+          .WhenCalled (mi =>
+          {
+            Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
+          })
+          .Return (_domainObject1);
+
+      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
+
+      var result = _agent.NewObject (typeDefinition, constructorParameters);
+
+      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
 
       _eventSinkWithMock.VerifyMock ();
-      Assert.That (result, Is.Not.Null);
+      creatorMock.VerifyAllExpectations();
 
-      Assert.That (result, Is.AssignableTo<OrderItem> ());
-      Assert.That (result, Is.Not.TypeOf<OrderItem> ());
-      var interceptedDomainObjectCreator = ((InterceptedDomainObjectCreator) typeDefinition.InstanceCreator);
-      var interceptedDomainObjectTypeFactory = interceptedDomainObjectCreator.Factory;
-      Assert.That (interceptedDomainObjectTypeFactory.WasCreatedByFactory (((object) result).GetType ()), Is.True);
-
-      Assert.That (((OrderItem) result).CtorCalled, Is.True);
-      Assert.That (((OrderItem) result).CtorTx, Is.SameAs (_transaction));
-      Assert.That (_transaction.Execute (() => ((OrderItem) result).Product), Is.EqualTo ("Some Product"));
-
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
+      Assert.That (result, Is.SameAs (_domainObject1));
     }
-
-    [Test]
-    public void NewObject_InitializesMixins ()
-    {
-      Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
-      _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
-      var typeDefinition = GetTypeDefinition (typeof (ClassWithAllDataTypes));
-
-      var result = _agent.NewObject (typeDefinition, ParamList.Empty);
-
-      var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
-      Assert.That (mixin, Is.Not.Null);
-      Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
-      Assert.That (mixin.OnDomainObjectCreatedTx, Is.SameAs (_transaction));
-    }
-
+    
     [Test]
     public void GetObjectReference_KnownObject_Invalid_Works ()
     {

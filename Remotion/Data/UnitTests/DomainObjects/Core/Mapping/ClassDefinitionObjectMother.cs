@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -61,26 +62,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
     
     public static ClassDefinition CreateClassDefinition (
-        string id,
-        Type classType,
-        bool isAbstract,
-        ClassDefinition baseClass,
-        Type storageGroupType,
-        IPersistentMixinFinder persistentMixinFinder)
+        string id = null,
+        Type classType = null,
+        bool isAbstract = false,
+        ClassDefinition baseClass = null,
+        Type storageGroupType = null,
+        IPersistentMixinFinder persistentMixinFinder = null,
+        IDomainObjectCreator instanceCreator = null)
     {
-      var instanceCreator = InterceptedDomainObjectCreator.Instance;
-      return CreateClassDefinition(id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder, instanceCreator);
-    }
+      id = id ?? "Test";
+      classType = classType ?? typeof (Order);
+      persistentMixinFinder = persistentMixinFinder ?? new PersistentMixinFinderStub (classType, Type.EmptyTypes);
+      instanceCreator = instanceCreator ?? MockRepository.GenerateStrictMock<IDomainObjectCreator>();
 
-    public static ClassDefinition CreateClassDefinition (
-        string id,
-        Type classType,
-        bool isAbstract,
-        ClassDefinition baseClass,
-        Type storageGroupType,
-        IPersistentMixinFinder persistentMixinFinder,
-        InterceptedDomainObjectCreator instanceCreator)
-    {
       return new ClassDefinition (id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder, instanceCreator);
     }
 
