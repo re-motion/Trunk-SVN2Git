@@ -272,18 +272,16 @@ namespace Remotion.Data.DomainObjects
       PerformConstructorCheck ();
 // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
-      var publicDomainObjectType = GetPublicDomainObjectType ();
-      var classDefinition = MappingConfiguration.Current.GetTypeDefinition (publicDomainObjectType);
-
-      var clientTransaction = ClientTransaction.Current;
-      var objectID = clientTransaction.CreateNewObjectID (classDefinition);
-
-      Initialize (objectID, clientTransaction as BindingClientTransaction);
-
-      clientTransaction.EnlistDomainObject (this);
-      var newDataContainer = DataContainer.CreateNew (objectID);
-      newDataContainer.SetDomainObject (this);
-      clientTransaction.DataManager.RegisterDataContainer (newDataContainer);
+      var initializationContext = ClientTransaction.Current.CurrentObjectInitializationContext;
+      if (initializationContext == null)
+      {
+        throw new InvalidOperationException (
+            "The DomainObject constructor may only be called via ClientTransaction.NewObject. "
+            + "If this exception occurs during a base call of a deserialization constructor, adjust the base call to call the DomainObject's "
+            + "deserialization constructor instead.");
+      }
+      Initialize (initializationContext.ObjectID, initializationContext.BindingClientTransaction);
+      initializationContext.RegisterObject (this);
 
       RaiseReferenceInitializatingEvent ();
 

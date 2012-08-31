@@ -18,9 +18,11 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
@@ -58,7 +60,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       Type concreteType = Factory.GetConcreteDomainObjectType (typeof (T));
       var constructorLookupInfo = new DomainObjectConstructorLookupInfo (typeof (T), concreteType, BindingFlags.Public | BindingFlags.Instance);
-      return (T) ParamList.Empty.InvokeConstructor (constructorLookupInfo);
+      return ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+          TestableClientTransaction,
+          new ObjectID (typeof (T), Guid.NewGuid ()), 
+          () => (T) ParamList.Empty.InvokeConstructor (constructorLookupInfo));
     }
 
     [Test]
@@ -160,7 +165,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
     {
       SerializationHelper.GetObjectDataForGeneratedTypes (_info, _context, _serializableInstanceImplementingISerializableNotCallingBaseCtor, false);
       _serializableInstanceImplementingISerializableNotCallingBaseCtor.GetObjectData (_info, _context);
-      new SerializationHelper (_info, _context).OnDeserialization (null);
+      ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+          TestableClientTransaction, DomainObjectIDs.Order1, () => new SerializationHelper (_info, _context).OnDeserialization (null));
     }
 
     [Test]

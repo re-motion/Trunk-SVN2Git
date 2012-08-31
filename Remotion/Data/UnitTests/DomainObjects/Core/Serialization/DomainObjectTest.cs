@@ -15,13 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using System.Reflection;
+using Remotion.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
 {
@@ -140,6 +143,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
       Assert.IsTrue (deserializedDomainObject.OnDeserializedAttributeCalled);
     }
 
+    [Test]
+    public void DomainObject_CallingWrongCtorDuringDeserialization ()
+    {
+      var domainObject = LifetimeService.NewObject (
+          TestableClientTransaction, typeof (SerializableClassCallingWrongBaseCtor), ParamList.Empty);
+
+      Assert.That (
+          () => UnwrapTargetInvocationExceptions (() => Serializer.SerializeAndDeserialize (domainObject)),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The DomainObject constructor may only be called via ClientTransaction.NewObject. " 
+              + "If this exception occurs during a base call of a deserialization constructor, adjust the base call to call the DomainObject's "
+              + "deserialization constructor instead."));
+    }
 
     private void AssertEventRegistered (DomainObject domainObject, string eventName, object receiver, MethodInfo receiverMethod)
     {
@@ -153,6 +169,39 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     {
       var eventDelegate = (Delegate) PrivateInvoke.GetNonPublicField (instance, typeof (DomainObject), eventName);
       return eventDelegate.Method;
+    }
+
+    private T UnwrapTargetInvocationExceptions<T> (Func<T> func)
+    {
+      try
+      {
+        return func ();
+      }
+      catch (Exception e)
+      {
+        var rethrownException = e;
+        while (rethrownException is TargetInvocationException)
+          rethrownException = rethrownException.InnerException;
+        throw rethrownException;
+      }
+    }
+
+    [Serializable]
+    [DBTable]
+    public class SerializableClassCallingWrongBaseCtor : DomainObject, ISerializable
+    {
+      public SerializableClassCallingWrongBaseCtor ()
+      {
+      }
+
+      protected SerializableClassCallingWrongBaseCtor (SerializationInfo info, StreamingContext context)
+      {
+      }
+
+      public void GetObjectData (SerializationInfo info, StreamingContext context)
+      {
+        BaseGetObjectData (info, context);
+      }
     }
   }
 }

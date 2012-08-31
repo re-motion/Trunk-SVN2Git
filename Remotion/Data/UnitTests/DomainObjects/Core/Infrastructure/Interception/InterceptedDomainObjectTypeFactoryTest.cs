@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Utilities;
 using File = System.IO.File;
@@ -203,7 +204,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
         + "created by InterceptedDomainObjectTypeFactory.GetConcreteDomainObjectType.\r\nParameter name: instance")]
     public void PrepareUnconstructedInstanceThrowsOnTypeNotCreatedByFactory ()
     {
-      Factory.PrepareUnconstructedInstance (new DirectlyInstantiableDO());
+      var directlyInstantiatedObject = ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+          TestableClientTransaction, DomainObjectIDs.Order1, () => new DirectlyInstantiableDO());
+
+      Factory.PrepareUnconstructedInstance (directlyInstantiatedObject);
     }
   }
 }

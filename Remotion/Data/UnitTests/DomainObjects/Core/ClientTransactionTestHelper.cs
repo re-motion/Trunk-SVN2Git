@@ -56,6 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return DataManagementService.GetDataManager (clientTransaction);
     }
 
+    public static IObjectInitializationContext GetCurrentObjectInitializationContext (ClientTransaction clientTransaction)
+    {
+      return (IObjectInitializationContext) PrivateInvoke.GetNonPublicProperty (clientTransaction, "CurrentObjectInitializationContext");
+    }
+
     public static IObjectLifetimeAgent GetObjectLifetimeAgent (ClientTransaction clientTransaction)
     {
       return (IObjectLifetimeAgent) PrivateInvoke.GetNonPublicField (clientTransaction, "_objectLifetimeAgent");
@@ -204,6 +209,5 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerManager = GetEventBroker (clientTransaction);
       return listenerManager.Listeners;
     }
-
   }
 }

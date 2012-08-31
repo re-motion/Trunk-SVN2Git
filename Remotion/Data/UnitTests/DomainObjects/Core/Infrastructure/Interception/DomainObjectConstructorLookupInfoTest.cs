@@ -17,9 +17,11 @@
 using System;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Interception;
 using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception.TestDomain;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Reflection;
 
@@ -51,14 +53,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       var lookupInfo = new DomainObjectConstructorLookupInfo (typeof (Order), concreteDomainObjectType, BindingFlags.Public | BindingFlags.Instance);
       var del = lookupInfo.GetDelegate (typeof (Func<Order>));
       Assert.That (del, Is.InstanceOf (typeof (Func<Order>)));
-      Assert.That (((Func<Order>) del)(), Is.InstanceOf (concreteDomainObjectType));
+      Assert.That (
+          ObjectLifetimeAgentTestHelper.CallWithInitializationContext (TestableClientTransaction, DomainObjectIDs.Order1, () => ((Func<Order>) del)()),
+          Is.InstanceOf (concreteDomainObjectType));
     }
 
     [Test]
-    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = "Type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order does not "
-                                                                           +
-                                                                           "support the requested constructor with signature (System.Int32, System.Int32, System.Int32)."
-        )]
+    [ExpectedException (typeof (MissingMethodException), ExpectedMessage = 
+      "Type Remotion.Data.UnitTests.DomainObjects.TestDomain.Order does not "
+      + "support the requested constructor with signature (System.Int32, System.Int32, System.Int32).")]
     public void GetDelegate_InvalidArgTypes ()
     {
       var concreteDomainObjectType = Factory.GetConcreteDomainObjectType (typeof (Order));
@@ -75,24 +78,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
           concreteDomainObjectType,
           BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-      var order = (Order) ParamList.Empty.InvokeConstructor (lookupInfo);
-      Assert.IsNotNull (order);
-      Assert.AreSame (concreteDomainObjectType, ((object) order).GetType());
+      var order = ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+          TestableClientTransaction, DomainObjectIDs.Order1, () => (Order) ParamList.Empty.InvokeConstructor (lookupInfo));
+      Assert.That (order, Is.Not.Null);
+      Assert.That (((object) order).GetType(), Is.SameAs (concreteDomainObjectType));
     }
 
     [Test]
     public void Integration_WithConstructors ()
     {
       var concreteDomainObjectType = Factory.GetConcreteDomainObjectType (typeof (DOWithConstructors));
-      var lookupInfo = new DomainObjectConstructorLookupInfo (
-          typeof (DOWithConstructors),
-          concreteDomainObjectType,
-          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+      var lookupInfo =
+          new DomainObjectConstructorLookupInfo (
+              typeof (DOWithConstructors),
+              concreteDomainObjectType,
+              BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-      var instance = (DOWithConstructors) ParamList.Create ("17", "4").InvokeConstructor (lookupInfo);
-      Assert.IsNotNull (instance);
-      Assert.AreEqual ("17", instance.FirstArg);
-      Assert.AreEqual ("4", instance.SecondArg);
+      var instance = ObjectLifetimeAgentTestHelper.CallWithInitializationContext (
+          TestableClientTransaction, DomainObjectIDs.Order1, () => (DOWithConstructors) ParamList.Create ("17", "4").InvokeConstructor (lookupInfo));
+      Assert.That (instance, Is.Not.Null);
+      Assert.That (instance.FirstArg, Is.EqualTo ("17"));
+      Assert.That (instance.SecondArg, Is.EqualTo ("4"));
     }
   }
 }

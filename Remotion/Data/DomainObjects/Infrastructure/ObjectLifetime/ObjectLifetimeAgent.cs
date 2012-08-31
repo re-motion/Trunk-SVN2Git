@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
     private readonly IPersistenceStrategy _persistenceStrategy;
 
     [ThreadStatic]
-    private static ObjectInitializationContext _currentInitializationContext;
+    private static IObjectInitializationContext _currentInitializationContext;
 
     public ObjectLifetimeAgent (
         ClientTransaction clientTransaction,

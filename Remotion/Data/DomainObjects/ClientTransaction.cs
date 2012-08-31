@@ -1342,6 +1342,16 @@ public class ClientTransaction
   }
 
   /// <summary>
+  /// Provides the thread-local <see cref="IObjectInitializationContext"/> for the object currently being initialized (or <see langword="null" /> if
+  /// no object is initialized).
+  /// </summary>
+  /// <value>The current initialization context.</value>
+  internal IObjectInitializationContext CurrentObjectInitializationContext
+  {
+    get { return _objectLifetimeAgent.CurrentInitializationContext; }
+  }
+
+  /// <summary>
   /// Gets a <see cref="System.Collections.Generic.Dictionary {TKey, TValue}"/> to store application specific objects 
   /// within the <see cref="ClientTransaction"/> hierarchy.
   /// </summary>

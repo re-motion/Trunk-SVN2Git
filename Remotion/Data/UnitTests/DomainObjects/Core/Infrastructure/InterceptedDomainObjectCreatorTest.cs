@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
+using Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifetime;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Mixins;
@@ -133,14 +134,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     [Test]
     public void CreateNewObject ()
     {
-      using (_transaction.EnterNonDiscardingScope())
-      {
-        var result = _interceptedDomainObjectCreator.CreateNewObject (typeof (OrderItem), ParamList.Create ("A product"));
+      var result =
+          CallWithInitializationContextAndTransaction (
+              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (OrderItem), ParamList.Create ("A product")), DomainObjectIDs.OrderItem1);
 
-        Assert.That (_interceptedDomainObjectCreator.Factory.WasCreatedByFactory (((object) result).GetType ()), Is.True);
-        Assert.That (result, Is.AssignableTo<OrderItem> ());
-        Assert.That (((OrderItem) result).Product, Is.EqualTo ("A product"));
-      }
+      Assert.That (_interceptedDomainObjectCreator.Factory.WasCreatedByFactory (((object) result).GetType ()), Is.True);
+      Assert.That (result, Is.AssignableTo<OrderItem> ());
+      Assert.That (_transaction.Execute (() => ((OrderItem) result).Product), Is.EqualTo ("A product"));
     }
 
     [Test]
@@ -149,31 +149,50 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       using (MixinConfiguration.BuildNew ().EnterScope ())
       {
-        _interceptedDomainObjectCreator.CreateNewObject (typeof (TargetClassForPersistentMixin), ParamList.Empty);
+        CallWithInitializationContextAndTransaction (
+            () => _interceptedDomainObjectCreator.CreateNewObject (typeof (TargetClassForPersistentMixin), ParamList.Empty), DomainObjectIDs.OrderItem1);
       }
     }
 
     [Test]
     public void CreateNewObject_InitializesMixins ()
     {
-      using (_transaction.EnterNonDiscardingScope ())
-      {
-        var result = _interceptedDomainObjectCreator.CreateNewObject (typeof (ClassWithAllDataTypes), ParamList.Empty);
-      
-        var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
-        Assert.That (mixin, Is.Not.Null);
-        Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
-        Assert.That (mixin.OnDomainObjectCreatedTx, Is.SameAs (_transaction));
-      }
+      var result = CallWithInitializationContextAndTransaction (
+        () => _interceptedDomainObjectCreator.CreateNewObject (typeof (ClassWithAllDataTypes), ParamList.Empty), DomainObjectIDs.OrderItem1);
+
+      var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
+      Assert.That (mixin, Is.Not.Null);
+      Assert.That (mixin.OnDomainObjectCreatedCalled, Is.True);
+      Assert.That (mixin.OnDomainObjectCreatedTx, Is.SameAs (_transaction));
     }
 
     [Test]
     public void CreateNewObject_AllowsPublicAndNonPublicCtors ()
     {
+      Assert.That (
+          CallWithInitializationContextAndTransaction (
+              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithPublicCtor), ParamList.Empty), DomainObjectIDs.OrderItem1),
+          Is.Not.Null);
+
+      Assert.That (
+          CallWithInitializationContextAndTransaction (
+              () => _interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithProtectedCtor), ParamList.Empty), DomainObjectIDs.OrderItem2),
+          Is.Not.Null);
+    }
+
+    private T CallWithInitializationContextAndTransaction<T> (Func<T> func, ObjectID objectID)
+    {
       using (_transaction.EnterNonDiscardingScope ())
       {
-        Assert.That (_interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithPublicCtor), ParamList.Empty), Is.Not.Null);
-        Assert.That (_interceptedDomainObjectCreator.CreateNewObject (typeof (DomainObjectWithProtectedCtor), ParamList.Empty), Is.Not.Null);
+        ObjectLifetimeAgentTestHelper.StubCurrentObjectInitializationContext (_transaction, objectID);
+        try
+        {
+          return func ();
+        }
+        finally
+        {
+          ObjectLifetimeAgentTestHelper.SetCurrentInitializationContext (null);
+        }
       }
     }
 

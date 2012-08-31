@@ -27,7 +27,6 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Mixins.Utilities;
-using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -41,6 +40,54 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       base.SetUp ();
 
       _transaction = new TestableClientTransaction ();
+    }
+
+    [Test]
+    public void Ctor_SetsObjectID ()
+    {
+      var instance = _transaction.Execute (() => Order.NewObject ());
+
+      Assert.That (instance.ID, Is.Not.Null);
+      Assert.That (instance.ID.ClassDefinition, Is.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
+    }
+
+    [Test]
+    public void Ctor_SetsBindingTransaction ()
+    {
+      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
+      var boundInstance = bindingTransaction.Execute (() => Order.NewObject ());
+
+      Assert.That (boundInstance.HasBindingTransaction, Is.True);
+      Assert.That (boundInstance.GetBindingTransaction(), Is.SameAs (bindingTransaction));
+
+      var nonBindingTransaction = ClientTransaction.CreateRootTransaction ();
+      var nonBoundInstance = nonBindingTransaction.Execute (() => Order.NewObject ());
+
+      Assert.That (nonBoundInstance.HasBindingTransaction, Is.False);
+    }
+
+    [Test]
+    public void Ctor_RegistersObject ()
+    {
+      TestDomainBase.StaticCtorHandler +=
+          (sender, args) =>
+          Assert.That (ClientTransactionTestHelper.GetCurrentObjectInitializationContext (_transaction).RegisteredObject, Is.SameAs (sender));
+
+      Order instance;
+      try
+      {
+        instance = _transaction.Execute (() => Order.NewObject ());
+      }
+      finally
+      {
+        TestDomainBase.ClearStaticCtorHandlers();
+      }
+
+      Assert.That (_transaction.IsEnlisted (instance), Is.True);
+      var dataContainer = _transaction.DataManager.DataContainers[instance.ID];
+      Assert.That (dataContainer, Is.Not.Null);
+      Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
+      Assert.That (dataContainer.ClientTransaction, Is.SameAs (_transaction));
     }
 
     [Test]
@@ -65,61 +112,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void Ctor_CreatesObjectID ()
-    {
-      var instance = _transaction.Execute (() => Order.NewObject ());
-
-      Assert.That (instance.ID, Is.Not.Null);
-      Assert.That (instance.ID.ClassDefinition, Is.SameAs (MappingConfiguration.Current.GetTypeDefinition (typeof (Order))));
-    }
-
-    [Test]
-    public void Ctor_Binding ()
-    {
-      var bindingTransaction = ClientTransaction.CreateBindingTransaction ();
-      var boundInstance = bindingTransaction.Execute (() => Order.NewObject ());
-
-      Assert.That (boundInstance.HasBindingTransaction, Is.True);
-      Assert.That (boundInstance.GetBindingTransaction(), Is.SameAs (bindingTransaction));
-
-      var nonBindingTransaction = ClientTransaction.CreateRootTransaction ();
-      var nonBoundInstance = nonBindingTransaction.Execute (() => Order.NewObject ());
-
-      Assert.That (nonBoundInstance.HasBindingTransaction, Is.False);
-    }
-
-    [Test]
-    public void Ctor_EnlistsObjectInTransaction ()
-    {
-      var instance = _transaction.Execute (() => Order.NewObject ());
-
-      Assert.That (_transaction.IsEnlisted (instance), Is.True);
-    }
-
-    [Test]
-    public void Ctor_CreatesAndRegistersDataContainer_AfterEnlistingObject ()
-    {
-      var clientTransactionListenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (_transaction);
-      clientTransactionListenerMock
-          .Expect (mock => mock.DataContainerMapRegistering (Arg.Is (_transaction), Arg<DataContainer>.Is.Anything))
-          .WhenCalled (mi => Assert.That (_transaction.IsEnlisted (((DataContainer) mi.Arguments[1]).DomainObject), Is.True));
-      clientTransactionListenerMock.Replay();
-
-      var instance = _transaction.Execute (() => Order.NewObject ());
-
-      clientTransactionListenerMock.VerifyAllExpectations();
-      var dataContainer = _transaction.DataManager.DataContainers[instance.ID];
-      Assert.That (dataContainer, Is.Not.Null);
-      Assert.That (dataContainer.DomainObject, Is.SameAs (instance));
-      Assert.That (dataContainer.ClientTransaction, Is.SameAs (_transaction));
-    }
-
-
-    [Test]
     public void Ctor_WithVirtualPropertyCall_Allowed ()
     {
       var orderItem = _transaction.Execute (() => OrderItem.NewObject ("Test Toast"));
       Assert.That (_transaction.Execute (() => orderItem.Product), Is.EqualTo ("Test Toast"));
+    }
+
+    [Test]
+    public void Ctor_DirectCall ()
+    {
+      Assert.That (
+          () => new DomainObjectWithPublicCtor(),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "DomainObject constructors must not be called directly. Use DomainObject.NewObject to create DomainObject instances."));
     }
 
     [Test]
@@ -432,7 +437,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
-    public void NetObject_WithoutTransaction ()
+    public void NewObject_WithoutTransaction ()
     {
       Order.NewObject ();
     }
@@ -610,6 +615,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       Assert.That (transactionContextIndexer, Is.InstanceOf (typeof (DomainObjectTransactionContextIndexer)));
       Assert.That (((DomainObjectTransactionContext) transactionContextIndexer[_transaction]).DomainObject, Is.SameAs (order));
+    }
+
+    [DBTable]
+    [ClassID ("DomainObjectTest_DomainObjectWithPublicCtor")]
+    public class DomainObjectWithPublicCtor : DomainObject
+    {
+      public DomainObjectWithPublicCtor ()
+      {
+      }
     }
   }
 }
