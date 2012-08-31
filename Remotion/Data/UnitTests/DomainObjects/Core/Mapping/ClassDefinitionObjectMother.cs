@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
@@ -67,7 +68,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
         Type storageGroupType,
         IPersistentMixinFinder persistentMixinFinder)
     {
-      return new ClassDefinition (id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder);
+      var instanceCreator = InterceptedDomainObjectCreator.Instance;
+      return CreateClassDefinition(id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder, instanceCreator);
+    }
+
+    public static ClassDefinition CreateClassDefinition (
+        string id,
+        Type classType,
+        bool isAbstract,
+        ClassDefinition baseClass,
+        Type storageGroupType,
+        IPersistentMixinFinder persistentMixinFinder,
+        InterceptedDomainObjectCreator instanceCreator)
+    {
+      return new ClassDefinition (id, classType, isAbstract, baseClass, storageGroupType, persistentMixinFinder, instanceCreator);
     }
 
     public static ClassDefinition CreateClassDefinition_WithEmptyMembers_AndDerivedClasses (Type classType)
@@ -118,7 +132,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
     public static ClassDefinition CreateClassDefinitionWithStorageGroup (Type type, Type storageGroupType, ClassDefinition baseClassDefinition)
     {
-      return new ClassDefinition (type.Name, type, false, baseClassDefinition, storageGroupType, new PersistentMixinFinderStub (type));
+      return new ClassDefinition (
+          type.Name, type, false, baseClassDefinition, storageGroupType, new PersistentMixinFinderStub (type), InterceptedDomainObjectCreator.Instance);
     }
 
     public static ClassDefinition CreateClassDefinitionWithMixins (Type type, params Type[] mixins)

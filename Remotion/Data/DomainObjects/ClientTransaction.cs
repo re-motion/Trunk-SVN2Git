@@ -1048,7 +1048,8 @@ public class ClientTransaction
     ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
     ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-    return _objectLifetimeAgent.NewObject (domainObjectType, constructorParameters);
+    var classDefinition = MappingConfiguration.Current.GetTypeDefinition (domainObjectType);
+    return _objectLifetimeAgent.NewObject (classDefinition, constructorParameters);
   }
 
   /// <summary>

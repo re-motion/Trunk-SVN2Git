@@ -20,6 +20,7 @@ using System.Linq;
 using System.Reflection;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Configuration;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
@@ -299,8 +300,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               orderTicket,
               typeof (OrderTicket), "Int32TransactionProperty",
               false,
-              null,
-              StorageClass.Transaction));
+              null));
       orderTicket.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return orderTicket;
@@ -752,22 +752,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               computer,
               typeof (Computer), "Int32TransactionProperty",
               false,
-              null,
-              StorageClass.Transaction));
+              null));
       properties.Add (
           CreateTransactionPropertyDefinition (
               computer,
               typeof (Computer), "DateTimeTransactionProperty",
               false,
-              null,
-              StorageClass.Transaction));
+              null));
       properties.Add (
           CreateTransactionPropertyDefinition (
               computer,
               typeof (Computer), "EmployeeTransactionProperty",
               true,
-              null,
-              StorageClass.Transaction));
+              null));
       computer.SetPropertyDefinitions (new PropertyDefinitionCollection (properties, true));
 
       return computer;
@@ -821,7 +818,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       // Don't use ClassDefinitionObjectMother: since this configuration is compared with the actual configuration, we must exactly define 
       // the mapping objects
       var classDefinition = new ClassDefinition (
-          id, classType, isAbstract, baseClass, null, new PersistentMixinFinderStub (classType, persistentMixins));
+          id,
+          classType,
+          isAbstract,
+          baseClass,
+          null,
+          new PersistentMixinFinderStub (classType, persistentMixins),
+          InterceptedDomainObjectCreator.Instance);
       SetFakeStorageEntity (classDefinition, entityName);
       return classDefinition;
     }
@@ -835,19 +838,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDefinition.SetStorageEntity (tableDefinition);
     }
 
-    private PropertyDefinition CreatePersistentPropertyDefinition (ClassDefinition classDefinition, Type declaringType, string propertyName, string columnName, bool isNullable, int? maxLength)
+    private PropertyDefinition CreatePersistentPropertyDefinition (
+        ClassDefinition classDefinition, Type declaringType, string propertyName, string columnName, bool isNullable, int? maxLength)
     {
       var propertyDefinition = CreatePropertyDefinition (classDefinition, declaringType, propertyName, isNullable, maxLength, StorageClass.Persistent);
       propertyDefinition.SetStorageProperty (new FakeStoragePropertyDefinition (columnName));
       return propertyDefinition;
     }
 
-    private PropertyDefinition CreateTransactionPropertyDefinition (ClassDefinition classDefinition, Type declaringType, string propertyName, bool isNullable, int? maxLength, StorageClass storageClass)
+    private PropertyDefinition CreateTransactionPropertyDefinition (
+        ClassDefinition classDefinition, Type declaringType, string propertyName, bool isNullable, int? maxLength)
     {
       return CreatePropertyDefinition (classDefinition, declaringType, propertyName, isNullable, maxLength, StorageClass.Transaction);
     }
 
-    private PropertyDefinition CreatePropertyDefinition (ClassDefinition classDefinition, Type declaringType, string propertyName, bool isNullable, int? maxLength, StorageClass storageClass)
+    private PropertyDefinition CreatePropertyDefinition (
+        ClassDefinition classDefinition, Type declaringType, string propertyName, bool isNullable, int? maxLength, StorageClass storageClass)
     {
       var propertyInfo = declaringType.GetProperty (
           propertyName,

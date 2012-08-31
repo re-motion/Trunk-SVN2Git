@@ -20,6 +20,7 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigurationLoader;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
@@ -80,7 +81,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var actual = classReflector.GetMetadata (null);
 
-      Assert.IsNotNull (actual);
+      Assert.That (actual, Is.Not.Null);
       _classDefinitionChecker.Check (expected, actual);
       _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
     }
@@ -111,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var baseClassDefinition = CreateClassWithDifferentPropertiesClassDefinition();
       var actual = classReflector.GetMetadata (baseClassDefinition);
 
-      Assert.IsNotNull (actual);
+      Assert.That (actual, Is.Not.Null);
       _classDefinitionChecker.Check (expected, actual);
       _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
     }
@@ -185,7 +186,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var actual = classReflector.GetMetadata (null);
 
-      Assert.IsNotNull (actual);
+      Assert.That (actual, Is.Not.Null);
       _classDefinitionChecker.Check (expected, actual);
       _endPointDefinitionChecker.Check (expected.MyRelationEndPointDefinitions, actual.MyRelationEndPointDefinitions, false);
     }
@@ -204,8 +205,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var actual = classReflector.GetMetadata (null);
 
-      Assert.IsNotNull (actual);
-      Assert.AreEqual ("ClassIDForClassHavingClassIDAttribute", actual.ID);
+      Assert.That (actual, Is.Not.Null);
+      Assert.That (actual.ID, Is.EqualTo ("ClassIDForClassHavingClassIDAttribute"));
     }
 
     [Test]
@@ -216,7 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var classReflector = new ClassReflector (
           typeof (ClosedGenericClass), MappingObjectFactory, Configuration.NameResolver, ClassIDProviderStub, DomainModelConstraintProviderStub);
 
-      Assert.IsNotNull (classReflector.GetMetadata (null));
+      Assert.That (classReflector.GetMetadata (null), Is.Not.Null);
     }
 
     [Test]
@@ -233,7 +234,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var actual = classReflector.GetMetadata (null);
 
-      Assert.IsNotNull (actual);
+      Assert.That (actual, Is.Not.Null);
       Assert.That (actual.StorageGroupType, Is.Null);
     }
 
@@ -251,7 +252,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 
       var actual = classReflector.GetMetadata (null);
 
-      Assert.IsNotNull (actual);
+      Assert.That (actual, Is.Not.Null);
       Assert.That (actual.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
     }
 
@@ -289,6 +290,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var actual = classReflector.GetMetadata (baseClassDefinition);
 
       Assert.That (actual.PersistentMixinFinder.IncludeInherited, Is.False);
+    }
+
+    [Test]
+    public void GetMetadata_InstanceCreator ()
+    {
+      ClassIDProviderStub.Stub (stub => stub.GetClassID (typeof (ClassWithDifferentProperties))).Return ("ClassID");
+
+      var classReflector = new ClassReflector (
+          typeof (ClassWithDifferentProperties),
+          MappingObjectFactory,
+          Configuration.NameResolver,
+          ClassIDProviderStub,
+          DomainModelConstraintProviderStub);
+
+      var actual = classReflector.GetMetadata (null);
+
+      Assert.That (actual.InstanceCreator, Is.SameAs (InterceptedDomainObjectCreator.Instance));
     }
 
     private ClassDefinition CreateClassWithDifferentPropertiesClassDefinition ()
@@ -494,13 +512,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var propertyInfo = declaringType.GetProperty (
           shortPropertyName,
           BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly | BindingFlags.Instance);
-      Assert.IsNotNull (propertyInfo, "Property '" + shortPropertyName + "' not found on type '" + declaringType + "'.");
+      Assert.That (propertyInfo, Is.Not.Null, "Property '" + shortPropertyName + "' not found on type '" + declaringType + "'.");
       return PropertyInfoAdapter.Create (propertyInfo);
     }
 
     private ClassDefinition CreateClassDefinition (string id, Type classType, bool isAbstract, ClassDefinition baseClass = null)
     {
-      return new ClassDefinition (id, classType, isAbstract, baseClass, null, new PersistentMixinFinderStub (classType));
+      return new ClassDefinition (id, classType, isAbstract, baseClass, null, new PersistentMixinFinderStub (classType), InterceptedDomainObjectCreator.Instance);
     }
 
     private PropertyDefinition CreatePersistentPropertyDefinition (

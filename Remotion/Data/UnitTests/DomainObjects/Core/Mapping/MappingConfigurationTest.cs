@@ -69,30 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void Initialize ()
     {
-      var typeDefinitions = new[]
-                             {
-                                 new ClassDefinition ("CID1", typeof (Ceo), false, null, null, MockRepository.GenerateStub<IPersistentMixinFinder>()),
-                                 new ClassDefinition (
-                                     "CID2", typeof (Order), false, null, null, MockRepository.GenerateStub<IPersistentMixinFinder>())
-                             };
-      foreach (var typeDefinition in typeDefinitions)
-      {
-        typeDefinition.SetDerivedClasses (new ClassDefinition[0]);
-        typeDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection());
-        typeDefinition.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
-      }
-
-      var relationDefinitions = new[]
-                                {
-                                    new RelationDefinition (
-                                        "RID1",
-                                        MockRepository.GenerateStub<IRelationEndPointDefinition>(),
-                                        MockRepository.GenerateStub<IRelationEndPointDefinition>()),
-                                    new RelationDefinition (
-                                        "RID2",
-                                        MockRepository.GenerateStub<IRelationEndPointDefinition>(),
-                                        MockRepository.GenerateStub<IRelationEndPointDefinition>())
-                                };
+      var typeDefinitions = new ClassDefinition[0];
+      var relationDefinitions = new RelationDefinition[0];
 
       StubMockMappingLoader (typeDefinitions, relationDefinitions);
 

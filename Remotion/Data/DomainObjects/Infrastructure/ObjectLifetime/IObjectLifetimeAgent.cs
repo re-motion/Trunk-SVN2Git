@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections.Generic;
+using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
@@ -26,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
   /// </summary>
   public interface IObjectLifetimeAgent
   {
-    DomainObject NewObject (Type domainObjectType, ParamList constructorParameters);
+    DomainObject NewObject (ClassDefinition classDefinition, ParamList constructorParameters);
 
     /// <summary>
     /// While <see cref="NewObject"/> is executing, <see cref="CurrentInitializationContext"/> returns a thread-local instance of 

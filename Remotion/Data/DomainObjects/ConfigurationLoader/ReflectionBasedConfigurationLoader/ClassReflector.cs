@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Reflection;
 using Remotion.Utilities;
@@ -73,8 +74,9 @@ namespace Remotion.Data.DomainObjects.ConfigurationLoader.ReflectionBasedConfigu
     public ClassDefinition GetMetadata (ClassDefinition baseClassDefinition)
     {
       var persistentMixinFinder = new PersistentMixinFinder (Type, baseClassDefinition == null);
+      var instanceCreator = InterceptedDomainObjectCreator.Instance;
       var classDefinition = new ClassDefinition (
-          _classIDProvider.GetClassID(Type), Type, IsAbstract(), baseClassDefinition, GetStorageGroupType(), persistentMixinFinder);
+          _classIDProvider.GetClassID (Type), Type, IsAbstract (), baseClassDefinition, GetStorageGroupType (), persistentMixinFinder, instanceCreator);
 
       var properties = MappingObjectFactory.CreatePropertyDefinitionCollection (classDefinition, GetPropertyInfos (classDefinition));
       classDefinition.SetPropertyDefinitions (properties);

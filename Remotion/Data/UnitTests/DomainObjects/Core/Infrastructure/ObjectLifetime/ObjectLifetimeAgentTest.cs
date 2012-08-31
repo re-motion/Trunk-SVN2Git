@@ -87,16 +87,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
       _eventSinkWithMock.ExpectMock (mock => mock.NewObjectCreating (_eventSinkWithMock.ClientTransaction, typeof (OrderItem)));
+      var typeDefinition = GetTypeDefinition (typeof (OrderItem));
 
-      var result = _agent.NewObject (typeof (OrderItem), ParamList.Create ("Some Product"));
+      var result = _agent.NewObject (typeDefinition, ParamList.Create ("Some Product"));
 
       _eventSinkWithMock.VerifyMock ();
       Assert.That (result, Is.Not.Null);
 
       Assert.That (result, Is.AssignableTo<OrderItem> ());
       Assert.That (result, Is.Not.TypeOf<OrderItem> ());
-      var typeDefinition = GetTypeDefinition (typeof (OrderItem));
-      var interceptedDomainObjectCreator = ((InterceptedDomainObjectCreator) typeDefinition.GetDomainObjectCreator ());
+      var interceptedDomainObjectCreator = ((InterceptedDomainObjectCreator) typeDefinition.InstanceCreator);
       var interceptedDomainObjectTypeFactory = interceptedDomainObjectCreator.Factory;
       Assert.That (interceptedDomainObjectTypeFactory.WasCreatedByFactory (((object) result).GetType ()), Is.True);
 
@@ -112,8 +112,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
       _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
-      
-      var result = _agent.NewObject (typeof (ClassWithAllDataTypes), ParamList.Empty);
+      var typeDefinition = GetTypeDefinition (typeof (ClassWithAllDataTypes));
+
+      var result = _agent.NewObject (typeDefinition, ParamList.Empty);
 
       var mixin = Mixin.Get<MixinWithAccessToDomainObjectProperties<ClassWithAllDataTypes>> (result);
       Assert.That (mixin, Is.Not.Null);

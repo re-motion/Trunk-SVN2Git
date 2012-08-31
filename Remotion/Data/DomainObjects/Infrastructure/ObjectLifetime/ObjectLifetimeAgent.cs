@@ -89,16 +89,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return null; }
     }
 
-    public DomainObject NewObject (Type domainObjectType, ParamList constructorParameters)
+    public DomainObject NewObject (ClassDefinition classDefinition, ParamList constructorParameters)
     {
-      ArgumentUtility.CheckNotNull ("domainObjectType", domainObjectType);
+      ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("constructorParameters", constructorParameters);
 
-      _eventSink.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, domainObjectType));
+      _eventSink.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, classDefinition.ClassType));
 
-      var creator = MappingConfiguration.Current.GetTypeDefinition (domainObjectType).GetDomainObjectCreator ();
+      var creator = classDefinition.InstanceCreator;
 
-      return _clientTransaction.Execute (() => creator.CreateNewObject (domainObjectType, constructorParameters));
+      return _clientTransaction.Execute (() => creator.CreateNewObject (classDefinition.ClassType, constructorParameters));
     }
 
     public DomainObject GetObjectReference (ObjectID objectID)
@@ -112,7 +112,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       if (enlistedObject != null)
         return enlistedObject;
 
-      var creator = objectID.ClassDefinition.GetDomainObjectCreator ();
+      var creator = objectID.ClassDefinition.InstanceCreator;
       return creator.CreateObjectReference (objectID, _clientTransaction);
     }
 

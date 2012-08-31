@@ -16,10 +16,12 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Mapping.Validation.Reflection;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation.Reflection.MappingAttributesAreOnlyAppliedOnOriginalPropertyDeclarationsValidationRule;
 using System.Linq;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflection
 {
@@ -40,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     {
       var type = typeof (BaseMappingAttributesClass);
       var classDefinition = new ClassDefinitionWithUnresolvedClassType (
-          "Test", "DefaultStorageProvider", type, true, null, new PersistentMixinFinder (type, false));
+          "Test", type, true, null, MockRepository.GenerateStub<IPersistentMixinFinder>(), MockRepository.GenerateStub<IDomainObjectCreator>());
 
       _validationRule.Validate (classDefinition);
     }

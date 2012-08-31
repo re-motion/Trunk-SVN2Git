@@ -16,13 +16,14 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Validation;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Validation
 {
@@ -55,11 +56,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     {
       var classDefinition = new ClassDefinitionWithUnresolvedClassType (
           "NonAbstractClassHasEntityNameDomainObject",
-          "NonAbstractClassHasEntityNameStorageProviderID",
           typeof (DerivedValidationDomainObjectClass),
           false,
           null,
-          new PersistentMixinFinderStub (typeof (DomainObject), new Type[0]));
+          MockRepository.GenerateStub<IPersistentMixinFinder>(),
+          MockRepository.GenerateStub<IDomainObjectCreator>());
 
       var validationResult = _validationRule.Validate (classDefinition);
 

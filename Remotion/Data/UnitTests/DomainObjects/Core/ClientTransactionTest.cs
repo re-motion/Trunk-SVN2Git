@@ -470,14 +470,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NewObject ()
     {
-      var domainObjectType = typeof (Order);
+      var typeDefinition = GetTypeDefinition (typeof (Order));
       var constructorParameters = ParamList.Create (_fakeDomainObject1);
       _objectLifetimeAgentMock
-          .Expect (mock => mock.NewObject (domainObjectType, constructorParameters))
+          .Expect (mock => mock.NewObject (typeDefinition, constructorParameters))
           .Return (_fakeDomainObject1);
       _objectLifetimeAgentMock.Replay ();
 
-      var result = ClientTransactionTestHelper.CallNewObject (_transactionWithMocks, domainObjectType, constructorParameters);
+      var result = ClientTransactionTestHelper.CallNewObject (_transactionWithMocks, typeof (Order), constructorParameters);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
       Assert.That (result, Is.SameAs (_fakeDomainObject1));

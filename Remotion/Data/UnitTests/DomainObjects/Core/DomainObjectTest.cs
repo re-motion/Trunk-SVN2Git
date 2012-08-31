@@ -515,7 +515,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_False_BeforeGetObject ()
     {
-      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
       var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
     }
@@ -523,7 +523,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_True_AfterOnLoaded ()
     {
-      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
       var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
 
@@ -545,7 +545,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_False ()
     {
-      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
       var order = (Order) creator.CreateObjectReference (DomainObjectIDs.Order1, _transaction);
 
       Assert.That (order.NeedsLoadModeDataContainerOnly, Is.False);
@@ -567,7 +567,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void NeedsLoadModeDataContainerOnly_Serialization_ISerializable_False ()
     {
-      var creator = DomainObjectIDs.Order1.ClassDefinition.GetDomainObjectCreator ();
+      var creator = DomainObjectIDs.Order1.ClassDefinition.InstanceCreator;
       var classWithAllDataTypes = (ClassWithAllDataTypes) creator.CreateObjectReference (DomainObjectIDs.ClassWithAllDataTypes1, _transaction);
 
       Assert.That (classWithAllDataTypes.NeedsLoadModeDataContainerOnly, Is.False);

@@ -43,6 +43,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     private readonly bool _isAbstract;
     private readonly Type _classType;
     private readonly IPersistentMixinFinder _persistentMixinFinder;
+    private readonly IDomainObjectCreator _instanceCreator;
 
     public ClassDefinition (
         string id,
@@ -50,7 +51,8 @@ namespace Remotion.Data.DomainObjects.Mapping
         bool isAbstract,
         ClassDefinition baseClass,
         Type storageGroupType,
-        IPersistentMixinFinder persistentMixinFinder)
+        IPersistentMixinFinder persistentMixinFinder,
+        IDomainObjectCreator instanceCreator)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
       ArgumentUtility.CheckNotNull ("classType", classType);
@@ -71,6 +73,7 @@ namespace Remotion.Data.DomainObjects.Mapping
               () => new PropertyDefinitionCollection (PropertyDefinitionCollection.CreateForAllProperties (this, true), true));
 
       _baseClass = baseClass;
+      _instanceCreator = instanceCreator;
     }
 
     // methods and properties
@@ -336,9 +339,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return _isAbstract; }
     }
 
-    public IDomainObjectCreator GetDomainObjectCreator ()
+    public IDomainObjectCreator InstanceCreator
     {
-      return InterceptedDomainObjectCreator.Instance;
+      get { return _instanceCreator; }
     }
 
     public PropertyDefinition ResolveProperty (IPropertyInformation propertyInformation)
