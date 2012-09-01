@@ -32,6 +32,10 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\</OutputPath>
@@ -213,6 +217,20 @@
     <Compile Include="ExecutionEngine\UserControlForm.aspx.designer.cs">
       <DependentUpon>UserControlForm.aspx</DependentUpon>
     </Compile>
+    <Compile Include="IFrameSupport\FrameContent.aspx.cs">
+      <DependentUpon>FrameContent.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="IFrameSupport\FrameContent.aspx.designer.cs">
+      <DependentUpon>FrameContent.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="IFrameSupport\MainForm.aspx.cs">
+      <DependentUpon>MainForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="IFrameSupport\MainForm.aspx.designer.cs">
+      <DependentUpon>MainForm.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MultiplePostBackCatching\TestSuiteForm.aspx.cs">
       <DependentUpon>TestSuiteForm.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -363,6 +381,8 @@
     <Content Include="ExecutionEngine\SecondControl.ascx" />
     <Content Include="ExecutionEngine\FirstControl.ascx" />
     <Content Include="ExecutionEngine\UserControlForm.aspx" />
+    <Content Include="IFrameSupport\FrameContent.aspx" />
+    <Content Include="IFrameSupport\MainForm.aspx" />
     <Content Include="MultiplePostBackCatching\TestSuiteForm.aspx" />
     <Content Include="MultiplePostBackCatching\UpdatePanelTestSuiteForm.aspx" />
     <Content Include="MultiplePostBackCatching\UpdatePanelTestForm.aspx" />
