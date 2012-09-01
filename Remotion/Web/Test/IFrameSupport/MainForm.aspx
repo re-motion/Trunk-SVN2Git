@@ -25,7 +25,7 @@
       </asp:UpdatePanel>
     </div>
     <div style="margin-left: 31%; height: 100%;">
-      <iframe src="FrameContent.aspx" style="height: 100%; width: 100%"></iframe>
+      <iframe src="FrameContent.wxe" style="height: 100%; width: 100%"></iframe>
     </div>
   </form>
 </body>

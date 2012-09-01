@@ -17,10 +17,11 @@
 
 using System;
 using System.Web.UI;
+using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.IFrameSupport
 {
-  public partial class FrameContent : Page
+  public partial class FrameContent : WxePage
   {
     protected void Button_Click (object sender, EventArgs e)
     {

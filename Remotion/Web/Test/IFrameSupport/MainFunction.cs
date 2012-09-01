@@ -14,13 +14,22 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Web.ExecutionEngine;
 
 namespace Remotion.Web.Test.IFrameSupport
 {
-  public partial class MainForm : WxePage
+  [Serializable]
+  public class MainFunction : WxeFunction
   {
+    public MainFunction ()
+        : base (WxeTransactionMode<NullTransactionFactory>.None)
+    {
+    }
+
+    [UsedImplicitly]
+    private WxeStep Step1 = new WxePageStep ("~/IFrameSupport/MainForm.aspx");
   }
 }

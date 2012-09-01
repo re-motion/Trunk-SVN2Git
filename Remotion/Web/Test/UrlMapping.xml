@@ -25,6 +25,8 @@
   <add type="Remotion.Web.Test::ExecutionEngine.RedirectedWxeFunction" resource="redirected.wxe"/>
   <add type="Remotion.Web.Test::UpdatePanelTests.SutFunction" resource="UpdatePanelTests/Sut.wxe"/>
   <add type="Remotion.Web.Test::ExecutionEngine.ShowUserControlFormFunction" resource="ShowUserControl.wxe"/>
+  <add type="Remotion.Web.Test::IFrameSupport.MainFunction" resource="Main.wxe"/>
+  <add type="Remotion.Web.Test::IFrameSupport.FrameContentFunction" resource="FrameContent.wxe"/>
 
   <!--
 		<add type="Remotion.Web.Test.SampleWxeFunction,Remotion.Web.Test" resource="sample.wxe"/>
