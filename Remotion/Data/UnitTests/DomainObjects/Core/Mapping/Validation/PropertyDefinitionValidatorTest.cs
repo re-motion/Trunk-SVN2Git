@@ -41,9 +41,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     [SetUp]
     public void SetUp ()
     {
-      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
-      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
-      _classDefinition3 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass));
+      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass));
+      _classDefinition3 = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass));
 
       _validationRuleMock1 = MockRepository.GenerateStrictMock<IPropertyDefinitionValidationRule> ();
       _validationRuleMock2 = MockRepository.GenerateStrictMock<IPropertyDefinitionValidationRule> ();

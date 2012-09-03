@@ -44,7 +44,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     [Test]
     public void ClassDefinitionTypeIsNoSubClassOfDomainObject ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (string));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("String", typeof (string));
       
       var validationResult = _validationRule.Validate (classDefinition);
 

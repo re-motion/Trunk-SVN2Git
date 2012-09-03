@@ -53,8 +53,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
       _someClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition ();
 
       _someClassDefinitionWithoutBaseClass = ClassDefinitionObjectMother.CreateClassDefinition ();
-      _someClassDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition ("some", _someClassDefinitionWithoutBaseClass);
-      _someClassDefinitionWithBaseBaseClass = ClassDefinitionObjectMother.CreateClassDefinition ("some", _someClassDefinitionWithBaseClass);
+      _someClassDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "some", baseClass: _someClassDefinitionWithoutBaseClass);
+      _someClassDefinitionWithBaseBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "some", baseClass: _someClassDefinitionWithBaseClass);
 
       _fakeStorageTypeInformation1 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();
       _fakeStorageTypeInformation2 = StorageTypeInformationObjectMother.CreateStorageTypeInformation ();

@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
       base.SetUp();
 
       _provider = new RdbmsPersistenceModelProvider();
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order", typeof (Order));
     }
 
     [Test]
@@ -56,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + "but that class has no storage definition object.")]
     public void GetEntityDefinition_EmptyViewDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order", classType: typeof (Order), baseClass: null);
       Assert.That (classDefinition.StorageEntityDefinition, Is.Null);
 
       _provider.GetEntityDefinition (classDefinition);
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms
         + "but that class has a storage definition object of type 'FakeStorageEntityDefinition'.")]
     public void GetEntityDefinition_WrongEntityDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order", typeof (Order));
       classDefinition.SetStorageEntity (new FakeStorageEntityDefinition (TestDomainStorageProviderDefinition, "Test"));
 
       _provider.GetEntityDefinition (classDefinition);

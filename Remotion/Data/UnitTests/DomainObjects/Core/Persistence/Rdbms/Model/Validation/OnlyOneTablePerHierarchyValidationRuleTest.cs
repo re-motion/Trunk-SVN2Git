@@ -42,14 +42,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition);
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);
 
-      _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseValidationDomainObjectClass));
-      _classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass), _baseClassDefinition);
+      _baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (BaseValidationDomainObjectClass));
+      _classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass), baseClass: _baseClassDefinition);
     }
 
     [Test]
     public void HasNoBaseClassAndHasNoTableDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass));
 
       classDefinition.SetStorageEntity (_unionViewDefinition);
 
@@ -96,9 +96,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     [Test]
     public void HasBaseClassesAndHasTableDefinition_BaseOfBaseClassHasTableDefinition ()
     {
-      var baseOfBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass));
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseValidationDomainObjectClass), baseOfBaseClassDefinition);
-      var classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass), baseClassDefinition);
+      var baseOfBaseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (BaseOfBaseValidationDomainObjectClass));
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (BaseValidationDomainObjectClass), baseClass: baseOfBaseClassDefinition);
+      var classDefinitionWithBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass), baseClass: baseClassDefinition);
 
       classDefinitionWithBaseClass.SetStorageEntity (_tableDefinition);
       baseClassDefinition.SetStorageEntity (_unionViewDefinition);

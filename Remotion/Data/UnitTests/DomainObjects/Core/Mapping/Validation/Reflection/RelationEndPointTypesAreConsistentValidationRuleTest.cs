@@ -36,10 +36,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation.Reflecti
     public void SetUp ()
     {
       _validationRule = new RelationEndPointTypesAreConsistentValidationRule();
-      _baseClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (BaseRelationEndPointPropertyClass1));
-      _baseClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (BaseRelationEndPointPropertyClass2));
-      _derivedClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedRelationEndPointPropertyClass1), _baseClassDefinition1);
-      _derivedClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition(typeof (DerivedRelationEndPointPropertyClass2), _baseClassDefinition2);
+      _baseClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition ("BaseRelationEndPointPropertyClass1", typeof (BaseRelationEndPointPropertyClass1));
+      _baseClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition ("BaseRelationEndPointPropertyClass2", typeof (BaseRelationEndPointPropertyClass2));
+      _derivedClassDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition ("DerivedRelationEndPointPropertyClass1", typeof (DerivedRelationEndPointPropertyClass1), baseClass: _baseClassDefinition1);
+      _derivedClassDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition ("DerivedRelationEndPointPropertyClass2", typeof (DerivedRelationEndPointPropertyClass2), baseClass: _baseClassDefinition2);
     }
 
     [Test]

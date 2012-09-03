@@ -34,9 +34,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyReflectorTe
       var propertyInfo = PropertyInfoAdapter.Create(type.GetProperty (property, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic));
       ClassDefinition classDefinition;
       if (ReflectionUtility.IsDomainObject (type))
-        classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (true, type);
+      {
+        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: type, isAbstract: true);
+      }
       else
-        classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (false, type);
+      {
+        classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: type, isAbstract: false);
+      }
 
       return new PropertyReflector (classDefinition, propertyInfo, MappingConfiguration.Current.NameResolver, domainModelConstraintProvider);
     }

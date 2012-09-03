@@ -285,7 +285,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           Configuration.NameResolver,
           ClassIDProviderStub,
           DomainModelConstraintProviderStub);
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses();
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition_WithEmptyMembers_AndDerivedClasses();
 
       var actual = classReflector.GetMetadata (baseClassDefinition);
 

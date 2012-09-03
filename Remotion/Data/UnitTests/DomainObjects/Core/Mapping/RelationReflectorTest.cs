@@ -380,8 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       classDeclaringOppositeProperty.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
       var oppositeProperty =
           EnsurePropertyDefinitionExisitsOnClassDefinition (classDeclaringOppositeProperty, typeof (BaseClass2), "RelationPropertyOnBaseClass");
-      var derivedOfClassDeclaringOppositeProperty = ClassDefinitionObjectMother.CreateClassDefinition (
-          typeof (DerivedClass2), classDeclaringOppositeProperty);
+      var derivedOfClassDeclaringOppositeProperty = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedClass2), baseClass: classDeclaringOppositeProperty);
       derivedOfClassDeclaringOppositeProperty.SetPropertyDefinitions (new PropertyDefinitionCollection());
       derivedOfClassDeclaringOppositeProperty.SetRelationEndPointDefinitions (new RelationEndPointDefinitionCollection());
 

@@ -64,7 +64,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Order), baseClass: null);
       var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreatePropertyDefinition (classDefinition, propertyInfo);
@@ -97,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinition ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Order), baseClass: null);
       var propertyInfo = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderItems"));
 
       var result = _factory.CreateRelationEndPointDefinition (classDefinition, propertyInfo);
@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreatePropertyDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Order), baseClass: null);
       var propertyInfo1 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("OrderNumber"));
       var propertyInfo2 = PropertyInfoAdapter.Create (typeof (Order).GetProperty ("DeliveryDate"));
 
@@ -153,7 +153,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderTicket), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (OrderTicket), baseClass: null);
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForRealPropertyInfo (classDefinition, typeof (OrderTicket), "Order");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
 

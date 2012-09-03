@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
@@ -39,9 +40,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.Validation
     public void SetUp ()
     {
       var type = typeof (DerivedValidationDomainObjectClass);
-      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (type);
-      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (type);
-      _classDefinition3 = ClassDefinitionObjectMother.CreateClassDefinition (type);
+      _classDefinition1 = ClassDefinitionObjectMother.CreateClassDefinition (classType: type);
+      _classDefinition2 = ClassDefinitionObjectMother.CreateClassDefinition (classType: type);
+      _classDefinition3 = ClassDefinitionObjectMother.CreateClassDefinition (classType: type);
 
       _validationRuleMock1 = MockRepository.GenerateStrictMock<IPersistenceMappingValidationRule> ();
       _validationRuleMock2 = MockRepository.GenerateStrictMock<IPersistenceMappingValidationRule> ();

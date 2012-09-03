@@ -35,7 +35,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.PropertyFinderTests
 
     protected ClassDefinition CreateClassDefinition (Type type)
     {
-      return ClassDefinitionObjectMother.CreateClassDefinitionWithMixinFinder (type, new PersistentMixinFinder (type));
+      return ClassDefinitionObjectMother.CreateClassDefinition (classType: type, persistentMixinFinder: new PersistentMixinFinder (type));
     }
   }
 }

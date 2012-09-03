@@ -42,9 +42,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void SetUp ()
     {
       _validationRule = new ClassAboveTableIsAbstractValidationRule();
-      _abstractClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (true, typeof (DerivedValidationDomainObjectClass));
-      _concreteClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (
-          false, typeof (DerivedValidationDomainObjectClass));
+      _abstractClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass), isAbstract: true);
+      _concreteClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass), isAbstract: false);
       var storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
       _tableDefinition = TableDefinitionObjectMother.Create (storageProviderDefinition, new EntityNameDefinition (null, "TableName"));
       _unionViewDefinition = UnionViewDefinitionObjectMother.Create (storageProviderDefinition);

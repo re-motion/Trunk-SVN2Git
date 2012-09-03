@@ -69,8 +69,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void CreateClassDefinitionCollection_DerivedClassAreSet ()
     {
       var fakeClassDefinitionCompany = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Company));
-      var fakeClassDefinitionPartner = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), fakeClassDefinitionCompany);
-      var fakeClassDefinitionCustomer = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Customer), fakeClassDefinitionCompany);
+      var fakeClassDefinitionPartner = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Partner), baseClass: fakeClassDefinitionCompany);
+      var fakeClassDefinitionCustomer = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Customer), baseClass: fakeClassDefinitionCompany);
 
       _mappingObjectFactoryMock
           .Expect (mock => mock.CreateClassDefinition (typeof (Order), null))

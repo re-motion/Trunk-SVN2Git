@@ -36,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping.RelationEndPointRef
       base.SetUp();
 
       _classType = typeof (ClassWithVirtualRelationEndPoints);
-      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (_classType);
+      _classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: _classType);
     }
 
     [Test]

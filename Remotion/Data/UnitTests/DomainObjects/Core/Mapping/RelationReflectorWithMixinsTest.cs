@@ -55,9 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _relatedClassDefinition =
           ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (
               typeof (RelationTargetForPersistentMixin), typeof (MixinAddingPersistentProperties));
-      _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixinFinder (
-              typeof (InheritanceRootInheritingPersistentMixin),
-              new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
+      _inheritanceRootInheritingMixinClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (InheritanceRootInheritingPersistentMixin), persistentMixinFinder: new PersistentMixinFinder (typeof (InheritanceRootInheritingPersistentMixin), true));
 
       _classDefinitions = new[] { _mixinTargetClassDefinition, _relatedClassDefinition, _multiMixinTargetClassDefinition }
           .ToDictionary (cd => cd.ClassType);

@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       base.SetUp ();
 
-      _customerClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Customer));
+      _customerClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Customer));
       _customerOrdersEndPoint = VirtualRelationEndPointDefinitionFactory.Create (
           _customerClassDefinition,
           "Orders",
@@ -44,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           typeof (OrderCollection),
           "OrderNumber desc");
 
-      _orderClassDefinition = ClassDefinitionObjectMother.CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses ();
+      _orderClassDefinition = CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses ();
     }
 
     [Test]
@@ -158,6 +159,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       orderItemClassDefinition.SetReadOnly ();
       endPoint.SetRelationDefinition (relationDefinition);
       return endPoint;
+    }
+
+    private static ClassDefinition CreateOrderDefinition_WithEmptyMembers_AndDerivedClasses ()
+    {
+      return ClassDefinitionObjectMother.CreateClassDefinition_WithEmptyMembers_AndDerivedClasses ("Order", classType: typeof (Order));
     }
   }
 }

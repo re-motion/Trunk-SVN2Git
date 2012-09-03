@@ -42,10 +42,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Val
     public void SetUp ()
     {
       _validationRule = new ColumnNamesAreUniqueWithinInheritanceTreeValidationRule(new RdbmsPersistenceModelProvider());
-      _baseOfBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseOfBaseValidationDomainObjectClass));
-      _derivedBaseClass1 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (BaseValidationDomainObjectClass), _baseOfBaseClass);
-      _derivedBaseClass2 = ClassDefinitionObjectMother.CreateClassDefinition (typeof (DerivedValidationDomainObjectClass), _derivedBaseClass1);
-      _derivedClass = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OtherDerivedValidationHierarchyClass), _baseOfBaseClass);
+      _baseOfBaseClass = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (BaseOfBaseValidationDomainObjectClass));
+      _derivedBaseClass1 = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (BaseValidationDomainObjectClass), baseClass: _baseOfBaseClass);
+      _derivedBaseClass2 = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (DerivedValidationDomainObjectClass), baseClass: _derivedBaseClass1);
+      _derivedClass = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (OtherDerivedValidationHierarchyClass), baseClass: _baseOfBaseClass);
 
       _baseOfBaseClass.SetDerivedClasses (new[] { _derivedBaseClass1, _derivedClass });
       _derivedBaseClass1.SetDerivedClasses (new[] { _derivedBaseClass2 });

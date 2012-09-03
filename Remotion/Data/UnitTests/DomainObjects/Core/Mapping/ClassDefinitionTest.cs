@@ -56,9 +56,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       _storageProviderDefinition = new UnitTestStorageProviderStubDefinition ("DefaultStorageProvider");
 
       _domainBaseClass = ClassDefinitionObjectMother.CreateClassDefinition ("DomainBase");
-      _personClass = ClassDefinitionObjectMother.CreateClassDefinition ("Person", _domainBaseClass);
-      _customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Customer", _personClass);
-      _organizationalUnitClass = ClassDefinitionObjectMother.CreateClassDefinition ("OrganizationalUnit", _domainBaseClass);
+      _personClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "Person", baseClass: _domainBaseClass);
+      _customerClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "Customer", baseClass: _personClass);
+      _organizationalUnitClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "OrganizationalUnit", baseClass: _domainBaseClass);
 
       _domainBaseClass.SetDerivedClasses (new[] { _personClass, _organizationalUnitClass });
 
@@ -93,7 +93,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithNullStorageGroupType ()
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (TIDomainBase), null);
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (TIDomainBase), storageGroupType: null);
       
       Assert.That (classDefinition.StorageGroupType, Is.Null);
     }
@@ -101,7 +101,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void InitializeWithStorageGroupType ()
     {
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithStorageGroup (typeof (TIDomainBase), typeof (DBStorageGroupAttribute));
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (TIDomainBase), storageGroupType: typeof (DBStorageGroupAttribute));
 
       Assert.That (classDefinition.StorageGroupType, Is.Not.Null);
       Assert.That (classDefinition.StorageGroupType, Is.SameAs (typeof (DBStorageGroupAttribute)));
@@ -286,7 +286,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetIsAbstract_True ()
     {
-      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (true);
+      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition (isAbstract: true);
 
       Assert.That (actual.IsAbstract, Is.True);
     }
@@ -294,7 +294,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void GetIsAbstract_False ()
     {
-      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinitionWithAbstractFlag (false);
+      ClassDefinition actual = ClassDefinitionObjectMother.CreateClassDefinition (isAbstract: false);
 
       Assert.That (actual.IsAbstract, Is.False);
     }
@@ -405,7 +405,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set for class 'Order'.")]
     public void GetPropertyDefinition_NoPropertyDefinitionsHaveBeenSet_ThrowsException ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
       classDefinition.GetPropertyDefinition ("dummy");
     }
 
@@ -495,7 +495,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var companyPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (companyClass, "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
-      var customerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Customer", companyClass);
+      var customerClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "Customer", baseClass: companyClass);
       var customerPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (customerClass, "Name");
       customerClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { customerPropertyDefinition }, true));
     }
@@ -509,10 +509,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var companyPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (companyClass, "Name");
       companyClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { companyPropertyDefinition }, true));
 
-      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition ("Partner", companyClass);
+      var partnerClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "Partner", baseClass: companyClass);
       partnerClass.SetPropertyDefinitions (new PropertyDefinitionCollection());
 
-      var supplierClass = ClassDefinitionObjectMother.CreateClassDefinition ("Supplier", partnerClass);
+      var supplierClass = ClassDefinitionObjectMother.CreateClassDefinition (id: "Supplier", baseClass: partnerClass);
       var supplierPropertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (supplierClass, "Name");
       supplierClass.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { supplierPropertyDefinition }, true));
     }
@@ -708,7 +708,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No property definitions have been set for class 'Order'.")]
     public void MyPropertyDefinitions_NoPropertiesSet_ThrowsException ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
 
       classDefinition.MyPropertyDefinitions.ToArray();
     }
@@ -731,7 +731,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No relation end point definitions have been set for class 'Order'.")]
     public void MyRelationEndPointDefinitions_NoRelationEndPointDefinitionsSet_ThrowsException ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition ("Order");
 
       classDefinition.MyRelationEndPointDefinitions.ToArray();
     }
@@ -1073,7 +1073,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void PersistentMixinFinder ()
     {
       var mixinFinder = new PersistentMixinFinderStub (typeof (Order));
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixinFinder (mixinFinder);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (persistentMixinFinder: mixinFinder);
       Assert.That (classDefinition.PersistentMixinFinder, Is.SameAs (mixinFinder));
     }
 
@@ -1305,7 +1305,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void ValidateCurrentMixinConfiguration_ThrowsWhenPersistentMixinsChangeOnParentClass ()
     {
       ClassDefinition baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Company), typeof (MixinA));
-      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Customer), baseClassDefinition);
+      ClassDefinition classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Customer), baseClass: baseClassDefinition);
       using (
           MixinConfiguration.BuildFromActive().ForClass (typeof (Company)).Clear().AddMixins (
               typeof (NonDomainObjectMixin), typeof (MixinA), typeof (MixinB), typeof (MixinC)).EnterScope())

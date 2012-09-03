@@ -119,7 +119,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     [Test]
     public void GetStoragePropertiesForHierarchy_NonPersistentPropertiesAreFiltered ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Order), null);
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Order), baseClass: null);
       var nonPersistentProperty = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "NonPersistentProperty", StorageClass.None);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { nonPersistentProperty }, true));
       classDefinition.SetDerivedClasses (new ClassDefinition[0]);
@@ -133,7 +133,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void GetStoragePropertiesForHierarchy_DuplicateStoragePropertiesAreFiltered ()
     {
       var classDefinition =
-          ClassDefinitionObjectMother.CreateClassDefinition (typeof (ClassHavingStorageSpecificIdentifierAttribute), null);
+          ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (ClassHavingStorageSpecificIdentifierAttribute), baseClass: null);
       var propertyDefinition1 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "P1");
       var propertyDefinition2 = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "P2");
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition1, propertyDefinition2 }, true));

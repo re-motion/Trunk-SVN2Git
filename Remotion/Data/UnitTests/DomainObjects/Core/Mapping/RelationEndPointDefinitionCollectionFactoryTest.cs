@@ -41,7 +41,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateRelationEndPointDefinitionCollection ()
     {
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (OrderTicket));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (OrderTicket));
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID (classDefinition);
       classDefinition.SetPropertyDefinitions (new PropertyDefinitionCollection (new[] { propertyDefinition }, true));
       var fakeRelationEndPoint = new RelationEndPointDefinition (propertyDefinition, false);

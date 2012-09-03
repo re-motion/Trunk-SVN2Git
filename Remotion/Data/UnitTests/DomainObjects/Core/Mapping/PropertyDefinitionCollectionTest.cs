@@ -70,8 +70,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [Test]
     public void CreateForAllPropertyDefinitions_ClassDefinitionWithBaseClassDefinition ()
     {
-      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Company));
-      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (typeof (Partner), baseClassDefinition);
+      var baseClassDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Company));
+      var classDefinition = ClassDefinitionObjectMother.CreateClassDefinition (classType: typeof (Partner), baseClass: baseClassDefinition);
 
       var propertyDefinitionInBaseClass = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (baseClassDefinition, "Property1");
       var propertyDefinitionInDerivedClass = PropertyDefinitionObjectMother.CreateForFakePropertyInfo (classDefinition, "Property2");
