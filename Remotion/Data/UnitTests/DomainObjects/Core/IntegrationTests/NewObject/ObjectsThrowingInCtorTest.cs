@@ -24,7 +24,6 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
 {
   [TestFixture]
-  [Ignore ("TODO 5015")]
   public class ObjectsThrowingInCtorTest : ClientTransactionBaseTest
   {
     private Exception _exception;
@@ -79,9 +78,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
         instance.Deleting += (sender, args) => { throw _deleteException; };
       });
 
-      Assert.That (
-          () => OrderItem.NewObject (), 
-          Throws.TypeOf<ObjectCleanupException>()
+      // Unfortunately, we can't use Assert.That (() => ..., Throws) here because the throwingInstance (required for constructing the message
+      // check constraint) only exists once the NewObject call has executed. Therefore, use manual try/catch instead.
+      try
+      {
+        OrderItem.NewObject ();
+        Assert.Fail ("Expected ObjectCleanupException.");
+      }
+      catch (ObjectCleanupException ex)
+      {
+        Assert.That (ex, Is.TypeOf<ObjectCleanupException> ()
               .With.Message.EqualTo (
                   "While cleaning up an object of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.OrderItem' that threw an exception of type "
                   + "'System.Exception' from its constructor, another exception of type 'System.InvalidOperationException' was encountered. "
@@ -90,9 +96,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
                   + "'. Rollback the transaction to get rid of the partially constructed instance." + Environment.NewLine
                   + "Message of original exception: Test exception." + Environment.NewLine
                   + "Message of exception occurring during cleanup: Thrown from Deleting!")
-              .And.Property ("ObjectID").EqualTo (throwingInstance.ID)
+              .And.Property ("ObjectID").Matches<ObjectID> (id => throwingInstance != null && id == throwingInstance.ID)
               .And.InnerException.SameAs (_deleteException)
               .And.Property ("OriginalException").SameAs (_exception));
+      }
 
       Assert.That (throwingInstance.State, Is.EqualTo (StateType.New));
       Assert.That (TestableClientTransaction.DataManager.DataContainers[throwingInstance.ID], Is.Not.Null);
@@ -106,7 +113,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
     [Test]
     public void ThrowingObjectInBidirectionalRelation_AlsoThrowingFromOnDeleting_CausesObjectCleanupException_AndRemainsInRelation ()
     {
-      var order = Order.NewObject ();
+      var order = Order.GetObject (DomainObjectIDs.Order1);
       OrderItem throwingInstance = null;
       RegisterThrowingCtorHandler<OrderItem> (instance =>
       {
@@ -120,13 +127,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
       Assert.That (throwingInstance.State, Is.EqualTo (StateType.New));
       Assert.That (TestableClientTransaction.DataManager.DataContainers[throwingInstance.ID], Is.Not.Null);
       Assert.That (throwingInstance.Order, Is.SameAs (order));
-      Assert.That (order.OrderItems, Is.Not.Empty.And.Member (throwingInstance));
+      Assert.That (order.OrderItems, Has.Member (throwingInstance));
 
       TestableClientTransaction.Rollback ();
 
       Assert.That (throwingInstance.State, Is.EqualTo (StateType.Invalid));
       Assert.That (TestableClientTransaction.DataManager.DataContainers[throwingInstance.ID], Is.Null);
-      Assert.That (order.OrderItems, Is.Empty);
+      Assert.That (order.OrderItems, Has.No.Member (throwingInstance));
     }
 
     [Test]
@@ -146,13 +153,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.NewObject
     }
 
     [Test]
-    public void ThrowingObject_UncaughtByOtherObjectCtor_CausesOnlyThrowingObjectToBeCleanedUp ()
+    public void ThrowingObject_CaughtByOtherObjectCtor_CausesOnlyThrowingObjectToBeCleanedUp ()
     {
       OrderItem throwingOrderItem = null;
       Order triggeringOrder = null;
 
       RegisterThrowingCtorHandler<OrderItem> (instance => throwingOrderItem = instance);
-      RegisterThrowingCtorHandler<Order> (instance =>
+      RegisterCtorHandler<Order> (instance =>
       {
         triggeringOrder = instance;
         Assert.That (() => OrderItem.NewObject (), Throws.Exception.SameAs (_exception));

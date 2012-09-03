@@ -216,7 +216,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Security
     }
 
     [Test]
-    [Ignore ("TODO 5015")]
     public void AutomaticCleanup_WhenDomainObjectCtorThrows_DoesNotRequireDeletePermissions ()
     {
       _functionalSecurityStub
