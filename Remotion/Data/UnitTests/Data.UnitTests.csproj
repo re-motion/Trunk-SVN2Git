@@ -205,6 +205,7 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableDataManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableEnlistedDomainObjectManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableLoadedObjectDataRegistrationListenerFake.cs" />
+    <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableObjectInitializationContextProviderFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTransactionHierarchyManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\ResurrectionServiceTest.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="DomainObjects\Core\Infrastructure\Interception\TestDomain\NonInstantiableClassWithMixinWithPersistentAutoProperties.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\NotFoundObjectsClientTransactionListenerTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectCleanupExceptionTest.cs" />
+    <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInitializationContextProviderTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectInitializationContextTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectLifetimeAgentTest.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ObjectLifetime\ObjectLifetimeAgentTestHelper.cs" />

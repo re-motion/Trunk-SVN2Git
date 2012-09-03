@@ -272,6 +272,7 @@ namespace Remotion.Data.DomainObjects
       PerformConstructorCheck ();
 // ReSharper restore DoNotCallOverridableMethodsInConstructor
 
+      Assertion.IsNotNull (ClientTransaction.Current, "This constructor cannot be called with a null ClientTransaction.");
       var initializationContext = ClientTransaction.Current.CurrentObjectInitializationContext;
       if (initializationContext == null)
       {
@@ -280,7 +281,7 @@ namespace Remotion.Data.DomainObjects
             + "If this exception occurs during a base call of a deserialization constructor, adjust the base call to call the DomainObject's "
             + "deserialization constructor instead.");
       }
-      Initialize (initializationContext.ObjectID, initializationContext.BindingClientTransaction);
+      Initialize (initializationContext.ObjectID, initializationContext.BindingTransaction);
       initializationContext.RegisterObject (this);
 
       RaiseReferenceInitializatingEvent ();

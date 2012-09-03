@@ -15,17 +15,18 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 
-namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
+using System;
+using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
+
+namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes
 {
-  /// <summary>
-  /// Represents the context of an object being initialized via <see cref="IObjectLifetimeAgent.NewObject"/>.
-  /// </summary>
-  public interface IObjectInitializationContext
+  [Serializable]
+  public class SerializableObjectInitializationContextProviderFake : IObjectInitializationContextProvider
   {
-    ObjectID ObjectID { get; }
-    ClientTransaction BindingTransaction { get; }
-    DomainObject RegisteredObject { get; }
-    
-    void RegisterObject (DomainObject domainObject);
+    public IObjectInitializationContext CreateContext (ObjectID objectID, ClientTransaction bindingTransaction)
+    {
+      throw new NotImplementedException();
+    }
   }
 }

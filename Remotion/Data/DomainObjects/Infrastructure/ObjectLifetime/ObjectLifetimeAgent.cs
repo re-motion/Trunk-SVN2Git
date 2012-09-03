@@ -41,6 +41,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
     private readonly IDataManager _dataManager;
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
     private readonly IPersistenceStrategy _persistenceStrategy;
+    private readonly IObjectInitializationContextProvider _objectInitializationContextProvider;
 
     [ThreadStatic]
     private static IObjectInitializationContext _currentInitializationContext;
@@ -51,20 +52,23 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
         IInvalidDomainObjectManager invalidDomainObjectManager,
         IDataManager dataManager,
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
-        IPersistenceStrategy persistenceStrategy)
+        IPersistenceStrategy persistenceStrategy,
+        IObjectInitializationContextProvider objectInitializationContextProvider)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("eventSink", eventSink);
       ArgumentUtility.CheckNotNull ("invalidDomainObjectManager", invalidDomainObjectManager);
       ArgumentUtility.CheckNotNull ("dataManager", dataManager);
       ArgumentUtility.CheckNotNull ("persistenceStrategy", persistenceStrategy);
+      ArgumentUtility.CheckNotNull ("objectInitializationContextProvider", objectInitializationContextProvider);
 
       _clientTransaction = clientTransaction;
+      _eventSink = eventSink;
+      _invalidDomainObjectManager = invalidDomainObjectManager;
       _dataManager = dataManager;
       _enlistedDomainObjectManager = enlistedDomainObjectManager;
       _persistenceStrategy = persistenceStrategy;
-      _eventSink = eventSink;
-      _invalidDomainObjectManager = invalidDomainObjectManager;
+      _objectInitializationContextProvider = objectInitializationContextProvider;
     }
 
     public ClientTransaction ClientTransaction
@@ -97,6 +101,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _persistenceStrategy; }
     }
 
+    public IObjectInitializationContextProvider ObjectInitializationContextProvider
+    {
+      get { return _objectInitializationContextProvider; }
+    }
+
     public IObjectInitializationContext CurrentInitializationContext
     {
       get { return _currentInitializationContext; }
@@ -115,15 +124,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 
       _eventSink.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, classDefinition.ClassType));
 
+      var previousInitializationContext = _currentInitializationContext;
+
       var objectID = _persistenceStrategy.CreateNewObjectID (classDefinition);
       var bindingClientTransaction = _clientTransaction as BindingClientTransaction;
-
-      var previousInitializationContext = _currentInitializationContext;
-      _currentInitializationContext = new ObjectInitializationContext (objectID, _enlistedDomainObjectManager, _dataManager, bindingClientTransaction);
+      _currentInitializationContext = _objectInitializationContextProvider.CreateContext (objectID, bindingClientTransaction);
 
       try
       {
         return _clientTransaction.Execute (() => classDefinition.InstanceCreator.CreateNewObject (classDefinition.ClassType, constructorParameters));
+      }
+      catch (Exception ex)
+      {
+        if (_currentInitializationContext.RegisteredObject != null)
+          CleanupCreatedObject (objectID, _currentInitializationContext.RegisteredObject, ex);
+        throw;
       }
       finally
       {
@@ -224,6 +239,32 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       var command = _dataManager.CreateDeleteCommand (domainObject);
       var fullCommand = command.ExpandToAllRelatedObjects ();
       fullCommand.NotifyAndPerform ();
+    }
+
+    private void CleanupCreatedObject (ObjectID objectID, DomainObject domainObject, Exception creationException)
+    {
+      try
+      {
+        Delete (domainObject);
+      }
+      catch (Exception deleteException)
+      {
+        var message = string.Format (
+            "While cleaning up an object of type '{0}' that threw an exception of type "
+            + "'{1}' from its constructor, another exception of type '{2}' was encountered. "
+            + "Cleanup was therefore aborted, and a partially constructed object with ID '{3}' remains within the ClientTransaction '{4}'."
+            + " Rollback the transaction to get rid of the partially constructed instance." + Environment.NewLine
+            + "Message of original exception: {5}" + Environment.NewLine
+            + "Message of exception occurring during cleanup: {6}",
+            domainObject.GetPublicDomainObjectType (),
+            creationException.GetType (),
+            deleteException.GetType (),
+            objectID,
+            _clientTransaction,
+            creationException.Message,
+            deleteException.Message);
+        throw new ObjectCleanupException (message, objectID, deleteException, creationException);
+      }
     }
   }
 }

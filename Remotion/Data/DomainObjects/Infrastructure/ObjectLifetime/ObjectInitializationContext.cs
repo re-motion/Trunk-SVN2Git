@@ -27,7 +27,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
   public class ObjectInitializationContext : IObjectInitializationContext
   {
     private readonly ObjectID _objectID;
-    private readonly BindingClientTransaction _bindingClientTransaction;
+    private readonly ClientTransaction _bindingTransaction;
     private readonly IEnlistedDomainObjectManager _enlistedDomainObjectManager;
     private readonly IDataManager _dataManager;
 
@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
         ObjectID objectID,
         IEnlistedDomainObjectManager enlistedDomainObjectManager,
         IDataManager dataManager,
-        BindingClientTransaction bindingClientTransaction)
+        ClientTransaction bindingTransaction)
     {
       ArgumentUtility.CheckNotNull ("objectID", objectID);
       ArgumentUtility.CheckNotNull ("enlistedDomainObjectManager", enlistedDomainObjectManager);
@@ -45,7 +45,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 
       _objectID = objectID;
       _dataManager = dataManager;
-      _bindingClientTransaction = bindingClientTransaction;
+      _bindingTransaction = bindingTransaction;
       _enlistedDomainObjectManager = enlistedDomainObjectManager;
     }
 
@@ -64,9 +64,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       get { return _dataManager; }
     }
 
-    public BindingClientTransaction BindingClientTransaction
+    public ClientTransaction BindingTransaction
     {
-      get { return _bindingClientTransaction; }
+      get { return _bindingTransaction; }
     }
 
     public DomainObject RegisteredObject
@@ -81,10 +81,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
       if (domainObject.ID != _objectID)
         throw new ArgumentException (string.Format ("The given DomainObject must have ID '{0}'.", _objectID), "domainObject");
 
-      if (BindingClientTransaction != null && (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction () != BindingClientTransaction))
-        throw new ArgumentException (string.Format ("The given DomainObject must have BindingClientTransaction '{0}'.", _bindingClientTransaction), "domainObject");
+      if (BindingTransaction != null && (!domainObject.HasBindingTransaction || domainObject.GetBindingTransaction () != BindingTransaction))
+        throw new ArgumentException (string.Format ("The given DomainObject must have BindingClientTransaction '{0}'.", _bindingTransaction), "domainObject");
 
-      if (BindingClientTransaction == null && domainObject.HasBindingTransaction)
+      if (BindingTransaction == null && domainObject.HasBindingTransaction)
         throw new ArgumentException ("The given DomainObject must not have a BindingClientTransaction.", "domainObject");
 
       if (_registeredObject != null)

@@ -157,12 +157,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           _fakeConstructedTransaction, eventSink, invalidDomainObjectManager, dataManager, enlistedDomainObjectManager, persistenceStrategy);
 
       Assert.That (result, Is.TypeOf (typeof (ObjectLifetimeAgent)));
-      Assert.That (((ObjectLifetimeAgent) result).ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
-      Assert.That (((ObjectLifetimeAgent) result).EventSink, Is.SameAs (eventSink));
-      Assert.That (((ObjectLifetimeAgent) result).InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
-      Assert.That (((ObjectLifetimeAgent) result).DataManager, Is.SameAs (dataManager));
-      Assert.That (((ObjectLifetimeAgent) result).EnlistedDomainObjectManager, Is.SameAs (enlistedDomainObjectManager));
-      Assert.That (((ObjectLifetimeAgent) result).PersistenceStrategy, Is.SameAs (persistenceStrategy));
+      
+      var objectLifetimeAgent = ((ObjectLifetimeAgent) result);
+      Assert.That (objectLifetimeAgent.ClientTransaction, Is.SameAs (_fakeConstructedTransaction));
+      Assert.That (objectLifetimeAgent.EventSink, Is.SameAs (eventSink));
+      Assert.That (objectLifetimeAgent.InvalidDomainObjectManager, Is.SameAs (invalidDomainObjectManager));
+      Assert.That (objectLifetimeAgent.DataManager, Is.SameAs (dataManager));
+      Assert.That (objectLifetimeAgent.EnlistedDomainObjectManager, Is.SameAs (enlistedDomainObjectManager));
+      Assert.That (objectLifetimeAgent.PersistenceStrategy, Is.SameAs (persistenceStrategy));
+      Assert.That (objectLifetimeAgent.ObjectInitializationContextProvider, Is.TypeOf<ObjectInitializationContextProvider> ());
+      
+      var objectInitializationContextProvider = ((ObjectInitializationContextProvider) objectLifetimeAgent.ObjectInitializationContextProvider);
+      Assert.That (objectInitializationContextProvider.EnlistedDomainObjectManager, Is.SameAs (enlistedDomainObjectManager));
+      Assert.That (objectInitializationContextProvider.DataManager, Is.SameAs (dataManager));
     }
 
     [Test]

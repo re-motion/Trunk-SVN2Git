@@ -18,7 +18,6 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
-using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.Enlistment;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime;
 using Remotion.Development.UnitTesting.ObjectMothers;
@@ -32,7 +31,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     private ObjectID _objectID;
     private IEnlistedDomainObjectManager _enlistedDomainObjectManagerMock;
     private IDataManager _dataManagerMock;
-    private BindingClientTransaction _bindingClientTransaction;
+    private ClientTransaction _bindingClientTransaction;
 
     private ObjectInitializationContext _contextWithBindingTransaction;
     private ObjectInitializationContext _contextWithoutBindingTransaction;
@@ -47,9 +46,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _objectID = DomainObjectIDs.Order1;
       _enlistedDomainObjectManagerMock = MockRepository.GenerateStrictMock<IEnlistedDomainObjectManager> ();
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
-      _bindingClientTransaction = ClientTransactionObjectMother.CreateBinding ();
+      _bindingClientTransaction = ClientTransactionObjectMother.CreateBinding();
 
-      _contextWithBindingTransaction = new ObjectInitializationContext (_objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, _bindingClientTransaction);
+      _contextWithBindingTransaction = new ObjectInitializationContext (
+          _objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, _bindingClientTransaction);
       _contextWithoutBindingTransaction = new ObjectInitializationContext (_objectID, _enlistedDomainObjectManagerMock, _dataManagerMock, null);
 
       _boundObject = DomainObjectMother.GetObjectReference (_bindingClientTransaction, _objectID);
@@ -62,14 +62,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       Assert.That (_contextWithBindingTransaction.ObjectID, Is.EqualTo (_objectID));
       Assert.That (_contextWithBindingTransaction.EnlistedDomainObjectManager, Is.SameAs (_enlistedDomainObjectManagerMock));
       Assert.That (_contextWithBindingTransaction.DataManager, Is.SameAs (_dataManagerMock));
-      Assert.That (_contextWithBindingTransaction.BindingClientTransaction, Is.SameAs (_bindingClientTransaction));
+      Assert.That (_contextWithBindingTransaction.BindingTransaction, Is.SameAs (_bindingClientTransaction));
       Assert.That (_contextWithBindingTransaction.RegisteredObject, Is.Null);
     }
 
     [Test]
     public void Initialization_NullBindingTransaction ()
     {
-      Assert.That (_contextWithoutBindingTransaction.BindingClientTransaction, Is.Null);
+      Assert.That (_contextWithoutBindingTransaction.BindingTransaction, Is.Null);
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     public void RegisterObject_NotBound_ButShouldBe ()
     {
       Assert.That (_unboundObject.HasBindingTransaction, Is.False);
-      Assert.That (_contextWithBindingTransaction.BindingClientTransaction, Is.Not.Null);
+      Assert.That (_contextWithBindingTransaction.BindingTransaction, Is.Not.Null);
 
       Assert.That (
           () => _contextWithBindingTransaction.RegisterObject (_unboundObject),
@@ -154,7 +154,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     public void RegisterObject_Bound_ButShouldNotBe ()
     {
       Assert.That (_boundObject.HasBindingTransaction, Is.True);
-      Assert.That (_contextWithoutBindingTransaction.BindingClientTransaction, Is.Null);
+      Assert.That (_contextWithoutBindingTransaction.BindingTransaction, Is.Null);
 
       Assert.That (
           () => _contextWithoutBindingTransaction.RegisterObject (_boundObject),
@@ -166,7 +166,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     public void RegisterObject_BoundToWrongTransaction ()
     {
       var differentlyBoundObject = DomainObjectMother.GetObjectReference (ClientTransactionObjectMother.CreateBinding(), _objectID);
-      Assert.That (differentlyBoundObject.GetBindingTransaction(), Is.Not.SameAs (_contextWithBindingTransaction.BindingClientTransaction));
+      Assert.That (differentlyBoundObject.GetBindingTransaction(), Is.Not.SameAs (_contextWithBindingTransaction.BindingTransaction));
 
       Assert.That (
           () => _contextWithBindingTransaction.RegisterObject (differentlyBoundObject),

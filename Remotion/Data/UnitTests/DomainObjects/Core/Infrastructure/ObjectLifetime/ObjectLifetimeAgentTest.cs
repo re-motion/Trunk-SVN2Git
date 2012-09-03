@@ -47,6 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     private IDataManager _dataManagerMock;
     private IEnlistedDomainObjectManager _enlistedDomainObjectManagerMock;
     private IPersistenceStrategy _persistenceStrategyMock;
+    private IObjectInitializationContextProvider _initializationContextProviderMock;
 
     private ObjectLifetimeAgent _agent;
 
@@ -60,6 +61,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     private IDomainObjectCreator _domainObjectCreatorMock;
     private ClassDefinition _typeDefinitionWithCreatorMock;
 
+    private IObjectInitializationContext _initializationContextStub;
+
     public override void SetUp ()
     {
       base.SetUp ();
@@ -70,6 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
       _enlistedDomainObjectManagerMock = MockRepository.GenerateStrictMock<IEnlistedDomainObjectManager> ();
       _persistenceStrategyMock = MockRepository.GenerateStrictMock<IPersistenceStrategy>();
+      _initializationContextProviderMock = MockRepository.GenerateStrictMock<IObjectInitializationContextProvider>();
 
       _agent = new ObjectLifetimeAgent (
           _transaction, 
@@ -77,7 +81,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           _invalidDomainObjectManagerMock, 
           _dataManagerMock, 
           _enlistedDomainObjectManagerMock,
-          _persistenceStrategyMock);
+          _persistenceStrategyMock,
+          _initializationContextProviderMock);
 
       _objectID1 = DomainObjectIDs.Order1;
       _domainObject1 = DomainObjectMother.CreateFakeObject (_objectID1);
@@ -90,6 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _domainObjectCreatorMock = MockRepository.GenerateStrictMock<IDomainObjectCreator>();
       _typeDefinitionWithCreatorMock = ClassDefinitionObjectMother.CreateClassDefinition (
           classType: typeof (OrderItem), instanceCreator: _domainObjectCreatorMock);
+
+      _initializationContextStub = MockRepository.GenerateStub<IObjectInitializationContext>();
     }
 
     [Test]
@@ -99,6 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
 
       _eventSinkWithMock.ExpectMock (mock => mock.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
       _persistenceStrategyMock.Expect (mock => mock.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
+      _initializationContextProviderMock.Expect (mock => mock.CreateContext (_objectID1, null)).Return (_initializationContextStub);
 
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, constructorParameters))
@@ -106,14 +114,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
               mi =>
               {
                 Assert.That (ClientTransaction.Current, Is.SameAs (_transaction));
-                Assert.That (_agent.CurrentInitializationContext, Is.Not.Null);
-                Assert.That (_agent.CurrentInitializationContext, Is.TypeOf<ObjectInitializationContext>());
-                Assert.That (_agent.CurrentInitializationContext.ObjectID, Is.SameAs (_objectID1));
-                Assert.That (
-                    ((ObjectInitializationContext) _agent.CurrentInitializationContext).EnlistedDomainObjectManager,
-                    Is.SameAs (_enlistedDomainObjectManagerMock));
-                Assert.That (((ObjectInitializationContext) _agent.CurrentInitializationContext).DataManager, Is.SameAs (_dataManagerMock));
-                Assert.That (_agent.CurrentInitializationContext.BindingClientTransaction, Is.Null);
+                Assert.That (_agent.CurrentInitializationContext, Is.Not.Null.And.SameAs (_initializationContextStub));
               })
           .Return (_domainObject1);
 
@@ -127,6 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
 
       _eventSinkWithMock.VerifyMock();
       _persistenceStrategyMock.VerifyAllExpectations();
+      _initializationContextProviderMock.VerifyAllExpectations();
       _domainObjectCreatorMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (_domainObject1));
@@ -135,31 +137,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void NewObject_WithBindingClientTransaction ()
     {
-      var bindingTrancation = ClientTransactionObjectMother.CreateBinding();
+      var bindingTransaction = ClientTransactionObjectMother.CreateBinding();
 
       var agent = new ObjectLifetimeAgent (
-          bindingTrancation,
+          bindingTransaction,
           _eventSinkWithMock,
           _invalidDomainObjectManagerMock,
           _dataManagerMock,
           _enlistedDomainObjectManagerMock,
-          _persistenceStrategyMock);
+          _persistenceStrategyMock,
+          _initializationContextProviderMock);
 
       _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything)).Return (_objectID1);
-
-      _domainObjectCreatorMock
-          .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty))
-          .WhenCalled (mi => 
-          {
-            Assert.That (agent.CurrentInitializationContext, Is.Not.Null);
-            Assert.That (agent.CurrentInitializationContext.BindingClientTransaction, Is.SameAs (bindingTrancation)); 
-          })
-          .Return (_domainObject1);
+      _initializationContextProviderMock.Expect (mock => mock.CreateContext (_objectID1, bindingTransaction)).Return (_initializationContextStub);
+      _domainObjectCreatorMock.Stub (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty)).Return (_domainObject1);
 
       agent.NewObject (_typeDefinitionWithCreatorMock, ParamList.Empty);
 
-      _domainObjectCreatorMock.VerifyAllExpectations();
+      _initializationContextProviderMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -167,6 +163,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything)).Return (_objectID1);
+      _initializationContextProviderMock
+          .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))
+          .Return (_initializationContextStub);
 
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty))
@@ -183,27 +182,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     }
 
     [Test]
-    public void NewObject_CleansUpContext_WhenExceptionIsThrown ()
-    {
-      _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
-      _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything)).Return (_objectID1);
-
-      var exception = new Exception ("Test");
-
-      _domainObjectCreatorMock
-          .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty))
-          .WhenCalled (mi => Assert.That (_agent.CurrentInitializationContext, Is.Not.Null))
-          .Throw (exception);
-
-      Assert.That (_agent.CurrentInitializationContext, Is.Null);
-
-      Assert.That (() => _agent.NewObject (_typeDefinitionWithCreatorMock, ParamList.Empty), Throws.Exception.SameAs (exception));
-
-      _domainObjectCreatorMock.VerifyAllExpectations ();
-      Assert.That (_agent.CurrentInitializationContext, Is.Null);
-    }
-
-    [Test]
     public void NewObject_RecursiveContexts ()
     {
       var typeDefinitionWithCreatorMock2 = ClassDefinitionObjectMother.CreateClassDefinition (instanceCreator: _domainObjectCreatorMock);
@@ -211,35 +189,32 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (typeDefinitionWithCreatorMock2)).Return (_objectID2);
 
+      var initializationContextStub2 = MockRepository.GenerateStub<IObjectInitializationContext> ();
+      _initializationContextProviderMock.Expect (mock => mock.CreateContext (_objectID1, null)).Return (_initializationContextStub);
+      _initializationContextProviderMock.Expect (mock => mock.CreateContext (_objectID2, null)).Return (initializationContextStub2);
+
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty))
           .WhenCalled (mi =>
           {
-            Assert.That (_agent.CurrentInitializationContext, Is.Not.Null);
-            Assert.That (_agent.CurrentInitializationContext.ObjectID, Is.EqualTo (_objectID1));
-
+            Assert.That (_agent.CurrentInitializationContext, Is.Not.Null.And.SameAs (_initializationContextStub));
             _agent.NewObject (typeDefinitionWithCreatorMock2, ParamList.Empty);
-
-            Assert.That (_agent.CurrentInitializationContext, Is.Not.Null);
-            Assert.That (_agent.CurrentInitializationContext.ObjectID, Is.EqualTo (_objectID1));
+            Assert.That (_agent.CurrentInitializationContext, Is.Not.Null.And.SameAs (_initializationContextStub));
           })
           .Return (_domainObject1);
 
       _domainObjectCreatorMock
           .Expect (mock => mock.CreateNewObject (typeDefinitionWithCreatorMock2.ClassType, ParamList.Empty))
-          .WhenCalled (mi =>
-          {
-            Assert.That (_agent.CurrentInitializationContext, Is.Not.Null);
-            Assert.That (_agent.CurrentInitializationContext.ObjectID, Is.EqualTo (_objectID2));
-          })
+          .WhenCalled (mi => Assert.That (_agent.CurrentInitializationContext, Is.Not.Null.And.SameAs (initializationContextStub2)))
           .Return (_domainObject2);
 
       Assert.That (_agent.CurrentInitializationContext, Is.Null);
 
       _agent.NewObject (_typeDefinitionWithCreatorMock, ParamList.Empty);
 
-      _domainObjectCreatorMock.VerifyAllExpectations ();
       Assert.That (_agent.CurrentInitializationContext, Is.Null);
+      _initializationContextProviderMock.VerifyAllExpectations();
+      _domainObjectCreatorMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -251,6 +226,108 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           Throws.InvalidOperationException.With.Message.EqualTo (
               "Cannot instantiate type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.AbstractClass' because it is abstract. "
               + "For classes with automatic properties, InstantiableAttribute must be used."));
+    }
+
+    [Test]
+    public void NewObject_CreationException_CausesObjectToBeDeleted_AndContextToBeCleanedUp ()
+    {
+      var constructorParameters = ParamList.Empty;
+
+      _eventSinkWithMock.StubMock (stub => stub.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
+      _persistenceStrategyMock.Stub (stub => stub.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
+      _initializationContextProviderMock
+          .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))
+          .Return (_initializationContextStub);
+
+      // Pretend an object was registered before the exception was thrown
+      _initializationContextStub.Stub (stub => stub.RegisteredObject).Return (_domainObject1);
+
+      var exception = new Exception ("Test");
+      _domainObjectCreatorMock
+          .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, constructorParameters))
+          .Throw (exception);
+
+      var deleteCommandMock = SetupDeleteExpectations (_dataManagerMock, _domainObject1);
+
+      Assert.That (_agent.CurrentInitializationContext, Is.Null);
+
+      Assert.That (() => _agent.NewObject (_typeDefinitionWithCreatorMock, constructorParameters), Throws.Exception.SameAs (exception));
+
+      Assert.That (_agent.CurrentInitializationContext, Is.Null);
+      _domainObjectCreatorMock.VerifyAllExpectations ();
+      _dataManagerMock.VerifyAllExpectations();
+      deleteCommandMock.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void NewObject_CreationException_WithExceptionInDelete ()
+    {
+      var constructorParameters = ParamList.Empty;
+
+      _eventSinkWithMock.StubMock (stub => stub.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
+      _persistenceStrategyMock.Stub (stub => stub.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
+      _initializationContextProviderMock
+          .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))
+          .Return (_initializationContextStub);
+
+      // Pretend an object was registered before the exception was thrown
+      _initializationContextStub.Stub (stub => stub.RegisteredObject).Return (_domainObject1);
+
+      var exceptionInCreate = new Exception ("Test");
+      _domainObjectCreatorMock
+          .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, constructorParameters))
+          .Throw (exceptionInCreate);
+
+      var exceptionInDelete = new InvalidOperationException ("Cancelled");
+      var deleteCommandMock = SetupDeleteExpectationsWithException (_dataManagerMock, _domainObject1, exceptionInDelete);
+
+      Assert.That (_agent.CurrentInitializationContext, Is.Null);
+
+      Assert.That (
+          () => _agent.NewObject (_typeDefinitionWithCreatorMock, constructorParameters), 
+          Throws.TypeOf<ObjectCleanupException>()
+              .With.Message.EqualTo (
+                  "While cleaning up an object of type 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order' that threw an exception of type "
+                  + "'System.Exception' from its constructor, another exception of type 'System.InvalidOperationException' was encountered. "
+                  + "Cleanup was therefore aborted, and a partially constructed object with ID '" + _objectID1 + "' remains "
+                  + "within the ClientTransaction '" + _transaction
+                  + "'. Rollback the transaction to get rid of the partially constructed instance." + Environment.NewLine
+                  + "Message of original exception: Test" + Environment.NewLine
+                  + "Message of exception occurring during cleanup: Cancelled")
+              .And.InnerException.SameAs (exceptionInDelete)
+              .And.Property ("OriginalException").SameAs (exceptionInCreate));
+
+      Assert.That (_agent.CurrentInitializationContext, Is.Null);
+      _domainObjectCreatorMock.VerifyAllExpectations ();
+      _dataManagerMock.VerifyAllExpectations ();
+      deleteCommandMock.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void NewObject_CreationException_WithoutRegisteredObject ()
+    {
+      var constructorParameters = ParamList.Empty;
+
+      _eventSinkWithMock.StubMock (stub => stub.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
+      _persistenceStrategyMock.Stub (stub => stub.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
+      _initializationContextProviderMock
+          .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))
+          .Return (_initializationContextStub);
+
+      // No object was registered before the exception was thrown
+      _initializationContextStub.Stub (stub => stub.RegisteredObject).Return (null);
+
+      var exception = new Exception ("Test");
+      _domainObjectCreatorMock
+          .Expect (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, constructorParameters))
+          .Throw (exception);
+
+      Assert.That (_agent.CurrentInitializationContext, Is.Null);
+
+      Assert.That (() => _agent.NewObject (_typeDefinitionWithCreatorMock, constructorParameters), Throws.Exception.SameAs (exception));
+
+      Assert.That (_agent.CurrentInitializationContext, Is.Null);
+      _domainObjectCreatorMock.VerifyAllExpectations ();
     }
     
     [Test]
@@ -455,22 +532,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void Delete ()
     {
-      var commandMock1 = MockRepository.GenerateStrictMock<IDataManagementCommand> ();
-      var commandMock2 = MockRepository.GenerateStrictMock<IDataManagementCommand> ();
-
-      var counter = new OrderedExpectationCounter();
-      _dataManagerMock.Expect (mock => mock.CreateDeleteCommand (_domainObject1)).Return (commandMock1);
-      commandMock2.Stub (stub => stub.GetAllExceptions()).Return (Enumerable.Empty<Exception>());
-      commandMock1.Expect (mock => mock.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (commandMock2)).Ordered (counter);
-      commandMock2.Expect (mock => mock.Begin ()).Ordered (counter);
-      commandMock2.Expect (mock => mock.Perform ()).Ordered (counter);
-      commandMock2.Expect (mock => mock.End ()).Ordered (counter);
+      var deleteCommandMock = SetupDeleteExpectations(_dataManagerMock, _domainObject1);
 
       _agent.Delete (_domainObject1);
 
       _dataManagerMock.VerifyAllExpectations();
-      commandMock1.VerifyAllExpectations();
-      commandMock2.VerifyAllExpectations();
+      deleteCommandMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -482,7 +549,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           new SerializableInvalidDomainObjectManagerFake(),
           new SerializableDataManagerFake(),
           new SerializableEnlistedDomainObjectManagerFake(),
-          new SerializablePersistenceStrategyFake());
+          new SerializablePersistenceStrategyFake(),
+          new SerializableObjectInitializationContextProviderFake()
+          );
 
       var deserializedInstance = Serializer.SerializeAndDeserialize (instance);
 
@@ -492,7 +561,35 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       Assert.That (deserializedInstance.DataManager, Is.Not.Null);
       Assert.That (deserializedInstance.EnlistedDomainObjectManager, Is.Not.Null);
       Assert.That (deserializedInstance.PersistenceStrategy, Is.Not.Null);
+      Assert.That (deserializedInstance.ObjectInitializationContextProvider, Is.Not.Null);
     }
 
+    private IDataManagementCommand SetupDeleteExpectations (IDataManager dataManagerMock, DomainObject deletedObject)
+    {
+      var initialCommandStub = MockRepository.GenerateStrictMock<IDataManagementCommand> ();
+      var actualCommandMock = MockRepository.GenerateStrictMock<IDataManagementCommand> ();
+
+      var counter = new OrderedExpectationCounter ();
+      actualCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (Enumerable.Empty<Exception> ());
+      initialCommandStub.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (actualCommandMock)).Ordered (counter);
+      actualCommandMock.Expect (mock => mock.Begin ()).Ordered (counter);
+      actualCommandMock.Expect (mock => mock.Perform ()).Ordered (counter);
+      actualCommandMock.Expect (mock => mock.End ()).Ordered (counter);
+      dataManagerMock.Expect (mock => mock.CreateDeleteCommand (deletedObject)).Return (initialCommandStub);
+      return actualCommandMock;
+    }
+
+    private IDataManagementCommand SetupDeleteExpectationsWithException (IDataManager dataManagerMock, DomainObject deletedObject, Exception exception)
+    {
+      var initialCommandStub = MockRepository.GenerateStrictMock<IDataManagementCommand> ();
+      var actualCommandMock = MockRepository.GenerateStrictMock<IDataManagementCommand> ();
+
+      var counter = new OrderedExpectationCounter ();
+      actualCommandMock.Stub (stub => stub.GetAllExceptions ()).Return (Enumerable.Empty<Exception> ());
+      initialCommandStub.Stub (stub => stub.ExpandToAllRelatedObjects ()).Return (new ExpandedCommand (actualCommandMock)).Ordered (counter);
+      actualCommandMock.Expect (mock => mock.Begin ()).Throw (exception);
+      dataManagerMock.Expect (mock => mock.CreateDeleteCommand (deletedObject)).Return (initialCommandStub);
+      return actualCommandMock;
+    }
   }
 }
