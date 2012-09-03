@@ -248,6 +248,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           .Throw (exception);
 
       var deleteCommandMock = SetupDeleteExpectations (_dataManagerMock, _domainObject1);
+      _enlistedDomainObjectManagerMock.Expect (mock => mock.DisenlistDomainObject (_domainObject1));
 
       Assert.That (_agent.CurrentInitializationContext, Is.Null);
 
@@ -257,6 +258,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       _domainObjectCreatorMock.VerifyAllExpectations ();
       _dataManagerMock.VerifyAllExpectations();
       deleteCommandMock.VerifyAllExpectations();
+      _enlistedDomainObjectManagerMock.VerifyAllExpectations();
     }
 
     [Test]

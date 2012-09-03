@@ -265,6 +265,8 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
             deleteException.Message);
         throw new ObjectCleanupException (message, objectID, deleteException, creationException);
       }
+
+      _enlistedDomainObjectManager.DisenlistDomainObject (domainObject);
     }
   }
 }

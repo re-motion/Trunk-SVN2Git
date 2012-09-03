@@ -40,14 +40,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
       throw new NotImplementedException();
     }
 
+    public bool IsEnlisted (DomainObject domainObject)
+    {
+      throw new NotImplementedException ();
+    }
+
     public bool EnlistDomainObject (DomainObject domainObject)
     {
       throw new NotImplementedException();
     }
 
-    public bool IsEnlisted (DomainObject domainObject)
+    public void DisenlistDomainObject (DomainObject domainObject)
     {
-      throw new NotImplementedException();
+      throw new NotImplementedException ();
     }
   }
 }

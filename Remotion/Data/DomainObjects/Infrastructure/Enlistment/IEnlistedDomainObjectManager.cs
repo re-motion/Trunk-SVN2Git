@@ -49,6 +49,16 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
     DomainObject GetEnlistedDomainObject (ObjectID objectID);
 
     /// <summary>
+    /// Determines whether the specified <paramref name="domainObject"/> has been enlisted via <see cref="EnlistDomainObject"/>.
+    /// </summary>
+    /// <param name="domainObject">The domain object to be checked.</param>
+    /// <returns>
+    /// <see langword="true" /> if the specified domain object has been enlisted via <see cref="EnlistDomainObject"/>; otherwise, 
+    /// <see langword="false" />.
+    /// </returns>
+    bool IsEnlisted (DomainObject domainObject);
+
+    /// <summary>
     /// Enlists the given domain object in the transaction managed by this <see cref="IEnlistedDomainObjectManager"/>.
     /// </summary>
     /// <param name="domainObject">The domain object to be enlisted.</param>
@@ -64,13 +74,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
     bool EnlistDomainObject (DomainObject domainObject);
 
     /// <summary>
-    /// Determines whether the specified <paramref name="domainObject"/> has been enlisted via <see cref="EnlistDomainObject"/>.
+    /// Disenlists the given <see cref="DomainObject"/>, throwing an exception if the object wasn't enlisted in the first place.
     /// </summary>
-    /// <param name="domainObject">The domain object to be checked.</param>
-    /// <returns>
-    /// <see langword="true" /> if the specified domain object has been enlisted via <see cref="EnlistDomainObject"/>; otherwise, 
-    /// <see langword="false" />.
-    /// </returns>
-    bool IsEnlisted (DomainObject domainObject);
+    /// <param name="domainObject">The <see cref="DomainObject"/> to be disenlisted.</param>
+    void DisenlistDomainObject (DomainObject domainObject);
   }
 }

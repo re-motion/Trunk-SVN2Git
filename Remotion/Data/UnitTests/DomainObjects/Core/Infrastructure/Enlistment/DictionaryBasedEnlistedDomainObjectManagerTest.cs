@@ -78,6 +78,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Enlistment
     }
 
     [Test]
+    public void Disenlist ()
+    {
+      _manager.EnlistDomainObject (_order);
+      Assert.That (_manager.IsEnlisted (_order), Is.True);
+
+      _manager.DisenlistDomainObject (_order);
+
+      Assert.That (_manager.IsEnlisted (_order), Is.False);
+    }
+
+    [Test]
+    public void Disenlist_NotEnlisted ()
+    {
+      Assert.That (
+          () => _manager.DisenlistDomainObject (_order),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not enlisted."));
+    }
+
+    [Test]
+    public void Disenlist_OtherReferenceEnlisted ()
+    {
+      var orderA = DomainObjectMother.GetObjectInOtherTransaction<Order> (_order.ID);
+      _manager.EnlistDomainObject (orderA);
+
+      Assert.That (
+          () => _manager.DisenlistDomainObject (_order),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "Object 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid' is not enlisted."));
+    }
+
+    [Test]
     public void GetEnlistedDomainObjects ()
     {
       _manager.EnlistDomainObject (_order);

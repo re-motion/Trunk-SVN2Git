@@ -45,6 +45,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
 
       return _enlistedObjects.GetValueOrDefault (objectID);
     }
+    
+    public bool IsEnlisted (DomainObject domainObject)
+    {
+      ArgumentUtility.CheckNotNull ("domainObject", domainObject);
+
+      return GetEnlistedDomainObject (domainObject.ID) == domainObject;
+    }
 
     public bool EnlistDomainObject (DomainObject domainObject)
     {
@@ -67,11 +74,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure.Enlistment
       }
     }
 
-    public bool IsEnlisted (DomainObject domainObject)
+    public void DisenlistDomainObject (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      return GetEnlistedDomainObject (domainObject.ID) == domainObject;
+      if (!IsEnlisted (domainObject))
+        throw new InvalidOperationException (string.Format ("Object '{0}' is not enlisted.", domainObject.ID));
+
+      _enlistedObjects.Remove (domainObject.ID);
     }
   }
 }
