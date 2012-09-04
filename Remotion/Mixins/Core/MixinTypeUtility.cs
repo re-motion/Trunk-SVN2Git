@@ -16,10 +16,11 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Utilities;
-using Remotion.ServiceLocation;
+using Remotion.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -38,6 +39,7 @@ namespace Remotion.Mixins
     /// </returns>
     public static bool IsGeneratedConcreteMixedType (Type type)
     {
+      // TODO 5025: When GetUnderlyingTargetType is cached, use GetUnderlyingTargetType (type) != type
       ArgumentUtility.CheckNotNull ("type", type);
       return typeof (IMixinTarget).IsAssignableFrom (type);
     }
@@ -55,22 +57,22 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("type", type);
       return IsGeneratedConcreteMixedType (type)
           || typeof (IGeneratedMixinType).IsAssignableFrom (type)
-              || typeof (IGeneratedNextCallProxyType).IsAssignableFrom (type);
+          || typeof (IGeneratedNextCallProxyType).IsAssignableFrom (type);
     }
 
     /// <summary>
     /// Gets the concrete type for a given <paramref name="targetOrConcreteType"/> which contains all mixins currently configured for the type.
     /// </summary>
-    /// <param name="targetOrConcreteType">The base type for which to retrieve a concrete type, or a concrete type.</param>
-    /// <returns>The <paramref name="targetOrConcreteType"/> itself if there are no mixins configured for the type or if the type itself is a generated type;
-    /// otherwise, a generated type containing all the mixins currently configured for <paramref name="targetOrConcreteType"/>.</returns>
+    /// <param name="targetOrConcreteType">The target type for which to retrieve a concrete type, or a concrete type.</param>
+    /// <returns>
+    /// The <paramref name="targetOrConcreteType"/> itself if there are no mixins configured for the type or if the type itself is a generated type; 
+    /// otherwise, a generated type containing all the mixins currently configured for <paramref name="targetOrConcreteType"/>.
+    /// </returns>
     public static Type GetConcreteMixedType (Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
-      if (IsGeneratedConcreteMixedType (targetOrConcreteType))
-        return targetOrConcreteType;
-      else
-        return TypeFactory.GetConcreteType (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
+      // Assuming that TypeFactory can deal with target types and concrete types (this is proven by unit test GetConcreteMixedType_ConcreteType).
+      return TypeFactory.GetConcreteType (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
     }
 
     /// <summary>
@@ -82,6 +84,8 @@ namespace Remotion.Mixins
     public static Type GetUnderlyingTargetType (Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+      // TODO 5025: Move GetClassContextFromConcreteType to this class, call it GetClassContextForGeneratedConcreteType. Cache its results (null or ClassContext).
+      // TODO 5025: Use that cache for IsGeneratedConcreteType (!= null) and GetUnderlyingTargetType (!= null ? .Type). Measure caching the results of this.
       if (IsGeneratedConcreteMixedType (targetOrConcreteType))
         return MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType).Type;
       else
@@ -99,6 +103,13 @@ namespace Remotion.Mixins
     /// True if the type returned by <see cref="GetConcreteMixedType"/> for <paramref name="targetOrConcreteType"/> is the same as, derived from, or an
     /// implementation of <paramref name="baseOrInterface"/>; otherwise, false.
     /// </returns>
+    /// <remarks>
+    /// <note type="caution">
+    /// This method requires the concrete mixed type, so it may invoke the code generation for <paramref name="targetOrConcreteType"/> 
+    /// (if it is not already a concrete type) unless code has already been generated for that type.
+    /// This could cause a performance problem when called in a tight loop with types for which no code has been generated so far.
+    /// </note>
+    /// </remarks>
     public static bool IsAssignableFrom (Type baseOrInterface, Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("baseOrInterface", baseOrInterface);
@@ -119,7 +130,7 @@ namespace Remotion.Mixins
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
       return classContext != null && classContext.Mixins.Count > 0;
     }
 
@@ -132,8 +143,10 @@ namespace Remotion.Mixins
     /// True if the specified type is a generated type containing a mixin of the given <paramref name="mixinType"/> or a base type currently
     /// configured with such a mixin; otherwise, false.
     /// </returns>
-    /// <remarks>This method checks for the exact mixin type, it does not take assignability or generic type instantiations into account. If the
-    /// check should be broadened to include these properties, <see cref="GetAscribableMixinType"/> should be used.</remarks>
+    /// <remarks>
+    /// This method checks for the exact mixin type, it does not take assignability or generic type instantiations into account. If the
+    /// check should be broadened to include these properties, <see cref="GetAscribableMixinType"/> should be used.
+    /// </remarks>
     public static bool HasMixin (Type targetOrConcreteType, Type mixinType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
@@ -145,25 +158,27 @@ namespace Remotion.Mixins
 
     /// <summary>
     /// Determines whether the specified <paramref name="targetOrConcreteType"/> is associated with a mixin that can be ascribed to the given
-    /// <paramref name="mixinType"/> and returns the respective mixin type.
+    /// <paramref name="mixinType"/>, and returns the respective mixin type.
     /// </summary>
     /// <param name="targetOrConcreteType">The type to check.</param>
     /// <param name="mixinType">The mixin type to check for.</param>
     /// <returns>
-    /// The exact mixin type if the specified type is a generated type containing a mixin that can be ascribed to <paramref name="mixinType"/> or a
-    /// base type currently configured with such a mixin; otherwise <see langword="null"/>.
+    /// The mixin type if the specified type is a generated type containing a mixin that can be ascribed to <paramref name="mixinType"/> or a
+    /// target type currently configured with such a mixin; otherwise <see langword="null"/>.
     /// </returns>
+    /// <remarks>
+    /// <para>
+    /// For performance reasons, if <paramref name="targetOrConcreteType"/> is a target type, this method returns only the configured mixin type 
+    /// (as would be returned by <see cref="GetMixinTypes"/>), not the exact mixin type (as would be returned by <see cref="GetMixinTypesExact"/>).
+    /// </para>
+    /// </remarks>
     public static Type GetAscribableMixinType (Type targetOrConcreteType, Type mixinType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      foreach (Type configuredMixinType in GetMixinTypes (targetOrConcreteType))
-      {
-        if (Remotion.Utilities.ReflectionUtility.CanAscribe (configuredMixinType, mixinType))
-          return configuredMixinType;
-      }
-      return null;
+      return GetMixinTypes (targetOrConcreteType)
+          .FirstOrDefault (configuredMixinType => Remotion.Utilities.ReflectionUtility.CanAscribe (configuredMixinType, mixinType));
     }
 
     /// <summary>
@@ -173,8 +188,8 @@ namespace Remotion.Mixins
     /// <param name="targetOrConcreteType">The type to check.</param>
     /// <param name="mixinType">The mixin type to check for.</param>
     /// <returns>
-    /// True, if the specified type is a generated type containing a mixin that can be ascribed to <paramref name="mixinType"/> or a
-    /// base type currently configured with such a mixin; otherwise false.
+    /// <see langword="true" />, if the specified type is a generated type containing a mixin that can be ascribed to <paramref name="mixinType"/> or 
+    /// a base type currently configured with such a mixin; otherwise <see langword="false" />.
     /// </returns>
     public static bool HasAscribableMixin (Type targetOrConcreteType, Type mixinType)
     {
@@ -194,12 +209,11 @@ namespace Remotion.Mixins
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
-      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
-      if (classContext != null)
-      {
-        foreach (MixinContext mixinContext in classContext.Mixins)
-          yield return mixinContext.MixinType;
-      }
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
+      if (classContext == null)
+        return Enumerable.Empty<Type>();
+
+      return classContext.Mixins.Select (m => m.MixinType);
     }
 
     /// <summary>
@@ -210,14 +224,25 @@ namespace Remotion.Mixins
     /// <returns>The mixins included in <paramref name="targetOrConcreteType"/> if it is a generated type; otherwise the mixins currently configured for
     /// <paramref name="targetOrConcreteType"/>.</returns>
     /// <remarks>
+    /// <para>
     /// This method returns the mixin types exactly as they are held in the <see cref="IMixinTarget.Mixins"/> property by the concrete type 
     /// corresponding to <paramref name="targetOrConcreteType"/> (or <paramref name="targetOrConcreteType"/> itself if it is a generated concrete 
-    /// type). To retrieve them, this method might invoke the code generation for <paramref name="targetOrConcreteType"/> (if it is not already a
-    /// concrete type). In such cases, <see cref="GetMixinTypes"/> might be the faster variant.
+    /// type).
+    /// </para>
+    /// <para>
+    /// <note type="caution">
+    /// This method requires the concrete mixed type, so it may invoke the code generation for <paramref name="targetOrConcreteType"/> 
+    /// (if it is not already a concrete type) unless code has already been generated for that type.
+    /// This could cause a performance problem when called in a tight loop with types for which no code has been generated so far.
+    /// Consider using <see cref="GetMixinTypes"/> for a faster variant.
+    /// </note>
+    /// </para>
     /// </remarks>
     public static Type[] GetMixinTypesExact (Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
+
+      // TODO 5025: Cache results.
 
       var concreteType = GetConcreteMixedType (targetOrConcreteType);
       var types = MixinReflector.GetOrderedMixinTypesFromConcreteType (concreteType);
@@ -231,12 +256,17 @@ namespace Remotion.Mixins
     /// <param name="args">The arguments to be passed to the constructor.</param>
     /// <returns>An instance of the type returned by <see cref="GetConcreteMixedType"/> for <paramref name="type"/> created via a constructor taking the
     /// specified <paramref name="args"/>.</returns>
+    /// <remarks>
+    /// This is just a wrapper around 
+    /// <see cref="ObjectFactory.Create(bool,System.Type,Remotion.Reflection.ParamList,Remotion.Mixins.GenerationPolicy,object[])"/>
+    /// with a Reflection-like interface.
+    /// </remarks>
     public static object CreateInstance (Type type, params object[] args)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return Activator.CreateInstance (GetConcreteMixedType (type), args);
+      return ObjectFactory.Create (false, type, ParamList.CreateDynamic (args), GenerationPolicy.GenerateOnlyIfConfigured);
     }
   }
 }

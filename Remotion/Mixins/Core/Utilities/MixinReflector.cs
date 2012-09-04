@@ -23,6 +23,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities
 {
+  /// <summary>
+  /// Performs common reflection operations on mixins and mixed types. The results of these operations are not cached.
+  /// </summary>
   public class MixinReflector
   {
     public enum InitializationMode { Construction, Deserialization }

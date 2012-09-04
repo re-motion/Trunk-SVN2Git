@@ -110,21 +110,27 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    public void GetConcreteTypeMixedTypes ()
+    public void GetConcreteMixedType_TargetTypes ()
     {
-      Assert.That (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1)), Is.SameAs (TypeFactory.GetConcreteType (typeof (BaseType1))));
-      Assert.That (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType2)), Is.SameAs (TypeFactory.GetConcreteType (typeof (BaseType2))));
+      var concreteMixedType1 = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
+      Assert.That (concreteMixedType1, Is.SameAs (TypeFactory.GetConcreteType (typeof (BaseType1))));
+
+      var concreteMixedType2 = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType2));
+      Assert.That (concreteMixedType2, Is.SameAs (TypeFactory.GetConcreteType (typeof (BaseType2))));
+
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
-        Assert.That (MixinTypeUtility.GetConcreteMixedType (typeof (NullTarget)), Is.Not.SameAs (typeof (NullTarget)));
-        Assert.That (MixinTypeUtility.GetConcreteMixedType (typeof (NullTarget)), Is.SameAs (TypeFactory.GetConcreteType (typeof (NullTarget))));
+        var concreteMixedType3 = MixinTypeUtility.GetConcreteMixedType (typeof (NullTarget));
+        Assert.That (concreteMixedType3, Is.Not.SameAs (typeof (NullTarget)));
+        Assert.That (concreteMixedType3, Is.SameAs (TypeFactory.GetConcreteType (typeof (NullTarget))));
       }
     }
 
     [Test]
-    public void GetConcreteTypeConcreteType ()
+    public void GetConcreteMixedType_ConcreteType ()
     {
-      Assert.That (MixinTypeUtility.GetConcreteMixedType (TypeFactory.GetConcreteType (typeof (BaseType1))), Is.SameAs (TypeFactory.GetConcreteType (typeof (BaseType1))));
+      var concreteMixedType = MixinTypeUtility.GetConcreteMixedType (TypeFactory.GetConcreteType (typeof (BaseType1)));
+      Assert.That (concreteMixedType, Is.SameAs (TypeFactory.GetConcreteType (typeof (BaseType1))));
     }
 
     [Test]
@@ -450,7 +456,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public void CreateInstanceUnmixedTypes ()
     {
       Assert.That (MixinTypeUtility.CreateInstance (typeof (object)).GetType (), Is.SameAs (typeof (object)));
-      Assert.That (MixinTypeUtility.CreateInstance (typeof (int)).GetType (), Is.SameAs (typeof (int)));
+      Assert.That (MixinTypeUtility.CreateInstance (typeof (List<int>)).GetType (), Is.SameAs (typeof (List<int>)));
     }
 
     [Test]
@@ -463,8 +469,8 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void CreateInstanceConcreteType()
     {
-      Assert.That (
-                  MixinTypeUtility.CreateInstance (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1))).GetType (), Is.SameAs (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1))));
+      var concreteMixedType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
+      Assert.That (MixinTypeUtility.CreateInstance (concreteMixedType).GetType (), Is.SameAs (concreteMixedType));
     }
 
     [Test]
