@@ -93,7 +93,7 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    public void GetConcreteTypeStandardType ()
+    public void GetConcreteMixedType_StandardType ()
     {
       Assert.That (MixinTypeUtility.GetConcreteMixedType (typeof (object)), Is.SameAs (typeof (object)));
       Assert.That (MixinTypeUtility.GetConcreteMixedType (typeof (int)), Is.SameAs (typeof (int)));
@@ -104,7 +104,7 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     [ExpectedException (typeof (ArgumentException))]
     [Ignore ("TODO 1370: Throw.")]
-    public void GetConcreteTypeOpenGeneric ()
+    public void GetConcreteMixedType_OpenGeneric ()
     {
       MixinTypeUtility.GetConcreteMixedType (typeof (List<>));
     }
