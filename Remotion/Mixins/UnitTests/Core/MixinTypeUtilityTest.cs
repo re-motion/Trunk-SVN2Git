@@ -453,28 +453,28 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    public void CreateInstanceUnmixedTypes ()
+    public void CreateInstance_UnmixedTypes ()
     {
       Assert.That (MixinTypeUtility.CreateInstance (typeof (object)).GetType (), Is.SameAs (typeof (object)));
       Assert.That (MixinTypeUtility.CreateInstance (typeof (List<int>)).GetType (), Is.SameAs (typeof (List<int>)));
     }
 
     [Test]
-    public void CreateInstanceMixedTypes ()
+    public void CreateInstance_MixedTypes ()
     {
       Assert.That (MixinTypeUtility.CreateInstance (typeof (BaseType1)).GetType (), Is.Not.SameAs (typeof (BaseType1)));
       Assert.That (MixinTypeUtility.CreateInstance (typeof (BaseType1)).GetType (), Is.SameAs (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1))));
     }
 
     [Test]
-    public void CreateInstanceConcreteType()
+    public void CreateInstance_ConcreteType()
     {
       var concreteMixedType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
       Assert.That (MixinTypeUtility.CreateInstance (concreteMixedType).GetType (), Is.SameAs (concreteMixedType));
     }
 
     [Test]
-    public void CreateInstanceWithCtorArgs ()
+    public void CreateInstance_WithCtorArgs ()
     {
       var instance = (List<int>) MixinTypeUtility.CreateInstance (typeof (List<int>), 51);
       Assert.That (instance.Capacity, Is.EqualTo (51));
