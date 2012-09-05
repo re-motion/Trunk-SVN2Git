@@ -21,19 +21,22 @@ using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using Wrapper = Remotion.Collections.LazyLockingCachingAdapter<string, object>.Wrapper;
 
 namespace Remotion.UnitTests.Collections
 {
+  using InnerFactory = Func<ICache<string, DoubleCheckedLockingContainer<Wrapper>>, DoubleCheckedLockingContainer<Wrapper>>;
+
   [TestFixture]
   public class LazyLockingCachingAdapterTest
   {
-    private ICache<string, DoubleCheckedLockingContainer<object>> _innerCacheMock;
+    private ICache<string, DoubleCheckedLockingContainer<Wrapper>> _innerCacheMock;
     private LazyLockingCachingAdapter<string, object> _cachingAdapter;
 
     [SetUp]
     public void SetUp ()
     {
-      _innerCacheMock = MockRepository.GenerateStrictMock<ICache<string, DoubleCheckedLockingContainer<object>>> ();
+      _innerCacheMock = MockRepository.GenerateStrictMock<ICache<string, DoubleCheckedLockingContainer<Wrapper>>> ();
       _cachingAdapter = new LazyLockingCachingAdapter<string, object> (_innerCacheMock);
     }
 
@@ -44,18 +47,65 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void GetOrCreateValue ()
+    public void GetOrCreateValue_TryGetValueIsFalse ()
     {
       var value = new object ();
       var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
 
-      ExpectSynchronizedDelegation (
-          store => store.GetOrCreateValue ("key", key => key + "123"),
-          store => store.GetOrCreateValue (
+      _innerCacheMock
+          .Expect (mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (null).Dummy))
+          .Return (false)
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+      _innerCacheMock
+          .Expect (mock => ((InnerFactory) (store => store.GetOrCreateValue (
               Arg.Is ("key"),
-              Arg<Func<string, DoubleCheckedLockingContainer<object>>>.Matches (f => f ("Test").Value.Equals ("Test123"))),
-          doubleCheckedLockingContainer,
-          value);
+              Arg<Func<string, DoubleCheckedLockingContainer<Wrapper>>>.Matches (f => f ("Test").Value.Value.Equals ("Test123"))))) (mock))
+          .Return (doubleCheckedLockingContainer)
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+
+      var actualResult = _cachingAdapter.GetOrCreateValue ("key", key => key + "123");
+
+      _innerCacheMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (value));
+    }
+
+    [Test]
+    public void GetOrCreateValue_TryGetValueIsTrue ()
+    {
+      var value = new object ();
+      var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
+
+      _innerCacheMock
+          .Expect (
+              mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (doubleCheckedLockingContainer).Dummy))
+          .Return (true)
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+
+      var actualResult = _cachingAdapter.GetOrCreateValue ("key", key => key + "123");
+
+      _innerCacheMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (value));
+    }
+
+    [Test]
+    public void GetOrCreateValue_TwiceWithNullValue_DoesNotEvalueValueFactoryTwice ()
+    {
+      var adapter = new LazyLockingCachingAdapter<string, object>(new Cache<string, DoubleCheckedLockingContainer<Wrapper>>());
+
+      bool wasCalled = false;
+
+      var value = adapter.GetOrCreateValue (
+          "test",
+          s =>
+          {
+            Assert.That (wasCalled, Is.False);
+            wasCalled = true;
+            return null;
+          });
+      Assert.That (value, Is.Null);
+
+      value = adapter.GetOrCreateValue ("test", s => { throw new InvalidOperationException ("Must not be called."); });
+      Assert.That (value, Is.Null);
     }
 
     [Test]
@@ -64,14 +114,17 @@ namespace Remotion.UnitTests.Collections
       var value = new object ();
       var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
 
-      object result = null;
-      ExpectSynchronizedDelegation (
-          store => store.TryGetValue ("key", out result),
-          store => store.TryGetValue (
-              Arg.Is ("key"),
-              out Arg<DoubleCheckedLockingContainer<object>>.Out (doubleCheckedLockingContainer).Dummy),
-          true,
-          true);
+      _innerCacheMock
+          .Expect (
+              mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (doubleCheckedLockingContainer).Dummy))
+          .Return (true)
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+
+      object result;
+      var actualResult = _cachingAdapter.TryGetValue ("key", out result);
+
+      _innerCacheMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (true));
 
       Assert.That (result, Is.SameAs (value));
     }
@@ -79,14 +132,16 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void TryGetValue_NoValueFound ()
     {
-      object result = null;
-      ExpectSynchronizedDelegation (
-          store => store.TryGetValue ("key", out result),
-          store => store.TryGetValue (
-              Arg.Is ("key"),
-              out Arg<DoubleCheckedLockingContainer<object>>.Out (null).Dummy),
-          false,
-          false);
+      _innerCacheMock
+          .Expect (mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (null).Dummy))
+          .Return (false)
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+
+      object result;
+      var actualResult = _cachingAdapter.TryGetValue ("key", out result);
+
+      _innerCacheMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (false));
 
       Assert.That (result, Is.Null);
     }
@@ -94,9 +149,13 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void Clear ()
     {
-      ExpectSynchronizedDelegation (
-          store => store.Clear (),
-          store => store.Clear ());
+      _innerCacheMock
+          .Expect (store => store.Clear ())
+          .WhenCalled (mi => CheckInnerCacheIsProtected ());
+
+      _cachingAdapter.Clear ();
+
+      _innerCacheMock.VerifyAllExpectations ();
     }
 
     private void CheckInnerCacheIsProtected ()
@@ -111,54 +170,20 @@ namespace Remotion.UnitTests.Collections
       LockingCacheDecoratorTestHelper.CheckLockIsNotHeld (lockingCacheDecorator);
     }
 
-    private DoubleCheckedLockingContainer<object> CreateContainerThatChecksForNotProtected (object value)
+    private DoubleCheckedLockingContainer<Wrapper> CreateContainerThatChecksForNotProtected (object value)
     {
-      return new DoubleCheckedLockingContainer<object> (() =>
+      return new DoubleCheckedLockingContainer<Wrapper> (() =>
       {
         CheckInnerCacheIsNotProtected ();
-        return value;
+        return new Wrapper (value);
       });
     }
 
-    private LockingCacheDecorator<string, DoubleCheckedLockingContainer<object>> GetLockingCacheDecorator (
+    private LockingCacheDecorator<string, DoubleCheckedLockingContainer<Wrapper>> GetLockingCacheDecorator (
         LazyLockingCachingAdapter<string, object> lazyLockingCacheAdapter)
     {
-      return (LockingCacheDecorator<string, DoubleCheckedLockingContainer<object>>)
+      return (LockingCacheDecorator<string, DoubleCheckedLockingContainer<Wrapper>>)
           PrivateInvoke.GetNonPublicField (lazyLockingCacheAdapter, "_innerCache");
     }
-
-    private void ExpectSynchronizedDelegation<TResultOfExpectation, TResultOfMethod> (
-        Func<ICache<string, object>, TResultOfMethod> action,
-        Func<ICache<string, DoubleCheckedLockingContainer<object>>, TResultOfExpectation> expectedInnerAction,
-        TResultOfExpectation innerResult,
-        TResultOfMethod expectedResult)
-    {
-      _innerCacheMock.BackToRecord ();
-      _innerCacheMock
-          .Expect (mock => expectedInnerAction (mock))
-          .Return (innerResult)
-          .WhenCalled (mi => CheckInnerCacheIsProtected ());
-      _innerCacheMock.Replay ();
-
-      var actualResult = action (_cachingAdapter);
-
-      _innerCacheMock.VerifyAllExpectations ();
-      Assert.That (actualResult, Is.EqualTo (expectedResult));
-    }
-
-    private void ExpectSynchronizedDelegation (
-        Action<ICache<string, object>> action,
-        Action<ICache<string, DoubleCheckedLockingContainer<object>>> expectedInnerAction)
-    {
-      _innerCacheMock
-          .Expect (expectedInnerAction)
-          .WhenCalled (mi => CheckInnerCacheIsProtected ());
-      _innerCacheMock.Replay ();
-
-      action (_cachingAdapter);
-
-      _innerCacheMock.VerifyAllExpectations ();
-    }
-
   }
 }

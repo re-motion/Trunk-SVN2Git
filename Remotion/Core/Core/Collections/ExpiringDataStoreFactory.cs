@@ -90,11 +90,14 @@ namespace Remotion.Collections
     /// delegates do not take a long time, consider using <see cref="CreateWithLocking{TKey,TValue,TExpirationInfo,TScanInfo}"/> instead to reduce the number of locks used.
     /// </remarks>
     public static LazyLockingDataStoreAdapter<TKey, TValue> CreateWithLazyLocking<TKey, TValue, TExpirationInfo, TScanInfo> (
-        IExpirationPolicy<DoubleCheckedLockingContainer<TValue>, TExpirationInfo, TScanInfo> policy, IEqualityComparer<TKey> comparer) where TValue : class
+        IExpirationPolicy<DoubleCheckedLockingContainer<LazyLockingDataStoreAdapter<TKey, TValue>.Wrapper>, TExpirationInfo, TScanInfo> policy,
+        IEqualityComparer<TKey> comparer) 
+        where TValue: class
     {
-      return
-          new LazyLockingDataStoreAdapter<TKey, TValue> (
-              new ExpiringDataStore<TKey, DoubleCheckedLockingContainer<TValue>, TExpirationInfo, TScanInfo> (policy, comparer));
+      return new LazyLockingDataStoreAdapter<TKey, TValue> (
+          new ExpiringDataStore<TKey, DoubleCheckedLockingContainer<LazyLockingDataStoreAdapter<TKey, TValue>.Wrapper>, TExpirationInfo, TScanInfo> (
+              policy, 
+              comparer));
     }
   }
 }

@@ -20,20 +20,25 @@ using System;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
+
+using Wrapper = Remotion.Collections.LazyLockingDataStoreAdapter<string, object>.Wrapper;
 
 namespace Remotion.UnitTests.Collections
 {
+  using InnerFactory = Func<IDataStore<string, DoubleCheckedLockingContainer<Wrapper>>, DoubleCheckedLockingContainer<Wrapper>>;
+
   [TestFixture]
   public class LazyLockingDataStoreAdapterTest
   {
-    private IDataStore<string, DoubleCheckedLockingContainer<object>> _innerDataStoreMock;
+    private IDataStore<string, DoubleCheckedLockingContainer<Wrapper>> _innerDataStoreMock;
     private LazyLockingDataStoreAdapter<string, object> _store;
 
     [SetUp]
     public void SetUp ()
     {
-      _innerDataStoreMock = MockRepository.GenerateStrictMock<IDataStore<string, DoubleCheckedLockingContainer<object>>>();
+      _innerDataStoreMock = MockRepository.GenerateStrictMock<IDataStore<string, DoubleCheckedLockingContainer<Wrapper>>>();
       _store = new LazyLockingDataStoreAdapter<string, object> (_innerDataStoreMock);
     }
 
@@ -44,53 +49,58 @@ namespace Remotion.UnitTests.Collections
     }
 
     [Test]
-    public void ContainsKey_True ()
+    public void ContainsKey ()
     {
-      ExpectSynchronizedDelegation (
-          store => store.ContainsKey ("test"), 
-          store => store.ContainsKey ("test"), 
-          true,
-          true);
+      var result = BooleanObjectMother.GetRandomBoolean();
+      _innerDataStoreMock
+          .Expect (mock => mock.ContainsKey ("test"))
+          .Return (result)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
 
-      ExpectSynchronizedDelegation (
-          store => store.ContainsKey ("test"),
-          store => store.ContainsKey ("test"),
-          false,
-          false);
+      var actualResult = _store.ContainsKey ("test");
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (result));
     }
 
     [Test]
     public void Add ()
     {
       var value = new object ();
+      _innerDataStoreMock
+          .Expect (store => store.Add (Arg.Is ("key"), Arg<DoubleCheckedLockingContainer<Wrapper>>.Matches (c => c.Value.Value == value)))
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected ());
 
-      ExpectSynchronizedDelegation (
-          store => store.Add ("key", value),
-          store => store.Add (Arg.Is ("key"), Arg<DoubleCheckedLockingContainer<object>>.Matches (c => c.Value == value)));
+      _store.Add ("key", value);
+
+      _innerDataStoreMock.VerifyAllExpectations ();
     }
 
     [Test]
     public void Remove ()
     {
-      ExpectSynchronizedDelegation (
-          store => store.Remove ("key"),
-          store => store.Remove ("key"),
-          true,
-          true);
+      bool result = BooleanObjectMother.GetRandomBoolean();
+      _innerDataStoreMock
+          .Expect (mock => mock.Remove ("key"))
+          .Return (result)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
 
-      ExpectSynchronizedDelegation (
-          store => store.Remove ("key"),
-          store => store.Remove ("key"),
-          false,
-          false);
+      var actualResult = _store.Remove ("key");
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (result));
     }
 
     [Test]
     public void Clear ()
     {
-      ExpectSynchronizedDelegation (
-          store => store.Clear(),
-          store => store.Clear());
+      _innerDataStoreMock
+          .Expect (store => store.Clear())
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected ());
+
+      _store.Clear();
+
+      _innerDataStoreMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -98,22 +108,29 @@ namespace Remotion.UnitTests.Collections
     {
       var value = new object();
       var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
+      
+      _innerDataStoreMock
+          .Expect (mock => ((InnerFactory) (store => store["test"])) (mock))
+          .Return (doubleCheckedLockingContainer)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
 
-      ExpectSynchronizedDelegation (
-          store => store["test"],
-          store => store["test"],
-          doubleCheckedLockingContainer,
-          value);
+      var actualResult = _store["test"];
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (value));
     }
 
     [Test]
     public void SetValue ()
     {
       var value = new object ();
+      _innerDataStoreMock
+          .Expect (store => store[Arg.Is ("key")] = Arg<DoubleCheckedLockingContainer<Wrapper>>.Matches (c => c.Value.Value == value))
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected ());
 
-      ExpectSynchronizedDelegation (
-          store => store["key"] = value,
-          store => store[Arg.Is ("key")] = Arg<DoubleCheckedLockingContainer<object>>.Matches (c => c.Value == value));
+      _store["key"] = value;
+
+      _innerDataStoreMock.VerifyAllExpectations ();
     }
 
     [Test]
@@ -122,21 +139,29 @@ namespace Remotion.UnitTests.Collections
       var value = new object ();
       var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
 
-      ExpectSynchronizedDelegation (
-          store => store.GetValueOrDefault ("test"),
-          store => store.GetValueOrDefault ("test"),
-          doubleCheckedLockingContainer,
-          value);
+      _innerDataStoreMock
+          .Expect (mock => ((InnerFactory) (store => store.GetValueOrDefault ("test"))) (mock))
+          .Return (doubleCheckedLockingContainer)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
+
+      var actualResult = _store.GetValueOrDefault ("test");
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (value));
     }
 
     [Test]
     public void GetValueOrDefault_NoValueFound ()
     {
-      ExpectSynchronizedDelegation (
-          store => store.GetValueOrDefault ("test"),
-          store => store.GetValueOrDefault ("test"),
-          null,
-          null);
+      _innerDataStoreMock
+          .Expect (mock => ((InnerFactory) (store => store.GetValueOrDefault ("test"))) (mock))
+          .Return (null)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
+
+      var actualResult = _store.GetValueOrDefault ("test");
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (null));
     }
 
     [Test]
@@ -145,14 +170,16 @@ namespace Remotion.UnitTests.Collections
       var value = new object ();
       var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
 
-      object result = null;
-      ExpectSynchronizedDelegation (
-          store => store.TryGetValue ("key", out result),
-          store => store.TryGetValue (
-              Arg.Is ("key"),
-              out Arg<DoubleCheckedLockingContainer<object>>.Out (doubleCheckedLockingContainer).Dummy),
-          true,
-          true);
+      _innerDataStoreMock
+          .Expect (mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (doubleCheckedLockingContainer).Dummy))
+          .Return (true)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
+
+      object result;
+      var actualResult = _store.TryGetValue ("key", out result);
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (true));
 
       Assert.That (result, Is.SameAs (value));
     }
@@ -160,31 +187,80 @@ namespace Remotion.UnitTests.Collections
     [Test]
     public void TryGetValue_NoValueFound ()
     {
-      object result = null;
-      ExpectSynchronizedDelegation (
-          store => store.TryGetValue ("key", out result),
-          store => store.TryGetValue (
-              Arg.Is ("key"),
-              out Arg<DoubleCheckedLockingContainer<object>>.Out (null).Dummy),
-          false,
-          false);
+      _innerDataStoreMock
+          .Expect (mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (null).Dummy))
+          .Return (false)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
+
+      object result;
+      var actualResult = _store.TryGetValue ("key", out result);
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (false));
 
       Assert.That (result, Is.Null);
     }
 
     [Test]
-    public void GetOrCreateValue ()
+    public void GetOrCreateValue_TryGetValueIsFalse ()
     {
       var value = new object ();
       var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
 
-      ExpectSynchronizedDelegation (
-          store => store.GetOrCreateValue ("key", key => key + "123"),
-          store => store.GetOrCreateValue (
+      _innerDataStoreMock
+          .Expect (mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (null).Dummy))
+          .Return (false)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
+      _innerDataStoreMock
+          .Expect (mock => ((InnerFactory) (store => store.GetOrCreateValue (
               Arg.Is ("key"),
-              Arg<Func<string, DoubleCheckedLockingContainer<object>>>.Matches (f => f ("Test").Value.Equals ("Test123"))),
-          doubleCheckedLockingContainer,
-          value);
+              Arg<Func<string, DoubleCheckedLockingContainer<Wrapper>>>.Matches (f => f ("Test").Value.Value.Equals ("Test123"))))) (mock))
+          .Return (doubleCheckedLockingContainer)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected ());
+
+      var actualResult = _store.GetOrCreateValue ("key", key => key + "123");
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (value));
+    }
+
+    [Test]
+    public void GetOrCreateValue_TryGetValueIsTrue ()
+    {
+      var value = new object ();
+      var doubleCheckedLockingContainer = CreateContainerThatChecksForNotProtected (value);
+
+      _innerDataStoreMock
+          .Expect (
+              mock => mock.TryGetValue (Arg.Is ("key"), out Arg<DoubleCheckedLockingContainer<Wrapper>>.Out (doubleCheckedLockingContainer).Dummy))
+          .Return (true)
+          .WhenCalled (mi => CheckInnerDataStoreIsProtected ());
+
+      var actualResult = _store.GetOrCreateValue ("key", key => key + "123");
+
+      _innerDataStoreMock.VerifyAllExpectations ();
+      Assert.That (actualResult, Is.EqualTo (value));
+    }
+
+    [Test]
+    public void GetOrCreateValue_TwiceWithNullValue_DoesNotEvalueValueFactoryTwice ()
+    {
+      var adapter = new LazyLockingDataStoreAdapter<string, object> (new SimpleDataStore<string, DoubleCheckedLockingContainer<Wrapper>>());
+
+      bool wasCalled = false;
+
+      var value = adapter.GetOrCreateValue (
+          "test",
+          s =>
+          {
+            Assert.That (wasCalled, Is.False);
+            wasCalled = true;
+            return null;
+          });
+      Assert.That (value, Is.Null);
+
+      value = adapter.GetOrCreateValue ("test", s => { throw new InvalidOperationException ("Must not be called."); });
+      Assert.That (value, Is.Null);
     }
 
     private void CheckInnerDataStoreIsProtected ()
@@ -199,53 +275,20 @@ namespace Remotion.UnitTests.Collections
       LockingDataStoreDecoratorTestHelper.CheckLockIsNotHeld (lockingDataStoreDecorator);
     }
 
-    private DoubleCheckedLockingContainer<object> CreateContainerThatChecksForNotProtected (object value)
+    private DoubleCheckedLockingContainer<Wrapper> CreateContainerThatChecksForNotProtected (object value)
     {
-      return new DoubleCheckedLockingContainer<object> (() =>
+      return new DoubleCheckedLockingContainer<Wrapper> (() =>
       {
         CheckInnerDataStoreIsNotProtected();
-        return value;
+        return new Wrapper (value);
       });
     }
 
-    private LockingDataStoreDecorator<string, DoubleCheckedLockingContainer<object>> GetLockingDataStoreDecorator (
+    private LockingDataStoreDecorator<string, DoubleCheckedLockingContainer<Wrapper>> GetLockingDataStoreDecorator (
         LazyLockingDataStoreAdapter<string, object> lazyLockingDataStoreAdapter)
     {
-      return (LockingDataStoreDecorator<string, DoubleCheckedLockingContainer<object>>) 
+      return (LockingDataStoreDecorator<string, DoubleCheckedLockingContainer<Wrapper>>) 
           PrivateInvoke.GetNonPublicField (lazyLockingDataStoreAdapter, "_innerDataStore");
-    }
-
-    private void ExpectSynchronizedDelegation<TResultOfExpectation, TResultOfMethod> (
-        Func<IDataStore<string, object>, TResultOfMethod> action,
-        Func<IDataStore<string, DoubleCheckedLockingContainer<object>>, TResultOfExpectation> expectedInnerAction,
-        TResultOfExpectation innerResult,
-        TResultOfMethod expectedResult)
-    {
-      _innerDataStoreMock.BackToRecord();
-      _innerDataStoreMock
-          .Expect (mock => expectedInnerAction (mock))
-          .Return (innerResult)
-          .WhenCalled (mi => CheckInnerDataStoreIsProtected());
-      _innerDataStoreMock.Replay ();
-
-      var actualResult = action (_store);
-
-      _innerDataStoreMock.VerifyAllExpectations ();
-      Assert.That (actualResult, Is.EqualTo (expectedResult));
-    }
-
-    private void ExpectSynchronizedDelegation (
-        Action<IDataStore<string, object>> action, 
-        Action<IDataStore<string, DoubleCheckedLockingContainer<object>>> expectedInnerAction)
-    {
-      _innerDataStoreMock
-          .Expect (expectedInnerAction)
-          .WhenCalled (mi => CheckInnerDataStoreIsProtected ());
-      _innerDataStoreMock.Replay ();
-
-      action (_store);
-
-      _innerDataStoreMock.VerifyAllExpectations ();
     }
   }
 }

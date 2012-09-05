@@ -48,7 +48,7 @@ namespace Remotion.UnitTests.Collections
       var result = CacheFactory.Create<string, int> (_comparer);
 
       Assert.That (result, Is.TypeOf (typeof (Cache<string, int>)));
-      var innerCache = PrivateInvoke.GetNonPublicField (result, "_cache");
+      var innerCache = PrivateInvoke.GetNonPublicField (result, "_dataStore");
       Assert.That (innerCache, Is.TypeOf (typeof (SimpleDataStore<string, int>)));
       Assert.That (((SimpleDataStore<string, int>) innerCache).Comparer, Is.SameAs (_comparer));
     }
@@ -71,7 +71,7 @@ namespace Remotion.UnitTests.Collections
       Assert.That (result, Is.TypeOf (typeof (LockingCacheDecorator<string, int>)));
       var innerCache = PrivateInvoke.GetNonPublicField (result, "_innerCache");
       Assert.That (innerCache, Is.TypeOf (typeof (Cache<string, int>)));
-      var innerDataStore = PrivateInvoke.GetNonPublicField (innerCache, "_cache");
+      var innerDataStore = PrivateInvoke.GetNonPublicField (innerCache, "_dataStore");
       Assert.That (((SimpleDataStore<string, int>) innerDataStore).Comparer, Is.SameAs (_comparer));
     }
 
@@ -82,9 +82,11 @@ namespace Remotion.UnitTests.Collections
 
       Assert.That (result, Is.TypeOf (typeof (LazyLockingCachingAdapter<string, object>)));
       var innerCache = PrivateInvoke.GetNonPublicField (result, "_innerCache");
-      Assert.That (innerCache, Is.TypeOf (typeof (LockingCacheDecorator<string, DoubleCheckedLockingContainer<object>>)));
+      Assert.That (
+          innerCache, 
+          Is.TypeOf (typeof (LockingCacheDecorator<string, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<string, object>.Wrapper>>)));
       var innerInnerCache = PrivateInvoke.GetNonPublicField (innerCache, "_innerCache");
-      Assert.That (innerInnerCache, Is.TypeOf (typeof (Cache<string, DoubleCheckedLockingContainer<object>>)));
+      Assert.That (innerInnerCache, Is.TypeOf (typeof (Cache<string, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<string, object>.Wrapper>>)));
     }
 
     [Test]
@@ -94,12 +96,12 @@ namespace Remotion.UnitTests.Collections
 
       Assert.That (result, Is.TypeOf (typeof (LazyLockingCachingAdapter<string, object>)));
       var innerCache = PrivateInvoke.GetNonPublicField (result, "_innerCache");
-      Assert.That (innerCache, Is.TypeOf (typeof (LockingCacheDecorator<string, DoubleCheckedLockingContainer<object>>)));
+      Assert.That (innerCache, Is.TypeOf (typeof (LockingCacheDecorator<string, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<string, object>.Wrapper>>)));
       var innerInnerCache = PrivateInvoke.GetNonPublicField (innerCache, "_innerCache");
-      Assert.That (innerInnerCache, Is.TypeOf (typeof (Cache<string, DoubleCheckedLockingContainer<object>>)));
-      var innerInnerInnerCache = PrivateInvoke.GetNonPublicField (innerInnerCache, "_cache");
-      Assert.That (innerInnerInnerCache, Is.TypeOf (typeof (SimpleDataStore<string, DoubleCheckedLockingContainer<object>>)));
-      Assert.That (((SimpleDataStore<string, DoubleCheckedLockingContainer<object>>) innerInnerInnerCache).Comparer, Is.SameAs (_comparer));
+      Assert.That (innerInnerCache, Is.TypeOf (typeof (Cache<string, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<string, object>.Wrapper>>)));
+      var underlyingDataStore = PrivateInvoke.GetNonPublicField (innerInnerCache, "_dataStore");
+      Assert.That (underlyingDataStore, Is.TypeOf (typeof (SimpleDataStore<string, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<string, object>.Wrapper>>)));
+      Assert.That (((SimpleDataStore<string, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<string, object>.Wrapper>>) underlyingDataStore).Comparer, Is.SameAs (_comparer));
     }
   }
 }

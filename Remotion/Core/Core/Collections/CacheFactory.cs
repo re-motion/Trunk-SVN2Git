@@ -114,7 +114,8 @@ namespace Remotion.Collections
     /// </remarks>
     public static LazyLockingCachingAdapter<TKey, TValue> CreateWithLazyLocking<TKey, TValue> () where TValue : class 
     {
-      return new LazyLockingCachingAdapter<TKey, TValue> (new Cache<TKey, DoubleCheckedLockingContainer<TValue>> ());
+      return new LazyLockingCachingAdapter<TKey, TValue> (
+          new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> ());
     }
 
     /// <summary>
@@ -135,7 +136,8 @@ namespace Remotion.Collections
     /// </remarks>
     public static LazyLockingCachingAdapter<TKey, TValue> CreateWithLazyLocking<TKey, TValue> (IEqualityComparer<TKey> comparer) where TValue : class
     {
-      return new LazyLockingCachingAdapter<TKey, TValue> (new Cache<TKey, DoubleCheckedLockingContainer<TValue>> (comparer));
+      return new LazyLockingCachingAdapter<TKey, TValue> (
+          new Cache<TKey, DoubleCheckedLockingContainer<LazyLockingCachingAdapter<TKey, TValue>.Wrapper>> (comparer));
     }
   }
 }

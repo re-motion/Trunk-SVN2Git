@@ -35,13 +35,23 @@ namespace Remotion.Collections
   // Not serializable because DoubleCheckedLockingContainer is not serializable.
   public class LazyLockingCachingAdapter<TKey, TValue> : ICache<TKey, TValue> where TValue : class 
   {
-    private readonly LockingCacheDecorator<TKey, DoubleCheckedLockingContainer<TValue>> _innerCache;
+    public class Wrapper
+    {
+      public readonly TValue Value;
 
-    public LazyLockingCachingAdapter (ICache<TKey, DoubleCheckedLockingContainer<TValue>> innerCache)
+      public Wrapper (TValue value)
+      {
+        Value = value;
+      }
+    }
+
+    private readonly LockingCacheDecorator<TKey, DoubleCheckedLockingContainer<Wrapper>> _innerCache;
+
+    public LazyLockingCachingAdapter (ICache<TKey, DoubleCheckedLockingContainer<Wrapper>> innerCache)
     {
       ArgumentUtility.CheckNotNull ("innerCache", innerCache);
 
-      _innerCache = new LockingCacheDecorator<TKey, DoubleCheckedLockingContainer<TValue>> (innerCache);
+      _innerCache = new LockingCacheDecorator<TKey, DoubleCheckedLockingContainer<Wrapper>> (innerCache);
     }
 
     public bool IsNull
@@ -54,19 +64,25 @@ namespace Remotion.Collections
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
 
-      var doubleCheckedLockingContainer = _innerCache.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<TValue> (() => valueFactory (k)));
-      return doubleCheckedLockingContainer.Value;
+      DoubleCheckedLockingContainer<Wrapper> value;
+      Wrapper wrapper;
+      if (_innerCache.TryGetValue (key, out value))
+        wrapper = value.Value;
+      else
+        wrapper = _innerCache.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (valueFactory (k)))).Value;
+
+      return wrapper.Value;
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
 
-      DoubleCheckedLockingContainer<TValue> result;
+      DoubleCheckedLockingContainer<Wrapper> result;
 
       if (_innerCache.TryGetValue (key, out result))
       {
-        value = result.Value;
+        value = result.Value.Value;
         return true;
       }
 

@@ -37,12 +37,22 @@ namespace Remotion.Collections
   public class LazyLockingDataStoreAdapter<TKey, TValue> : IDataStore<TKey, TValue>
       where TValue: class
   {
-    private readonly LockingDataStoreDecorator<TKey, DoubleCheckedLockingContainer<TValue>> _innerDataStore;
+    public class Wrapper
+    {
+      public readonly TValue Value;
 
-    public LazyLockingDataStoreAdapter (IDataStore<TKey, DoubleCheckedLockingContainer<TValue>> innerDataStore)
+      public Wrapper (TValue value)
+      {
+        Value = value;
+      }
+    }
+
+    private readonly LockingDataStoreDecorator<TKey, DoubleCheckedLockingContainer<Wrapper>> _innerDataStore;
+
+    public LazyLockingDataStoreAdapter (IDataStore<TKey, DoubleCheckedLockingContainer<Wrapper>> innerDataStore)
     {
       ArgumentUtility.CheckNotNull ("innerDataStore", innerDataStore);
-      _innerDataStore = new LockingDataStoreDecorator<TKey, DoubleCheckedLockingContainer<TValue>> (innerDataStore);
+      _innerDataStore = new LockingDataStoreDecorator<TKey, DoubleCheckedLockingContainer<Wrapper>> (innerDataStore);
     }
 
     public bool IsNull
@@ -59,7 +69,7 @@ namespace Remotion.Collections
     public void Add (TKey key, TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
-      _innerDataStore.Add (key, new DoubleCheckedLockingContainer<TValue> (() => value));
+      _innerDataStore.Add (key, new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (value)));
     }
 
     public bool Remove (TKey key)
@@ -78,12 +88,12 @@ namespace Remotion.Collections
       get
       {
         ArgumentUtility.CheckNotNull ("key", key);
-        return _innerDataStore[key].Value;
+        return _innerDataStore[key].Value.Value;
       }
       set
       {
         ArgumentUtility.CheckNotNull ("key", key);
-        _innerDataStore[key] = new DoubleCheckedLockingContainer<TValue> (() => value);
+        _innerDataStore[key] = new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (value));
       }
     }
 
@@ -92,18 +102,18 @@ namespace Remotion.Collections
       ArgumentUtility.CheckNotNull ("key", key);
 
       var doubleCheckedLockingContainer = _innerDataStore.GetValueOrDefault (key);
-      return doubleCheckedLockingContainer != null ? doubleCheckedLockingContainer.Value : null;
+      return doubleCheckedLockingContainer != null ? doubleCheckedLockingContainer.Value.Value : null;
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
       
-      DoubleCheckedLockingContainer<TValue> result;
+      DoubleCheckedLockingContainer<Wrapper> result;
 
       if (_innerDataStore.TryGetValue (key, out result))
       {
-        value = result.Value;
+        value = result.Value.Value;
         return true;
       }
 
@@ -116,8 +126,14 @@ namespace Remotion.Collections
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("creator", creator);
 
-     var doubleCheckedLockingContainer = _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<TValue> (() => creator (k)));
-      return doubleCheckedLockingContainer.Value;
+      DoubleCheckedLockingContainer<Wrapper> value;
+      Wrapper wrapper;
+      if (_innerDataStore.TryGetValue (key, out value))
+        wrapper = value.Value;
+      else
+        wrapper = _innerDataStore.GetOrCreateValue (key, k => new DoubleCheckedLockingContainer<Wrapper> (() => new Wrapper (creator (k)))).Value;
+
+      return wrapper.Value;
     }
   }
 }
