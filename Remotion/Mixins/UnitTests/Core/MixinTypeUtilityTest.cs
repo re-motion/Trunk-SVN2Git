@@ -404,6 +404,19 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
+    public void GetMixinTypes_OnMixedTypes_RespectsCurrentConfiguration ()
+    {
+      Assert.That (MixinTypeUtility.GetMixinTypes (typeof (BaseType1)), Has.Member (typeof (BT1Mixin1)));
+
+      using (MixinConfiguration.BuildNew ().EnterScope ())
+      {
+        Assert.That (MixinTypeUtility.GetMixinTypes (typeof (BaseType1)), Has.No.Member (typeof (BT1Mixin1)));
+      }
+
+      Assert.That (MixinTypeUtility.GetMixinTypes (typeof (BaseType1)), Has.Member (typeof (BT1Mixin1)));
+    }
+
+    [Test]
     public void GetMixinTypes_OnGeneratedTypes ()
     {
       Assert.That (new List<Type> (MixinTypeUtility.GetMixinTypes (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1)))),
@@ -433,6 +446,19 @@ namespace Remotion.Mixins.UnitTests.Core
           typeof (BT7Mixin5) }));
 
       Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), Has.Member(typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+    }
+
+    [Test]
+    public void GetMixinTypesExact_OnMixedTypes_RespectsCurrentConfiguration ()
+    {
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), Has.Member (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+
+      using (MixinConfiguration.BuildNew ().EnterScope ())
+      {
+        Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), Has.No.Member (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
+      }
+
+      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), Has.Member (typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
 
     [Test]
@@ -505,6 +531,30 @@ namespace Remotion.Mixins.UnitTests.Core
       var customClassEmitter = new CustomClassEmitter (new ModuleScope (false), "Test", concreteType);
       Type derivedType = customClassEmitter.BuildType();
       Assert.That (MixinTypeUtility.GetUnderlyingTargetType (derivedType), Is.SameAs (typeof (BaseType1)));
+    }
+
+    [Test]
+    public void GetClassContextForConcreteType ()
+    {
+      Type bt1Type = TypeFactory.GetConcreteType (typeof (BaseType1));
+      Assert.That (MixinTypeUtility.GetClassContextForConcreteType (bt1Type),
+          Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
+    }
+
+    [Test]
+    public void GetClassContextForConcreteType_NullWhenNoMixedType ()
+    {
+      Assert.That (MixinTypeUtility.GetClassContextForConcreteType (typeof (object)), Is.Null);
+    }
+
+    [Test]
+    public void GetMixinConfigurationFromConcreteType_DerivedType ()
+    {
+      Type concreteType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
+      var customClassEmitter = new CustomClassEmitter (new ModuleScope (false), "Test", concreteType);
+      Type derivedType = customClassEmitter.BuildType ();
+      Assert.That (MixinTypeUtility.GetClassContextForConcreteType (derivedType),
+          Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
     }
 
     private Type CreateMixedType (Type baseType, params Type[] types)

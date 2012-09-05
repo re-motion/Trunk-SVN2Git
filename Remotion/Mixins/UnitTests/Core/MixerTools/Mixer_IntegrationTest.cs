@@ -69,7 +69,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
               var concreteType = types.Where (t => t.BaseType == typeof (BaseType1)).SingleOrDefault();
               Assert.That (concreteType, Is.Not.Null);
               Assert.That (
-                  MixinReflector.GetClassContextFromConcreteType (concreteType),
+                  MixinTypeUtility.GetClassContextForConcreteType (concreteType),
                   Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
 
               object instance = Activator.CreateInstance (concreteType);

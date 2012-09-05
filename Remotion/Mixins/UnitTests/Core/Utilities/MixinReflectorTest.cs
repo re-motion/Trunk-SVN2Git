@@ -86,30 +86,6 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     }
 
     [Test]
-    public void GetMixinConfigurationFromConcreteType ()
-    {
-      Type bt1Type = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Assert.That (MixinReflector.GetClassContextFromConcreteType (bt1Type),
-          Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
-    }
-
-    [Test]
-    public void GetMixinConfigurationFromConcreteTypeNullWhenNoMixedType ()
-    {
-      Assert.That (MixinReflector.GetClassContextFromConcreteType (typeof (object)), Is.Null);
-    }
-
-    [Test]
-    public void GetMixinConfigurationFromDerivedConcreteType ()
-    {
-      Type concreteType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1));
-      var customClassEmitter = new CustomClassEmitter (new ModuleScope (false), "Test", concreteType);
-      Type derivedType = customClassEmitter.BuildType ();
-      Assert.That (MixinReflector.GetClassContextFromConcreteType (derivedType),
-          Is.EqualTo (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
-    }
-
-    [Test]
     public void GetOrderedMixinTypes_NullWhenNoMixedType ()
     {
       Assert.That (MixinReflector.GetOrderedMixinTypesFromConcreteType (typeof (object)), Is.Null);

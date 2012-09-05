@@ -153,7 +153,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
 
       if (MixinTypeUtility.IsGeneratedConcreteMixedType (targetOrConcreteType))
-        return MixinReflector.GetClassContextFromConcreteType (targetOrConcreteType);
+        return MixinTypeUtility.GetClassContextForConcreteType (targetOrConcreteType);
       
       ClassContext context = ClassContexts.GetWithInheritance (targetOrConcreteType);
       if (context == null || context.IsEmpty())

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Collections;
@@ -157,7 +158,7 @@ namespace Remotion.Mixins.UnitTests.Core
         bool acc = false;
         for (long l = 0; l < runs; ++l)
         {
-          acc ^= MixinTypeUtility.GetMixinTypes (type) != null;
+          acc ^= MixinTypeUtility.GetMixinTypes (type).Count() != 0;
         }
         return acc;
       });

@@ -17,7 +17,6 @@
 using System;
 using System.Reflection;
 using Remotion.Mixins.CodeGeneration;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Utilities;
 
@@ -81,24 +80,6 @@ namespace Remotion.Mixins.Utilities
       Assertion.IsNotNull (castTarget.FirstNextCallProxy);
       Type NextCallProxyType = castTarget.FirstNextCallProxy.GetType();
       return NextCallProxyType;
-    }
-
-    /// <summary>
-    /// Returns the <see cref="ClassContext"/> that was used as the mixin configuration when the given <paramref name="concreteMixedType"/>
-    /// was created by the <see cref="TypeFactory"/>.
-    /// </summary>
-    /// <param name="concreteMixedType">The type whose mixin configuration is to be retrieved.</param>
-    /// <returns>The <see cref="ClassContext"/> used when the given <paramref name="concreteMixedType"/> was created, or <see langword="null"/>
-    /// if <paramref name="concreteMixedType"/> is no mixed type.</returns>
-    public static ClassContext GetClassContextFromConcreteType (Type concreteMixedType)
-    {
-      ArgumentUtility.CheckNotNull ("concreteMixedType", concreteMixedType);
-      
-      var attribute = AttributeUtility.GetCustomAttribute<ConcreteMixedTypeAttribute> (concreteMixedType, true);
-      if (attribute == null)
-        return null;
-      else
-        return attribute.GetClassContext ();
     }
 
     /// <summary>
