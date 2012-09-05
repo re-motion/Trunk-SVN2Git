@@ -96,17 +96,29 @@ namespace Remotion.Mixins.Context
     /// </returns>
     public override bool Equals (object obj)
     {
+      if (object.ReferenceEquals (this, obj))
+        return true;
+
       var other = obj as MixinContext;
       if (other == null)
         return false;
-      
+
       if (other._mixinKind != _mixinKind 
-        || other._mixinType != _mixinType 
-        || other.IntroducedMemberVisibility != IntroducedMemberVisibility
-        || other.ExplicitDependencies.Count != ExplicitDependencies.Count)
+        || other._mixinType != _mixinType
+        || other._introducedMemberVisibility != _introducedMemberVisibility
+        || other._explicitDependencies.Count != _explicitDependencies.Count)
         return false;
 
-      return ExplicitDependencies.All (explicitDependency => other.ExplicitDependencies.ContainsKey (explicitDependency));
+      // No LINQ expression for performance reasons (avoid closure)
+      // ReSharper disable LoopCanBeConvertedToQuery
+      foreach (var explicitDependency in _explicitDependencies)
+      {
+        if (!other._explicitDependencies.ContainsKey (explicitDependency))
+          return false;
+      }
+      // ReSharper restore LoopCanBeConvertedToQuery
+
+      return true;
     }
 
     /// <summary>

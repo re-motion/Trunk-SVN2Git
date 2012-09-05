@@ -121,12 +121,12 @@ namespace Remotion.Mixins.Context
     /// </returns>
     public override bool Equals (object obj)
     {
+      if (object.ReferenceEquals (this, obj))
+        return true;
+
       var other = obj as ClassContext;
       if (other == null)
         return false;
-
-      if (object.ReferenceEquals (this, other))
-        return true;
 
       if (other._cachedHashCode != _cachedHashCode 
           || !other.Type.Equals (Type) 
@@ -134,9 +134,23 @@ namespace Remotion.Mixins.Context
           || other._completeInterfaces.Count != _completeInterfaces.Count)
         return false;
 
-      return _mixins.All (
-              mixinContext => other._mixins.ContainsKey (mixinContext.MixinType) && other._mixins[mixinContext.MixinType].Equals (mixinContext)) 
-          && _completeInterfaces.All (completeInterface => other._completeInterfaces.ContainsKey (completeInterface));
+      // No LINQ expression for performance reasons (avoid closure)
+      // ReSharper disable LoopCanBeConvertedToQuery
+      foreach (var mixinContext in _mixins)
+      {
+        var otherMixinContext = other._mixins[mixinContext.MixinType];
+        if (otherMixinContext == null || !otherMixinContext.Equals (mixinContext))
+          return false;
+      }
+
+      foreach (var completeInterface in _completeInterfaces)
+      {
+        if (!other._completeInterfaces.ContainsKey (completeInterface))
+          return false;
+      }
+      // ReSharper restore LoopCanBeConvertedToQuery
+
+      return true;
     }
 
     /// <summary>
