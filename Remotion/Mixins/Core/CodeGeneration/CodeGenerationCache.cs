@@ -88,9 +88,15 @@ namespace Remotion.Mixins.CodeGeneration
 
       lock (_lockObject)
       {
-        return _typeCache.GetOrCreateValue (
-            classContext,
-            key => GenerateConcreteType (moduleManager, key, nameProvider, concreteMixinTypeProvider));
+        // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
+        Type result;
+        if (!_typeCache.TryGetValue (classContext, out result))
+        {
+          result = _typeCache.GetOrCreateValue (
+              classContext,
+              key => GenerateConcreteType (moduleManager, key, nameProvider, concreteMixinTypeProvider));
+        }
+        return result;
       }
     }
 
@@ -126,11 +132,19 @@ namespace Remotion.Mixins.CodeGeneration
 
       lock (_lockObject)
       {
-        return _constructorLookupInfos.GetOrCreateValue (new CtorLookupInfoKey (classContext, allowNonPublic), cc =>
+        var key = new CtorLookupInfoKey (classContext, allowNonPublic);
+
+        // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
+        IConstructorLookupInfo result;
+        if (!_constructorLookupInfos.TryGetValue (key, out result))
         {
-          var concreteType = GetOrCreateConcreteType (manager, classContext, nameProvider, concreteMixinTypeProvider);
-          return new MixedTypeConstructorLookupInfo (concreteType, classContext.Type, allowNonPublic);
-        });
+          result = _constructorLookupInfos.GetOrCreateValue (key, cc =>
+          {
+            var concreteType = GetOrCreateConcreteType (manager, classContext, nameProvider, concreteMixinTypeProvider);
+            return new MixedTypeConstructorLookupInfo (concreteType, classContext.Type, allowNonPublic);
+          });
+        }
+        return result;
       }
     }
 
@@ -145,9 +159,15 @@ namespace Remotion.Mixins.CodeGeneration
 
       lock (_lockObject)
       {
-        return _mixinTypeCache.GetOrCreateValue (
+        // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
+        ConcreteMixinType result;
+        if (!_mixinTypeCache.TryGetValue (concreteMixinTypeIdentifier, out result))
+        {
+          result = _mixinTypeCache.GetOrCreateValue (
               concreteMixinTypeIdentifier,
               key => GenerateConcreteMixinType (moduleManager, concreteMixinTypeIdentifier, mixinNameProvider));
+        }
+        return result;
       }
     }
 
