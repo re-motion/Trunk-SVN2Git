@@ -24,7 +24,7 @@ namespace Remotion.Collections
   [Serializable]
   public class Cache<TKey, TValue> : ICache<TKey, TValue> 
   {
-    private readonly SimpleDataStore<TKey, TValue> _cache;
+    private readonly SimpleDataStore<TKey, TValue> _dataStore;
 
     // construction and disposing
 
@@ -35,7 +35,7 @@ namespace Remotion.Collections
 
     public Cache (IEqualityComparer<TKey> comparer)
     {
-      _cache = new SimpleDataStore<TKey, TValue> (comparer);
+      _dataStore = new SimpleDataStore<TKey, TValue> (comparer);
     }
 
     // methods and properties
@@ -44,19 +44,19 @@ namespace Remotion.Collections
     {
       ArgumentUtility.CheckNotNull ("key", key);
 
-      _cache[key] = value;
+      _dataStore[key] = value;
     }
 
     public bool TryGetValue (TKey key, out TValue value)
     {
       ArgumentUtility.CheckNotNull ("key", key);
       
-      return _cache.TryGetValue (key, out value);
+      return _dataStore.TryGetValue (key, out value);
     }
 
     public void Clear ()
     {
-      _cache.Clear ();
+      _dataStore.Clear ();
     }
 
     public TValue GetOrCreateValue (TKey key, Func<TKey,TValue> valueFactory)
@@ -64,7 +64,7 @@ namespace Remotion.Collections
       ArgumentUtility.CheckNotNull ("key", key);
       ArgumentUtility.CheckNotNull ("valueFactory", valueFactory);
 
-      return _cache.GetOrCreateValue (key, valueFactory);
+      return _dataStore.GetOrCreateValue (key, valueFactory);
     }
 
     bool INullObject.IsNull
