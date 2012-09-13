@@ -301,7 +301,11 @@
                 if ($input.val() == '')  {
                     options.clearRequestError();
                 }
-            } else if (!config.mouseDownOnSelect) {
+            }
+
+            var isLastKeyPressBeforeBlurHandled = lastKeyPressCode == -1;
+            if (!config.mouseDownOnSelect && !isLastKeyPressBeforeBlurHandled) {
+                clearTimeout(timeout);
                 timeout = setTimeout(
                     function() {
                         acceptInput (lastKeyPressCode);
