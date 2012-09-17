@@ -30,7 +30,6 @@
   </Target>
 
   <PropertyGroup>
-    <MSBuildCommunityTasksPath>$(SolutionDirectory)prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>

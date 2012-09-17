@@ -34,7 +34,6 @@
   </Target>
 
   <PropertyGroup>
-    <MSBuildCommunityTasksPath>$(SolutionDirectory)\prereq\Tools\MSBuildCommunityTasks\</MSBuildCommunityTasksPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <JiraReleaseNoteGeneratorPath>$(SolutionDirectory)\prereq\Tools\JiraReleaseNoteGenerator\</JiraReleaseNoteGeneratorPath>
     <CodeplexReleaseToolPath>$(SolutionDirectory)\prereq\Tools\CodeplexReleaseTool\</CodeplexReleaseToolPath>

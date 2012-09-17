@@ -128,20 +128,42 @@
     <Message Text="Done building test projects, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
 
+  <ItemGroup>
+    <NumberOfTestFailuresPerProject Include="0"/>
+    <NumberOfTestErrorsPerProject Include="0"/>
+  </ItemGroup>
+  
   <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects">
     <Message Text="Running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
-
-    <MSBuild.Community.Tasks.NUnit Assemblies="%(TestOutputFiles.FullPath)"
-                                   OutputXmlFile="$(LogDirectory)\%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml"
-                                   ToolPath="$(NUnitToolPath)" />
     
-    <!--Does not output test results to console-->
-    <!--<MSBuild.ExtensionPack.CodeQuality.NUnit ToolPath="$(NUnitToolPath)"
-                                             Assemblies="%(TestOutputFiles.FullPath)"
-                                             Use32Bit="True"
-                                             OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml" />-->
+    <!-- Call actual testing target, fills NumberOfTest*PerProject item groups -->
+    <CallTarget Targets="RunTestsInternal" />
+    
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestFailuresPerProject)">
+      <Output PropertyName="_failures" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
+
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestErrorsPerProject)">
+      <Output PropertyName="_errors" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
+
+    <Error
+        Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors."
+        Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
 
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
+  </Target>
+  
+  <Target Name="RunTestsInternal">
+    <MSBuild.ExtensionPack.CodeQuality.NUnit
+        ToolPath="$(NUnitToolPath)"
+        Assemblies="%(TestOutputFiles.FullPath)"
+        ContinueOnError="True"
+        Use32Bit="True"
+        OutputXmlFile="$(LogDirectory)%(TestOutputFiles.Filename).$(ActiveConfigurationName).xml">
+      <Output TaskParameter="Failures" ItemName="NumberOfTestFailuresPerProject"/>
+      <Output TaskParameter="Errors" ItemName="NumberOfTestErrorsPerProject"/>
+    </MSBuild.ExtensionPack.CodeQuality.NUnit>
   </Target>
 
   <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration" Condition="$(Version) != ''">
