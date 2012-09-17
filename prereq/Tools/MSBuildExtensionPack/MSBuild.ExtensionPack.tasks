@@ -3,7 +3,7 @@
     <PropertyGroup>
         <BuildPath Condition="'$(BuildPath)' == ''">$(MSBuildProjectDirectory)</BuildPath>
         <ExtensionTasksPath Condition="Exists('$(BuildPath)\..\..\BuildBinaries\MSBuild.ExtensionPack.dll')">$(BuildPath)\..\..\BuildBinaries\</ExtensionTasksPath>
-        <ExtensionTasksPath Condition="'$(ExtensionTasksPath)' == ''">$(MSBuildExtensionsPath)\ExtensionPack\</ExtensionTasksPath>
+        <ExtensionTasksPath Condition="'$(ExtensionTasksPath)' == ''">$(MSBuildExtensionsPath)\ExtensionPack\4.0\</ExtensionTasksPath>
     </PropertyGroup>
 
     <!-- ============== Framework ============== -->
@@ -49,6 +49,7 @@
     <UsingTask AssemblyFile="$(ExtensionTasksPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.ILMerge"/>
     <UsingTask AssemblyFile="$(ExtensionTasksPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.Metadata"/>
     <UsingTask AssemblyFile="$(ExtensionTasksPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.MSBuildHelper"/>
+    <UsingTask AssemblyFile="$(ExtensionTasksPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.Parallel"/>
     <UsingTask AssemblyFile="$(ExtensionTasksPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.UpdateMetadata"/>
     <UsingTask AssemblyFile="$(ExtensionTasksPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.Signing"/>
     <UsingTask AssemblyFile="$(ExtensionTasksPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.SmartExec"/>
@@ -107,7 +108,7 @@
 
     
     <!-- ============== StyleCop ============== -->
-    <UsingTask AssemblyFile="$(MSBuildProgramFiles32)\StyleCop 4.6\MSBuild.ExtensionPack.StyleCop.dll" TaskName="MSBuild.ExtensionPack.CodeQuality.StyleCop"/>
+    <UsingTask AssemblyFile="$(MSBuildProgramFiles32)\StyleCop 4.7\MSBuild.ExtensionPack.StyleCop.dll" TaskName="MSBuild.ExtensionPack.CodeQuality.StyleCop"/>
     
 
     <!-- ============== Sql2005 ============== -->
@@ -128,12 +129,12 @@
     <!-- ============== Tfs ============== -->
     <UsingTask AssemblyFile="$(ExtensionTasksPath)\MSBuild.ExtensionPack.Tfs.dll" TaskName="MSBuild.ExtensionPack.Tfs.DevEnv"/>
     <UsingTask AssemblyFile="$(ExtensionTasksPath)\MSBuild.ExtensionPack.Tfs.dll" TaskName="MSBuild.ExtensionPack.Tfs.TeamBuild"/>
-
+    
     
     <!-- ============== Tfs2010 ============== -->
     <UsingTask AssemblyFile="$(ExtensionTasksPath)\MSBuild.ExtensionPack.Tfs2010.dll" TaskName="MSBuild.ExtensionPack.Tfs2010.DevEnv"/>
 
-
+    
     <!-- ============== Windows Virtual PC ============== -->
     <UsingTask AssemblyFile="$(ExtensionTasksPath)\MSBuild.ExtensionPack.WindowsVirtualPC.dll" TaskName="MSBuild.ExtensionPack.Virtualisation.VirtualPc"/>
 </Project>
