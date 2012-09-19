@@ -37,10 +37,22 @@ namespace Remotion.Development.UnitTesting.Reflection
     private const BindingFlags AllBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
     private static readonly MemberInfoEqualityComparer<MethodInfo> s_methodComparer = MemberInfoEqualityComparer<MethodInfo>.Instance;
 
+    public static MemberInfo GetMember (Expression<Action> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMemberInfoFromExpression (null, expression.Body);
+    }
+
     public static MemberInfo GetMember<TMemberType> (Expression<Func<TMemberType>> expression)
     {
       ArgumentUtility.CheckNotNull ("expression", expression);
       return GetMemberInfoFromExpression (null, expression.Body);
+    }
+
+    public static MemberInfo GetMember<TSourceObject> (Expression<Action<TSourceObject>> expression)
+    {
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      return GetMemberInfoFromExpression (typeof (TSourceObject), expression.Body);
     }
 
     public static MemberInfo GetMember<TSourceObject, TMemberType> (Expression<Func<TSourceObject, TMemberType>> expression)
