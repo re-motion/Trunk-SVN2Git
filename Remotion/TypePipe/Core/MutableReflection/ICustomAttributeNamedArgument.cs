@@ -15,35 +15,15 @@
 // under the License.
 // 
 using System.Reflection;
-using Remotion.Utilities;
 
 namespace Remotion.TypePipe.MutableReflection
 {
   /// <summary>
   /// Represents the TypePipe counterpart of <see cref="CustomAttributeNamedArgument"/>.
   /// </summary>
-  public struct TypePipeCustomAttributeNamedArgument
+  public interface ICustomAttributeNamedArgument
   {
-    private readonly MemberInfo _memberInfo;
-    private readonly TypePipeCustomAttributeTypedArgument _typedValue;
-
-    public TypePipeCustomAttributeNamedArgument (MemberInfo memberInfo, TypePipeCustomAttributeTypedArgument typedValue)
-    {
-      ArgumentUtility.CheckNotNull ("memberInfo", memberInfo);
-      // typedValue is struct
-
-      _memberInfo = memberInfo;
-      _typedValue = typedValue;
-    }
-
-    public MemberInfo MemberInfo
-    {
-      get { return _memberInfo; }
-    }
-    
-    public TypePipeCustomAttributeTypedArgument TypedValue
-    {
-      get { return _typedValue; }
-    }
+    MemberInfo MemberInfo { get; }
+    object Value { get; }
   }
 }
