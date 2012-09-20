@@ -329,11 +329,10 @@
                 if (typeof fn == "function") fn(result);
                 else updateResult(result.data);
             }
-            $.each(trimWords($input.val()), function(i, value) {
-                if (!options.matchCase)
-                  value = value.toLowerCase();
-                requestData(value, findValueCallback, findValueCallback);
-            });
+            var value = $.trim($input.val());
+            if (!options.matchCase)
+              value = value.toLowerCase();
+            requestData(value, findValueCallback, findValueCallback);
         }).bind("flushCache", function() {
             cache.flush();
         }).bind("setOptions", function() {
@@ -501,7 +500,7 @@
 
             if (openFromInput || openFromTrigger) {
                 startLoading();
-                var searchString = lastWord(currentValue);
+                var searchString = currentValue;
                 if (!options.matchCase)
                     searchString = searchString.toLowerCase();
                 if (dropDownTriggered)
@@ -524,17 +523,6 @@
             }
         };
 
-        function trimWords(value) {
-            if (!value) {
-                return [""];
-            }
-            return [$.trim(value)];
-        }
-
-        function lastWord(value) {
-            return value;
-        }
-
         // fills in the input box w/the first match (assumed to be the best match)
         // query: the term entered
         // sValue: the first matching result
@@ -551,20 +539,19 @@
                 return;
 
             // autofill in the complete box w/the first match as long as the user hasn't entered in more data
-            if (lastWord($input.val()).toLowerCase() != query.toLowerCase())
+            if ($input.val().toLowerCase() != query.toLowerCase())
                 return;
 
-            var lastWordInQuery = lastWord(query);
             //sValue completely matches the user's input, don't autofill needed
-            if (lastWordInQuery.toLowerCase() == sValue.toLowerCase())
+            if (query.toLowerCase() == sValue.toLowerCase())
                 return;
 
             //sValue does not start with the user's input, don't autofill
-            if (sValue.length >= lastWordInQuery.length && sValue.substring(0, lastWordInQuery.length).toLowerCase() != lastWordInQuery.toLowerCase())
+            if (sValue.length >= query.length && sValue.substring(0, query.length).toLowerCase() != query.toLowerCase())
               return;
 
             // fill in the value (keep the case the user has typed)
-            $input.val($input.val() + sValue.substring(lastWordInQuery.length));
+            $input.val($input.val() + sValue.substring(query.length));
             // select the portion of the value not typed by the user (so the next character will erase)
             $.Autocompleter.Selection(input, query.length, query.length + sValue.length);
         };
@@ -658,7 +645,7 @@
                 //           see http://encosia.com/2008/06/05/3-mistakes-to-avoid-when-using-jquery-with-aspnet-ajax/ 
                 //           under "JSON, objects, and strings: oh my!" for details.
                 var params = {
-                    searchString: lastWord(term),
+                    searchString: term,
                     completionSetCount: options.max
                 };
                 for (var propertyName in options.extraParams)
@@ -701,7 +688,7 @@
             options.clearRequestError();
 
             var params = {
-              searchString: lastWord(term)
+              searchString: term
             };
             for (var propertyName in options.extraParams)
               params[propertyName] = options.extraParams[propertyName];
