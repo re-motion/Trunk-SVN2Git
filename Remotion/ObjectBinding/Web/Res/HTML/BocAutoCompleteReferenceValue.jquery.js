@@ -191,8 +191,6 @@
                     }
                     return;
 
-                // matches also semicolon                    
-                case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
                 case KEY.RETURN:
                 case KEY.TAB:
                 case KEY.ESC:
@@ -247,14 +245,17 @@
                     || event.keyCode == KEY.DEL
                     || event.keyCode == KEY.SPACE;
 
-                var isValueSeparatorKey = options.multiple && $.trim(options.multipleSeparator) == "," && event.keyCode == KEY.COMMA;
+                var hasValueChanged = $input.val() != previousValidValue;
 
                 if (isTextChangeKey) {
                     clearTimeout(timeout);
-                    $input.trigger("invalidateResult");
-                  }
+                }
 
-                if (!isControlKey && !isValueSeparatorKey) {
+                if (isTextChangeKey && hasValueChanged) {
+                    $input.trigger("invalidateResult");
+                }
+
+                if (!isControlKey && hasValueChanged) {
                     handleInput();
                 }
             } else if (event.type == 'paste') {
@@ -328,7 +329,7 @@
                     }
                 }
                 if (typeof fn == "function") fn(result);
-                else $input.trigger("updateResult", result.data);
+                else updateResult(result.data);
             }
             $.each(trimWords($input.val()), function(i, value) {
                 if (!options.matchCase)
@@ -422,7 +423,7 @@
             closeDropDownListAndSetValue(term);
 
             if (previousValidValue == term && selectedItem != null) {
-                $input.trigger("updateResult", selectedItem.data);
+                updateResult(selectedItem.data);
                 return;
             }
 
@@ -436,7 +437,7 @@
             if (selectedItem != null) {
 
                 $input.val(selectedItem.result);
-                $input.trigger("updateResult", selectedItem.data);
+                updateResult(selectedItem.data);
 
             } else if (confirmValue && term != '' && !options.isAutoPostBackEnabled) {
 
@@ -444,20 +445,18 @@
                   if (data != null) {
                       stopLoading();
                       if ($input.val().toLowerCase() == term.toLowerCase()) {
-                          previousValue = data.result;
-                          previousValidValue = data.result;
                           $input.val(data.result);
-                          $input.trigger("updateResult", data.data);
+                          updateResult(data.data);
                       }
                   } else {
                       stopLoading();
-                      $input.trigger("updateResult", { DisplayName: term, UniqueIdentifier: options.nullValue });
+                      updateResult({ DisplayName: term, UniqueIdentifier: options.nullValue });
                   }
                 };
 
                 var failureHandler = function() {
                     stopLoading();
-                    $input.trigger("updateResult", { DisplayName: term, UniqueIdentifier: options.nullValue });
+                    updateResult({ DisplayName: term, UniqueIdentifier: options.nullValue });
                 };
 
               startLoading();
@@ -466,9 +465,16 @@
 
             } else {
 
-                $input.trigger("updateResult", { DisplayName: term, UniqueIdentifier: options.nullValue });
+              updateResult({ DisplayName: term, UniqueIdentifier: options.nullValue });
 
             }
+        };
+
+        function updateResult(item) {
+            var actualItem = $input.trigger("updateResult", item);
+
+            previousValue = actualItem.DisplayName;
+            previousValidValue = actualItem.DisplayName;
         };
 
         function selectCurrent() {
@@ -476,21 +482,8 @@
             if (!selected)
                 return false;
 
-            var v = selected.result;
-
-            previousValue = v;
-            previousValidValue = v;
-
-            if (options.multiple) {
-                var words = trimWords($input.val());
-                if (words.length > 1) {
-                    v = words.slice(0, words.length - 1).join(options.multipleSeparator) + options.multipleSeparator + v;
-                }
-                v += options.multipleSeparator;
-            }
-
-            closeDropDownListAndSetValue(v);
-            $input.trigger("updateResult", selected.data);
+            closeDropDownListAndSetValue(selected.result);
+            updateResult(selected.data);
 
             return true;
         }
@@ -540,20 +533,11 @@
             if (!value) {
                 return [""];
             }
-            var words = value.split(options.multipleSeparator);
-            var result = [];
-            $.each(words, function(i, value) {
-                if ($.trim(value))
-                    result[i] = $.trim(value);
-            });
-            return result;
+            return [$.trim(value)];
         }
 
         function lastWord(value) {
-            if (!options.multiple)
-                return value;
-            var words = trimWords(value);
-            return words[words.length - 1];
+            return value;
         }
 
         // fills in the input box w/the first match (assumed to be the best match)
@@ -617,12 +601,7 @@
                     function(result) {
                         // if no value found, clear the input box
                         if (!result) {
-                            if (options.multiple) {
-                                var words = trimWords($input.val()).slice(0, -1);
-                                $input.val(words.join(options.multipleSeparator) + (words.length ? options.multipleSeparator : ""));
-                            }
-                            else
-                                $input.val("");
+                            $input.val("");
                         }
                     }
                   );
@@ -819,8 +798,6 @@
         formatItem: function(row) { return row[0]; },
         formatMatch: null,
         autoFill: false,
-        multiple: false,
-        multipleSeparator: ", ",
         highlight: function(value, term) {
             if (term == '')
               return value;

@@ -79,7 +79,6 @@ BocAutoCompleteReferenceValue.Initialize = function (
           autoFill: true,
           mustMatch: false, // set true if should clear input on no results
           matchContains: true,
-          multiple: false, // not supprted
           dropDownButtonId: button.attr('id'),
           inputAreaClass: 'content',
           // this can be set to true/removed once the problem is fixed that an empty textbox still selects the first element, making it impossible to clear the selection
@@ -155,24 +154,23 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
         var hasChanged = _itemBackUp != actualItem;
 
-        if (!_isInvalidated && !hasChanged)
+        if (_isInvalidated || hasChanged)
         {
-          return;
-        }
+          hiddenField.val (actualItem.UniqueIdentifier);
+          BackupItemData (actualItem.UniqueIdentifier, actualItem.DisplayName);
 
-        hiddenField.val (actualItem.UniqueIdentifier);
-        BackupItemData (actualItem.UniqueIdentifier, actualItem.DisplayName);
-
-        if (hasChanged)
-        {
-          UpdateCommand(actualItem.UniqueIdentifier);
-          _commandBackUp = _command;
-          hiddenField.trigger('change');
+          if (hasChanged)
+          {
+            UpdateCommand (actualItem.UniqueIdentifier);
+            _commandBackUp = _command;
+            hiddenField.trigger ('change');
+          }
+          else
+          {
+            RestoreCommand();
+          }
         }
-        else
-        {
-          RestoreCommand();
-        }
+        return actualItem;
       }
       finally
       {
