@@ -153,11 +153,12 @@ BocAutoCompleteReferenceValue.Initialize = function (
           textbox.val (actualItem.DisplayName);
         }
 
-        if (!_isInvalidated)
+        var hasChanged = _itemBackUp != actualItem;
+
+        if (!_isInvalidated && !hasChanged)
         {
           return;
         }
-        var hasChanged = _itemBackUp != actualItem;
 
         hiddenField.val (actualItem.UniqueIdentifier);
         BackupItemData (actualItem.UniqueIdentifier, actualItem.DisplayName);
