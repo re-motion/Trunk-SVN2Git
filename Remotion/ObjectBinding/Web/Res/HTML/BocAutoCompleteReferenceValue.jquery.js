@@ -109,8 +109,6 @@
         var autoFillTimeout;
         // holds the last text the user entered into the input element
         var previousValue = '';
-        // re-motion: holds the last valid value of the input element
-        var previousValidValue = $input.val();
         var cache = $.Autocompleter.Cache(options);
         var hasFocus = TypeUtility.IsDefined (window.document.activeElement) && window.document.activeElement == input;
         var lastKeyPressCode = -1;
@@ -245,7 +243,7 @@
                     || event.keyCode == KEY.DEL
                     || event.keyCode == KEY.SPACE;
 
-                var hasValueChanged = $input.val() != previousValidValue;
+                var hasValueChanged = $input.val() != previousValue;
 
                 if (isTextChangeKey) {
                     clearTimeout(timeout);
@@ -403,7 +401,7 @@
             } else if (lastKeyPressCode != -1) {
                 acceptCurrent(true);
             } else {
-                closeDropDownListAndSetValue(previousValidValue);
+                closeDropDownListAndSetValue(previousValue);
             }
         };
 
@@ -422,13 +420,12 @@
             }
             closeDropDownListAndSetValue(term);
 
-            if (previousValidValue == term && selectedItem != null) {
+            if (previousValue == term && selectedItem != null) {
                 updateResult(selectedItem.data);
                 return;
             }
 
             previousValue = term;
-            previousValidValue = term;
 
             if (selectedItem == null) {
               options.clearRequestError();
@@ -472,9 +469,7 @@
 
         function updateResult(item) {
             var actualItem = $input.trigger("updateResult", item);
-
             previousValue = actualItem.DisplayName;
-            previousValidValue = actualItem.DisplayName;
         };
 
         function selectCurrent() {
@@ -518,7 +513,7 @@
                         informationPopUp.show (options.noDataFoundMessage);
                     }
                 };
-                var failureHandler = function() { closeDropDownListAndSetValue(previousValidValue); };
+                var failureHandler = function() { closeDropDownListAndSetValue(previousValue); };
 
                 requestData(searchString, successHandler, failureHandler);
             } else {
@@ -613,7 +608,6 @@
 
         function resetState() {
             lastKeyPressCode = -1;
-            previousValue = '';
             config.mouseDownOnSelect = false;
         };
 
