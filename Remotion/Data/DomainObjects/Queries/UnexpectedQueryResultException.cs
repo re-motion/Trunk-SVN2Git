@@ -22,7 +22,7 @@ namespace Remotion.Data.DomainObjects.Queries
   /// <summary>
   /// Thrown when a query yields a result unexpected in the context of the parameters given by the user.
   /// </summary>
-  public class UnexpectedQueryResultException : Exception
+  public class UnexpectedQueryResultException : DomainObjectException
   {
     public UnexpectedQueryResultException (string message, Exception innerException)
         : base (message, innerException)

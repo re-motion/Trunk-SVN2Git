@@ -22,8 +22,23 @@ using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
 {
+  /// <summary>
+  /// Thrown when the cleanup of a <see cref="DomainObject"/> whose constructor threw an exception fails.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// When a <see cref="DomainObject"/>'s constructor throws an exception, the object is automatically deleted from the transaction that caused its 
+  /// creation. When that cleanup process again causes an exception, e.g., because the Delete operation is canceled, an 
+  /// <see cref="ObjectCleanupException"/> is thrown that contains both the original constructor exception and the exception that canceled the
+  /// cleanup process.
+  /// </para>
+  /// <para>
+  /// When this exception occurs, the partially constructed <see cref="DomainObject"/> remains within the <see cref="ClientTransaction"/>.
+  /// Rollback the <see cref="ClientTransaction"/> to get rid of the partially constructed instance.
+  /// </para>
+  /// </remarks>
   [Serializable]
-  public class ObjectCleanupException : Exception
+  public class ObjectCleanupException : DomainObjectException
   {
     private readonly ObjectID _objectID;
     private readonly Exception _originalException;
