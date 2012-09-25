@@ -32,6 +32,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocDateTimeValueImplementation.Rendering
 {
   [TestFixture]
+  [SetCulture("")]
   public class BocDateTimeValueRendererTest : RendererTestBase
   {
     private const string c_timeString = "15:43";
