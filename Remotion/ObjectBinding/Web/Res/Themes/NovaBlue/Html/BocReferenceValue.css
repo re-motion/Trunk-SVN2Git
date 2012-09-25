@@ -89,9 +89,9 @@ span.bocReferenceValue.readOnly a.command img
 span.bocReferenceValue.disabled a.command img,
 span.bocReferenceValue .disabled a.command img
 {
+  -moz-opacity: 0.4;
   opacity: 0.4;
-  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40), progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
 /* withoutOptionsMenu */
@@ -162,10 +162,18 @@ span.bocReferenceValue.readOnly span.content
   position: static;
 }
 
-span.bocReferenceValue span.content.hasIcon,
-span.bocReferenceValue.disabled span.content.hasIcon
+/* has Icon */
+span.bocReferenceValue a.command.hasIcon + span.content,
+span.bocReferenceValue.disabled a.command.hasIcon + span.content,
+span.bocReferenceValue.readOnly img > span.content
 {
   left: 22px; /* width of a.command icon + desired space between */
+}
+
+span.bocReferenceValue a.command img
+{
+  width: 16px;
+  height: 16px;
 }
 
 span.bocReferenceValue span.optionsMenu

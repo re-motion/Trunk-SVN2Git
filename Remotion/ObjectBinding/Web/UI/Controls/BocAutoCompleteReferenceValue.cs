@@ -112,9 +112,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       _textBoxStyle = new SingleRowTextBoxStyle();
       _validators = new ArrayList();
-
-      EnableIcon = true;
-      ShowOptionsMenu = true;
     }
 
     // methods and properties

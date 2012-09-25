@@ -93,7 +93,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public BocReferenceValue ()
     {
-      EnableIcon = true;
       _listItems = new ListItemCollection();
       _dropDownListStyle = new DropDownListStyle();
     }

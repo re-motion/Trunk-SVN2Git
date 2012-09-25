@@ -61,9 +61,9 @@ span.bocAutoCompleteReferenceValueButton img
   height: 100%;
   width: 15px;
   border: solid 1px white;
-  box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  box-sizing: border-box;
   background-image: url('../Image/AutoCompleteReferenceValueDropDownButtonFace.gif');
   background-position: -1px center; /*-1px for border*/
   background-repeat: no-repeat;
@@ -75,6 +75,7 @@ span.bocAutoCompleteReferenceValue.disabled span.bocAutoCompleteReferenceValueBu
   background-position: -16px center; /*-1px for border*/
   background-color: #E8E8E8;
   filter: none;
+  -moz-opacity: 1;
   opacity: 1;
 }
 
@@ -150,9 +151,9 @@ span.bocAutoCompleteReferenceValue.readOnly a.command img
 span.bocAutoCompleteReferenceValue.disabled a.command img,
 span.bocAutoCompleteReferenceValue .disabled a.command img
 {
+  -moz-opacity: 0.4;
   opacity: 0.4;
-  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40),
-          progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(opacity=0.40), progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);
 }
 
 /* withoutOptionsMenu */
@@ -225,10 +226,18 @@ span.bocAutoCompleteReferenceValue.readOnly span.content
   position: static;
 }
 
-span.bocAutoCompleteReferenceValue span.content.hasIcon,
-span.bocAutoCompleteReferenceValue.disabled span.content.hasIcon
+/* has Icon */
+span.bocAutoCompleteReferenceValue a.command.hasIcon + span.content,
+span.bocAutoCompleteReferenceValue.disabled a.command.hasIcon + span.content,
+span.bocAutoCompleteReferenceValue.readOnly img > span.content
 {
   left: 22px; /* width of a.command icon + desired space between */
+}
+
+span.bocAutoCompleteReferenceValue a.command > img
+{
+  width: 16px;
+  height: 16px;
 }
 
 span.bocAutoCompleteReferenceValue span.optionsMenu

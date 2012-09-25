@@ -145,7 +145,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
       script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
 
-      if (renderingContext.Control.EnableIcon)
+      if (renderingContext.Control.IsIconEnabled())
         script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
       else
         script.Append ("null, ");
@@ -232,7 +232,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     private Image GetIcon (BocAutoCompleteReferenceValueRenderingContext renderingContext)
     {
       var icon = new Image { EnableViewState = false, Visible = false };
-      if (renderingContext.Control.EnableIcon)
+      if (renderingContext.Control.IsIconEnabled())
       {
         IconInfo iconInfo = renderingContext.Control.GetIcon ();
 
@@ -246,7 +246,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
           icon.Style["vertical-align"] = "middle";
           icon.Style["border-style"] = "none";
 
-          if (renderingContext.Control.IsCommandEnabled (renderingContext.Control.IsReadOnly))
+          if (renderingContext.Control.IsCommandEnabled ())
           {
             if (string.IsNullOrEmpty (iconInfo.AlternateText))
               icon.AlternateText = renderingContext.Control.GetLabelText ();
@@ -319,7 +319,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Table); // Begin table
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr); //  Begin tr
 
-      bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
+      bool isCommandEnabled = renderingContext.Control.BusinessObjectUniqueIdentifier != null && renderingContext.Control.IsCommandEnabled ();
 
       string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
@@ -412,7 +412,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
       bool isControlWidthEmpty = renderingContext.Control.Width.IsEmpty && string.IsNullOrEmpty (renderingContext.Control.Style["width"]);
       bool isTextboxWidthEmpty = string.IsNullOrEmpty (textbox.Style["width"]);
 
-      bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
+      bool isCommandEnabled = renderingContext.Control.BusinessObjectUniqueIdentifier != null && renderingContext.Control.IsCommandEnabled ();
 
       string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);

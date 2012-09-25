@@ -59,7 +59,7 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
         params,
         function (result, context, methodName)
         {
-          BocReferenceValueBase.UpdateIconFromWebService(newIcon, result);
+          BocReferenceValueBase.UpdateIconFromWebService(newCommand, newIcon, result);
         },
         function (err, context, methodName)
         {
@@ -114,6 +114,8 @@ BocReferenceValueBase.CreateCommand = function (oldCommand, commandInfo, busines
       newCommand.attr(property, value);
   }
 
+  newCommand.removeClass('hasIcon');
+
   return newCommand;
 };
 
@@ -132,7 +134,7 @@ BocReferenceValueBase.CreateEmptyIcon = function (oldIcon, title)
   return newIcon;
 };
 
-BocReferenceValueBase.UpdateIconFromWebService = function (icon, iconInformation)
+BocReferenceValueBase.UpdateIconFromWebService = function (command, icon, iconInformation)
 {
   ArgumentUtility.CheckNotNull('icon', icon);
   ArgumentUtility.CheckTypeIsObject('iconInformation', iconInformation);
@@ -150,6 +152,8 @@ BocReferenceValueBase.UpdateIconFromWebService = function (icon, iconInformation
     icon.attr({ title: iconInformation.ToolTip });
 
   icon.css({ width: iconInformation.Width, heght: iconInformation.Height });
+
+  command.addClass('hasIcon');
 };
 
 BocReferenceValueBase.ResetCommand = function (command)
@@ -159,4 +163,5 @@ BocReferenceValueBase.ResetCommand = function (command)
   command.removeAttr('onclick');
   command.removeAttr('title');
   command.removeAttr('target');
+  command.removeClass('hasIcon');
 };

@@ -99,7 +99,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocReferenceValueImpleme
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      if (!renderingContext.Control.EnableIcon)
+      if (!renderingContext.Control.IsIconEnabled())
         return null;
 
       var iconServicePath = renderingContext.Control.IconServicePath;

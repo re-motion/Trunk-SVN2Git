@@ -30,9 +30,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       base.EvaluateWaiConformity();
     }
 
-    public new bool IsCommandEnabled (bool readOnly)
+    public new bool IsCommandEnabled ()
     {
-      return base.IsCommandEnabled (readOnly);
+      return base.IsCommandEnabled();
     }
 
     public new object SaveControlState ()

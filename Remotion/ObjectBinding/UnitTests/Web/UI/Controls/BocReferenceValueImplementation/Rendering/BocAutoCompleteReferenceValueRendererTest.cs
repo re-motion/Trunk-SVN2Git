@@ -136,7 +136,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.Enabled).Return (true);
 
       XmlNode containerDiv = GetAssertedContainerSpan (false);
-      AssertControl (containerDiv, false, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (containerDiv, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -146,7 +146,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
       XmlNode containerDiv = GetAssertedContainerSpan (false);
-      AssertControl (containerDiv, false, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (containerDiv, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -158,7 +158,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, false, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -171,14 +171,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       AddStyle();
 
       XmlNode span = GetAssertedContainerSpan (true);
-      AssertControl (span, false, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
     public void RenderNullReferenceValueReadOnly ()
     {
       Control.Stub (stub => stub.Enabled).Return (true);
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
       XmlNode span = GetAssertedContainerSpan (false);
@@ -189,7 +189,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     public void RenderNullReferenceValueReadOnlyWithStyle ()
     {
       Control.Stub (stub => stub.Enabled).Return (true);
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
       AddStyle();
 
@@ -202,7 +202,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     public void RenderNullReferenceValueReadOnlyWithOptionsMenu ()
     {
       Control.Stub (stub => stub.Enabled).Return (true);
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
@@ -220,7 +220,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       AddStyle();
 
       XmlNode span = GetAssertedContainerSpan (true);
-      AssertControl (span, false, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -231,7 +231,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       AddStyle();
 
       XmlNode span = GetAssertedContainerSpan (true);
-      AssertControl (span, false, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
 
       Assert.That (OptionsMenu.Style["width"], Is.Null);
       Assert.That (OptionsMenu.Style["height"], Is.Null);
@@ -241,13 +241,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     public void RenderNullReferenceValueWithIcon ()
     {
       Control.Stub (stub => stub.Enabled).Return (true);
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.Property).Return (
           (IBusinessObjectReferenceProperty) ((IBusinessObject) BusinessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue"));
       SetUpGetIconExpectations();
 
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, true, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -256,7 +256,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.Enabled).Return (true);
       SetValue();
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, false, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -271,7 +271,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.TextBoxStyle.AutoPostBack = true;
 
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, false, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Enabled);
+      AssertControl (span, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Enabled);
       Assert.IsTrue (TextBox.AutoPostBack);
     }
 
@@ -289,7 +289,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, false, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
 
       Assert.That (OptionsMenu.Style["width"], Is.Null);
       Assert.That (OptionsMenu.Style["height"], Is.Null);
@@ -305,7 +305,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
 
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, false, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -319,7 +319,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       AddStyle();
 
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, false, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -327,7 +327,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     {
       Control.Stub (stub => stub.Enabled).Return (true);
       SetValue();
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
       XmlNode span = GetAssertedContainerSpan (false);
@@ -339,7 +339,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     {
       Control.Stub (stub => stub.Enabled).Return (true);
       SetValue();
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
       AddStyle();
 
@@ -353,7 +353,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     {
       Control.Stub (stub => stub.Enabled).Return (true);
       SetValue();
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.HasOptionsMenu).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
@@ -372,7 +372,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       AddStyle();
 
       XmlNode span = GetAssertedContainerSpan (true);
-      AssertControl (span, false, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -384,7 +384,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       AddStyle();
 
       XmlNode span = GetAssertedContainerSpan (true);
-      AssertControl (span, false, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.SeparateOptionsMenu, AutoPostBack.Disabled);
 
       Assert.That (OptionsMenu.Style["width"], Is.Null);
       Assert.That (OptionsMenu.Style["height"], Is.Null);
@@ -395,13 +395,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
     {
       Control.Stub (stub => stub.Enabled).Return (true);
       SetValue();
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.Property).Return (
           (IBusinessObjectReferenceProperty) ((IBusinessObject) BusinessObject).BusinessObjectClass.GetPropertyDefinition ("ReferenceValue"));
       SetUpGetIconExpectations();
 
       XmlNode span = GetAssertedContainerSpan (false);
-      AssertControl (span, true, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (span, OptionMenuConfiguration.NoOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
@@ -416,13 +416,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       Html.Writer.RenderEndTag();
 
       var document = Html.GetResultDocument();
-      AssertControl (document, false, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
+      AssertControl (document, OptionMenuConfiguration.EmbeddedOptionsMenu, AutoPostBack.Disabled);
     }
 
     [Test]
     public void RenderOptionsReadOnly ()
     {
-      Control.Stub (stub => stub.EnableIcon).Return (true);
+      Control.Stub (stub => stub.IsIconEnabled()).Return (true);
       Control.Stub (stub => stub.IsReadOnly).Return (true);
 
       var renderer = new TestableBocAutoCompleteReferenceValueRenderer (_resourceUrlFactoryStub, () => new StubTextBox());
@@ -459,18 +459,29 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
     protected void AssertIcon (XmlNode parent, bool wrapNonCommandIcon)
     {
-      if (Control.IsCommandEnabled (Control.IsReadOnly))
+      var isIconEnabled = Control.IsIconEnabled();
+      var commandClass = "command";
+      if (isIconEnabled)
+        commandClass += " hasIcon";
+
+      if (Control.IsCommandEnabled())
       {
         var link = parent.GetAssertedChildElement ("a", 0);
         link.AssertAttributeValueEquals ("id", Control.ClientID + "_Command");
-        link.AssertAttributeValueEquals ("class", "command");
+        link.AssertAttributeValueEquals ("class", commandClass);
         link.AssertAttributeValueEquals ("href", "#");
         link.AssertAttributeValueEquals ("onclick", "");
-        link.AssertChildElementCount (1);
+        if (isIconEnabled)
+        {
+          link.AssertChildElementCount (1);
 
-        var icon = link.GetAssertedChildElement ("img", 0);
-        icon.AssertAttributeValueEquals ("src", "~/Images/Remotion.ObjectBinding.UnitTests.Web.Domain.TypeWithReference.gif");
-        icon.AssertStyleAttribute ("border-width", "0px");
+          var icon = link.GetAssertedChildElement ("img", 0);
+          icon.AssertAttributeValueEquals ("src", "/Images/Remotion.ObjectBinding.UnitTests.Web.Domain.TypeWithReference.gif");
+        }
+        else
+        {
+          link.AssertChildElementCount (0);
+        }
       }
       else
       {
@@ -479,14 +490,21 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
         {
           var anchor = parent.GetAssertedChildElement ("a", 0);
           anchor.AssertAttributeValueEquals ("id", Control.ClientID + "_Command");
-          anchor.AssertAttributeValueEquals ("class", "command");
+          anchor.AssertAttributeValueEquals ("class", commandClass);
 
           iconParent = anchor;
         }
 
-        var icon = iconParent.GetAssertedChildElement ("img", 0);
-        icon.AssertAttributeValueEquals ("src", "~/Images/NullIcon.gif");
-        icon.AssertStyleAttribute ("border-width", "0px");
+        if (isIconEnabled)
+        {
+          iconParent.AssertChildElementCount (1);
+          var icon = iconParent.GetAssertedChildElement ("img", 0);
+          icon.AssertAttributeValueEquals ("src", "/Images/NullIcon.gif");
+        }
+        else
+        {
+          iconParent.AssertChildElementCount (0);
+        }
       }
     }
 
@@ -549,26 +567,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
       hiddenField.AssertChildElementCount (0);
     }
 
-    private void AssertControl (XmlNode containerDiv, bool withIcon, OptionMenuConfiguration optionMenuConfiguration, AutoPostBack autoPostBack)
+    private void AssertControl (XmlNode containerDiv, OptionMenuConfiguration optionMenuConfiguration, AutoPostBack autoPostBack)
     {
       var contentDiv = containerDiv.GetAssertedChildElement ("span", 0);
       contentDiv.AssertAttributeValueEquals ("class", "body");
 
-      if (withIcon)
-        AssertIcon (contentDiv, true);
+      AssertIcon (contentDiv, true);
 
-      var contentSpan = contentDiv.GetAssertedChildElement ("span", withIcon ? 1 : 0);
-      var iconQualifierCssClass = withIcon ? " hasIcon" : "";
+      var contentSpan = contentDiv.GetAssertedChildElement ("span", 1);
       switch (optionMenuConfiguration)
       {
         case OptionMenuConfiguration.NoOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content withoutOptionsMenu" + iconQualifierCssClass);
+          contentSpan.AssertAttributeValueEquals ("class", "content withoutOptionsMenu");
           break;
         case OptionMenuConfiguration.SeparateOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content separateOptionsMenu" + iconQualifierCssClass);
+          contentSpan.AssertAttributeValueEquals ("class", "content separateOptionsMenu");
           break;
         case OptionMenuConfiguration.EmbeddedOptionsMenu:
-          contentSpan.AssertAttributeValueEquals ("class", "content embeddedOptionsMenu" + iconQualifierCssClass);
+          contentSpan.AssertAttributeValueEquals ("class", "content embeddedOptionsMenu");
           break;
       }
 
@@ -576,7 +592,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocReferenceValueImpl
 
       if (optionMenuConfiguration == OptionMenuConfiguration.SeparateOptionsMenu)
       {
-        var optionsMenuDiv = contentDiv.GetAssertedChildElement ("span", 1);
+        var optionsMenuDiv = contentDiv.GetAssertedChildElement ("span", 2);
         optionsMenuDiv.AssertAttributeValueEquals ("class", "optionsMenu");
         optionsMenuDiv.AssertTextNode ("DropDownMenu", 0);
       }

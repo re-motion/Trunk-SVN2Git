@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      if (!renderingContext.Control.EnableIcon)
+      if (!renderingContext.Control.IsIconEnabled())
         return null;
 
       var iconServicePath = renderingContext.Control.IconServicePath;
@@ -179,27 +179,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      Image icon = GetIcon (renderingContext);
-      bool isReadOnly = renderingContext.Control.IsReadOnly;
-
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassContent);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
-
-      bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
 
       string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
-      if (isReadOnly)
+      if (renderingContext.Control.IsReadOnly)
       {
-        RenderReadOnlyValue (renderingContext, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
+        RenderReadOnlyValue (renderingContext, postBackEvent, string.Empty, objectID);
       }
       else
       {
-        if (icon.Visible)
-          RenderSeparateIcon (renderingContext, icon, isCommandEnabled, postBackEvent, string.Empty, objectID);
-
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext, icon.Visible));
+        RenderSeparateIcon (renderingContext, postBackEvent, string.Empty, objectID);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext));
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValueWithSeparateOptionsMenu (renderingContext);
@@ -226,23 +219,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
 
-      Image icon = GetIcon (renderingContext);
-      bool isReadOnly = renderingContext.Control.IsReadOnly;
-
-      bool isCommandEnabled = renderingContext.Control.IsCommandEnabled (isReadOnly);
-
       string postBackEvent = GetPostBackEvent (renderingContext);
       string objectID = StringUtility.NullToEmpty (renderingContext.Control.BusinessObjectUniqueIdentifier);
 
-      if (isReadOnly)
+      if (renderingContext.Control.IsReadOnly)
       {
-        RenderReadOnlyValue (renderingContext, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+        RenderReadOnlyValue (renderingContext, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
       }
       else
       {
-        if (icon.Visible)
-          RenderSeparateIcon (renderingContext, icon, isCommandEnabled, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
-        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext, icon.Visible));
+        RenderSeparateIcon (renderingContext, postBackEvent, DropDownMenu.OnHeadTitleClickScript, objectID);
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext));
         renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
         RenderEditModeValueWithIntegratedOptionsMenu (renderingContext);
@@ -260,43 +247,64 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
     }
 
-    private void RenderSeparateIcon (BocRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderSeparateIcon (BocRenderingContext<TControl> renderingContext, string postBackEvent, string onClick, string objectID)
     {
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
+      IconInfo icon = null;
+      var isIconEnabled = renderingContext.Control.IsIconEnabled();
+      if (isIconEnabled)
+        icon = GetIcon (renderingContext);
 
+      var anchorClass = CssClassCommand;
+      if (icon != null)
+        anchorClass += " " + CssClassHasIcon;
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, anchorClass);
+
+      var isCommandEnabled = isIconEnabled && IsCommandEnabled (renderingContext);
       var command = GetCommand (renderingContext, isCommandEnabled);
       command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
-      if (!string.IsNullOrEmpty (command.ToolTip))
-        icon.ToolTip = renderingContext.Control.Command.ToolTip;
 
-      icon.RenderControl (renderingContext.Writer);
+      if (isIconEnabled)
+        icon = icon ?? IconInfo.Spacer;
 
-      if (isCommandEnabled)
-        renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
-      else
-        renderingContext.Writer.RenderEndTag();
+      if (icon != null)
+      {
+        if (!string.IsNullOrEmpty (command.ToolTip))
+          icon.ToolTip = renderingContext.Control.Command.ToolTip;
+        icon.Render (renderingContext.Writer, renderingContext.Control);
+      }
+
+      renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
     }
 
-    private void RenderReadOnlyValue (BocRenderingContext<TControl> renderingContext, Image icon, bool isCommandEnabled, string postBackEvent, string onClick, string objectID)
+    private void RenderReadOnlyValue (BocRenderingContext<TControl> renderingContext, string postBackEvent, string onClick, string objectID)
     {
       Label label = GetLabel (renderingContext);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassCommand);
+
+      var isCommandEnabled = IsCommandEnabled (renderingContext);
       var command = GetCommand (renderingContext, isCommandEnabled);
       command.RenderBegin (renderingContext.Writer, postBackEvent, onClick, objectID, null);
 
-      if (icon.Visible)
-        icon.RenderControl (renderingContext.Writer);
+      IconInfo icon = null;
+      var isIconEnabled = renderingContext.Control.IsIconEnabled();
+      if (isIconEnabled)
+        icon = GetIcon (renderingContext);
 
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext, icon.Visible));
+      if (icon != null)
+        icon.Render (renderingContext.Writer, renderingContext.Control);
+
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, GetCssClassInnerContent (renderingContext));
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span);
       label.RenderControl (renderingContext.Writer);
       renderingContext.Writer.RenderEndTag();
 
-      if (isCommandEnabled)
-        renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
-      else
-        renderingContext.Writer.RenderEndTag ();
+      renderingContext.Control.Command.RenderEnd (renderingContext.Writer);
+    }
+
+    private bool IsCommandEnabled (BocRenderingContext<TControl> renderingContext)
+    {
+      return renderingContext.Control.BusinessObjectUniqueIdentifier != null && renderingContext.Control.IsCommandEnabled();
     }
 
     private BocCommand GetCommand (BocRenderingContext<TControl> renderingContext, bool isCommandEnabled)
@@ -308,31 +316,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return command;
     }
 
-    private Image GetIcon (BocRenderingContext<TControl> renderingContext)
+    private IconInfo GetIcon (BocRenderingContext<TControl> renderingContext)
     {
-      var icon = new Image { EnableViewState = false, ID = renderingContext.Control.IconClientID, GenerateEmptyAlternateText = true, Visible = false };
-      if (renderingContext.Control.EnableIcon)
+      var iconInfo = renderingContext.Control.GetIcon();
+
+      if (iconInfo != null && renderingContext.Control.IsCommandEnabled())
       {
-        IconInfo iconInfo = renderingContext.Control.GetIcon ();
-
-        if (iconInfo != null)
-        {
-          icon.ImageUrl = iconInfo.Url;
-          icon.Width = iconInfo.Width;
-          icon.Height = iconInfo.Height;
-
-          icon.Visible = true;
-
-          if (renderingContext.Control.IsCommandEnabled (renderingContext.Control.IsReadOnly))
-          {
-            if (string.IsNullOrEmpty (iconInfo.AlternateText))
-              icon.AlternateText = renderingContext.Control.GetLabelText ();
-            else
-              icon.AlternateText = iconInfo.AlternateText;
-          }
-        }
+        if (string.IsNullOrEmpty (iconInfo.AlternateText))
+          iconInfo.AlternateText = renderingContext.Control.GetLabelText();
       }
-      return icon;
+
+      return iconInfo;
     }
 
     private Label GetLabel (BocRenderingContext<TControl> renderingContext)
@@ -350,7 +344,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
                || renderingContext.Control.HasValueEmbeddedInsideOptionsMenu == null && renderingContext.Control.IsReadOnly && renderingContext.Control.HasOptionsMenu;
     }
 
-    private string GetCssClassInnerContent (BocRenderingContext<TControl> renderingContext, bool hasIcon)
+    private string GetCssClassInnerContent (BocRenderingContext<TControl> renderingContext)
     {
       string cssClass = CssClassInnerContent;
 
@@ -360,9 +354,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         cssClass += " " + CssClassEmbeddedOptionsMenu;
       else
         cssClass += " " + CssClassSeparateOptionsMenu;
-
-      if (hasIcon)
-        cssClass += " " + CssClassHasIcon;
 
       return cssClass;
     }

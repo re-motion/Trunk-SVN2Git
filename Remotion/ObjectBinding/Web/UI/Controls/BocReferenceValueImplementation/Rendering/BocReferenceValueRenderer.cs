@@ -113,7 +113,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.Append ("$(document).ready( function() { BocReferenceValue.Initialize(");
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.DropDownListClientID);
 
-      if (renderingContext.Control.EnableIcon)
+      if (renderingContext.Control.IsIconEnabled())
         script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
       else
         script.Append ("null, ");

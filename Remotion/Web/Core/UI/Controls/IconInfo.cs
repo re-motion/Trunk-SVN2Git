@@ -163,6 +163,8 @@ namespace Remotion.Web.UI.Controls
       ArgumentUtility.CheckNotNull ("writer", writer);
 
       string url = container.ResolveClientUrl (_url);
+      if (string.IsNullOrEmpty (url))
+        throw new InvalidOperationException (string.Format ("Icon url '{0}' resolved to null or empty. Icons without a source are not supported.", _url));
 
       writer.AddAttribute (HtmlTextWriterAttribute.Src, url);
 

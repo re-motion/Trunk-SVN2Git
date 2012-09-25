@@ -95,6 +95,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       _command.OwnerControl = this;
       _commonStyle = new Style();
       _labelStyle = new Style();
+
+      EnableIcon = true;
     }
 
     protected abstract string ValueContainingControlID { get; }
@@ -367,21 +369,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     public override Control TargetControl
     {
       get { return this; }
-    }
-
-    private bool ShowIcon
-    {
-      get
-      {
-        if (!EnableIcon)
-          return false;
-        if (Property == null)
-          return false;
-        if (GetIcon (Value, Property.ReferenceClass.BusinessObjectProvider) == null)
-          return false;
-
-        return true;
-      }
     }
 
     /// <summary> 
@@ -981,24 +968,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return businessObject.DisplayNameSafe;
     }
 
-    protected bool IsCommandEnabled (bool isReadOnly)
+    protected bool IsCommandEnabled ()
     {
       if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
         return false;
 
-      bool isCommandEnabled = false;
-      if (Command != null)
-      {
-        bool isActive = Command.Show == CommandShow.Always
-                        || isReadOnly && Command.Show == CommandShow.ReadOnly
-                        || ! isReadOnly && Command.Show == CommandShow.EditMode;
-        bool isCommandLinkPossible = (IsReadOnly || ShowIcon) && InternalValue != null;
-        if (isActive
-            && Command.Type != CommandType.None
-            && isCommandLinkPossible)
-          isCommandEnabled = Enabled;
-      }
-      return isCommandEnabled;
+      if (Command == null)
+        return false;
+
+      var isReadOnly = IsReadOnly;
+
+      bool isActive = Command.Show == CommandShow.Always
+                      || isReadOnly && Command.Show == CommandShow.ReadOnly
+                      || ! isReadOnly && Command.Show == CommandShow.EditMode;
+
+      return Enabled && isActive && Command.Type != CommandType.None;
     }
 
     private bool IsNullValue (string newValue)
@@ -1016,13 +1000,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return businessObjectClass;
     }
 
-    protected BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
-    {
-      if (!EnableIcon)
-        return null;
-      return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass());
-    }
-
     bool IBocRenderableControl.IsDesignMode
     {
       get { return IsDesignMode; }
@@ -1033,14 +1010,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       get { return HasOptionsMenu; }
     }
 
-    bool IBocReferenceValueBase.IsCommandEnabled (bool readOnly)
+    bool IBocReferenceValueBase.IsCommandEnabled ()
     {
-      return IsCommandEnabled (readOnly);
+      return IsCommandEnabled ();
     }
 
     DropDownMenu IBocReferenceValueBase.OptionsMenu
     {
       get { return OptionsMenu; }
+    }
+
+    bool IBocReferenceValueBase.IsIconEnabled()
+    {
+      if (!EnableIcon)
+        return false;
+      if (GetBusinessObjectClass() == null)
+        return false;
+      return true;
     }
 
     IconInfo IBocReferenceValueBase.GetIcon ()
@@ -1049,6 +1035,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       if (businessObjectClass == null)
         return null;
       return GetIcon (Value, businessObjectClass.BusinessObjectProvider);
+    }
+
+    protected BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
+    {
+      return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass());
     }
 
     string IBocReferenceValueBase.LabelClientID

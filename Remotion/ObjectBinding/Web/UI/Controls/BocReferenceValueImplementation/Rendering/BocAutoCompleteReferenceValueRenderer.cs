@@ -156,7 +156,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       script.AppendFormat ("$('#{0}'), ", renderingContext.Control.HiddenFieldClientID);
       script.AppendFormat ("$('#{0}'),", renderingContext.Control.DropDownButtonClientID);
 
-      if (renderingContext.Control.EnableIcon)
+      if (renderingContext.Control.IsIconEnabled())
         script.AppendFormat ("$('#{0} .{1}'), ", renderingContext.Control.ClientID, CssClassCommand);
       else
         script.Append ("null, ");
