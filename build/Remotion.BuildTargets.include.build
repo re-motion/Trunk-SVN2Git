@@ -133,28 +133,26 @@
     <NumberOfTestErrorsPerProject Include="0"/>
   </ItemGroup>
   
-  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects">
-    <Message Text="Running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
-    
-    <!-- Call actual testing target, fills NumberOfTest*PerProject item groups -->
-    <CallTarget Targets="RunTestsInternal" />
-    
+  <Target Name="RunTests" DependsOnTargets="CreateActiveConfiguration;CreateLogDirectory;BuildTestProjects;RunTestsInternal">
+    <Error Text="ItemGroup 'NumberOfTestFailuresPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestFailuresPerProject) == ''"/>
+    <Error Text="ItemGroup 'NumberOfTestErrorsPerProject' is empty, but should contain test results!" Condition="@(NumberOfTestErrorsPerProject) == ''"/>
+      
     <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestFailuresPerProject)">
       <Output PropertyName="_failures" TaskParameter="Result"/>
     </MSBuild.ExtensionPack.Science.Maths>
-
     <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestErrorsPerProject)">
       <Output PropertyName="_errors" TaskParameter="Result"/>
     </MSBuild.ExtensionPack.Science.Maths>
-
+      
     <Error
-        Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors."
-        Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
-
+      Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors."
+      Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
+      
     <Message Text="Done running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
   </Target>
   
   <Target Name="RunTestsInternal">
+    <Message Text="Running tests, ConfigurationID=$(ConfigurationID)" Importance="High"/>
     <MSBuild.ExtensionPack.CodeQuality.NUnit
         ToolPath="$(NUnitToolPath)"
         Assemblies="%(TestOutputFiles.FullPath)"
