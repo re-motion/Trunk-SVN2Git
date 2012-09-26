@@ -719,7 +719,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     [Test]
     public void CreateValidatorsReadOnly ()
     {
-      _control.RequiredFieldErrorMessage = "RequiredFieldErrorMessage";
+      _control.NullItemErrorMessage = "RequiredFieldErrorMessage";
       _control.ReadOnly = true;
       _control.Required = true;
       BaseValidator[] validators = _control.CreateValidators();

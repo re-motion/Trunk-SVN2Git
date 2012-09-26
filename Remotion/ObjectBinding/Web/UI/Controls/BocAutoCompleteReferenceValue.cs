@@ -71,9 +71,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       /// <summary> Label displayed in the OptionsMenu. </summary>
       OptionsTitle,
       /// <summary> The validation error message displayed when the null item is selected. </summary>
-      NullItemValidationMessage,
+      NullItemErrorMessage,
       /// <summary> The validation error message displayed when the display name does not identify a valid item. </summary>
-      InvalidItemValidationMessage,
+      InvalidItemErrorMessage,
     }
 
     // static members
@@ -243,7 +243,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       invalidDisplayNameValidator.ID = ID + "_ValidatorValidDisplayName";
       invalidDisplayNameValidator.ControlToValidate = ID;
       if (string.IsNullOrEmpty (InvalidItemErrorMessage))
-        invalidDisplayNameValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.InvalidItemValidationMessage);
+        invalidDisplayNameValidator.ErrorMessage = GetResourceManager ().GetString (ResourceIdentifier.InvalidItemErrorMessage);
       else
         invalidDisplayNameValidator.ErrorMessage = InvalidItemErrorMessage;
 
@@ -642,9 +642,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return UniqueID + IdSeparator + c_hiddenFieldIDPostfix; }
     }
 
-    protected override sealed string GetNullItemValidationMessage ()
+    protected override sealed string GetNullItemErrorMessage ()
     {
-      return GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
+      return GetResourceManager().GetString (ResourceIdentifier.NullItemErrorMessage);
     }
 
     protected override sealed string GetOptionsMenuTitle ()

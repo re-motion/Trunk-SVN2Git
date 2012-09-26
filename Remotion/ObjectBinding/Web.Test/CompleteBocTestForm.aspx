@@ -55,7 +55,7 @@
 </ListControlStyle></remotion:bocenumvalue></td></tr>
   <tr>
     <td></td>
-    <td><remotion:bocreferencevalue id=ReferenceField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Partner" RequiredFieldErrorMessage="Fehler">
+    <td><remotion:bocreferencevalue id=ReferenceField runat="server" datasourcecontrol="CurrentObject" propertyidentifier="Partner" NullItemErrorMessage="Fehler">
 <dropdownliststyle autopostback="True">
 </DropDownListStyle>
 

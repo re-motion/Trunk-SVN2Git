@@ -78,7 +78,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private readonly Style _commonStyle;
     private readonly Style _labelStyle;
 
-    private string _requiredFieldErrorMessage;
+    private string _nullItemErrorMessage;
     private readonly ArrayList _validators = new ArrayList ();
     private string _optionsTitle;
     private bool _showOptionsMenu = true;
@@ -124,7 +124,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     /// <summary> Returns the <see cref="IResourceManager"/> used to access the resources for this control. </summary>
     protected abstract IResourceManager GetResourceManager ();
 
-    protected abstract string GetNullItemValidationMessage ();
+    protected abstract string GetNullItemErrorMessage ();
 
     protected abstract string GetOptionsMenuTitle ();
 
@@ -233,14 +233,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     [Description ("Validation message displayed if the value is not set but the control is required.")]
     [Category ("Validator")]
     [DefaultValue ("")]
-    public string RequiredFieldErrorMessage
+    public string NullItemErrorMessage
     {
-      get { return _requiredFieldErrorMessage; }
+      get { return _nullItemErrorMessage; }
       set
       {
-        _requiredFieldErrorMessage = value;
+        _nullItemErrorMessage = value;
         foreach (var validator in _validators.OfType<RequiredFieldValidator>())
-          validator.ErrorMessage = _requiredFieldErrorMessage;
+          validator.ErrorMessage = _nullItemErrorMessage;
       }
     }
 
@@ -866,9 +866,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
       base.LoadResources (resourceManager);
 
-      var key = ResourceManagerUtility.GetGlobalResourceKey (RequiredFieldErrorMessage);
+      var key = ResourceManagerUtility.GetGlobalResourceKey (NullItemErrorMessage);
       if (!string.IsNullOrEmpty (key))
-        RequiredFieldErrorMessage = resourceManager.GetString (key);
+        NullItemErrorMessage = resourceManager.GetString (key);
   
       key = ResourceManagerUtility.GetGlobalResourceKey (OptionsTitle);
       if (! StringUtility.IsNullOrEmpty (key))
@@ -910,12 +910,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       RequiredFieldValidator notNullItemValidator = new RequiredFieldValidator ();
       notNullItemValidator.ID = ID + "_ValidatorNotNullItem";
       notNullItemValidator.ControlToValidate = ID;
-      if (string.IsNullOrEmpty (RequiredFieldErrorMessage))
+      if (string.IsNullOrEmpty (NullItemErrorMessage))
       {
-        notNullItemValidator.ErrorMessage = GetNullItemValidationMessage();
+        notNullItemValidator.ErrorMessage = GetNullItemErrorMessage();
       }
       else
-        notNullItemValidator.ErrorMessage = RequiredFieldErrorMessage;
+        notNullItemValidator.ErrorMessage = NullItemErrorMessage;
       validators[0] = notNullItemValidator;
 
       _validators.AddRange (validators);

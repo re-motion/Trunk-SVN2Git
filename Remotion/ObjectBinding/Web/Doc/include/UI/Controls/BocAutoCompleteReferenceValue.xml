@@ -92,10 +92,17 @@
           <description>Resource Identifier</description>
         </listheader>
         <item>
-          <term> <see cref="BocReferenceValueBase.RequiredFieldErrorMessage"/> </term>
+          <term> <see cref="BocReferenceValueBase.NullItemErrorMessage"/> </term>
           <description>
-            <para> &lt;BocReferenceValue Resource ID&gt;:RequiredFieldErrorMessage </para>
-            <para> e.g. auto:MyBocReferenceValue:RequiredFieldErrorMessage </para>
+            <para> &lt;BocReferenceValue Resource ID&gt;:NullItemErrorMessage </para>
+            <para> e.g. auto:MyBocReferenceValue:NullItemErrorMessage </para>
+          </description>
+        </item>
+        <item>
+          <term><see cref="BocAutoCompleteReferenceValue.InvalidItemErrorMessage"/></term>
+          <description>
+            <para> &lt;BocReferenceValue Resource ID&gt;:InvalidItemErrorMessage </para>
+            <para> e.g. auto:MyBocReferenceValue:InvalidItemErrorMessage </para>
           </description>
         </item>
         <item>

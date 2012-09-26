@@ -65,7 +65,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       /// <summary> Label displayed in the OptionsMenu. </summary>
       OptionsTitle,
       /// <summary> The validation error message displayed when the null item is selected. </summary>
-      NullItemValidationMessage,
+      NullItemErrorMessage,
     }
 
 
@@ -293,9 +293,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return GetResourceManager (typeof (ResourceIdentifier));
     }
 
-    protected override sealed string GetNullItemValidationMessage ()
+    protected override sealed string GetNullItemErrorMessage ()
     {
-      return GetResourceManager().GetString (ResourceIdentifier.NullItemValidationMessage);
+      return GetResourceManager().GetString (ResourceIdentifier.NullItemErrorMessage);
     }
 
     protected override sealed string GetOptionsMenuTitle ()

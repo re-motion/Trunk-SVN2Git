@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue.NullItemValidationMessage" xml:space="preserve">
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue.NullItemErrorMessage" xml:space="preserve">
     <value>Please select an item.</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValue.OptionsTitle" xml:space="preserve">

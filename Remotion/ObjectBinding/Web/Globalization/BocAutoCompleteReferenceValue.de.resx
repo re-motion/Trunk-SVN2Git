@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.InvalidItemValidationMessage" xml:space="preserve">
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.InvalidItemErrorMessage" xml:space="preserve">
     <value>Der eingegebene Text kann keinem Eintrag zugeordnet werden. Bitte korrigieren Sie Ihre Eingabe.</value>
   </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.NullItemValidationMessage" xml:space="preserve">
+  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.NullItemErrorMessage" xml:space="preserve">
     <value>Bitte wählen Sie einen Eintrag aus.</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocAutoCompleteReferenceValue.OptionsTitle" xml:space="preserve">
