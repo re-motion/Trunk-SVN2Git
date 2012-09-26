@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
         return null;
 
       var postBackEvent = GetPostBackEvent (renderingContext);
-      var commandInfo = command.GetCommandInfo (postBackEvent, new[] { "-0-" }, "", null, new NameValueCollection(), false);
+      var commandInfo = command.GetCommandInfo (postBackEvent, new[] { "-0-" }, "", null, new NameValueCollection(), true);
 
       if (commandInfo == null)
         return null;
