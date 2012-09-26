@@ -261,7 +261,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
-      string cssClassTableCell = CssClasses.GetDataCell (dataRowRenderEventArgs.IsOddRow);
+      string cssClassTableCell = CssClasses.DataCell;
 
       if (!StringUtility.IsNullOrEmpty (renderingContext.ColumnDefinition.CssClass))
         cssClassTableCell += " " + renderingContext.ColumnDefinition.CssClass;

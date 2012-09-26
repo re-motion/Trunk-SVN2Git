@@ -208,8 +208,7 @@ th.bocListTitleCell a:hover
 }
 
 /*  Style applied to the cells in the BocList's odd and even data rows. */
-td.bocListDataCellOdd,
-td.bocListDataCellEven
+td.bocListDataCell
 {
   text-align: left;
 
@@ -222,26 +221,24 @@ td.bocListDataCellEven
   cursor: default;
 }
 
-body.msie7 td.bocListDataCellOdd,
-body.msie7 td.bocListDataCellEven
+body.msie7 td.bocListDataCell
 {
   position: relative;
 }
 
 /*  Style applied to the cells in the BocList's not-selected odd and even data rows. */
-tr.bocListDataRow td.bocListDataCellOdd
+tr.bocListDataRow.odd td.bocListDataCell
 {
   background-color: White;
 }
 
-tr.bocListDataRow td.bocListDataCellEven
+tr.bocListDataRow.even td.bocListDataCell
 {
   background-color: #f4f4f4;
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */
-tr.bocListDataRow.selected td.bocListDataCellOdd,
-tr.bocListDataRow.selected td.bocListDataCellEven
+tr.bocListDataRow.selected td.bocListDataCell
 {
   background-color: Highlight;
   color: HighlightText;
@@ -268,58 +265,45 @@ label.bocListContent
 }
 
 /*  Style applied to the anchor tags in BocList's data rows.  */
-tr.bocListDataRow td.bocListDataCellOdd a,
-tr.bocListDataRow td.bocListDataCellEven a
+tr.bocListDataRow td.bocListDataCell a
 {
   display: inline-block;
   padding: 1px;
   border: 1px solid transparent;
-}
-
-/*  Style applied to the anchor tags in BocList's unselected odd and even data rows.  */
-tr.bocListDataRow td.bocListDataCellOdd a,
-tr.bocListDataRow td.bocListDataCellEven a
-{
   color: #083779;
 }
 
-/*  Style applied to the anchor tags in BocList's selected odd and even data rows.  */
-tr.bocListDataRow.selected td.bocListDataCellOdd a,
-tr.bocListDataRow.selected td.bocListDataCellEven a
+/*  Style applied to the anchor tags in BocList's selected data rows.  */
+tr.bocListDataRow.selected td.bocListDataCell a
 {
   color: White;
 }
 
-/*  Style applied to the anchor tags during hovering in BocList's selected odd and even data rows.  */
-tr.bocListDataRow td.bocListDataCellOdd a:hover,
-tr.bocListDataRow td.bocListDataCellEven a:hover
+/*  Style applied to the anchor tags during hovering in BocList's data rows.  */
+tr.bocListDataRow td.bocListDataCell a:hover
 {
   color: #083779;
   border: 1px solid #083779;
   background-color: #e6f0ff;
 }
 
-/*  Style applied to the disabled anchor tags during hovering in BocList's selected odd and even data rows.  */
-tr.bocListDataRow td.bocListDataCellOdd a.disabled:hover,
-tr.bocListDataRow td.bocListDataCellEven a.disabled:hover
+/*  Style applied to the disabled anchor tags during hovering in BocList's data rows.  */
+tr.bocListDataRow td.bocListDataCell a.disabled:hover
 {
   color: #083779;
   border: 1px solid transparent;
 }
 
 /* Style applied to SPAN elements in command-enabled column cells */
-tr.bocListDataRow td.bocListDataCellOdd span.CommandText,
-tr.bocListDataRow td.bocListDataCellEven span.CommandText
+tr.bocListDataRow td.bocListDataCell span.CommandText
 {
   vertical-align: middle;
 }
 
 
 /* Style to override the BocList's anchor style for drop down menus rendered inside a cell. */
-td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuLabel,
-td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuLabel,
-td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuLabel:hover,
-td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuLabel:hover
+td.bocListDataCell div span.DropDownMenuSelect a.DropDownMenuLabel,
+td.bocListDataCell div span.DropDownMenuSelect a.DropDownMenuLabel:hover
 {
   padding: 0;
   border: none;
@@ -327,10 +311,8 @@ td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuLabel:hover
   background-color: Transparent;
 }
 
-td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuButton,
-td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuButton,
-td.bocListDataCellOdd div span.DropDownMenuSelect a.DropDownMenuButton:hover,
-td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuButton:hover
+td.bocListDataCell div span.DropDownMenuSelect a.DropDownMenuButton,
+td.bocListDataCell div span.DropDownMenuSelect a.DropDownMenuButton:hover
 {
   padding: 0;
   border: none;
@@ -339,10 +321,8 @@ td.bocListDataCellEven div span.DropDownMenuSelect a.DropDownMenuButton:hover
 }
 
 
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuLabel,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuLabel,
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuLabel:hover,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuLabel:hover
+td.bocListDataCell span.DropDownMenuSelect.disabled a.DropDownMenuLabel,
+td.bocListDataCell span.DropDownMenuSelect.disabled a.DropDownMenuLabel:hover
 {
   padding: 0px;
   border: none;
@@ -350,10 +330,8 @@ td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuLabel:hove
   background-color: Transparent;
 }
 
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuButton,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuButton,
-td.bocListDataCellOdd span.DropDownMenuSelect.disabled a.DropDownMenuButton:hover,
-td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuButton:hover
+td.bocListDataCell span.DropDownMenuSelect.disabled a.DropDownMenuButton,
+td.bocListDataCell span.DropDownMenuSelect.disabled a.DropDownMenuButton:hover
 {
   padding: 0px;
   border: none;
@@ -361,14 +339,10 @@ td.bocListDataCellEven span.DropDownMenuSelect.disabled a.DropDownMenuButton:hov
   background-color: #E8E8E8;
 }
 
-td.bocListDataCellOdd span.bocDateValue a,
-td.bocListDataCellEven span.bocDateValue a,
-td.bocListDataCellOdd span.bocDateValue a:hover,
-td.bocListDataCellEven span.bocDateValue a:hover,
-td.bocListDataCellOdd span.bocDateTimeValue a,
-td.bocListDataCellEven span.bocDateTimeValue a,
-td.bocListDataCellOdd span.bocDateTimeValue a:hover,
-td.bocListDataCellEven span.bocDateTimeValue a:hover
+td.bocListDataCell span.bocDateValue a,
+td.bocListDataCell span.bocDateValue a:hover,
+td.bocListDataCell span.bocDateTimeValue a,
+td.bocListDataCell span.bocDateTimeValue a:hover
 {
   padding: 0px;
   border-style: none;

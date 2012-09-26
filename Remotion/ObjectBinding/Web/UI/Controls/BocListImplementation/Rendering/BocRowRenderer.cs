@@ -128,7 +128,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Control.OnDataRowRendering (dataRowRenderEventArgs);
 
       string cssClassTableRow = GetCssClassTableRow (renderingContext, isChecked, dataRowRenderEventArgs);
-      string cssClassTableCell = CssClasses.GetDataCell (isOddRow);
+      string cssClassTableCell = CssClasses.DataCell;
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
@@ -160,6 +160,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       string cssClassTableRow = CssClasses.DataRow;
+
+      if (dataRowRenderEventArgs.IsOddRow)
+        cssClassTableRow += " " + CssClasses.DataRowOdd;
+      else
+        cssClassTableRow += " " + CssClasses.DataRowEven;
 
       if (!string.IsNullOrEmpty (dataRowRenderEventArgs.AdditionalCssClassForDataRow))
         cssClassTableRow += " " + dataRowRenderEventArgs.AdditionalCssClassForDataRow;

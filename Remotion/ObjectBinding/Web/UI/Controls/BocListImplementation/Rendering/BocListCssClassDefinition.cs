@@ -92,25 +92,32 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return "bocListDataRow"; }
     }
 
-    /// <summary> Gets the CSS-Class additionally applied to the cells in the <see cref="BocList"/>'s selected data rows. </summary>
+    /// <summary> Gets the CSS-Class additionally applied to the <see cref="BocList"/>'s selected data rows. </summary>
     /// <remarks> Class: <c>selected</c> </remarks>
     public string DataRowSelected
     {
       get { return "selected"; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s odd data rows. </summary>
-    /// <remarks> Class: <c>bocListDataCellOdd</c> </remarks>
-    public virtual string DataCellOdd
+    /// <summary> Gets the CSS-Class additionally applied to the <see cref="BocList"/>'s even data rows. </summary>
+    /// <remarks> Class: <c>odd</c> </remarks>
+    public string DataRowOdd
     {
-      get { return "bocListDataCellOdd"; }
+      get { return "odd"; }
+    }
+    
+    /// <summary> Gets the CSS-Class additionally applied to the <see cref="BocList"/>'s even data rows. </summary>
+    /// <remarks> Class: <c>even</c> </remarks>
+    public string DataRowEven
+    {
+      get { return "even"; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s even data rows. </summary>
-    /// <remarks> Class: <c>bocListDataCellEven</c> </remarks>
-    public virtual string DataCellEven
+    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s odd data rows. </summary>
+    /// <remarks> Class: <c>bocListDataCellOdd</c> </remarks>
+    public virtual string DataCell
     {
-      get { return "bocListDataCellEven"; }
+      get { return "bocListDataCell"; }
     }
 
     /// <summary> Gets the CSS-Class applied to the cell in the <see cref="BocList"/>'s title row that contains the row index header. </summary>
@@ -195,22 +202,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     public virtual string CommandText
     {
       get { return "bocListCommandText"; }
-    }
-
-    public string FakeTableHead
-    {
-      get { return "bocListFakeTableHead"; }
-    }
-
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s data rows. </summary>
-    /// <param name="isOddRow"><see langword="true" /> for rows with an odd row-index, otherwise <see langword="false" />.</param>
-    /// <returns><see cref="DataCellOdd"/> if <paramref name="isOddRow"/> is <see langword="true" />, otherwise <see cref="DataCellEven"/>.</returns>
-    public string GetDataCell (bool isOddRow)
-    {
-      if (isOddRow)
-        return DataCellOdd;
-      else
-        return DataCellEven;
     }
 
     /// <summary> Gets the CSS-Class applied to the <see cref="BocList"/>'s table block. </summary>
