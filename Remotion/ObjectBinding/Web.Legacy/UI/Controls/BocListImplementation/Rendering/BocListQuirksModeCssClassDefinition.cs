@@ -90,14 +90,14 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data. </summary>
     /// <remarks> Class: <c>bocListDataRow</c> </remarks>
-    public virtual string DataRow
+    public string DataRow
     {
       get { return "bocListDataRow"; }
     }
 
     /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data rows. </summary>
     /// <remarks> Class: <c>bocListDataRowSelected</c> </remarks>
-    public virtual string DataRowSelected
+    public string DataRowSelected
     {
       get { return "bocListDataRowSelected"; }
     }
