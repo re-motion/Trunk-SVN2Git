@@ -92,11 +92,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return "bocListDataRow"; }
     }
 
-    /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s selected data rows. </summary>
-    /// <remarks> Class: <c>bocListDataRowSelected</c> </remarks>
-    public virtual string DataRowSelected
+    /// <summary> Gets the CSS-Class additionally applied to the cells in the <see cref="BocList"/>'s selected data rows. </summary>
+    /// <remarks> Class: <c>selected</c> </remarks>
+    public string DataRowSelected
     {
-      get { return "bocListDataRowSelected"; }
+      get { return "selected"; }
     }
 
     /// <summary> Gets the CSS-Class applied to the cells in the <see cref="BocList"/>'s odd data rows. </summary>

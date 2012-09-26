@@ -235,8 +235,8 @@ tr.bocListDataRow td.bocListDataCellEven
 }
 
 /*  Style applied to the cells in the BocList's selected odd and even data rows. */
-tr.bocListDataRowSelected td.bocListDataCellOdd,
-tr.bocListDataRowSelected td.bocListDataCellEven
+tr.bocListDataRow.selected td.bocListDataCellOdd,
+tr.bocListDataRow.selected td.bocListDataCellEven
 {
   background-color: Highlight;
   color: HighlightText;
@@ -264,9 +264,7 @@ label.bocListContent
 
 /*  Style applied to the anchor tags in BocList's data rows.  */
 tr.bocListDataRow td.bocListDataCellOdd a,
-tr.bocListDataRow td.bocListDataCellEven a,
-tr.bocListDataRowSelected td.bocListDataCellOdd a,
-tr.bocListDataRowSelected td.bocListDataCellEven a
+tr.bocListDataRow td.bocListDataCellEven a
 {
   display: inline-block;
   padding: 1px;
@@ -281,17 +279,15 @@ tr.bocListDataRow td.bocListDataCellEven a
 }
 
 /*  Style applied to the anchor tags in BocList's selected odd and even data rows.  */
-tr.bocListDataRowSelected td.bocListDataCellOdd a,
-tr.bocListDataRowSelected td.bocListDataCellEven a
+tr.bocListDataRow.selected td.bocListDataCellOdd a,
+tr.bocListDataRow.selected td.bocListDataCellEven a
 {
   color: White;
 }
 
 /*  Style applied to the anchor tags during hovering in BocList's selected odd and even data rows.  */
 tr.bocListDataRow td.bocListDataCellOdd a:hover,
-tr.bocListDataRow td.bocListDataCellEven a:hover,
-tr.bocListDataRowSelected td.bocListDataCellOdd a:hover,
-tr.bocListDataRowSelected td.bocListDataCellEven a:hover
+tr.bocListDataRow td.bocListDataCellEven a:hover
 {
   color: Blue;
   border: 1px solid #005588;
@@ -300,9 +296,7 @@ tr.bocListDataRowSelected td.bocListDataCellEven a:hover
 
 /*  Style applied to the disabled anchor tags during hovering in BocList's selected odd and even data rows.  */
 tr.bocListDataRow td.bocListDataCellOdd a.disabled:hover,
-tr.bocListDataRow td.bocListDataCellEven a.disabled:hover,
-tr.bocListDataRowSelected td.bocListDataCellOdd a.disabled:hover,
-tr.bocListDataRowSelected td.bocListDataCellEven a.disabled:hover
+tr.bocListDataRow td.bocListDataCellEven a.disabled:hover
 {
   color: Blue;
   border: 1px solid transparent;
@@ -310,9 +304,7 @@ tr.bocListDataRowSelected td.bocListDataCellEven a.disabled:hover
 
 /* Style applied to SPAN elements in command-enabled column cells */
 tr.bocListDataRow td.bocListDataCellOdd span.CommandText,
-tr.bocListDataRow td.bocListDataCellEven span.CommandText,
-tr.bocListDataRowSelected td.bocListDataCellOdd span.CommandText,
-tr.bocListDataRowSelected td.bocListDataCellEven span.CommandText
+tr.bocListDataRow td.bocListDataCellEven span.CommandText
 {
   vertical-align: middle;
 }

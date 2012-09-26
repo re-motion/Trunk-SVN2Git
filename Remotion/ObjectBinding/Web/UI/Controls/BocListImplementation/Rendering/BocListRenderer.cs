@@ -187,10 +187,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       string startUpScriptKey = typeof (BocListRenderer).FullName + "_Startup";
       if (!renderingContext.Control.Page.ClientScript.IsStartupScriptRegistered (typeof (BocListRenderer), startUpScriptKey))
       {
-        string script = string.Format (
-            "BocList_InitializeGlobals ('{0}', '{1}');",
-            CssClasses.DataRow,
-            CssClasses.DataRowSelected);
+        string script = "BocList_InitializeGlobals ();";
         renderingContext.Control.Page.ClientScript.RegisterStartupScriptBlock (
             renderingContext.Control, typeof (BocListRenderer), startUpScriptKey, script);
       }

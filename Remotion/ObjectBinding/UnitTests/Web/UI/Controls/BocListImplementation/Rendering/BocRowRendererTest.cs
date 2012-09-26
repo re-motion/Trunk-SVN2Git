@@ -147,7 +147,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
-      Html.AssertAttribute (tr, "class", _bocListCssClassDefinition.DataRowSelected);
+      Html.AssertAttribute (tr, "class", _bocListCssClassDefinition.DataRow + " " + _bocListCssClassDefinition.DataRowSelected);
 
       Html.GetAssertedChildElement (tr, "td", 0);
     }

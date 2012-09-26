@@ -15,9 +15,8 @@
 // 
 //  BocListe.js contains client side scripts used by BocList.
 
-//  The css classes used for rows in their selected and unselected state.
-var _bocList_TrClassName = '';
-var _bocList_TrClassNameSelected = '';
+//  The css class used for rows in their selected state.
+var _bocList_TrClassNameSelected = 'selected';
 
 //  Associative array: <BocList ID>, <BocList_SelectedRows>
 var _bocList_selectedRows = new Object();
@@ -61,11 +60,8 @@ function BocList_RowBlock (row, selectorControl)
 
 //  Initializes the class names of the css classes used to format the table cells.
 //  Call this method once in a startup script.
-function BocList_InitializeGlobals (trClassName, trClassNameSelected)
+function BocList_InitializeGlobals ()
 {
-  _bocList_TrClassName = trClassName;
-  _bocList_TrClassNameSelected = trClassNameSelected;
-
   _bocList_isCommandClick = false;
   _bocList_isSelectorControlClick = false;
   _bocList_isSelectorControlLabelClick = false;
@@ -212,7 +208,7 @@ function BocList_SelectRow (bocList, rowBlock)
   selectedRows.Length++;
     
   // Select currentRow
-  rowBlock.Row.className = _bocList_TrClassNameSelected;
+  $(rowBlock.Row).addClass (_bocList_TrClassNameSelected);
   rowBlock.SelectorControl.checked = true;
 }
 
@@ -247,7 +243,7 @@ function BocList_UnselectRow (bocList, rowBlock)
   selectedRows.Length--;
     
   // Unselect currentRow
-  rowBlock.Row.className = _bocList_TrClassName;
+  $(rowBlock.Row).removeClass(_bocList_TrClassNameSelected);
   rowBlock.SelectorControl.checked = false;
 }
 

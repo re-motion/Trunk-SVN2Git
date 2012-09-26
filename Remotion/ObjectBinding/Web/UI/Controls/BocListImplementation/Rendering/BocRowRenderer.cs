@@ -159,11 +159,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
     private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked)
     {
-      string cssClassTableRow;
+      string cssClassTableRow = CssClasses.DataRow;
       if (isChecked && renderingContext.Control.AreDataRowsClickSensitive())
-        cssClassTableRow = CssClasses.DataRowSelected;
-      else
-        cssClassTableRow = CssClasses.DataRow;
+        cssClassTableRow = cssClassTableRow + " " + CssClasses.DataRowSelected;
       return cssClassTableRow;
     }
   }
