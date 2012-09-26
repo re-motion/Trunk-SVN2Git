@@ -14,12 +14,32 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using Remotion.Web.Services;
 
 namespace Remotion.ObjectBinding.Web.Services
 {
+  /// <summary>
+  /// The <see cref="IBusinessObjectIconWebService"/> interface defines the API for retrieving the icon 
+  /// for an <see cref="IBusinessObjectWithIdentity"/> via a web-service call.
+  /// </summary>
   public interface IBusinessObjectIconWebService
   {
+    /// <summary>
+    /// Retrieves the icon for the specified <see cref="IBusinessObjectWithIdentity"/>.
+    /// </summary>
+    /// <param name="businessObjectClass">
+    /// The <see cref="IBusinessObjectClass.Identifier"/> of the <see cref="IBusinessObjectClass"/> the control is bound to or <see langword="null" />.
+    /// This value is either the <see cref="IBusinessObject.BusinessObjectClass"/> of the bound <see cref="IBusinessObject"/> or the 
+    /// <see cref="IBusinessObjectDataSource.BusinessObjectClass"/> of the <see cref="IBusinessObjectDataSource"/>. 
+    /// If no <paramref name="businessObjectClass"/> is specified, the method will return <see langword="null"/>.
+    /// </param>
+    /// <param name="businessObject">
+    ///   The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the bound <see cref="IBusinessObjectWithIdentity"/> or <see langword="null" />
+    ///   if no business object is set, i.e. the control's value is <see langword="null"/>.
+    /// </param>
+    /// <returns>An <see cref="IconProxy"/> object or <see langword="null" />.</returns>
     IconProxy GetIcon (string businessObjectClass, string businessObject);
   }
 }
