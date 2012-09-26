@@ -109,6 +109,7 @@
         var autoFillTimeout;
         // holds the last text the user entered into the input element
         var previousValue = '';
+        var isInvalidated = false;
         var cache = $.Autocompleter.Cache(options);
         var hasFocus = TypeUtility.IsDefined (window.document.activeElement) && window.document.activeElement == input;
         var lastKeyPressCode = -1;
@@ -454,9 +455,10 @@
                     updateResult({ DisplayName: term, UniqueIdentifier: options.nullValue });
                 };
 
-              startLoading();
-              invalidateResult();
-              requestDataExact(term, successHandler, failureHandler);
+                if (isInvalidated) {
+                    startLoading();
+                    requestDataExact(term, successHandler, failureHandler);
+                }
 
             } else {
 
@@ -468,10 +470,12 @@
         function updateResult(item) {
             var actualItem = $input.trigger("updateResult", item);
             previousValue = actualItem.DisplayName;
-        };
+            isInvalidated = false;
+          };
 
         function invalidateResult() {
             $input.trigger("invalidateResult");
+            isInvalidated = true;
         }
 
         function selectCurrent() {
