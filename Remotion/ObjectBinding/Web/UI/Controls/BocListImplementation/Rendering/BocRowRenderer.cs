@@ -124,7 +124,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       bool isChecked = (renderingContext.Control.SelectorControlCheckedState.Contains (originalRowIndex));
       bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
-      string cssClassTableRow = GetCssClassTableRow (renderingContext, isChecked);
+      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject, true, isOddRow);
+      renderingContext.Control.OnDataRowRendering (dataRowRenderEventArgs);
+
+      string cssClassTableRow = GetCssClassTableRow (renderingContext, isChecked, dataRowRenderEventArgs);
       string cssClassTableCell = CssClasses.GetDataCell (isOddRow);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
@@ -132,9 +135,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       GetIndexColumnRenderer().RenderDataCell (renderingContext, originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
       GetSelectorColumnRenderer().RenderDataCell (renderingContext, originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
-
-      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject, true, isOddRow);
-      renderingContext.Control.OnDataRowRendering (dataRowRenderEventArgs);
 
       RenderDataCells (renderingContext, rowIndex, dataRowRenderEventArgs);
 
@@ -157,11 +157,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         columnRenderer.RenderDataCell (renderingContext, rowIndex, dataRowRenderEventArgs);
     }
 
-    private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked)
+    private string GetCssClassTableRow (BocListRenderingContext renderingContext, bool isChecked, BocListDataRowRenderEventArgs dataRowRenderEventArgs)
     {
       string cssClassTableRow = CssClasses.DataRow;
+
+      if (!string.IsNullOrEmpty (dataRowRenderEventArgs.AdditionalCssClassForDataRow))
+        cssClassTableRow += " " + dataRowRenderEventArgs.AdditionalCssClassForDataRow;
+
       if (isChecked && renderingContext.Control.AreDataRowsClickSensitive())
-        cssClassTableRow = cssClassTableRow + " " + CssClasses.DataRowSelected;
+        cssClassTableRow += " " + CssClasses.DataRowSelected;
+
       return cssClassTableRow;
     }
   }

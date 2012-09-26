@@ -17,3 +17,9 @@ td.formGridTitleCell .bocTextValue.readOnly
 {
   width: auto;
 }
+
+tr.bocListDataRow.test
+{
+  font-weight: bold;
+  font-style: italic;
+}

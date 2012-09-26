@@ -358,7 +358,10 @@ public class BocListUserControl : BaseUserControl
   private void ChildrenList_DataRowRender(object sender, BocListDataRowRenderEventArgs e)
   {
     if (e.ListIndex == 3)
+    {
       e.SetRowReadonly();
+      e.SetAdditionalCssClassForDataRow ("test");
+    }
   }
 
   private void ChildrenList_EditableRowChangesCanceling(object sender, BocListEditableRowChangesEventArgs e)
