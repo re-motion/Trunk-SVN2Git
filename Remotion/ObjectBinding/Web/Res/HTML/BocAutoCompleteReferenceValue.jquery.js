@@ -250,7 +250,7 @@
                 }
 
                 if (isTextChangeKey && hasValueChanged) {
-                    $input.trigger("invalidateResult");
+                    invalidateResult();
                 }
 
                 if (!isControlKey && hasValueChanged) {
@@ -258,7 +258,7 @@
                 }
             } else if (event.type == 'paste') {
                 clearTimeout(timeout);
-                $input.trigger("invalidateResult");
+                invalidateResult();
                 lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
@@ -438,14 +438,13 @@
             } else if (confirmValue && term != '' && !options.isAutoPostBackEnabled) {
 
                 var successHandler = function(term, data) {
+                  stopLoading();
                   if (data != null) {
-                      stopLoading();
                       if ($input.val().toLowerCase() == term.toLowerCase()) {
                           $input.val(data.result);
                           updateResult(data.data);
                       }
                   } else {
-                      stopLoading();
                       updateResult({ DisplayName: term, UniqueIdentifier: options.nullValue });
                   }
                 };
@@ -456,7 +455,7 @@
                 };
 
               startLoading();
-              $input.trigger("invalidateResult");
+              invalidateResult();
               requestDataExact (term, successHandler, failureHandler);
 
             } else {
@@ -470,6 +469,10 @@
             var actualItem = $input.trigger("updateResult", item);
             previousValue = actualItem.DisplayName;
         };
+
+        function invalidateResult() {
+            $input.trigger("invalidateResult");
+        }
 
         function selectCurrent() {
             var selected = select.selected();
