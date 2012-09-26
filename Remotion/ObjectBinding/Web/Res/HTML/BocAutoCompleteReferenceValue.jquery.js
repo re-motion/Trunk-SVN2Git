@@ -455,7 +455,8 @@
                 };
 
               startLoading();
-              requestDataExact (term, successHandler, failureHandler);
+              invalidateResult();
+              requestDataExact(term, successHandler, failureHandler);
 
             } else {
 
@@ -676,8 +677,6 @@
         };
 
         function requestDataExact(term, success, failure) {
-            invalidateResult();
-
             if (!options.matchCase)
               term = term.toLowerCase();
 
