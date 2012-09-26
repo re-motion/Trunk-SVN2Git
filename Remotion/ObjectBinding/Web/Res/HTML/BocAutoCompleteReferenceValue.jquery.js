@@ -455,7 +455,6 @@
                 };
 
               startLoading();
-              invalidateResult();
               requestDataExact (term, successHandler, failureHandler);
 
             } else {
@@ -510,12 +509,16 @@
                     searchString = options.searchStringValidationParams.getDropDownSearchString(searchString);
 
                 var successHandler = function (q, data) {
+                    stopLoading();
                     receiveData (q, data);
                     if (dropDownTriggered && !select.visible() && options.noDataFoundMessage) {
                         informationPopUp.show (options.noDataFoundMessage);
                     }
                 };
-                var failureHandler = function() { closeDropDownListAndSetValue(previousValue); };
+                var failureHandler = function () {
+                    stopLoading();
+                    closeDropDownListAndSetValue(previousValue);
+                };
 
                 requestData(searchString, successHandler, failureHandler);
             } else {
@@ -604,7 +607,6 @@
         function receiveData(q, data) {
             informationPopUp.hide();
             if (data && hasFocus) {
-                stopLoading();
                 select.display(data, q);
                 if (data.length) {
                     autoFill(q, data[0].result);
@@ -663,8 +665,8 @@
                                           },
                                           function(err, context, methodName) {
                                             executingRequest = null;
-                                            stopLoading();
-                                            options.handleRequestError (err);
+                                            failure(term);
+                                            options.handleRequestError(err);
                                           });
             } else {
                 // if we have a failure, we need to empty the list -- this prevents the the [TAB] key from selecting the last successful match
@@ -674,6 +676,8 @@
         };
 
         function requestDataExact(term, success, failure) {
+            invalidateResult();
+
             if (!options.matchCase)
               term = term.toLowerCase();
 
@@ -709,7 +713,7 @@
                                                   },
                                                   function (err, context, methodName) {
                                                     executingRequest = null;
-                                                    stopLoading();
+                                                    failure(term);
                                                     options.handleRequestError(err);
                                                   });
         };
