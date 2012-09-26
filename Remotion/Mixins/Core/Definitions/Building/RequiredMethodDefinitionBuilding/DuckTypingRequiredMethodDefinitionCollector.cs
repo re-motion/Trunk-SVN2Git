@@ -75,23 +75,14 @@ namespace Remotion.Mixins.Definitions.Building.RequiredMethodDefinitionBuilding
       }
       catch (InvalidOperationException)
       {
-        var requiringMixins = requirement.FindRequiringMixins ().ToArray();
-        string requiringEntityString;
-        if (requiringMixins.Length > 0)
-        {
-          var mixinsString = SeparatedStringBuilder.Build (", ", requiringMixins, m => "'" + m.FullName + "'");
-          requiringEntityString = string.Format ("required by mixin(s) {0} applied to class '{1}'", mixinsString, requirement.TargetClass.FullName);
-        }
-        else
-        {
-          requiringEntityString = "required by a complete interface";
-        }
+        string requiringEntityString = requirement.GetRequiringEntityDescription ();
 
         string message = string.Format (
-            "The dependency '{0}' ({1}) is not fulfilled - public or protected method '{2}' could not be "
+            "The dependency '{0}' (required by {1} on class '{2}') is not fulfilled - public or protected method '{3}' could not be "
             + "found on the target class.",
             requirement.Type.Name,
             requiringEntityString,
+            requirement.TargetClass,
             interfaceMethod);
         throw new ConfigurationException (message);
       }

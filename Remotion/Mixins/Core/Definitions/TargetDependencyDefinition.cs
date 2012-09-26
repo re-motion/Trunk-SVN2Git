@@ -19,11 +19,28 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
+  /// <summary>
+  /// Represents the dependency a mixin has on a type to be used for <see cref="Mixin{TTarget}.Target"/> calls.
+  /// </summary>
   public class TargetCallDependencyDefinition : DependencyDefinitionBase
   {
-    public TargetCallDependencyDefinition (RequiredTargetCallTypeDefinition requiredType, MixinDefinition depender, TargetCallDependencyDefinition aggregator)
-      : base (requiredType, depender, aggregator)
+    private readonly MixinDefinition _dependingMixin;
+
+    public TargetCallDependencyDefinition (RequiredTargetCallTypeDefinition requiredType, MixinDefinition dependingMixin, TargetCallDependencyDefinition aggregator)
+      : base (requiredType, aggregator)
     {
+      ArgumentUtility.CheckNotNull ("dependingMixin", dependingMixin);
+      _dependingMixin = dependingMixin;
+    }
+
+    public new RequiredTargetCallTypeDefinition RequiredType
+    {
+      get { return (RequiredTargetCallTypeDefinition) base.RequiredType; }
+    }
+
+    public override IVisitableDefinition Depender
+    {
+      get { return _dependingMixin; }
     }
 
     public override void Accept (IDefinitionVisitor visitor)
@@ -32,9 +49,10 @@ namespace Remotion.Mixins.Definitions
       visitor.Visit (this);
     }
 
-    public new RequiredTargetCallTypeDefinition RequiredType
+    public override string GetDependencyDescription ()
     {
-      get { return (RequiredTargetCallTypeDefinition) base.RequiredType; }
+      return string.Format ("mixin '{0}'", _dependingMixin.FullName);
     }
+
   }
 }

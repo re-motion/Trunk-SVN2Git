@@ -40,6 +40,12 @@ namespace Remotion.Mixins.UnitTests.Core
       return new ClassContext (type, mixinContexts, completeInterfaces);
     }
 
+    public static ClassContext Create (Type type, Type[] mixinTypes, Type[] completeInterfaces)
+    {
+      var mixinContexts = GetMixinContexts (mixinTypes);
+      return new ClassContext (type, mixinContexts, completeInterfaces);
+    }
+
     private static IEnumerable<MixinContext> GetMixinContexts (Type[] mixinTypes)
     {
       var mixins = new Dictionary<Type, MixinContext> (mixinTypes.Length);

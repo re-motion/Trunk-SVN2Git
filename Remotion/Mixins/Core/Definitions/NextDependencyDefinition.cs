@@ -19,11 +19,28 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
+  /// <summary>
+  /// Represents the dependency a mixin has on a type to be used for <see cref="Mixin{TTarget,TNext}.Next"/> calls.
+  /// </summary>
   public class NextCallDependencyDefinition : DependencyDefinitionBase
   {
-    public NextCallDependencyDefinition (RequiredNextCallTypeDefinition requiredType, MixinDefinition depender, NextCallDependencyDefinition aggregator)
-      : base (requiredType, depender, aggregator)
+    private readonly MixinDefinition _dependingMixin;
+
+    public NextCallDependencyDefinition (RequiredNextCallTypeDefinition requiredType, MixinDefinition dependingMixin, NextCallDependencyDefinition aggregator)
+      : base (requiredType, aggregator)
     {
+      ArgumentUtility.CheckNotNull ("dependingMixin", dependingMixin);
+      _dependingMixin = dependingMixin;
+    }
+
+    public new RequiredNextCallTypeDefinition RequiredType
+    {
+      get { return (RequiredNextCallTypeDefinition) base.RequiredType; }
+    }
+
+    public override IVisitableDefinition Depender
+    {
+      get { return _dependingMixin; }
     }
 
     public override void Accept (IDefinitionVisitor visitor)
@@ -32,20 +49,20 @@ namespace Remotion.Mixins.Definitions
       visitor.Visit (this);
     }
 
+    public override string GetDependencyDescription ()
+    {
+      return string.Format ("mixin '{0}'", _dependingMixin.FullName);
+    }
+
     public override ClassDefinitionBase GetImplementer ()
     {
       ClassDefinitionBase implementer = base.GetImplementer ();
       // check for duck interface
       if (implementer == null && !RequiredType.IsEmptyInterface)
       {
-        implementer = Depender.TargetClass; // duck interface
+        implementer = TargetClass; // duck interface
       }
       return implementer;
-    }
-
-    public new RequiredNextCallTypeDefinition RequiredType
-    {
-      get { return (RequiredNextCallTypeDefinition) base.RequiredType; }
     }
   }
 }

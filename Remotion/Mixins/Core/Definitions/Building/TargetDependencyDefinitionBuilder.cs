@@ -19,52 +19,54 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
 {
+  /// <summary>
+  /// Builds <see cref="TargetCallDependencyDefinition"/> objects, for when a mixin has a dependency on a type to be used for 
+  /// <see cref="Mixin{TTarget}.Target"/> calls.
+  /// </summary>
   public class TargetCallDependencyDefinitionBuilder : DependencyDefinitionBuilderBase
   {
+    private readonly MixinDefinition _mixin;
+
     public TargetCallDependencyDefinitionBuilder (MixinDefinition mixin)
-        : base (mixin)
     {
+      ArgumentUtility.CheckNotNull ("mixin", mixin);
+      _mixin = mixin;
     }
 
-    protected override RequirementDefinitionBase GetRequirement (Type type, TargetClassDefinition targetClass)
+    protected override RequirementDefinitionBase GetRequirement (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("targetClass", targetClass);
 
-      return targetClass.RequiredTargetCallTypes[type];
+      return _mixin.TargetClass.RequiredTargetCallTypes[type];
     }
 
-    protected override RequirementDefinitionBase CreateRequirement (Type type, MixinDefinition mixin)
+    protected override RequirementDefinitionBase CreateRequirement (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
 
-      return new RequiredTargetCallTypeDefinition (mixin.TargetClass, type);
+      return new RequiredTargetCallTypeDefinition (_mixin.TargetClass, type);
     }
 
-    protected override void AddRequirement (RequirementDefinitionBase requirement, TargetClassDefinition targetClass)
+    protected override void AddRequirement (RequirementDefinitionBase requirement)
     {
       ArgumentUtility.CheckNotNull ("requirement", requirement);
-      ArgumentUtility.CheckNotNull ("targetClass", targetClass);
 
-      targetClass.RequiredTargetCallTypes.Add ((RequiredTargetCallTypeDefinition) requirement);
+      _mixin.TargetClass.RequiredTargetCallTypes.Add ((RequiredTargetCallTypeDefinition) requirement);
     }
 
-    protected override DependencyDefinitionBase CreateDependency (RequirementDefinitionBase requirement, MixinDefinition mixin, DependencyDefinitionBase aggregator)
+    protected override DependencyDefinitionBase CreateDependency (RequirementDefinitionBase requirement, DependencyDefinitionBase aggregator)
     {
       ArgumentUtility.CheckNotNull ("requirement", requirement);
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
 
-      return new TargetCallDependencyDefinition ((RequiredTargetCallTypeDefinition) requirement, mixin, (TargetCallDependencyDefinition) aggregator);
+      return new TargetCallDependencyDefinition ((RequiredTargetCallTypeDefinition) requirement, _mixin, (TargetCallDependencyDefinition) aggregator);
     }
 
-    protected override void AddDependency (MixinDefinition mixin, DependencyDefinitionBase dependency)
+    protected override void AddDependency (DependencyDefinitionBase dependency)
     {
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
       ArgumentUtility.CheckNotNull ("dependency", dependency);
 
-      if (!mixin.TargetCallDependencies.ContainsKey (dependency.RequiredType.Type))
-        mixin.TargetCallDependencies.Add ((TargetCallDependencyDefinition) dependency);
+      if (!_mixin.TargetCallDependencies.ContainsKey (dependency.RequiredType.Type))
+        _mixin.TargetCallDependencies.Add ((TargetCallDependencyDefinition) dependency);
     }
   }
 }

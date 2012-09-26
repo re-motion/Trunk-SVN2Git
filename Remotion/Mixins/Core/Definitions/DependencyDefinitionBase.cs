@@ -20,23 +20,20 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
-  [DebuggerDisplay ("{RequiredType.Type}, Depender = {Depender.Type}")]
+  [DebuggerDisplay ("{RequiredType.Type}, Depender = {Depender}")]
   public abstract class DependencyDefinitionBase : IVisitableDefinition
   {
     private readonly UniqueDefinitionCollection<Type, DependencyDefinitionBase> _aggregatedDependencies;
 
     private readonly RequirementDefinitionBase _requirement; // the required face or base interface
-    private readonly MixinDefinition _depender; // the mixin (directly or indirectly) defining the requirement
     private readonly DependencyDefinitionBase _aggregator; // the outer dependency containing this dependency, if defined indirectly
 
-    public DependencyDefinitionBase (RequirementDefinitionBase requirement, MixinDefinition depender, DependencyDefinitionBase aggregator)
+    public DependencyDefinitionBase (RequirementDefinitionBase requirement, DependencyDefinitionBase aggregator)
     {
       ArgumentUtility.CheckNotNull ("requirement", requirement);
-      ArgumentUtility.CheckNotNull ("depender", depender);
       ArgumentUtility.CheckType ("aggregator", aggregator, GetType ());
 
       _requirement = requirement;
-      _depender = depender;
       _aggregator = aggregator;
 
       _aggregatedDependencies = new UniqueDefinitionCollection<Type, DependencyDefinitionBase> (
@@ -44,20 +41,25 @@ namespace Remotion.Mixins.Definitions
           HasSameDepender);
     }
 
-    public bool HasSameDepender (DependencyDefinitionBase dependencyToCheck)
+    public abstract IVisitableDefinition Depender { get; }
+
+    public abstract void Accept (IDefinitionVisitor visitor);
+    public abstract string GetDependencyDescription ();
+
+    private bool HasSameDepender (DependencyDefinitionBase dependencyToCheck)
     {
       ArgumentUtility.CheckNotNull ("dependencyToCheck", dependencyToCheck);
-      return dependencyToCheck.Depender == _depender;
+      return dependencyToCheck.Depender == Depender;
+    }
+
+    public TargetClassDefinition TargetClass
+    {
+      get { return RequiredType.TargetClass; }
     }
 
     public RequirementDefinitionBase RequiredType
     {
       get { return _requirement; }
-    }
-
-    public MixinDefinition Depender
-    {
-      get { return _depender; }
     }
 
     public DependencyDefinitionBase Aggregator
@@ -96,16 +98,14 @@ namespace Remotion.Mixins.Definitions
       get { return _aggregatedDependencies; }
     }
 
-    public abstract void Accept (IDefinitionVisitor visitor);
-
     public virtual ClassDefinitionBase GetImplementer()
     {
-      if (RequiredType.Type.IsAssignableFrom (_depender.TargetClass.Type))
-        return _depender.TargetClass;
-      else if (_depender.TargetClass.ReceivedInterfaces.ContainsKey (RequiredType.Type))
-        return _depender.TargetClass.ReceivedInterfaces[RequiredType.Type].Implementer;
+      if (RequiredType.Type.IsAssignableFrom (TargetClass.Type))
+        return TargetClass;
+      else if (TargetClass.ReceivedInterfaces.ContainsKey (RequiredType.Type))
+        return TargetClass.ReceivedInterfaces[RequiredType.Type].Implementer;
       else if (!RequiredType.IsEmptyInterface) // duck interface
-        return _depender.TargetClass; 
+        return TargetClass; 
       else
         return null; // empty interface that is neither introduced nor implemented
     }

@@ -109,7 +109,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefi
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
-        "The dependency 'IBaseType2' (required by mixin(s) 'System.String' applied to class 'System.Object') is not fulfilled - public or protected "
+        "The dependency 'IBaseType2' (required by mixin 'System.String' on class 'System.Object') is not fulfilled - public or protected "
         + "method 'System.String IfcMethod()' could not be found on the target class.")]
     public void CreateRequiredMethodDefinitions_NoMatch ()
     {
@@ -127,8 +127,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefi
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage = 
-        "The dependency 'IInterface' (required by a complete interface) is not fulfilled - public or protected method 'Void Method1()' could not be "
-        + "found on the target class.")]
+        "The dependency 'IInterface' (required by a complete interface on class 'System.Object') is not fulfilled - public or protected method "
+        + "'Void Method1()' could not be found on the target class.")]
     public void CreateRequiredMethodDefinitions_NoMatch_NoRequiringMixin ()
     {
       var targetClassDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (object));

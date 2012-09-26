@@ -15,10 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
-using Remotion.Collections;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
@@ -35,7 +35,7 @@ namespace Remotion.Mixins.Definitions
     private readonly TargetClassDefinition _targetClass;
     private readonly Type _type;
 
-    public RequirementDefinitionBase(TargetClassDefinition targetClass, Type type)
+    protected RequirementDefinitionBase(TargetClassDefinition targetClass, Type type)
     {
       ArgumentUtility.CheckNotNull ("targetClass", targetClass);
       ArgumentUtility.CheckNotNull ("type", type);
@@ -93,12 +93,15 @@ namespace Remotion.Mixins.Definitions
 
     protected abstract void ConcreteAccept (IDefinitionVisitor visitor);
 
-    public IEnumerable<MixinDefinition> FindRequiringMixins()
+    public string GetRequiringEntityDescription ()
     {
-      var mixins = new Set<MixinDefinition>();
-      foreach (DependencyDefinitionBase dependency in _requiringDependencies)
-        mixins.Add (dependency.Depender);
-      return mixins;
+      var distinctRequiringDependencyDescriptions = _requiringDependencies.Select (d => d.GetDependencyDescription()).Distinct();
+      var requiringEntityDescription = SeparatedStringBuilder.Build (", ", distinctRequiringDependencyDescriptions);
+      // TODO 4024: Temporary workaround
+      if (requiringEntityDescription == "")
+        requiringEntityDescription = "a complete interface";
+
+      return requiringEntityDescription;
     }
   }
 }

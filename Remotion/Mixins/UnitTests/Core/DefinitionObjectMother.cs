@@ -258,6 +258,16 @@ namespace Remotion.Mixins.UnitTests.Core
       return BuildUnvalidatedDefinition(context);
     }
 
+    public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, Type[] mixinTypes, Type[] completeInterfaces)
+    {
+      ArgumentUtility.CheckNotNull ("baseType", baseType);
+      ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
+      ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
+
+      var context = ClassContextObjectMother.Create (baseType, mixinTypes, completeInterfaces);
+      return BuildUnvalidatedDefinition (context);
+    }
+
     public static TargetClassDefinition BuildUnvalidatedDefinition (ClassContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);

@@ -19,20 +19,28 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
 {
+  /// <summary>
+  /// Represents the dependency a mixin has on a different mixin for ordering purposes.
+  /// </summary>
   public class MixinDependencyDefinition : DependencyDefinitionBase
   {
-    public MixinDependencyDefinition (RequiredMixinTypeDefinition requiredType, MixinDefinition depender, MixinDependencyDefinition aggregator)
-      : base (requiredType, depender, aggregator)
+    private readonly MixinDefinition _dependingMixin;
+
+    public MixinDependencyDefinition (RequiredMixinTypeDefinition requiredType, MixinDefinition dependingMixin, MixinDependencyDefinition aggregator)
+      : base (requiredType, aggregator)
     {
+      ArgumentUtility.CheckNotNull ("dependingMixin", dependingMixin);
+      _dependingMixin = dependingMixin;
     }
 
-    public override ClassDefinitionBase GetImplementer ()
+    public new RequiredMixinTypeDefinition RequiredType
     {
-      if (RequiredType.Type.IsInterface)
-        return Depender.TargetClass.ReceivedInterfaces.ContainsKey (RequiredType.Type)
-            ? Depender.TargetClass.ReceivedInterfaces[RequiredType.Type].Implementer : null;
-      else
-        return Depender.TargetClass.Mixins[RequiredType.Type];
+      get { return (RequiredMixinTypeDefinition) base.RequiredType; }
+    }
+
+    public override IVisitableDefinition Depender
+    {
+      get { return _dependingMixin; }
     }
 
     public override void Accept (IDefinitionVisitor visitor)
@@ -41,9 +49,18 @@ namespace Remotion.Mixins.Definitions
       visitor.Visit (this);
     }
 
-    public new RequiredMixinTypeDefinition RequiredType
+    public override string GetDependencyDescription ()
     {
-      get { return (RequiredMixinTypeDefinition) base.RequiredType; }
+      return string.Format ("mixin '{0}'", _dependingMixin.FullName);
+    }
+
+    public override ClassDefinitionBase GetImplementer ()
+    {
+      if (RequiredType.Type.IsInterface)
+        return TargetClass.ReceivedInterfaces.ContainsKey (RequiredType.Type)
+            ? TargetClass.ReceivedInterfaces[RequiredType.Type].Implementer : null;
+      else
+        return TargetClass.Mixins[RequiredType.Type];
     }
   }
 }

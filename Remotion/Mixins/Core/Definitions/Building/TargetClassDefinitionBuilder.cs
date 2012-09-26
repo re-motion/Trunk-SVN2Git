@@ -49,7 +49,12 @@ namespace Remotion.Mixins.Definitions.Building
       attributesBuilder.Apply (classDefinition.Type);
 
       foreach (Type faceInterface in classContext.CompleteInterfaces)
+      {
         classDefinition.RequiredTargetCallTypes.Add (new RequiredTargetCallTypeDefinition (classDefinition, faceInterface));
+        // Also add the inherited interfaces
+        //foreach (var inheritedFaceInterface in faceInterface.GetInterfaces())
+        //  classDefinition.RequiredTargetCallTypes.Add (new RequiredTargetCallTypeDefinition (classDefinition, inheritedFaceInterface));
+      }
 
       ApplyMixins (classDefinition, classContext);
       ApplyMethodRequirements (classDefinition);

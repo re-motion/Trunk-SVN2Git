@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 {
@@ -35,22 +36,22 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType33)));
       Assert.IsFalse (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType2)));
 
-      List<MixinDefinition> requirers = new List<MixinDefinition> (targetClass.RequiredTargetCallTypes[typeof (IBaseType31)].FindRequiringMixins());
-      Assert.Contains (targetClass.Mixins[typeof (BT3Mixin1)], requirers);
-      Assert.Contains (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin6<,>)), requirers);
-      Assert.AreEqual (2, requirers.Count);
+      CheckAllRequiringEntities (
+          targetClass.RequiredTargetCallTypes[typeof (IBaseType31)], 
+          targetClass.Mixins[typeof (BT3Mixin1)], targetClass.GetMixinByConfiguredType (typeof (BT3Mixin6<,>)));
 
       Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IBaseType31)].IsEmptyInterface);
       Assert.IsFalse (targetClass.RequiredTargetCallTypes[typeof (IBaseType31)].IsAggregatorInterface);
 
       targetClass = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin4), typeof (Bt3Mixin7TargetCall));
       Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)));
-      requirers = new List<MixinDefinition> (targetClass.RequiredTargetCallTypes[typeof (ICBaseType3BT3Mixin4)].FindRequiringMixins());
-      Assert.Contains (targetClass.Mixins[typeof (Bt3Mixin7TargetCall)], requirers);
 
-      requirers = new List<MixinDefinition> (targetClass.RequiredTargetCallTypes[typeof (BaseType3)].FindRequiringMixins ());
-      Assert.Contains (targetClass.Mixins[typeof (BT3Mixin4)], requirers);
-      Assert.AreEqual (1, requirers.Count);
+      CheckAllRequiringEntities (
+          targetClass.RequiredTargetCallTypes[typeof (ICBaseType3BT3Mixin4)],
+          targetClass.Mixins[typeof (Bt3Mixin7TargetCall)]);
+      CheckAllRequiringEntities (
+          targetClass.RequiredTargetCallTypes[typeof (BaseType3)],
+          targetClass.Mixins[typeof (BT3Mixin4)]);
     }
 
     [Test]
@@ -74,20 +75,20 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "The dependency 'IBT3Mixin4' (required by mixin(s) 'Remotion.Mixins.UnitTests.Core.TestDomain.Bt3Mixin7TargetCall' applied to class "
-                          + "'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType3') is not fulfilled - public or protected method 'System.String Foo()' "
-                          + "could not be found on the target class.")]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = 
+        "The dependency 'IBT3Mixin4' (required by mixin 'Remotion.Mixins.UnitTests.Core.TestDomain.Bt3Mixin7TargetCall' on class "
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType3') is not fulfilled - public or protected method 'System.String Foo()' "
+        + "could not be found on the target class.")]
     public void ThrowsIfAggregateTargetCallDependencyIsNotFullyImplemented ()
     {
       DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (Bt3Mixin7TargetCall));
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException),
-        ExpectedMessage = "The dependency 'IBT3Mixin4' (required by mixin(s) 'Remotion.Mixins.UnitTests.Core.TestDomain.BT3Mixin7Base' applied to class "
-                          + "'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType3') is not fulfilled - public or protected method 'System.String Foo()' "
-                          + "could not be found on the target class.")]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
+        "The dependency 'IBT3Mixin4' (required by mixin 'Remotion.Mixins.UnitTests.Core.TestDomain.BT3Mixin7Base' on class "
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType3') is not fulfilled - public or protected method 'System.String Foo()' "
+        + "could not be found on the target class.")]
     public void ThrowsIfAggregateNextCallDependencyIsNotFullyImplemented ()
     {
       DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), typeof (BT3Mixin7Base));
@@ -105,8 +106,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.Contains (typeof (IBaseType34), requiredNextCallTypes);
       Assert.IsFalse (requiredNextCallTypes.Contains (typeof (IBaseType35)));
 
-      List<MixinDefinition> requirers = new List<MixinDefinition> (targetClass.RequiredNextCallTypes[typeof (IBaseType33)].FindRequiringMixins());
-      Assert.Contains (targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)), requirers);
+      CheckSomeRequiringMixin (
+          targetClass.RequiredNextCallTypes[typeof (IBaseType33)],
+          targetClass.GetMixinByConfiguredType (typeof (BT3Mixin3<,>)));
     }
 
     [Test]
@@ -167,7 +169,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         Assert.IsTrue (targetClass.Mixins.ContainsKey (typeof (DuckTargetCallMixin)));
         MixinDefinition mixin = targetClass.Mixins[typeof (DuckTargetCallMixin)];
         Assert.IsTrue (targetClass.RequiredTargetCallTypes.ContainsKey (typeof (IDuckTargetCallRequirements)));
-        Assert.IsTrue (new List<MixinDefinition> (targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)].FindRequiringMixins ()).Contains (mixin));
+        CheckAllRequiringEntities (
+            targetClass.RequiredTargetCallTypes[typeof (IDuckTargetCallRequirements)],
+            mixin);
 
         Assert.IsTrue (mixin.TargetCallDependencies.ContainsKey (typeof (IDuckTargetCallRequirements)));
         Assert.AreSame (targetClass, mixin.TargetCallDependencies[typeof (IDuckTargetCallRequirements)].GetImplementer ());
@@ -208,7 +212,9 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         Assert.IsTrue (targetClass.Mixins.ContainsKey (typeof (DuckBaseMixin)));
         MixinDefinition mixin = targetClass.Mixins[typeof (DuckBaseMixin)];
         Assert.IsTrue (targetClass.RequiredNextCallTypes.ContainsKey (typeof (IDuckBaseRequirements)));
-        Assert.IsTrue (new List<MixinDefinition> (targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)].FindRequiringMixins()).Contains (mixin));
+        CheckAllRequiringEntities (
+            targetClass.RequiredNextCallTypes[typeof (IDuckBaseRequirements)],
+            mixin);
 
         Assert.IsTrue (mixin.NextCallDependencies.ContainsKey (typeof (IDuckBaseRequirements)));
         Assert.AreSame (targetClass, mixin.NextCallDependencies[typeof (IDuckBaseRequirements)].GetImplementer());
@@ -397,6 +403,52 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
+    public void CompleteInterfaces ()
+    {
+      TargetClassDefinition bt3 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), Type.EmptyTypes, new[] { typeof (ICBaseType3) });
+
+      var requirement = bt3.RequiredTargetCallTypes[typeof (ICBaseType3)];
+      Assert.That (requirement, Is.Not.Null);
+
+      // Assert.That (requirement.RequiringDependencies)
+
+      // TODO 4024: temporary workaround
+      Assert.That (requirement.GetRequiringEntityDescription(), Is.EqualTo ("a complete interface"));
+      // CheckSomeRequiringCompleteInterface (requirement, typeof (ICBaseType3));
+
+      //MixinDefinition m4 = bt3.Mixins[typeof (BT3Mixin4)];
+      //MixinDefinition m7 = bt3.Mixins[typeof (Bt3Mixin7TargetCall)];
+
+      //TargetCallDependencyDefinition d1 = m7.TargetCallDependencies[typeof (ICBaseType3BT3Mixin4)];
+      //Assert.IsNull (d1.GetImplementer());
+      //Assert.AreEqual ("Remotion.Mixins.UnitTests.Core.TestDomain.ICBaseType3BT3Mixin4", d1.FullName);
+      //Assert.AreSame (m7, d1.Parent);
+
+      //Assert.IsTrue (d1.IsAggregate);
+      //Assert.IsTrue (d1.AggregatedDependencies[typeof (ICBaseType3)].IsAggregate);
+      //Assert.IsFalse (
+      //    d1.AggregatedDependencies[typeof (ICBaseType3)]
+      //        .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
+      //Assert.AreSame (
+      //    bt3,
+      //    d1.AggregatedDependencies[typeof (ICBaseType3)]
+      //        .AggregatedDependencies[typeof (IBaseType31)].GetImplementer());
+
+      //Assert.IsFalse (d1.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate);
+      //Assert.AreSame (m4, d1.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer());
+
+      //Assert.AreSame (d1, d1.AggregatedDependencies[typeof (IBT3Mixin4)].Aggregator);
+
+      //Assert.IsTrue (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsEmptyInterface);
+      //Assert.IsTrue (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsAggregatorInterface);
+
+      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)));
+      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3)));
+      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType31)));
+      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBT3Mixin4)));
+    }
+
+    [Test]
     public void EmptyInterface()
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (MixinWithEmptyInterface), typeof (MixinRequiringEmptyInterface)).EnterScope())
@@ -511,7 +563,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       Assert.IsTrue (targetClass.RequiredMixinTypes.ContainsKey (typeof (IMixinWithAdditionalClassDependency)));
       RequiredMixinTypeDefinition requirement = targetClass.RequiredMixinTypes[typeof (IMixinWithAdditionalClassDependency)];
-      Assert.That (requirement.FindRequiringMixins (), Has.Member(mixin));
+      CheckAllRequiringEntities (requirement, mixin);
+
       Assert.IsTrue (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (IMixinWithAdditionalClassDependency)]));
       
       Assert.AreEqual(0, requirement.Methods.Count, "mixin type requirements do not contain method requirements");
@@ -532,12 +585,47 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       Assert.IsTrue (targetClass.RequiredMixinTypes.ContainsKey (typeof (MixinWithNoAdditionalDependency)));
       RequiredMixinTypeDefinition requirement = targetClass.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
-      Assert.That (requirement.FindRequiringMixins (), Has.Member(mixin));
+      CheckAllRequiringEntities (requirement, mixin);
+
       Assert.IsTrue (requirement.RequiringDependencies.ContainsKey (mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)]));
 
       Assert.AreEqual (0, requirement.Methods.Count, "mixin type requirements do not contain method requirements");
 
       Assert.AreSame (requirement, mixin.MixinDependencies[typeof (MixinWithNoAdditionalDependency)].RequiredType);
+    }
+
+    private void CheckAllRequiringEntities (RequirementDefinitionBase requirement, params MixinDefinition[] expectedRequiringMixins)
+    {
+      ArgumentUtility.CheckNotNull ("requirement", requirement);
+      ArgumentUtility.CheckNotNull ("expectedRequiringMixins", expectedRequiringMixins);
+
+      var requiringEntityDescription = requirement.GetRequiringEntityDescription ();
+      var requiringEntityDescriptionItems = requiringEntityDescription.Split (new[] { ", "}, StringSplitOptions.None);
+
+      foreach (var mixinDefinition in expectedRequiringMixins)
+        CheckSomeRequiringMixin (requirement, mixinDefinition);
+
+      Assert.That (requiringEntityDescriptionItems, Has.Length.EqualTo (expectedRequiringMixins.Length), requiringEntityDescription);
+    }
+
+    private void CheckSomeRequiringMixin (RequirementDefinitionBase requirement, MixinDefinition expectedRequiringMixin)
+    {
+      ArgumentUtility.CheckNotNull ("requirement", requirement);
+      ArgumentUtility.CheckNotNull ("expectedRequiringMixin", expectedRequiringMixin);
+
+      var requirers = requirement.GetRequiringEntityDescription ().Split (new[] { ", " }, StringSplitOptions.None);
+
+      Assert.That (requirers, Has.Member ("mixin '" + expectedRequiringMixin.FullName + "'"));
+    }
+
+    private void CheckSomeRequiringCompleteInterface (RequirementDefinitionBase requirement, Type expectedRequiringCompleteInterface)
+    {
+      ArgumentUtility.CheckNotNull ("requirement", requirement);
+      ArgumentUtility.CheckNotNull ("expectedRequiringCompleteInterface", expectedRequiringCompleteInterface);
+
+      var requirers = requirement.GetRequiringEntityDescription ().Split (new[] { ", " }, StringSplitOptions.None);
+
+      Assert.That (requirers, Has.Member ("complete interface '" + expectedRequiringCompleteInterface.FullName + "'"));
     }
   }
 }

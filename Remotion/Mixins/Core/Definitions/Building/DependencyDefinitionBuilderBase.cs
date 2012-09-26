@@ -22,19 +22,11 @@ namespace Remotion.Mixins.Definitions.Building
 {
   public abstract class DependencyDefinitionBuilderBase
   {
-    private readonly MixinDefinition _mixin;
-
-    public DependencyDefinitionBuilderBase(MixinDefinition mixin)
-    {
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
-      _mixin = mixin;
-    }
-
-    protected abstract RequirementDefinitionBase GetRequirement (Type type, TargetClassDefinition targetClass);
-    protected abstract RequirementDefinitionBase CreateRequirement (Type type, MixinDefinition mixin);
-    protected abstract void AddRequirement (RequirementDefinitionBase requirement, TargetClassDefinition targetClass);
-    protected abstract DependencyDefinitionBase CreateDependency (RequirementDefinitionBase requirement, MixinDefinition mixin, DependencyDefinitionBase aggregator);
-    protected abstract void AddDependency (MixinDefinition mixin, DependencyDefinitionBase dependency);
+    protected abstract RequirementDefinitionBase GetRequirement (Type type);
+    protected abstract RequirementDefinitionBase CreateRequirement (Type type);
+    protected abstract void AddRequirement (RequirementDefinitionBase requirement);
+    protected abstract DependencyDefinitionBase CreateDependency (RequirementDefinitionBase requirement, DependencyDefinitionBase aggregator);
+    protected abstract void AddDependency (DependencyDefinitionBase dependency);
 
     public void Apply (IEnumerable<Type> dependencyTypes)
     {
@@ -45,7 +37,7 @@ namespace Remotion.Mixins.Definitions.Building
         if (!type.Equals (typeof (object))) // dependencies to System.Object are always fulfilled and not explicitly added to the configuration
         {
           DependencyDefinitionBase dependency = BuildDependency (type, null);
-          AddDependency (_mixin, dependency);
+          AddDependency (dependency);
         }
       }
     }
@@ -54,13 +46,13 @@ namespace Remotion.Mixins.Definitions.Building
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      RequirementDefinitionBase requirement = GetRequirement (type, _mixin.TargetClass);
+      RequirementDefinitionBase requirement = GetRequirement (type);
       if (requirement == null)
       {
-        requirement = CreateRequirement (type, _mixin);
-        AddRequirement(requirement, _mixin.TargetClass);
+        requirement = CreateRequirement (type);
+        AddRequirement(requirement);
       }
-      DependencyDefinitionBase dependency = CreateDependency (requirement, _mixin, aggregator);
+      DependencyDefinitionBase dependency = CreateDependency (requirement, aggregator);
       requirement.RequiringDependencies.Add (dependency);
       CheckForAggregate (dependency);
       return dependency;

@@ -19,61 +19,62 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
 {
+  /// <summary>
+  /// Builds <see cref="NextCallDependencyDefinition"/> objects, for when a mixin has a dependency on a type to be used for 
+  /// <see cref="Mixin{TTarget,TNext}.Next"/> calls.
+  /// </summary>
   public class NextCallDependencyDefinitionBuilder : DependencyDefinitionBuilderBase
   {
+    private readonly MixinDefinition _mixin;
+
     public NextCallDependencyDefinitionBuilder (MixinDefinition mixin)
-        : base (mixin)
     {
-    }
-
-    protected override RequirementDefinitionBase GetRequirement (Type type, TargetClassDefinition targetClass)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      ArgumentUtility.CheckNotNull ("targetClass", targetClass);
-
-      return targetClass.RequiredNextCallTypes[type];
-    }
-
-    protected override RequirementDefinitionBase CreateRequirement (Type type, MixinDefinition mixin)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("mixin", mixin);
+      _mixin = mixin;
+    }
+
+    protected override RequirementDefinitionBase GetRequirement (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
+
+      return _mixin.TargetClass.RequiredNextCallTypes[type];
+    }
+
+    protected override RequirementDefinitionBase CreateRequirement (Type type)
+    {
+      ArgumentUtility.CheckNotNull ("type", type);
 
       Assertion.IsTrue (type != typeof (object), "This method will not be called for typeof (object).");
 
       if (!type.IsInterface)
       {
         string message = string.Format ("Next call dependencies must be interfaces (or System.Object), but mixin {0} (on class {1} has a dependency "
-            + "on a class: {2}.", mixin.FullName, mixin.TargetClass.FullName, type.FullName);
+            + "on a class: {2}.", _mixin.FullName, _mixin.TargetClass.FullName, type.FullName);
         throw new ConfigurationException (message);
       }
 
-      return new RequiredNextCallTypeDefinition (mixin.TargetClass, type);
+      return new RequiredNextCallTypeDefinition (_mixin.TargetClass, type);
     }
 
-    protected override void AddRequirement (RequirementDefinitionBase requirement, TargetClassDefinition targetClass)
+    protected override void AddRequirement (RequirementDefinitionBase requirement)
     {
       ArgumentUtility.CheckNotNull ("requirement", requirement);
-      ArgumentUtility.CheckNotNull ("targetClass", targetClass);
 
-      targetClass.RequiredNextCallTypes.Add ((RequiredNextCallTypeDefinition) requirement);
+      _mixin.TargetClass.RequiredNextCallTypes.Add ((RequiredNextCallTypeDefinition) requirement);
     }
 
-    protected override DependencyDefinitionBase CreateDependency (RequirementDefinitionBase requirement, MixinDefinition mixin,
-        DependencyDefinitionBase aggregator)
+    protected override DependencyDefinitionBase CreateDependency (RequirementDefinitionBase requirement, DependencyDefinitionBase aggregator)
     {
       ArgumentUtility.CheckNotNull ("requirement", requirement);
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
 
-      return new NextCallDependencyDefinition ((RequiredNextCallTypeDefinition) requirement, mixin, (NextCallDependencyDefinition)aggregator);
+      return new NextCallDependencyDefinition ((RequiredNextCallTypeDefinition) requirement, _mixin, (NextCallDependencyDefinition)aggregator);
     }
 
-    protected override void AddDependency (MixinDefinition mixin, DependencyDefinitionBase dependency)
+    protected override void AddDependency (DependencyDefinitionBase dependency)
     {
-      ArgumentUtility.CheckNotNull ("mixin", mixin);
       ArgumentUtility.CheckNotNull ("dependency", dependency);
-      if (!mixin.NextCallDependencies.ContainsKey (dependency.RequiredType.Type))
-        mixin.NextCallDependencies.Add ((NextCallDependencyDefinition) dependency);
+      if (!_mixin.NextCallDependencies.ContainsKey (dependency.RequiredType.Type))
+        _mixin.NextCallDependencies.Add ((NextCallDependencyDefinition) dependency);
     }
   }
 }
