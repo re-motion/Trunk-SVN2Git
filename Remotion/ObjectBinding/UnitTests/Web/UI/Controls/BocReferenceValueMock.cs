@@ -43,11 +43,6 @@ public class BocReferenceValueMock: BocReferenceValue
     get { return base.HasOptionsMenu; }
   }
 
-  public new bool IsCommandEnabled ()
-  {
-    return base.IsCommandEnabled();
-  }
-
   protected override bool IsDesignMode
   {
     get { return _isDesignMode; }

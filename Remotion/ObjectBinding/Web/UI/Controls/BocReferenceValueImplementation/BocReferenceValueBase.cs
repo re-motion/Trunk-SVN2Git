@@ -968,23 +968,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       return businessObject.DisplayNameSafe;
     }
 
-    protected bool IsCommandEnabled ()
-    {
-      if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
-        return false;
-
-      if (Command == null)
-        return false;
-
-      var isReadOnly = IsReadOnly;
-
-      bool isActive = Command.Show == CommandShow.Always
-                      || isReadOnly && Command.Show == CommandShow.ReadOnly
-                      || ! isReadOnly && Command.Show == CommandShow.EditMode;
-
-      return Enabled && isActive && Command.Type != CommandType.None;
-    }
-
     private bool IsNullValue (string newValue)
     {
       return newValue == c_nullIdentifier;
@@ -1012,7 +995,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     bool IBocReferenceValueBase.IsCommandEnabled ()
     {
-      return IsCommandEnabled ();
+      if (WcagHelper.Instance.IsWaiConformanceLevelARequired())
+        return false;
+
+      if (Command == null)
+        return false;
+
+      var isReadOnly = IsReadOnly;
+
+      bool isActive = Command.Show == CommandShow.Always
+                      || isReadOnly && Command.Show == CommandShow.ReadOnly
+                      || ! isReadOnly && Command.Show == CommandShow.EditMode;
+
+      return Enabled && isActive && Command.Type != CommandType.None;
     }
 
     DropDownMenu IBocReferenceValueBase.OptionsMenu

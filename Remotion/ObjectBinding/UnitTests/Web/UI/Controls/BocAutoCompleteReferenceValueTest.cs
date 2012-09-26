@@ -112,7 +112,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _control.Command.Type = CommandType.Event;
-      Assert.IsFalse (_control.IsCommandEnabled());
+      Assert.IsFalse (((IBocReferenceValueBase) _control).IsCommandEnabled());
     }
 
     [Test]
@@ -123,7 +123,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
       _control.Command.Type = CommandType.Event;
-      Assert.IsTrue (_control.IsCommandEnabled());
+      Assert.IsTrue (((IBocReferenceValueBase) _control).IsCommandEnabled());
     }
 
     [Test]
@@ -131,7 +131,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _control.Command.Type = CommandType.WxeFunction;
-      Assert.IsFalse (_control.IsCommandEnabled());
+      Assert.IsFalse (((IBocReferenceValueBase) _control).IsCommandEnabled());
     }
 
     [Test]
@@ -142,7 +142,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _control.Property = _propertyReferenceValue;
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
       _control.Command.Type = CommandType.WxeFunction;
-      Assert.IsTrue (_control.IsCommandEnabled());
+      Assert.IsTrue (((IBocReferenceValueBase) _control).IsCommandEnabled());
     }
 
     [Test]

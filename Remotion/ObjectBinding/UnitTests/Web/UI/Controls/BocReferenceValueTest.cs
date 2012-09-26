@@ -22,6 +22,7 @@ using Remotion.Development.Web.UnitTesting.UI.Controls;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web;
+using Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
@@ -176,7 +177,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _bocReferenceValue.Command.Type = CommandType.Event;
-      Assert.IsFalse (_bocReferenceValue.IsCommandEnabled());
+      Assert.IsFalse (((IBocReferenceValueBase) _bocReferenceValue).IsCommandEnabled());
     }
 
     [Test]
@@ -187,7 +188,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocReferenceValue.Property = _propertyReferenceValue;
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
       _bocReferenceValue.Command.Type = CommandType.Event;
-      Assert.IsTrue (_bocReferenceValue.IsCommandEnabled());
+      Assert.IsTrue (((IBocReferenceValueBase) _bocReferenceValue).IsCommandEnabled());
     }
 
 
@@ -209,7 +210,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
     {
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelA();
       _bocReferenceValue.Command.Type = CommandType.WxeFunction;
-      Assert.IsFalse (_bocReferenceValue.IsCommandEnabled());
+      Assert.IsFalse (((IBocReferenceValueBase) _bocReferenceValue).IsCommandEnabled());
     }
 
     [Test]
@@ -220,7 +221,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
       _bocReferenceValue.Property = _propertyReferenceValue;
       WebConfigurationMock.Current = WebConfigurationFactory.GetLevelUndefined();
       _bocReferenceValue.Command.Type = CommandType.WxeFunction;
-      Assert.IsTrue (_bocReferenceValue.IsCommandEnabled());
+      Assert.IsTrue (((IBocReferenceValueBase) _bocReferenceValue).IsCommandEnabled());
     }
 
 
