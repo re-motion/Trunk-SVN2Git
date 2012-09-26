@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.Web.Services
     ///   if the bound object only implements the <see cref="IBusinessObject"/> interface.
     /// </param>
     /// <param name="args">Additional search arguments.</param>
-    /// <returns>A <see cref="BusinessObjectWithIdentityProxy"/> object if an exact match is found or <see langword="null" />.</returns>
+    /// <returns>A <see cref="BusinessObjectWithIdentityProxy"/> object if an exact match (i.e. a single match) is found or <see langword="null" />.</returns>
     BusinessObjectWithIdentityProxy SearchExact (
         string searchString,
         string businessObjectClass,

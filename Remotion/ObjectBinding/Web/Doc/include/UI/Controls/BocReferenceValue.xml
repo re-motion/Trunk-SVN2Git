@@ -77,7 +77,8 @@
         In order to get the value after the user has changed it, <see cref="BocReferenceValueBase.Value"/> must be read.
       </para>
       <para>
-        If the control is unbound, <see cref="BusinessObjectBoundWebControl.DataSource"/> must be set in order to get the
+        If the control is unbound, <see cref="BusinessObjectBoundWebControl.DataSource"/> must be set to the
+        <see cref="IBusinessObjectClassWithIdentity"/> of the values availble for selection in order to get the
         <see cref="BocReferenceValueBase.Value"/> after a postback.
       </para><para>
         The control provides a default <b>CSS Class</b>, applied to the top level element: <c>bocReferenceValue</c>.
