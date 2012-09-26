@@ -14,10 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.Definitions.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
@@ -127,10 +127,14 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     [Test]
     public void Build_AddsCompleteInterfaces ()
     {
-      var classContext = new ClassContext (typeof (BaseType6), new MixinContext[0], new[] { typeof (ICBT6Mixin1) });
+      var classContext = ClassContextObjectMother.Create (typeof (BaseType6), new[] { typeof (BT6Mixin1) }, new[] { typeof (ICBT6Mixin1) });
       var targetClassDefinition = _builder.Build (classContext);
 
-      Assert.That (targetClassDefinition.RequiredTargetCallTypes.Select (f => f.Type).ToArray(), Has.Member(typeof (ICBT6Mixin1)));
+      Assert.That (targetClassDefinition.CompleteInterfaceDependencies[typeof (ICBT6Mixin1)], Is.Not.Null);
+      
+      var requirement = targetClassDefinition.CompleteInterfaceDependencies[typeof (ICBT6Mixin1)].RequiredType;
+      Assert.That (requirement, Is.Not.Null);
+      Assert.That (targetClassDefinition.RequiredTargetCallTypes, Has.Member (requirement));
     }
 
     [Test]

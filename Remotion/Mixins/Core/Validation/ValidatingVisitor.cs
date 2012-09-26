@@ -42,6 +42,7 @@ namespace Remotion.Mixins.Validation
     private readonly List<IValidationRule<TargetCallDependencyDefinition>> _targetCallDependencyRules = new List<IValidationRule<TargetCallDependencyDefinition>> ();
     private readonly List<IValidationRule<NextCallDependencyDefinition>> _nextCallDependencyRules = new List<IValidationRule<NextCallDependencyDefinition>> ();
     private readonly List<IValidationRule<MixinDependencyDefinition>> _mixinDependencyRules = new List<IValidationRule<MixinDependencyDefinition>> ();
+    private readonly List<IValidationRule<CompleteInterfaceDependencyDefinition>> _completeInterfaceDependencyRules = new List<IValidationRule<CompleteInterfaceDependencyDefinition>> ();
     private readonly List<IValidationRule<AttributeDefinition>> _attributeRules = new List<IValidationRule<AttributeDefinition>> ();
     private readonly List<IValidationRule<AttributeIntroductionDefinition>> _attributeIntroductionRules = new List<IValidationRule<AttributeIntroductionDefinition>> ();
     private readonly List<IValidationRule<NonAttributeIntroductionDefinition>> _nonAttributeIntroductionRules = new List<IValidationRule<NonAttributeIntroductionDefinition>> ();
@@ -178,7 +179,7 @@ namespace Remotion.Mixins.Validation
 
     public void Visit (NonInterfaceIntroductionDefinition nonIntroductionDefinition)
     {
-      ArgumentUtility.CheckNotNull ("suppressedInterfaceIntroduction", nonIntroductionDefinition);
+      ArgumentUtility.CheckNotNull ("nonIntroductionDefinition", nonIntroductionDefinition);
       CheckRules (_nonIntroductedInterfaceRules, nonIntroductionDefinition);
     }
 
@@ -214,7 +215,7 @@ namespace Remotion.Mixins.Validation
 
     public void Visit (EventDefinition eventDefinition)
     {
-      ArgumentUtility.CheckNotNull ("event", eventDefinition);
+      ArgumentUtility.CheckNotNull ("eventDefinition", eventDefinition);
       CheckRules (_eventRules, eventDefinition);
     }
 
@@ -258,6 +259,12 @@ namespace Remotion.Mixins.Validation
     {
       ArgumentUtility.CheckNotNull ("dependency", dependency);
       CheckRules (_mixinDependencyRules, dependency);
+    }
+
+    public void Visit (CompleteInterfaceDependencyDefinition dependency)
+    {
+      ArgumentUtility.CheckNotNull ("dependency", dependency);
+      CheckRules (_completeInterfaceDependencyRules, dependency);
     }
 
     public void Visit (AttributeDefinition attribute)

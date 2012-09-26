@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.Definitions.Building;
 
 namespace Remotion.Mixins.Definitions
 {
@@ -37,6 +38,7 @@ namespace Remotion.Mixins.Definitions
     void Visit (TargetCallDependencyDefinition targetCallDependency);
     void Visit (NextCallDependencyDefinition nextCallDependency);
     void Visit (MixinDependencyDefinition mixinDependency);
+    void Visit (CompleteInterfaceDependencyDefinition dependency);
     void Visit (AttributeDefinition attribute);
     void Visit (AttributeIntroductionDefinition attributeIntroduction);
     void Visit (NonAttributeIntroductionDefinition nonAttributeIntroduction);

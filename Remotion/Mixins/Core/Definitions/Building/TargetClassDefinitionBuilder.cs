@@ -48,14 +48,7 @@ namespace Remotion.Mixins.Definitions.Building
       var attributesBuilder = new AttributeDefinitionBuilder (classDefinition);
       attributesBuilder.Apply (classDefinition.Type);
 
-      foreach (Type faceInterface in classContext.CompleteInterfaces)
-      {
-        classDefinition.RequiredTargetCallTypes.Add (new RequiredTargetCallTypeDefinition (classDefinition, faceInterface));
-        // Also add the inherited interfaces
-        //foreach (var inheritedFaceInterface in faceInterface.GetInterfaces())
-        //  classDefinition.RequiredTargetCallTypes.Add (new RequiredTargetCallTypeDefinition (classDefinition, inheritedFaceInterface));
-      }
-
+      ApplyCompleteInterfaces (classDefinition, classContext);
       ApplyMixins (classDefinition, classContext);
       ApplyMethodRequirements (classDefinition);
 
@@ -63,6 +56,16 @@ namespace Remotion.Mixins.Definitions.Building
       AnalyzeAttributeIntroductions (classDefinition);
       AnalyzeMemberAttributeIntroductions (classDefinition);
       return classDefinition;
+    }
+
+    private void ApplyCompleteInterfaces (TargetClassDefinition classDefinition, ClassContext classContext)
+    {
+      foreach (Type completeInterface in classContext.CompleteInterfaces)
+      {
+        var completeInterfaceDependencyDefinitionBuilder = new CompleteInterfaceDependencyDefinitionBuilder (classDefinition, completeInterface);
+        // Apply recursively creates aggregated dependencies for interfaces implemented by completeInterface
+        completeInterfaceDependencyDefinitionBuilder.Apply (new[] { completeInterface });
+      }
     }
 
     private void ApplyMixins (TargetClassDefinition classDefinition, ClassContext classContext)

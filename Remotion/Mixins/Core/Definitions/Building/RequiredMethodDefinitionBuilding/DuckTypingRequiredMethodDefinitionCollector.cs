@@ -18,9 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Remotion.Reflection;
 using Remotion.Reflection.MemberSignatures;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building.RequiredMethodDefinitionBuilding
@@ -45,11 +43,9 @@ namespace Remotion.Mixins.Definitions.Building.RequiredMethodDefinitionBuilding
 
       Assertion.IsTrue (requirement.Type.IsInterface);
 
-      foreach (MethodInfo interfaceMethod in requirement.Type.GetMethods ())
-      {
-        MethodDefinition implementingMethod = FindMethod (interfaceMethod, requirement);
-        yield return new RequiredMethodDefinition (requirement, interfaceMethod, implementingMethod);
-      }
+      return from interfaceMethod in requirement.Type.GetMethods () 
+             let implementingMethod = FindMethod (interfaceMethod, requirement) 
+             select new RequiredMethodDefinition (requirement, interfaceMethod, implementingMethod);
     }
 
     private MethodDefinition FindMethod (MethodInfo interfaceMethod, RequirementDefinitionBase requirement)
@@ -76,6 +72,9 @@ namespace Remotion.Mixins.Definitions.Building.RequiredMethodDefinitionBuilding
       catch (InvalidOperationException)
       {
         string requiringEntityString = requirement.GetRequiringEntityDescription ();
+        // In practice, every requirement should know its requiring entities. However, this is not enforced, so provide a fallback...
+        if (string.IsNullOrEmpty (requiringEntityString))
+          requiringEntityString = "<unknown>";
 
         string message = string.Format (
             "The dependency '{0}' (required by {1} on class '{2}') is not fulfilled - public or protected method '{3}' could not be "

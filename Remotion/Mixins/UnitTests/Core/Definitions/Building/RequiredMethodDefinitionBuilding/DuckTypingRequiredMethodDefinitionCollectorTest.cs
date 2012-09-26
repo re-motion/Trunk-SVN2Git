@@ -126,8 +126,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefi
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = 
-        "The dependency 'IInterface' (required by a complete interface on class 'System.Object') is not fulfilled - public or protected method "
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
+        "The dependency 'IInterface' (required by <unknown> on class 'System.Object') is not fulfilled - public or protected method "
         + "'Void Method1()' could not be found on the target class.")]
     public void CreateRequiredMethodDefinitions_NoMatch_NoRequiringMixin ()
     {
@@ -138,5 +138,6 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefi
 
       builder.CreateRequiredMethodDefinitions (requirement).ToArray ();
     }
+
   }
 }

@@ -104,6 +104,8 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       AssertVisitedEquivalent (validationResults, bt1);
       TargetClassDefinition bt3 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType3));
       AssertVisitedEquivalent (validationResults, bt3);
+      TargetClassDefinition bt6 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType6));
+      AssertVisitedEquivalent (validationResults, bt6);
       TargetClassDefinition btWithAdditionalDependencies =
           DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (TargetClassWithAdditionalDependencies));
       AssertVisitedEquivalent (validationResults, btWithAdditionalDependencies);
@@ -212,6 +214,9 @@ namespace Remotion.Mixins.UnitTests.Core.Validation
       AssertVisitedEquivalent (validationResults, rmt1);
       RequiredMixinTypeDefinition rmt2 = btWithAdditionalDependencies.RequiredMixinTypes[typeof (MixinWithNoAdditionalDependency)];
       AssertVisitedEquivalent (validationResults, rmt2);
+
+      CompleteInterfaceDependencyDefinition cid1 = bt6.CompleteInterfaceDependencies[typeof (ICBT6Mixin1)];
+      AssertVisitedEquivalent (validationResults, cid1);
 
       TargetCallDependencyDefinition td1 = bt3m1.TargetCallDependencies[typeof (IBaseType31)];
       AssertVisitedEquivalent (validationResults, td1);

@@ -180,6 +180,8 @@
     <Compile Include="Definitions\AttributeIntroductionDefinition.cs" />
     <Compile Include="Definitions\Building\AttributeDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\AttributeIntroductionDefinitionBuilder.cs" />
+    <Compile Include="Definitions\CompleteInterfaceDependencyDefinition.cs" />
+    <Compile Include="Definitions\Building\CompleteInterfaceDependencyDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\DependencyDefinitionBuilderBase.cs" />
     <Compile Include="Definitions\Building\DependencySorting\DependentMixinGrouper.cs" />
     <Compile Include="Definitions\Building\DependencySorting\DependentMixinGrouperAlgorithm.cs" />
@@ -307,6 +309,7 @@
     <Compile Include="Validation\IValidationRule.cs" />
     <Compile Include="Validation\Rules\ContextStoreMemberIntroductionLookupUtility.cs" />
     <Compile Include="Validation\Rules\ContextStoreMemberLookupUtility.cs" />
+    <Compile Include="Validation\Rules\DefaultCompleteInterfaceDependencyRules.cs" />
     <Compile Include="Validation\Rules\DefaultAttributeIntroductionRules.cs" />
     <Compile Include="Validation\Rules\DefaultAttributeRules.cs" />
     <Compile Include="Validation\Rules\DefaultEventIntroductionRules.cs" />

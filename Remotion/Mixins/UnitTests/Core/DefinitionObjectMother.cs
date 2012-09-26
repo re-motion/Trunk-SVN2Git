@@ -71,6 +71,15 @@ namespace Remotion.Mixins.UnitTests.Core
       return mixinDependency;
     }
 
+    public static CompleteInterfaceDependencyDefinition CreateCompleteInterfaceDependencyDefinition (TargetClassDefinition targetClassDefinition)
+    {
+      var dependency =
+          new CompleteInterfaceDependencyDefinition (
+              new RequiredTargetCallTypeDefinition (targetClassDefinition, typeof (ISimpleInterface)), typeof (ISimpleInterface), null);
+      PrivateInvoke.InvokeNonPublicMethod (targetClassDefinition.CompleteInterfaceDependencies, "Add", dependency);
+      return dependency;
+    }
+
     public static NextCallDependencyDefinition CreateNextCallDependencyDefinition (MixinDefinition definition)
     {
       ArgumentUtility.CheckNotNull ("definition", definition);

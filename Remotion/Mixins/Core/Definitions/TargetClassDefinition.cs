@@ -34,6 +34,9 @@ namespace Remotion.Mixins.Definitions
     private readonly UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> _requiredMixinTypes =
         new UniqueDefinitionCollection<Type, RequiredMixinTypeDefinition> (t => t.Type);
     
+    private readonly UniqueDefinitionCollection<Type, CompleteInterfaceDependencyDefinition> _completeInterfaceDependencies =
+        new UniqueDefinitionCollection<Type, CompleteInterfaceDependencyDefinition> (d => d.RequiredType.Type);
+    
     private readonly UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> _receivedInterfaces =
         new UniqueDefinitionCollection<Type, InterfaceIntroductionDefinition> (i => i.InterfaceType);
     private readonly MultiDefinitionCollection<Type, AttributeIntroductionDefinition> _receivedAttributes;
@@ -107,6 +110,11 @@ namespace Remotion.Mixins.Definitions
       get { return _requiredTargetCallTypes; }
     }
 
+    public UniqueDefinitionCollection<Type, CompleteInterfaceDependencyDefinition> CompleteInterfaceDependencies
+    {
+      get { return _completeInterfaceDependencies; }
+    }
+
     protected override void ChildSpecificAccept (IDefinitionVisitor visitor)
     {
       ArgumentUtility.CheckNotNull ("visitor", visitor);
@@ -117,6 +125,7 @@ namespace Remotion.Mixins.Definitions
       _requiredTargetCallTypes.Accept (visitor);
       _requiredNextCallTypes.Accept (visitor);
       _requiredMixinTypes.Accept (visitor);
+      _completeInterfaceDependencies.Accept (visitor);
     }
 
     public bool HasMixinWithConfiguredType(Type configuredType)

@@ -96,12 +96,7 @@ namespace Remotion.Mixins.Definitions
     public string GetRequiringEntityDescription ()
     {
       var distinctRequiringDependencyDescriptions = _requiringDependencies.Select (d => d.GetDependencyDescription()).Distinct();
-      var requiringEntityDescription = SeparatedStringBuilder.Build (", ", distinctRequiringDependencyDescriptions);
-      // TODO 4024: Temporary workaround
-      if (requiringEntityDescription == "")
-        requiringEntityDescription = "a complete interface";
-
-      return requiringEntityDescription;
+      return SeparatedStringBuilder.Build (", ", distinctRequiringDependencyDescriptions);
     }
   }
 }

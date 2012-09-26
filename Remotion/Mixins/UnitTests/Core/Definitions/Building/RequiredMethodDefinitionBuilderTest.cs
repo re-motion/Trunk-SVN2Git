@@ -228,9 +228,10 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
     [Test]
     [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
-        "The dependency 'ISimpleInterface' (required by a complete interface) is not fulfilled - public or protected method 'System.String Method()' "
+        "The dependency 'ISimpleInterface' (required by complete interface "
+        + "'Remotion.Mixins.UnitTests.Core.Definitions.Building.RequiredMethodDefinitionBuilderTest+IDerivedSimpleInterface' on class "
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget') is not fulfilled - public or protected method 'System.String Method()' "
         + "could not be found on the target class.")]
-    [Ignore ("TODO 4024: Bug in requirements analysis")]
     public void ThrowsIfDerivedRequiredInterfaceIsNotFullyImplemented ()
     {
       using (MixinConfiguration

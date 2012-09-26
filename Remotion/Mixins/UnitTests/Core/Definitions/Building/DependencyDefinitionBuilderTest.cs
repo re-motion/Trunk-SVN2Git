@@ -407,45 +407,32 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition bt3 = DefinitionObjectMother.BuildUnvalidatedDefinition (typeof (BaseType3), Type.EmptyTypes, new[] { typeof (ICBaseType3) });
 
-      var requirement = bt3.RequiredTargetCallTypes[typeof (ICBaseType3)];
+      var dependency = bt3.CompleteInterfaceDependencies[typeof (ICBaseType3)];
+      Assert.That (dependency, Is.Not.Null);
+
+      var requirement = dependency.RequiredType;
       Assert.That (requirement, Is.Not.Null);
+      Assert.That (requirement, Is.SameAs (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)]));
+      Assert.That (requirement.RequiringDependencies, Is.EqualTo (new[] { dependency }));
 
-      // Assert.That (requirement.RequiringDependencies)
+      Assert.That (dependency, Is.TypeOf<CompleteInterfaceDependencyDefinition> ());
+      Assert.That (dependency.RequiredType, Is.SameAs (requirement));
+      Assert.That (dependency.TargetClass, Is.SameAs (bt3));
+      Assert.That (dependency.Depender, Is.SameAs (bt3));
+      Assert.That (dependency.FullName, Is.EqualTo (typeof (ICBaseType3).FullName));
+      Assert.That (dependency.Parent, Is.SameAs (dependency.Depender));
+      Assert.That (dependency.CompleteInterface, Is.SameAs (typeof (ICBaseType3)));
 
-      // TODO 4024: temporary workaround
-      Assert.That (requirement.GetRequiringEntityDescription(), Is.EqualTo ("a complete interface"));
-      // CheckSomeRequiringCompleteInterface (requirement, typeof (ICBaseType3));
-
-      //MixinDefinition m4 = bt3.Mixins[typeof (BT3Mixin4)];
-      //MixinDefinition m7 = bt3.Mixins[typeof (Bt3Mixin7TargetCall)];
-
-      //TargetCallDependencyDefinition d1 = m7.TargetCallDependencies[typeof (ICBaseType3BT3Mixin4)];
-      //Assert.IsNull (d1.GetImplementer());
-      //Assert.AreEqual ("Remotion.Mixins.UnitTests.Core.TestDomain.ICBaseType3BT3Mixin4", d1.FullName);
-      //Assert.AreSame (m7, d1.Parent);
-
-      //Assert.IsTrue (d1.IsAggregate);
-      //Assert.IsTrue (d1.AggregatedDependencies[typeof (ICBaseType3)].IsAggregate);
-      //Assert.IsFalse (
-      //    d1.AggregatedDependencies[typeof (ICBaseType3)]
-      //        .AggregatedDependencies[typeof (IBaseType31)].IsAggregate);
-      //Assert.AreSame (
-      //    bt3,
-      //    d1.AggregatedDependencies[typeof (ICBaseType3)]
-      //        .AggregatedDependencies[typeof (IBaseType31)].GetImplementer());
-
-      //Assert.IsFalse (d1.AggregatedDependencies[typeof (IBT3Mixin4)].IsAggregate);
-      //Assert.AreSame (m4, d1.AggregatedDependencies[typeof (IBT3Mixin4)].GetImplementer());
-
-      //Assert.AreSame (d1, d1.AggregatedDependencies[typeof (IBT3Mixin4)].Aggregator);
-
-      //Assert.IsTrue (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsEmptyInterface);
-      //Assert.IsTrue (bt3.RequiredTargetCallTypes[typeof (ICBaseType3)].IsAggregatorInterface);
-
-      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3BT3Mixin4)));
-      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (ICBaseType3)));
-      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBaseType31)));
-      //Assert.IsTrue (bt3.RequiredTargetCallTypes.ContainsKey (typeof (IBT3Mixin4)));
+      CheckSomeRequiringCompleteInterface (requirement, typeof (ICBaseType3));
+      
+      Assert.That (dependency.IsAggregate, Is.True);
+      Assert.That (dependency.AggregatedDependencies[typeof (IBaseType31)], Is.Not.Null);
+      Assert.That (dependency.AggregatedDependencies[typeof (IBaseType31)], Is.TypeOf<CompleteInterfaceDependencyDefinition> ());
+      Assert.That (
+          ((CompleteInterfaceDependencyDefinition) dependency.AggregatedDependencies[typeof (IBaseType31)]).CompleteInterface, 
+          Is.SameAs (typeof (ICBaseType3)));
+      Assert.That (bt3.RequiredTargetCallTypes[typeof (IBaseType31)], Is.Not.Null);
+      Assert.That (bt3.RequiredTargetCallTypes[typeof (IBaseType31)], Is.SameAs (dependency.AggregatedDependencies[typeof (IBaseType31)].RequiredType));
     }
 
     [Test]

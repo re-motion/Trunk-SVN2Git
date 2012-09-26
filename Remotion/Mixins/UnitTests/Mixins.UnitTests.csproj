@@ -251,6 +251,7 @@
     <Compile Include="Core\Context\Suppression\TestDomain\MixinWithCircularSuppress2.cs" />
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedBaseMixin.cs" />
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedMixin.cs" />
+    <Compile Include="Core\Definitions\CompleteInterfaceDependencyDefinitionTest.cs" />
     <Compile Include="Core\MixinTypeUtilityPerformanceTest.cs" />
     <Compile Include="Core\DefinitionObjectMother.cs" />
     <Compile Include="Core\Definitions\Building\AttributeDefinitionBuilderTest.cs" />
