@@ -67,6 +67,17 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    public void Initialize_IncompatibleType ()
+    {
+      var implementationInfo = new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton);
+
+      Assert.That (
+          () => new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), implementationInfo),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The implementation type 'System.Object' does not implement the service type.\r\nParameter name: implementationInfos"));
+    }
+
+    [Test]
     public void CreateFromAttributes_Single ()
     {
       var attribute = new ConcreteImplementationAttribute (typeof (TestConcreteImplementationAttributeType)) { Lifetime = LifetimeKind.Singleton };
@@ -194,6 +205,16 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    public void CreateFromAttributes_IncompatibleType ()
+    {
+      var attribute = new ConcreteImplementationAttribute (typeof (object));
+
+      Assert.That (
+          () => ServiceConfigurationEntry.CreateFromAttributes (typeof (ITestSingletonConcreteImplementationAttributeType), new[] { attribute }),
+          Throws.InvalidOperationException.With.Message.EqualTo ("The implementation type 'System.Object' does not implement the service type."));
+    }
+
+    [Test]
     public void ToString_EmptyEntry ()
     {
       var entry = new ServiceConfigurationEntry (typeof (IServiceProvider));
@@ -205,12 +226,12 @@ namespace Remotion.UnitTests.ServiceLocation
     public void ToString_TwoEntries ()
     {
       var entry = new ServiceConfigurationEntry (
-          typeof (IServiceProvider),
-          new ServiceImplementationInfo (typeof (object), LifetimeKind.Singleton),
+          typeof (IComparable),
+          new ServiceImplementationInfo (typeof (int), LifetimeKind.Singleton),
           new ServiceImplementationInfo (typeof (string), LifetimeKind.Instance));
 
       Assert.That (entry.ToString (), Is.EqualTo (
-        "System.IServiceProvider implementations: [{System.Object, Singleton}, {System.String, Instance}]"));
+        "System.IComparable implementations: [{System.Int32, Singleton}, {System.String, Instance}]"));
     }
   }
 }

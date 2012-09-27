@@ -159,7 +159,7 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
-        "Invalid configuration for service type "
+        "Invalid ConcreteImplementationAttribute configuration for service type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicatePositionType'. "
         + "Ambiguous ConcreteImplementationAttribute: Position must be unique.")]
     public void GetAllInstances_ServiceTypeWithAmbiguousPosition ()
@@ -169,12 +169,23 @@ namespace Remotion.UnitTests.ServiceLocation
 
     [Test]
     [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
-        "Invalid configuration for service type "
+        "Invalid ConcreteImplementationAttribute configuration for service type "
         + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType'. "
         + "Ambiguous ConcreteImplementationAttribute: Implementation type must be unique.")]
     public void GetAllInstances_ServiceTypeWithDuplicateImplementation ()
     {
       _serviceLocator.GetAllInstances (typeof (ITestMultipleConcreteImplementationAttributesWithDuplicateImplementationType)).ToArray ();
+    }
+
+    [Test]
+    [ExpectedExceptionAttribute (typeof (ActivationException), ExpectedMessage =
+        "Invalid ConcreteImplementationAttribute configuration for service type "
+        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithInvalidImplementation'. "
+        + "The implementation type 'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType' does not implement "
+        + "the service type.")]
+    public void GetAllInstances_ServiceTypeNotImplementedByImplementationType()
+    {
+      _serviceLocator.GetAllInstances (typeof (ITestConcreteImplementationAttributeTypeWithInvalidImplementation)).ToArray ();
     }
 
     [Test]
@@ -194,16 +205,6 @@ namespace Remotion.UnitTests.ServiceLocation
       var result = _serviceLocator.GetAllInstances (typeof (IServiceLocator));
 
       Assert.That (result, Is.Empty);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ActivationException), ExpectedMessage =
-        "The instance returned by the registered factory does not implement the requested type " 
-        + "'Remotion.UnitTests.ServiceLocation.TestDomain.ITestConcreteImplementationAttributeTypeWithInvalidImplementation'. " 
-        + "(Instance type: 'Remotion.UnitTests.ServiceLocation.TestDomain.TestConcreteImplementationAttributeType'.)")]
-    public void GetInstance_Generic_ServiceTypeWithIncompatibleImplementationType ()
-    {
-      _serviceLocator.GetInstance<ITestConcreteImplementationAttributeTypeWithInvalidImplementation>();
     }
 
     [Test]
@@ -435,6 +436,16 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
+    public void Register_ConcreteImplementation_ImplementationTypeDoesNotImplementServiceType_ThrowsException ()
+    {
+      Assert.That (
+          () => _serviceLocator.Register (
+          typeof (ITestSingletonConcreteImplementationAttributeType), typeof (object), LifetimeKind.Singleton),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "Implementation type must implement service type.\r\nParameter name: concreteImplementationType"));
+    }
+
+    [Test]
     public void Register_ConcreteImplementation_ServiceIsAdded ()
     {
       _serviceLocator.Register (
@@ -461,10 +472,8 @@ namespace Remotion.UnitTests.ServiceLocation
     public void Register_ServiceConfigurationEntry_ServiceAlreadyExists_ThrowsException ()
     {
       _serviceLocator.GetInstance<ITestSingletonConcreteImplementationAttributeType>();
-      var serviceImplementation = new ServiceImplementationInfo (
-          typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (
-          typeof (ITestSingletonConcreteImplementationAttributeType), serviceImplementation);
+      var serviceImplementation = new ServiceImplementationInfo (typeof (TestConcreteImplementationAttributeType), LifetimeKind.Singleton);
+      var serviceConfigurationEntry = new ServiceConfigurationEntry (typeof (ITestSingletonConcreteImplementationAttributeType), serviceImplementation);
       _serviceLocator.Register (serviceConfigurationEntry);
     }
 

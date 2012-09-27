@@ -246,7 +246,16 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("concreteImplementationType", concreteImplementationType);
 
       var serviceImplemetation = new ServiceImplementationInfo (concreteImplementationType, lifetime);
-      var serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, serviceImplemetation);
+      ServiceConfigurationEntry serviceConfigurationEntry;
+      try
+      {
+        serviceConfigurationEntry = new ServiceConfigurationEntry (serviceType, serviceImplemetation);
+      }
+      catch (ArgumentException ex)
+      {
+        throw new ArgumentException ("Implementation type must implement service type.", "concreteImplementationType", ex);
+      }
+
       Register (serviceConfigurationEntry);
     }
 
@@ -329,7 +338,7 @@ namespace Remotion.ServiceLocation
       }
       catch (InvalidOperationException ex)
       {
-        var message = string.Format ("Invalid configuration for service type '{0}'. {1}", serviceType, ex.Message);
+        var message = string.Format ("Invalid ConcreteImplementationAttribute configuration for service type '{0}'. {1}", serviceType, ex.Message);
         throw new ActivationException (message, ex);
       }
       return CreateInstanceFactories (entry);

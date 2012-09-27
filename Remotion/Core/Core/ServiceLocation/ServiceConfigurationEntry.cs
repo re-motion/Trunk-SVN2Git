@@ -55,8 +55,10 @@ namespace Remotion.ServiceLocation
       EnsureUniqueProperty ("Implementation type", attributesAndResolvedTypes.Select (tuple => tuple.ResolvedType));
       EnsureUniqueProperty ("Position", attributesAndResolvedTypes.Select (tuple => tuple.Attribute.Position));
 
-      var serviceImplementationInfos = 
-          attributesAndResolvedTypes.Select (tuple => new ServiceImplementationInfo (tuple.ResolvedType, tuple.Attribute.Lifetime));
+      var serviceImplementationInfos =
+          attributesAndResolvedTypes
+          .ApplySideEffect (tuple => CheckImplementationType (serviceType, tuple.ResolvedType, s => new InvalidOperationException (s)))
+          .Select (tuple => new ServiceImplementationInfo (tuple.ResolvedType, tuple.Attribute.Lifetime));
       
       return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
     }
@@ -78,6 +80,15 @@ namespace Remotion.ServiceLocation
         if (attribute.IgnoreIfNotFound)
           return null;
         throw;
+      }
+    }
+
+    private static void CheckImplementationType (Type serviceType, Type implementationType, Func<string, Exception> exceptionFactory)
+    {
+      if (!serviceType.IsAssignableFrom (implementationType))
+      {
+        var message = string.Format ("The implementation type '{0}' does not implement the service type.", implementationType);
+        throw exceptionFactory (message);
       }
     }
 
@@ -117,7 +128,10 @@ namespace Remotion.ServiceLocation
       ArgumentUtility.CheckNotNull ("implementationInfos", implementationInfos);
 
       _serviceType = serviceType;
-      _implementationInfos = Array.AsReadOnly (implementationInfos.ToArray ());
+      var checkedImplementationInfos =
+          implementationInfos.ApplySideEffect (
+              info => CheckImplementationType (serviceType, info.ImplementationType, message => new ArgumentException (message, "implementationInfos")));
+      _implementationInfos = Array.AsReadOnly (checkedImplementationInfos.ToArray());
     }
 
     /// <summary>
