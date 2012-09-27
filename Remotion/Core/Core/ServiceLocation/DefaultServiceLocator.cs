@@ -296,7 +296,6 @@ namespace Remotion.ServiceLocation
 
     private object SafeInvokeInstanceFactory (Func<object> factory, Type serviceType)
     {
-      // TODO 4396: Check that result implements serviceType
       object instance;
       try
       {
