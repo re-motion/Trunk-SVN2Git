@@ -25,6 +25,8 @@
       <UploadToWebShare>False</UploadToWebShare>
       <UploadToCodePlex>False</UploadToCodePlex>
       <CodePlexProjectName></CodePlexProjectName>
+      <UploadToDependDB>True</UploadToDependDB>
+      <DependDBProjectName>re-motion SecurityManager</DependDBProjectName>
     </PropertyGroup>
   </Target>
 
@@ -75,6 +77,20 @@
       <LicenseFiles Remove="@(LicenseFiles)"/>
       <LicenseFiles Include="$(SolutionDirectory)SecurityManager\license\*.*" Exclude="@(StandardExcludes)" />
     </ItemGroup>
+  </Target>
+  
+    <Target Name="CreateDependDBBinaryFiles" DependsOnTargets="CreateStandardExcludes">
+        <PropertyGroup>
+            <DependDBBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DependDBBinariesDirectory>
+        </PropertyGroup>
+        <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
+        <ItemGroup>
+            <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
+            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.dll"/>
+            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.Clients.Web.dll"/>
+            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\AclExpander.exe"/>
+            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.Metadata.Importer.exe"/>
+        </ItemGroup>
   </Target>
 
 </Project>

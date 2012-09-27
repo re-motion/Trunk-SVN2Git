@@ -59,11 +59,13 @@
     <Error Text="The property 'LogDirectory' is not set." Condition="'$(LogDirectory)' == ''" />
     <Error Text="The property 'TempDirectory' is not set." Condition="'$(TempDirectory)' == ''" />
     <Error Text="The property 'BinariesDirectory' is not set." Condition="'$(BinariesDirectory)' == ''" />
-
+    <Error Text="The property 'DependDBDirectory' is not set." Condition="'$(DependDBDirectory)' == ''" />
+    
     <Exec Command="rmdir /Q /S &quot;$(LogDirectory)&quot;" Condition="Exists ($(LogDirectory))" />
     <Exec Command="rmdir /Q /S &quot;$(TempDirectory)&quot;" Condition="Exists ($(TempDirectory))" />
     <Exec Command="rmdir /Q /S &quot;$(BinariesDirectory)&quot;" Condition="Exists ($(BinariesDirectory))" />
     <Exec Command="rmdir /Q /S &quot;$(OutputDirectory)&quot;" Condition="Exists ($(OutputDirectory))" />
+    <Exec Command="rmdir /Q /S $(DependDBDirectory)" Condition="Exists ($(DependDBDirectory))" />
   </Target>
 
   <Target Name="CreateLogDirectory">

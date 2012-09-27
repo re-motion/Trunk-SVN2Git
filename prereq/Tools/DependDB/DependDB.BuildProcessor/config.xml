@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BuildProcessorConfiguration
+  xmlns="http://rubicon.eu/BuildProcessorConfiguration" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Settings>
+		<ProjectName>re-motion</ProjectName>
+    <ProjectBranch></ProjectBranch>
+    <ProjectVersion></ProjectVersion>
+		<RetentionTime>30</RetentionTime>
+    <SourceDirectoryRoot></SourceDirectoryRoot>
+    <SourceControlUrlTemplate>https://svn.re-motion.org:443/svn/Remotion/!svn/bc/{0}/branches/ActaNova/trunk/</SourceControlUrlTemplate>
+    <ProjectAssemblyFiles>
+      <Assembly>NotExisitingAssembly.dll</Assembly>
+    </ProjectAssemblyFiles>
+    <ReferencedAssemblyDirectories>
+    </ReferencedAssemblyDirectories>
+    <NotificationAddresses>
+      <To>christian.schuster@rubicon.eu</To>
+    </NotificationAddresses>
+	</Settings>
+  
+	<ReportGenerators>
+    <ReportGenerator name="Analyzer">
+      <ComplexParameter name="trackedReferenceFilter">
+        <TrackedReferenceFilter>
+          <Include filter="Remotion*"/>
+          <Include filter="Rubicon.*"/>
+          <Include filter="TestLibrary"/>
+          <Include filter="TestConsumerLibrary"/>
+          <Include filter="TestLibrary.Indirect"/>
+          <Exclude filter="Rubicon.Silverlight"/>
+        </TrackedReferenceFilter>
+      </ComplexParameter>
+		</ReportGenerator>
+    <ReportGenerator name="XReferencer">
+			<StringParameter name="reflector" value="MixinXRef.Reflectors.dll"/>
+      <ComplexParameter name="ignoredAssemblies">
+        <IgnoredAssemblies>
+          <IgnoredAssembly name="mscorlib" />
+        </IgnoredAssemblies>
+      </ComplexParameter>
+		</ReportGenerator>
+	</ReportGenerators>
+	
+	<Senders>
+		<Sender name="FileSender">
+      <BoolParameter name="compress" value="true" />
+      <StringParameter name="outputPath" value="C:/watch" />
+    </Sender>
+    <Sender name="SmtpSender">
+      <BoolParameter name="compress" value="true" />
+      <StringParameter name="toAddresses" value="christian.schuster@rubicon.eu" />
+      <StringParameter name="ccAddresses" value="thomas.leberbauer@rubicon.eu" />
+      <StringParameter name="attachmentName" value="output" />
+      <StringParameter name="mailSubject" value="DependDB analyze results" />
+    </Sender>
+	</Senders>
+</BuildProcessorConfiguration>

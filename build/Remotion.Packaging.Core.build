@@ -26,6 +26,8 @@
       <UploadToWebShare>True</UploadToWebShare>
       <UploadToCodePlex>False</UploadToCodePlex>
       <CodePlexProjectName></CodePlexProjectName>
+      <UploadToDependDB>True</UploadToDependDB>
+      <DependDBProjectName>re-motion Core</DependDBProjectName>
     </PropertyGroup>
   </Target>
   
@@ -81,4 +83,25 @@
     </ItemGroup>
   </Target>
 
+  <Target Name="CreateDependDBBinaryFiles" DependsOnTargets="CreateStandardExcludes">
+    <PropertyGroup>
+        <DependDBBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DependDBBinariesDirectory>
+    </PropertyGroup>
+    <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
+    <ItemGroup>
+        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\*.resources.dll"/>
+        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Dms*.dll"/>
+        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Linq*.dll"/>
+        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager*.dll"/>
+    </ItemGroup>
+    <ItemGroup>
+        <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
+        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion*.dll" Exclude="@(_dependDBBinaryFilesExcludes)"/>
+        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\dbschema.exe"/>
+        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.Security.Metadata.Extractor.exe"/>
+        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\TypeMixer.exe"/>
+        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\wxegen.exe"/>
+    </ItemGroup>
+  </Target>
+  
 </Project>

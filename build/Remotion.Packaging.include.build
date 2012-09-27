@@ -41,10 +41,12 @@
   </PropertyGroup>
 
   <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.DependDB.include.build" />
 
-  <Target Name="CreatePackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage;"/>
+  <Target Name="CreatePackages" DependsOnTargets="CreateZipPackages;CreateDependDBPackages"/>
+  <Target Name="CreateZipPackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage"/>
 
-  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;UploadToShares;UploadToCodePlex" />
+  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;UploadToShares;UploadToCodePlex;UploadToDependDB" />
     
   <!-- Source Package -->
   

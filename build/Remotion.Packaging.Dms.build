@@ -26,6 +26,8 @@
       <UploadToWebShare>False</UploadToWebShare>
       <UploadToCodePlex>False</UploadToCodePlex>
       <CodePlexProjectName></CodePlexProjectName>
+      <UploadToDependDB>True</UploadToDependDB>
+      <DependDBProjectName>re-motion Dms</DependDBProjectName>
     </PropertyGroup>
   </Target>
 
@@ -73,6 +75,22 @@
     <ItemGroup>
       <LicenseFiles Remove="@(LicenseFiles)"/>
       <LicenseFiles Include="$(SolutionDirectory)Dms\license\*.*" Exclude="@(StandardExcludes)" />
+    </ItemGroup>
+  </Target>
+  
+  <Target Name="CreateDependDBBinaryFiles" DependsOnTargets="CreateStandardExcludes">
+    <PropertyGroup>
+        <DependDBBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DependDBBinariesDirectory>
+    </PropertyGroup>
+    <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
+    <ItemGroup>
+      <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.Dms.DesktopConnector.dll"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.Dms.dll"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.Dms.Shared.dll"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.Dms.Web.dll"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\DmsTray.exe"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\DocumentEventMonitor.exe"/>
     </ItemGroup>
   </Target>
 

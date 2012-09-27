@@ -33,6 +33,7 @@
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
     <TempDirectory>$(MSBuildProjectDirectory)\BuildOutput\temp\</TempDirectory>
     <ArchiveDirectory>$(MSBuildProjectDirectory)\BuildOutput\Archive\</ArchiveDirectory>
+    <DependDBDirectory>$(MSBuildProjectDirectory)\BuildOutput\DependDB\</DependDBDirectory>
     <WebShareDirectory>$(MSBuildProjectDirectory)\BuildOutput\WebShare\</WebShareDirectory>
     <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
@@ -44,11 +45,18 @@
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
   
+  <PropertyGroup>
+    <DependDBProjectVCSUrlTemplate>https://svn.re-motion.org:443/svn/Remotion/!svn/bc/$(DependDBProjectRevision)/branches/ActaNova/trunk/{0}</DependDBProjectVCSUrlTemplate>
+    <DependDBProjectImportNotificationMailAddress>$(UserName)@rubicon.eu</DependDBProjectImportNotificationMailAddress>
+  </PropertyGroup>
+
   <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
-             Properties="ConfigurationID=%(AllConfigurations.Identity);SolutionKeyFile=$(SolutionKeyFile)"/>
+             Properties="
+                 ConfigurationID=%(AllConfigurations.Identity);
+                 SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
   <Target Name="DocumentAll">
@@ -61,21 +69,64 @@
              BuildInParallel="true"
              StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;"
-             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);LogDirectory=$(LogDirectory);Version=$(Version);"/>
+             Properties="
+                 SolutionDirectory=$(SolutionDirectory);
+                 BinariesDirectory=$(BinariesDirectory);
+                 TempDirectory=$(TempDirectory);
+                 LogDirectory=$(LogDirectory);
+                 Version=$(Version);"/>
   </Target>
 
-  <Target Name="PackageAll">
+  <Target Name="PackageAll">  
     <MSBuild Projects="%(AllPackages.PackageDeclaration)"
              BuildInParallel="false"
              Targets="CreatePackages"
-             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);"/>
+             Properties="
+                 SolutionDirectory=$(SolutionDirectory);
+                 BinariesDirectory=$(BinariesDirectory);
+                 OutputDirectory=$(OutputDirectory);
+                 TempDirectory=$(TempDirectory);
+                 Version=$(Version);
+                 DependDBDirectory=$(DependDBDirectory);
+                 DependDBProjectBranch=$(DependDBProjectBranch);
+                 DependDBProjectVersion=$(DependDBProjectVersion);
+                 DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
+                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
+                 DependDBUploadPath=$(DependDBUploadPath);"/>
+  </Target>
+  
+  <Target Name="ZipPackageAll">
+    <MSBuild Projects="%(AllPackages.PackageDeclaration)"
+             BuildInParallel="false"
+             Targets="CreateZipPackages"
+             Properties="
+                 SolutionDirectory=$(SolutionDirectory);
+                 BinariesDirectory=$(BinariesDirectory);
+                 OutputDirectory=$(OutputDirectory);
+                 TempDirectory=$(TempDirectory);
+                 Version=$(Version);"/>
   </Target>
 
   <Target Name="DeployAll">
     <MSBuild Projects="%(AllPackages.PackageDeclaration)"
              BuildInParallel="false"
              Targets="DeployPackages"
-             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);OutputDirectory=$(OutputDirectory);TempDirectory=$(TempDirectory);Version=$(Version);ArchiveDirectory=$(ArchiveDirectory);WebShareDirectory=$(WebShareDirectory);CodeplexUserName=$(CodePlexUsername);CodeplexPassword=$(CodePlexPassword)"/>
+             Properties="
+                 SolutionDirectory=$(SolutionDirectory);
+                 BinariesDirectory=$(BinariesDirectory);
+                 OutputDirectory=$(OutputDirectory);
+                 TempDirectory=$(TempDirectory);
+                 Version=$(Version);
+                 ArchiveDirectory=$(ArchiveDirectory);
+                 WebShareDirectory=$(WebShareDirectory);
+                 CodeplexUserName=$(CodePlexUsername);
+                 CodeplexPassword=$(CodePlexPassword);
+                 DependDBDirectory=$(DependDBDirectory);
+                 DependDBProjectBranch=$(DependDBProjectBranch);
+                 DependDBProjectVersion=$(DependDBProjectVersion);
+                 DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
+                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
+                 DependDBUploadPath=$(DependDBUploadPath);"/>
   </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll;DocumentAll;PackageAll" />
@@ -84,14 +135,18 @@
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
-             Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
+             Properties="
+                 ConfigurationID=Debug;
+                 SolutionKeyFile=$(SolutionKeyFile)"/>
   </Target>
 
   <Target Name="DocumentationTestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
              Targets="BuildReleaseProjects;AssembleBuildOutput;"
-             Properties="ConfigurationID=Debug;SolutionKeyFile=$(SolutionKeyFile)"/>
+             Properties="
+                 ConfigurationID=Debug;
+                 SolutionKeyFile=$(SolutionKeyFile)"/>
 
     <ItemGroup>
       <_allDocumentationDeclarations Remove="@(_allDocumentationDeclarations)" />
@@ -102,7 +157,12 @@
              BuildInParallel="true"
              StopOnFirstFailure="true"
              Targets="GenerateDocumentation;CopyChmFilesToBinariesDirectory;CopyWebsiteFilesToWebsiteDirectory"
-             Properties="SolutionDirectory=$(SolutionDirectory);BinariesDirectory=$(BinariesDirectory);TempDirectory=$(TempDirectory);LogDirectory=$(LogDirectory);Version=0.0.0;"/>
+             Properties="
+                 SolutionDirectory=$(SolutionDirectory);
+                 BinariesDirectory=$(BinariesDirectory);
+                 TempDirectory=$(TempDirectory);
+                 LogDirectory=$(LogDirectory);
+                 Version=0.0.0;"/>
   </Target>
 
 </Project>
