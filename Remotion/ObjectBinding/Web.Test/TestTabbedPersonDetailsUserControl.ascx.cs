@@ -139,7 +139,7 @@ public class TestTabbedPersonDetailsUserControl :
 
     ExtraFormGridPlaceHolder.Controls.Clear();
     ExtraFormGridPlaceHolder.Controls.Add (formGrid);
-    if (FormGridManager.IsRegistered (formGrid))
+    if (FormGridManager.IsFormGridRegistered (formGrid))
       FormGridManager.UnregisterFormGrid (formGrid);
     FormGridManager.RegisterFormGrid (formGrid);
   }

@@ -2998,7 +2998,7 @@ namespace Remotion.Web.UI.Controls
       {
         var childControl = control.Controls[i];
         var table = childControl as HtmlTable;
-        if (table != null && table.ID != null && table.ID.EndsWith (_formGridSuffix) && !IsRegistered (table))
+        if (table != null && table.ID != null && table.ID.EndsWith (_formGridSuffix) && !IsFormGridRegistered (table))
           RegisterFormGrid (table);
 
         if (! (childControl is TemplateControl))
@@ -3012,7 +3012,7 @@ namespace Remotion.Web.UI.Controls
     /// <param name="table">The <see cref="HtmlTable"/> to be used as the <see cref="FormGrid"/>. Must not be <see langword="null" />.</param>
     /// <returns><see langword="true" /> if the <paramref name="table"/> is registered. </returns>
     /// <exception cref="ArgumentException"> Thrown of the <paramref name="table"/> does not have a <see cref="Page"/>.</exception>
-    public bool IsRegistered (HtmlTable table)
+    public bool IsFormGridRegistered (HtmlTable table)
     {
       ArgumentUtility.CheckNotNull ("table", table);
       if (Page != null && table.Page == null)
@@ -3032,7 +3032,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("table", table);
 
-      if (IsRegistered (table))
+      if (IsFormGridRegistered (table))
         throw new ArgumentException ("The HtmlTable passed as FormGrid is already registered with this FormGridManager.", "table");
 
       if (IsParentControl (table))
@@ -3058,7 +3058,7 @@ namespace Remotion.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("table", table);
 
-      if (!IsRegistered (table))
+      if (!IsFormGridRegistered (table))
         throw new ArgumentException ("The HtmlTable passed as FormGrid is not registered with this FormGridManager.", "table");
 
       _formGrids.Remove (table.UniqueID);
