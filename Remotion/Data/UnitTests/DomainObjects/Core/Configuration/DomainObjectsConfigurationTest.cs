@@ -207,7 +207,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Configuration
     {
     }
 
-    public class CustomStorageObjectFactory : SqlStorageObjectFactory
+    public class CustomStorageObjectFactory : SqlStorageObjectFactory, ICustomStorageObjectFactory
     {
     }
 
