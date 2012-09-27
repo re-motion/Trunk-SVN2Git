@@ -427,5 +427,30 @@ namespace Remotion.UnitTests.FunctionalProgramming
       input.SingleOrDefault (x => x == 2, () => new ApplicationException ("ExpectedText"));
     }
 
+    [Test]
+    public void ApplySideEffect ()
+    {
+      var sourceSequence = new[] { 1, 2, 3 };
+
+      int sum = 0;
+      var resultSequence = sourceSequence.ApplySideEffect (i => sum += i);
+
+      using (var enumerator = resultSequence.GetEnumerator ())
+      {
+        Assert.That (sum, Is.EqualTo (0));
+        
+        Assert.That (enumerator.MoveNext(), Is.True);
+        Assert.That (sum, Is.EqualTo (1));
+
+        Assert.That (enumerator.MoveNext (), Is.True);
+        Assert.That (sum, Is.EqualTo (3));
+
+        Assert.That (enumerator.MoveNext (), Is.True);
+        Assert.That (sum, Is.EqualTo (6));
+
+        Assert.That (enumerator.MoveNext(), Is.False);
+      }
+    }
+
   }
 }

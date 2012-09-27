@@ -334,8 +334,7 @@ namespace Remotion.FunctionalProgramming
         return element;
       }
     }
-
-
+    
     /// <summary>
     /// Works like <see cref="Enumerable.SingleOrDefault{TSource}(System.Collections.Generic.IEnumerable{TSource},System.Func{TSource,bool})"/>
     /// but throws a custom exception if the sequence contains more than one matching element.
@@ -355,6 +354,30 @@ namespace Remotion.FunctionalProgramming
       ArgumentUtility.CheckNotNull ("createMultipleMatchingElementsException", createMultipleMatchingElementsException);
       
       return source.Where (predicate).SingleOrDefault (createMultipleMatchingElementsException);
+    }
+
+    /// <summary>
+    /// Returns a sequence that lazily applies a side effect to each item of a source sequence.
+    /// </summary>
+    /// <typeparam name="T">The item type of the <see cref="IEnumerable{T}"/> sequence.</typeparam>
+    /// <param name="source">The source sequence.</param>
+    /// <param name="sideEffect">The side effect to apply to each item.</param>
+    /// <returns>A sequence containing the same items as the <paramref name="source"/> sequence that lazily applies the given 
+    /// <paramref name="sideEffect"/> to each item while the sequence is enumerated.</returns>
+    /// <remarks>
+    /// This method is used to associate a side effect with an enumerable sequence. One use case is to add consistency checks to the items of a 
+    /// sequence that are executed when the sequence is enumerated. 
+    /// </remarks>
+    public static IEnumerable<T> ApplySideEffect<T> (this IEnumerable<T> source, Action<T> sideEffect)
+    {
+      ArgumentUtility.CheckNotNull ("source", source);
+      ArgumentUtility.CheckNotNull ("sideEffect", sideEffect);
+
+      foreach (var item in source)
+      {
+        sideEffect (item);
+        yield return item;
+      }
     }
   }
 }
