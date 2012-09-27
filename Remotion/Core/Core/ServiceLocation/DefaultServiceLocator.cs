@@ -40,7 +40,8 @@ namespace Remotion.ServiceLocation
   /// depending on the <see cref="LifetimeKind"/> associated with the type) is cached, so subsequent lookups for the same type are very fast.
   /// </para>
   /// <para>
-  /// The <see cref="DefaultServiceLocator"/> also provides a set of <see cref="DefaultServiceLocator.Register(ServiceConfigurationEntry)"/> methods that allow to registration of custom 
+  /// The <see cref="DefaultServiceLocator"/> also provides a set of <see cref="DefaultServiceLocator.Register(ServiceConfigurationEntry)"/> methods 
+  /// that allow to registration of custom 
   /// implementations or factories for service types even if those types do not have the <see cref="ConcreteImplementationAttribute"/> applied. 
   /// Applications can use this to override the configuration defined by the <see cref="ConcreteImplementationAttribute"/> and to register 
   /// implementations of service types that do not have the <see cref="ConcreteImplementationAttribute"/> applied. Custom implementations or factories
@@ -124,7 +125,7 @@ namespace Remotion.ServiceLocation
     {
       ArgumentUtility.CheckNotNull ("serviceType", serviceType);
 
-      return GetOrCreateFactories (serviceType).Select (factory => factory());
+      return GetOrCreateFactories (serviceType).Select (factory => SafeInvokeInstanceFactory (factory, serviceType));
     }
 
     /// <summary>
@@ -138,15 +139,7 @@ namespace Remotion.ServiceLocation
     /// could not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
     public TService GetInstance<TService> ()
     {
-      try
-      {
-        return (TService) GetInstance (typeof (TService));
-      }
-      catch (InvalidCastException ex)
-      {
-        var message = "The implementation type does not implement the service interface. " + ex.Message;
-        throw new ActivationException (message, ex);
-      }
+      return (TService) GetInstance (typeof (TService));
     }
 
     /// <summary>
@@ -177,7 +170,7 @@ namespace Remotion.ServiceLocation
     /// implementation could not be instantiated. Inspect the <see cref="Exception.InnerException"/> property for the reason of the exception.</exception>
     public IEnumerable<TService> GetAllInstances<TService> ()
     {
-      return GetAllInstances (typeof (TService)).Cast<TService>();
+      return GetAllInstances (typeof (TService)).Cast<TService> ();
     }
 
     /// <summary>
@@ -201,7 +194,9 @@ namespace Remotion.ServiceLocation
     /// The factories are subsequently invoked whenever instances for the <paramref name="serviceType"/> is requested.
     /// </summary>
     /// <param name="serviceType">The service type to register the factories for.</param>
-    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>.</param>
+    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>. These factories
+    /// must return non-null instances implementing the <paramref name="serviceType"/>, otherwise an <see cref="ActivationException"/> is thrown
+    /// when an instance of <paramref name="serviceType"/> is requested.</param>
     /// <exception cref="InvalidOperationException">Factories have already been registered or an instance of the <paramref name="serviceType"/> has 
     /// already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
     public void Register (Type serviceType, params Func<object>[] instanceFactories)
@@ -217,7 +212,9 @@ namespace Remotion.ServiceLocation
     /// The factories are subsequently invoked whenever instances for the <paramref name="serviceType"/> is requested.
     /// </summary>
     /// <param name="serviceType">The service type to register the factories for.</param>
-    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>.</param>
+    /// <param name="instanceFactories">The instance factories to use when resolving instances for the <paramref name="serviceType"/>. These factories
+    /// must return non-null instances implementing the <paramref name="serviceType"/>, otherwise an <see cref="ActivationException"/> is thrown
+    /// when an instance of <paramref name="serviceType"/> is requested.</param>
     /// <exception cref="InvalidOperationException">Factories have already been registered or an instance of the <paramref name="serviceType"/> has 
     /// already been retrieved. Registering factories or concrete implementations can only be done before any instances are retrieved.</exception>
     public void Register (Type serviceType, IEnumerable<Func<object>> instanceFactories)
@@ -285,20 +282,41 @@ namespace Remotion.ServiceLocation
         return null;
 
       var factory = factories.Single();
-      return SafeInvokeInstanceFactory(factory);
+      return SafeInvokeInstanceFactory (factory, serviceType);
     }
 
-    private object SafeInvokeInstanceFactory (Func<object> factory)
+    private object SafeInvokeInstanceFactory (Func<object> factory, Type serviceType)
     {
+      // TODO 4396: Check that result implements serviceType
+      object instance;
       try
       {
-        return factory ();
+        instance = factory ();
       }
       catch (Exception ex)
       {
         var message = string.Format ("{0}: {1}", ex.GetType ().Name, ex.Message);
         throw new ActivationException (message, ex);
       }
+
+      if (instance == null)
+      {
+        var message = string.Format (
+            "The registered factory returned null instead of an instance implementing the requested service type '{0}'.",
+            serviceType);
+        throw new ActivationException (message);
+      }
+
+      if (!serviceType.IsInstanceOfType (instance))
+      {
+        var message = string.Format (
+            "The instance returned by the registered factory does not implement the requested type '{0}'. (Instance type: '{1}'.)",
+            serviceType,
+            instance.GetType());
+        throw new ActivationException (message);
+      }
+
+      return instance;
     }
 
     private IEnumerable<Func<object>> CreateInstanceFactories (Type serviceType)
