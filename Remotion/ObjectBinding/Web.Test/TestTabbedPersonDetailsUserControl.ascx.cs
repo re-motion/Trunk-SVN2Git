@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Specialized;
 using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 using Remotion.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.Web.UI.Controls;
@@ -36,10 +37,9 @@ public class TestTabbedPersonDetailsUserControl :
   protected BocDateTimeValue DateOfDeathField;
   protected BocEnumValue MarriageStatusField;
   protected HtmlTable FormGrid;
-  private AutoInitHashtable _listOfFormGridRowInfos =
-      new AutoInitHashtable (typeof (FormGridRowInfoCollection));
-  private AutoInitHashtable _listOfHiddenRows = 
-      new AutoInitHashtable (typeof (StringCollection));
+  protected PlaceHolder ExtraFormGridPlaceHolder;
+  private AutoInitHashtable _listOfFormGridRowInfos = new AutoInitHashtable (typeof (FormGridRowInfoCollection));
+  private AutoInitHashtable _listOfHiddenRows = new AutoInitHashtable (typeof (StringCollection));
 
   public override IBusinessObjectDataSourceControl DataSource
   {
@@ -61,13 +61,10 @@ public class TestTabbedPersonDetailsUserControl :
     StringCollection hiddenRows = (StringCollection)_listOfHiddenRows[FormGrid];
     FormGridRowInfoCollection newRows = (FormGridRowInfoCollection)_listOfFormGridRowInfos[FormGrid];
 
-		//
-		// CODEGEN: This call is required by the ASP.NET Web Form Designer.
-		//
-		InitializeComponent();
 		base.OnInit(e);
     InitalizePartnerFieldMenuItems();
-  }
+	  CreateExtraFormGrid("Init");
+	}
 	
   private void InitalizePartnerFieldMenuItems()
   {
@@ -119,16 +116,32 @@ public class TestTabbedPersonDetailsUserControl :
     PartnerField.OptionsMenuItems.Add (menuItem);
   }
 
-	#region Web Form Designer generated code
-
-	/// <summary>
-	///		Required method for Designer support - do not modify
-	///		the contents of this method with the code editor.
-	/// </summary>
-	private void InitializeComponent()
-	{
-
+  protected void ShowExtraFormGridButton_Click (object sender, EventArgs e)
+  {
+    CreateExtraFormGrid("Button");
   }
-	#endregion
-	}
+
+  private void CreateExtraFormGrid (string contextInformation)
+  {
+    var formGrid = new HtmlTable();
+    formGrid.ID = "ExtraFormGrid";
+
+    var titleRow = new HtmlTableRow();
+    titleRow.Cells.Add (new HtmlTableCell { ColSpan = 2, InnerText = "Extra FormGrid from " + contextInformation });
+    formGrid.Rows.Add (titleRow);
+
+    var dataRow = new HtmlTableRow();
+    dataRow.Cells.Add (new HtmlTableCell());
+    var controlCell = new HtmlTableCell();
+    controlCell.Controls.Add (new BocTextValue { ID = "TextField", Required = true });
+    dataRow.Cells.Add (controlCell);
+    formGrid.Rows.Add (dataRow);
+
+    ExtraFormGridPlaceHolder.Controls.Clear();
+    ExtraFormGridPlaceHolder.Controls.Add (formGrid);
+    if (FormGridManager.IsRegistered (formGrid))
+      FormGridManager.UnregisterFormGrid (formGrid);
+    FormGridManager.RegisterFormGrid (formGrid);
+  }
+}
 }

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web;
@@ -975,7 +976,7 @@ namespace Remotion.Web.UI.Controls
     /// <summary>
     ///   Hashtable&lt;string uniqueID, <see cref="FormGrid"/>&gt;
     /// </summary>
-    private Hashtable _formGrids = new Hashtable();
+    private readonly Dictionary<string, FormGrid> _formGrids = new Dictionary<string, FormGrid>();
 
     /// <summary> Index of the column normally containing the labels. </summary>
     private int _labelsColumn;
@@ -1110,9 +1111,7 @@ namespace Remotion.Web.UI.Controls
         string tableID = key.Substring (0, key.IndexOf (":"));
         string elementIDProperty = key.Substring (posColon + 1);
 
-        FormGrid formGrid = (FormGrid)_formGrids[tableID];
-
-        if (formGrid != null)
+        if (_formGrids.ContainsKey (tableID))
         {
           //  Get the controls for the current FormGrid
           Hashtable controls = (Hashtable) formGridControls[tableID];
@@ -1165,7 +1164,7 @@ namespace Remotion.Web.UI.Controls
       foreach (DictionaryEntry formGridEntry in formGridControls)
       {
         string tableID = (string)formGridEntry.Key;
-        FormGrid formGrid = (FormGrid)_formGrids[tableID];
+        var formGrid = _formGrids[tableID];
       
         Hashtable controls = (Hashtable)formGridEntry.Value;
 
@@ -1265,7 +1264,7 @@ namespace Remotion.Web.UI.Controls
     private void Table_Load (object sender, EventArgs e)
     {
       string formGridID = ((HtmlTable) sender).UniqueID;
-      FormGrid formGrid = (FormGrid) _formGrids[formGridID];
+      var formGrid = _formGrids[formGridID];
       EnsureTransformationStep (formGrid, TransformationStep.PreLoadViewStateTransformationCompleted);
     }
 
@@ -1284,15 +1283,15 @@ namespace Remotion.Web.UI.Controls
     private void Table_PreRender (object sender, EventArgs e)
     {
       string formGridID = ((HtmlTable) sender).UniqueID;
-      FormGrid formGrid = (FormGrid) _formGrids[formGridID];
+      var formGrid = _formGrids[formGridID];
       EnsureTransformationStep (formGrid, TransformationStep.PostValidationTransformationCompleted);
-      ((HtmlTable) sender).SetRenderMethodDelegate (new RenderMethod (Table_Render));
+      ((HtmlTable) sender).SetRenderMethodDelegate (Table_Render);
     }
 
     private void Table_Render (HtmlTextWriter writer, Control table)
     {
-      string formGridID = ((HtmlTable) table).UniqueID;
-      FormGrid formGrid = (FormGrid) _formGrids[formGridID];
+      string formGridID = table.UniqueID;
+      var formGrid = _formGrids[formGridID];
       EnsureTransformationStep (formGrid, TransformationStep.RenderTransformationCompleted);
 
       foreach (Control row in table.Controls)
@@ -2997,27 +2996,75 @@ namespace Remotion.Web.UI.Controls
       //  Add all table having the suffix
       for (int i = 0; i < control.Controls.Count; i++)
       {
-        Control childControl = (Control) control.Controls[i];
-        HtmlTable htmlTable = childControl as HtmlTable;
-        if (htmlTable != null && htmlTable.ID != null && htmlTable.ID.EndsWith (_formGridSuffix))
-          Add (htmlTable);
+        var childControl = control.Controls[i];
+        var table = childControl as HtmlTable;
+        if (table != null && table.ID != null && table.ID.EndsWith (_formGridSuffix) && !IsRegistered (table))
+          RegisterFormGrid (table);
 
         if (! (childControl is TemplateControl))
           PopulateFormGridList (childControl);
       }
     }
-
-    public void Add (HtmlTable table)
+    
+    /// <summary>
+    /// Tests whether the supplied <paramref name="table"/> is registered as a <see cref="FormGrid"/> with this <see cref="FormGridManager"/>.
+    /// </summary>
+    /// <param name="table">The <see cref="HtmlTable"/> to be used as the <see cref="FormGrid"/>. Must not be <see langword="null" />.</param>
+    /// <returns><see langword="true" /> if the <paramref name="table"/> is registered. </returns>
+    /// <exception cref="ArgumentException"> Thrown of the <paramref name="table"/> does not have a <see cref="Page"/>.</exception>
+    public bool IsRegistered (HtmlTable table)
     {
-      if (! _formGrids.Contains (table.UniqueID))
+      ArgumentUtility.CheckNotNull ("table", table);
+      if (Page != null && table.Page == null)
+        throw new ArgumentException ("The HtmlTable passed as FormGrid is not part of this page.", "table");
+
+      return _formGrids.ContainsKey (table.UniqueID);
+    }
+
+    /// <summary>
+    /// Registers the supplied <paramref name="table"/> as a <see cref="FormGrid"/> with this <see cref="FormGridManager"/>.
+    /// </summary>
+    /// <param name="table">The <see cref="HtmlTable"/> to be used as the <see cref="FormGrid"/>. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentException">
+    ///   Thrown of the <paramref name="table"/> does not have a <see cref="Page"/> or has already been registered with this <see cref="FormGridManager"/>.
+    /// </exception>
+    public void RegisterFormGrid (HtmlTable table)
+    {
+      ArgumentUtility.CheckNotNull ("table", table);
+
+      if (IsRegistered (table))
+        throw new ArgumentException ("The HtmlTable passed as FormGrid is already registered with this FormGridManager.", "table");
+
+      if (IsParentControl (table))
       {
-        if (IsParentControl (table))
-          throw new ArgumentException ("A FormGridManager must not be nested in an HtmlTable managed by it: FormGridManager '" + ID + "', HtmlTable '" + table.ID + "'");
-        FormGridRow[] rows = CreateFormGridRows (table, _labelsColumn, _controlsColumn);
-        _formGrids[table.UniqueID] = new FormGrid (table, rows, _labelsColumn, _controlsColumn);
-        table.Load += new EventHandler (Table_Load);
-        table.PreRender += new EventHandler (Table_PreRender);
+        throw new ArgumentException (
+            string.Format ("A FormGridManager must not be nested in an HtmlTable managed by it: FormGridManager '{0}', HtmlTable '{1}'", ID, table.ID));
       }
+
+      FormGridRow[] rows = CreateFormGridRows (table, _labelsColumn, _controlsColumn);
+      _formGrids[table.UniqueID] = new FormGrid (table, rows, _labelsColumn, _controlsColumn);
+      table.Load += Table_Load;
+      table.PreRender += Table_PreRender;
+    }
+
+    /// <summary>
+    /// Removes the registration of the supplied <paramref name="table"/> as a <see cref="FormGrid"/> with this <see cref="FormGridManager"/>.
+    /// </summary>
+    /// <param name="table">The <see cref="HtmlTable"/> to be used as the <see cref="FormGrid"/>. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentException"> \
+    ///   Thrown of the <paramref name="table"/> does not have a <see cref="Page"/> or has not been registered with this <see cref="FormGridManager"/>.
+    /// </exception>
+    public void UnregisterFormGrid (HtmlTable table)
+    {
+      ArgumentUtility.CheckNotNull ("table", table);
+
+      if (!IsRegistered (table))
+        throw new ArgumentException ("The HtmlTable passed as FormGrid is not registered with this FormGridManager.", "table");
+
+      _formGrids.Remove (table.UniqueID);
+      table.Load -= Table_Load;
+      table.PreRender -= Table_PreRender;
+      table.SetRenderMethodDelegate (null);
     }
 
     private bool IsParentControl (HtmlTable table)
