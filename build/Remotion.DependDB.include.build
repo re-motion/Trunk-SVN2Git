@@ -34,8 +34,8 @@
 
     
     <!-- Targets -->
-    <Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;DependDBBuildProcessing"/>
-    <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal"/>
+    <Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;DependDBBuildProcessing" Condition="$(UploadToDependDB) == 'True'"/>
+    <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal" Condition="$(UploadToDependDB) == 'True'"/>
     
     
     <!-- Internal targets: Build processing -->    
@@ -194,7 +194,7 @@
     </Target>
 
     <!-- Internal targets: Uploading -->
-    <Target Name="UploadToDependDBInternal" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackages" Condition="$(UploadToDependDB) == 'True'">
+    <Target Name="UploadToDependDBInternal" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackages">
         <Error Text="The property 'DependDBProjectName' is not set." Condition="'$(DependDBProjectName)' == ''" />
         <Error Text="The property 'DependDBProjectDirectory' is not set." Condition="'$(DependDBProjectDirectory)' == ''" />
         <Error Text="The property 'DependDBUploadPath' is not set." Condition="'$(DependDBUploadPath)' == ''" />
