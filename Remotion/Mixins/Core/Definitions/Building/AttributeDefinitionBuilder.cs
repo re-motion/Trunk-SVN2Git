@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using Remotion.Utilities;
 
@@ -47,7 +48,7 @@ namespace Remotion.Mixins.Definitions.Building
       {
         Type attributeType = attributeData.Constructor.DeclaringType;
         if (attributeType == typeof (CopyCustomAttributesAttribute))
-          Copy (attributeSource, attributeData);
+          ApplyViaCopyAttribute (attributeSource, attributeData);
         else if (attributeType.IsVisible && !IsIgnoredAttributeType (attributeType))
           _attributableDefinition.CustomAttributes.Add (new AttributeDefinition (_attributableDefinition, attributeData, isCopyTemplate));
       }
@@ -55,21 +56,21 @@ namespace Remotion.Mixins.Definitions.Building
 
     private bool IsIgnoredAttributeType (Type type)
     {
-      return type == typeof (SerializableAttribute) 
-          || (type.Assembly == typeof (ExtendsAttribute).Assembly && type.Namespace.StartsWith ("Remotion.Mixins"));
+      return type == typeof (SerializableAttribute)
+          || (typeof (ExtendsAttribute).Assembly.Equals (type.Assembly) && type.Namespace.StartsWith ("Remotion.Mixins"));
     }
 
-    private void Copy (MemberInfo attributeSource, CustomAttributeData copyAttributeData)
+    private void ApplyViaCopyAttribute (MemberInfo copyAttributeSource, CustomAttributeData copyAttributeData)
     {
       Assertion.IsTrue (copyAttributeData.Constructor.DeclaringType == typeof (CopyCustomAttributesAttribute));
-      string sourceName = GetFullMemberName (attributeSource);
+      string sourceName = GetFullMemberName (copyAttributeSource);
 
       var copyAttribute = (CopyCustomAttributesAttribute) CustomAttributeDataUtility.InstantiateCustomAttributeData (copyAttributeData);
 
-      MemberInfo copySource;
+      MemberInfo copiedAttributesSource;
       try
       {
-        copySource = copyAttribute.GetAttributeSource (UnifyTypeMemberTypes (attributeSource.MemberType));
+        copiedAttributesSource = copyAttribute.GetAttributeSource (UnifyTypeMemberTypes (copyAttributeSource.MemberType));
       }
       catch (AmbiguousMatchException ex)
       {
@@ -78,29 +79,41 @@ namespace Remotion.Mixins.Definitions.Building
         throw new ConfigurationException (message, ex);
       }
       
-      if (copySource == null)
+      if (copiedAttributesSource == null)
       {
         string message = string.Format ("The CopyCustomAttributes attribute on {0} specifies an unknown attribute source {1}.",
             sourceName, copyAttribute.AttributeSourceName);
         throw new ConfigurationException (message);
       }
 
-      if (!AreCompatibleMemberTypes (copySource.MemberType, attributeSource.MemberType))
+      if (!AreCompatibleMemberTypes (copiedAttributesSource.MemberType, copyAttributeSource.MemberType))
       {
         string message = string.Format ("The CopyCustomAttributes attribute on {0} specifies an attribute source {1} of a different member kind.",
             sourceName, copyAttribute.AttributeSourceName);
         throw new ConfigurationException (message);
       }
 
-      bool parseCopyAttributes = !copySource.Equals (attributeSource);
-      bool parseInheritedAttributes = !copySource.Equals (attributeSource);
-      Apply (copySource, GetFilteredAttributeData(copySource, copyAttribute, parseCopyAttributes, parseInheritedAttributes), true);
+      // A CopyCustomAttribute can specify the same type/member it itself is sitting on; this can be used to get non-inheritable attributes to be 
+      // copied to the target. (Normally, only inheritable attributes are copied.)
+      // In this case, we must avoid parsing copy attributes again to avoid recursion.
+      // In addition, we will add non-inheritable attributes as copy templates. Inheritable attributes are not added as copy templates, since they'll
+      // be inherited anyway.
+      var isCopyingFromSameMember = copiedAttributesSource.Equals (copyAttributeSource);
+      var copiedAttributesData = GetCopiedAttributesData (
+          copiedAttributesSource: copiedAttributesSource, 
+          copyAttribute: copyAttribute, 
+          includeCopyAttributes: !isCopyingFromSameMember, 
+          includeInheritableAttributes: !isCopyingFromSameMember);
+      Apply (copiedAttributesSource, copiedAttributesData, true);
     }
 
-    private IEnumerable<CustomAttributeData> GetFilteredAttributeData (MemberInfo copySource, CopyCustomAttributesAttribute filterAttribute,
-        bool includeCopyAttributes, bool includeInheritedAttributes)
+    private IEnumerable<CustomAttributeData> GetCopiedAttributesData (
+        MemberInfo copiedAttributesSource, 
+        CopyCustomAttributesAttribute copyAttribute,
+        bool includeCopyAttributes, 
+        bool includeInheritableAttributes)
     {
-      foreach (CustomAttributeData attributeData in CustomAttributeData.GetCustomAttributes (copySource))
+      foreach (CustomAttributeData attributeData in CustomAttributeData.GetCustomAttributes (copiedAttributesSource))
       {
         Type attributeType = attributeData.Constructor.DeclaringType;
         if (typeof (CopyCustomAttributesAttribute).IsAssignableFrom (attributeType))
@@ -108,8 +121,11 @@ namespace Remotion.Mixins.Definitions.Building
           if (includeCopyAttributes)
             yield return attributeData;
         }
-        else if (filterAttribute.IsCopiedAttributeType (attributeType) && (includeInheritedAttributes || !AttributeUtility.IsAttributeInherited (attributeType)))
+        else if (copyAttribute.IsCopiedAttributeType (attributeType)
+                 && (includeInheritableAttributes || !AttributeUtility.IsAttributeInherited (attributeType)))
+        {
           yield return attributeData;
+        }
       }
     }
 
