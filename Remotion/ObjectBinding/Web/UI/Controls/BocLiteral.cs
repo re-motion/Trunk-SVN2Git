@@ -162,6 +162,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    protected override void OnUnload (EventArgs e)
+    {
+      _binding.UnregisterDataSource();
+      base.OnUnload (e);
+    }
+
     /// <value> 
     ///   <para>
     ///     The <b>set accessor</b> passes the value to the base class's <b>Visible</b> property.

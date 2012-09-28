@@ -18,7 +18,6 @@ using System;
 using System.ComponentModel;
 using System.Web;
 using System.Web.UI;
-using Remotion.ObjectBinding;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -157,6 +156,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
 
         _dataSourceChanged = false;
+      }
+    }
+
+    public void UnregisterDataSource()
+    {
+      if (DataSource != null)
+      {
+        DataSource.Unregister (Control);
+        _dataSourceChanged = true;
       }
     }
 

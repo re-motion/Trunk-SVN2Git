@@ -237,6 +237,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
+    protected override void OnUnload (EventArgs e)
+    {
+      _binding.UnregisterDataSource();
+      base.OnUnload (e);
+    }
+
     /// <summary>Gets or sets a value that determines whether a server control is rendered as UI on the page.</summary>
     /// <value> 
     ///   <para>

@@ -20,6 +20,7 @@ using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using Remotion.Collections;
 using Remotion.ObjectBinding.Web.UI.Controls;
+using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace OBWTest
@@ -118,7 +119,12 @@ public class TestTabbedPersonDetailsUserControl :
 
   protected void ShowExtraFormGridButton_Click (object sender, EventArgs e)
   {
-    CreateExtraFormGrid("Button");
+    var textField = (BocTextValue) ((HtmlTable) ExtraFormGridPlaceHolder.Controls[0]).Rows[1].Cells[2].Controls[0];
+    Assertion.IsTrue (DataSource.GetAllBoundControls().Contains (textField));
+
+    CreateExtraFormGrid ("Button");
+
+    Assertion.IsFalse (DataSource.GetAllBoundControls().Contains (textField));
   }
 
   private void CreateExtraFormGrid (string contextInformation)
@@ -133,7 +139,7 @@ public class TestTabbedPersonDetailsUserControl :
     var dataRow = new HtmlTableRow();
     dataRow.Cells.Add (new HtmlTableCell());
     var controlCell = new HtmlTableCell();
-    controlCell.Controls.Add (new BocTextValue { ID = "TextField", Required = true });
+    controlCell.Controls.Add (new BocTextValue { ID = "TextField", Required = true, DataSource = DataSource });
     dataRow.Cells.Add (controlCell);
     formGrid.Rows.Add (dataRow);
 
@@ -142,6 +148,8 @@ public class TestTabbedPersonDetailsUserControl :
     if (FormGridManager.IsFormGridRegistered (formGrid))
       FormGridManager.UnregisterFormGrid (formGrid);
     FormGridManager.RegisterFormGrid (formGrid);
+
+
   }
 }
 }
