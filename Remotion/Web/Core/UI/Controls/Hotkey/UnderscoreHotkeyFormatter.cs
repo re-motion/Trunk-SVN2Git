@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Text;
 using System.Web;
 using Remotion.Utilities;
 
@@ -23,6 +24,20 @@ namespace Remotion.Web.UI.Controls.Hotkey
 {
   public class UnderscoreHotkeyFormatter : IHotkeyFormatter
   {
+    private struct TextParts
+    {
+      public readonly string BeforeHotkey;
+      public readonly string Hotkey;
+      public readonly string AfterHotkey;
+
+      public TextParts (string beforeHotkey, string hotkey, string afterHotkey)
+      {
+        BeforeHotkey = beforeHotkey;
+        Hotkey = hotkey;
+        AfterHotkey = afterHotkey;
+      }
+    }
+
     public UnderscoreHotkeyFormatter ()
     {
     }
@@ -31,11 +46,50 @@ namespace Remotion.Web.UI.Controls.Hotkey
     {
       ArgumentUtility.CheckNotNull ("textWithHotkey", textWithHotkey);
 
-      var text = textWithHotkey.Text;
-
+      var textParts = GetTextParts (textWithHotkey.Text, textWithHotkey.HotkeyIndex);
       if (encode)
-        return HttpUtility.HtmlEncode (text);
-      return text;
+        textParts = GetHtmlEncodedTextParts (textParts);
+
+      return GetFormattedString (textParts);
+    }
+
+    private TextParts GetTextParts (string text, int? hotkeyIndex)
+    {
+      if (!hotkeyIndex.HasValue)
+        return new TextParts (text, null, null);
+
+      return new TextParts (
+          text.Substring (0, hotkeyIndex.Value),
+          text.Substring (hotkeyIndex.Value, 1),
+          text.Substring (hotkeyIndex.Value + 1));
+    }
+
+    private TextParts GetHtmlEncodedTextParts (TextParts textParts)
+    {
+      return new TextParts (
+          HttpUtility.HtmlEncode (textParts.BeforeHotkey),
+          HttpUtility.HtmlEncode (textParts.Hotkey),
+          HttpUtility.HtmlEncode (textParts.AfterHotkey));
+    }
+
+    private string GetFormattedString (TextParts textParts)
+    {
+      var stringBuilder = new StringBuilder (100);
+
+      if (!string.IsNullOrEmpty (textParts.BeforeHotkey))
+        stringBuilder.Append (textParts.BeforeHotkey);
+
+      if (!string.IsNullOrEmpty (textParts.Hotkey))
+      {
+        stringBuilder.Append ("<u>");
+        stringBuilder.Append (textParts.Hotkey);
+        stringBuilder.Append ("</u>");
+      }
+
+      if (!string.IsNullOrEmpty (textParts.AfterHotkey))
+        stringBuilder.Append (textParts.AfterHotkey);
+
+      return stringBuilder.ToString();
     }
   }
 }

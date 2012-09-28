@@ -33,12 +33,57 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     }
 
     [Test]
-    public void Format_HtmlEncoding_NoHotkey ()
+    public void Format_WithHtmlEncoding_NoHotkey ()
     {
       var formatter = new UnderscoreHotkeyFormatter();
       var textWithHotkey = new TextWithHotkey ("f<b>o</b>o b&ar", null);
 
       Assert.That (formatter.Format (textWithHotkey, true), Is.EqualTo ("f&lt;b&gt;o&lt;/b&gt;o b&amp;ar"));
+    }
+
+    [Test]
+    public void Format_NoEncoding_WithHotkey ()
+    {
+      var formatter = new UnderscoreHotkeyFormatter();
+      var textWithHotkey = new TextWithHotkey ("foo b&ar", 4);
+
+      Assert.That (formatter.Format (textWithHotkey, false), Is.EqualTo ("foo <u>b</u>&ar"));
+    }
+
+    [Test]
+    public void Format_NoEncoding_WithHotkeyAtStart ()
+    {
+      var formatter = new UnderscoreHotkeyFormatter();
+      var textWithHotkey = new TextWithHotkey ("foo bar", 0);
+
+      Assert.That (formatter.Format (textWithHotkey, false), Is.EqualTo ("<u>f</u>oo bar"));
+    }
+
+    [Test]
+    public void Format_NoEncoding_WithHotkeyAtEnd ()
+    {
+      var formatter = new UnderscoreHotkeyFormatter();
+      var textWithHotkey = new TextWithHotkey ("foo bar", 6);
+
+      Assert.That (formatter.Format (textWithHotkey, false), Is.EqualTo ("foo ba<u>r</u>"));
+    }
+
+    [Test]
+    public void Format_WithHtmlEncoding_WithHotkey ()
+    {
+      var formatter = new UnderscoreHotkeyFormatter();
+      var textWithHotkey = new TextWithHotkey ("f<b>o</b>o b&ar", 11);
+
+      Assert.That (formatter.Format (textWithHotkey, true), Is.EqualTo ("f&lt;b&gt;o&lt;/b&gt;o <u>b</u>&amp;ar"));
+    }
+
+    [Test]
+    public void Format_WithHtmlEncoding_WithEncodedHotkey ()
+    {
+      var formatter = new UnderscoreHotkeyFormatter();
+      var textWithHotkey = new TextWithHotkey ("foo öar", 4);
+
+      Assert.That (formatter.Format (textWithHotkey, true), Is.EqualTo ("foo <u>&#246;</u>ar"));
     }
   }
 }
