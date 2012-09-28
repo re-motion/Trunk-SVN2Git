@@ -270,5 +270,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       //  No output, control is invisible
     }
+
+    protected override void OnUnload (EventArgs e)
+    {
+      foreach (var control in InnerDataSource.GetAllBoundControls().ToArray())
+        InnerDataSource.Unregister (control);
+
+      base.OnUnload (e);
+    }
   }
 }
