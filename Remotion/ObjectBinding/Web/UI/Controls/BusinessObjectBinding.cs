@@ -161,9 +161,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     public void UnregisterDataSource()
     {
-      if (DataSource != null)
+      if (_dataSource != null)
       {
-        DataSource.Unregister (Control);
+        _dataSource.Unregister (_control);
         _dataSourceChanged = true;
       }
     }
@@ -179,12 +179,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
 
       if (_dataSource != null)
-        _dataSource.Unregister (Control);
+        _dataSource.Unregister (_control);
 
       _dataSource = dataSource;
 
       if (dataSource != null)
-        dataSource.Register (Control);
+        dataSource.Register (_control);
       _bindingChanged = true;
     }
 
