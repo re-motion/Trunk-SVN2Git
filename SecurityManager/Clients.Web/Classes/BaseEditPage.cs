@@ -118,13 +118,12 @@ namespace Remotion.SecurityManager.Clients.Web.Classes
       return true;
     }
 
-
-    protected override void OnUnload (EventArgs e)
+    protected override object SaveControlState ()
     {
-      base.OnUnload (e);
-
       foreach (DataEditUserControl control in _dataEditUserControls)
         control.SaveValues (true);
+
+      return base.SaveControlState ();
     }
 
     protected void RegisterDataEditUserControl (DataEditUserControl dataEditUserControl)

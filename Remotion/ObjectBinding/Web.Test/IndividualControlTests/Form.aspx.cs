@@ -74,19 +74,14 @@ namespace OBWTest.IndividualControlTests
       Stack.Text = sb.ToString();
     }
 
-    protected override void OnUnload (EventArgs e)
+    protected override object SaveControlState ()
     {
-      base.OnUnload (e);
-
       if (! _isCurrentObjectSaved)
       {
         SaveValues (true);
       }
-    }
-
-    protected override void LoadViewState (object savedState)
-    {
-      base.LoadViewState (savedState);
+      RegisterRequiresControlState
+      return base.SaveControlState();
     }
 
     private void PostBackButton_Click (object sender, EventArgs e)
