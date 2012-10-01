@@ -84,6 +84,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           _dataSourceControl = dataSourceControl.ID;
         else
           _dataSourceControl = null;
+
+        _dataSourceChanged = false;
       }
     }
 
@@ -163,7 +165,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       if (_dataSource != null)
       {
-        _dataSource.Unregister (_control);
+        SetDataSource (null);
         _dataSourceChanged = true;
       }
     }
