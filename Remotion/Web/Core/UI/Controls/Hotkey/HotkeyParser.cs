@@ -14,20 +14,37 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+using System.Text;
+
 namespace Remotion.Web.UI.Controls.Hotkey
 {
   public class HotkeyParser
   {
-    private IHotkeyFormatter _hotkeyFormatter;
+    private const char c_hotkeyMarker = '&';
 
-    public HotkeyParser (IHotkeyFormatter hotkeyFormatter)
+    public HotkeyParser ()
     {
-      _hotkeyFormatter = hotkeyFormatter;
     }
 
-     public TextWithHotkey Parse (string value)
-     {
-       return null;
-     }
+    public TextWithHotkey Parse (string value)
+    {
+      if (string.IsNullOrEmpty (value))
+        return new TextWithHotkey (string.Empty, null);
+
+      var resultBuilder = new StringBuilder (value.Length);
+      int? hotkeyIndex = null;
+      for (int i = 0; i < value.Length; i++)
+      {
+        var currentChar = value[i];
+        if (currentChar == c_hotkeyMarker)
+          hotkeyIndex = i;
+        else
+          resultBuilder.Append (currentChar);
+      }
+
+      return new TextWithHotkey (resultBuilder.ToString(), hotkeyIndex);
+    }
   }
 }
