@@ -40,32 +40,13 @@ namespace Remotion.Utilities
       return attribute;
     }
 
-    private static object ExtractValueFromAttributeArgument (CustomAttributeTypedArgument typedArgument)
-    {
-      if (typedArgument.ArgumentType.IsArray)
-      {
-        IList<CustomAttributeTypedArgument> typedArgumentValue = (IList<CustomAttributeTypedArgument>) typedArgument.Value;
-        Array array = Array.CreateInstance (typedArgument.ArgumentType.GetElementType (), typedArgumentValue.Count);
-        for (int i = 0; i < typedArgumentValue.Count; i++)
-        {
-          CustomAttributeTypedArgument arrayElement = typedArgumentValue[i];
-          array.SetValue (ExtractValueFromAttributeArgument (arrayElement), i);
-        }
-        return array;
-      }
-      else if (typedArgument.ArgumentType.IsEnum)
-        return Enum.ToObject (typedArgument.ArgumentType, typedArgument.Value);
-      else
-        return typedArgument.Value;
-    }
-
     public static CustomAttributeArguments ParseCustomAttributeArguments (CustomAttributeData attributeData)
     {
       ArgumentUtility.CheckNotNull ("attributeData", attributeData);
 
       object[] constructorArgs = new object[attributeData.ConstructorArguments.Count];
       for (int i = 0; i < constructorArgs.Length; ++i)
-        constructorArgs[i] = ExtractValueFromAttributeArgument (attributeData.ConstructorArguments[i]);
+        constructorArgs[i] = CustomAttributeTypedArgumentUtility.Unwrap (attributeData.ConstructorArguments[i]);
 
       List<PropertyInfo> namedProperties = new List<PropertyInfo> ();
       List<object> propertyValues = new List<object> ();
@@ -78,11 +59,11 @@ namespace Remotion.Utilities
         {
           case MemberTypes.Field:
             namedFields.Add ((FieldInfo) namedArgument.MemberInfo);
-            fieldValues.Add (ExtractValueFromAttributeArgument (namedArgument.TypedValue));
+            fieldValues.Add (CustomAttributeTypedArgumentUtility.Unwrap (namedArgument.TypedValue));
             break;
           case MemberTypes.Property:
             namedProperties.Add ((PropertyInfo) namedArgument.MemberInfo);
-            propertyValues.Add (ExtractValueFromAttributeArgument (namedArgument.TypedValue));
+            propertyValues.Add (CustomAttributeTypedArgumentUtility.Unwrap (namedArgument.TypedValue));
             break;
           default:
             Assertion.IsTrue (false);
