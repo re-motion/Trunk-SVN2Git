@@ -46,11 +46,12 @@ namespace OBWTest
       Stack.Text += string.Format ("LevelThree (LevelOne.ReferenceValue.ReferenceValue): HasInstance = {0}, IsDirty = {1}<br/>", hasLevelThreeInstance, LevelThreeDataSource.IsDirty);
     }
 
-    protected override void OnUnload (EventArgs e)
+    protected override object SaveControlState ()
     {
-      base.OnUnload (e);
       if (LevelOneDataSource != null)
         LevelOneDataSource.SaveValues (true);
+
+      return base.SaveControlState ();
     }
 
     protected void ValidateButton_OnClick (object sender, EventArgs e)

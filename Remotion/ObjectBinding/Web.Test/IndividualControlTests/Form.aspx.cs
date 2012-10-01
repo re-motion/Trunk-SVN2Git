@@ -77,10 +77,8 @@ namespace OBWTest.IndividualControlTests
     protected override object SaveControlState ()
     {
       if (! _isCurrentObjectSaved)
-      {
         SaveValues (true);
-      }
-      RegisterRequiresControlState
+
       return base.SaveControlState();
     }
 

@@ -239,18 +239,15 @@ public class TestTabbedForm : TestWxeBasePage
       UpdatePanel.Style.Clear();
   }
 
-  protected override void OnUnload (EventArgs e)
+  protected override object SaveControlState ()
   {
-    base.OnUnload (e);
-
-    if (_currentObjectSaved)
-      return;
-
-    if (_dataEditControls != null)
+    if (!_currentObjectSaved)
     {
       foreach (IDataEditControl control in _dataEditControls)
         control.DataSource.SaveValues (true);
     }
+
+    return base.SaveControlState ();
   }
 
   private void CancelButton_Click(object sender, EventArgs e)
