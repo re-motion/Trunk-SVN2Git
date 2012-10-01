@@ -19,9 +19,9 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 
-namespace Remotion.TypePipe.UnitTests.MutableReflection
+namespace Remotion.UnitTests.Utilities
 {
   [TestFixture]
   public class CustomAttributeTypedArgumentUtilityTest

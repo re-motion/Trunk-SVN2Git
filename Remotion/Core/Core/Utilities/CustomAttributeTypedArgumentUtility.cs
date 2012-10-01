@@ -17,9 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Utilities;
 
-namespace Remotion.TypePipe.MutableReflection
+namespace Remotion.Utilities
 {
   /// <summary>
   /// Utility for recursively unwrapping <see cref="CustomAttributeTypedArgument"/> instances.
