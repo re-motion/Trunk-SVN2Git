@@ -43,26 +43,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var objectIDs = new[] { objectID1, objectID2 };
 
       var parentTransaction = ClientTransaction.CreateRootTransaction();
-      var subTransaction = parentTransaction.CreateSubTransaction();
+      var subTransaction1 = parentTransaction.CreateSubTransaction ();
+      var subTransaction2 = subTransaction1.CreateSubTransaction ();
 
       Assert.That (parentTransaction.IsInvalid (objectID1), Is.False);
       Assert.That (parentTransaction.IsInvalid (objectID2), Is.False);
-      Assert.That (subTransaction.IsInvalid (objectID1), Is.False);
-      Assert.That (subTransaction.IsInvalid (objectID2), Is.False);
+      Assert.That (subTransaction1.IsInvalid (objectID1), Is.False);
+      Assert.That (subTransaction1.IsInvalid (objectID2), Is.False);
+      Assert.That (subTransaction2.IsInvalid (objectID1), Is.False);
+      Assert.That (subTransaction2.IsInvalid (objectID2), Is.False);
 
       _listener.ObjectsNotFound (parentTransaction, Array.AsReadOnly (objectIDs));
 
       Assert.That (parentTransaction.IsInvalid (objectID1), Is.True);
       Assert.That (parentTransaction.IsInvalid (objectID2), Is.True);
-      Assert.That (subTransaction.IsInvalid (objectID1), Is.True);
-      Assert.That (subTransaction.IsInvalid (objectID2), Is.True);
+      Assert.That (subTransaction1.IsInvalid (objectID1), Is.True);
+      Assert.That (subTransaction1.IsInvalid (objectID2), Is.True);
+      Assert.That (subTransaction2.IsInvalid (objectID1), Is.True);
+      Assert.That (subTransaction1.IsInvalid (objectID2), Is.True);
 
       Assert.That (
           LifetimeService.GetObjectReference (parentTransaction, objectID1),
-          Is.SameAs (LifetimeService.GetObjectReference (subTransaction, objectID1)));
+          Is.SameAs (LifetimeService.GetObjectReference (subTransaction1, objectID1)));
       Assert.That (
-          LifetimeService.GetObjectReference (parentTransaction, objectID2),
-          Is.SameAs (LifetimeService.GetObjectReference (subTransaction, objectID2)));
+          LifetimeService.GetObjectReference (parentTransaction, objectID1),
+          Is.SameAs (LifetimeService.GetObjectReference (subTransaction2, objectID1)));
     }
 
     [Test]

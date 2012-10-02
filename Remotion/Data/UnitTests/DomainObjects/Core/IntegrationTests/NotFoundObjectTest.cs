@@ -439,6 +439,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckObjectIsMarkedInvalid (_nonExistingObjectID);
     }
 
+    [Test]
+    public void Invalidity_WithMultipleSubTransactions ()
+    {
+      var middleTransaction = TestableClientTransaction.CreateSubTransaction();
+      using (middleTransaction.EnterDiscardingScope ())
+      {
+        var subTransaction = middleTransaction.CreateSubTransaction();
+        using (subTransaction.EnterDiscardingScope ())
+        {
+          Assert.That (() => Order.GetObject (_nonExistingObjectID, true), ThrowsObjectNotFoundException (_nonExistingObjectID));
+
+          CheckObjectIsMarkedInvalid (_nonExistingObjectID);
+        }
+        CheckObjectIsMarkedInvalid (_nonExistingObjectID);
+      }
+      CheckObjectIsMarkedInvalid (_nonExistingObjectID);
+    }
+
     private void EnableConstraints (TableDefinition tableDefinition)
     {
       var commandText = string.Format ("ALTER TABLE [{0}] WITH CHECK CHECK CONSTRAINT all", tableDefinition.TableName.EntityName);

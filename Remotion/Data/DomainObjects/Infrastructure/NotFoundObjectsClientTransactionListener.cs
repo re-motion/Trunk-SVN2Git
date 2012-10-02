@@ -38,7 +38,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         var objectReference = clientTransaction.GetObjectReference (objectID);
         for (var tx = clientTransaction; tx != null; tx = tx.SubTransaction)
         {
-          using (clientTransaction.HierarchyManager.UnlockIfRequired())
+          using (tx.HierarchyManager.UnlockIfRequired())
           {
             tx.DataManager.MarkInvalid (objectReference);
           }
