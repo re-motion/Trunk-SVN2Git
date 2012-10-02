@@ -122,5 +122,45 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
     }
+
+    [Test]
+    public void Parse_TextWithEscapedHotkeyMarker_IgnoreHotkeyMarker ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("No &&Hotkey");
+      Assert.That (result.Text, Is.EqualTo ("No &Hotkey"));
+      Assert.That (result.Hotkey, Is.Null);
+      Assert.That (result.HotkeyIndex, Is.Null);
+    }
+
+    [Test]
+    public void Parse_TextWithEscapedHotkeyMarker_AndFollowedByHotkey ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("A &&&Hotkey");
+      Assert.That (result.Text, Is.EqualTo ("A &Hotkey"));
+      Assert.That (result.Hotkey, Is.EqualTo ('H'));
+      Assert.That (result.HotkeyIndex, Is.EqualTo (3));
+    }
+
+    [Test]
+    public void Parse_TextWithMultipleHotkeyMarkers_AndEscapedHotkeyMarkers_IgnoreHotkeyMarker_IntegrationTest ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("&Hotkey &&Integration &Test");
+      Assert.That (result.Text, Is.EqualTo ("&Hotkey &&Integration &Test"));
+      Assert.That (result.Hotkey, Is.Null);
+      Assert.That (result.HotkeyIndex, Is.Null);
+    }
+
+    [Test]
+    public void Parse_TextWithHotkey_AndIgnoredHotkeyMarkers_AndEscapedHotkeyMarkers_IntegrationTest ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("&&Hotkey & &Integration Test&");
+      Assert.That (result.Text, Is.EqualTo ("&Hotkey & Integration Test&"));
+      Assert.That (result.Hotkey, Is.EqualTo ('I'));
+      Assert.That (result.HotkeyIndex, Is.EqualTo (10));
+    }
   }
 }

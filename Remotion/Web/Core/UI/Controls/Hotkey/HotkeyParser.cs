@@ -45,8 +45,12 @@ namespace Remotion.Web.UI.Controls.Hotkey
             if (hotkeyIndex.HasValue)
               return new TextWithHotkey (value, null);
 
-            hotkeyIndex = i;
+            hotkeyIndex = resultBuilder.Length;
             continue;
+          }
+          else if (value[i + 1] == c_hotkeyMarker)
+          {
+            i++;
           }
         }
 
