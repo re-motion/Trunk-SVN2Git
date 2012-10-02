@@ -157,8 +157,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     public void Parse_TextWithHotkey_AndIgnoredHotkeyMarkers_AndEscapedHotkeyMarkers_IntegrationTest ()
     {
       var parser = new HotkeyParser();
-      var result = parser.Parse ("&&Hotkey & &Integration Test&");
-      Assert.That (result.Text, Is.EqualTo ("&Hotkey & Integration Test&"));
+      var result = parser.Parse ("&&Hotkey & &Integration &&Test&");
+      Assert.That (result.Text, Is.EqualTo ("&Hotkey & Integration &Test&"));
       Assert.That (result.Hotkey, Is.EqualTo ('I'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (10));
     }
