@@ -38,10 +38,19 @@ namespace Remotion.Web.UI.Controls.Hotkey
       for (int i = 0; i < value.Length; i++)
       {
         var currentChar = value[i];
-        if (currentChar == c_hotkeyMarker)
-          hotkeyIndex = i;
-        else
-          resultBuilder.Append (currentChar);
+        if (currentChar == c_hotkeyMarker && i + 1 < value.Length)
+        {
+          if (char.IsLetterOrDigit (value, i + 1))
+          {
+            if (hotkeyIndex.HasValue)
+              return new TextWithHotkey (value, null);
+
+            hotkeyIndex = i;
+            continue;
+          }
+        }
+
+        resultBuilder.Append (currentChar);
       }
 
       return new TextWithHotkey (resultBuilder.ToString(), hotkeyIndex);

@@ -57,19 +57,19 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     public void Parse_TextWithHotkey ()
     {
       var parser = new HotkeyParser();
-      var result = parser.Parse ("No &Hotkey");
-      Assert.That (result.Text, Is.EqualTo ("No Hotkey"));
+      var result = parser.Parse ("A &Hotkey");
+      Assert.That (result.Text, Is.EqualTo ("A Hotkey"));
       Assert.That (result.Hotkey, Is.EqualTo ('H'));
-      Assert.That (result.HotkeyIndex, Is.EqualTo (3));
+      Assert.That (result.HotkeyIndex, Is.EqualTo (2));
     }
 
     [Test]
     public void Parse_TextWithHotkeyAtStart ()
     {
       var parser = new HotkeyParser();
-      var result = parser.Parse ("&No Hotkey");
-      Assert.That (result.Text, Is.EqualTo ("No Hotkey"));
-      Assert.That (result.Hotkey, Is.EqualTo ('N'));
+      var result = parser.Parse ("&A Hotkey");
+      Assert.That (result.Text, Is.EqualTo ("A Hotkey"));
+      Assert.That (result.Hotkey, Is.EqualTo ('A'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (0));
     }
 
@@ -77,10 +77,50 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     public void Parse_TextWithHotkeyAtEnd ()
     {
       var parser = new HotkeyParser();
-      var result = parser.Parse ("No Hotke&y");
-      Assert.That (result.Text, Is.EqualTo ("No Hotkey"));
+      var result = parser.Parse ("A Hotke&y");
+      Assert.That (result.Text, Is.EqualTo ("A Hotkey"));
       Assert.That (result.Hotkey, Is.EqualTo ('y'));
-      Assert.That (result.HotkeyIndex, Is.EqualTo (8));
+      Assert.That (result.HotkeyIndex, Is.EqualTo (7));
+    }
+
+    [Test]
+    public void Parse_TextWithHotkeyMarkerBeforeWhitespace_IgnoreHotkeyMarker ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("No & Hotkey");
+      Assert.That (result.Text, Is.EqualTo ("No & Hotkey"));
+      Assert.That (result.Hotkey, Is.Null);
+      Assert.That (result.HotkeyIndex, Is.Null);
+    }
+
+    [Test]
+    public void Parse_TextWithHotkeyMarkerBeforePunctuation_IgnoreHotkeyMarker ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("No &. Hotkey");
+      Assert.That (result.Text, Is.EqualTo ("No &. Hotkey"));
+      Assert.That (result.Hotkey, Is.Null);
+      Assert.That (result.HotkeyIndex, Is.Null);
+    }
+
+    [Test]
+    public void Parse_TextWithHotkeyMarkerAsLastCharacter_IgnoreHotkeyMarker ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("No Hotkey&");
+      Assert.That (result.Text, Is.EqualTo ("No Hotkey&"));
+      Assert.That (result.Hotkey, Is.Null);
+      Assert.That (result.HotkeyIndex, Is.Null);
+    }
+
+    [Test]
+    public void Parse_TextWithMultipleHotkeyMarkers_IgnoreHotkeyMarkers ()
+    {
+      var parser = new HotkeyParser();
+      var result = parser.Parse ("&No &Hotkey");
+      Assert.That (result.Text, Is.EqualTo ("&No &Hotkey"));
+      Assert.That (result.Hotkey, Is.Null);
+      Assert.That (result.HotkeyIndex, Is.Null);
     }
   }
 }
