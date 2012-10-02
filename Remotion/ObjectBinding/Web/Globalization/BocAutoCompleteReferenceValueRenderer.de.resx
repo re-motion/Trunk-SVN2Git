@@ -127,6 +127,6 @@
     <value>Für die aktuelle Eingabe wurden keine Daten gefunden.</value>
   </data>
   <data name="Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation.Rendering.BocAutoCompleteReferenceValueRenderer.SearchStringForDropDownDoesNotMatchRegexMessage" xml:space="preserve">
-    <value>Die aktuellen Eingabe entspricht nicht dem vorgegebenen Format.</value>
+    <value>Die aktuelle Eingabe entspricht nicht dem vorgegebenen Format.</value>
   </data>
 </root>
