@@ -53,8 +53,8 @@ namespace Remotion.Utilities
     // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     [AssertionMethod]
     public static T CheckNotNull<T> (
-        [InvokerParameterName] string argumentName, 
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] T actualValue)
+        [InvokerParameterName] string argumentName,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] T actualValue)
     {
       // ReSharper disable CompareNonConstrainedGenericWithNull
       if (actualValue == null)
@@ -178,8 +178,8 @@ namespace Remotion.Utilities
     }
 
     public static object CheckNotNullAndType (
-        [InvokerParameterName] string argumentName, 
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] object actualValue, 
+        [InvokerParameterName] string argumentName,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] object actualValue, 
         Type expectedType)
     {
       if (actualValue == null)
@@ -208,8 +208,8 @@ namespace Remotion.Utilities
     /// <exception cref="ArgumentTypeException">The <paramref name="actualValue"/> is an instance of another type.</exception>
     // Duplicated in Remotion.Linq.Utilities.ArgumentUtility
     public static TExpected CheckNotNullAndType<TExpected> (
-        [InvokerParameterName] string argumentName, 
-        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] object actualValue)
+        [InvokerParameterName] string argumentName,
+        [AssertionCondition (AssertionConditionType.IS_NOT_NULL)] [NoEnumeration] object actualValue)
         // where TExpected: struct
     {
       if (actualValue == null)
@@ -220,7 +220,7 @@ namespace Remotion.Utilities
       return (TExpected) actualValue;
     }
 
-    public static object CheckType ([InvokerParameterName] string argumentName, object actualValue, Type expectedType)
+    public static object CheckType ([InvokerParameterName] string argumentName, [NoEnumeration] object actualValue, Type expectedType)
     {
       if (actualValue == null)
       {
@@ -245,7 +245,7 @@ namespace Remotion.Utilities
     ///   For non-nullable value types, you should use either <see cref="CheckNotNullAndType{TExpected}"/> or pass the type 
     ///   <see cref="Nullable{T}" /> instead.
     /// </remarks>
-    public static TExpected CheckType<TExpected> ([InvokerParameterName] string argumentName, object actualValue)
+    public static TExpected CheckType<TExpected> ([InvokerParameterName] string argumentName, [NoEnumeration] object actualValue)
     {
       if (actualValue == null)
       {

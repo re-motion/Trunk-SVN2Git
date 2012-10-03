@@ -484,6 +484,7 @@
     <Compile Include="Utilities\ReSharperAnnotations\InvokerParameterNameAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\LocalizationRequiredAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\MeansImplicitUseAttribute.cs" />
+    <Compile Include="Utilities\ReSharperAnnotations\NoEnumerationAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\NotNullAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\StringFormatMethodAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\TerminatesProgramAttribute.cs" />
