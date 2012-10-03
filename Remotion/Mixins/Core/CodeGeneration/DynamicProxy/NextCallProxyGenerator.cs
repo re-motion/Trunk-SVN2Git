@@ -16,14 +16,15 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Definitions;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.Reflection.CodeGeneration.DPExtensions;
-using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.CodeGeneration.DynamicProxy
@@ -49,13 +50,15 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       _concreteMixinTypes = concreteMixinTypes;
       _targetClassConfiguration = surroundingType.Configuration;
 
-      List<Type> interfaces = new List<Type> ();
-      interfaces.Add (typeof (IGeneratedNextCallProxyType));
-      foreach (RequiredNextCallTypeDefinition requiredType in _targetClassConfiguration.RequiredNextCallTypes)
-        interfaces.Add (requiredType.Type);
+      var interfaces = EnumerableUtility
+          .Singleton (typeof (IGeneratedNextCallProxyType))
+          .Concat (_targetClassConfiguration.RequiredNextCallTypes.Select (requiredType => requiredType.Type))
+          .ToArray();
 
-      _emitter = surroundingTypeEmitter.CreateNestedClass("NextCallProxy", typeof (object), interfaces.ToArray());
-      _emitter.AddCustomAttribute (new CustomAttributeBuilder (typeof (SerializableAttribute).GetConstructor (Type.EmptyTypes), new object[0]));
+      _emitter = surroundingTypeEmitter.CreateNestedClass("NextCallProxy", typeof (object), interfaces);
+      var serializableAttributeCtor = typeof (SerializableAttribute).GetConstructor (Type.EmptyTypes);
+      Assertion.IsNotNull (serializableAttributeCtor);
+      _emitter.AddCustomAttribute (new CustomAttributeBuilder (serializableAttributeCtor, new object[0]));
 
       _thisField = _emitter.CreateField ("__this", _surroundingType.TypeBuilder);
       _depthField = _emitter.CreateField ("__depth", typeof (int));
@@ -101,7 +104,7 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
     {
       ArgumentReference arg1 = new ArgumentReference (_surroundingType.TypeBuilder);
       ArgumentReference arg2 = new ArgumentReference (typeof (int));
-      ConstructorEmitter ctor = _emitter.CreateConstructor (new ArgumentReference[] { arg1, arg2 });
+      ConstructorEmitter ctor = _emitter.CreateConstructor (new[] { arg1, arg2 });
 
       ctor.CodeBuilder.InvokeBaseConstructor();
       ctor.CodeBuilder.AddStatement (new AssignStatement (_thisField, arg1.ToExpression()));
@@ -134,16 +137,22 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
       // If the base type of the emitter (object) already has the method being overridden (ToString, Equals, etc.), mixins could use the base 
       // implementation of the method rather than coming via the next call interface. Therefore, we need to override that base method and point it
       // towards our next call above.
-      Assertion.IsTrue (_emitter.BaseType == typeof (object));
-      // TODO 4648: Due to a bug in methodOverride.ParameterTypes, this will only work for methods with an empty argument list.
-#pragma warning disable 612,618
-      MethodInfo sameMethodOnProxyBase = _emitter.BaseType.GetMethod (methodDefinitionOnTarget.Name,
-          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, methodOverride.ParameterTypes, null);
-#pragma warning restore 612,618
-      if (sameMethodOnProxyBase != null && sameMethodOnProxyBase.IsVirtual)
-        _emitter.CreateMethodOverride (sameMethodOnProxyBase).ImplementByDelegating (
+      Assertion.IsTrue (
+          _emitter.BaseType == typeof (object), 
+          "This code assumes that only non-generic methods could match on the base type, which holds for object.");
+      // Since object has no generic methods, we can use the exact parameter types to find the equivalent method.
+      var equivalentMethodOnProxyBase = _emitter.BaseType.GetMethod (
+          methodDefinitionOnTarget.Name,
+          BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+          null,
+          methodOverride.ParameterTypes,
+          null);
+      if (equivalentMethodOnProxyBase != null && equivalentMethodOnProxyBase.IsVirtual)
+      {
+        _emitter.CreateMethodOverride (equivalentMethodOnProxyBase).ImplementByDelegating (
             new TypeReferenceWrapper (SelfReference.Self, _emitter.TypeBuilder),
             methodOverride.MethodBuilder);
+      }
     }
 
     private void ImplementBaseCallsForRequirements ()
