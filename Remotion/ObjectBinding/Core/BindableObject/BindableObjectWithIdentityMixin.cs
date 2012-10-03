@@ -26,10 +26,10 @@ namespace Remotion.ObjectBinding.BindableObject
   [Serializable]
   [BindableObjectWithIdentityProvider]
   [CopyCustomAttributes (typeof (DebuggerDisplay))]
-  public abstract class BindableObjectWithIdentityMixin : BindableObjectMixin, IBusinessObjectWithIdentity
+  public abstract class BindableObjectWithIdentityMixin : BindableObjectMixinBase<object>, IBusinessObjectWithIdentity
   {
     [DebuggerDisplay ("{UniqueIdentifier} ({((Remotion.Mixins.IMixinTarget)this).Configuration.Type.FullName})")]
-    internal class DebuggerDisplay // the attributes of this class are copied to the target class
+    private class DebuggerDisplay // the attributes of this class are copied to the target class
     {
     }
 
@@ -38,5 +38,10 @@ namespace Remotion.ObjectBinding.BindableObject
     }
 
     public abstract string UniqueIdentifier { get; }
+
+    protected override Type GetTypeForBindableObjectClass ()
+    {
+      return MixinTypeUtility.GetUnderlyingTargetType (Target.GetType ());
+    }
   }
 }
