@@ -54,6 +54,31 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
+    [IgnoreAttribute ("TODO 4558")]
+    public void MixinsIntroduceAttributes_InheritedFromBase ()
+    {
+      TargetClassDefinition target = DefinitionObjectMother.GetTargetClassDefinition (typeof (NullTarget), typeof (MixinInheritingAttributes));
+
+      var mixin = target.Mixins[typeof (MixinInheritingAttributes)];
+      Assert.That (mixin.CustomAttributes.Keys, Has.Member (typeof (InheritableAttribute)));
+      Assert.That (mixin.CustomAttributes.Keys, Has.No.Member (typeof (NonInheritableAttribute)));
+
+      var attribute = mixin.CustomAttributes[typeof (InheritableAttribute)].Single();
+      Assert.That (mixin.AttributeIntroductions.Select (i => i.Attribute), Has.Member (attribute));
+      var attributeIntroduction = mixin.AttributeIntroductions[typeof (InheritableAttribute)].Single();
+      Assert.That (target.ReceivedAttributes, Has.Member (attributeIntroduction));
+
+      var member = mixin.Methods[typeof (MixinInheritingAttributes).GetMethod ("ToString")];
+      Assert.That (member.CustomAttributes.Keys, Has.Member (typeof (InheritableAttribute)));
+      Assert.That (member.CustomAttributes.Keys, Has.No.Member (typeof (NonInheritableAttribute)));
+
+      var memberAttribute = member.CustomAttributes[typeof (InheritableAttribute)].Single ();
+      Assert.That (member.AttributeIntroductions.Select (i => i.Attribute), Has.Member (memberAttribute));
+      var memberAttributeIntroduction = member.AttributeIntroductions[typeof (InheritableAttribute)].Single ();
+      Assert.That (member.Base.ReceivedAttributes, Has.Member (memberAttributeIntroduction));
+    }
+
+    [Test]
     public void MixinsIntroduceAttributesToMembers ()
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
@@ -115,7 +140,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseType1), typeof (MixinAddingNonInheritedAttribute));
-      Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (NonInheritedAttribute)));
+      Assert.AreEqual (0, definition.ReceivedAttributes.GetItemCount (typeof (NonInheritableAttribute)));
     }
 
     [Test]
@@ -192,13 +217,39 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
+    [IgnoreAttribute ("TODO 4558")]
+    public void IndirectAttributeIntroduction_ViaCopy_OfAttributesInheritedFromCopyBase ()
+    {
+      var mixinType = typeof (MixinIndirectlyAddingAttributeInheritedFromAttributeSourceBase);
+      var target = DefinitionObjectMother.GetTargetClassDefinition (typeof (NullTarget), mixinType);
+      
+      var mixin = target.Mixins[mixinType];
+      Assert.That (mixin.CustomAttributes.Keys, Has.Member (typeof (InheritableAttribute)));
+      Assert.That (mixin.CustomAttributes.Keys, Has.No.Member (typeof (NonInheritableAttribute)));
+
+      var mixinAttribute = mixin.CustomAttributes[typeof (InheritableAttribute)].Single();
+      Assert.That (target.ReceivedAttributes.Keys, Has.Member (typeof (InheritableAttribute)));
+      Assert.That (target.ReceivedAttributes.Keys, Has.No.Member (typeof (NonInheritableAttribute)));
+      Assert.That (target.ReceivedAttributes[typeof (InheritableAttribute)].Single ().Attribute, Is.SameAs (mixinAttribute));
+
+      var member = mixin.Methods[mixinType.GetMethod ("ToString")];
+      Assert.That (member.CustomAttributes.Keys, Has.Member (typeof (InheritableAttribute)));
+      Assert.That (member.CustomAttributes.Keys, Has.No.Member (typeof (NonInheritableAttribute)));
+
+      var memberAttribute = member.CustomAttributes[typeof (InheritableAttribute)].Single();
+      Assert.That (member.Base.ReceivedAttributes.Keys, Has.Member (typeof (InheritableAttribute)));
+      Assert.That (member.Base.ReceivedAttributes.Keys, Has.No.Member (typeof (NonInheritableAttribute)));
+      Assert.That (member.Base.ReceivedAttributes[typeof (InheritableAttribute)].Single ().Attribute, Is.SameAs (memberAttribute));
+    }
+
+    [Test]
     public void IndirectAttributeIntroduction_OfNonInheritedAttribute_ViaCopy ()
     {
       using (MixinConfiguration.BuildFromActive ().ForClass<NullTarget> ().Clear ().AddMixins (typeof (MixinIndirectlyAddingNonInheritedAttribute)).EnterScope ())
       {
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         Assert.IsFalse (definition.ReceivedAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)));
-        Assert.IsTrue (definition.ReceivedAttributes.ContainsKey (typeof (NonInheritedAttribute)));
+        Assert.IsTrue (definition.ReceivedAttributes.ContainsKey (typeof (NonInheritableAttribute)));
       }
     }
 
@@ -287,6 +338,56 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         TargetClassDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget));
         Assert.That (definition.ReceivedAttributes.ContainsKey (typeof (BT1Attribute)), Is.True);
       }
+    }
+
+    [NonInheritable]
+    [Inheritable]
+    public class BaseClassWithAttributes
+    {
+      [NonInheritable]
+      [Inheritable]
+      public virtual new string ToString ()
+      {
+        return null;
+      }
+    }
+
+    public class MixinInheritingAttributes : BaseClassWithAttributes
+    {
+      [OverrideTarget]
+      public override string ToString ()
+      {
+        return base.ToString ();
+      }
+    }
+  }
+
+  [CopyCustomAttributes (typeof (AttributeSourceWithInheritance))]
+  public class MixinIndirectlyAddingAttributeInheritedFromAttributeSourceBase
+  {
+    public class AttributeSourceWithInheritance : AttributeSourceBase
+    {
+      public override void AttributeSourceMethod ()
+      {
+      }
+    }
+
+    [Inheritable]
+    [NonInheritable]
+    public class AttributeSourceBase
+    {
+      [Inheritable]
+      [NonInheritable]
+      public virtual void AttributeSourceMethod ()
+      {
+      }
+    }
+
+    [OverrideTarget]
+    [CopyCustomAttributes (typeof (AttributeSourceWithInheritance), "AttributeSourceMethod")]
+    public new string ToString ()
+    {
+      return "";
     }
   }
 }

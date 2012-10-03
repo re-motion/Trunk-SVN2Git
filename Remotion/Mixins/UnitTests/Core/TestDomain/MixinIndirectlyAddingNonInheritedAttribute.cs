@@ -19,7 +19,7 @@ namespace Remotion.Mixins.UnitTests.Core.TestDomain
   [CopyCustomAttributes (typeof (AttributeSource))]
   public class MixinIndirectlyAddingNonInheritedAttribute : Mixin<object>
   {
-    [NonInheritedAttribute]
+    [NonInheritable]
     public class AttributeSource
     {
     }

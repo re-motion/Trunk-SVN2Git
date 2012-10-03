@@ -18,10 +18,10 @@ using System;
 
 namespace Remotion.Mixins.UnitTests.Core.TestDomain
 {
-  [AttributeUsage (AttributeTargets.Class, Inherited = false)]
-  public class NonInheritedAttribute : Attribute
+  [AttributeUsage (AttributeTargets.All, Inherited = true)]
+  public class InheritableAttribute : Attribute
   {
-    public NonInheritedAttribute ()
+    public InheritableAttribute ()
     {
     }
   }

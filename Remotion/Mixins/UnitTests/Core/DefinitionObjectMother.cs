@@ -258,6 +258,15 @@ namespace Remotion.Mixins.UnitTests.Core
       return TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
     }
 
+    public static TargetClassDefinition GetTargetClassDefinition (Type targetClass, params Type[] mixins)
+    {
+      ArgumentUtility.CheckNotNull ("targetClass", targetClass);
+      ArgumentUtility.CheckNotNull ("mixins", mixins);
+
+      var classContext = ClassContextObjectMother.Create (targetClass, mixins);
+      return GetTargetClassDefinition (classContext);
+    }
+
     public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, params Type[] mixinTypes)
     {
       ArgumentUtility.CheckNotNull ("baseType", baseType);

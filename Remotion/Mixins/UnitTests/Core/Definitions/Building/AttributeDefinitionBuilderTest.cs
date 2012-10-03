@@ -149,7 +149,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         MixinDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingNonInheritedAttribute)];
         Assert.That (definition.CustomAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)), Is.False);
-        Assert.That (definition.CustomAttributes.ContainsKey (typeof (NonInheritedAttribute)), Is.True);
+        Assert.That (definition.CustomAttributes.ContainsKey (typeof (NonInheritableAttribute)), Is.True);
       }
     }
 
@@ -160,7 +160,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       {
         MixinDefinition definition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (NullTarget)).Mixins[typeof (MixinIndirectlyAddingNonInheritedAttributeFromSelf)];
         Assert.That (definition.CustomAttributes.ContainsKey (typeof (CopyCustomAttributesAttribute)), Is.False);
-        Assert.That (definition.CustomAttributes.ContainsKey (typeof (NonInheritedAttribute)), Is.True);
+        Assert.That (definition.CustomAttributes.ContainsKey (typeof (NonInheritableAttribute)), Is.True);
       }
     }
 

@@ -252,6 +252,7 @@
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedBaseMixin.cs" />
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedMixin.cs" />
     <Compile Include="Core\Definitions\CompleteInterfaceDependencyDefinitionTest.cs" />
+    <Compile Include="Core\IntegrationTests\AttributeIntroduction\InheritedAttributeViaCopyTest.cs" />
     <Compile Include="Core\MixinTypeUtilityPerformanceTest.cs" />
     <Compile Include="Core\DefinitionObjectMother.cs" />
     <Compile Include="Core\Definitions\Building\AttributeDefinitionBuilderTest.cs" />
@@ -343,6 +344,8 @@
     <Compile Include="Core\MixinTypeUtilityTest.cs" />
     <Compile Include="Core\ObjectFactoryPerformanceTest.cs" />
     <Compile Include="Core\ObjectFactoryTest.cs" />
+    <Compile Include="Core\IntegrationTests\AttributeIntroduction\InheritedAttributeTest.cs" />
+    <Compile Include="Core\TestDomain\InheritableAttribute.cs" />
     <Compile Include="Core\TypeExtensionsTest.cs" />
     <Compile Include="Core\Utilities\ConstraintBasedGenericParameterInstantiatorTest.cs" />
     <Compile Include="Core\Utilities\DependencySortTest.cs" />
@@ -597,7 +600,7 @@
     <Compile Include="Core\TestDomain\MixinWithVirtualMethod.cs" />
     <Compile Include="Core\TestDomain\MixinWithVirtualMethod2.cs" />
     <Compile Include="Core\TestDomain\MultiAttribute.cs" />
-    <Compile Include="Core\TestDomain\NonInheritedAttribute.cs" />
+    <Compile Include="Core\TestDomain\NonInheritableAttribute.cs" />
     <Compile Include="Core\TestDomain\NullMixin.cs" />
     <Compile Include="Core\TestDomain\NullMixin2.cs" />
     <Compile Include="Core\TestDomain\NullMixin3.cs" />
