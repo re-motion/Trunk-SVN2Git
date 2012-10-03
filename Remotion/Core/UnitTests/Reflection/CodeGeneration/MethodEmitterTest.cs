@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
@@ -30,7 +31,6 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
   public class MethodEmitterTest : MethodGenerationTestBase
   {
     [Test]
-    [Obsolete ("TODO RM-4648 : MethodEmitter.ParameterTypes returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     public void SimpleMethod ()
     {
       var method = ClassEmitter.CreateMethod ("SimpleMethod", MethodAttributes.Public, typeof (string), new[] { typeof (string) });
@@ -59,6 +59,40 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
 
       object returnValue = BuildTypeAndInvokeMethod (method, "Param");
       Assert.AreEqual ("ParamSimple", returnValue);
+    }
+
+    [Test]
+    public void CopiedMethod ()
+    {
+      var method = ClassEmitter.CreateMethod ("SimpleMethod", MethodAttributes.Public, typeof (List<int>).GetMethod ("Contains", new[] { typeof (int) }));
+      method.ImplementByReturning (new ConstReference (false).ToExpression ());
+
+      object returnValue = BuildInstanceAndInvokeMethod (method, 12);
+      Assert.AreEqual (false, returnValue);
+
+      Assert.IsNotNull (method.MethodBuilder);
+      Assert.That (method.ReturnType, Is.EqualTo (typeof (bool)));
+      Assert.That (method.ParameterTypes, Is.EqualTo (new[] { typeof (int) }));
+    }
+
+    [Test]
+    public void CopiedMethod_Generic ()
+    {
+      var method = ClassEmitter.CreateMethod ("SimpleMethod", MethodAttributes.Public, typeof (ClassWithSimpleGenericMethod).GetMethod ("GenericMethod"));
+      method.ImplementByReturning (new ConstReference ("done").ToExpression ());
+
+      object returnValue = BuildInstanceAndInvokeMethod (method, new[] { typeof (int), typeof (string), typeof (bool) }, 12, "", false);
+      Assert.AreEqual ("done", returnValue);
+
+      Assert.IsNotNull (method.MethodBuilder);
+      Assert.That (method.ReturnType, Is.EqualTo (typeof (string)));
+      Assert.That (method.ParameterTypes, Has.Length.EqualTo (3));
+      Assert.That (method.ParameterTypes[0].IsGenericParameter, Is.True);
+      Assert.That (method.ParameterTypes[0].Name, Is.EqualTo ("T1"));
+      Assert.That (method.ParameterTypes[1].IsGenericParameter, Is.True);
+      Assert.That (method.ParameterTypes[1].Name, Is.EqualTo ("T2"));
+      Assert.That (method.ParameterTypes[2].IsGenericParameter, Is.True);
+      Assert.That (method.ParameterTypes[2].Name, Is.EqualTo ("T3"));
     }
 
     [Test]

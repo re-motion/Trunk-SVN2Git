@@ -59,6 +59,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
       return InvokeMethod (instance, method, arguments);
     }
 
+    protected object BuildInstanceAndInvokeMethod (IMethodEmitter method, Type[] typeArguments, params object[] arguments)
+    {
+      object instance = BuildInstance ();
+      return InvokeMethod (instance, method, typeArguments, arguments);
+    }
+
     protected object BuildTypeAndInvokeMethod (IMethodEmitter method, params object[] arguments)
     {
       Type builtType = _classEmitter.BuildType();
@@ -68,6 +74,12 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     protected object InvokeMethod (object instance, IMethodEmitter method, params object[] arguments)
     {
       var methodInfo = GetMethod (instance, method);
+      return methodInfo.Invoke (instance, arguments);
+    }
+
+    protected object InvokeMethod (object instance, IMethodEmitter method, Type[] typeArguments, params object[] arguments)
+    {
+      var methodInfo = GetMethod (instance, method).MakeGenericMethod (typeArguments);
       return methodInfo.Invoke (instance, arguments);
     }
 

@@ -128,11 +128,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.NextCal
     }
 
     [Test]
-    [Ignore ("TODO 4648")]
     public void NextCall_ToMethodWithArgument_AlsoDeclaredOnObject ()
     {
       var instance = ObjectFactory.Create<TargetClassForMixinOverridingMethodWithArgument> ();
+// ReSharper disable EqualExpressionComparison
       var result1 = instance.Equals (instance);
+// ReSharper restore EqualExpressionComparison
       var result2 = instance.Equals (null);
 
       Assert.That (result1, Is.True);

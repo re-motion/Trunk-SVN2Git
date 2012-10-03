@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy.Generators.Emitters;
@@ -60,7 +61,7 @@ namespace Remotion.Reflection.CodeGeneration
       _innerEmitter = innerEmitter;
       _declaringType = declaringType;
       _name = name;
-      _parameterTypes = new Type[0];
+      _parameterTypes = _innerEmitter.Arguments.Select (a => a.Type).ToArray ();
     }
 
     public MethodBuilder MethodBuilder

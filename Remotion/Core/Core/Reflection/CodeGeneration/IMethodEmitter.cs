@@ -28,7 +28,6 @@ namespace Remotion.Reflection.CodeGeneration
     string Name { get; }
     ArgumentReference[] ArgumentReferences { get; }
     Type ReturnType { get; }
-    [Obsolete ("TODO RM-4648 : This property returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     Type[] ParameterTypes { get; }
     
     Expression[] GetArgumentExpressions ();

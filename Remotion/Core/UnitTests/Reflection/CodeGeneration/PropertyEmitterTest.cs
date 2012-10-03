@@ -264,7 +264,6 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    [Obsolete ("TODO RM-4648 : MethodEmitter.ParameterTypes returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     public void CreateGetMethodStatic ()
     {
       CustomPropertyEmitter property =
@@ -279,7 +278,6 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    [Obsolete ("TODO RM-4648 : MethodEmitter.ParameterTypes returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     public void CreateGetMethodInstance ()
     {
       CustomPropertyEmitter property =
@@ -305,7 +303,6 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    [Obsolete ("TODO RM-4648 : MethodEmitter.ParameterTypes returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     public void CreateSetMethodStatic ()
     {
       CustomPropertyEmitter property =
@@ -320,7 +317,6 @@ namespace Remotion.UnitTests.Reflection.CodeGeneration
     }
 
     [Test]
-    [Obsolete ("TODO RM-4648 : MethodEmitter.ParameterTypes returns invalid results when the parameter types are copied from a MethodInfo. Fix or remove.")]
     public void CreateSetMethodInstance ()
     {
       CustomPropertyEmitter property =
