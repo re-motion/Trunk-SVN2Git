@@ -14,19 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
+using Remotion.Reflection.CodeGeneration;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
+using System.Linq;
 
-namespace Remotion.Reflection.CodeGeneration.DPExtensions
+namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 {
   /// <summary>
   /// Generates attribute data given as <see cref="CustomAttributeData"/> to an <see cref="IAttributableEmitter"/>.
   /// </summary>
   public class AttributeGenerator
   {
-    public void GenerateAttribute (IAttributableEmitter target, CustomAttributeData attributeData)
+    public void GenerateAttribute (IAttributableEmitter target, ICustomAttributeData attributeData)
     {
       ArgumentUtility.CheckNotNull ("target", target);
       ArgumentUtility.CheckNotNull ("attributeData", attributeData);
@@ -35,11 +39,17 @@ namespace Remotion.Reflection.CodeGeneration.DPExtensions
       target.AddCustomAttribute (builder);
     }
 
-    private CustomAttributeBuilder CreateAttributeBuilderFromData (CustomAttributeData attributeData)
+    private CustomAttributeBuilder CreateAttributeBuilderFromData (ICustomAttributeData attributeData)
     {
-      CustomAttributeArguments arguments = CustomAttributeDataUtility.ParseCustomAttributeArguments (attributeData);
-      return new CustomAttributeBuilder (attributeData.Constructor, arguments.ConstructorArgs, arguments.NamedProperties,
-          arguments.PropertyValues, arguments.NamedFields, arguments.FieldValues);
+      var namedArgumentsByMemberType = attributeData.NamedArguments.ToLookup (na => na.MemberInfo.MemberType);
+      
+      return new CustomAttributeBuilder (
+          attributeData.Constructor, 
+          attributeData.ConstructorArguments.ToArray(),
+          namedArgumentsByMemberType[MemberTypes.Property].Select (na => (PropertyInfo) na.MemberInfo).ToArray(),
+          namedArgumentsByMemberType[MemberTypes.Property].Select (na => na.Value).ToArray(),
+          namedArgumentsByMemberType[MemberTypes.Field].Select (na => (FieldInfo) na.MemberInfo).ToArray(),
+          namedArgumentsByMemberType[MemberTypes.Field].Select (na => na.Value).ToArray());
     }
   }
 }

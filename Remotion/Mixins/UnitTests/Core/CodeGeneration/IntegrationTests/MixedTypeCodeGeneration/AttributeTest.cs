@@ -90,7 +90,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
           typeof (MixinAddingAllowMultipleToClassAndMember),
           typeof (MixinAddingAllowMultipleToClassAndMember2));
 
-      Assert.AreEqual (3, concreteType.GetCustomAttributes (typeof (MultiAttribute), true).Length);
+      Assert.AreEqual (4, concreteType.GetCustomAttributes (typeof (MultiAttribute), true).Length);
       Assert.AreEqual (3, concreteType.GetMethod ("Foo").GetCustomAttributes (typeof (MultiAttribute), true).Length);
     }
 

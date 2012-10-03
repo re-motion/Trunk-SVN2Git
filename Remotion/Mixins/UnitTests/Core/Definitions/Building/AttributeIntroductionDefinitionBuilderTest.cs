@@ -54,7 +54,6 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    [IgnoreAttribute ("TODO 4558")]
     public void MixinsIntroduceAttributes_InheritedFromBase ()
     {
       TargetClassDefinition target = DefinitionObjectMother.GetTargetClassDefinition (typeof (NullTarget), typeof (MixinInheritingAttributes));
@@ -102,7 +101,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       TargetClassDefinition definition = DefinitionObjectMother.BuildUnvalidatedDefinition (
           typeof (BaseTypeWithAllowMultiple), typeof (MixinAddingAllowMultipleToClassAndMember), typeof (MixinAddingAllowMultipleToClassAndMember2));
-      Assert.AreEqual (2, definition.ReceivedAttributes.GetItemCount (typeof (MultiAttribute)));
+      Assert.AreEqual (3, definition.ReceivedAttributes.GetItemCount (typeof (MultiAttribute)));
       Assert.AreEqual (1, definition.CustomAttributes.GetItemCount (typeof (MultiAttribute)));
     }
 
@@ -217,7 +216,6 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     }
 
     [Test]
-    [IgnoreAttribute ("TODO 4558")]
     public void IndirectAttributeIntroduction_ViaCopy_OfAttributesInheritedFromCopyBase ()
     {
       var mixinType = typeof (MixinIndirectlyAddingAttributeInheritedFromAttributeSourceBase);

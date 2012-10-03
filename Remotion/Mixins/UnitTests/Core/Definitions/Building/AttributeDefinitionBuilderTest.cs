@@ -20,8 +20,9 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building;
-using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using System.Linq;
+using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 {
@@ -106,20 +107,17 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
         Assert.That (attributes[0].DeclaringDefinition, Is.EqualTo (definition));
 
         Assert.That (attributes[0].Data.ConstructorArguments.Count, Is.EqualTo (2));
-        Assert.That (attributes[0].Data.ConstructorArguments[0].ArgumentType, Is.EqualTo (typeof (int)));
-        Assert.That (attributes[0].Data.ConstructorArguments[0].Value, Is.EqualTo (1));
-        Assert.That (attributes[0].Data.ConstructorArguments[1].ArgumentType, Is.EqualTo (typeof (string)));
-        Assert.That (attributes[0].Data.ConstructorArguments[1].Value, Is.EqualTo ("bla"));
+        Assert.That (attributes[0].Data.ConstructorArguments[0], Is.EqualTo (1));
+        Assert.That (attributes[0].Data.ConstructorArguments[1], Is.EqualTo ("bla"));
 
-        Assert.That (attributes[0].Data.NamedArguments.Count, Is.EqualTo (2));
-
-        Assert.That (attributes[0].Data.NamedArguments[0].MemberInfo, Is.EqualTo (typeof (AttributeWithParameters).GetField ("Field")));
-        Assert.That (attributes[0].Data.NamedArguments[0].TypedValue.ArgumentType, Is.EqualTo (typeof (int)));
-        Assert.That (attributes[0].Data.NamedArguments[0].TypedValue.Value, Is.EqualTo (5));
-
-        Assert.That (attributes[0].Data.NamedArguments[1].MemberInfo, Is.EqualTo (typeof (AttributeWithParameters).GetProperty ("Property")));
-        Assert.That (attributes[0].Data.NamedArguments[1].TypedValue.ArgumentType, Is.EqualTo (typeof (int)));
-        Assert.That (attributes[0].Data.NamedArguments[1].TypedValue.Value, Is.EqualTo (4));
+        var namedArgumentData = attributes[0].Data.NamedArguments.Select (n => new { n.MemberInfo, n.Value }).ToArray();
+        var expectedNamedArgumentData =
+            new[]
+            {
+                new { MemberInfo = (MemberInfo) typeof (AttributeWithParameters).GetField ("Field"), Value = (object) 5 },
+                new { MemberInfo = (MemberInfo) typeof (AttributeWithParameters).GetProperty ("Property"), Value = (object) 4 }
+            };
+        Assert.That (namedArgumentData, Is.EquivalentTo (expectedNamedArgumentData));
       }
     }
 
@@ -193,8 +191,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
         Assert.That (attributes[0].IsCopyTemplate, Is.True);
         Assert.That (attributes[0].Data.ConstructorArguments.Count, Is.EqualTo (1));
-        Assert.That (attributes[0].Data.ConstructorArguments[0].ArgumentType, Is.EqualTo (typeof (int)));
-        Assert.That (attributes[0].Data.ConstructorArguments[0].Value, Is.EqualTo (4));
+        Assert.That (attributes[0].Data.ConstructorArguments[0], Is.EqualTo (4));
 
         Assert.That (attributes[0].Data.NamedArguments.Count, Is.EqualTo (0));
       }
@@ -229,7 +226,8 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     {
       var builder = new AttributeDefinitionBuilder (DefinitionObjectMother.CreateMixinDefinition (typeof (MixinWithAmbiguousSource)));
       var method = typeof (MixinWithAmbiguousSource).GetMethod ("ToString", BindingFlags.NonPublic | BindingFlags.Instance);
-      builder.Apply (method, CustomAttributeData.GetCustomAttributes (method), true);
+      var data = CustomAttributeData.GetCustomAttributes (method).Select (d => (ICustomAttributeData) new CustomAttributeDataAdapter (d));
+      builder.Apply (method, data, true);
     }
 
     [Test]
@@ -289,12 +287,16 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
       Assert.That (attribute2, Is.Not.Null);
       Assert.That (attribute2.IsCopyTemplate, Is.False);
       Assert.That (attribute2.Data.ConstructorArguments.Count, Is.EqualTo (1));
-      Assert.That (attribute2.Data.ConstructorArguments[0].ArgumentType, Is.EqualTo (typeof (string)));
-      Assert.That (attribute2.Data.ConstructorArguments[0].Value, Is.EqualTo ("Class!"));
-      Assert.That (attribute2.Data.NamedArguments.Count, Is.EqualTo (1));
-      Assert.That (attribute2.Data.NamedArguments[0].MemberInfo, Is.EqualTo (typeof (TagAttribute).GetField ("Named")));
-      Assert.That (attribute2.Data.NamedArguments[0].TypedValue.ArgumentType, Is.EqualTo (typeof (int)));
-      Assert.That (attribute2.Data.NamedArguments[0].TypedValue.Value, Is.EqualTo (5));
+      Assert.That (attribute2.Data.ConstructorArguments[0], Is.EqualTo ("Class!"));
+
+      var namedArgumentData = attribute2.Data.NamedArguments.Select (n => new { n.MemberInfo, n.Value }).ToArray ();
+      var expectedNamedArgumentData =
+          new[]
+            {
+                new { MemberInfo = (MemberInfo) typeof (TagAttribute).GetField ("Named"), Value = (object) 5 }
+            };
+      Assert.That (namedArgumentData, Is.EquivalentTo (expectedNamedArgumentData));
+
       Assert.That (attribute2.DeclaringDefinition, Is.SameAs (attributableDefinition));
       Assert.That (attribute2.Parent, Is.SameAs (attributableDefinition));
     }

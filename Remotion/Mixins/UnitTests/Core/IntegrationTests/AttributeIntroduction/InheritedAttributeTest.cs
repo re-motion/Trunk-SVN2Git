@@ -21,7 +21,6 @@ using NUnit.Framework;
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AttributeIntroduction
 {
   [TestFixture]
-  [Ignore ("TODO 4558")]
   public class InheritedAttributeTest
   {
     [Test]

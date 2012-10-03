@@ -16,8 +16,8 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions.Building
@@ -36,17 +36,18 @@ namespace Remotion.Mixins.Definitions.Building
     {
       ArgumentUtility.CheckNotNull ("attributeSource", attributeSource);
 
-      Apply (attributeSource, CustomAttributeData.GetCustomAttributes (attributeSource), false);
+      Apply (attributeSource, TypePipeCustomAttributeData.GetCustomAttributes (attributeSource, true), false);
     }
 
-    public void Apply (MemberInfo attributeSource, IEnumerable<CustomAttributeData> attributes, bool isCopyTemplate)
+    public void Apply (MemberInfo attributeSource, IEnumerable<ICustomAttributeData> attributes, bool isCopyTemplate)
     {
       ArgumentUtility.CheckNotNull ("attributeSource", attributeSource);
       ArgumentUtility.CheckNotNull ("attributes", attributes);
 
-      foreach (CustomAttributeData attributeData in attributes)
+      foreach (var attributeData in attributes)
       {
         Type attributeType = attributeData.Constructor.DeclaringType;
+        Assertion.IsNotNull (attributeType);
         if (attributeType == typeof (CopyCustomAttributesAttribute))
           ApplyViaCopyAttribute (attributeSource, attributeData);
         else if (attributeType.IsVisible && !IsIgnoredAttributeType (attributeType))
@@ -56,16 +57,17 @@ namespace Remotion.Mixins.Definitions.Building
 
     private bool IsIgnoredAttributeType (Type type)
     {
+      Assertion.IsNotNull (type.Namespace);
       return type == typeof (SerializableAttribute)
           || (typeof (ExtendsAttribute).Assembly.Equals (type.Assembly) && type.Namespace.StartsWith ("Remotion.Mixins"));
     }
 
-    private void ApplyViaCopyAttribute (MemberInfo copyAttributeSource, CustomAttributeData copyAttributeData)
+    private void ApplyViaCopyAttribute (MemberInfo copyAttributeSource, ICustomAttributeData copyAttributeData)
     {
       Assertion.IsTrue (copyAttributeData.Constructor.DeclaringType == typeof (CopyCustomAttributesAttribute));
       string sourceName = GetFullMemberName (copyAttributeSource);
 
-      var copyAttribute = (CopyCustomAttributesAttribute) CustomAttributeDataUtility.InstantiateCustomAttributeData (copyAttributeData);
+      var copyAttribute = (CopyCustomAttributesAttribute) copyAttributeData.CreateInstance();
 
       MemberInfo copiedAttributesSource;
       try
@@ -107,13 +109,13 @@ namespace Remotion.Mixins.Definitions.Building
       Apply (copiedAttributesSource, copiedAttributesData, true);
     }
 
-    private IEnumerable<CustomAttributeData> GetCopiedAttributesData (
+    private IEnumerable<ICustomAttributeData> GetCopiedAttributesData (
         MemberInfo copiedAttributesSource, 
         CopyCustomAttributesAttribute copyAttribute,
         bool includeCopyAttributes, 
         bool includeInheritableAttributes)
     {
-      foreach (CustomAttributeData attributeData in CustomAttributeData.GetCustomAttributes (copiedAttributesSource))
+      foreach (var attributeData in TypePipeCustomAttributeData.GetCustomAttributes (copiedAttributesSource, true))
       {
         Type attributeType = attributeData.Constructor.DeclaringType;
         if (typeof (CopyCustomAttributesAttribute).IsAssignableFrom (attributeType))

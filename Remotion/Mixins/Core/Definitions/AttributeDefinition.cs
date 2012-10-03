@@ -16,7 +16,7 @@
 // 
 using System;
 using System.Diagnostics;
-using System.Reflection;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
@@ -25,19 +25,19 @@ namespace Remotion.Mixins.Definitions
   public class AttributeDefinition: IVisitableDefinition
   {
     private readonly IAttributableDefinition _declaringDefinition;
-    private readonly CustomAttributeData _data;
+    private readonly ICustomAttributeData _data;
     private readonly object _instance;
     private readonly bool _isCopyTemplate;
 
-    public AttributeDefinition (IAttributableDefinition declaringDefinition, CustomAttributeData data, bool isCopyTemplate)
+    public AttributeDefinition (IAttributableDefinition declaringDefinition, ICustomAttributeData data, bool isCopyTemplate)
     {
       _declaringDefinition = declaringDefinition;
       _data = data;
       _isCopyTemplate = isCopyTemplate;
-      _instance = CustomAttributeDataUtility.InstantiateCustomAttributeData (data);
+      _instance = data.CreateInstance();
     }
 
-    public CustomAttributeData Data
+    public ICustomAttributeData Data
     {
       get { return _data;}
     }
@@ -70,7 +70,12 @@ namespace Remotion.Mixins.Definitions
 
     public string FullName
     {
-      get { return _data.Constructor.DeclaringType.FullName; }
+      get
+      {
+        var declaringType = _data.Constructor.DeclaringType;
+        Assertion.IsNotNull (declaringType);
+        return declaringType.FullName;
+      }
     }
 
     public IVisitableDefinition Parent

@@ -87,6 +87,7 @@
     <Compile Include="Core\CodeGeneration\ConcreteTypeBuilderTestHelper.cs" />
     <Compile Include="Core\CodeGeneration\DynamicMethodCodeBuilder.cs" />
     <Compile Include="Core\CodeGeneration\DynamicMethodEmitter.cs" />
+    <Compile Include="Core\CodeGeneration\DynamicProxy\AttributeGeneratorTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationClassContextSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\DynamicProxy\CodeGenerationMixinContextSerializerTest.cs" />
@@ -634,6 +635,10 @@
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
+      <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>
+      <Name>TypePipe.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\Mixins.Core.csproj">
       <Project>{D641E4E2-23F3-4454-8074-1327EF07BAA1}</Project>

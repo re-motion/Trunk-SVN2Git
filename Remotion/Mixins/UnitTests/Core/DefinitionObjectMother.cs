@@ -23,6 +23,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
@@ -162,11 +163,9 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       ArgumentUtility.CheckNotNull ("declaringDefinition", declaringDefinition);
 
-      var attributeData = CustomAttributeData.GetCustomAttributes (typeof (BaseType1))
-          .Where (a => a.Constructor.DeclaringType == typeof (BT1Attribute))
-          .Single();
+      var attributeData = CustomAttributeData.GetCustomAttributes (typeof (BaseType1)).Single(a => a.Constructor.DeclaringType == typeof (BT1Attribute));
 
-      var attributeDefinition = new AttributeDefinition (declaringDefinition, attributeData, true);
+      var attributeDefinition = new AttributeDefinition (declaringDefinition, new CustomAttributeDataAdapter (attributeData), true);
       PrivateInvoke.InvokeNonPublicMethod (declaringDefinition.CustomAttributes, "Add", attributeDefinition);
       return attributeDefinition;
     }

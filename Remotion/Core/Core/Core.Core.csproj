@@ -300,7 +300,6 @@
     <Compile Include="Reflection\CodeGeneration\CustomMethodEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\CustomPropertyEmitter.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\AssemblySaver.cs" />
-    <Compile Include="Reflection\CodeGeneration\DPExtensions\AttributeGenerator.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\ClassEmitterSupportingOpenGenericBaseType.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\ConditionExpression.cs" />
     <Compile Include="Reflection\CodeGeneration\DPExtensions\AutomaticMethodInvocationExpression.cs" />

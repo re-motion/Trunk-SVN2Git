@@ -334,7 +334,6 @@
     <Compile Include="Context\CallContextStorageProviderTest.cs" />
     <Compile Include="Globalization\ResourceManagerFactoryTest.cs" />
     <Compile Include="Reflection\CodeGeneration\AssemblySaverTest.cs" />
-    <Compile Include="Reflection\CodeGeneration\AttributeGeneratorTest.cs" />
     <Compile Include="Reflection\CodeGeneration\PopStatementTest.cs" />
     <Compile Include="Reflection\CodeGeneration\TestDomain\BaseClassWithDeserializationEvents.cs" />
     <Compile Include="Reflection\CodeGeneration\ClassEmitterGenericsTest.cs" />
