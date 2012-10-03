@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Hotkey
 {
-  public class UnderscoreHotkeyFormatter : HotkeyFormatterBase
+  public sealed class UnderscoreHotkeyFormatter : HotkeyFormatterBase
   {
     public UnderscoreHotkeyFormatter ()
     {

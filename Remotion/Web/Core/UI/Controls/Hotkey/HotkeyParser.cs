@@ -20,7 +20,7 @@ using System.Text;
 
 namespace Remotion.Web.UI.Controls.Hotkey
 {
-  public class HotkeyParser
+  public sealed class HotkeyParser
   {
     private const char c_hotkeyMarker = '&';
 

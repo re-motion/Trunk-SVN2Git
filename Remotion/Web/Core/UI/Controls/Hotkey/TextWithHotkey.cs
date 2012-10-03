@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Hotkey
 {
-  public class TextWithHotkey
+  public sealed class TextWithHotkey
   {
     private readonly string _text;
     private readonly int? _hotkeyIndex;
