@@ -512,7 +512,6 @@
     <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestApplicationRunner.cs" />
     <Compile Include="Utilities\ConsoleApplicationTests\ConsoleApplicationTestSettings.cs" />
     <Compile Include="Utilities\CultureScopeTest.cs" />
-    <Compile Include="Utilities\CustomAttributeDataUtilityTest.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\BaseInheritedAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\BaseClassWithAttribute.cs" />
     <Compile Include="Utilities\AttributeUtilityTests\TestDomain\BaseWithAttributesForSuppressed.cs" />

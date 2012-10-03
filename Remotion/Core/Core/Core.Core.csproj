@@ -457,8 +457,6 @@
     <Compile Include="Utilities\ConsoleApplication\ConsoleKeypressWaiter.cs" />
     <Compile Include="Utilities\ConsoleUtility.cs" />
     <Compile Include="Utilities\CultureScope.cs" />
-    <Compile Include="Utilities\CustomAttributeArguments.cs" />
-    <Compile Include="Utilities\CustomAttributeDataUtility.cs" />
     <Compile Include="Utilities\DefaultConsoleManager.cs" />
     <Compile Include="FunctionalProgramming\EnumerableUtility.cs" />
     <Compile Include="Utilities\EqualityUtility.cs" />
