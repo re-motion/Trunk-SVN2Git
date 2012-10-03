@@ -44,7 +44,17 @@ namespace Remotion.Web.UI.Controls.Hotkey
     protected abstract void AppendHotkeyBeginTag (StringBuilder stringBuilder, string hotkey);
     protected abstract void AppendHotkeyEndTag (StringBuilder stringBuilder);
 
-    public string Format (TextWithHotkey textWithHotkey, bool encode)
+    public string FormatHotkey (TextWithHotkey textWithHotkey)
+    {
+      ArgumentUtility.CheckNotNull ("textWithHotkey", textWithHotkey);
+
+      if (!textWithHotkey.Hotkey.HasValue)
+        return null;
+
+      return char.ToString (char.ToUpper (textWithHotkey.Hotkey.Value));
+    }
+
+    public string FormatText (TextWithHotkey textWithHotkey, bool encode)
     {
       ArgumentUtility.CheckNotNull ("textWithHotkey", textWithHotkey);
 

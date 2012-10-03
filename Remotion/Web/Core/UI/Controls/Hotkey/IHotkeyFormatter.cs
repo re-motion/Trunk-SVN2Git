@@ -23,6 +23,6 @@ namespace Remotion.Web.UI.Controls.Hotkey
   [ConcreteImplementation (typeof (UnderscoreHotkeyFormatter), Lifetime = LifetimeKind.Singleton)]
   public interface IHotkeyFormatter
   {
-    string Format (TextWithHotkey textWithHotkey, bool encode);
+    string FormatText (TextWithHotkey textWithHotkey, bool encode);
   }
 }

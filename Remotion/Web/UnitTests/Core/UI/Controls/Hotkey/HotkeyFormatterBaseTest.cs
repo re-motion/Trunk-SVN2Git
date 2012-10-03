@@ -38,66 +38,93 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     }
 
     [Test]
-    public void Format_NoEncoding_NoHotkey ()
+    public void FormatHotkey_NoHotkey ()
+    {
+      var formatter = new TestableHotkeyFormatterBase();
+      var textWithHotkey = new TextWithHotkey ("text", null);
+
+      Assert.That (formatter.FormatHotkey (textWithHotkey), Is.Null);
+    }
+
+    [Test]
+    public void FormatHotkey ()
+    {
+      var formatter = new TestableHotkeyFormatterBase();
+      var textWithHotkey = new TextWithHotkey ("text", 'A');
+
+      Assert.That (formatter.FormatHotkey (textWithHotkey), Is.EqualTo ("A"));
+    }
+
+    [Test]
+    public void FormatHotkey_LowerCaseHotkey_MakesUpperCase ()
+    {
+      var formatter = new TestableHotkeyFormatterBase();
+      var textWithHotkey = new TextWithHotkey ("text", 'a');
+
+      Assert.That (formatter.FormatHotkey (textWithHotkey), Is.EqualTo ("A"));
+    }
+
+    [Test]
+    public void FormatText_NoEncoding_NoHotkey ()
     {
       var formatter = new TestableHotkeyFormatterBase();
       var textWithHotkey = new TextWithHotkey ("f<b>o</b>o b&ar", null);
 
-      Assert.That (formatter.Format (textWithHotkey, false), Is.EqualTo ("f<b>o</b>o b&ar"));
+      Assert.That (formatter.FormatText (textWithHotkey, false), Is.EqualTo ("f<b>o</b>o b&ar"));
     }
 
     [Test]
-    public void Format_WithHtmlEncoding_NoHotkey ()
+    public void FormatText_WithHtmlEncoding_NoHotkey ()
     {
       var formatter = new TestableHotkeyFormatterBase();
       var textWithHotkey = new TextWithHotkey ("f<b>o</b>o b&ar", null);
 
-      Assert.That (formatter.Format (textWithHotkey, true), Is.EqualTo ("f&lt;b&gt;o&lt;/b&gt;o b&amp;ar"));
+      Assert.That (formatter.FormatText (textWithHotkey, true), Is.EqualTo ("f&lt;b&gt;o&lt;/b&gt;o b&amp;ar"));
     }
 
     [Test]
-    public void Format_NoEncoding_WithHotkey ()
+    public void FormatText_NoEncoding_WithHotkey ()
     {
       var formatter = new TestableHotkeyFormatterBase();
       var textWithHotkey = new TextWithHotkey ("foo b&ar", 4);
 
-      Assert.That (formatter.Format (textWithHotkey, false), Is.EqualTo ("foo <x 'b'>b</x>&ar"));
+      Assert.That (formatter.FormatText (textWithHotkey, false), Is.EqualTo ("foo <x 'b'>b</x>&ar"));
     }
 
     [Test]
-    public void Format_NoEncoding_WithHotkeyAtStart ()
+    public void FormatText_NoEncoding_WithHotkeyAtStart ()
     {
       var formatter = new TestableHotkeyFormatterBase();
       var textWithHotkey = new TextWithHotkey ("foo bar", 0);
 
-      Assert.That (formatter.Format (textWithHotkey, false), Is.EqualTo ("<x 'f'>f</x>oo bar"));
+      Assert.That (formatter.FormatText (textWithHotkey, false), Is.EqualTo ("<x 'f'>f</x>oo bar"));
     }
 
     [Test]
-    public void Format_NoEncoding_WithHotkeyAtEnd ()
+    public void FormatText_NoEncoding_WithHotkeyAtEnd ()
     {
       var formatter = new TestableHotkeyFormatterBase();
       var textWithHotkey = new TextWithHotkey ("foo bar", 6);
 
-      Assert.That (formatter.Format (textWithHotkey, false), Is.EqualTo ("foo ba<x 'r'>r</x>"));
+      Assert.That (formatter.FormatText (textWithHotkey, false), Is.EqualTo ("foo ba<x 'r'>r</x>"));
     }
 
     [Test]
-    public void Format_WithHtmlEncoding_WithHotkey ()
+    public void FormatText_WithHtmlEncoding_WithHotkey ()
     {
       var formatter = new TestableHotkeyFormatterBase();
       var textWithHotkey = new TextWithHotkey ("f<b>o</b>o b&ar", 11);
 
-      Assert.That (formatter.Format (textWithHotkey, true), Is.EqualTo ("f&lt;b&gt;o&lt;/b&gt;o <x 'b'>b</x>&amp;ar"));
+      Assert.That (formatter.FormatText (textWithHotkey, true), Is.EqualTo ("f&lt;b&gt;o&lt;/b&gt;o <x 'b'>b</x>&amp;ar"));
     }
 
     [Test]
-    public void Format_WithHtmlEncoding_WithEncodedHotkey ()
+    public void FormatText_WithHtmlEncoding_WithEncodedHotkey ()
     {
       var formatter = new TestableHotkeyFormatterBase();
       var textWithHotkey = new TextWithHotkey ("foo öar", 4);
 
-      Assert.That (formatter.Format (textWithHotkey, true), Is.EqualTo ("foo <x '&#246;'>&#246;</x>ar"));
+      Assert.That (formatter.FormatText (textWithHotkey, true), Is.EqualTo ("foo <x '&#246;'>&#246;</x>ar"));
     }
   }
 }
