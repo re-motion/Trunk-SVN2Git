@@ -213,6 +213,7 @@
     <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\HotkeyFormatterBaseTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\HotkeyParserTest.cs" />
+    <Compile Include="Core\UI\Controls\Hotkey\IHotkeyFormatterTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\TextWithHotkeyTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\UnderscoreHotkeyFormatterTest.cs" />
     <Compile Include="Core\UI\Controls\IClientScriptBehaviorTest.cs" />
