@@ -23,12 +23,14 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI.Controls.FormGridManagerImplementation;
+using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Design;
 using Remotion.Web.UI.Globalization;
 using Remotion.Web.Utilities;
@@ -1100,6 +1102,8 @@ namespace Remotion.Web.UI.Controls
 
       //  Parse the values
 
+      var hotkeyFormatter = HotkeyFormatter;
+
       foreach (DictionaryEntry entry in values)
       {
         //  Compound key: "tableUniqueID:controlUniqueID:property"
@@ -1185,37 +1189,42 @@ namespace Remotion.Web.UI.Controls
             else
               ResourceDispatcher.DispatchGeneric (control, controlValues);
 
-            //  Access key support for Labels      
+            //  Access key support for Labels
             Label label = control as Label;
             if (label != null)
             {
+#pragma warning disable 184
+              Assertion.IsFalse (label is SmartLabel);
+#pragma warning restore 184
+
+              var textWithHotkey = TextWithHotkey.Parse (label.Text);
+
               //  Label has associated control
-              if (label.AssociatedControlID.Length > 0)
+              if (!string.IsNullOrEmpty (label.AssociatedControlID))
               {
                 Control associatedControl = NamingContainer.FindControl (label.AssociatedControlID);
 
                 ISmartControl smartControl = control as ISmartControl;
                 if (smartControl != null && smartControl.UseLabel)
                 {
-                  string accessKey;
-                  label.Text = SmartLabel.FormatLabelText (label.Text, true, out accessKey);
-                  label.AccessKey = accessKey;
+                  label.Text = hotkeyFormatter.FormatText (textWithHotkey, false);
+                  label.AccessKey = hotkeyFormatter.FormatHotkey (textWithHotkey);
                 }
-                else if (control is DropDownList || control is HtmlSelect)
+                else if (associatedControl is DropDownList || associatedControl is HtmlSelect)
                 {
-                  label.Text = SmartLabel.FormatLabelText (label.Text, false);
+                  label.Text = textWithHotkey.Text;
                   label.AccessKey = "";
                 }
                 else
                 {
-                  string accessKey;
-                  label.Text = SmartLabel.FormatLabelText (label.Text, true, out accessKey);
-                  label.AccessKey = accessKey;
+                  label.Text = hotkeyFormatter.FormatText (textWithHotkey, false);
+                  label.AccessKey = hotkeyFormatter.FormatHotkey (textWithHotkey);
                 }
               }
               else
               {
-                label.Text = SmartLabel.FormatLabelText (label.Text, false);
+                label.Text = textWithHotkey.Text;
+                label.AccessKey = "";
               }
             }
           }
@@ -3217,6 +3226,16 @@ namespace Remotion.Web.UI.Controls
     protected virtual string ImageExtension
     { get { return ".gif"; } }
 
+    protected virtual IServiceLocator ServiceLocator
+    {
+      get { return SafeServiceLocator.Current; }
+    }
+
+    private IHotkeyFormatter HotkeyFormatter
+    {
+      get { return ServiceLocator.GetInstance<IHotkeyFormatter>(); }
+    }
+    
     #region protected virtual string CssClass...
 
     /// <summary> CSS-Class applied to the form grid tables' <c>table</c> tag. </summary>

@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Text;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
@@ -23,6 +24,40 @@ namespace Remotion.Web.UI.Controls.Hotkey
 {
   public sealed class TextWithHotkey
   {
+    private const char c_hotkeyMarker = '&';
+
+    public static TextWithHotkey Parse (string value)
+    {
+      if (String.IsNullOrEmpty (value))
+        return new TextWithHotkey (String.Empty, null);
+
+      var resultBuilder = new StringBuilder (value.Length);
+      int? hotkeyIndex = null;
+      for (int i = 0; i < value.Length; i++)
+      {
+        var currentChar = value[i];
+        if (currentChar == c_hotkeyMarker && i + 1 < value.Length)
+        {
+          if (Char.IsLetterOrDigit (value, i + 1))
+          {
+            if (hotkeyIndex.HasValue)
+              return new TextWithHotkey (value, null);
+
+            hotkeyIndex = resultBuilder.Length;
+            continue;
+          }
+          else if (value[i + 1] == c_hotkeyMarker)
+          {
+            i++;
+          }
+        }
+
+        resultBuilder.Append (currentChar);
+      }
+
+      return new TextWithHotkey (resultBuilder.ToString(), hotkeyIndex);
+    }
+
     private readonly string _text;
     private readonly int? _hotkeyIndex;
     private readonly char? _hotkey;

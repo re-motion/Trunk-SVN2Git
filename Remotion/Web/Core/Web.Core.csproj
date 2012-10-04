@@ -199,7 +199,6 @@
     <Compile Include="UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRenderer.cs" />
     <Compile Include="UI\Controls\FormGridManagerImplementation\FormGridCellNamingContainer.cs" />
     <Compile Include="UI\Controls\Hotkey\HotkeyFormatterBase.cs" />
-    <Compile Include="UI\Controls\Hotkey\HotkeyParser.cs" />
     <Compile Include="UI\Controls\Hotkey\IHotkeyFormatter.cs" />
     <Compile Include="UI\Controls\Hotkey\TextWithHotkey.cs" />
     <Compile Include="UI\Controls\Hotkey\UnderscoreHotkeyFormatter.cs" />

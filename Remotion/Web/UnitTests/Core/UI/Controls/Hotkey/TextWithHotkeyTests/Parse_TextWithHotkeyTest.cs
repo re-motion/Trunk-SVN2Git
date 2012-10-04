@@ -19,16 +19,15 @@ using System;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls.Hotkey;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
+namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey.TextWithHotkeyTests
 {
   [TestFixture]
-  public class HotkeyParserTest
+  public class Parse_TextWithHotkeyTest
   {
     [Test]
     public void Parse_TextWithoutHotkey ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("No Hotkey");
+      var result = TextWithHotkey.Parse ("No Hotkey");
       Assert.That (result.Text, Is.EqualTo ("No Hotkey"));
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -37,8 +36,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextIsEmpty ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("");
+      var result = TextWithHotkey.Parse ("");
       Assert.That (result.Text, Is.Empty);
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -46,8 +44,8 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
 
     [Test]
     public void Parse_TextIsNull ()
-    {      var parser = new HotkeyParser();
-      var result = parser.Parse (null);
+    {
+      var result = TextWithHotkey.Parse (null);
       Assert.That (result.Text, Is.Empty);
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -56,8 +54,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithHotkey ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("A &Hotkey");
+      var result = TextWithHotkey.Parse ("A &Hotkey");
       Assert.That (result.Text, Is.EqualTo ("A Hotkey"));
       Assert.That (result.Hotkey, Is.EqualTo ('H'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (2));
@@ -66,8 +63,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithHotkeyAtStart ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("&A Hotkey");
+      var result = TextWithHotkey.Parse ("&A Hotkey");
       Assert.That (result.Text, Is.EqualTo ("A Hotkey"));
       Assert.That (result.Hotkey, Is.EqualTo ('A'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (0));
@@ -76,8 +72,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithHotkeyAtEnd ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("A Hotke&y");
+      var result = TextWithHotkey.Parse ("A Hotke&y");
       Assert.That (result.Text, Is.EqualTo ("A Hotkey"));
       Assert.That (result.Hotkey, Is.EqualTo ('y'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (7));
@@ -86,8 +81,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithHotkeyMarkerBeforeWhitespace_IgnoreHotkeyMarker ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("No & Hotkey");
+      var result = TextWithHotkey.Parse ("No & Hotkey");
       Assert.That (result.Text, Is.EqualTo ("No & Hotkey"));
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -96,8 +90,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithHotkeyMarkerBeforePunctuation_IgnoreHotkeyMarker ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("No &. Hotkey");
+      var result = TextWithHotkey.Parse ("No &. Hotkey");
       Assert.That (result.Text, Is.EqualTo ("No &. Hotkey"));
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -106,8 +99,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithHotkeyMarkerAsLastCharacter_IgnoreHotkeyMarker ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("No Hotkey&");
+      var result = TextWithHotkey.Parse ("No Hotkey&");
       Assert.That (result.Text, Is.EqualTo ("No Hotkey&"));
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -116,8 +108,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithMultipleHotkeyMarkers_IgnoreHotkeyMarkers ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("&No &Hotkey");
+      var result = TextWithHotkey.Parse ("&No &Hotkey");
       Assert.That (result.Text, Is.EqualTo ("&No &Hotkey"));
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -126,8 +117,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithEscapedHotkeyMarker_IgnoreHotkeyMarker ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("No &&Hotkey");
+      var result = TextWithHotkey.Parse ("No &&Hotkey");
       Assert.That (result.Text, Is.EqualTo ("No &Hotkey"));
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -136,8 +126,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithEscapedHotkeyMarker_AndFollowedByHotkey ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("A &&&Hotkey");
+      var result = TextWithHotkey.Parse ("A &&&Hotkey");
       Assert.That (result.Text, Is.EqualTo ("A &Hotkey"));
       Assert.That (result.Hotkey, Is.EqualTo ('H'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (3));
@@ -146,8 +135,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithMultipleHotkeyMarkers_AndEscapedHotkeyMarkers_IgnoreHotkeyMarker_IntegrationTest ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("&Hotkey &&Integration &Test");
+      var result = TextWithHotkey.Parse ("&Hotkey &&Integration &Test");
       Assert.That (result.Text, Is.EqualTo ("&Hotkey &&Integration &Test"));
       Assert.That (result.Hotkey, Is.Null);
       Assert.That (result.HotkeyIndex, Is.Null);
@@ -156,8 +144,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
     [Test]
     public void Parse_TextWithHotkey_AndIgnoredHotkeyMarkers_AndEscapedHotkeyMarkers_IntegrationTest ()
     {
-      var parser = new HotkeyParser();
-      var result = parser.Parse ("&&Hotkey & &Integration &&Test&");
+      var result = TextWithHotkey.Parse ("&&Hotkey & &Integration &&Test&");
       Assert.That (result.Text, Is.EqualTo ("&Hotkey & Integration &Test&"));
       Assert.That (result.Hotkey, Is.EqualTo ('I'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (10));

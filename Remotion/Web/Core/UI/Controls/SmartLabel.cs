@@ -33,6 +33,7 @@ namespace Remotion.Web.UI.Controls
 [ToolboxItemFilter("System.Web.UI")]
 public class SmartLabel: WebControl, IControl
 {
+  [Obsolete ("Use TextWithHotkey.Parse() and IHotkeyFormatter for analyzing and formatting hotkey-enabled strings. (Version 1.13.169)")]
   public static string FormatLabelText (string rawString, bool underlineAccessKey)
   {
     string accessKey;
@@ -43,6 +44,7 @@ public class SmartLabel: WebControl, IControl
   ///   Formats the string to support an access key:
   ///   Looks for an ampersand and optionally highlights the next letter with &lt;u&gt;&lt;/u&gt;.
   /// </summary>
+  [Obsolete ("Use TextWithHotkey.Parse() and IHotkeyFormatter for analyzing and formatting hotkey-enabled strings. (Version 1.13.169)")]
   public static string FormatLabelText (string rawString, bool underlineAccessKey, out string accessKey)
   {
     //  TODO: HTMLEncode -> likely not since it's a label and thus renders developer-defined text.

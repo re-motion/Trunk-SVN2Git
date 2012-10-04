@@ -14,51 +14,65 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Remotion.Utilities;
+using Microsoft.Practices.ServiceLocation;
+using Remotion.ServiceLocation;
 using Remotion.Web.Infrastructure;
+using Remotion.Web.UI.Controls.Hotkey;
 
 namespace Remotion.Web.UI.Controls
 {
-
-/// <summary> A <c>LinkButton</c> using <c>&amp;</c> as access key prefix in <see cref="LinkButton.Text"/>. </summary>
-/// <include file='doc\include\UI\Controls\WebLinkButton.xml' path='WebLinkButton/Class/*' />
-[ToolboxData("<{0}:WebLinkButton runat=server></{0}:WebLinkButton>")]
-[ToolboxItem (false)]
-public class WebLinkButton : LinkButton, IControl
-{
-  private string _text = string.Empty;
-
-  protected override void AddAttributesToRender(HtmlTextWriter writer)
+  /// <summary> A <c>LinkButton</c> using <c>&amp;</c> as access key prefix in <see cref="LinkButton.Text"/>. </summary>
+  /// <include file='doc\include\UI\Controls\WebLinkButton.xml' path='WebLinkButton/Class/*' />
+  [ToolboxData ("<{0}:WebLinkButton runat=server></{0}:WebLinkButton>")]
+  [ToolboxItem (false)]
+  public class WebLinkButton : LinkButton, IControl
   {
-    string accessKey;
-    _text = StringUtility.NullToEmpty (Text);
-    _text = SmartLabel.FormatLabelText (_text, false, out accessKey);
+    private TextWithHotkey _textWithHotkey;
 
-    if (StringUtility.IsNullOrEmpty (AccessKey))
-      writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, accessKey);
+    protected override void Render (HtmlTextWriter writer)
+    {
+      _textWithHotkey = TextWithHotkey.Parse (Text);
 
-    base.AddAttributesToRender (writer);
+      base.Render (writer);
+    }
+
+    protected override void AddAttributesToRender (HtmlTextWriter writer)
+    {
+      if (string.IsNullOrEmpty (AccessKey))
+        writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, HotkeyFormatter.FormatHotkey (_textWithHotkey));
+
+      base.AddAttributesToRender (writer);
+    }
+
+    protected override void RenderContents (HtmlTextWriter writer)
+    {
+      if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
+        WcagHelper.Instance.HandleError (1, this);
+
+      if (HasControls())
+        base.RenderContents (writer);
+      else
+        writer.Write (HotkeyFormatter.FormatText (_textWithHotkey, false));
+    }
+
+    public new IPage Page
+    {
+      get { return PageWrapper.CastOrCreate (base.Page); }
+    }
+
+    protected virtual IServiceLocator ServiceLocator
+    {
+      get { return SafeServiceLocator.Current; }
+    }
+
+    private IHotkeyFormatter HotkeyFormatter
+    {
+      get { return ServiceLocator.GetInstance<IHotkeyFormatter>(); }
+    }
   }
-
-  protected override void RenderContents(HtmlTextWriter writer)
-  {
-    if (WcagHelper.Instance.IsWcagDebuggingEnabled() && WcagHelper.Instance.IsWaiConformanceLevelARequired())
-      WcagHelper.Instance.HandleError (1, this);
-
-    if (HasControls())
-      base.RenderContents (writer);
-    else
-      writer.Write (_text);
-  }
-
-  public new IPage Page
-  {
-    get { return PageWrapper.CastOrCreate (base.Page); }
-  }
-}
-
 }

@@ -19,10 +19,12 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Globalization;
 using Remotion.Security;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebButtonImplementation;
 using Remotion.Web.UI.Controls.WebButtonImplementation.Rendering;
 using Remotion.Web.UI.Globalization;
@@ -53,6 +55,8 @@ namespace Remotion.Web.UI.Controls
     private ISecurableObject _securableObject;
     private MissingPermissionBehavior _missingPermissionBehavior = MissingPermissionBehavior.Invisible;
     private bool _requiresSynchronousPostBack;
+
+    private TextWithHotkey _textWithHotkey;
 
     public WebButton ()
     {
@@ -116,39 +120,26 @@ namespace Remotion.Web.UI.Controls
       }
     }
 
-    protected override void AddAttributesToRender (HtmlTextWriter writer)
+    protected override void Render (HtmlTextWriter writer)
     {
-      string accessKey;
-      string text = StringUtility.NullToEmpty (Text);
-      text = SmartLabel.FormatLabelText (text, !IsLegacyButtonEnabled, out accessKey);
+      _textWithHotkey = TextWithHotkey.Parse (Text);
 
-      if (StringUtility.IsNullOrEmpty (AccessKey))
-        writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, accessKey);
-
-      string tempText = Text;
-      bool hasIcon = _icon != null && _icon.HasRenderingInformation;
-      bool hasText = !StringUtility.IsNullOrEmpty (text);
-      if (IsLegacyButtonEnabled)
-      {
-        if (hasText)
-          Text = text;
-        else if (hasIcon)
-          Text = _icon.AlternateText;
-      }
-      else
-        Text = text;
-
-      AddAttributesToRender_net20 (writer);
-
-      Text = tempText;
-
-      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
-        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
+      base.Render (writer);
     }
 
-    /// <summary> Method to be executed when compiled for .net 2.0. </summary>
-    private void AddAttributesToRender_net20 (HtmlTextWriter writer)
+    protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
+      if (string.IsNullOrEmpty (AccessKey))
+        writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, HotkeyFormatter.FormatHotkey (_textWithHotkey));
+
+      if (IsLegacyButtonEnabled)
+      {
+        if (!string.IsNullOrEmpty (_textWithHotkey.Text))
+          Text = _textWithHotkey.Text;
+        else if (_icon != null && _icon.HasRenderingInformation)
+          Text = _icon.AlternateText;
+      }
+
       if (Page != null)
         Page.VerifyRenderingInServerForm (this);
 
@@ -211,6 +202,9 @@ namespace Remotion.Web.UI.Controls
       OnClientClick = backUpOnClientClick;
 
       _options = null;
+
+      if (StringUtility.IsNullOrEmpty (CssClass) && StringUtility.IsNullOrEmpty (Attributes["class"]))
+        writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassBase);
     }
 
     protected override PostBackOptions GetPostBackOptions ()
@@ -261,8 +255,7 @@ namespace Remotion.Web.UI.Controls
       writer.AddAttribute (HtmlTextWriterAttribute.Class, CssClassButtonBody);
       writer.RenderBeginTag (HtmlTextWriterTag.Span);
 
-      string text = StringUtility.NullToEmpty (Text);
-      text = SmartLabel.FormatLabelText (text, true);
+      var text = HotkeyFormatter.FormatText (_textWithHotkey, false);
 
       if (HasControls())
         base.RenderContents (writer);
@@ -469,6 +462,17 @@ namespace Remotion.Web.UI.Controls
     public new IPage Page
     {
       get { return PageWrapper.CastOrCreate (base.Page); }
+    }
+
+
+    protected virtual IServiceLocator ServiceLocator
+    {
+      get { return SafeServiceLocator.Current; }
+    }
+
+    private IHotkeyFormatter HotkeyFormatter
+    {
+      get { return ServiceLocator.GetInstance<IHotkeyFormatter>(); }
     }
 
     #region protected virtual string CssClass...

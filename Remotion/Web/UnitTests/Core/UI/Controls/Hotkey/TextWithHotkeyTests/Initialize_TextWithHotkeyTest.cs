@@ -19,10 +19,10 @@ using System;
 using NUnit.Framework;
 using Remotion.Web.UI.Controls.Hotkey;
 
-namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
+namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey.TextWithHotkeyTests
 {
   [TestFixture]
-  public class TextWithHotkeyTest
+  public class Initialize_TextWithHotkeyTest
   {
     [Test]
     public void Initialize_WithText_AndHotkeyIndex ()
