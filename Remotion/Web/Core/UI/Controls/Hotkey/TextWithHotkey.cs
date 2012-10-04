@@ -46,6 +46,7 @@ namespace Remotion.Web.UI.Controls.Hotkey
   ///     </description>
   ///   </item>
   /// </list>
+  /// Use the <see cref="IHotkeyFormatter"/> to prepare a <see cref="TextWithHotkey"/> for rendering (i.e. add high-lighting for the hotkey).
   /// </remarks>
   public sealed class TextWithHotkey
   {

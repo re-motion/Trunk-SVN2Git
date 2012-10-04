@@ -16,14 +16,29 @@
 // 
 
 using System;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Web.UI.Controls.Hotkey
 {
+  /// <summary>
+  /// Defines the methods required for rendering a <see cref="TextWithHotkey"/>.
+  /// </summary>
+  /// <remarks>
+  /// <para>Use <see cref="IServiceLocator"/> to retieve an instance of type <see cref="IHotkeyFormatter"/>.</para>
+  /// <para>The defalt implementation underlines the hotkey.</para>
+  /// </remarks>
   [ConcreteImplementation (typeof (UnderscoreHotkeyFormatter), Lifetime = LifetimeKind.Singleton)]
   public interface IHotkeyFormatter
   {
+    /// <summary>
+    /// Formats the <see cref="TextWithHotkey.Hotkey"/>. This mainly includes transforming the hotkey to upper-case.
+    /// </summary>
     string FormatHotkey (TextWithHotkey textWithHotkey);
+    
+    /// <summary>
+    /// Formats the <see cref="TextWithHotkey.Text"/> and offers optional HTML encoding.
+    /// </summary>
     string FormatText (TextWithHotkey textWithHotkey, bool encode);
   }
 }
