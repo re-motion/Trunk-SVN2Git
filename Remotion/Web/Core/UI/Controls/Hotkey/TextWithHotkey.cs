@@ -22,11 +22,44 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Hotkey
 {
+  /// <summary>
+  /// Represents all information required about a hotkey-enabled string.
+  /// </summary>
+  /// <remarks>
+  /// Use the <see cref="Parse"/> method to analyze a <see cref="string"/>. The following rules are applied:
+  /// <list type="bullet">
+  ///   <item>
+  ///     <description>
+  ///       If the string contains a single '<c>&amp;</c>'-character followed by a letter or a digit, then the letter or digit is used as hotkey.
+  ///       The '<c>&amp;</c>' will be removed from the resulting <see cref="Text"/>.
+  ///     </description>
+  ///   </item>
+  ///   <item>
+  ///     <description>
+  ///       '<c>&amp;</c>'-characters can be escaped by using two '<c>&amp;</c>'. 
+  ///       The parsing logic merges them into a single '<c>&amp;</c>'-character for the resulting <see cref="Text"/>.
+  ///     </description>
+  ///   </item>
+  ///   <item>
+  ///     <description>
+  ///       If the string contains multiple possible hotkeys, then no further parsing is attempted and the original string is used as the resulting <see cref="Text"/>.
+  ///     </description>
+  ///   </item>
+  /// </list>
+  /// </remarks>
   public sealed class TextWithHotkey
   {
     private const char c_hotkeyMarker = '&';
 
-    public static TextWithHotkey Parse (string value)
+    /// <summary>
+    /// Parses the <paramref name="value"/> and creates a new <see cref="TextWithHotkey"/>.
+    /// </summary>
+    /// <param name="value">The <see cref="string"/> to be analyzed.</param>
+    /// <returns>
+    /// An instance of <see cref="TextWithHotkey"/>. If <paramref name="value"/> is <see langword="null" />, 
+    /// the resulting <see cref="TextWithHotkey"/> contains an empty <see cref="Text"/>.
+    /// </returns>
+    public static TextWithHotkey Parse ([CanBeNull]string value)
     {
       if (String.IsNullOrEmpty (value))
         return new TextWithHotkey (String.Empty, null);
@@ -47,9 +80,7 @@ namespace Remotion.Web.UI.Controls.Hotkey
             continue;
           }
           else if (value[i + 1] == c_hotkeyMarker)
-          {
             i++;
-          }
         }
 
         resultBuilder.Append (currentChar);
