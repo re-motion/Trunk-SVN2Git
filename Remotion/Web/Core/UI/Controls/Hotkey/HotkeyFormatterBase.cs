@@ -21,6 +21,13 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Hotkey
 {
+  /// <summary>
+  /// Base class for implementations of the <see cref="IHotkeyFormatter"/> interface.
+  /// </summary>
+  /// <remarks>
+  /// This class provides a complete implementation of the interface, only requiring the definition of the template methods 
+  /// for the hotkey highlighting (<see cref="AppendHotkeyBeginTag"/>, <see cref="AppendHotkeyEndTag"/>).
+  /// </remarks>
   public abstract class HotkeyFormatterBase : IHotkeyFormatter
   {
     private struct TextParts

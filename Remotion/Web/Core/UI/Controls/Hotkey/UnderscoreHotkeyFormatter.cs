@@ -21,6 +21,9 @@ using Remotion.Utilities;
 
 namespace Remotion.Web.UI.Controls.Hotkey
 {
+  /// <summary>
+  /// Implementation of the <see cref="IHotkeyFormatter"/> interface. Surrounds the hotkey with HTML U-tags.
+  /// </summary>
   public sealed class UnderscoreHotkeyFormatter : HotkeyFormatterBase
   {
     public UnderscoreHotkeyFormatter ()

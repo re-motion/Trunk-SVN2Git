@@ -26,7 +26,7 @@ namespace Remotion.Web.UI.Controls.Hotkey
   /// </summary>
   /// <remarks>
   /// <para>Use <see cref="IServiceLocator"/> to retieve an instance of type <see cref="IHotkeyFormatter"/>.</para>
-  /// <para>The defalt implementation underlines the hotkey.</para>
+  /// <para>The default implementation (<see cref="UnderscoreHotkeyFormatter"/>) underlines the hotkey.</para>
   /// </remarks>
   [ConcreteImplementation (typeof (UnderscoreHotkeyFormatter), Lifetime = LifetimeKind.Singleton)]
   public interface IHotkeyFormatter
