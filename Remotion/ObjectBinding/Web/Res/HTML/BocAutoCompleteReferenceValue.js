@@ -77,7 +77,6 @@ BocAutoCompleteReferenceValue.Initialize = function (
 
           noDataFoundMessage: resources.NoDataFoundMessage,
           autoFill: true,
-          mustMatch: false, // set true if should clear input on no results
           matchContains: true,
           dropDownButtonId: button.attr('id'),
           inputAreaClass: 'content',
@@ -128,7 +127,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
             ClearError();
           }
         }
-    ).invalidateResult(function (e, item)
+    ).invalidateResult(function ()
     {
       if (_isInvalidated)
         return;
@@ -265,4 +264,3 @@ BocAutoCompleteReferenceValue.GetSelectionCount = function (referenceValueHidden
 
   return 1;
 };
-

@@ -64,9 +64,6 @@
         updateResult: function(handler) {
             return this.bind("updateResult", handler);
         },
-        search: function(handler) {
-            return this.trigger("search", [handler]);
-        },
         flushCache: function() {
             return this.trigger("flushCache");
         },
@@ -578,20 +575,10 @@
             select.hide();
             clearTimeout(timeout);
             stopLoading();
-            if (options.mustMatch) {
-                // call search and run callback
-                $input.search(
-                    function(result) {
-                        // if no value found, clear the input box
-                        if (!result) {
-                            $input.val("");
-                        }
-                    }
-                  );
-            }
-            if (wasVisible)
-            // position cursor at end of input field
+            if (wasVisible) {
+                // position cursor at end of input field
                 $.Autocompleter.Selection(input, $input.val().length, $input.val().length);
+            }
         };
 
         function resetState() {
@@ -771,7 +758,6 @@
         matchContains: false,
         cacheLength: 10,
         max: 100,
-        mustMatch: false,
         isAutoPostBackEnabled: false,
         extraParams: {},
         // re-motion: changed selectFirst from boolean field to function
