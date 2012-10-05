@@ -1197,7 +1197,7 @@ namespace Remotion.Web.UI.Controls
               Assertion.IsFalse (label is SmartLabel);
 #pragma warning restore 184
 
-              var textWithHotkey = TextWithHotkey.Parse (label.Text);
+              var textWithHotkey = HotkeyParser.Parse (label.Text);
 
               //  Label has associated control
               if (!string.IsNullOrEmpty (label.AssociatedControlID))

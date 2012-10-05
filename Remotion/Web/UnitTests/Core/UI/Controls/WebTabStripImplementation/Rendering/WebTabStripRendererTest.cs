@@ -371,7 +371,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
         link.AssertAttributeValueEquals ("onclick", clickScript);
       }
 
-      var textWithHotkey = TextWithHotkey.Parse (webTab.Text);
+      var textWithHotkey = HotkeyParser.Parse (webTab.Text);
       if (webTab.EvaluateEnabled() && textWithHotkey.Hotkey.HasValue)
       {
         var accessKey = new NoneHotkeyFormatter().FormatHotkey (textWithHotkey);
@@ -386,7 +386,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       var anchorBody = link.GetAssertedChildElement ("span", 0);
       anchorBody.AssertAttributeValueEquals ("class", _renderer.CssClassTabAnchorBody);
 
-      var textWithHotkey = TextWithHotkey.Parse (tab.Text);
+      var textWithHotkey = HotkeyParser.Parse (tab.Text);
       string text = StringUtility.NullToEmpty (textWithHotkey.Text);
       var hasIcon = tab.Icon != null && !string.IsNullOrEmpty (tab.Icon.Url);
       if (hasIcon)

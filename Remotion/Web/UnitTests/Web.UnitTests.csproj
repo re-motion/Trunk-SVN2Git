@@ -213,9 +213,9 @@
     <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\NoneHotkeyFormatterTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\HotkeyFormatterBaseTest.cs" />
-    <Compile Include="Core\UI\Controls\Hotkey\TextWithHotkeyTests\Parse_TextWithHotkeyTest.cs" />
+    <Compile Include="Core\UI\Controls\Hotkey\HotkeyParserTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\IHotkeyFormatterTest.cs" />
-    <Compile Include="Core\UI\Controls\Hotkey\TextWithHotkeyTests\Initialize_TextWithHotkeyTest.cs" />
+    <Compile Include="Core\UI\Controls\Hotkey\TextWithHotkeyTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\UnderscoreHotkeyFormatterTest.cs" />
     <Compile Include="Core\UI\Controls\IClientScriptBehaviorTest.cs" />
     <Compile Include="Core\UI\Controls\ListMenuImplementation\Rendering\IListMenuRendererTest.cs" />
@@ -505,6 +505,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\UI\Controls\Hotkey\TextWithHotkeyTests\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

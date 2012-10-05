@@ -16,7 +16,6 @@
 // 
 
 using System;
-using System.Text;
 using JetBrains.Annotations;
 using Remotion.Utilities;
 
@@ -26,75 +25,14 @@ namespace Remotion.Web.UI.Controls.Hotkey
   /// Represents all information required about a hotkey-enabled string.
   /// </summary>
   /// <remarks>
-  /// Use the <see cref="Parse"/> method to analyze a <see cref="string"/>. The following rules are applied:
-  /// <list type="bullet">
-  ///   <item>
-  ///     <description>
-  ///       If the string contains a single '<c>&amp;</c>'-character followed by a letter or a digit, then the letter or digit is used as hotkey.
-  ///       The '<c>&amp;</c>' will be removed from the resulting <see cref="Text"/>.
-  ///     </description>
-  ///   </item>
-  ///   <item>
-  ///     <description>
-  ///       '<c>&amp;</c>'-characters can be escaped by using two '<c>&amp;</c>'. 
-  ///       The parsing logic merges them into a single '<c>&amp;</c>'-character for the resulting <see cref="Text"/>.
-  ///     </description>
-  ///   </item>
-  ///   <item>
-  ///     <description>
-  ///       If the string contains multiple possible hotkeys, then no further parsing is attempted and the original string is used as the resulting <see cref="Text"/>.
-  ///     </description>
-  ///   </item>
-  /// </list>
+  /// <para>
+  /// Use the <see cref="HotkeyParser"/>'s <see cref="HotkeyParser.Parse"/> method to analyze a <see cref="string"/>.
+  /// </para><para>
   /// Use the <see cref="IHotkeyFormatter"/> to prepare a <see cref="TextWithHotkey"/> for rendering (i.e. add high-lighting for the hotkey).
+  /// </para>
   /// </remarks>
   public sealed class TextWithHotkey
   {
-    private const char c_hotkeyMarker = '&';
-
-    /// <summary>
-    /// Parses the <paramref name="value"/> and creates a new <see cref="TextWithHotkey"/>.
-    /// </summary>
-    /// <param name="value">The <see cref="string"/> to be analyzed.</param>
-    /// <returns>
-    /// An instance of <see cref="TextWithHotkey"/>. If <paramref name="value"/> is <see langword="null" />, 
-    /// the resulting <see cref="TextWithHotkey"/> contains an empty <see cref="Text"/>.
-    /// </returns>
-    public static TextWithHotkey Parse ([CanBeNull]string value)
-    {
-      if (String.IsNullOrEmpty (value))
-        return new TextWithHotkey (String.Empty, null);
-
-      var resultBuilder = new StringBuilder (value.Length);
-      int? hotkeyIndex = null;
-      for (int i = 0; i < value.Length; i++)
-      {
-        var currentChar = value[i];
-        if (currentChar == c_hotkeyMarker && i + 1 < value.Length)
-        {
-          if (IsValidHotkeyCharacter (value, i + 1))
-          {
-            if (hotkeyIndex.HasValue)
-              return new TextWithHotkey (value, null);
-
-            hotkeyIndex = resultBuilder.Length;
-            continue;
-          }
-          else if (value[i + 1] == c_hotkeyMarker)
-            i++;
-        }
-
-        resultBuilder.Append (currentChar);
-      }
-
-      return new TextWithHotkey (resultBuilder.ToString(), hotkeyIndex);
-    }
-
-    private static bool IsValidHotkeyCharacter (string text, int index)
-    {
-      return Char.IsLetterOrDigit (text, index);
-    }
-
     private readonly string _text;
     private readonly int? _hotkeyIndex;
     private readonly char? _hotkey;
@@ -109,7 +47,7 @@ namespace Remotion.Web.UI.Controls.Hotkey
       if (hotkeyIndex.HasValue && hotkeyIndex.Value >= text.Length)
         throw new ArgumentOutOfRangeException ("hotkeyIndex", "The hotkeyIndex must be less then the length of the 'text' argument.");
 
-      if (hotkeyIndex.HasValue && !IsValidHotkeyCharacter(text, hotkeyIndex.Value))
+      if (hotkeyIndex.HasValue && !HotkeyParser.IsValidHotkeyCharacter(text, hotkeyIndex.Value))
         throw new ArgumentException ("The hotkeyIndex must indicate a letter or digit character.", "hotkeyIndex");
 
       _text = text;
@@ -121,7 +59,7 @@ namespace Remotion.Web.UI.Controls.Hotkey
     public TextWithHotkey ([NotNull] string text, char hotkey)
     {
       ArgumentUtility.CheckNotNull ("text", text);
-      if (!IsValidHotkeyCharacter(char.ToString (hotkey), 0))
+      if (!HotkeyParser.IsValidHotkeyCharacter(char.ToString (hotkey), 0))
         throw new ArgumentException ("The hotkey must be a letter or digit character.", "hotkey");
 
       _text = text;

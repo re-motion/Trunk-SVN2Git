@@ -120,7 +120,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
         if (isEnabled)
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, tab.GetPostBackClientEvent ());
 
-        var textWithHotkey = TextWithHotkey.Parse (tab.Text);
+        var textWithHotkey = HotkeyParser.Parse (tab.Text);
         if (textWithHotkey.Hotkey.HasValue)
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, _hotkeyFormatter.FormatHotkey (textWithHotkey));
       }
@@ -149,7 +149,7 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
         renderingContext.Writer.Write ("&nbsp;");
       if (hasText)
       {
-        var textWithHotkey = TextWithHotkey.Parse (tab.Text);
+        var textWithHotkey = HotkeyParser.Parse (tab.Text);
         renderingContext.Writer.Write (_hotkeyFormatter.FormatText (textWithHotkey, false)); // Do not HTML encode
       }
       if (!hasIcon && !hasText)

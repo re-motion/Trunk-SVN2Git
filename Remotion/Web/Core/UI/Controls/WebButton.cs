@@ -122,7 +122,7 @@ namespace Remotion.Web.UI.Controls
 
     protected override void Render (HtmlTextWriter writer)
     {
-      _textWithHotkey = TextWithHotkey.Parse (Text);
+      _textWithHotkey = HotkeyParser.Parse (Text);
 
       base.Render (writer);
     }
