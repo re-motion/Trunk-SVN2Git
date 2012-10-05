@@ -33,6 +33,8 @@ namespace Remotion.Web.UI.Controls
 [ToolboxItemFilter("System.Web.UI")]
 public class SmartLabel: WebControl, IControl
 {
+  #region Obsolete
+
   [Obsolete ("Use TextWithHotkey.Parse() and IHotkeyFormatter for analyzing and formatting hotkey-enabled strings. (Version 1.13.169)")]
   public static string FormatLabelText (string rawString, bool underlineAccessKey)
   {
@@ -54,7 +56,7 @@ public class SmartLabel: WebControl, IControl
 
     //  Access key is preceeded by an ampersand
     int indexOfAmp = rawString.IndexOf ("&");
-    
+
     //  No ampersand and therfor access key found
     if (indexOfAmp == -1)
     {
@@ -64,8 +66,8 @@ public class SmartLabel: WebControl, IControl
 
     //  Split string at first ampersand
 
-    string leftSubString = rawString.Substring(0, indexOfAmp);
-    string rightSubString = rawString.Substring(indexOfAmp + 1);
+    string leftSubString = rawString.Substring (0, indexOfAmp);
+    string rightSubString = rawString.Substring (indexOfAmp + 1);
 
     //  Remove excess ampersands
     rightSubString.Replace ("&", "");
@@ -87,27 +89,25 @@ public class SmartLabel: WebControl, IControl
     if (underlineAccessKey)
     {
       stringBuilder.AppendFormat (highlighter, accessKey);
-      stringBuilder.Append (rightSubString.Substring(1));
+      stringBuilder.Append (rightSubString.Substring (1));
     }
     else
     {
       stringBuilder.Append (rightSubString);
     }
-    
+
     return stringBuilder.ToString();
   }
+
+  #endregion
 
   private string _forControl = null;
   private string _text = null;
 
-  //  Unfinished implementation of SmartLabel populated by ResourceDispatchter
-  //private string _text = string.Empty;
-  //private string _accessKey = string.Empty
-
   public SmartLabel()
     : base (HtmlTextWriterTag.Label)
-	{
-	}
+  {
+  }
 
   /// <summary>
   ///   The ID of the control to display a label for.
@@ -168,48 +168,9 @@ public class SmartLabel: WebControl, IControl
     {
       ISmartControl smartControl = NamingContainer.FindControl (ForControl) as ISmartControl;
       if (smartControl != null && smartControl.DisplayName != null)
-      {
         text = smartControl.DisplayName;
-      }
-      // Unfinished implementation of SmartLabel populated by ResourceDispatchter
-      // SmartLabel not supposed to be populated
-      //else if (! StringUtility.IsNullOrEmpty (_text))
-      //{
-      //  // TODO: use access key (nicht für texte aus dem control)
-      //  Control associatedControl = null;
-      //  if (NamingContainer != null)
-      //    associatedControl = ControlHelper.FindControl (NamingContainer, ForControl);
-      //
-      //  if (associatedControl != null)
-      //  {
-      //    ISmartControl smartControl = control as ISmartControl;
-      //    if (smartControl != null && smartControl.UseLabel)
-      //    {
-      //      string accessKey;
-      //      text = SmartLabel.FormatLabelText (label.Text, true, out accessKey);
-      //      _accessKey = accessKey;
-      //    }
-      //    else if (control is DropDownList || control is HtmlSelect)
-      //    {
-      //      text = SmartLabel.FormatLabelText (label.Text, false);
-      //      _accessKey = "";
-      //    }
-      //    else
-      //    {
-      //      string accessKey;
-      //      text = SmartLabel.FormatLabelText (label.Text, true, out accessKey);
-      //      _accessKey = accessKey;
-      //    }
-      //  }
-      //  else
-      //  {
-      //    text = SmartLabel.FormatLabelText (label.Text, false);
-      //  }
-      //}
       else
-      {
         text = "[Label for " + ForControl + "]";
-      }
     }
     ForControl = forControlBackUp;
     return text;
