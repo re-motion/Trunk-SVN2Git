@@ -43,7 +43,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey.TextWithHotkeyTests
       Assert.That (textWithHotkey.HotkeyIndex, Is.Null);
       Assert.That (textWithHotkey.Hotkey, Is.Null);
     }
-    
+
     [Test]
     public void Initialize_WithTextEmpty_AndHotkeyIndexNull ()
     {
@@ -75,6 +75,12 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey.TextWithHotkeyTests
     }
 
     [Test]
+    public void Initialize_WithText_AndHotkeyIndexNotInidicatingLetterOrDigit_ThrowsArgumentException ()
+    {
+      Assert.That (() => new TextWithHotkey ("fo.o", 2), Throws.InstanceOf<ArgumentException>());
+    }
+
+    [Test]
     public void Initialize_WithText_AndHotkey ()
     {
       var textWithHotkey = new TextWithHotkey ("foo bar", 'X');
@@ -100,6 +106,12 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey.TextWithHotkeyTests
       // ReSharper disable AssignNullToNotNullAttribute
       Assert.That (() => new TextWithHotkey (null, 'X'), Throws.InstanceOf<ArgumentNullException>());
       // ReSharper restore AssignNullToNotNullAttribute
+    }
+
+    [Test]
+    public void Initialize_WithText_AndHotkeyNotLetterOrDigit_ThrowsArgumentException ()
+    {
+      Assert.That (() => new TextWithHotkey ("foo", '/'), Throws.InstanceOf<ArgumentException>());
     }
   }
 }
