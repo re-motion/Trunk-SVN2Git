@@ -144,9 +144,8 @@ BocAutoCompleteReferenceValue.Initialize = function (
       {
         var actualItem = item;
 
-        if (_itemBackUp != null
-          && item.DisplayName.toLowerCase() == _itemBackUp.DisplayName.toLowerCase()
-          && (item.UniqueIdentifier == _itemBackUp.UniqueIdentifier || item.UniqueIdentifier == nullValueString))
+        if (item.DisplayName.toLowerCase() == _itemBackUp.DisplayName.toLowerCase()
+            && (item.UniqueIdentifier == _itemBackUp.UniqueIdentifier || item.UniqueIdentifier == nullValueString))
         {
           actualItem = _itemBackUp;
           textbox.val (actualItem.DisplayName);
@@ -241,14 +240,14 @@ BocAutoCompleteReferenceValue.Initialize = function (
   function BackupItemData(uniqueIdentifier, displayName)
   {
     if (uniqueIdentifier == nullValueString)
-      _itemBackUp = null;
+      _itemBackUp = { UniqueIdentifier : nullValueString, DisplayName: '' };
     else
       _itemBackUp = { UniqueIdentifier : uniqueIdentifier, DisplayName : displayName };
   }
 
   function GetDropDownSearchStringForValidInput(searchString)
   {
-    if (_itemBackUp != null && searchString.toLowerCase() == _itemBackUp.DisplayName.toLowerCase())
+    if (searchString.toLowerCase() == _itemBackUp.DisplayName.toLowerCase())
       return '';
     return searchString;
   }
