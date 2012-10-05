@@ -236,8 +236,6 @@
             };
 
             if (event.type == 'keyup') {
-              var isControlKey = event.keyCode < KEY.FIRSTTEXTCHARACTER;
-
                 var isTextChangeKey =
                        event.keyCode >= KEY.FIRSTTEXTCHARACTER
                     || event.keyCode == KEY.BACKSPACE
@@ -252,9 +250,6 @@
 
                 if (isTextChangeKey && hasValueChanged) {
                     invalidateResult();
-                }
-
-                if (!isControlKey && hasValueChanged) {
                     handleInput();
                 }
             } else if (event.type == 'paste') {
@@ -491,11 +486,6 @@
 
         function onChange(dropDownTriggered, currentValue) {
             informationPopUp.hide();
-
-            if (lastKeyPressCode == KEY.DEL) {
-                select.hide();
-                return;
-            }
 
             if (!dropDownTriggered && currentValue == previousValue)
                 return;
