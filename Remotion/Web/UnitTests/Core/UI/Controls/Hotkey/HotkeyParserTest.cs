@@ -149,5 +149,23 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.Hotkey
       Assert.That (result.Hotkey, Is.EqualTo ('I'));
       Assert.That (result.HotkeyIndex, Is.EqualTo (10));
     }
+
+    [Test]
+    public void Escape ()
+    {
+      Assert.That (HotkeyParser.Escape ("Foo & Bar && Foo Bar"), Is.EqualTo ("Foo && Bar &&&& Foo Bar"));
+    }
+    
+    [Test]
+    public void Escape_Empty ()
+    {
+      Assert.That (HotkeyParser.Escape (string.Empty), Is.Empty);
+    }
+
+    [Test]
+    public void Escape_Null ()
+    {
+      Assert.That (HotkeyParser.Escape (null), Is.Null);
+    }
   }
 }

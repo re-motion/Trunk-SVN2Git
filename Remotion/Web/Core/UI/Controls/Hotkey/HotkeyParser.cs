@@ -52,7 +52,7 @@ namespace Remotion.Web.UI.Controls.Hotkey
     /// <summary>
     /// Parses the <paramref name="value"/> and creates a new <see cref="TextWithHotkey"/>.
     /// </summary>
-    /// <param name="value">The <see cref="string"/> to be analyzed.</param>
+    /// <param name="value">The <see cref="string"/> to be analyzed. Can be <see langword="null" />.</param>
     /// <returns>
     /// An instance of <see cref="TextWithHotkey"/>. If <paramref name="value"/> is <see langword="null" />, 
     /// the resulting <see cref="TextWithHotkey"/> contains an empty <see cref="TextWithHotkey.Text"/>.
@@ -85,6 +85,19 @@ namespace Remotion.Web.UI.Controls.Hotkey
       }
 
       return new TextWithHotkey (resultBuilder.ToString(), hotkeyIndex);
+    }
+
+    /// <summary>
+    /// Escapes all the <c>&amp;</c> inside <paramref name="value"/> with their escape sequecence.
+    /// </summary>
+    /// <param name="value">The <see cref="string"/> to be escaped. Can be <see langword="null" />.</param>
+    /// <returns>The escaped <see cref="string"/> or <see langword="null"/> if the <paramref name="value"/> was <see langword="null" />.</returns>
+    public static string Escape ([CanBeNull]string value)
+    {
+      if (value == null)
+        return null;
+
+      return value.Replace (new string (c_hotkeyMarker, 1), new string (c_hotkeyMarker, 2));
     }
 
     internal static bool IsValidHotkeyCharacter (string text, int index)
