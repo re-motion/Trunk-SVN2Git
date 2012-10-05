@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Utilities;
+using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.Utilities;
 
 namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
@@ -27,9 +28,13 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
   /// </summary>
   public class WebTabRenderer : IWebTabRenderer
   {
-    public WebTabRenderer ()
+    private readonly IHotkeyFormatter _hotkeyFormatter;
+
+    public WebTabRenderer (IHotkeyFormatter hotkeyFormatter)
     {
-     
+      ArgumentUtility.CheckNotNull ("hotkeyFormatter", hotkeyFormatter);
+      
+      _hotkeyFormatter = hotkeyFormatter;
     }
 
     public void Render (WebTabStripRenderingContext renderingContext, IWebTab tab, bool isEnabled, bool isLast, WebTabStyle style)
@@ -114,6 +119,10 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         if (isEnabled)
           renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, tab.GetPostBackClientEvent ());
+
+        var textWithHotkey = TextWithHotkey.Parse (tab.Text);
+        if (textWithHotkey.Hotkey.HasValue)
+          renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, _hotkeyFormatter.FormatHotkey (textWithHotkey));
       }
       style.AddAttributesToRender (renderingContext.Writer);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.A); // Begin anchor
@@ -139,7 +148,10 @@ namespace Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering
       if (hasIcon && hasText)
         renderingContext.Writer.Write ("&nbsp;");
       if (hasText)
-        renderingContext.Writer.Write (tab.Text); // Do not HTML encode
+      {
+        var textWithHotkey = TextWithHotkey.Parse (tab.Text);
+        renderingContext.Writer.Write (_hotkeyFormatter.FormatText (textWithHotkey, false)); // Do not HTML encode
+      }
       if (!hasIcon && !hasText)
         renderingContext.Writer.Write ("&nbsp;");
 

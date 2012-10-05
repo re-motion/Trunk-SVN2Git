@@ -200,6 +200,7 @@
     <Compile Include="UI\Controls\FormGridManagerImplementation\FormGridCellNamingContainer.cs" />
     <Compile Include="UI\Controls\Hotkey\HotkeyFormatterBase.cs" />
     <Compile Include="UI\Controls\Hotkey\IHotkeyFormatter.cs" />
+    <Compile Include="UI\Controls\Hotkey\NoneHotkeyFormatter.cs" />
     <Compile Include="UI\Controls\Hotkey\TextWithHotkey.cs" />
     <Compile Include="UI\Controls\Hotkey\UnderscoreHotkeyFormatter.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRenderer.cs" />

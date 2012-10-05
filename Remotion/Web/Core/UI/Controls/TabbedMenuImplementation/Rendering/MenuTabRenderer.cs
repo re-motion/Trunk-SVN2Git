@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.Web.UI;
 using Remotion.Utilities;
 using System.Web;
+using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 
@@ -32,7 +33,8 @@ namespace Remotion.Web.UI.Controls.TabbedMenuImplementation.Rendering
   {
     private Command _renderingCommand;
 
-    public MenuTabRenderer ()
+    public MenuTabRenderer (IHotkeyFormatter hotkeyFormatter)
+        : base(hotkeyFormatter)
     {
     }
 

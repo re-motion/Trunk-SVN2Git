@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Rhino.Mocks;
@@ -30,7 +31,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
     public void GetWebTabRenderers_OneTab ()
     {
       var webTabMock = MockRepository.GenerateMock<IWebTab>();
-      var fakeWebTabRenderer = new WebTabRenderer ();
+      var fakeWebTabRenderer = CreateWebTabRenderer();
       var builder = new WebTabRendererAdapterArrayBuilder (new[] { webTabMock });
       
       webTabMock.Expect (mock => mock.GetRenderer()).Return (fakeWebTabRenderer);
@@ -52,7 +53,7 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       var webTabMock1 = MockRepository.GenerateMock<IWebTab> ();
       var webTabMock2 = MockRepository.GenerateMock<IWebTab> ();
       var webTabMock3 = MockRepository.GenerateMock<IWebTab> ();
-      var fakeWebTabRenderer = new WebTabRenderer ();
+      var fakeWebTabRenderer = CreateWebTabRenderer();
       var builder = new WebTabRendererAdapterArrayBuilder (new[] { webTabMock1, webTabMock2, webTabMock3 });
 
       webTabMock1.Expect (mock => mock.GetRenderer ()).Return (fakeWebTabRenderer);
@@ -85,5 +86,9 @@ namespace Remotion.Web.UnitTests.Core.UI.Controls.WebTabStripImplementation.Rend
       Assert.That (PrivateInvoke.GetNonPublicField (result[2], "_webTabRenderer"), Is.SameAs (fakeWebTabRenderer));
     }
 
+    private WebTabRenderer CreateWebTabRenderer ()
+    {
+      return new WebTabRenderer (new NoneHotkeyFormatter());
+    }
   }
 }

@@ -91,10 +91,10 @@ public class TestTabbedForm : TestWxeBasePage
     List<IDataEditControl> dataEditControls = new List<IDataEditControl> ();
     // load editor pages
     IDataEditControl dataEditControl;
-    dataEditControl = AddPage ("TestTabbedPersonDetailsUserControl", "Person Details", new IconInfo ("Images/Remotion.ObjectBinding.Sample.Person.gif"), "TestTabbedPersonDetailsUserControl.ascx");
+    dataEditControl = AddPage ("TestTabbedPersonDetailsUserControl", "&Person Details", new IconInfo ("Images/Remotion.ObjectBinding.Sample.Person.gif"), "TestTabbedPersonDetailsUserControl.ascx");
     if (dataEditControl != null)
       dataEditControls.Add (dataEditControl);
-    dataEditControl = AddPage ("TestTabbedPersonJobsUserControl", "Jobs", new IconInfo ("Images/Remotion.ObjectBinding.Sample.Job.gif"), "TestTabbedPersonJobsUserControl.ascx");
+    dataEditControl = AddPage ("TestTabbedPersonJobsUserControl", "&Jobs", new IconInfo ("Images/Remotion.ObjectBinding.Sample.Job.gif"), "TestTabbedPersonJobsUserControl.ascx");
     if (dataEditControl != null)
       dataEditControls.Add (dataEditControl);
     _dataEditControls = (IDataEditControl[]) dataEditControls.ToArray ();
@@ -200,7 +200,7 @@ public class TestTabbedForm : TestWxeBasePage
 
     WebButton validateButton = new WebButton();
     validateButton.ID = "ValidateButton";
-    validateButton.Text = "Validate";
+    validateButton.Text = "&Validate";
     validateButton.Style["margin-right"] = "10pt";
     validateButton.Click += new EventHandler(ValidateButton_Click);
     MultiView.BottomControls.Add (validateButton);

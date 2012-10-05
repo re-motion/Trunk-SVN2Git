@@ -27,6 +27,7 @@ using Remotion.Web.Infrastructure;
 using Remotion.Web.Legacy.UI.Controls.Rendering;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.Web.UI.Controls.Hotkey;
 using Remotion.Web.UI.Controls.WebTabStripImplementation;
 using Remotion.Web.UI.Controls.WebTabStripImplementation.Rendering;
 using Remotion.Web.UnitTests.Core.UI.Controls;
@@ -221,7 +222,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab0.Stub (stub => stub.Icon).Return (new IconInfo ());
       _tab0.Stub (stub => stub.EvaluateEnabled()).Return (true);
       _tab0.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab0.ItemID));
-      _tab0.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
+      _tab0.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (CreateWebTabRenderer());
 
       _tab1 = MockRepository.GenerateStub<IWebTab>();
       _tab1.Stub (stub => stub.ItemID).Return ("Tab1");
@@ -229,7 +230,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab1.Stub (stub => stub.Icon).Return (new IconInfo ("~/myImageUrl"));
       _tab1.Stub (stub => stub.EvaluateEnabled()).Return (true);
       _tab1.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab1.ItemID));
-      _tab1.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
+      _tab1.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (CreateWebTabRenderer());
 
       _tab2 = MockRepository.GenerateStub<IWebTab>();
       _tab2.Stub (stub => stub.ItemID).Return ("Tab2");
@@ -237,7 +238,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab2.Stub (stub => stub.Icon).Return (null);
       _tab2.Stub (stub => stub.EvaluateEnabled()).Return (true);
       _tab2.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab2.ItemID));
-      _tab2.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
+      _tab2.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (CreateWebTabRenderer());
 
       _tab3 = MockRepository.GenerateStub<IWebTab>();
       _tab3.Stub (stub => stub.ItemID).Return ("Tab3");
@@ -245,7 +246,7 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
       _tab3.Stub (stub => stub.Icon).Return (null);
       _tab3.Stub (stub => stub.EvaluateEnabled()).Return (true);
       _tab3.Stub (stub => stub.GetPostBackClientEvent()).Return (_pageStub.ClientScript.GetPostBackClientHyperlink (_webTabStrip, _tab3.ItemID));
-      _tab3.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (new WebTabRenderer());
+      _tab3.Stub (stub => stub.GetRenderer()).IgnoreArguments().Return (CreateWebTabRenderer());
 
       _webTabStrip.GetVisibleTabs().Add (_tab0);
       _webTabStrip.GetVisibleTabs().Add (_tab1);
@@ -372,6 +373,11 @@ namespace Remotion.Web.UnitTests.Legacy.UI.Controls
         text = HtmlHelper.WhiteSpace;
 
       anchorBody.AssertTextNode (text, hasIcon ? 1 : 0);
+    }
+
+    private WebTabRenderer CreateWebTabRenderer ()
+    {
+      return new WebTabRenderer(new NoneHotkeyFormatter());
     }
   }
 }

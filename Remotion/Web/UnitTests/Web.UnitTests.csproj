@@ -211,6 +211,7 @@
     <Compile Include="Core\UI\Controls\CommandTests\CommonCommandTest.cs" />
     <Compile Include="Core\UI\Controls\DatePickerButtonImplementation\Rendering\IDatePickerButtonRendererTest.cs" />
     <Compile Include="Core\UI\Controls\DropDownMenuImplementation\Rendering\IDropDownMenuRendererTest.cs" />
+    <Compile Include="Core\UI\Controls\Hotkey\NoneHotkeyFormatterTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\HotkeyFormatterBaseTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\TextWithHotkeyTests\Parse_TextWithHotkeyTest.cs" />
     <Compile Include="Core\UI\Controls\Hotkey\IHotkeyFormatterTest.cs" />
