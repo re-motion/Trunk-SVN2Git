@@ -28,6 +28,7 @@
       <CodePlexProjectName></CodePlexProjectName>
       <UploadToDependDB>True</UploadToDependDB>
       <DependDBProjectName>re-motion Core</DependDBProjectName>
+      <DependDBExecuteXReferencer>True</DependDBExecuteXReferencer>
     </PropertyGroup>
   </Target>
   

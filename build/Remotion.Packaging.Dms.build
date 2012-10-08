@@ -28,6 +28,7 @@
       <CodePlexProjectName></CodePlexProjectName>
       <UploadToDependDB>True</UploadToDependDB>
       <DependDBProjectName>re-motion Dms</DependDBProjectName>
+      <DependDBExecuteXReferencer>True</DependDBExecuteXReferencer>
     </PropertyGroup>
   </Target>
 
@@ -79,7 +80,7 @@
   </Target>
   
   <Target Name="CreateDependDBBinaryFiles" DependsOnTargets="CreateStandardExcludes">
-	<Error Text="The property 'DependDBBinariesDirectory' is not set." Condition="'$(DependDBBinariesDirectory)' == ''" />
+    <Error Text="The property 'DependDBBinariesDirectory' is not set." Condition="'$(DependDBBinariesDirectory)' == ''" />
     <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
     <ItemGroup>
       <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>

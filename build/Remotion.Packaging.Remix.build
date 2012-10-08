@@ -30,6 +30,7 @@
       <!-- Do not upload Remotion.Remix to DependDB, it's part of Remotion.Core! -->
       <UploadToDependDB>False</UploadToDependDB>
       <DependDBProjectName></DependDBProjectName>
+      <DependDBExecuteXReferencer></DependDBExecuteXReferencer>
     </PropertyGroup>
   </Target>
 
