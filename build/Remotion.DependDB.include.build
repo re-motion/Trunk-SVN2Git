@@ -43,7 +43,7 @@
         <Message Text="Started DependDB build processing, ProjectName=$(DependDBProjectName)" Importance="High"/>
     
         <!-- Execute build processor -->
-        <Exec Command="$(DependDBBuildProcessorTool) $(DependDBConfigurationFile)"/>
+        <Exec Command="$(DependDBBuildProcessorTool) &quot;$(DependDBConfigurationFile)&quot;"/>
     
         <Message Text="Finished DependDB build processing, ProjectName=$(DependDBProjectName)" Importance="High"/>
     </Target>
@@ -52,7 +52,7 @@
         <PropertyGroup>
             <DependDBProjectDirectory>$(DependDBDirectory)$(DependDBProjectName)\</DependDBProjectDirectory>
             <DependDBConfigurationTemplate>$(MSBuildProjectDirectory)\DependDB.ConfigurationTemplate.xml</DependDBConfigurationTemplate>
-            <DependDBConfigurationFile>$(MSBuildProjectDirectory)\DependDB.Configuration.xml</DependDBConfigurationFile>
+            <DependDBConfigurationFile>$(DependDBProjectDirectory)DependDB.Configuration.xml</DependDBConfigurationFile>
             <DependDBBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DependDBBinariesDirectory>
         </PropertyGroup>
     </Target>
@@ -204,7 +204,7 @@
         
         <!-- Copy build processor output to upload path -->
         <ItemGroup>
-            <SourceFiles Include="$(DependDBProjectDirectory)*.xml"/>
+            <SourceFiles Include="$(DependDBProjectDirectory)*.xml" Exclude="$(DependDBConfigurationFile)"/>
         </ItemGroup>
         <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(DependDBUploadPath)"/>
         

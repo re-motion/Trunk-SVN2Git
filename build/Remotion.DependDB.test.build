@@ -17,7 +17,23 @@
 -->
 <Project DefaultTargets="DependDB" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-    <Import Project="Remotion.Packages.include.build" />
+	<!--
+	 ! Important note: In order to use this test target two prerequirements have
+	 ! to be fulfilled:
+	 !   1) Debug builds of projects have to be done already
+	 !   2) Condition="$(UploadToDependDB) == 'True'" has to be removed from
+	 !      both public Remotion.DependDB.include.build targets:
+	 !          - CreateDependDBPackages
+	 !          - UploadToDependDB
+	 !      (don't know why, this shouldn't be the case normally...)
+	-->
+
+	<Import Project="Remotion.Tasks.include.build" />
+	<Import Project="Remotion.Packages.include.build" />
+	<Import Project="Remotion.Projects.include.build" />
+	<Import Project="Remotion.Configurations.include.build" />
+	<Import Project="Remotion.BuildTargets.include.build" />
+	<Import Project="Remotion.AssembleBuildOutput.include.build" />
     
     <PropertyGroup>
         <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
@@ -27,7 +43,10 @@
     </PropertyGroup>
 
     <Target Name="DependDB">
-        <MSBuild Projects="%(AllPackages.PackageDeclaration)"
+		<ItemGroup>
+			<DependDBPackages Include="%(AllPackages.PackageDeclaration)" Exclude="Remotion.Packaging.Remix.build"/>
+		</ItemGroup>
+        <MSBuild Projects="@(DependDBPackages)"
              BuildInParallel="false"
              Targets="UploadToDependDB"
              Properties="
