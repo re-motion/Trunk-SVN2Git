@@ -53,6 +53,7 @@
             <DependDBProjectDirectory>$(DependDBDirectory)$(DependDBProjectName)\</DependDBProjectDirectory>
             <DependDBConfigurationTemplate>$(MSBuildProjectDirectory)\DependDB.ConfigurationTemplate.xml</DependDBConfigurationTemplate>
             <DependDBConfigurationFile>$(MSBuildProjectDirectory)\DependDB.Configuration.xml</DependDBConfigurationFile>
+            <DependDBBinariesDirectory>$(BinariesDirectory)net-3.5\bin\debug\</DependDBBinariesDirectory>
         </PropertyGroup>
     </Target>
     
@@ -85,7 +86,7 @@
             </_config>
             <_config Include="DependDBProjectSourceRoot">
                 <XPath>$(SettingsXPath)/c:SourceDirectoryRoot</XPath>
-				<Value>$([System.IO.Path]::GetFullPath('$(SolutionDirectory)'))</Value>
+                <Value>$([System.IO.Path]::GetFullPath('$(SolutionDirectory)'))</Value>
             </_config>
             <_config Include="DependDBProjectVCSUrlTemplate">
                 <XPath>$(SettingsXPath)/c:SourceControlUrlTemplate</XPath>
