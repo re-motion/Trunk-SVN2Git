@@ -80,16 +80,16 @@
     </ItemGroup>
   </Target>
   
-    <Target Name="CreateDependDBBinaryFiles" DependsOnTargets="CreateStandardExcludes">
-        <Error Text="The property 'DependDBBinariesDirectory' is not set." Condition="'$(DependDBBinariesDirectory)' == ''" />
-        <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
-        <ItemGroup>
-            <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
-            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.dll"/>
-            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.Clients.Web.dll"/>
-            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\AclExpander.exe"/>
-            <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.Metadata.Importer.exe"/>
-        </ItemGroup>
+  <Target Name="CreateDependDBBinaryFiles" DependsOnTargets="CreateStandardExcludes">
+    <Error Text="The property 'DependDBBinariesDirectory' is not set." Condition="'$(DependDBBinariesDirectory)' == ''" />
+    <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
+    <ItemGroup>
+      <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.dll"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.Clients.Web.dll"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\AclExpander.exe"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager.Metadata.Importer.exe"/>
+    </ItemGroup>
   </Target>
 
 </Project>

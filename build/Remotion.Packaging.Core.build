@@ -88,18 +88,18 @@
     <Error Text="The property 'DependDBBinariesDirectory' is not set." Condition="'$(DependDBBinariesDirectory)' == ''" />
     <Error Text="DependDB requires the debug configuration build - not found at '$(DependDBBinariesDirectory)'." Condition="!Exists($(DependDBBinariesDirectory))"/>
     <ItemGroup>
-        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\*.resources.dll"/>
-        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Dms*.dll"/>
-        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Linq*.dll"/>
-        <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager*.dll"/>
+      <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\*.resources.dll"/>
+      <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Dms*.dll"/>
+      <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.Linq*.dll"/>
+      <_dependDBBinaryFilesExcludes Include="$(DependDBBinariesDirectory)**\Remotion.SecurityManager*.dll"/>
     </ItemGroup>
     <ItemGroup>
-        <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
-        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion*.dll" Exclude="@(_dependDBBinaryFilesExcludes)"/>
-        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\dbschema.exe"/>
-        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.Security.Metadata.Extractor.exe"/>
-        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\TypeMixer.exe"/>
-        <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\wxegen.exe"/>
+      <DependDBBinaryFiles Remove="@(DependDBBinaryFiles)"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion*.dll" Exclude="@(_dependDBBinaryFilesExcludes)"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\dbschema.exe"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\Remotion.Security.Metadata.Extractor.exe"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\TypeMixer.exe"/>
+      <DependDBBinaryFiles Include="$(DependDBBinariesDirectory)**\wxegen.exe"/>
     </ItemGroup>
   </Target>
   

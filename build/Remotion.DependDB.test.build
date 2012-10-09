@@ -17,47 +17,47 @@
 -->
 <Project DefaultTargets="DependDB" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<!--
-	 ! Important note: In order to use this test target two prerequirements have
-	 ! to be fulfilled:
-	 !   1) Debug builds of projects have to be done already
-	 !   2) Condition="$(UploadToDependDB) == 'True'" has to be removed from
-	 !      both public Remotion.DependDB.include.build targets:
-	 !          - CreateDependDBPackages
-	 !          - UploadToDependDB
-	 !      (don't know why, this shouldn't be the case normally...)
-	-->
-
-	<Import Project="Remotion.Tasks.include.build" />
-	<Import Project="Remotion.Packages.include.build" />
-	<Import Project="Remotion.Projects.include.build" />
-	<Import Project="Remotion.Configurations.include.build" />
-	<Import Project="Remotion.BuildTargets.include.build" />
-	<Import Project="Remotion.AssembleBuildOutput.include.build" />
+<!--
+ ! Important note: In order to use this test target two prerequirements have
+ ! to be fulfilled:
+ !   1) Debug builds of projects have to be done already
+ !   2) Condition="$(UploadToDependDB) == 'True'" has to be removed from
+ !      both public Remotion.DependDB.include.build targets:
+ !          - CreateDependDBPackages
+ !          - UploadToDependDB
+ !      (don't know why, this shouldn't be the case normally...)
+-->
+  
+  <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.Packages.include.build" />
+  <Import Project="Remotion.Projects.include.build" />
+  <Import Project="Remotion.Configurations.include.build" />
+  <Import Project="Remotion.BuildTargets.include.build" />
+  <Import Project="Remotion.AssembleBuildOutput.include.build" />
     
-    <PropertyGroup>
-        <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
-        <TempDirectory>$(MSBuildProjectDirectory)\BuildOutput\temp\</TempDirectory>
-        <DependDBDirectory>$(MSBuildProjectDirectory)\BuildOutput\DependDB\</DependDBDirectory>
-        <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
-    </PropertyGroup>
+  <PropertyGroup>
+    <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
+    <TempDirectory>$(MSBuildProjectDirectory)\BuildOutput\temp\</TempDirectory>
+    <DependDBDirectory>$(MSBuildProjectDirectory)\BuildOutput\DependDB\</DependDBDirectory>
+    <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
+  </PropertyGroup>
 
-    <Target Name="DependDB">
-		<ItemGroup>
-			<DependDBPackages Include="%(AllPackages.PackageDeclaration)" Exclude="Remotion.Packaging.Remix.build"/>
-		</ItemGroup>
-        <MSBuild Projects="@(DependDBPackages)"
+  <Target Name="DependDB">
+    <ItemGroup>
+      <DependDBPackages Include="%(AllPackages.PackageDeclaration)" Exclude="Remotion.Packaging.Remix.build"/>
+    </ItemGroup>
+    <MSBuild Projects="@(DependDBPackages)"
              BuildInParallel="false"
              Targets="UploadToDependDB"
              Properties="
-                 SolutionDirectory=$(SolutionDirectory);
-                 BinariesDirectory=$(BinariesDirectory);
-                 DependDBProjectBranch=AN Branch;
-                 DependDBProjectVersion=1.13.166.2;
-                 DependDBUploadPath=C:\watch;
-                 DependDBProjectVCSUrlTemplate=https://svn.re-motion.org:443/svn/Remotion/!svn/bc/$(ProjectRevision)/branches/ActaNova/trunk/{0};
-                 DependDBProjectImportNotificationMailAddress=dominik.rauch@rubicon.eu;
-                 DependDBDirectory=$(DependDBDirectory)"/>
+               SolutionDirectory=$(SolutionDirectory);
+               BinariesDirectory=$(BinariesDirectory);
+               DependDBProjectBranch=AN Branch;
+               DependDBProjectVersion=1.13.166.2;
+               DependDBUploadPath=C:\watch;
+               DependDBProjectVCSUrlTemplate=https://svn.re-motion.org:443/svn/Remotion/!svn/bc/$(ProjectRevision)/branches/ActaNova/trunk/{0};
+               DependDBProjectImportNotificationMailAddress=dominik.rauch@rubicon.eu;
+               DependDBDirectory=$(DependDBDirectory)"/>
   </Target>
 
 </Project>
