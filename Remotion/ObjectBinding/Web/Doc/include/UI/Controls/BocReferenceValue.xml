@@ -97,6 +97,7 @@
       </para><para>
         Use the <see cref="BocReferenceValueBase.IconServicePath"/> to specify the ASP.NET web service used to retrieve the icon after a value selection
         without requiring an auto-postback. This web service must implement the <see cref="Remotion.ObjectBinding.Web.Services.IBusinessObjectIconWebService" /> interface.
+        Additional context information can be provided using the <see cref="BocReferenceValueBase.IconServiceArguments"/> property.
       </para>
 
       <h4 class="dtH4">Localization Support</h4>
