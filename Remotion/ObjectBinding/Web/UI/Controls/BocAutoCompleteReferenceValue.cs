@@ -535,6 +535,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     [Category ("AutoComplete")]
     [DefaultValue ("")]
+    [Description ("Additional arguments passed to the search web service.")]
     public string Args
     {
       get { return _args; }

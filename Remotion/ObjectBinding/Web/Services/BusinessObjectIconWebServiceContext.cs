@@ -15,28 +15,36 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.Services
 {
   public class BusinessObjectIconWebServiceContext
   {
-    public static BusinessObjectIconWebServiceContext Create (IBusinessObjectClassWithIdentity businessObjectClass)
+    public static BusinessObjectIconWebServiceContext Create (IBusinessObjectClassWithIdentity businessObjectClass, string arguments)
     {
       if (businessObjectClass == null)
         return null;
-      return new BusinessObjectIconWebServiceContext (businessObjectClass.Identifier);
+      return new BusinessObjectIconWebServiceContext (businessObjectClass.Identifier, StringUtility.EmptyToNull (arguments));
     }
 
     private readonly string _businessObjectClass;
+    private readonly string _arguments;
 
-    private BusinessObjectIconWebServiceContext (string businessObjectClass)
+    private BusinessObjectIconWebServiceContext (string businessObjectClass, string arguments)
     {
       _businessObjectClass = businessObjectClass;
+      _arguments = arguments;
     }
 
     public string BusinessObjectClass
     {
       get { return _businessObjectClass; }
+    }
+
+    public string Arguments
+    {
+      get { return _arguments; }
     }
   }
 }

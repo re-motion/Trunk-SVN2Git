@@ -39,7 +39,8 @@ namespace Remotion.ObjectBinding.Web.Services
     ///   The <see cref="IBusinessObjectWithIdentity.UniqueIdentifier"/> of the bound <see cref="IBusinessObjectWithIdentity"/> or <see langword="null" />
     ///   if no business object is set, i.e. the control's value is <see langword="null"/>.
     /// </param>
+    /// <param name="arguments">Additional arguments required for retrieving the icon.</param>
     /// <returns>An <see cref="IconProxy"/> object or <see langword="null" />.</returns>
-    IconProxy GetIcon (string businessObjectClass, string businessObject);
+    IconProxy GetIcon (string businessObjectClass, string businessObject, string arguments);
   }
 }

@@ -103,6 +103,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
       jsonBuilder.Append ("{ ");
       jsonBuilder.Append ("businessObjectClass : ");
       AppendStringValueOrNullToScript (jsonBuilder, iconServiceContext.BusinessObjectClass);
+      jsonBuilder.Append (", ");
+      jsonBuilder.Append ("arguments : ");
+      AppendStringValueOrNullToScript (jsonBuilder, iconServiceContext.Arguments);
       jsonBuilder.Append (" }");
 
       return jsonBuilder.ToString ();

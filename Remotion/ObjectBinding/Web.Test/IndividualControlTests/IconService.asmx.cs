@@ -36,7 +36,7 @@ namespace OBWTest.IndividualControlTests
   {
     [WebMethod]
     [ScriptMethod (ResponseFormat = ResponseFormat.Json)]
-    public IconProxy GetIcon (string businessObjectClass, string businessObject)
+    public IconProxy GetIcon (string businessObjectClass, string businessObject, string arguments)
     {
       if (businessObjectClass == null)
         return null;

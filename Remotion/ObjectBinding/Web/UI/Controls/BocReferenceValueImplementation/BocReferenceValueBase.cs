@@ -86,6 +86,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     private bool? _hasValueEmbeddedInsideOptionsMenu;
     private string[] _hiddenMenuItems;
     private string _iconServicePath;
+    private string _iconServiceArguments;
     private IWebServiceFactory _webServiceFactory = new WebServiceFactory (new BuildManagerWrapper());
 
     protected BocReferenceValueBase ()
@@ -394,6 +395,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
     {
       get { return _iconServicePath; }
       set { _iconServicePath = StringUtility.NullToEmpty (value); }
+    }
+
+    [Category ("Appearance")]
+    [DefaultValue ("")]
+    [Description ("Additional arguments passed to the icon service.")]
+    public string IconServiceArguments
+    {
+      get { return _iconServiceArguments; }
+      set { _iconServiceArguments = StringUtility.EmptyToNull (value); }
     }
 
     [EditorBrowsable (EditorBrowsableState.Advanced)]
@@ -1034,7 +1044,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocReferenceValueImplementation
 
     protected BusinessObjectIconWebServiceContext CreateIconWebServiceContext ()
     {
-      return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass());
+      return BusinessObjectIconWebServiceContext.Create (GetBusinessObjectClass(), IconServiceArguments);
     }
 
     string IBocReferenceValueBase.LabelClientID
