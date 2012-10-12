@@ -43,7 +43,7 @@ namespace Remotion.Web.UI.Controls
 
     protected override void AddAttributesToRender (HtmlTextWriter writer)
     {
-      if (string.IsNullOrEmpty (AccessKey))
+      if (string.IsNullOrEmpty (AccessKey) && _textWithHotkey.Hotkey.HasValue)
         writer.AddAttribute (HtmlTextWriterAttribute.Accesskey, HotkeyFormatter.FormatHotkey (_textWithHotkey));
 
       base.AddAttributesToRender (writer);
