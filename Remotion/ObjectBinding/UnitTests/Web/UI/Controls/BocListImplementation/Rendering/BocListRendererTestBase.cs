@@ -84,8 +84,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       List.Stub (list => list.Value).Return (value);
       List.Stub (list => list.HasValue).Return (value != null && value.Length > 0);
 
-      List.Stub (list => list.SelectorControlCheckedState).Return (new List<int> ());
-
       var listMenuStub = MockRepository.GenerateStub<IListMenu>();
       List.Stub (list => list.ListMenu).Return (listMenuStub);
 
@@ -107,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var editModeController = MockRepository.GenerateMock<IEditModeController>();
       List.Stub (list => list.EditModeController).Return (editModeController);
 
-      List.Stub (stub => stub.GetSelectorControlClientId (Arg<int>.Is.Anything)).Return ("SelectRowControlID");
+      List.Stub (stub => stub.GetSelectorControlClientID (Arg<int>.Is.Anything)).Return ("SelectRowControlID");
       List.Stub (stub => stub.GetSelectAllControlClientID()).Return ("SelectAllControlID");
 
       List.Stub (list => list.GetResourceManager()).Return (

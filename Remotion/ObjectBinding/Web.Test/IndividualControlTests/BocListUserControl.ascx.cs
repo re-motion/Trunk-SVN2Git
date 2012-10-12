@@ -305,6 +305,7 @@ public class BocListUserControl : BaseUserControl
 
     if (!IsPostBack)
     {
+      JobList.SetSelectedRows (new[] { 1 });
       ChildrenList.SetSelectedBusinessObjects (new[] { ChildrenList.Value[1] });
     }
   }

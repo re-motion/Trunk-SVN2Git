@@ -124,12 +124,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
           _bocListQuirksModeCssClassDefinition,
           new BocIndexColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition),
           new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition));
-      renderer.RenderDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _bocColumnRenderers), BusinessObject, 0, 0, 0); //use StubServiceLocator !??
+      renderer.RenderDataRow (
+          new BocListRenderingContext (HttpContext, Html.Writer, List, _bocColumnRenderers),
+          new BocListRowRenderingContext (new BocListRow (0, BusinessObject), 1, true),
+          0); //use StubServiceLocator !??
 
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);
-      Html.AssertAttribute (tr, "class", _bocListQuirksModeCssClassDefinition.DataRow);
+      Html.AssertAttribute (tr, "class", _bocListQuirksModeCssClassDefinition.DataRowSelected);
 
       Html.GetAssertedChildElement (tr, "td", 0);
     }
@@ -137,13 +140,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderDataRowSelected ()
     {
-      List.SelectorControlCheckedState.Add (0);
-
       IBocRowRenderer renderer = new BocRowQuirksModeRenderer (
           _bocListQuirksModeCssClassDefinition,
           new BocIndexColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition),
           new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition));
-      renderer.RenderDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _bocColumnRenderers), BusinessObject, 0, 0, 0); //use StubServiceLocator !??
+      renderer.RenderDataRow (
+          new BocListRenderingContext (HttpContext, Html.Writer, List, _bocColumnRenderers),
+          new BocListRowRenderingContext (new BocListRow (0, BusinessObject), 1, true),
+          0); //use StubServiceLocator !??
 
       var document = Html.GetResultDocument();
 

@@ -39,12 +39,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </remarks>
     void RenderEmptyListDataRow (BocListRenderingContext renderingContext);
 
-    /// <summary>Renders a table row containing the data of <paramref name="businessObject"/>. </summary>
+    /// <summary>Renders a table row containing the data of the <see cref="IBusinessObject"/> wrapped inside <paramref name="rowRenderingContext"/>. </summary>
     /// <param name="renderingContext">The <see cref="BocListRenderingContext"/>.</param>
-    /// <param name="businessObject"> The <see cref="IBusinessObject"/> whose data will be rendered. </param>
+    /// <param name="rowRenderingContext"> The <see cref="BocListRowRenderingContext"/> contains all data about the row being rendererd. </param>
     /// <param name="rowIndex"> The row number in the current view. </param>
-    /// <param name="absoluteRowIndex"> The position of <paramref name="businessObject"/> in the list of values. </param>
-    /// <param name="originalRowIndex"> The position of <paramref name="businessObject"/> in the list of values before sorting. </param>
-    void RenderDataRow (BocListRenderingContext renderingContext, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex);
+    void RenderDataRow (BocListRenderingContext renderingContext, BocListRowRenderingContext rowRenderingContext, int rowIndex);
   }
 }

@@ -20,6 +20,7 @@ using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering;
@@ -51,10 +52,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
                          new BocListCustomColumnTuple (firstObject, 0, new WebControl (HtmlTextWriterTag.Div)),
                          new BocListCustomColumnTuple (secondObject, 1, new HtmlGenericControl ("div"))
                      };
-      var customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>
-                          {
-                              { Column, triplets }
-                          };
+      var customColumns =
+          new ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> (
+              new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>
+              {
+                  { Column, triplets }
+              });
       List.Stub (mock => mock.CustomColumns).Return (customColumns);
 
       _bocListQuirksModeCssClassDefinition = new BocListQuirksModeCssClassDefinition();

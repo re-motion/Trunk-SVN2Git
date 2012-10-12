@@ -263,7 +263,6 @@
     <Compile Include="IEnumerationValueInfo.cs" />
     <Compile Include="IListInfo.cs" />
     <Compile Include="ISearchAvailableObjectsArguments.cs" />
-    <Compile Include="ListUtility.cs" />
     <Compile Include="ObjectBindingAttribute.cs" />
     <Compile Include="ItemTypeAttribute.cs" />
     <Compile Include="ListInfo.cs" />

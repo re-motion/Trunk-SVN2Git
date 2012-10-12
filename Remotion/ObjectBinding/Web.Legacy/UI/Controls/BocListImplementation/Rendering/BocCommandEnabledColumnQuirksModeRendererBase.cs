@@ -97,7 +97,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         if (businessObjectWithIdentity != null)
           objectID = businessObjectWithIdentity.UniqueIdentifier;
 
-        string argument = renderingContext.Control.GetListItemCommandArgument (renderingContext.ColumnIndex, originalRowIndex);
+        string argument = 
+            renderingContext.Control.GetListItemCommandArgument (renderingContext.ColumnIndex, new BocListRow (originalRowIndex, businessObject));
         string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
         string onClick = renderingContext.Control.HasClientScript ? c_onCommandClickScript : string.Empty;
         if (command.Type == CommandType.None)

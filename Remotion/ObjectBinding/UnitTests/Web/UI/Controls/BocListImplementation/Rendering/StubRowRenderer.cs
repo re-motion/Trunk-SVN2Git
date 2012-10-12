@@ -42,10 +42,11 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       renderingContext.Writer.RenderBeginTag ("tr");
       renderingContext.Writer.RenderEndTag();
     }
-
-    public void RenderDataRow (BocListRenderingContext renderingContext, IBusinessObject businessObject, int rowIndex, int absoluteRowIndex, int originalRowIndex)
+    
+    public void RenderDataRow (BocListRenderingContext renderingContext, BocListRowRenderingContext rowRenderingContext, int rowIndex)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      ArgumentUtility.CheckNotNull ("rowRenderingContext", rowRenderingContext);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, "dataStub");
       renderingContext.Writer.RenderBeginTag ("tr");
       renderingContext.Writer.RenderEndTag();

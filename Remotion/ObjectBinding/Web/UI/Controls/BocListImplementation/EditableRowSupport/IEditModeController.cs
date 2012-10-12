@@ -24,14 +24,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 {
   public interface IEditModeController : IControl
   {
-    Controls.BocList OwnerControl { get; }
     bool IsRowEditModeActive { get; }
     bool IsListEditModeActive { get; }
     int? EditableRowIndex { get; }
-    bool ShowEditModeRequiredMarkers { get; set; }
-    bool ShowEditModeValidationMarkers { get; set; }
-    bool DisableEditModeValidationMessages { get; set; }
-    bool EnableEditModeValidator { get; set; }
     void SwitchRowIntoEditMode (int index, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
     void SwitchListIntoEditMode (BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
     bool AddAndEditRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);

@@ -31,7 +31,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   [TestFixture]
   public class EditableRowTest : BocTest
   {
-    private Remotion.ObjectBinding.Web.UI.Controls.BocList _bocList;
+    private FakeEditModeHost _editModeHost;
+
     private EditableRow _editableRow;
 
     private IBusinessObject _value01;
@@ -62,11 +63,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       base.SetUp();
 
-      _bocList = new Remotion.ObjectBinding.Web.UI.Controls.BocList();
-      _bocList.ID = "BocList";
-      NamingContainer.Controls.Add (_bocList);
+      _editModeHost = new FakeEditModeHost();
+      _editModeHost.ID = "BocList";
+      _editModeHost.RowIDProvider = new FakeRowIDProvider();
+      _editModeHost.EditModeControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
+      _editModeHost.EditModeDataSourceFactory = new EditableRowDataSourceFactory();
 
-      _editableRow = new EditableRow (_bocList);
+      _editableRow = new EditableRow (_editModeHost);
       _editableRow.ID = "Row";
       NamingContainer.Controls.Add (_editableRow);
 
@@ -107,7 +110,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void Initialize ()
     {
-      Assert.AreSame (_bocList, _editableRow.OwnerControl);
       Assert.IsNull (_editableRow.DataSourceFactory);
       Assert.IsNull (_editableRow.ControlFactory);
     }

@@ -27,8 +27,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// </summary>
   public class BocSelectorColumnQuirksModeRenderer : IBocSelectorColumnRenderer
   {
-    private const int c_titleRowIndex = -1;
-    protected const string c_whiteSpace = "&nbsp;";
+    private const string c_whiteSpace = "&nbsp;";
 
     private readonly BocListQuirksModeCssClassDefinition _cssClasses;
 
@@ -44,18 +43,26 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       get { return _cssClasses; }
     }
 
-    public void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell)
+    public void RenderDataCell (
+        BocListRenderingContext renderingContext,
+        BocListRowRenderingContext rowRenderingContext,
+        string selectorControlID,
+        string cssClassTableCell)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      ArgumentUtility.CheckNotNull ("cssClassTableCell", cssClassTableCell);
       ArgumentUtility.CheckNotNullOrEmpty ("selectorControlID", selectorControlID);
       ArgumentUtility.CheckNotNullOrEmpty ("cssClassTableCell", cssClassTableCell);
 
       if (!renderingContext.Control.IsSelectionEnabled)
         return;
 
+      var selectorControlValue = renderingContext.Control.GetSelectorControlValue (rowRenderingContext.Row);
+      var isChecked = rowRenderingContext.IsSelected;
+
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderSelectorControl (renderingContext, selectorControlID, originalRowIndex.ToString(), isChecked, false);
+      RenderSelectorControl (renderingContext, selectorControlID, selectorControlValue, isChecked, false);
       renderingContext.Writer.RenderEndTag();
     }
 
@@ -71,29 +78,17 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (renderingContext.Control.Selection == RowSelection.Multiple)
       {
         string selectorControlName = renderingContext.Control.GetSelectAllControlClientID ();
-        bool isChecked = (renderingContext.Control.SelectorControlCheckedState.Contains (c_titleRowIndex));
-        RenderSelectorControl (renderingContext, selectorControlName, c_titleRowIndex.ToString (), isChecked, true);
+        RenderSelectorControl (renderingContext, selectorControlName, null, false, true);
       }
       else
         renderingContext.Writer.Write (c_whiteSpace);
       renderingContext.Writer.RenderEndTag ();
     }
 
-    /// <summary> Renders a check-box or a radio-button used for row selection. </summary>
-    /// <param name="renderingContext">The <see cref="BocListRenderingContext"/>.</param>
-    /// <param name="id"> The <see cref="string"/> rendered into the <c>id</c> and <c>name</c> attributes. </param>
-    /// <param name="value"> The value of the check-box or radio-button. </param>
-    /// <param name="isChecked"> 
-    ///   <see langword="true"/> if the check-box or radio-button is checked. 
-    /// </param>
-    /// <param name="isSelectAllSelectorControl"> 
-    ///   <see langword="true"/> if the rendered check-box or radio-button is in the title row.
-    /// </param>
     private void RenderSelectorControl (BocListRenderingContext renderingContext, string id, string value, bool isChecked, bool isSelectAllSelectorControl)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
-      ArgumentUtility.CheckNotNullOrEmpty ("value", value);
 
       if (renderingContext.Control.Selection == RowSelection.SingleRadioButton)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
@@ -107,12 +102,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (renderingContext.Control.EditModeController.IsRowEditModeActive)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
 
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
-
       if (isSelectAllSelectorControl)
+      {
         AddSelectAllSelectorAttributes (renderingContext);
+      }
       else
+      {
+        renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Value, value);
         AddRowSelectorAttributes (renderingContext);
+      }
 
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Input);
       renderingContext.Writer.RenderEndTag ();
@@ -146,7 +144,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         string script = "BocList_OnSelectAllSelectorControlClick ("
                         + "document.getElementById ('" + renderingContext.Control.ClientID + "'), "
                         + "this , '"
-                        + renderingContext.Control.GetSelectorControlClientId (null) + "', "
+                        + renderingContext.Control.GetSelectorControlClientID (null) + "', "
                         + count + ", "
                         + "document.getElementById ('" + renderingContext.Control.ListMenu.ClientID + "'));";
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);

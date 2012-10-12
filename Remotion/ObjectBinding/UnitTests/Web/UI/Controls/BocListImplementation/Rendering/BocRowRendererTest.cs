@@ -123,7 +123,10 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
           _bocListCssClassDefinition,
           new BocIndexColumnRenderer (_bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition));
-      renderer.RenderDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers), BusinessObject, 0, 0, 0);
+      renderer.RenderDataRow (
+          new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers),
+          new BocListRowRenderingContext (new BocListRow (0, BusinessObject), 1, false),
+          0);
       
       var document = Html.GetResultDocument();
 
@@ -136,14 +139,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderDataRowSelected ()
     {
-      List.SelectorControlCheckedState.Add (0);
-
       IBocRowRenderer renderer = new BocRowRenderer (
           _bocListCssClassDefinition,
           new BocIndexColumnRenderer (_bocListCssClassDefinition),
           new BocSelectorColumnRenderer (_bocListCssClassDefinition));
-      renderer.RenderDataRow (new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers), BusinessObject, 0, 0, 0);
-      
+      renderer.RenderDataRow (
+          new BocListRenderingContext (HttpContext, Html.Writer, List, _columnRenderers),
+          new BocListRowRenderingContext (new BocListRow (0, BusinessObject), 1, true),
+          0);
+
       var document = Html.GetResultDocument();
 
       var tr = Html.GetAssertedChildElement (document, "tr", 0);

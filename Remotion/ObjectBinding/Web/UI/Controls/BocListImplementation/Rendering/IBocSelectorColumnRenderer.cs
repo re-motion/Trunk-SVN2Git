@@ -31,14 +31,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     void RenderTitleCell (BocListRenderingContext renderingContext);
 
     /// <summary>
-    /// Renders a cell containing the selector control specified by <see cref="IBocList.Selection"/> for the row
-    /// identified by <paramref name="originalRowIndex"/>
+    /// Renders a cell containing the selector control for the current data row.
     /// </summary>
     /// <param name="renderingContext">The <see cref="BocListRenderingContext"/>.</param>
-    /// <param name="originalRowIndex">The absollute index of the row in the original (unsorted) collection.</param>
+    /// <param name="rowRenderingContext">The <see cref="BocListRowRenderingContext"/> for the current data row.</param>
     /// <param name="selectorControlID">The ID to apply to the selector control.</param>
-    /// <param name="isChecked">Indicates whether the row is selected.</param>
     /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
-    void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, string selectorControlID, bool isChecked, string cssClassTableCell);
+    void RenderDataCell (BocListRenderingContext renderingContext, BocListRowRenderingContext rowRenderingContext, string selectorControlID, string cssClassTableCell);
   }
 }

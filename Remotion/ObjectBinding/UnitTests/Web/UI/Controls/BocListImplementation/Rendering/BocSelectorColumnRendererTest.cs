@@ -53,18 +53,23 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var input = Html.GetAssertedChildElement (th, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
-      Html.AssertAttribute (input, "id", List.GetSelectAllControlClientID ());
       Html.AssertAttribute (input, "name", List.GetSelectAllControlClientID ());
-      Html.AssertAttribute (input, "value", "-1");
+      Html.AssertNoAttribute (input, "value");
       Html.AssertAttribute (input, "alt", "Select all rows.");
     }
 
     [Test]
     public void RenderDataCellForMultiSelect ()
     {
+      var row = new BocListRow (1, BusinessObject);
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
+      List.Stub (mock => mock.GetSelectorControlValue (row)).Return ("row1");
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
-      renderer.RenderDataCell (_bocListRenderingContext, 0, "checkboxControl", false, "bocListTableCell");
+      renderer.RenderDataCell (
+          _bocListRenderingContext,
+          new BocListRowRenderingContext (row, 0, false),
+          "checkboxControl",
+          "bocListTableCell");
 
       var document = Html.GetResultDocument();
 
@@ -75,7 +80,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "id", "checkboxControl");
       Html.AssertAttribute (input, "name", "checkboxControl");
-      Html.AssertAttribute (input, "value", "0");
+      Html.AssertAttribute (input, "value", "row1");
       Html.AssertAttribute (input, "alt", "Select this row.");
     }
 
@@ -97,10 +102,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void RenderDataCellForSingleSelect ()
     {
+      var row = new BocListRow (1, BusinessObject);
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
+      List.Stub (mock => mock.GetSelectorControlValue (row)).Return ("row1");
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnRenderer (_bocListCssClassDefinition);
-      renderer.RenderDataCell (_bocListRenderingContext, 0, "radioControl", false, "bocListTableCell");
-
+      renderer.RenderDataCell (
+          _bocListRenderingContext,
+          new BocListRowRenderingContext (row, 0, false),
+          "radioControl",
+          "bocListTableCell");
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -110,7 +120,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Html.AssertAttribute (input, "type", "radio");
       Html.AssertAttribute (input, "id", "radioControl");
       Html.AssertAttribute (input, "name", "radioControl");
-      Html.AssertAttribute (input, "value", "0");
+      Html.AssertAttribute (input, "value", "row1");
       Html.AssertAttribute (input, "alt", "Select this row.");
     }
   }

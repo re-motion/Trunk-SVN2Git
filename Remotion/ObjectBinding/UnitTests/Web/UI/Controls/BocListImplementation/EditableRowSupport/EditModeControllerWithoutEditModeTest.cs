@@ -27,7 +27,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void Initialize ()
     {
-      Assert.AreSame (BocList, Controller.OwnerControl);
       Assert.IsFalse (Controller.IsRowEditModeActive);
       Assert.IsFalse (Controller.IsListEditModeActive);
     }
@@ -117,7 +116,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     [Test]
     public void EnsureEditModeRestoredWithValueNull ()
     {
-      Controller.OwnerControl.LoadUnboundValue (null, false);    
+      EditModeHost.Value = null;
    
       Assert.IsFalse (Controller.IsRowEditModeActive);
 

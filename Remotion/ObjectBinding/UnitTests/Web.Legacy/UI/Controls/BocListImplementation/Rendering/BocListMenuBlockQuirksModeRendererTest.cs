@@ -93,8 +93,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderWithListMenu ()
     {
-      var menuItemCollection = new WebMenuItemCollection (List);
-      List.Stub (mock => mock.ListMenuItems).Return (menuItemCollection);
       List.Stub (mock => mock.HasListMenu).Return (true);
 
       Unit menuBlockOffset = new Unit (3, UnitType.Pixel);

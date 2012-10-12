@@ -55,17 +55,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       var input = Html.GetAssertedChildElement (th, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "name", List.GetSelectAllControlClientID());
-      Html.AssertAttribute (input, "value", "-1");
+      Html.AssertNoAttribute (input, "value");
       Html.AssertAttribute (input, "alt", "Select all rows.");
     }
 
     [Test]
     public void RenderDataCellForMultiSelect ()
     {
+      var row = new BocListRow (1, BusinessObject);
       List.Stub (mock => mock.Selection).Return (RowSelection.Multiple);
+      List.Stub (mock => mock.GetSelectorControlValue (row)).Return ("row1");
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, "checkboxControl", false, "bocListTableCell");
-
+      renderer.RenderDataCell (
+          new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]),
+          new BocListRowRenderingContext (row, 0, false),
+          "checkboxControl",
+          "bocListTableCell");
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -74,7 +79,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
       Html.AssertAttribute (input, "name", "checkboxControl");
-      Html.AssertAttribute (input, "value", "0");
+      Html.AssertAttribute (input, "value", "row1");
       Html.AssertAttribute (input, "alt", "Select this row.");
     }
 
@@ -96,10 +101,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
     [Test]
     public void RenderDataCellForSingleSelect ()
     {
+      var row = new BocListRow (1, BusinessObject);
       List.Stub (mock => mock.Selection).Return (RowSelection.SingleRadioButton);
+      List.Stub (mock => mock.GetSelectorControlValue (row)).Return ("row1");
       IBocSelectorColumnRenderer renderer = new BocSelectorColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, "radioControl", false, "bocListTableCell");
-
+      renderer.RenderDataCell (
+          new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]),
+          new BocListRowRenderingContext (row, 0, false),
+          "radioControl",
+          "bocListTableCell");
       var document = Html.GetResultDocument();
 
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -108,7 +118,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "radio");
       Html.AssertAttribute (input, "name", "radioControl");
-      Html.AssertAttribute (input, "value", "0");
+      Html.AssertAttribute (input, "value", "row1");
       Html.AssertAttribute (input, "alt", "Select this row.");
     }
   }

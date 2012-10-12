@@ -113,18 +113,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderEndTag();
     }
 
-    public void RenderDataRow (
-        BocListRenderingContext renderingContext,
-        IBusinessObject businessObject,
-        int rowIndex,
-        int absoluteRowIndex,
-        int originalRowIndex)
+    public void RenderDataRow (BocListRenderingContext renderingContext, BocListRowRenderingContext rowRenderingContext, int rowIndex)
     {
-      string selectorControlID = renderingContext.Control.GetSelectorControlClientId (rowIndex);
-      bool isChecked = (renderingContext.Control.SelectorControlCheckedState.Contains (originalRowIndex));
+      ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
+      ArgumentUtility.CheckNotNull ("rowRenderingContext", rowRenderingContext);
+
+      var absoluteRowIndex = rowRenderingContext.SortedIndex;
+      var originalRowIndex = rowRenderingContext.Row.Index;
+      var businessObject = rowRenderingContext.Row.BusinessObject;
+
+      string selectorControlID = renderingContext.Control.GetSelectorControlClientID (rowIndex);
+      bool isChecked = rowRenderingContext.IsSelected;
       bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
-      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject, true, isOddRow);
+      var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (
+          originalRowIndex,
+          businessObject,
+          true,
+          isOddRow);
       renderingContext.Control.OnDataRowRendering (dataRowRenderEventArgs);
 
       string cssClassTableRow = GetCssClassTableRow (renderingContext, isChecked, dataRowRenderEventArgs);
@@ -134,7 +140,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
       GetIndexColumnRenderer().RenderDataCell (renderingContext, originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
-      GetSelectorColumnRenderer().RenderDataCell (renderingContext, originalRowIndex, selectorControlID, isChecked, cssClassTableCell);
+      GetSelectorColumnRenderer().RenderDataCell (renderingContext, rowRenderingContext, selectorControlID, cssClassTableCell);
 
       RenderDataCells (renderingContext, rowIndex, dataRowRenderEventArgs);
 

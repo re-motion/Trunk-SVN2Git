@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.ObjectModel;
 using System.Web.UI;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Rendering;
@@ -123,11 +124,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
     private void InitializeRowMenus ()
     {
-      BocListRowMenuTuple[] rowMenus = new[]
-                                       {
-                                           new BocListRowMenuTuple (BusinessObject, 0, Menu),
-                                           new BocListRowMenuTuple (BusinessObject, 1, Menu)
-                                       };
+      var rowMenus = new ReadOnlyCollection<BocListRowMenuTuple> (
+          new[]
+          {
+              new BocListRowMenuTuple (BusinessObject, 0, Menu),
+              new BocListRowMenuTuple (BusinessObject, 1, Menu)
+          });
       List.Stub (mock => mock.RowMenus).Return (rowMenus);
     }
   }

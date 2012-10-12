@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 using Remotion.Development.Web.UnitTesting.UI.Controls;
@@ -32,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     private StringCollection _actualEvents;
 
-    private Remotion.ObjectBinding.Web.UI.Controls.BocList _bocList;
+    private FakeEditModeHost _editModeHost;
     private EditModeController _controller;
     private ControlInvoker _controllerInvoker;
 
@@ -87,23 +88,37 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _columns[0] = _stringValueSimpleColumn;
       _columns[1] = _int32ValueSimpleColumn;
 
-      _bocList = new Remotion.ObjectBinding.Web.UI.Controls.BocList();
-      _bocList.ID = "BocList";
-      Page.Controls.Add (_bocList);
-      NamingContainer.Controls.Add (_bocList);
+      _editModeHost = new FakeEditModeHost();
+      _editModeHost.ID = "BocList";
 
-      _controller = new EditModeController (_bocList);
+      _controller = new EditModeController (_editModeHost);
       _controller.ID = "Controller";
       NamingContainer.Controls.Add (_controller);
 
       _controllerInvoker = new ControlInvoker (_controller);
 
-      _bocList.EditableRowChangesCanceled += Boclist_EditableRowChangesCanceled;
-      _bocList.EditableRowChangesCanceling += Boclist_EditableRowChangesCanceling;
-      _bocList.EditableRowChangesSaved += Boclist_EditableRowChangesSaved;
-      _bocList.EditableRowChangesSaving += Boclist_EditableRowChangesSaving;
-
-      _bocList.LoadUnboundValue (_values, false);
+      _editModeHost.NotifyOnEditableRowChangesCanceled = (i, o) => _actualEvents.Add (FormatChangesCanceledEventMessage (i, o));
+      _editModeHost.NotifyOnEditableRowChangesCanceling = (i, o) => _actualEvents.Add (FormatChangesCancelingEventMessage (i, o));
+      _editModeHost.NotifyOnEditableRowChangesSaved = (i, o) => _actualEvents.Add (FormatChangesSavedEventMessage (i, o));
+      _editModeHost.NotifyOnEditableRowChangesSaving = (i, o) => _actualEvents.Add (FormatChangesSavingEventMessage (i, o));
+      _editModeHost.NotifyAddRows =
+          objects =>
+          {
+            var oldLength = _editModeHost.Value.Count;
+            _editModeHost.Value = ((IBusinessObject[]) _editModeHost.Value).Concat (objects).ToArray();
+            return ((IBusinessObject[]) _editModeHost.Value).Select ((o, i) => new BocListRow (i, o)).Skip (oldLength).ToArray();
+          };
+      _editModeHost.NotifyRemoveRows =
+          rows => { _editModeHost.Value = ((IBusinessObject[]) _editModeHost.Value).Except (rows.Select (r => r.BusinessObject)).ToArray(); };
+      _editModeHost.NotifyEndRowEditModeCleanUp = i => _actualEvents.Add (FormatEndRowEditModeCleanUp(i));
+      _editModeHost.NotifyEndListEditModeCleanUp = () => _actualEvents.Add (FormatEndListEditModeCleanUp());
+      _editModeHost.NotifyValidateEditableRows = () => _actualEvents.Add (FormatValidateEditableRows());
+      _editModeHost.Value =_values;
+      _editModeHost.RowIDProvider = new FakeRowIDProvider();
+      _editModeHost.EditModeControlFactory = EditableRowControlFactory.CreateEditableRowControlFactory();
+      _editModeHost.EditModeDataSourceFactory = new EditableRowDataSourceFactory();
+      _editModeHost.EnableEditModeValidator = true;
+      _editModeHost.AreCustomCellsValid = true;
     }
 
     protected StringCollection ActualEvents
@@ -111,9 +126,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       get { return _actualEvents; }
     }
 
-    protected Remotion.ObjectBinding.Web.UI.Controls.BocList BocList
+    protected FakeEditModeHost EditModeHost
     {
-      get { return _bocList; }
+      get { return _editModeHost; }
     }
 
     protected EditModeController Controller
@@ -190,40 +205,33 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       return string.Format ("{0}: {1}, {2}", eventName, index, businessObject.ToString());
     }
 
-    private void Boclist_EditableRowChangesCanceled (object sender, BocListItemEventArgs e)
+    protected string FormatEndRowEditModeCleanUp (int index)
     {
-      _actualEvents.Add (FormatChangesCanceledEventMessage (e.ListIndex, e.BusinessObject));
+      return string.Format ("EndRowEditModeCleanUp ({0})", index);
     }
 
-    private void Boclist_EditableRowChangesCanceling (object sender, BocListEditableRowChangesEventArgs e)
+    protected string FormatEndListEditModeCleanUp ()
     {
-      _actualEvents.Add (FormatChangesCancelingEventMessage (e.ListIndex, e.BusinessObject));
+      return "EndListEditModeCleanUp()";
     }
-
-    private void Boclist_EditableRowChangesSaved (object sender, BocListItemEventArgs e)
+    
+    protected string FormatValidateEditableRows ()
     {
-      _actualEvents.Add (FormatChangesSavedEventMessage (e.ListIndex, e.BusinessObject));
-    }
-
-    private void Boclist_EditableRowChangesSaving (object sender, BocListEditableRowChangesEventArgs e)
-    {
-      _actualEvents.Add (FormatChangesSavingEventMessage (e.ListIndex, e.BusinessObject));
+      return "ValidateEditableRows ()";
     }
 
     protected object CreateControlState (
         object baseControlState,
         bool isListEditModeActive,
         int? editableRowIndex,
-        bool isEditNewRow,
-        EditableRowIDProvider rowIDProvider)
+        bool isEditNewRow)
     {
-      object[] values = new object[5];
+      object[] values = new object[4];
 
       values[0] = baseControlState;
       values[1] = isListEditModeActive;
       values[2] = editableRowIndex;
       values[3] = isEditNewRow;
-      values[4] = rowIDProvider;
 
       return values;
     }

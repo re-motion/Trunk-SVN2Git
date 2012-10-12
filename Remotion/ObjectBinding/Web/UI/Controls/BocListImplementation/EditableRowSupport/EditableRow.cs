@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     // member fields
 
-    private readonly IBocList _ownerControl;
+    private readonly IEditModeHost _editModeHost;
 
     private EditableRowDataSourceFactory _dataSourceFactory;
     private EditableRowControlFactory _controlFactory;
@@ -48,19 +48,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     // construction and disposing
 
-    public EditableRow (IBocList ownerControl)
+    public EditableRow (IEditModeHost editModeHost)
     {
-      ArgumentUtility.CheckNotNull ("ownerControl", ownerControl);
+      ArgumentUtility.CheckNotNull ("editModeHost", editModeHost);
 
-      _ownerControl = ownerControl;
+      _editModeHost = editModeHost;
     }
 
     // methods and properties
-
-    public IBocList OwnerControl
-    {
-      get { return _ownerControl; }
-    }
 
     public EditableRowDataSourceFactory DataSourceFactory
     {
@@ -95,16 +90,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
       if (_dataSourceFactory == null)
       {
-        throw new InvalidOperationException (string.Format (
-                                                 "BocList '{0}': DataSourceFactory has not been set prior to invoking CreateControls().", 
-                                                 _ownerControl.ID));
+        throw new InvalidOperationException (
+            string.Format ("BocList '{0}': DataSourceFactory has not been set prior to invoking CreateControls().", _editModeHost.ID));
       }
 
       if (_controlFactory == null)
       {
-        throw new InvalidOperationException (string.Format (
-                                                 "BocList '{0}': ControlFactory has not been set prior to invoking CreateControls().", 
-                                                 _ownerControl.ID));
+        throw new InvalidOperationException (
+            string.Format ("BocList '{0}': ControlFactory has not been set prior to invoking CreateControls().", _editModeHost.ID));
       }
 
       CreatePlaceHolders (columns);
@@ -169,6 +162,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     public void RemoveControls()
     {
+      ClearChildState();
       Controls.Clear();
       _editControls = null;
       _validatorControls = null;
@@ -436,10 +430,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       writer.AddStyleAttribute ("display", "inline-block");
       writer.RenderBeginTag (HtmlTextWriterTag.Span); // Span Container
 
-      if (OwnerControl.EditModeController.ShowEditModeValidationMarkers)
+      if (_editModeHost.ShowEditModeValidationMarkers)
       {
         bool isCellValid = true;
-        Image validationErrorMarker = _ownerControl.GetValidationErrorMarker();
+        Image validationErrorMarker = _editModeHost.GetValidationErrorMarker();
       
         for (int i = 0; i < validators.Count; i++)
         {
@@ -483,7 +477,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
         if (   ! validator.IsValid 
                && validator.Display == ValidatorDisplay.None
-               && ! OwnerControl.EditModeController.DisableEditModeValidationMessages)
+               && ! _editModeHost.DisableEditModeValidationMessages)
         {
           if (! StringUtility.IsNullOrEmpty (validator.CssClass))
             writer.AddAttribute (HtmlTextWriterAttribute.Class, validator.CssClass);
@@ -508,8 +502,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     private void PreRenderValidators ()
     {
-      var editModeValidator = OwnerControl.Validators.OfType<EditModeValidator>().FirstOrDefault();
-      var disableEditModeValidationMessages = OwnerControl.EditModeController.DisableEditModeValidationMessages;
+      var editModeValidator = _editModeHost.GetEditModeValidator();
+      var disableEditModeValidationMessages = _editModeHost.DisableEditModeValidationMessages;
 
       foreach (var validator in _validatorControls.Controls.Cast<Control>().SelectMany (placeHolder => placeHolder.Controls.Cast<BaseValidator>()))
       {

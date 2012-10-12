@@ -185,11 +185,17 @@
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\Rendering\IBocDateTimeValueRenderer.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRenderer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\IEditModeHost.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\IndexBasedRowIDProvider.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\IRowIDProvider.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\ListUtility.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\NullValueRowIDProvider.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnRendererArrayBuilder.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnRenderingContext1.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocColumnRenderingContext.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListRenderingContext.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Rendering\BocListRowRenderingContext.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCommandColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCompoundColumnRenderer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Rendering\IBocCustomColumnRenderer.cs" />
@@ -203,6 +209,7 @@
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocCustomColumnDefinitionCellValueComparer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocListRowSortExtension.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocSimpleColumnDefinitionCellValueComparer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\UniqueIdentifierBasedRowIDProvider.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\BocAutoCompleteReferenceValueInvalidDisplayNameValidator.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\IBocReferenceValueBase.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\Rendering\BocAutoCompleteReferenceValueRenderingContext.cs" />
@@ -351,9 +358,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditableRowDataSourceFactory.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditableRowIDProvider.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditModeController.cs">
@@ -597,6 +601,7 @@
     <EmbeddedResource Include="Globalization\BocTextValue.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Compile Include="UI\Controls\BocList.EditModeHost.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

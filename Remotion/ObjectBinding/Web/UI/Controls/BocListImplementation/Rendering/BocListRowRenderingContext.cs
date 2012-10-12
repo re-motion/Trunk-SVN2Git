@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -18,31 +18,36 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.Web.UI.Controls
+namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 {
-  public class BocListRow
+  public class BocListRowRenderingContext
   {
-    private readonly int _index;
-    private readonly IBusinessObject _businessObject;
+    private readonly BocListRow _row;
+    private readonly int _sortedIndex;
+    private readonly bool _isSelected;
 
-    public BocListRow (int index, IBusinessObject businessObject)
+    public BocListRowRenderingContext (BocListRow row, int sortedIndex, bool isSelected)
     {
-      if (index < 0)
-        throw new ArgumentOutOfRangeException ("index", index, "Negative indices are not allowed.");
-      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.CheckNotNull ("row", row);
 
-      _index = index;
-      _businessObject = businessObject;
+      _row = row;
+      _sortedIndex = sortedIndex;
+      _isSelected = isSelected;
     }
 
-    public int Index
+    public BocListRow Row
     {
-      get { return _index; }
+      get { return _row; }
     }
 
-    public IBusinessObject BusinessObject
+    public int SortedIndex
     {
-      get { return _businessObject; }
+      get { return _sortedIndex; }
+    }
+
+    public bool IsSelected
+    {
+      get { return _isSelected; }
     }
   }
 }

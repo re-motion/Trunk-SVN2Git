@@ -16,13 +16,15 @@
 // 
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
+using System.Web.UI;
 using System.Web.UI.WebControls;
+using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
-using Remotion.Web.UI.Controls;
+using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
-using Image=System.Web.UI.WebControls.Image;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 {
@@ -125,12 +127,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// <remarks> The <see cref="MenuBlockOffset"/> is applied as a <c>margin</c> attribute. </remarks>
     Unit MenuBlockItemOffset { get; }
 
-    /// <summary> Gets the <see cref="BocMenuItem"/> objects displayed in the <see cref="BocList"/>'s options menu. </summary>
-    WebMenuItemCollection OptionsMenuItems { get; }
-
-    /// <summary> Gets the <see cref="BocMenuItem"/> objects displayed in the <see cref="BocList"/>'s menu area. </summary>
-    WebMenuItemCollection ListMenuItems { get; }
-
     /// <summary> Gets or sets the width reserved for the menu block. </summary>
     Unit MenuBlockWidth { get; }
 
@@ -157,11 +153,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     DropDownList AvailableViewsList { get; }
     IDropDownMenu OptionsMenu { get; }
 
-    System.Collections.Generic.IList<int> SelectorControlCheckedState { get; }
     IEditModeController EditModeController { get; }
-    ArrayList Validators { get; }
-    BocListRowMenuTuple[] RowMenus { get; }
-    System.Collections.Generic.IDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
+    ReadOnlyCollection<IValidator> Validators { get; }
+    ReadOnlyCollection<BocListRowMenuTuple> RowMenus { get; }
+    ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
     bool HasListMenu { get; }
     bool IsClientSideSortingEnabled { get; }
     bool HasOptionsMenu { get; }
@@ -170,9 +165,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     bool IsPagingEnabled { get; }
     bool IsShowSortingOrderEnabled { get; }
     IListMenu ListMenu { get; }
-
-    /// <summary> Builds the validation error marker. </summary>
-    Image GetValidationErrorMarker ();
 
     /// <summary>
     ///   Obtains a reference to a client-side script function that causes, when invoked, a server postback to the form.
@@ -186,19 +178,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     ///   </para>
     /// </remarks>
     /// <param name="columnIndex"> The index of the column for which the post back function should be created. </param>
-    /// <param name="listIndex"> The index of the business object for which the post back function should be created. </param>
+    /// <param name="row"> The <see cref="BocListRow"/> for which the post back function should be created. </param>
     /// <param name="customCellArgument"> 
     ///   The argument to be passed to the <see cref="BocCustomColumnDefinitionCell"/>'s <c>OnClick</c> method.
     ///   Can be <see langword="null"/>.
     /// </param>
     /// <returns></returns>
-    string GetCustomCellPostBackClientEvent (int columnIndex, int listIndex, string customCellArgument);
+    string GetCustomCellPostBackClientEvent (int columnIndex, BocListRow row, string customCellArgument);
+    string GetListItemCommandArgument (int columnIndex, BocListRow row);
+    string GetRowEditCommandArgument (BocListRow row, BocList.RowEditModeCommand command);
     IResourceManager GetResourceManager ();
-    string GetListItemCommandArgument (int columnIndex, int originalRowIndex);
-    BocListRow[] GetRowsToDisplay (out int startAbsoluteIndex);
+    BocListRowRenderingContext[] GetRowsToDisplay ();
     void OnDataRowRendering (BocListDataRowRenderEventArgs args);
     bool AreDataRowsClickSensitive ();
-    string GetSelectorControlClientId (int? absoluteRowIndex);
+    string GetSelectorControlClientID (int? absoluteRowIndex);
+    string GetSelectorControlValue (BocListRow row);
     string GetSelectAllControlClientID ();
     string GetSelectionChangedHandlerScript ();
   }

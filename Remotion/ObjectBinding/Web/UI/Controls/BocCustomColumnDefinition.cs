@@ -312,8 +312,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (renderArguments == null)
         throw new InvalidOperationException ("GetPostBackClientEvent can only be called from DoRender method.");
 
-      return renderArguments.List.GetCustomCellPostBackClientEvent (
-                 renderArguments.ColumnIndex, renderArguments.ListIndex, eventArgument) + renderArguments.OnClick;
+      var postBackClientEvent = renderArguments.List.GetCustomCellPostBackClientEvent (
+          renderArguments.ColumnIndex,
+          new BocListRow (renderArguments.ListIndex, renderArguments.BusinessObject),
+          eventArgument);
+      return postBackClientEvent + renderArguments.OnClick;
     }
 
     internal Control CreateControlInternal (BocCustomCellArguments arguments)

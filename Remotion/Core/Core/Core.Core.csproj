@@ -508,9 +508,6 @@
     <Compile Include="Utilities\EnumUtility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utilities\ListUtility.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Utilities\NameValueCollectionUtility.cs">
       <SubType>Code</SubType>
     </Compile>

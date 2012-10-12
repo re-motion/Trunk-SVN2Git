@@ -50,6 +50,8 @@ function BocList_SelectedRows (selection)
     this.Length = 0;
     this.Rows = new Object();
   };
+  this.SelectAllSelectorControls = null;
+  this.DataRowCount = 0;
 }
 
 function BocList_RowBlock (row, selectorControl)
@@ -72,12 +74,19 @@ function BocList_InitializeGlobals ()
 //  Call this method once for each BocList on the page.
 //  bocList: The BocList to which the row belongs.
 //  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
+//  selectAllSelectorControlName: The name of the select-all selector control
 //  count: The number of data rows in the BocList.
 //  selection: The RowSelection enum value defining the selection mode (disabled/single/multiple)
 //  hasClickSensitiveRows: true if the click event handler is bound to the data rows.
 //  updateListMenuHandler: A function to be invoked when the BocList's selection changes.
-function BocList_InitializeList(bocList, selectorControlPrefix, count, selection, hasClickSensitiveRows, onSelectionChangedHandler)
+function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelectorControlName, count, selection, hasClickSensitiveRows, onSelectionChangedHandler)
 {
+  if (BocList_HasDimensions (bocList))
+  {
+    $(bocList).addClass('hasDimensions');
+    BocList_FixUpScrolling(bocList);
+  }
+
   var selectedRows = new BocList_SelectedRows (selection);
   if (   selectedRows.Selection != _bocList_rowSelectionUndefined
       && selectedRows.Selection != _bocList_rowSelectionDisabled)
@@ -88,6 +97,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
       var selectorControl = document.getElementById (selectorControlID);
       if (selectorControl == null)
         continue;
+      selectedRows.DataRowCount++;
       var row = selectorControl.parentNode.parentNode;
   
       if (hasClickSensitiveRows)
@@ -100,14 +110,11 @@ function BocList_InitializeList(bocList, selectorControlPrefix, count, selection
         selectedRows.Length++;
       }
     }
+
+    selectedRows.SelectAllSelectorControls = $("input[name=" + selectAllSelectorControlName + "]");
+    BocList_SetSelectAllRowsSelectorOnDemand (selectedRows);
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
-
-  if (BocList_HasDimensions (bocList))
-  {
-    $(bocList).addClass('hasDimensions');
-    BocList_FixUpScrolling(bocList);
-  }
 
   onSelectionChangedHandler(bocList);
 }
@@ -206,10 +213,12 @@ function BocList_SelectRow (bocList, rowBlock)
   var selectedRows = _bocList_selectedRows[bocList.id];
   selectedRows.Rows[rowBlock.SelectorControl.id] = rowBlock;
   selectedRows.Length++;
-    
+
   // Select currentRow
-  $(rowBlock.Row).addClass (_bocList_TrClassNameSelected);
+  $ (rowBlock.Row).addClass (_bocList_TrClassNameSelected);
   rowBlock.SelectorControl.checked = true;
+
+  BocList_SetSelectAllRowsSelectorOnDemand (selectedRows);
 }
 
 //  Unselects all rows in a BocList.
@@ -245,6 +254,19 @@ function BocList_UnselectRow (bocList, rowBlock)
   // Unselect currentRow
   $(rowBlock.Row).removeClass(_bocList_TrClassNameSelected);
   rowBlock.SelectorControl.checked = false;
+
+  BocList_ClearSelectAllRowsSelector (selectedRows);
+}
+
+function BocList_SetSelectAllRowsSelectorOnDemand (selectedRows)
+{
+  if (selectedRows.DataRowCount == selectedRows.Length)
+    selectedRows.SelectAllSelectorControls.each (function () { this.checked = true; });
+}
+
+function BocList_ClearSelectAllRowsSelector (selectedRows)
+{
+  selectedRows.SelectAllSelectorControls.each(function () { this.checked = false; });
 }
 
 //  Event handler for the selection selectorControl in the title row.

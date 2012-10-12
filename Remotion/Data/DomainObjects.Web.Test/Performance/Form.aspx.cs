@@ -29,7 +29,7 @@ namespace Remotion.Data.DomainObjects.Web.Test.Performance
     {
       base.OnLoad (e);
       var items = ((PerformanceFunction) CurrentFunction).Items;
-      ItemList.LoadUnboundValue (items, !IsPostBack);
+      ItemList.LoadUnboundValue (items, IsPostBack);
     }
 
     protected override void OnPreRender (EventArgs e)

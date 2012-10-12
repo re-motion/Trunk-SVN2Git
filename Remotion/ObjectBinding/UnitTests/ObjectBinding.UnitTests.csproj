@@ -88,6 +88,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Web\UI\Controls\BocListImplementation\ListUtilityTest.cs" />
     <Compile Include="Web.Legacy\BocLegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseImplementationTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseIntegrationTest.cs" />
@@ -358,6 +359,10 @@
     <Compile Include="Web\Domain\TypeWithNumber.cs" />
     <Compile Include="Web\Domain\TypeWithReference.cs" />
     <Compile Include="Web\Domain\TypeWithString.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\FakeEditModeHost.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\FakeRowIDProvider.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\IndexBasedRowIDProviderTest.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\NullValueRowIDProviderTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Sorting\CellValueComparerTestBase.cs" />
     <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocAutoCompleteReferenceValueTest.cs" />
@@ -396,6 +401,7 @@
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\IsColumnVisible_BocColumnRendererArrayBuilderTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\NullColumnRendererTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\Rendering\StubValueColumnDefinition.cs" />
+    <Compile Include="Web\UI\Controls\BocListImplementation\UniqueIdentifierBasedRowIDProviderTest.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInListEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\BocListManageRowsInUnboundListTest.cs" />
     <Compile Include="Web\UI\Controls\BocListMock.cs" />
@@ -423,7 +429,6 @@
     <Compile Include="Web\UI\Controls\BocTreeViewTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditableRowControlFactoryTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditableRowDataSourceFactoryTest.cs" />
-    <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditableRowIDProviderTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditableRowTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditModeControllerInListEditModeTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\EditableRowSupport\EditModeControllerInRowEditModeTest.cs" />

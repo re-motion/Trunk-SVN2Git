@@ -29,8 +29,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
   /// </summary>
   public class BocRowEditModeColumnQuirksModeRenderer : BocColumnQuirksModeRendererBase<BocRowEditModeColumnDefinition>, IBocRowEditModeColumnRenderer
   {
-    private const string c_eventRowEditModePrefix = "RowEditMode=";
-
     /// <summary>
     /// Contructs a renderer bound to a <see cref="BocList"/> to render, an <see cref="HtmlTextWriter"/> to render to, and a
     /// <see cref="BocRowEditModeColumnDefinition"/> column for which to render cells.
@@ -65,36 +63,42 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       bool isEditableRow = dataRowRenderEventArgs.IsEditableRow;
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
+      var businessObject = dataRowRenderEventArgs.BusinessObject;
       bool isEditedRow = renderingContext.Control.EditModeController.EditableRowIndex.HasValue
                          && renderingContext.Control.EditModeController.EditableRowIndex == dataRowRenderEventArgs.ListIndex;
 
       if (isEditedRow)
-        RenderEditedRowCellContents (renderingContext, originalRowIndex);
+        RenderEditedRowCellContents (renderingContext, originalRowIndex, businessObject);
+      else if (isEditableRow)
+        RenderEditableRowCellContents (renderingContext, originalRowIndex, businessObject);
       else
-      {
-        if (isEditableRow)
-          RenderEditableRowCellContents (renderingContext, originalRowIndex);
-        else
-          renderingContext.Writer.Write (c_whiteSpace);
-      }
+        renderingContext.Writer.Write (c_whiteSpace);
     }
 
-    private void RenderEditableRowCellContents (BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext, int originalRowIndex)
+    private void RenderEditableRowCellContents (
+        BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext,
+        int originalRowIndex,
+        IBusinessObject businessObject)
     {
       RenderCommandControl (
           renderingContext, 
           originalRowIndex,
+          businessObject,
           BocList.RowEditModeCommand.Edit,
           BocList.ResourceIdentifier.RowEditModeEditAlternateText,
           renderingContext.ColumnDefinition.EditIcon,
           renderingContext.ColumnDefinition.EditText);
     }
 
-    private void RenderEditedRowCellContents (BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext, int originalRowIndex)
+    private void RenderEditedRowCellContents (
+        BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext,
+        int originalRowIndex,
+        IBusinessObject businessObject)
     {
       RenderCommandControl (
           renderingContext,
           originalRowIndex,
+          businessObject,
           BocList.RowEditModeCommand.Save,
           BocList.ResourceIdentifier.RowEditModeSaveAlternateText,
           renderingContext.ColumnDefinition.SaveIcon,
@@ -105,6 +109,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       RenderCommandControl (
           renderingContext,
           originalRowIndex,
+          businessObject,
           BocList.RowEditModeCommand.Cancel,
           BocList.ResourceIdentifier.RowEditModeCancelAlternateText,
           renderingContext.ColumnDefinition.CancelIcon,
@@ -116,6 +121,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     /// </summary>
     /// <param name="renderingContext">The <see cref="BocColumnRenderingContext{BocColumnDefinition}"/>.</param>
     /// <param name="originalRowIndex">The zero-based index of the current row in <see cref="IBocList"/></param>
+    /// <param name="businessObject">The <see cref="IBusinessObject"/> associated with the current row.</param>
     /// <param name="command">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCommand"/> that is issued 
     /// when the control is clicked. Must not be <see langword="null" />.</param>
     /// <param name="alternateText">The <see cref="Remotion.ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier"/> 
@@ -126,18 +132,19 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     protected virtual void RenderCommandControl (
         BocColumnRenderingContext<BocRowEditModeColumnDefinition> renderingContext, 
         int originalRowIndex,
+        IBusinessObject businessObject,
         BocList.RowEditModeCommand command,
         BocList.ResourceIdentifier alternateText,
         IconInfo icon,
         string text)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
-      ArgumentUtility.CheckNotNull ("command", command);
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNull ("icon", icon);
 
       if (!renderingContext.Control.IsReadOnly && renderingContext.Control.HasClientScript)
       {
-        string argument = c_eventRowEditModePrefix + originalRowIndex + "," + command;
+        string argument = renderingContext.Control.GetRowEditCommandArgument (new BocListRow(originalRowIndex, businessObject), command);
         string postBackEvent = renderingContext.Control.Page.ClientScript.GetPostBackEventReference (renderingContext.Control, argument) + ";";
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Href, "#");
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, postBackEvent + c_onCommandClickScript);

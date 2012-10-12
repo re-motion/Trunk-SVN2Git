@@ -151,19 +151,15 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tbody);
 
       if (!renderingContext.Control.HasValue && renderingContext.Control.ShowEmptyListMessage)
+      {
         RowRenderer.RenderEmptyListDataRow (renderingContext);
+      }
       else
       {
-        int firstRow;
-        BocListRow[] rows = renderingContext.Control.GetRowsToDisplay (out firstRow);
-
-        for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
-             idxRelativeRows < rows.Length;
-             idxAbsoluteRows++, idxRelativeRows++)
+        var rowRenderingContexts = renderingContext.Control.GetRowsToDisplay();
+        for (int index = 0; index < rowRenderingContexts.Length; index++)
         {
-          BocListRow row = rows[idxRelativeRows];
-          int originalRowIndex = row.Index;
-          RowRenderer.RenderDataRow (renderingContext, row.BusinessObject, idxRelativeRows, idxAbsoluteRows, originalRowIndex);
+          RowRenderer.RenderDataRow (renderingContext, rowRenderingContexts[index], index);
         }
       }
 

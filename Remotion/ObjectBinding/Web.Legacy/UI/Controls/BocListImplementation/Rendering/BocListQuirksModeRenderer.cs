@@ -295,11 +295,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive &&
                                      renderingContext.Control.AreDataRowsClickSensitive();
 
-        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', {2}, {3}, {4}, {5});";
+        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', '{2}', {3}, {4}, {5}, {6});";
         string script = string.Format (
             scriptTemplate,
             renderingContext.Control.ClientID,
-            renderingContext.Control.GetSelectorControlClientId (null),
+            renderingContext.Control.GetSelectorControlClientID (null),
+            renderingContext.Control.GetSelectAllControlClientID(),
             count,
             (int) renderingContext.Control.Selection,
             hasClickSensitiveRows ? "true" : "false",

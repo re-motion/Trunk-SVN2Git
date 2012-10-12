@@ -15,7 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Web.UI;
 using NUnit.Framework;
 using Remotion.ObjectBinding.UnitTests.Web.Domain;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -133,7 +134,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       List.EditModeController.Stub (mock => mock.GetEditableRow (EventArgs.ListIndex)).Return (editableRow);
 
-      List.Stub (mock => mock.Validators).Return (new ArrayList());
+      List.Stub (mock => mock.Validators).Return (new List<IValidator>().AsReadOnly());
 
       IBocColumnRenderer renderer = new BocSimpleColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory> (), _bocListCssClassDefinition);
       renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
