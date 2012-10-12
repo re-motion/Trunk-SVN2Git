@@ -2878,13 +2878,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("businessObjects", businessObjects);
 
-      var oldValue = Value;
+      var newValue = ListUtility.AddRange (Value, businessObjects, Property, false, true);
 
-      var newValue = ListUtility.AddRange (oldValue, businessObjects, Property, false, true);
-
-      if (oldValue == null || newValue == null)
+      if (newValue == null)
       {
-        Value = newValue;
+        Value = null;
         return new BocListRow[0];
       }
       else
@@ -2892,31 +2890,38 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         SetValue (newValue);
         IsDirty = true;
 
-        var rows = ListUtility.IndicesOf (newValue, businessObjects).OrderBy (r => r.Index).ToArray();
-        foreach (var row in rows)
+        var rows = ListUtility.IndicesOf (newValue, businessObjects).ToArray();
+        foreach (var row in rows.OrderBy (r => r.Index))
           RowIDProvider.AddRow (row);
 
         return rows;
       }
     }
 
-    private void RemoveRowsImplementation (BocListRow[] bocListRows)
+    private BocListRow[] RemoveRowsImplementation (IBusinessObject[] businessObjects)
     {
-      ArgumentUtility.CheckNotNull ("bocListRows", bocListRows);
+      ArgumentUtility.CheckNotNull ("businessObjects", businessObjects);
 
-      var oldValue = Value;
+      if (Value == null)
+        return new BocListRow[0];
 
-      var newValue = ListUtility.Remove (Value, bocListRows.Select (r => r.BusinessObject).ToArray(), Property, false);
+      var rows = ListUtility.IndicesOf (Value, businessObjects).ToArray();
+      var newValue = ListUtility.Remove (Value, rows.Select (r => r.BusinessObject).ToArray(), Property, false);
 
-      if (oldValue == null || newValue == null)
-        Value = newValue;
+      if (newValue == null)
+      {
+        Value = null;
+        return rows;
+      }
       else
       {
         SetValue (newValue);
         IsDirty = true;
 
-        foreach (var row in bocListRows.OrderByDescending (r => r.Index))
+        foreach (var row in rows.OrderByDescending (r => r.Index))
           RowIDProvider.RemoveRow (row);
+
+        return rows;
       }
     }
 

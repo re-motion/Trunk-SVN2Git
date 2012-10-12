@@ -109,7 +109,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
             return ((IBusinessObject[]) _editModeHost.Value).Select ((o, i) => new BocListRow (i, o)).Skip (oldLength).ToArray();
           };
       _editModeHost.NotifyRemoveRows =
-          rows => { _editModeHost.Value = ((IBusinessObject[]) _editModeHost.Value).Except (rows.Select (r => r.BusinessObject)).ToArray(); };
+          objects =>
+          {
+            var removedRows = ((IBusinessObject[]) _editModeHost.Value)
+                .Select ((o, i) => new BocListRow (i, o))
+                .Where (r => objects.Contains (r.BusinessObject))
+                .ToArray();
+            _editModeHost.Value = ((IBusinessObject[]) _editModeHost.Value).Except (objects).ToArray();
+            return removedRows;
+          };
       _editModeHost.NotifyEndRowEditModeCleanUp = i => _actualEvents.Add (FormatEndRowEditModeCleanUp(i));
       _editModeHost.NotifyEndListEditModeCleanUp = () => _actualEvents.Add (FormatEndListEditModeCleanUp());
       _editModeHost.NotifyValidateEditableRows = () => _actualEvents.Add (FormatValidateEditableRows());

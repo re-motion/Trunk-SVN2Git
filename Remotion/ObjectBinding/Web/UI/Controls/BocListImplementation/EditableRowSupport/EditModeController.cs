@@ -190,7 +190,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
           if (_isEditNewRow)
           {
-            _editModeHost.RemoveRows (new[] { new BocListRow (index, value) });
+            _editModeHost.RemoveRows (new[] { value });
             OnEditableRowChangesCanceled (-1, value);
           }
           else
@@ -336,7 +336,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     }
 
 
-    public void AddRows (IBusinessObject[] businessObjects, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
+    public BocListRow[] AddRows (IBusinessObject[] businessObjects, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("businessObjects", businessObjects);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
@@ -355,6 +355,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           }
         }
       }
+
+      return bocListRows;
     }
 
     public int AddRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
@@ -362,18 +364,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
-      AddRows (new[] { businessObject }, oldColumns, columns);
+      var bocListRows = AddRows (new[] { businessObject }, oldColumns, columns);
 
-      if (_editModeHost.Value == null)
-        return -1;
-
-      for (int i = _editModeHost.Value.Count - 1; i >= 0; i--)
-      {
-        if (businessObject.Equals (_editModeHost.Value[i]))
-          return i;
-      }
-
-      return -1;
+      if (bocListRows.Length == 0)
+        return - 1;
+      return bocListRows.Single().Index;
     }
 
     private EditableRow AddRowToDataStructure (BocListRow bocListRow, BocColumnDefinition[] columns)
@@ -389,7 +384,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("businessObjects", businessObjects);
 
-      var bocListRows = ListUtility.IndicesOf (_editModeHost.Value, businessObjects).ToArray();
+      var bocListRows = _editModeHost.RemoveRows (businessObjects);
 
       if (_editModeHost.Value != null)
       {
@@ -406,8 +401,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
             RemoveRowFromDataStructure (row.Index);
         }
       }
-
-      _editModeHost.RemoveRows (bocListRows);
     }
 
     public void RemoveRow (IBusinessObject businessObject)

@@ -525,11 +525,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Controller.SwitchListIntoEditMode (Columns, Columns);
 
       var businessObject = Values[2];
-      BocListRow[] removedRows = null;
-      EditModeHost.NotifyRemoveRows = rows => { removedRows = rows; };
+      IBusinessObject[] removedRows = null;
+      EditModeHost.NotifyRemoveRows = objects =>
+      {
+        removedRows = objects;
+        return new BocListRow[0];
+      };
       Controller.RemoveRow (businessObject);
 
-      CollectionAssert.AreEquivalent (new[] { businessObject }, removedRows.Select (r => r.BusinessObject));
+      CollectionAssert.AreEqual (new[] { businessObject }, removedRows);
     }
 
     [Test]
@@ -567,11 +571,15 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Controller.SwitchListIntoEditMode (Columns, Columns);
 
       var businessObjects = new[] { Values[2] };
-      BocListRow[] removedRows = null;
-      EditModeHost.NotifyRemoveRows = rows => { removedRows = rows; };
+      IBusinessObject[] removedRows = null;
+      EditModeHost.NotifyRemoveRows = objects =>
+      {
+        removedRows = objects;
+        return new BocListRow[0];
+      };
       Controller.RemoveRows (businessObjects);
 
-      CollectionAssert.AreEqual (businessObjects, removedRows.Select (r => r.BusinessObject));
+      Assert.AreSame (businessObjects, removedRows);
     }
 
     [Test]
