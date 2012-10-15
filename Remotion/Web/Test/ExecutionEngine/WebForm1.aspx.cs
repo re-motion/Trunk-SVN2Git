@@ -160,7 +160,12 @@ namespace Remotion.Web.Test.ExecutionEngine
       if (! IsReturningPostBack)
       {
         SubFunction subFunction = new SubFunction ("subext var 1", "vall var2");
-        this.ExecuteFunctionExternal (subFunction, "_blank", (Control) sender, true);
+        this.ExecuteFunctionExternal (
+            subFunction,
+            "_blank",
+            "width=700,height=500,top=100,left=100,resizable=yes,location=no,menubar=no,status=no,toolbar=no,scrollbars=no",
+            (Control) sender,
+            true);
       }
       else
       {

@@ -108,8 +108,16 @@ namespace Remotion.Web.ExecutionEngine
 
       string href = WxeContext.Current.GetDestinationUrlForExternalFunction (function, functionToken, options.PermaUrlOptions);
 
-      string openScript = string.Format ("window.open('{0}', '{1}', '{2}');", href, options.Target, StringUtility.NullToEmpty (options.Features));
-      _page.ClientScript.RegisterStartupScriptBlock (_page, typeof (WxeExecutor), "WxeExecuteFunction", openScript);
+      // Execute after Smart-Page was restored
+      string functionName = "ExecuteFunctonExternal_" + Guid.NewGuid().ToString().Replace ('-', '_');
+      string openScript = string.Format (
+          "function {0} () {{ setTimeout( function () {{ window.open('{1}', '{2}', '{3}'); }}, 0); }}",
+          functionName,
+          href,
+          options.Target,
+          StringUtility.NullToEmpty (options.Features));
+      _page.ClientScript.RegisterClientScriptBlock (_page, typeof (WxeExecutor), "WxeExecuteFunction", openScript);
+      _page.RegisterClientSidePageEventHandler (SmartPageEvents.OnLoad, "WxeExecuteFunction", functionName);
 
       function.ReturnUrl = "javascript:" + GetClosingScriptForExternalFunction (functionToken, sender, options.ReturningPostback);
     }
