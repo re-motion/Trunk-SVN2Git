@@ -13,6 +13,7 @@
 </head>
 <body style="height: 95%">
   <form id="form1" runat="server" style="height: 100%">
+    <input type="hidden" name="MainScriptManager_HiddenField1" value=";;AjaxControlToolkit, Version=3.5.40412.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e:de-AT:1547e793-5b7e-48fe-8490-03a375b13a33:de1feab2:f9cec9bc:a67c2700:f2c8e708:8613aea7:3202a5a2:ab09e3fe:87104b7c:be6fb298"/>
     <asp:ScriptManager runat="server" ID="ScriptManager" EnablePartialRendering="True" />
     <div style="float: left; width: 30%; height: 100%; border-right: 1px solid black">
       left<br />

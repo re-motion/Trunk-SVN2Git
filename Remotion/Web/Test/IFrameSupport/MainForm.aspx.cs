@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web;
 using System.Web.UI;
 using Remotion.Web.ExecutionEngine;
 
@@ -22,5 +23,12 @@ namespace Remotion.Web.Test.IFrameSupport
 {
   public partial class MainForm : WxePage
   {
+    protected override void OnLoad (EventArgs e)
+    {
+      base.OnLoad (e);
+      if (!IsPostBack)
+        Context.Response.AppendCookie (
+            new HttpCookie ("Rubicon.Dms.Web::Classes.DetectionState_DetectedRenderMode", "ManagedControlsOrHtmlControlsPossible"));
+    }
   }
 }
