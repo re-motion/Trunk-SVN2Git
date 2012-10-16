@@ -108,7 +108,17 @@
         // re-motion: holds the last valid value of the input element
         var previousValidValue = $input.val();
         var cache = $.Autocompleter.Cache(options);
-        var hasFocus = TypeUtility.IsDefined (window.document.activeElement) && window.document.activeElement == input;
+        var hasFocus = false;
+        try
+        {
+          hasFocus = TypeUtility.IsDefined(window.document.activeElement) && window.document.activeElement == input;
+        }
+        catch (e)
+        {
+          //IE9 can throw an unspecified error when inside an iframe because the activeElement is not yet initialzied
+          //See also SmartPage.js:270
+          //The input-element will be focused later in the page life cycle.
+        }
         var lastKeyPressCode = -1;
         var config = {
             mouseDownOnSelect: false
