@@ -24,6 +24,9 @@
   </HEAD>
   <body MS_POSITIONING="GridLayout">
     <FORM id="Form1" method="post" runat="server">
+      <asp:ScriptManager runat="server" EnablePartialRendering="False"/>
+      <asp:UpdatePanel runat="server" UpdateMode="Conditional">
+        <ContentTemplate>
       <asp:textbox id="TextBox1" style="Z-INDEX: 101; LEFT: 80px; POSITION: absolute; TOP: 48px" runat="server"></asp:textbox>
       <asp:Button id="ThrowText" style="Z-INDEX: 118; LEFT: 128px; POSITION: absolute; TOP: 200px"
         runat="server" Text='Throw ("test")'></asp:Button><asp:label id="Var2Label" style="Z-INDEX: 111; LEFT: 376px; POSITION: absolute; TOP: 56px"
@@ -50,6 +53,8 @@
         runat="server" Height="168px" Width="480px"></asp:label><asp:button id="Sub" style="Z-INDEX: 106; LEFT: 96px; POSITION: absolute; TOP: 144px" runat="server"
         Text="Sub"></asp:button><asp:checkbox id="IsPostBackCheck" style="Z-INDEX: 105; LEFT: 88px; POSITION: absolute; TOP: 96px"
         runat="server" Text="IsPostBack" Enabled="False"></asp:checkbox>
+        </ContentTemplate>
+      </asp:UpdatePanel>
     </FORM>
   </body>
 </HTML>

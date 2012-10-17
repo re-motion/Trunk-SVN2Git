@@ -369,8 +369,13 @@ namespace Remotion.Web.UI
       initScript.AppendLine ("function SmartPage_Initialize ()");
       initScript.AppendLine ("{");
 
+      const string eventHandlersArray = "eventHandlers";
+      initScript.Append ("  var ").Append (eventHandlersArray).AppendLine (" = new Array();");
+      FormatPopulateEventHandlersArrayClientScript (initScript, eventHandlersArray);
+      initScript.AppendLine();
+
       const string trackedControlsArray = "trackedControls";
-      initScript.Append ("var ").Append (trackedControlsArray).AppendLine (" = new Array();");
+      initScript.Append ("  var ").Append (trackedControlsArray).AppendLine (" = new Array();");
       if (_page.IsDirtyStateTrackingEnabled)
       {
         isDirtyStateTrackingEnabled = "true";
@@ -389,24 +394,21 @@ namespace Remotion.Web.UI
       initScript.AppendLine ("  if (SmartPage_Context.Instance == null)");
       initScript.AppendLine ("  {");
 
-      const string eventHandlersArray = "eventHandlers";
-      initScript.Append ("    var ").Append (eventHandlersArray).AppendLine (" = new Array();");
-      FormatPopulateEventHandlersArrayClientScript (initScript, eventHandlersArray);
       initScript.AppendLine();
 
-      initScript.AppendLine ("SmartPage_Context.Instance = new SmartPage_Context (");
-      initScript.Append ("    '").Append (_page.HtmlForm.ClientID).AppendLine ("',");
-      initScript.Append ("    ").Append (isDirtyStateTrackingEnabled).AppendLine (",");
-      initScript.Append ("    ").Append (abortMessage).AppendLine (",");
-      initScript.Append ("    ").Append (statusIsSubmittingMessage).AppendLine (",");
-      initScript.Append ("    ").Append (smartScrollingFieldID).AppendLine (",");
-      initScript.Append ("    ").Append (smartFocusFieldID).AppendLine (",");
-      initScript.Append ("    ").Append (checkFormStateFunction).AppendLine (",");
-      initScript.Append ("        ").Append (eventHandlersArray).AppendLine (");");
+      initScript.AppendLine ("    SmartPage_Context.Instance = new SmartPage_Context (");
+      initScript.Append ("        '").Append (_page.HtmlForm.ClientID).AppendLine ("',");
+      initScript.Append ("        ").Append (isDirtyStateTrackingEnabled).AppendLine (",");
+      initScript.Append ("        ").Append (abortMessage).AppendLine (",");
+      initScript.Append ("        ").Append (statusIsSubmittingMessage).AppendLine (",");
+      initScript.Append ("        ").Append (smartScrollingFieldID).AppendLine (",");
+      initScript.Append ("        ").Append (smartFocusFieldID).AppendLine (",");
+      initScript.Append ("        ").Append (checkFormStateFunction).AppendLine (");");
 
       initScript.AppendLine ("  }");
       initScript.AppendLine();
 
+      initScript.Append ("  SmartPage_Context.Instance.set_EventHandlers (").Append (eventHandlersArray).AppendLine (");");
       initScript.Append ("  SmartPage_Context.Instance.set_TrackedIDs (").Append (trackedControlsArray).AppendLine (");");
       initScript.Append ("  SmartPage_Context.Instance.set_SynchronousPostBackCommands (").Append (synchronousPostBackCommandsArray).AppendLine (");");
       initScript.AppendLine ("}");
@@ -470,19 +472,19 @@ namespace Remotion.Web.UI
       {
         NameValueCollection eventHandlers = _clientSideEventHandlers[pageEvent];
 
-        script.Append ("    ");
+        script.Append ("  ");
         script.Append (eventHandlersByEventArray).AppendLine (" = new Array();");
 
         for (int i = 0; i < eventHandlers.Keys.Count; i++)
         {
           // IE 5.0.1 does not understand push
-          script.Append ("    ");
+          script.Append ("  ");
           script.Append (eventHandlersByEventArray).Append ("[").Append (eventHandlersByEventArray).Append (".length] = '");
           script.Append (eventHandlers.Get (i));
           script.AppendLine ("';");
         }
 
-        script.Append ("    ");
+        script.Append ("  ");
         script.Append (eventHandlersArray).Append ("['");
         script.Append (pageEvent.ToString().ToLower());
         script.Append ("'] = ").Append (eventHandlersByEventArray).AppendLine (";");

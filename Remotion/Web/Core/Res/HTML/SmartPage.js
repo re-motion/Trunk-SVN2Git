@@ -32,8 +32,7 @@ function SmartPage_Context(
     isDirtyStateTrackingEnabled,
     abortMessage, statusIsSubmittingMessage,
     smartScrollingFieldID, smartFocusFieldID,
-    checkFormStateFunctionName,
-    eventHandlers)
+    checkFormStateFunctionName)
 {
   ArgumentUtility.CheckNotNullAndTypeIsString('theFormID', theFormID);
   ArgumentUtility.CheckNotNullAndTypeIsBoolean('isDirtyStateTrackingEnabled', isDirtyStateTrackingEnabled);
@@ -42,7 +41,6 @@ function SmartPage_Context(
   ArgumentUtility.CheckTypeIsString('smartScrollingFieldID', smartScrollingFieldID);
   ArgumentUtility.CheckTypeIsString('smartFocusFieldID', smartFocusFieldID);
   ArgumentUtility.CheckTypeIsString('checkFormStateFunctionName', checkFormStateFunctionName);
-  ArgumentUtility.CheckTypeIsObject('eventHandlers', eventHandlers);
 
   var _theForm;
 
@@ -88,7 +86,7 @@ function SmartPage_Context(
 
   var _activeElement = null;
   // The hashtable of eventhandlers: Hashtable < event-key, Array < event-handler > >
-  var _eventHandlers = eventHandlers;
+  var _eventHandlers = new Array();
   var _trackedIDs = new Array();
   var _synchronousPostBackCommands = new Array();
 
@@ -131,23 +129,29 @@ function SmartPage_Context(
     _smartScrollingFieldID = smartScrollingFieldID;
     _smartFocusFieldID = smartFocusFieldID;
 
-    this.SetEventHandlers();
+    this.AttachPageLevelEventHandlers();
   };
 
-  this.set_TrackedIDs = function(trackedIDs)
+  this.set_EventHandlers = function (eventHandlers)
   {
-    ArgumentUtility.CheckTypeIsObject('trackedIDs', trackedIDs);
-    _trackedIDs = trackedIDs;
-  }
+    ArgumentUtility.CheckTypeIsObject('eventHandlers', eventHandlers);
+    _eventHandlers = eventHandlers;
+  };
 
-  this.set_SynchronousPostBackCommands = function(synchronousPostBackCommands)
+  this.set_TrackedIDs = function (trackedIDs)
   {
-    ArgumentUtility.CheckTypeIsObject('synchronousPostBackCommands', synchronousPostBackCommands);
+    ArgumentUtility.CheckTypeIsObject ('trackedIDs', trackedIDs);
+    _trackedIDs = trackedIDs;
+  };
+
+  this.set_SynchronousPostBackCommands = function (synchronousPostBackCommands)
+  {
+    ArgumentUtility.CheckTypeIsObject ('synchronousPostBackCommands', synchronousPostBackCommands);
     _synchronousPostBackCommands = synchronousPostBackCommands;
-  }
+  };
 
   // Attaches the event handlers to the page's events.
-  this.SetEventHandlers = function ()
+  this.AttachPageLevelEventHandlers = function ()
   {
     RemoveEventHandler(window, 'load', _loadHandler);
     AddEventHandler(window, 'load', _loadHandler);
@@ -183,9 +187,9 @@ function SmartPage_Context(
     _isDirty = isDirty;
 
     if (_isDirtyStateTrackingEnabled)
-      SetDataChangedEventHandlers(_theForm);
+      AttachDataChangedEventHandlers(_theForm);
 
-    SetFocusEventHandlers(window.document.body);
+    AttachFocusEventHandlers(window.document.body);
 
     if (TypeUtility.IsDefined(window.Sys) && TypeUtility.IsDefined(Sys.WebForms) && TypeUtility.IsDefined(Sys.WebForms.PageRequestManager))
     {
@@ -223,7 +227,7 @@ function SmartPage_Context(
   }
 
   // Attached the OnValueChanged event handler to all form data elements listed in _trackedIDs.
-  function SetDataChangedEventHandlers(theForm)
+  function AttachDataChangedEventHandlers(theForm)
   {
     for (var i = 0; i < _trackedIDs.length; i++)
     {
@@ -263,7 +267,7 @@ function SmartPage_Context(
   };
 
   // Attaches the event handlers to the OnFocus and OnBlur events.
-  function SetFocusEventHandlers(currentElement)
+  function AttachFocusEventHandlers(currentElement)
   {
     if ($.browser.msie)
     {
@@ -286,7 +290,7 @@ function SmartPage_Context(
       for (var i = 0; i < currentElement.childNodes.length; i++)
       {
         var element = currentElement.childNodes[i];
-        SetFocusEventHandlers(element);
+        AttachFocusEventHandlers(element);
       }
     }
     else if ($.browser.webkit)
@@ -369,7 +373,7 @@ function SmartPage_Context(
     {
       this.PageLoaded(isAsynchronous); 
     }
-  }
+  };
 
   this.PageLoaded = function (isAsynchronous)
   {
@@ -383,7 +387,7 @@ function SmartPage_Context(
     this.HideStatusMessage();
 
     ExecuteEventHandlers(_eventHandlers['onload'], _hasSubmitted, _isCached, isAsynchronous);
-  }
+  };
 
   // Determines whether the page was loaded from cache.
   this.CheckIfCached = function()
@@ -533,7 +537,7 @@ function SmartPage_Context(
         _isMsIEFormClicked = false;
       }
     }
-  }
+  };
 
   // Event handler for Form.Submit.
   this.OnFormSubmit = function()
@@ -686,7 +690,7 @@ function SmartPage_Context(
       return true;
 
     return false;
-  }
+  };
 
   this.IsAsyncPostback = function(element)
   {
@@ -697,7 +701,7 @@ function SmartPage_Context(
 
     var postbackSettings = GetPostbackSettings(Sys.WebForms.PageRequestManager.getInstance(), element);
     return postbackSettings.async;
-  }
+  };
 
   function GetPostbackSettings(pageRequestManager, element)
   {
@@ -841,7 +845,7 @@ function SmartPage_Context(
     if (TypeUtility.IsFunction(fct))
       return fct;
     else
-      return null
+      return null;
   };
 
   // Shows the status message informing the user that the page is already submitting.
@@ -928,7 +932,7 @@ function SmartPage_Context(
       window.document.body.removeChild(_statusMessageWindow);
       _statusMessageWindow = null;
     }
-  }
+  };
 
   // Determines whether the elements of the specified tag can receive the focus.
   function IsFocusableTag(tagName)
@@ -1040,7 +1044,7 @@ function SmartPage_Context(
       return null;
 
     return document.getElementById(UniqueIDToClientID(_theForm.__EVENTTARGET.value));
-  }
+  };
 
   this.IsSynchronousPostBackRequired = function(eventTargetID, eventArguments)
   {
@@ -1055,17 +1059,17 @@ function SmartPage_Context(
     }
 
     return false;
-  }
+  };
 
   this.ClearIsSubmitting = function()
   {
     _isSubmitting = false;
-  }
+  };
 
   this.DisableAbortConfirmation = function()
   {
     _isAbortConfirmationEnabled = false;
-  }
+  };
 
   this.ShowAbortConfirmation = function ()
   {
@@ -1073,7 +1077,7 @@ function SmartPage_Context(
       return window.confirm(_abortMessage);
     else
       return true;
-  }
+  };
 
   // Perform initialization
   this.Init();
