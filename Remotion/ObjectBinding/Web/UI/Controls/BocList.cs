@@ -2754,6 +2754,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       return _selectorControlCheckedState
           .Select (rowID => RowIDProvider.GetRowFromItemRowID (Value, rowID))
+          .Where (r => r != null)
           .OrderBy (r => r.Index);
     }
 
