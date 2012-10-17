@@ -129,7 +129,7 @@ function SmartPage_Context(
     _smartScrollingFieldID = smartScrollingFieldID;
     _smartFocusFieldID = smartFocusFieldID;
 
-    this.AttachPageLevelEventHandlers();
+    AttachPageLevelEventHandlers();
   };
 
   this.set_EventHandlers = function (eventHandlers)
@@ -151,7 +151,7 @@ function SmartPage_Context(
   };
 
   // Attaches the event handlers to the page's events.
-  this.AttachPageLevelEventHandlers = function ()
+  function AttachPageLevelEventHandlers ()
   {
     RemoveEventHandler(window, 'load', _loadHandler);
     AddEventHandler(window, 'load', _loadHandler);
@@ -187,7 +187,7 @@ function SmartPage_Context(
     _isDirty = isDirty;
 
     if (_isDirtyStateTrackingEnabled)
-      AttachDataChangedEventHandlers(_theForm);
+      AttachDataChangedEventHandlers();
 
     AttachFocusEventHandlers(window.document.body);
 
@@ -227,12 +227,12 @@ function SmartPage_Context(
   }
 
   // Attached the OnValueChanged event handler to all form data elements listed in _trackedIDs.
-  function AttachDataChangedEventHandlers(theForm)
+  function AttachDataChangedEventHandlers()
   {
     for (var i = 0; i < _trackedIDs.length; i++)
     {
       var id = _trackedIDs[i];
-      var element = theForm.elements[id];
+      var element = _theForm.elements[id];
       if (element == null)
         continue;
 
