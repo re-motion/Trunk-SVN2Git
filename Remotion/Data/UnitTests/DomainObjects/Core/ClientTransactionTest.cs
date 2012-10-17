@@ -972,7 +972,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Return (new[] { _fakeDomainObject1, _fakeDomainObject2 });
       _objectLifetimeAgentMock.Replay ();
 
-      var result = _transactionWithMocks.GetObjects<DomainObject> (_objectID1, _objectID2);
+      var result = ClientTransactionTestHelper.CallGetObjects<DomainObject> (_transactionWithMocks, _objectID1, _objectID2);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (new[] { _fakeDomainObject1, _fakeDomainObject2 }));
@@ -986,7 +986,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
           .Return (new[] { _fakeDomainObject1, _fakeDomainObject2 });
       _objectLifetimeAgentMock.Replay ();
 
-      var result = _transactionWithMocks.TryGetObjects<DomainObject> (_objectID1, _objectID2);
+      var result = ClientTransactionTestHelper.CallTryGetObjects<DomainObject> (_transactionWithMocks, _objectID1, _objectID2);
 
       _objectLifetimeAgentMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (new[] { _fakeDomainObject1, _fakeDomainObject2 }));

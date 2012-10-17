@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using Remotion.Utilities;
@@ -30,7 +31,7 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       ArgumentUtility.CheckNotNullOrEmpty ("uniqueIdentifier", uniqueIdentifier);
 
       var objectID = ObjectID.Parse (uniqueIdentifier);
-      return ClientTransaction.Current.TryGetObjects<DomainObject> (objectID)
+      return LifetimeService.TryGetObjects<DomainObject> (ClientTransaction.Current, objectID)
           .Where (o => o!= null && o.State != StateType.Deleted && o.State != StateType.Invalid)
           .Cast<IBusinessObjectWithIdentity>()
           .SingleOrDefault();

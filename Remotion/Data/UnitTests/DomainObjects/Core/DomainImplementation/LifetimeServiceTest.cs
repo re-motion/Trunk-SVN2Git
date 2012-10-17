@@ -177,6 +177,47 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
     }
 
     [Test]
+    public void GetObjects ()
+    {
+      var deletedObjectID = DomainObjectIDs.Order3;
+      var deletedObject = Order.GetObject (deletedObjectID);
+      deletedObject.Delete();
+
+      Order[] orders = LifetimeService.GetObjects<Order> (TestableClientTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, deletedObjectID);
+
+      Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), Order.GetObject (DomainObjectIDs.Order2), deletedObject }));
+    }
+
+    [Test]
+    public void GetObjects_WithInvalidObject_Throws ()
+    {
+      var instance = Order.NewObject ();
+      instance.Delete ();
+      Assert.That (instance.IsInvalid, Is.True);
+
+      Assert.That (() => LifetimeService.GetObjects<Order> (TestableClientTransaction, instance.ID, instance.ID), Throws.TypeOf<ObjectInvalidException> ());
+    }
+
+    [Test]
+    public void TryGetObjects ()
+    {
+      var notFoundObjectID = new ObjectID (typeof (Order), Guid.NewGuid());
+
+      var deletedObjectID = DomainObjectIDs.Order3;
+      var deletedObject = Order.GetObject (deletedObjectID);
+      deletedObject.Delete ();
+
+      var invalidInstance = Order.NewObject ();
+      invalidInstance.Delete ();
+      Assert.That (invalidInstance.IsInvalid, Is.True);
+
+      Order[] orders = LifetimeService.TryGetObjects<Order> (
+          TestableClientTransaction, DomainObjectIDs.Order1, notFoundObjectID, deletedObjectID, invalidInstance.ID);
+
+      Assert.That (orders, Is.EqualTo (new[] { Order.GetObject (DomainObjectIDs.Order1), null, deletedObject, invalidInstance }));
+    }
+
+    [Test]
     public void DeleteObject ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);

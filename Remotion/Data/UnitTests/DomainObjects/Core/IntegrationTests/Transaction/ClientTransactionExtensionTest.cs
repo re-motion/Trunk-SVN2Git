@@ -1442,7 +1442,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_newTransaction.EnterNonDiscardingScope())
       {
-        _newTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+        LifetimeService.GetObjects<DomainObject> (_newTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       }
 
       _mockRepository.VerifyAll();
@@ -1477,7 +1477,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     ObjectID expectedMainObjectID,
     bool expectingCollection,
     bool expectLoadedEvent,
-    IEnumerable<ObjectID> expectedRelatedObjectIDs)
+    ObjectID[] expectedRelatedObjectIDs)
     {
       using (_mockRepository.Ordered ())
       {
@@ -1527,7 +1527,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ObjectID expectedMainObjectID,
         bool expectCollection,
         bool expectLoadedEvent,
-        IEnumerable<ObjectID> expectedRelatedIDs)
+        ObjectID[] expectedRelatedIDs)
     {
       _mockRepository.BackToRecordAll ();
       RecordObjectLoadingCalls (_newTransaction, expectedMainObjectID, expectCollection, expectLoadedEvent, expectedRelatedIDs);

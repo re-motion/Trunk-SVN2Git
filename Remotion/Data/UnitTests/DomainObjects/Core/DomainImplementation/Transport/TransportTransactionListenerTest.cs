@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
@@ -66,7 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     {
       _transporter.Load (DomainObjectIDs.Computer2);
 
-      Computer source = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).GetBindingTransaction().GetObjects<Computer> (DomainObjectIDs.Computer1)[0];
+      var bindingTransaction = _transporter.GetTransportedObject (DomainObjectIDs.Computer2).GetBindingTransaction();
+      Computer source = LifetimeService.GetObjects<Computer> (bindingTransaction, DomainObjectIDs.Computer1)[0];
       _listener.PropertyValueChanging (TestableClientTransaction, source, GetPropertyDefinition (typeof (Computer), "SerialNumber"), null, null);
     }
 

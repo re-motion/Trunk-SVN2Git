@@ -17,6 +17,7 @@
 using System.Linq;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain.ConcreteInheritance;
@@ -97,8 +98,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsInstanceOf (typeof (SingleInheritanceFirstDerivedClass), ClientTransaction.Current.GetObjects<SingleInheritanceBaseClass> (firstDerivedClassObjectID).Single());
-        Assert.IsInstanceOf (typeof (SingleInheritanceSecondDerivedClass), ClientTransaction.Current.GetObjects<SingleInheritanceBaseClass> (secondDerivedClassObjectID).Single ());
+        Assert.IsInstanceOf (typeof (SingleInheritanceFirstDerivedClass), LifetimeService.GetObject (ClientTransaction.Current, firstDerivedClassObjectID, false));
+        Assert.IsInstanceOf (typeof (SingleInheritanceSecondDerivedClass), LifetimeService.GetObject (ClientTransaction.Current, secondDerivedClassObjectID, false));
       }
     }
 
@@ -185,8 +186,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
-        Assert.IsInstanceOf (typeof (ConcreteInheritanceFirstDerivedClass), ClientTransaction.Current.GetObjects<ConcreteInheritanceBaseClass> (firstDerivedClassObjectID).Single());
-        Assert.IsInstanceOf (typeof (ConcreteInheritanceSecondDerivedClass), ClientTransaction.Current.GetObjects<ConcreteInheritanceBaseClass> (secondDerivedClassObjectID).Single ());
+        Assert.IsInstanceOf (typeof (ConcreteInheritanceFirstDerivedClass), LifetimeService.GetObject (ClientTransaction.Current, firstDerivedClassObjectID, false));
+        Assert.IsInstanceOf (typeof (ConcreteInheritanceSecondDerivedClass), LifetimeService.GetObject (ClientTransaction.Current, secondDerivedClassObjectID, false));
       }
     }
 

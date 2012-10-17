@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
@@ -135,6 +136,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       return (DomainObject) PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "NewObject", domainObjectType, constructorParameters);
     }
 
+    public static T[] CallGetObjects<T> (ClientTransaction clientTransaction, params ObjectID[] objectIDs)
+    {
+      var method = typeof (ClientTransaction).GetMethod ("GetObjects", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod (typeof (T));
+      return (T[]) method.Invoke (clientTransaction, new object[] { objectIDs });
+    }
+
+    public static T[] CallTryGetObjects<T> (ClientTransaction clientTransaction, params ObjectID[] objectIDs)
+    {
+      var method = typeof (ClientTransaction).GetMethod ("TryGetObjects", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod (typeof (T));
+      return (T[]) method.Invoke (clientTransaction, new object[] { objectIDs });
+    }
+
     public static void AddListener (ClientTransaction clientTransaction, IClientTransactionListener listener)
     {
       PrivateInvoke.InvokeNonPublicMethod (clientTransaction, "AddListener", listener);
@@ -209,5 +222,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var listenerManager = GetEventBroker (clientTransaction);
       return listenerManager.Listeners;
     }
+
   }
 }

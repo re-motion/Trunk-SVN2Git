@@ -1069,33 +1069,10 @@ public class ClientTransaction
   /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
   /// <see cref="ObjectInvalidException"/> being thrown.
   /// </exception>
-  public T[] GetObjects<T> (params ObjectID[] objectIDs) 
+  protected internal T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {
-    return GetObjects<T> ((IEnumerable<ObjectID>) objectIDs);
-  }
-
-  /// <summary>
-  /// Gets a number of objects that are already loaded or attempts to load them from the data source.
-  /// If an object's data can't be found, an exception is thrown, and the object is marked <see cref="StateType.Invalid"/> in the 
-  /// <see cref="ClientTransaction"/>.
-  /// </summary>
-  /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
-  /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
-  /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in 
-  /// <paramref name="objectIDs"/>. This list might include deleted objects.</returns>
-  /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
-  /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the expected type <typeparamref name="T"/>.</exception>
-  /// <exception cref="ObjectInvalidException">One of the retrieved objects is invalid in this transaction.</exception>
-  /// <exception cref="ObjectsNotFoundException">
-  /// One or more objects could not be found in the data source. Note that the <see cref="ClientTransaction"/> marks
-  /// not found objects as <see cref="StateType.Invalid"/>, so calling this API again witht he same <see cref="ObjectID"/> results in a 
-  /// <see cref="ObjectInvalidException"/> being thrown.
-  /// </exception>
-
-  public T[] GetObjects<T> (IEnumerable<ObjectID> objectIDs)
-      where T : DomainObject
-  {
+    ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);
     return _objectLifetimeAgent.GetObjects<T> (objectIDs);
   }
 
@@ -1110,24 +1087,7 @@ public class ClientTransaction
   /// <paramref name="objectIDs"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
   /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
   /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  public T[] TryGetObjects<T> (params ObjectID[] objectIDs) 
-      where T : DomainObject
-  {
-    return TryGetObjects<T> ((IEnumerable<ObjectID>) objectIDs);
-  }
-
-  /// <summary>
-  /// Gets a number of objects that are already loaded (including invalid objects) or attempts to load them from the data source. 
-  /// If an object cannot be found, it will be marked <see cref="StateType.Invalid"/> in the <see cref="ClientTransaction"/>, and the result array will 
-  /// contain a <see langword="null" /> reference in its place.
-  /// </summary>
-  /// <typeparam name="T">The type of objects expected to be returned. Specify <see cref="DomainObject"/> if no specific type is expected.</typeparam>
-  /// <param name="objectIDs">The IDs of the objects to be retrieved.</param>
-  /// <returns>A list of objects of type <typeparamref name="T"/> corresponding to (and in the same order as) the IDs specified in 
-  /// <paramref name="objectIDs"/>. This list can contain invalid and <see langword="null" /> <see cref="DomainObject"/> references.</returns>
-  /// <exception cref="ArgumentNullException">The <paramref name="objectIDs"/> parameter is <see langword="null"/>.</exception>
-  /// <exception cref="InvalidCastException">One of the retrieved objects doesn't fit the specified type <typeparamref name="T"/>.</exception>
-  public T[] TryGetObjects<T> (IEnumerable<ObjectID> objectIDs)
+  protected internal T[] TryGetObjects<T> (IEnumerable<ObjectID> objectIDs)
       where T : DomainObject
   {
     ArgumentUtility.CheckNotNull ("objectIDs", objectIDs);

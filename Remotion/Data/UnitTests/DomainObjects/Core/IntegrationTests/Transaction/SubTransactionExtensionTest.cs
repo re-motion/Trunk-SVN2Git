@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
@@ -140,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ObjectID expectedMainObjectID,
         bool expectingCollection,
         bool expectLoadedEvent,
-        IEnumerable<ObjectID> expectedRelatedObjectIDs)
+        ObjectID[] expectedRelatedObjectIDs)
     {
       using (_mockRepository.Ordered())
       {
@@ -211,7 +210,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         ObjectID expectedMainObjectID,
         bool expectCollection,
         bool expectLoadedEvent,
-        IEnumerable<ObjectID> expectedRelatedIDs)
+        ObjectID[] expectedRelatedIDs)
     {
       _mockRepository.BackToRecordAll();
       RecordObjectLoadingCalls (_subTransaction, expectedMainObjectID, expectCollection, expectLoadedEvent, expectedRelatedIDs);
@@ -1356,7 +1355,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (_subTransaction.EnterNonDiscardingScope())
       {
-        _subTransaction.GetObjects<DomainObject> (DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
+        LifetimeService.GetObjects<DomainObject> (_subTransaction, DomainObjectIDs.Order1, DomainObjectIDs.Order2, DomainObjectIDs.Order3);
       }
 
       _mockRepository.VerifyAll();
