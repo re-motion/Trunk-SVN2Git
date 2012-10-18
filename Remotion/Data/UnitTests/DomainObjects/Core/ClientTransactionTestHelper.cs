@@ -138,12 +138,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
     public static T[] CallGetObjects<T> (ClientTransaction clientTransaction, params ObjectID[] objectIDs)
     {
+      // TODO 5118: Use PrivateInvoke when it gets support for generic.
       var method = typeof (ClientTransaction).GetMethod ("GetObjects", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod (typeof (T));
       return (T[]) method.Invoke (clientTransaction, new object[] { objectIDs });
     }
 
     public static T[] CallTryGetObjects<T> (ClientTransaction clientTransaction, params ObjectID[] objectIDs)
     {
+      // TODO 5118: Use PrivateInvoke when it gets support for generic.
       var method = typeof (ClientTransaction).GetMethod ("TryGetObjects", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod (typeof (T));
       return (T[]) method.Invoke (clientTransaction, new object[] { objectIDs });
     }
