@@ -71,28 +71,6 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     }
 
     [Test]
-    public void GetExecutionListener ()
-    {
-      TestFunction2 function = new TestFunction2();
-      Assert.That (function.ExecutionListener, Is.InstanceOf (typeof (NullExecutionListener)));
-    }
-
-    [Test]
-    public void SetExecutionListener ()
-    {
-      TestFunction2 function = new TestFunction2();
-      function.SetExecutionListener (_executionListenerMock);
-      Assert.That (function.ExecutionListener, Is.SameAs (_executionListenerMock));
-    }
-
-    [Test]
-    public void SetExecutionListenerNull ()
-    {
-      TestFunction2 function = new TestFunction2();
-      Assert.That (() =>function.SetExecutionListener (null), Throws.TypeOf<ArgumentNullException>());
-    }
-
-    [Test]
     public void SetTransactionMode ()
     {
       TestFunction2 function = new TestFunction2();
@@ -132,6 +110,45 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     {
       TestFunction2 function = new TestFunction2();
       Assert.That (function.Transaction, Is.InstanceOf<NullTransactionStrategy>());
+    }
+
+    [Test]
+    public void GetExecutionListener ()
+    {
+      TestFunction2 function = new TestFunction2();
+      Assert.That (function.ExecutionListener, Is.InstanceOf (typeof (NullExecutionListener)));
+    }
+
+    [Test]
+    public void SetExecutionListener ()
+    {
+      TestFunction2 function = new TestFunction2();
+      function.SetExecutionListener (_executionListenerMock);
+      Assert.That (function.ExecutionListener, Is.SameAs (_executionListenerMock));
+    }
+
+    [Test]
+    public void SetExecutionListener_AfterExecutionHasStarted_ThrowsInvalidOperationException ()
+    {
+      TestFunction2 function = new TestFunction2();
+      function.Add (
+          new WxeDelegateStep (
+              () => Assert.That (
+                  () => function.SetExecutionListener (_executionListenerMock),
+                  Throws.InvalidOperationException
+                      .With.Message.EqualTo ("The ExecutionListener cannot be set after the TransactionStrategy has been initialized."))));
+
+      WxeContextFactory contextFactory = new WxeContextFactory();
+      var context = contextFactory.CreateContext (function);
+
+      function.Execute (context);
+    }
+
+    [Test]
+    public void SetExecutionListenerNull ()
+    {
+      TestFunction2 function = new TestFunction2();
+      Assert.That (() =>function.SetExecutionListener (null), Throws.TypeOf<ArgumentNullException>());
     }
   }
 }

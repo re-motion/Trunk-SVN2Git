@@ -273,6 +273,7 @@ namespace Remotion.Web.ExecutionEngine
 
       if (_transactionStrategy != null)
         throw new InvalidOperationException ("The TransactionMode cannot be set after the TransactionStrategy has been initialized.");
+
       _transactionMode = transactionMode;
     }
 
@@ -284,6 +285,10 @@ namespace Remotion.Web.ExecutionEngine
     protected void SetExecutionListener (IWxeFunctionExecutionListener executionListener)
     {
       ArgumentUtility.CheckNotNull ("executionListener", executionListener);
+
+      if (_transactionStrategy != null)
+        throw new InvalidOperationException ("The ExecutionListener cannot be set after the TransactionStrategy has been initialized.");
+
       _executionListener = executionListener;
     }
 
