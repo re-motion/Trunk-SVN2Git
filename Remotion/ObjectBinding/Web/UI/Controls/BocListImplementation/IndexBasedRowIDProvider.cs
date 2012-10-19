@@ -45,14 +45,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     {
       ArgumentUtility.CheckNotNull ("row", row);
 
-      return _rowIDs[row.Index];
+      return GetRowID(row);
     }
 
     public string GetItemRowID (BocListRow row)
     {
       ArgumentUtility.CheckNotNull ("row", row);
 
-      return _rowIDs[row.Index];
+      return GetRowID(row);
     }
 
     public BocListRow GetRowFromItemRowID (IList values, string rowID)
@@ -75,7 +75,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
       {
         throw new InvalidOperationException (
             string.Format (
-                "Tried to add row at index {0} but the current length of the row collection is {1}. The index must not exceed the length of the row collection.",
+                "Tried to add row at index {0} but the current length of the row collection is {1}."
+                + "The index must not exceed the length of the row collection.",
                 row.Index,
                 _rowIDs.Count));
       }
@@ -90,7 +91,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
       {
         throw new InvalidOperationException (
             string.Format (
-                "Tried to remove row at index {0} but the current length of the row collection is {1}. The index must not exceed the length of the row collection.",
+                "Tried to remove row at index {0} but the current length of the row collection is {1}."
+                + "The index must not exceed the length of the row collection.",
                 row.Index,
                 _rowIDs.Count));
       }
@@ -103,6 +105,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
       var id = FormatRowID (_nextID);
       _nextID++;
       return id;
+    }
+
+    private string GetRowID (BocListRow row)
+    {
+      if (row.Index > _rowIDs.Count)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "Tried to retrieve the ID for the row at index {0} but the current length of the row collection is {1}."
+                + "The index must not exceed the length of the row collection.",
+                row.Index,
+                _rowIDs.Count));
+      }
+
+      return _rowIDs[row.Index];
     }
 
     private static string FormatRowID (int rowIndex)
