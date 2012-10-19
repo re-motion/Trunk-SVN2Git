@@ -417,6 +417,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Obsolete ("TODO 2072 - Remove")]
     public void CopyCollectionEventHandlers ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -443,6 +444,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Obsolete ("TODO 2072 - Remove")]
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInOriginalTransaction ()
     {
       Order order = Order.GetObject (DomainObjectIDs.Order1);
@@ -461,6 +463,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Obsolete ("TODO 2072 - Remove")]
     [Ignore ("TODO: Optimize CopyCollectionEventHandlers")]
     public void CopyCollectionEventHandlers_DoesNotLoadRelatedObjectsInDestinationTransaction_IfNotRequiredTo ()
     {
@@ -482,6 +485,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Obsolete ("TODO 2072 - Remove")]
     public void CopyCollectionEventHandlers_DoesLoadRelatedObjectsInDestinationTransaction_IfRequiredTo ()
     {
       var mockRepository = new MockRepository ();
@@ -524,6 +528,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Obsolete ("TODO 2072 - Remove")]
     public void CopyTransactionEventHandlers ()
     {
       EventHandler<ClientTransactionEventArgs> committedHandler = delegate { };
@@ -556,6 +561,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
+    [Obsolete ("TODO 2072 - Remove")]
     public void CopyTransactionEventHandlers_WithNoEventsDoesNotOverwriteOldHandlers ()
     {
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())

@@ -723,7 +723,6 @@ public class ClientTransaction
     Assertion.IsTrue (endPoint.IsDataComplete);
   }
 
-  // TODO 2072: Move
   /// <summary>
   /// Copies the event handlers defined on the given <see cref="DomainObject"/>'s collection properties from another transaction to this
   /// transaction.
@@ -741,6 +740,9 @@ public class ClientTransaction
   /// <paramref name="sourceTransaction"/>.</exception>
   /// <exception cref="ObjectInvalidException">The <paramref name="domainObject"/> is invalid in either the current transaction or the
   /// <paramref name="sourceTransaction"/>.</exception>
+  [Obsolete (
+      "This API will be removed in a future version of re-store. To have identical event handlers between DomainObjectCollection, factorize "
+      + "the event registration code and apply it to all DomainObjectCollections involved. (1.13.172, RM-2072)", false)]
   public void CopyCollectionEventHandlers (DomainObject domainObject, ClientTransaction sourceTransaction)
   {
     ArgumentUtility.CheckNotNull ("domainObject", domainObject);
@@ -769,6 +771,9 @@ public class ClientTransaction
   /// Copies the event handlers defined on the given <see cref="ClientTransaction"/> to this transaction.
   /// </summary>
   /// <param name="sourceTransaction">The transaction to copy the event handlers from.</param>
+  [Obsolete (
+      "This API will be removed in a future version of re-store. To have identical event handlers between ClientTransactions, factorize "
+      + "the event registration code and apply it to all ClientTransactions involved. (1.13.172, RM-2072)", false)]
   public void CopyTransactionEventHandlers (ClientTransaction sourceTransaction)
   {
     ArgumentUtility.CheckNotNull ("sourceTransaction", sourceTransaction);

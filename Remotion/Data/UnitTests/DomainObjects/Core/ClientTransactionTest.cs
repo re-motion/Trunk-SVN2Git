@@ -699,6 +699,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    [Obsolete ("TODO 2072 - Remove")]
     public void CopyCollectionEventHandlers ()
     {
       var order = _transaction.Execute (() => Order.GetObject (_objectID1));
