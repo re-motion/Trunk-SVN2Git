@@ -268,7 +268,7 @@ namespace Remotion.Web.ExecutionEngine
       get { return _transactionStrategy; }
     }
 
-    public ITransactionMode TransactionMode
+    protected ITransactionMode TransactionMode
     {
       get { return _transactionMode; }
     }
