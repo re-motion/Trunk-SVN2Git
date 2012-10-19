@@ -109,7 +109,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 
     private string GetRowID (BocListRow row)
     {
-      if (row.Index > _rowIDs.Count)
+      if (row.Index >= _rowIDs.Count)
       {
         throw new InvalidOperationException (
             string.Format (

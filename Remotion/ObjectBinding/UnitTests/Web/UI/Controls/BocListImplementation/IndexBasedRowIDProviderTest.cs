@@ -40,9 +40,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var rowIDProvider = new IndexBasedRowIDProvider (new IBusinessObject[6]);
 
       Assert.That (
-          () => rowIDProvider.GetControlRowID (new BocListRow (7, CreateObject())),
+          () => rowIDProvider.GetControlRowID (new BocListRow (6, CreateObject())),
           Throws.InvalidOperationException
-              .With.Message.StartsWith ("Tried to retrieve the ID for the row at index 7 but the current length of the row collection is 6."));
+              .With.Message.StartsWith ("Tried to retrieve the ID for the row at index 6 but the current length of the row collection is 6."));
     }
 
     [Test]
@@ -58,9 +58,9 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var rowIDProvider = new IndexBasedRowIDProvider (new IBusinessObject[6]);
 
       Assert.That (
-          () => rowIDProvider.GetItemRowID (new BocListRow (7, CreateObject())),
+          () => rowIDProvider.GetItemRowID (new BocListRow (6, CreateObject())),
           Throws.InvalidOperationException
-              .With.Message.StartsWith ("Tried to retrieve the ID for the row at index 7 but the current length of the row collection is 6."));
+              .With.Message.StartsWith ("Tried to retrieve the ID for the row at index 6 but the current length of the row collection is 6."));
     }
 
     [Test]
