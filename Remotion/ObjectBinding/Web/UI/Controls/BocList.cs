@@ -3206,7 +3206,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    protected internal virtual void OnEditableRowChangesSaving (
+    protected virtual void OnEditableRowChangesSaving (
         int index,
         IBusinessObject businessObject,
         IBusinessObjectDataSource dataSource,
@@ -3582,7 +3582,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _selection = value; }
     }
 
-    protected internal bool IsSelectionEnabled
+    protected bool IsSelectionEnabled
     {
       get { return _selection != RowSelection.Undefined && _selection != RowSelection.Disabled; }
     }
