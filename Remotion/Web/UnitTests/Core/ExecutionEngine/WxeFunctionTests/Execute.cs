@@ -46,7 +46,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void Test_NoException ()
     {
       TestFunction2 function = new TestFunction2 ();
-      function.ExecutionListener = _executionListenerMock;
+      function.SetExecutionListener (_executionListenerMock);
 
       using (_mockRepository.Ordered ())
       {
@@ -89,7 +89,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void Test_ReEntryAfterThreadAbort ()
     {
       TestFunction2 function = new TestFunction2 ();
-      function.ExecutionListener = _executionListenerMock;
+      function.SetExecutionListener (_executionListenerMock);
       
       WxeStep step1 = MockRepository.GenerateMock<WxeStep> ();
       step1.Expect (mock => mock.Execute (_context)).WhenCalled (invocation => Thread.CurrentThread.Abort ()).Repeat.Once();
@@ -135,7 +135,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void Test_ThreadAbort_WithFatalException ()
     {
       TestFunction2 function = new TestFunction2 ();
-      function.ExecutionListener = _executionListenerMock;
+      function.SetExecutionListener (_executionListenerMock);
 
       WxeStep step1 = MockRepository.GenerateMock<WxeStep> ();
       step1.Expect (mock => mock.Execute (_context)).WhenCalled (invocation => Thread.CurrentThread.Abort ());
@@ -166,7 +166,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void Test_FailAfterException ()
     {
       TestFunction2 function = new TestFunction2 ();
-      function.ExecutionListener = _executionListenerMock;
+      function.SetExecutionListener (_executionListenerMock);
       
       WxeStep step1 = MockRepository.GenerateMock<WxeStep> ();
       Exception stepException = new Exception ("StepException");
@@ -197,7 +197,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void Test_FailAfterExceptionAndFailInListener ()
     {
       TestFunction2 function = new TestFunction2 ();
-      function.ExecutionListener = _executionListenerMock;
+      function.SetExecutionListener (_executionListenerMock);
       
       WxeStep step1 = MockRepository.GenerateMock<WxeStep> ();
       Exception stepException = new Exception ("StepException");

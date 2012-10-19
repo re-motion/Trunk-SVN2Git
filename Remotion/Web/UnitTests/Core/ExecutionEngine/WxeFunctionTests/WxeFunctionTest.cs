@@ -81,7 +81,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void SetExecutionListener ()
     {
       TestFunction2 function = new TestFunction2();
-      function.ExecutionListener = _executionListenerMock;
+      function.SetExecutionListener (_executionListenerMock);
       Assert.That (function.ExecutionListener, Is.SameAs (_executionListenerMock));
     }
 
@@ -89,7 +89,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     public void SetExecutionListenerNull ()
     {
       TestFunction2 function = new TestFunction2();
-      Assert.That (() => function.ExecutionListener = null, Throws.TypeOf<ArgumentNullException>());
+      Assert.That (() =>function.SetExecutionListener (null), Throws.TypeOf<ArgumentNullException>());
     }
 
     [Test]

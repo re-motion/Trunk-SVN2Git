@@ -252,12 +252,6 @@ namespace Remotion.Web.ExecutionEngine
         _variablesContainer.ReturnParametersToCaller ();
     }
 
-    public IWxeFunctionExecutionListener ExecutionListener
-    {
-      get { return _executionListener; }
-      set { _executionListener = ArgumentUtility.CheckNotNull ("value", value); }
-    }
-
     public ITransactionStrategy Transaction
     {
       get { return TransactionStrategy; }
@@ -280,6 +274,17 @@ namespace Remotion.Web.ExecutionEngine
       if (_transactionStrategy != null)
         throw new InvalidOperationException ("The TransactionMode cannot be set after the TransactionStrategy has been initialized.");
       _transactionMode = transactionMode;
+    }
+
+    protected IWxeFunctionExecutionListener ExecutionListener
+    {
+      get { return _executionListener; }
+    }
+
+    protected void SetExecutionListener (IWxeFunctionExecutionListener executionListener)
+    {
+      ArgumentUtility.CheckNotNull ("executionListener", executionListener);
+      _executionListener = executionListener;
     }
 
     object[] IWxeFunctionExecutionContext.GetInParameters ()
