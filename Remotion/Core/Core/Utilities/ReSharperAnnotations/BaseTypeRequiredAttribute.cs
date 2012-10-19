@@ -15,14 +15,10 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 
-// ReSharper disable CheckNamespace
 namespace JetBrains.Annotations
-// ReSharper restore CheckNamespace
 {
   /// <summary>
-  /// Used for ReSharper intellisense only.
   /// When applied to target attribute, specifies a requirement for any type which is marked with 
   /// target attribute to implement or inherit specific type or types
   /// </summary>
@@ -37,28 +33,22 @@ namespace JetBrains.Annotations
   /// {}
   /// </code>
   /// </example>
-  [BaseTypeRequired (new[] { typeof (Attribute) }), AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
-  [CLSCompliant (false)]
+  [AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = true)]
+  [BaseTypeRequired (typeof (Attribute))]
   public sealed class BaseTypeRequiredAttribute : Attribute
   {
-    private readonly Type[] myBaseTypes;
-
     /// <summary>
     /// Initializes new instance of BaseTypeRequiredAttribute
     /// </summary>
-    /// <param name="baseTypes">Specifies which types are required</param>
-    public BaseTypeRequiredAttribute (params Type[] baseTypes)
+    /// <param name="baseType">Specifies which types are required</param>
+    public BaseTypeRequiredAttribute (Type baseType)
     {
-      myBaseTypes = baseTypes;
+      BaseTypes = new[] { baseType };
     }
 
     /// <summary>
     /// Gets enumerations of specified base types
     /// </summary>
-    public IEnumerable<Type> BaseTypes
-    {
-      get { return myBaseTypes; }
-    }
+    public Type[] BaseTypes { get; private set; }
   }
-
 }

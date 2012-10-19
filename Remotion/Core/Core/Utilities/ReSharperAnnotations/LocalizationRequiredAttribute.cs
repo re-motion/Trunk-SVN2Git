@@ -25,6 +25,15 @@ namespace JetBrains.Annotations
   public sealed class LocalizationRequiredAttribute : Attribute
   {
     /// <summary>
+    /// Initializes a new instance of the <see cref="LocalizationRequiredAttribute"/> class with
+    /// <see cref="Required"/> set to <see langword="true"/>.
+    /// </summary>
+    public LocalizationRequiredAttribute ()
+        : this (true)
+    {
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="LocalizationRequiredAttribute"/> class.
     /// </summary>
     /// <param name="required"><c>true</c> if a element should be localized; otherwise, <c>false</c>.</param>
@@ -37,7 +46,8 @@ namespace JetBrains.Annotations
     /// Gets a value indicating whether a element should be localized.
     /// <value><c>true</c> if a element should be localized; otherwise, <c>false</c>.</value>
     /// </summary>
-    public bool Required { get; set; }
+    [UsedImplicitly]
+    public bool Required { get; private set; }
 
     /// <summary>
     /// Returns whether the value of the given object is equal to the current <see cref="LocalizationRequiredAttribute"/>.

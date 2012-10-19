@@ -23,7 +23,5 @@ namespace JetBrains.Annotations
   /// There is only exception to compare with <c>null</c>, it is permitted
   /// </summary>
   [AttributeUsage (AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false, Inherited = true)]
-  public sealed class CannotApplyEqualityOperatorAttribute : Attribute
-  {
-  }
+  public sealed class CannotApplyEqualityOperatorAttribute : Attribute { }
 }

@@ -18,30 +18,18 @@ using System;
 
 namespace JetBrains.Annotations
 {
-  [Flags]
-  public enum ImplicitUseKindFlags
+  [AttributeUsage (AttributeTargets.Parameter)]
+  public class PathReferenceAttribute : Attribute
   {
-    Default = Access | Assign | InstantiatedWithFixedConstructorSignature,
+    public PathReferenceAttribute () { }
 
-    /// <summary>
-    /// Only entity marked with attribute considered used
-    /// </summary>
-    Access = 1,
+    [UsedImplicitly]
+    public PathReferenceAttribute ([PathReference] string basePath)
+    {
+      BasePath = basePath;
+    }
 
-    /// <summary>
-    /// Indicates implicit assignment to a member
-    /// </summary>
-    Assign = 2,
-
-    /// <summary>
-    /// Indicates implicit instantiation of a type with fixed constructor signature.
-    /// That means any unused constructor parameters won't be reported as such.
-    /// </summary>
-    InstantiatedWithFixedConstructorSignature = 4,
-
-    /// <summary>
-    /// Indicates implicit instantiation of a type
-    /// </summary>
-    InstantiatedNoFixedConstructorSignature = 8,
+    [UsedImplicitly]
+    public string BasePath { get; private set; }
   }
 }
