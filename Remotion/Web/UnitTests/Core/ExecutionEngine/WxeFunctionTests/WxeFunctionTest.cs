@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
+using Remotion.Web.ExecutionEngine;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
@@ -89,6 +90,48 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxeFunctionTests
     {
       TestFunction2 function = new TestFunction2();
       Assert.That (() => function.ExecutionListener = null, Throws.TypeOf<ArgumentNullException>());
+    }
+
+    [Test]
+    public void SetTransactionMode ()
+    {
+      TestFunction2 function = new TestFunction2();
+      ITransactionStrategy actualTransaction = null;
+      function.Add (new WxeDelegateStep (() => actualTransaction = function.Transaction));
+      function.SetTransactionMode (WxeTransactionMode<TestTransactionFactory>.CreateRoot);
+
+      WxeContextFactory contextFactory = new WxeContextFactory();
+      var context = contextFactory.CreateContext (function);
+
+      Assert.That (function.Transaction, Is.InstanceOf<NullTransactionStrategy>());
+
+      function.Execute (context);
+
+      Assert.That (actualTransaction, Is.InstanceOf<RootTransactionStrategy>());
+    }
+
+    [Test]
+    public void SetTransactionMode_AfterExecutionHasStarted_ThrowsInvalidOperationException ()
+    {
+      TestFunction2 function = new TestFunction2();
+      function.Add (
+          new WxeDelegateStep (
+              () => Assert.That (
+                  () => function.SetTransactionMode (WxeTransactionMode<TestTransactionFactory>.CreateRoot),
+                  Throws.InvalidOperationException
+                      .With.Message.EqualTo ("The TransactionMode cannot be set after the TransactionStrategy has been initialized."))));
+
+      WxeContextFactory contextFactory = new WxeContextFactory();
+      var context = contextFactory.CreateContext (function);
+
+      function.Execute (context);
+    }
+
+    [Test]
+    public void GetTransaction_BeforeTransactionStrategyInitialized ()
+    {
+      TestFunction2 function = new TestFunction2();
+      Assert.That (function.Transaction, Is.InstanceOf<NullTransactionStrategy>());
     }
   }
 }

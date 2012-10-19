@@ -36,5 +36,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions
     {
       get { return base.TransactionStrategy; }
     }
+
+    public new void SetTransactionMode (ITransactionMode transactionMode)
+    {
+      base.SetTransactionMode (transactionMode);
+    }
   }
 }

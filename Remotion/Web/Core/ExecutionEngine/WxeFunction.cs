@@ -165,8 +165,8 @@ namespace Remotion.Web.ExecutionEngine
     }
 
     private IWxeFunctionExecutionListener _executionListener = NullExecutionListener.Null;
-    private TransactionStrategyBase _transactionStrategy = NullTransactionStrategy.Null;
-    private readonly ITransactionMode _transactionMode;
+    private TransactionStrategyBase _transactionStrategy;
+    private ITransactionMode _transactionMode;
     private readonly WxeVariablesContainer _variablesContainer;
     private readonly WxeExceptionHandler _exceptionHandler = new WxeExceptionHandler ();
     private string _functionToken;
@@ -210,7 +210,7 @@ namespace Remotion.Web.ExecutionEngine
 
       try
       {
-        _executionListener.OnExecutionPlay (context);        
+        _executionListener.OnExecutionPlay (context);
         base.Execute (context);
         _executionListener.OnExecutionStop (context);
       }
@@ -260,17 +260,26 @@ namespace Remotion.Web.ExecutionEngine
 
     public ITransactionStrategy Transaction
     {
-      get { return _transactionStrategy; }
+      get { return TransactionStrategy; }
     }
 
     protected internal TransactionStrategyBase TransactionStrategy
     {
-      get { return _transactionStrategy; }
+      get { return _transactionStrategy ?? NullTransactionStrategy.Null; }
     }
 
     protected ITransactionMode TransactionMode
     {
       get { return _transactionMode; }
+    }
+
+    protected void SetTransactionMode (ITransactionMode transactionMode)
+    {
+      ArgumentUtility.CheckNotNull ("transactionMode", transactionMode);
+
+      if (_transactionStrategy != null)
+        throw new InvalidOperationException ("The TransactionMode cannot be set after the TransactionStrategy has been initialized.");
+      _transactionMode = transactionMode;
     }
 
     object[] IWxeFunctionExecutionContext.GetInParameters ()
