@@ -160,6 +160,9 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 
     public void OnTransactionDiscard ()
     {
+      if (_subTransaction != null)
+        _subTransaction.Discard ();
+
       if (_parentHierarchyManager != null)
         _parentHierarchyManager.RemoveSubTransaction();
     }

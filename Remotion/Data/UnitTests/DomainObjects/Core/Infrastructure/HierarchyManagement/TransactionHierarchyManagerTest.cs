@@ -121,6 +121,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.HierarchyMan
     }
 
     [Test]
+    public void OnTransactionDiscard_WithSubTransaction ()
+    {
+      _thisEventSinkWithStrictMock.StubMock (mock => mock.SubTransactionCreating (Arg<ClientTransaction>.Is.Anything));
+      _thisEventSinkWithStrictMock.StubMock (
+          mock => mock.SubTransactionCreated (Arg<ClientTransaction>.Is.Anything, Arg<ClientTransaction>.Is.Anything));
+
+      ClientTransaction fakeSubTransaction = ClientTransactionObjectMother.CreateWithParent (_thisTransaction);
+      _manager.CreateSubTransaction (tx => fakeSubTransaction);
+      Assert.That (_manager.SubTransaction, Is.SameAs (fakeSubTransaction));
+      Assert.That (fakeSubTransaction.IsDiscarded, Is.False);
+
+      _parentHierarchyManagerStrictMock
+          .Expect (mock => mock.RemoveSubTransaction())
+          .WhenCalled (
+              mi =>
+              Assert.That (
+                  fakeSubTransaction.IsDiscarded,
+                  Is.True,
+                  "Subtransaction should be discarded before this transaction is removed from the parent tx, so that the hierarchy is still intact "
+                  + "within SubTransaction's Discard listener."));
+
+      _manager.OnTransactionDiscard();
+
+      Assert.That (fakeSubTransaction.IsDiscarded, Is.True);
+    }
+
+    [Test]
     public void OnBeforeObjectRegistration_WithoutParent ()
     {
       Assert.That (_managerWithNullParent.InactiveClientTransactionListener.CurrentlyLoadingObjectIDs, Is.Empty);
