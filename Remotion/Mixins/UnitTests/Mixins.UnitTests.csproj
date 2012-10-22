@@ -175,8 +175,10 @@
     <Compile Include="Core\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierDeserializerTest.cs" />
     <Compile Include="Core\CodeGeneration\Serialization\SerializationInfoConcreteMixinTypeIdentifierSerializerTest.cs" />
     <Compile Include="Core\CodeGeneration\SetUpFixture.cs" />
+    <Compile Include="Core\CodeGeneration\TestDomain\ClassInheritingDebuggerDisplay.cs" />
     <Compile Include="Core\CodeGeneration\TestDomain\ClassOverridingSingleMixinMethod.cs" />
     <Compile Include="Core\CodeGeneration\TestDomain\ClassWithCopyCustomAttributes.cs" />
+    <Compile Include="Core\CodeGeneration\TestDomain\ClassWithDebuggerDisplay.cs" />
     <Compile Include="Core\CodeGeneration\TestDomain\GenericClassWithAllKindsOfMembers.cs" />
     <Compile Include="Core\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForBaseType1.cs" />
     <Compile Include="Core\CodeGeneration\TestDomain\LoadableConcreteMixedTypeForClassOverridingMixinMembers.cs" />

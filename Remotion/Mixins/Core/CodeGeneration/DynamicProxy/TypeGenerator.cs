@@ -450,9 +450,10 @@ namespace Remotion.Mixins.CodeGeneration.DynamicProxy
 
     private void AddDebuggerAttributes ()
     {
-      if (!Configuration.ReceivedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
+      if (!Configuration.ReceivedAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)) 
+          && !Configuration.CustomAttributes.ContainsKey (typeof (DebuggerDisplayAttribute)))
       {
-        string debuggerString = string.Format ("{{ToString(),nq}} (+{0})", SeparatedStringBuilder.Build (",", _configuration.Mixins, m => m.Name));
+        string debuggerString = "{ToString(),nq} (mixed)";
         _debuggerDisplayAttributeGenerator.AddDebuggerDisplayAttribute (Emitter, debuggerString);
       }
     }

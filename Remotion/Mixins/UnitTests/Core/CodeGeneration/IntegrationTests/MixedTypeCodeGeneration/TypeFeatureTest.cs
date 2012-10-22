@@ -126,6 +126,30 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     }
 
     [Test]
+    public void DebuggerDisplayAttribute_NotAddedIfAlreadyExistsOnTargetClass ()
+    {
+      Type generatedType = CreateMixedType (typeof (ClassWithDebuggerDisplay), typeof (NullMixin));
+      var attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
+      Assert.That (attributes.Length, Is.EqualTo (0));
+
+      attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), true);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0].Value, Is.EqualTo ("On Target"));
+    }
+
+    [Test]
+    public void DebuggerDisplayAttribute_NotAddedIfAlreadyExistsOnTargetClassBase ()
+    {
+      Type generatedType = CreateMixedType (typeof (ClassInheritingDebuggerDisplay), typeof (NullMixin));
+      var attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), false);
+      Assert.That (attributes.Length, Is.EqualTo (0));
+
+      attributes = (DebuggerDisplayAttribute[]) generatedType.GetCustomAttributes (typeof (DebuggerDisplayAttribute), true);
+      Assert.That (attributes.Length, Is.EqualTo (1));
+      Assert.That (attributes[0].Value, Is.EqualTo ("On Target"));
+    }
+
+    [Test]
     public void MixedTypeAttribute_GetsClassContext ()
     {
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType3));
