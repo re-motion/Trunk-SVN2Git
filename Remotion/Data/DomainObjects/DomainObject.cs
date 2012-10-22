@@ -39,7 +39,6 @@ namespace Remotion.Data.DomainObjects
   /// </para>
   /// </remarks>
   [Serializable]
-  [DebuggerDisplay ("{GetPublicDomainObjectType().FullName}: {ID.ToString()}")]
   public class DomainObject
   {
     #region Creation and GetObject factory methods
