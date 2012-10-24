@@ -228,7 +228,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       Assert.That (classContext, Is.Not.Null);
 
       Assert.That (classContext.Mixins.ContainsKey (typeof (MixinWithAdditionalClassDependency)), Is.True);
-      Assert.That (classContext.Mixins[typeof (MixinWithAdditionalClassDependency)].ExplicitDependencies.ContainsKey (typeof (MixinWithNoAdditionalDependency)), Is.True);
+      Assert.That (
+          classContext.Mixins[typeof (MixinWithAdditionalClassDependency)].ExplicitDependencies, Has.Member (typeof (MixinWithNoAdditionalDependency)));
     }
 
     [Test]

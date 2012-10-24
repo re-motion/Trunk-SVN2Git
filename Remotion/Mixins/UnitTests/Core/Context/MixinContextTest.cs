@@ -35,7 +35,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var mixinContext = MixinContextObjectMother.Create (explicitDependencies: Enumerable.Empty<Type> ());
 
       Assert.AreEqual (0, mixinContext.ExplicitDependencies.Count);
-      Assert.IsFalse (mixinContext.ExplicitDependencies.ContainsKey (typeof (IBaseType2)));
+      Assert.That (mixinContext.ExplicitDependencies, Has.No.Member(typeof (IBaseType2)));
 
       Assert.That (mixinContext.ExplicitDependencies, Is.Empty);
     }
@@ -46,8 +46,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var mixinContext = MixinContextObjectMother.Create (explicitDependencies: new[] { typeof (IBT6Mixin2), typeof (IBT6Mixin3) });
 
       Assert.AreEqual (2, mixinContext.ExplicitDependencies.Count);
-      Assert.IsTrue (mixinContext.ExplicitDependencies.ContainsKey (typeof (IBT6Mixin2)));
-      Assert.IsTrue (mixinContext.ExplicitDependencies.ContainsKey (typeof (IBT6Mixin3)));
+      Assert.That (mixinContext.ExplicitDependencies, Has.Member (typeof (IBT6Mixin2)));
+      Assert.That (mixinContext.ExplicitDependencies, Has.Member (typeof (IBT6Mixin3)));
 
       Assert.That(mixinContext.ExplicitDependencies, Is.EquivalentTo(new[] { typeof(IBT6Mixin2), typeof(IBT6Mixin3) }));
     }
@@ -58,8 +58,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var mixinContext = MixinContextObjectMother.Create (explicitDependencies: new[] { typeof (BT6Mixin2), typeof (BT6Mixin3<>) });
 
       Assert.AreEqual (2, mixinContext.ExplicitDependencies.Count);
-      Assert.IsTrue (mixinContext.ExplicitDependencies.ContainsKey (typeof (BT6Mixin2)));
-      Assert.IsTrue (mixinContext.ExplicitDependencies.ContainsKey (typeof (BT6Mixin3<>)));
+      Assert.That (mixinContext.ExplicitDependencies, Has.Member (typeof (BT6Mixin2)));
+      Assert.That (mixinContext.ExplicitDependencies, Has.Member (typeof (BT6Mixin3<>)));
 
       Assert.That(mixinContext.ExplicitDependencies, Is.EquivalentTo(new[] { typeof(BT6Mixin2), typeof(BT6Mixin3<>) }));
     }
@@ -208,6 +208,22 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       var context = MixinContextObjectMother.Create (introducedMemberVisibility: MemberVisibility.Public);
       Assert.That (context.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Public));
+    }
+
+    [Test]
+    public void ApplyAdditionalExplicitDependencies ()
+    {
+      var context = MixinContextObjectMother.Create (explicitDependencies: new[] { typeof (int), typeof (double) });
+
+      var result = context.ApplyAdditionalExplicitDependencies (new[] { typeof (string), typeof (double), typeof (float) });
+
+      Assert.That (result.ExplicitDependencies, Is.EquivalentTo (new[] { typeof (int), typeof (double), typeof (string), typeof (float) }));
+      Assert.That (context.ExplicitDependencies, Is.EquivalentTo (new[] { typeof (int), typeof (double) }));
+
+      Assert.That (result.MixinType, Is.SameAs (context.MixinType));
+      Assert.That (result.MixinKind, Is.EqualTo (context.MixinKind));
+      Assert.That (result.IntroducedMemberVisibility, Is.EqualTo (context.IntroducedMemberVisibility));
+      Assert.That (result.Origin, Is.SameAs (context.Origin));
     }
 
     [Test]

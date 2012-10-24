@@ -53,8 +53,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (1));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DateTime)), Is.True);
-      Assert.That (inheritor.Mixins[typeof (DateTime)].ExplicitDependencies.ContainsKey (typeof (int)), Is.False);
-      Assert.That (inheritor.Mixins[typeof (DateTime)].ExplicitDependencies.ContainsKey (typeof (decimal)), Is.True);
+      Assert.That (inheritor.Mixins[typeof (DateTime)].ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (DateTime)].ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]
@@ -68,8 +68,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (1));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (NullTarget)), Is.False);
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DerivedNullTarget)), Is.True);
-      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)].ExplicitDependencies.ContainsKey (typeof (int)), Is.False);
-      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)].ExplicitDependencies.ContainsKey (typeof (decimal)), Is.True);
+      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)].ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (DerivedNullTarget)].ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]
@@ -105,8 +105,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (inheritor.Mixins.Count, Is.EqualTo (1));
       Assert.That (inheritor.Mixins.ContainsKey (typeof (GenericMixinWithVirtualMethod<>)), Is.False);
       Assert.That (inheritor.Mixins.ContainsKey (typeof (GenericMixinWithVirtualMethod<object>)), Is.True);
-      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)].ExplicitDependencies.ContainsKey (typeof (int)), Is.False);
-      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)].ExplicitDependencies.ContainsKey (typeof (decimal)), Is.True);
+      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)].ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (GenericMixinWithVirtualMethod<object>)].ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]
@@ -123,8 +123,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DerivedGenericMixin<>)), Is.False);
       Assert.That (inheritor.Mixins.ContainsKey (typeof (DerivedGenericMixin<object>)), Is.True);
 
-      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)].ExplicitDependencies.ContainsKey (typeof (int)), Is.False);
-      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)].ExplicitDependencies.ContainsKey (typeof (decimal)), Is.True);
+      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)].ExplicitDependencies, Has.No.Member (typeof (int)));
+      Assert.That (inheritor.Mixins[typeof (DerivedGenericMixin<object>)].ExplicitDependencies, Has.Member (typeof (decimal)));
     }
 
     [Test]

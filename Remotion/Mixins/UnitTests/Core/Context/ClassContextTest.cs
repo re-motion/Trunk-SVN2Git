@@ -133,7 +133,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.IsNotNull (specialized);
       Assert.AreEqual (typeof (List<int>), specialized.Type);
       Assert.IsTrue (specialized.Mixins.ContainsKey (typeof (BT1Mixin1)));
-      Assert.IsTrue (specialized.Mixins[typeof (BT1Mixin1)].ExplicitDependencies.ContainsKey (typeof (IBaseType2)));
+      Assert.That (specialized.Mixins[typeof (BT1Mixin1)].ExplicitDependencies, Has.Member (typeof (IBaseType2)));
     }
 
     [Test]

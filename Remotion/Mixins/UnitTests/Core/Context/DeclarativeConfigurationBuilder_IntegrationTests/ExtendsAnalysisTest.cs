@@ -66,7 +66,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           new DeclarativeConfigurationBuilder (null).AddType (typeof (ExtenderWithDependencies)).AddType (typeof (ExtenderWithoutDependencies)).BuildConfiguration ();
       Assert.AreEqual (0, configuration.GetContext (typeof (object)).Mixins[typeof (ExtenderWithoutDependencies)].ExplicitDependencies.Count);
       Assert.AreEqual (1, configuration.GetContext (typeof (object)).Mixins[typeof (ExtenderWithDependencies)].ExplicitDependencies.Count);
-      Assert.IsTrue (configuration.GetContext (typeof (object)).Mixins[typeof (ExtenderWithDependencies)].ExplicitDependencies.ContainsKey (typeof (string)));
+      Assert.That (configuration.GetContext (typeof (object)).Mixins[typeof (ExtenderWithDependencies)].ExplicitDependencies, Has.Member (typeof (string)));
     }
 
     public class ExtendsTargetBase { }

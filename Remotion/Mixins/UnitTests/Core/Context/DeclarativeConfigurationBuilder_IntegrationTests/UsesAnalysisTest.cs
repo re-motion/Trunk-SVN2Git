@@ -64,7 +64,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
           new DeclarativeConfigurationBuilder (null).AddType (typeof (UserWithoutDependencies)).AddType (typeof (UserWithDependencies)).BuildConfiguration();
       Assert.AreEqual (0, configuration.GetContext (typeof (UserWithoutDependencies)).Mixins[typeof (NullMixin)].ExplicitDependencies.Count);
       Assert.AreEqual (1, configuration.GetContext (typeof (UserWithDependencies)).Mixins[typeof (NullMixin)].ExplicitDependencies.Count);
-      Assert.IsTrue (configuration.GetContext (typeof (UserWithDependencies)).Mixins[typeof (NullMixin)].ExplicitDependencies.ContainsKey (typeof (string)));
+      Assert.That (configuration.GetContext (typeof (UserWithDependencies)).Mixins[typeof (NullMixin)].ExplicitDependencies, Has.Member (typeof (string)));
     }
 
     [Uses (typeof (NullMixin), AdditionalDependencies = new[] { typeof (object) })]
@@ -78,8 +78,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (DerivedWithoutUses)).BuildConfiguration ();
       Assert.IsTrue (configuration.GetContext (typeof (DerivedWithoutUses)).Mixins.ContainsKey (typeof (NullMixin)));
-      Assert.IsTrue (configuration.GetContext (typeof (DerivedWithoutUses)).Mixins[typeof (NullMixin)].ExplicitDependencies
-          .ContainsKey (typeof (object)));
+      Assert.That (configuration.GetContext (typeof (DerivedWithoutUses)).Mixins[typeof (NullMixin)].ExplicitDependencies, Has.Member (typeof (object)));
       Assert.AreEqual (1, configuration.GetContext (typeof (DerivedWithoutUses)).Mixins.Count);
     }
 
@@ -144,8 +143,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     {
       MixinConfiguration configuration = new DeclarativeConfigurationBuilder (null).AddType (typeof (DerivedWithUses)).BuildConfiguration ();
       Assert.IsTrue (configuration.GetContext (typeof (DerivedWithUses)).Mixins.ContainsKey (typeof (NullMixin)));
-      Assert.IsFalse (configuration.GetContext (typeof (DerivedWithUses)).Mixins[typeof (NullMixin)]
-          .ExplicitDependencies.ContainsKey (typeof (object)));
+      Assert.That (configuration.GetContext (typeof (DerivedWithUses)).Mixins[typeof (NullMixin)].ExplicitDependencies, Has.No.Member (typeof (object)));
       Assert.AreEqual (1, configuration.GetContext (typeof (DerivedWithUses)).Mixins.Count);
     }
 
