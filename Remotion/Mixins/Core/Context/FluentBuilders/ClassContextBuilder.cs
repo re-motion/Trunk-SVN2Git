@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
@@ -682,7 +683,8 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <returns>A <see cref="ClassContext"/> for the <see cref="TargetType"/> holding all mixin configuration data collected so far.</returns>
     public virtual ClassContext BuildClassContext (IEnumerable<ClassContext> inheritedContexts)
     {
-      var classContext = new ClassContext (_targetType, GetMixins(), CompleteInterfaces);
+      var mixinContexts = MixinContextBuilders.Select (mixinContextBuilder => mixinContextBuilder.BuildMixinContext());
+      var classContext = new ClassContext (_targetType, mixinContexts, CompleteInterfaces);
       classContext = ApplyInheritance(classContext, inheritedContexts);
       classContext = classContext.SuppressMixins (SuppressedMixins);
       return classContext;
@@ -695,12 +697,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public virtual ClassContext BuildClassContext ()
     {
       return BuildClassContext (new ClassContext[0]);
-    }
-
-    private IEnumerable<MixinContext> GetMixins ()
-    {
-      foreach (MixinContextBuilder mixinContextBuilder in MixinContextBuilders)
-        yield return mixinContextBuilder.BuildMixinContext();
     }
 
     private ClassContext ApplyInheritance (ClassContext classContext, IEnumerable<ClassContext> inheritedContexts)
@@ -721,13 +717,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
 
       Type typeDefinition = mixinType.GetGenericTypeDefinition ();
 
-      foreach (MixinContextBuilder mixinContextBuilder in MixinContextBuilders)
-      {
-        if (mixinContextBuilder.MixinType.IsGenericType && mixinContextBuilder.MixinType.GetGenericTypeDefinition () == typeDefinition)
-          return true;
-      }
-
-      return false;
+      return MixinContextBuilders
+          .Any (mixinContextBuilder => mixinContextBuilder.MixinType.IsGenericType 
+              && mixinContextBuilder.MixinType.GetGenericTypeDefinition() == typeDefinition);
     }
 
     #region Parent members
