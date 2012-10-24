@@ -256,7 +256,14 @@
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedMixin.cs" />
     <Compile Include="Core\Definitions\CompleteInterfaceDependencyDefinitionTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AdditionalMixinDependencyAttribute.cs" />
-    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\DependencyResolvingOrderingConflictTest.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AddingDependencyWithinDerivedClassTest.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\ClassWithGenericMixinTest.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\GenericClassTest.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\DependencyViaInterfaceTest.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\UnresolvedMixinDependencyTest.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\OverridingAlphabeticalOrdering.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\ResolvingOrderingConflictTest.cs" />
+    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\PuttingMixinInTheMiddleTest.cs" />
     <Compile Include="Core\IntegrationTests\AttributeIntroduction\InheritedAttributeViaCopyTest.cs" />
     <Compile Include="Core\MixinTypeUtilityPerformanceTest.cs" />
     <Compile Include="Core\DefinitionObjectMother.cs" />

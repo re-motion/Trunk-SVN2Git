@@ -19,24 +19,34 @@ using NUnit.Framework;
 using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
 
 [assembly: AdditionalMixinDependency (
-    typeof (DependencyResolvingOrderingConflictTest.C), 
-    typeof (DependencyResolvingOrderingConflictTest.M1),
-    typeof (DependencyResolvingOrderingConflictTest.M2))]
+    typeof (AddingDependencyWithinDerivedClassTest.D),
+    typeof (AddingDependencyWithinDerivedClassTest.M1),
+    typeof (AddingDependencyWithinDerivedClassTest.M2))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
   [Ignore ("TODO 5142")]
-  public class DependencyResolvingOrderingConflictTest
+  public class AddingDependencyWithinDerivedClassTest
   {
     [Test]
-    public void OrderingConflictIsResolvedViaAssemblyLevelAttribute ()
+    public void DependencyAddedToDerivedClass_FromBaseClassMixin_ToDerivedClassMixin_ViaAssemblyLevelAttribute ()
     {
-      var instance = ObjectFactory.Create<C>();
+      var instance = ObjectFactory.Create<D>();
 
       var result = instance.M();
 
       Assert.That (result, Is.EqualTo ("M1 M2 C"));
+    }
+
+    [Test]
+    public void DependencyAddedToDerivedClass_HasNoEffectOnBaseClass ()
+    {
+      var instance = ObjectFactory.Create<C> ();
+
+      var result = instance.M ();
+
+      Assert.That (result, Is.EqualTo ("M1 C"));
     }
 
     public class C : IC
@@ -45,6 +55,10 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
       {
         return "C";
       }
+    }
+
+    public class D : C
+    {
     }
 
     public interface IC
@@ -62,7 +76,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
       }
     }
 
-    [Extends (typeof (C))]
+    [Extends (typeof (D))]
     public class M2 : Mixin<C, IC>
     {
       [OverrideTarget]
