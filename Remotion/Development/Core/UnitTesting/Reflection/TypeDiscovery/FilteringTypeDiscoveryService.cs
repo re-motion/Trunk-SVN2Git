@@ -33,19 +33,21 @@ namespace Remotion.Development.UnitTesting.Reflection.TypeDiscovery
       ArgumentUtility.CheckNotNullOrEmpty ("whitelistedNamespaces", whitelistedNamespaces);
 
       return new FilteringTypeDiscoveryService (
-          decoratedTypeDiscoveryService, type => whitelistedNamespaces.Any (whitelistedNamespace => type.Namespace.StartsWith (whitelistedNamespace)));
+          decoratedTypeDiscoveryService,
+          type => whitelistedNamespaces.Any (whitelistedNamespace => GetNamespaceSafe (type).StartsWith (whitelistedNamespace)));
     }
 
     public static FilteringTypeDiscoveryService CreateFromNamespaceBlacklist (ITypeDiscoveryService decoratedTypeDiscoveryService, params string[] blacklistedNamespaces)
     {
       ArgumentUtility.CheckNotNull ("decoratedTypeDiscoveryService", decoratedTypeDiscoveryService);
-      ArgumentUtility.CheckNotNullOrEmpty ("whitelistedNamespaces", blacklistedNamespaces);
+      ArgumentUtility.CheckNotNullOrEmpty ("blacklistedNamespaces", blacklistedNamespaces);
 
       return new FilteringTypeDiscoveryService (
-          decoratedTypeDiscoveryService, type => !blacklistedNamespaces.Any (blacklistedNamespace => type.Namespace.StartsWith (blacklistedNamespace)));
+          decoratedTypeDiscoveryService,
+          type => !blacklistedNamespaces.Any (blacklistedNamespace => GetNamespaceSafe (type).StartsWith (blacklistedNamespace)));
     }
 
-    protected FilteringTypeDiscoveryService (ITypeDiscoveryService decoratedTypeDiscoveryService, Func<Type, bool> filter)
+    public FilteringTypeDiscoveryService (ITypeDiscoveryService decoratedTypeDiscoveryService, Func<Type, bool> filter)
     {
       ArgumentUtility.CheckNotNull ("decoratedTypeDiscoveryService", decoratedTypeDiscoveryService);
       ArgumentUtility.CheckNotNull ("filter", filter);
@@ -60,5 +62,9 @@ namespace Remotion.Development.UnitTesting.Reflection.TypeDiscovery
       return collection.Cast<Type>().Where (_filter).ToList();
     }
 
+    private static string GetNamespaceSafe (Type type)
+    {
+      return type.Namespace ?? "";
+    }
   }
 }
