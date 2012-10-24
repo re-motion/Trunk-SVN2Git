@@ -17,18 +17,40 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting.Reflection.TypeDiscovery;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.UnitTests.Core.Validation.ValidationTestDomain;
 using Remotion.Mixins.Validation;
 using Remotion.Mixins.Validation.Rules;
 using System.Linq;
+using Remotion.Reflection.TypeDiscovery;
 
 namespace Remotion.Mixins.UnitTests.Core.Validation
 {
   [TestFixture]
   public class GeneralValidationTest : ValidationTestBase
   {
+    private IDisposable _configurationScope;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      var validationTestDomainNamespace = typeof (AbstractMixinWithoutBase).Namespace;
+      var globalTestDomainNamespace = typeof (BaseType1).Namespace;
+      var typeDiscoveryService = FilteringTypeDiscoveryService.CreateFromNamespaceWhitelist (
+          ContextAwareTypeDiscoveryUtility.GetTypeDiscoveryService(), validationTestDomainNamespace, globalTestDomainNamespace);
+      var types = typeDiscoveryService.GetTypes (null, false);
+      _configurationScope = DeclarativeConfigurationBuilder.BuildConfigurationFromTypes (null, types.Cast<Type>()).EnterScope();
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      _configurationScope.Dispose();
+    }
+
     [Test]
     public void ValidationVisitsSomething ()
     {
