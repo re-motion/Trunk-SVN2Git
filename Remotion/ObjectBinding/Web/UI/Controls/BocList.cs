@@ -1010,7 +1010,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _listMenu.Visible = HasListMenu;
       _listMenu.Enabled = !_editModeController.IsRowEditModeActive;
 
+      BocColumnDefinition[] columns = EnsureColumnsGot (true);
       EnsureChildControls();
+
       base.OnPreRender (e);
 
       // Must be executed before CalculateCurrentPage
@@ -1028,8 +1030,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
       }
       CalculateCurrentPage (true);
-
-      BocColumnDefinition[] columns = EnsureColumnsGot (true);
 
       EnsureEditModeValidatorsRestored();
 
