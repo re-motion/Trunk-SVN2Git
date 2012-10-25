@@ -215,7 +215,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
     {
       var context = MixinContextObjectMother.Create (explicitDependencies: new[] { typeof (int), typeof (double) });
 
-      var result = context.ApplyAdditionalExplicitDependencies (new[] { typeof (string), typeof (double), typeof (float) });
+      var result = context.ApplyAdditionalExplicitDependencies (new[] { typeof (string), typeof (double), typeof (float), typeof (float) });
 
       Assert.That (result.ExplicitDependencies, Is.EquivalentTo (new[] { typeof (int), typeof (double), typeof (string), typeof (float) }));
       Assert.That (context.ExplicitDependencies, Is.EquivalentTo (new[] { typeof (int), typeof (double) }));

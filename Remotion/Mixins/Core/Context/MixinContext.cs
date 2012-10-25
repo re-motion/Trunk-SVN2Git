@@ -180,10 +180,12 @@ namespace Remotion.Mixins.Context
     }
 
     /// <summary>
-    /// Returns an equivalent <see cref="MixinContext"/>
+    /// Returns an equivalent <see cref="MixinContext"/> that contains the given <paramref name="explicitDependencies"/> (eliminating duplicates).
     /// </summary>
-    /// <param name="explicitDependencies"></param>
-    /// <returns></returns>
+    /// <param name="explicitDependencies">The additional types to add to the <see cref="ExplicitDependencies"/> collection of the returned
+    /// <see cref="MixinContext"/>. If this sequence contains duplicate entries or entries that already exist within the 
+    /// <see cref="ExplicitDependencies"/>, those entries are ignored.</param>
+    /// <returns>An equivalent <see cref="MixinContext"/> that contains the given <paramref name="explicitDependencies"/>.</returns>
     public MixinContext ApplyAdditionalExplicitDependencies (IEnumerable<Type> explicitDependencies)
     {
       ArgumentUtility.CheckNotNull ("explicitDependencies", explicitDependencies);
