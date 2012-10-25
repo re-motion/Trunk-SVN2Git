@@ -151,6 +151,7 @@
     <Compile Include="Context\IMixinInheritancePolicy.cs" />
     <Compile Include="Context\MixinContext.cs" />
     <Compile Include="Context\MixinContextCollection.cs" />
+    <Compile Include="Context\MixinDependencySpecification.cs" />
     <Compile Include="Context\ReadOnlyContextCollection.cs" />
     <Compile Include="Context\Serialization\AttributeClassContextDeserializer.cs" />
     <Compile Include="Context\Serialization\AttributeClassContextSerializer.cs" />

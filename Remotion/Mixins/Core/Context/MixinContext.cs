@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Remotion.Collections;
 using Remotion.Mixins.Context.Serialization;
+using Remotion.Text;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context
@@ -203,6 +204,16 @@ namespace Remotion.Mixins.Context
       serializer.AddIntroducedMemberVisibility (_introducedMemberVisibility);
       serializer.AddExplicitDependencies (_explicitDependencies);
       serializer.AddOrigin (_origin);
+    }
+
+    public override string ToString ()
+    {
+      return string.Format (
+          "MixinContext: '{0}' ({1},{2},Dependencies=({3}))",
+          MixinType,
+          MixinKind,
+          IntroducedMemberVisibility,
+          SeparatedStringBuilder.Build (",", ExplicitDependencies, t => t.Name));
     }
   }
 }

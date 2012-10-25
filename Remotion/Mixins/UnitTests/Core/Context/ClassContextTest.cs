@@ -347,6 +347,129 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (result.Mixins.Select (mc => mc.MixinType).ToArray (), Is.EquivalentTo (new[] { typeof (string) }));
     }
 
+    [Test]
+    public void ApplyMixinDependencies ()
+    {
+      var originalMixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (string), explicitDependencies: new[] { typeof (int) });
+      var originalMixinContext2 = MixinContextObjectMother.Create (mixinType: typeof (DateTime), explicitDependencies: new[] { typeof (double) });
+      var originalMixinContext3 = MixinContextObjectMother.Create (mixinType: typeof (object), explicitDependencies: new[] { typeof (decimal) });
+      var originalClassContext = ClassContextObjectMother.Create (typeof (NullTarget), originalMixinContext1, originalMixinContext2, originalMixinContext3);
+
+      var dependencies = 
+          new[] 
+          { 
+            new MixinDependencySpecification (typeof (string), new[] { typeof (int), typeof (float), typeof (long) }),
+            new MixinDependencySpecification (typeof (object), new[] { typeof (byte) }),
+            new MixinDependencySpecification (typeof (string), new[] { typeof (Enum) })
+          };
+
+      var result = originalClassContext.ApplyMixinDependencies (dependencies);
+
+      Assert.That (result, Is.Not.EqualTo (originalClassContext));
+      var expectedResult = new ClassContext (
+          originalClassContext.Type,
+          new[]
+          {
+              new MixinContext (
+                  originalMixinContext1.MixinKind,
+                  originalMixinContext1.MixinType,
+                  originalMixinContext1.IntroducedMemberVisibility,
+                  new[] { typeof (int), typeof (float), typeof (long), typeof (Enum) },
+                  originalMixinContext1.Origin),
+              originalMixinContext2,
+              new MixinContext (
+                  originalMixinContext3.MixinKind,
+                  originalMixinContext3.MixinType,
+                  originalMixinContext3.IntroducedMemberVisibility,
+                  new[] { typeof (decimal), typeof (byte) },
+                  originalMixinContext3.Origin)
+          },
+          originalClassContext.CompleteInterfaces);
+      Assert.That (result, Is.EqualTo (expectedResult));
+
+      Assert.That (originalClassContext.Mixins[typeof (string)].ExplicitDependencies, Has.No.Member (typeof (float)), "Original is not changed");
+    }
+
+    [Test]
+    public void ApplyMixinDependencies_NotFound ()
+    {
+      var originalMixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (object), explicitDependencies: new[] { typeof (int) });
+      var originalClassContext = ClassContextObjectMother.Create (typeof (NullTarget), originalMixinContext1);
+      var dependencies = new[] { new MixinDependencySpecification (typeof (string), new[] { typeof (float) })};
+
+      Assert.That (
+          () => originalClassContext.ApplyMixinDependencies (dependencies), 
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The mixin 'System.String' is not configured for class 'Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget'."));
+    }
+
+    [Test]
+    public void ApplyMixinDependencies_GenericMixins ()
+    {
+      var originalMixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (List<>), explicitDependencies: new[] { typeof (int) });
+      var originalMixinContext2 = MixinContextObjectMother.Create (mixinType: typeof (Dictionary<int, string>), explicitDependencies: new[] { typeof (double) });
+      var originalClassContext = ClassContextObjectMother.Create (typeof (NullTarget), originalMixinContext1, originalMixinContext2);
+
+      var dependencies =
+          new[] 
+          { 
+            new MixinDependencySpecification (typeof (List<>), new[] { typeof (float) }),
+            new MixinDependencySpecification (typeof (Dictionary<,>), new[] { typeof (byte) })
+          };
+
+      var result = originalClassContext.ApplyMixinDependencies (dependencies);
+
+      var expectedResult = new ClassContext (
+          originalClassContext.Type,
+          new[]
+          {
+              new MixinContext (
+                  originalMixinContext1.MixinKind,
+                  originalMixinContext1.MixinType,
+                  originalMixinContext1.IntroducedMemberVisibility,
+                  new[] { typeof (int), typeof (float) },
+                  originalMixinContext1.Origin),
+              new MixinContext (
+                  originalMixinContext2.MixinKind,
+                  originalMixinContext2.MixinType,
+                  originalMixinContext2.IntroducedMemberVisibility,
+                  new[] { typeof (double), typeof (byte) },
+                  originalMixinContext2.Origin)
+          },
+          originalClassContext.CompleteInterfaces);
+      Assert.That (result, Is.EqualTo (expectedResult));
+    }
+
+    [Test]
+    public void ApplyMixinDependencies_GenericMixin_NotFound ()
+    {
+      var originalMixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (List<>), explicitDependencies: new[] { typeof (int) });
+      var originalClassContext = ClassContextObjectMother.Create (typeof (NullTarget), originalMixinContext1);
+      var dependencies = new[] { new MixinDependencySpecification (typeof (List<int>), new[] { typeof (float) }) };
+
+      Assert.That (
+          () => originalClassContext.ApplyMixinDependencies (dependencies),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The mixin 'System.Collections.Generic.List`1[System.Int32]' is not configured for class "
+              + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget'."));
+    }
+
+    [Test]
+    public void ApplyMixinDependencies_GenericMixin_Ambiguous ()
+    {
+      var originalMixinContext1 = MixinContextObjectMother.Create (mixinType: typeof (List<int>), explicitDependencies: new[] { typeof (int) });
+      var originalMixinContext2 = MixinContextObjectMother.Create (mixinType: typeof (List<string>), explicitDependencies: new[] { typeof (int) });
+      var originalClassContext = ClassContextObjectMother.Create (typeof (NullTarget), originalMixinContext1, originalMixinContext2);
+      var dependencies = new[] { new MixinDependencySpecification (typeof (List<>), new[] { typeof (float) }) };
+
+      Assert.That (
+          () => originalClassContext.ApplyMixinDependencies (dependencies),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The dependency specification for 'System.Collections.Generic.List`1[T]' applied to class "
+              + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget' is ambiguous; matching mixins: "
+              + "'System.Collections.Generic.List`1[System.Int32]', 'System.Collections.Generic.List`1[System.String]'."));
+    }
+
     private static MixinContext CreateBT1Mixin1Context ()
     {
       return MixinContextObjectMother.Create (mixinType: typeof (BT1Mixin1));

@@ -16,11 +16,13 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using Remotion.Collections;
 using Remotion.Mixins.Context.Serialization;
 using Remotion.Mixins.Context.Suppression;
+using Remotion.Text;
 using Remotion.Utilities;
 using System.Linq;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Context
 {
@@ -173,12 +175,12 @@ namespace Remotion.Mixins.Context
     /// </returns>
     public override string ToString ()
     {
-      var sb = new StringBuilder (Type.FullName);
-      foreach (MixinContext mixinContext in Mixins)
-        sb.Append (" + ").Append (mixinContext.MixinType.FullName);
-      foreach (Type completeInterfaceType in CompleteInterfaces)
-        sb.Append (" => ").Append (completeInterfaceType.FullName);
-      return sb.ToString();
+      return string.Format (
+          "ClassContext: '{0}'{1}  Mixins: {2}{1}  CompleteInterfaces: ({3})",
+          Type,
+          Environment.NewLine,
+          SeparatedStringBuilder.Build ("", Mixins, mc => Environment.NewLine + "    " + mc), 
+          SeparatedStringBuilder.Build (",", CompleteInterfaces, ifc => ifc.Name));
     }
 
     /// <summary>
@@ -244,6 +246,35 @@ namespace Remotion.Mixins.Context
       return new ClassContext (Type, mixinsAfterSuppression.Values, CompleteInterfaces);
     }
 
+    /// <summary>
+    /// Returns a new <see cref="ClassContext"/> equivalent to this object but with the given <paramref name="dependencySpecifications"/> applied to 
+    /// the <see cref="Mixins"/>.
+    /// </summary>
+    /// <param name="dependencySpecifications">The <see cref="MixinDependencySpecification"/> objects to apply to the <see cref="Mixins"/> of this 
+    /// <see cref="ClassContext"/> to create the resulting new <see cref="ClassContext"/>.
+    /// </param>
+    /// <returns>A new <see cref="ClassContext"/> equivalent to this object but with the given <paramref name="dependencySpecifications"/> applied to 
+    /// the <see cref="Mixins"/>.</returns>
+    /// <exception cref="InvalidOperationException">
+    ///   The mixin given by an item of <paramref name="dependencySpecifications"/> does not exist within this <see cref="ClassContext"/>.
+    /// </exception>
+    public ClassContext ApplyMixinDependencies (IEnumerable<MixinDependencySpecification> dependencySpecifications)
+    {
+      ArgumentUtility.CheckNotNull ("dependencySpecifications", dependencySpecifications);
+
+      var newMixinContexts = _mixins.ToDictionary (mc => mc.MixinType);
+      foreach (var dependencySpecification in dependencySpecifications)
+      {
+        var mixinType = dependencySpecification.MixinType;
+        var originalMixinContext = GetMatchingMixin (mixinType, newMixinContexts);
+
+        var newMixinContext = originalMixinContext.ApplyAdditionalExplicitDependencies (dependencySpecification.Dependencies);
+        newMixinContexts[originalMixinContext.MixinType] = newMixinContext;
+      }
+
+      return new ClassContext (_type, newMixinContexts.Values, _completeInterfaces);
+    }
+
     public void Serialize (IClassContextSerializer serializer)
     {
       ArgumentUtility.CheckNotNull ("serializer", serializer);
@@ -251,6 +282,37 @@ namespace Remotion.Mixins.Context
       serializer.AddClassType (Type);
       serializer.AddMixins (Mixins);
       serializer.AddCompleteInterfaces (CompleteInterfaces);
+    }
+
+    private MixinContext GetMatchingMixin (Type mixinType, Dictionary<Type, MixinContext> mixinContexts)
+    {
+      var originalMixinContext = mixinContexts.GetValueOrDefault (mixinType);
+      if (originalMixinContext == null && mixinType.IsGenericTypeDefinition)
+      {
+        var matchingMixins = mixinContexts.Values
+            .Where (mc => mc.MixinType.IsGenericType && mc.MixinType.GetGenericTypeDefinition () == mixinType)
+            .ConvertToCollection ();
+        try
+        {
+          originalMixinContext = matchingMixins.SingleOrDefault ();
+        }
+        catch (InvalidOperationException ex)
+        {
+          var message = string.Format (
+              "The dependency specification for '{0}' applied to class '{1}' is ambiguous; matching mixins: {2}.",
+              mixinType,
+              Type,
+              SeparatedStringBuilder.Build (", ", matchingMixins, mc => "'" + mc.MixinType + "'"));
+          throw new InvalidOperationException (message, ex);
+        }
+      }
+
+      if (originalMixinContext == null)
+      {
+        var message = string.Format ("The mixin '{0}' is not configured for class '{1}'.", mixinType, Type);
+        throw new InvalidOperationException (message);
+      }
+      return originalMixinContext;
     }
   }
 }
