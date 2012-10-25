@@ -151,6 +151,20 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=2844CD1DB3091F47BC36CB164A9FA6B9/ReplacePattern/@EntryValue">Assert.That ($expr$, Is.True);</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=2844CD1DB3091F47BC36CB164A9FA6B9/SearchPattern/@EntryValue">Assert.IsTrue ($expr$);</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=2844CD1DB3091F47BC36CB164A9FA6B9/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=expr/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=expr/Properties/=ExactType/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=expr/Properties/=ExpressionType/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=expr/Type/@EntryValue">ExpressionPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=item/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=item/Properties/=ExactType/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=item/Properties/=ExpressionType/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/CustomPatternPlaceholder/=item/Type/@EntryValue">ExpressionPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/ReplacePattern/@EntryValue">Assert.That ($expr$, Has.Member ($item$));</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/SearchPattern/@EntryValue">Assert.Contains ($item$, $expr$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=52A2565BBED6D0458663E7C6735AAE9B/Severity/@EntryValue">SUGGESTION</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=5608620311D33E40A2F41860C1F21328/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=5608620311D33E40A2F41860C1F21328/CustomPatternPlaceholder/=expr/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=5608620311D33E40A2F41860C1F21328/CustomPatternPlaceholder/=expr/Properties/=ExactType/@EntryIndexedValue">True</s:String>
@@ -175,6 +189,16 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=5F07500A01C8094FA827E0C81094025F/ReplacePattern/@EntryValue">Assert.That ($expr2$, Is.Not.EqualTo ($expr$));</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=5F07500A01C8094FA827E0C81094025F/SearchPattern/@EntryValue">Assert.AreNotEqual ($expr$, $expr2$);</s:String>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=5F07500A01C8094FA827E0C81094025F/Severity/@EntryValue">SUGGESTION</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/CustomPatternPlaceholder/=expr/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/CustomPatternPlaceholder/=expr/Properties/=ExactType/@EntryIndexedValue">True</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/CustomPatternPlaceholder/=expr/Properties/=ExpressionType/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/CustomPatternPlaceholder/=expr/Type/@EntryValue">ExpressionPlaceholder</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/IsReplacePattern/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/LanguageName/@EntryValue">CSHARP</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/ReplacePattern/@EntryValue">Assert.That ($expr$, Is.Empty);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/SearchPattern/@EntryValue">Assert.IsEmpty ($expr$);</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7A89559B4594D342AC9CB75D23F1121F/Severity/@EntryValue">SUGGESTION</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7B12257D0E245C4895B62F8117BD7294/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7B12257D0E245C4895B62F8117BD7294/CustomPatternPlaceholder/=expr/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/StructuralSearch/Pattern/=7B12257D0E245C4895B62F8117BD7294/CustomPatternPlaceholder/=expr/Properties/=ExactType/@EntryIndexedValue">True</s:String>
