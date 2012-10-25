@@ -502,7 +502,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         bool isTitleRowSelectorControl = (key == titleRowSelectorControlFilter);
         if (isDataRowSelectorControl && !isTitleRowSelectorControl)
         {
-          if ((_selection == RowSelection.SingleCheckBox || _selection == RowSelection.SingleRadioButton) && (_selectorControlCheckedState.Count > 1))
+          if ((_selection == RowSelection.SingleCheckBox || _selection == RowSelection.SingleRadioButton) && (_selectorControlCheckedState.Count == 1))
             continue;
 
           string rowID = postCollection[i];
