@@ -129,7 +129,7 @@ namespace Remotion.Mixins.Context
         return false;
 
       if (other._cachedHashCode != _cachedHashCode 
-          || !other.Type.Equals (Type) 
+          || other.Type != Type 
           || other._mixins.Count != _mixins.Count 
           || other._completeInterfaces.Count != _completeInterfaces.Count)
         return false;
