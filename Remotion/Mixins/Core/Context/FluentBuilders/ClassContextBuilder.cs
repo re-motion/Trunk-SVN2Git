@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Remotion.Collections;
 using Remotion.Mixins.Context.Suppression;
 using Remotion.Utilities;
 
@@ -40,6 +41,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     private readonly Dictionary<Type, MixinContextBuilder> _mixinContextBuilders = new Dictionary<Type, MixinContextBuilder> ();
     private readonly HashSet<Type> _completeInterfaces = new HashSet<Type> ();
     private readonly List<IMixinSuppressionRule> _suppressedMixins = new List<IMixinSuppressionRule> ();
+    private readonly MultiDictionary<Type, Type> _mixinDependencies = new MultiDictionary<Type, Type>();
     private bool _suppressInheritance = false;
 
     public ClassContextBuilder (Type targetType) : this (new MixinConfigurationBuilder (null), targetType)
@@ -98,6 +100,15 @@ namespace Remotion.Mixins.Context.FluentBuilders
     public IEnumerable<IMixinSuppressionRule> SuppressedMixins
     {
       get { return _suppressedMixins; }
+    }
+
+    /// <summary>
+    /// Gets the independent mixin dependencies collected so far.
+    /// </summary>
+    /// <value>The independent mixin dependencies collected so far.</value>
+    public IEnumerable<MixinDependencySpecification> MixinDependencies
+    {
+      get { return _mixinDependencies.Select (kvp => new MixinDependencySpecification (kvp.Key, kvp.Value)); }
     }
 
     public bool SuppressInheritance
@@ -677,6 +688,36 @@ namespace Remotion.Mixins.Context.FluentBuilders
     }
 
     /// <summary>
+    /// Denotes that mixin <paramref name="dependentMixin"/> should have a dependency on <paramref name="requiredMixin"/> in the context 
+    /// of the <see cref="TargetType"/>. This dependency can be added independently from the actual mixin, but when the <see cref="ClassContext"/> is 
+    /// built, an exception is found if <paramref name="dependentMixin"/> is not configured for the <see cref="TargetType"/>.
+    /// </summary>
+    /// <param name="dependentMixin">The mixin for which the dependency is to be added.</param>
+    /// <param name="requiredMixin">The type on which <paramref name="dependentMixin"/> should have a dependency.</param>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder WithMixinDependency (Type dependentMixin, Type requiredMixin)
+    {
+      ArgumentUtility.CheckNotNull ("dependentMixin", dependentMixin);
+      ArgumentUtility.CheckNotNull ("requiredMixin", requiredMixin);
+
+      _mixinDependencies.Add (dependentMixin, requiredMixin);
+      return this;
+    }
+
+    /// <summary>
+    /// Denotes that mixin <typeparamref name="TDependentMixin"/> should have a dependency on <typeparamref name="TRequiredMixin"/> in the context 
+    /// of the <see cref="TargetType"/>. This dependency can be added independently from the actual mixin, but when the <see cref="ClassContext"/> is 
+    /// built, an exception is found if <typeparamref name="TDependentMixin"/> is not configured for the <see cref="TargetType"/>.
+    /// </summary>
+    /// <typeparam name="TDependentMixin">The mixin for which the dependency is to be added.</typeparam>
+    /// <typeparam name="TRequiredMixin">The type on which <typeparamref name="TDependentMixin"/> should have a dependency.</typeparam>
+    /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
+    public virtual ClassContextBuilder WithMixinDependency<TDependentMixin, TRequiredMixin> ()
+    {
+      return WithMixinDependency (typeof (TDependentMixin), typeof (TRequiredMixin));
+    }
+
+    /// <summary>
     /// Builds a class context with the data collected so far for the <see cref="TargetType"/> that inherits from other contexts.
     /// </summary>
     /// <param name="inheritedContexts">A collection of <see cref="ClassContext"/> instances the newly built context should inherit mixin data from.</param>
@@ -685,8 +726,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
     {
       var mixinContexts = MixinContextBuilders.Select (mixinContextBuilder => mixinContextBuilder.BuildMixinContext());
       var classContext = new ClassContext (_targetType, mixinContexts, CompleteInterfaces);
-      classContext = ApplyInheritance(classContext, inheritedContexts);
+      classContext = ApplyInheritance (classContext, inheritedContexts);
       classContext = classContext.SuppressMixins (SuppressedMixins);
+      classContext = classContext.ApplyMixinDependencies (_mixinDependencies.Select (kvp => new MixinDependencySpecification (kvp.Key, kvp.Value)));
       return classContext;
     }
 
@@ -764,5 +806,6 @@ namespace Remotion.Mixins.Context.FluentBuilders
       return _parent.EnterScope();
     }
     #endregion
+
   }
 }
