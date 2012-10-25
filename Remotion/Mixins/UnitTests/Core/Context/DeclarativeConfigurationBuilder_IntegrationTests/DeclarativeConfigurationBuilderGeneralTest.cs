@@ -56,7 +56,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
 
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.True);
-      Assert.That (configuration.GetContext (typeof (BaseType6)).CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)), Is.True);
+      Assert.That (configuration.GetContext (typeof (BaseType6)).CompleteInterfaces, Has.Member (typeof (ICBT6Mixin1)));
     }
 
     [Test]
@@ -251,9 +251,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       ClassContext classContext = configuration.GetContext (typeof (BaseType6));
       Assert.That (classContext, Is.Not.Null);
 
-      Assert.That (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin1)), Is.True);
-      Assert.That (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin2)), Is.True);
-      Assert.That (classContext.CompleteInterfaces.ContainsKey (typeof (ICBT6Mixin3)), Is.True);
+      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ICBT6Mixin1)));
+      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ICBT6Mixin2)));
+      Assert.That (classContext.CompleteInterfaces, Has.Member (typeof (ICBT6Mixin3)));
     }
 
     [Extends (typeof (BaseType1))]

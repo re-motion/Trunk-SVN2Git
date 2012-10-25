@@ -724,8 +724,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
 
       Assert.That (builtContext.CompleteInterfaces.Count, Is.EqualTo (2));
-      Assert.That (builtContext.CompleteInterfaces.ContainsKey (typeof (IBT6Mixin1)), Is.True);
-      Assert.That (builtContext.CompleteInterfaces.ContainsKey (typeof (IBT6Mixin2)), Is.True);
+      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin1)));
+      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin2)));
     }
 
     [Test]
@@ -747,8 +747,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT1Mixin2)), Is.True);
 
       Assert.That (builtContext.CompleteInterfaces.Count, Is.EqualTo (2));
-      Assert.That (builtContext.CompleteInterfaces.ContainsKey (typeof (IBT6Mixin1)), Is.True);
-      Assert.That (builtContext.CompleteInterfaces.ContainsKey (typeof (IBT6Mixin2)), Is.True);
+      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin1)));
+      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin2)));
     }
 
     [Test]
@@ -770,9 +770,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (builtContext.Mixins.ContainsKey (typeof (BT7Mixin1)), Is.True);
 
       Assert.That (builtContext.CompleteInterfaces.Count, Is.EqualTo (3));
-      Assert.That (builtContext.CompleteInterfaces.ContainsKey (typeof (IBT6Mixin1)), Is.True);
-      Assert.That (builtContext.CompleteInterfaces.ContainsKey (typeof (IBT6Mixin2)), Is.True);
-      Assert.That (builtContext.CompleteInterfaces.ContainsKey (typeof (BT1Mixin2)), Is.True);
+      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin1)));
+      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (IBT6Mixin2)));
+      Assert.That (builtContext.CompleteInterfaces, Has.Member (typeof (BT1Mixin2)));
     }
 
     [Test]

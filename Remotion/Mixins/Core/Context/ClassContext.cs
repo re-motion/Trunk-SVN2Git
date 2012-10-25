@@ -53,7 +53,7 @@ namespace Remotion.Mixins.Context
 
     private readonly Type _type;
     private readonly MixinContextCollection _mixins;
-    private readonly ReadOnlyContextCollection<Type, Type> _completeInterfaces;
+    private readonly ReadOnlyCollectionDecorator<Type> _completeInterfaces;
     private readonly int _cachedHashCode;
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace Remotion.Mixins.Context
       _type = type;
 
       _mixins = new MixinContextCollection (mixins);
-      _completeInterfaces = new ReadOnlyContextCollection<Type, Type> (t => t, completeInterfaces);
+      _completeInterfaces = new HashSet<Type> (completeInterfaces).AsReadOnly();
 
       _cachedHashCode = CalculateHashCode (this);
     }
@@ -97,7 +97,7 @@ namespace Remotion.Mixins.Context
     /// Gets the complete interfaces associated with this <see cref="ClassContext"/>.
     /// </summary>
     /// <value>The complete interfaces associated with this context (for an explanation, see <see cref="CompleteInterfaceAttribute"/>).</value>
-    public ReadOnlyContextCollection<Type, Type> CompleteInterfaces
+    public ReadOnlyCollectionDecorator<Type> CompleteInterfaces
     {
       get { return _completeInterfaces; }
     }
@@ -147,7 +147,7 @@ namespace Remotion.Mixins.Context
 
       foreach (var completeInterface in _completeInterfaces)
       {
-        if (!other._completeInterfaces.ContainsKey (completeInterface))
+        if (!other._completeInterfaces.Contains (completeInterface))
           return false;
       }
       // ReSharper restore LoopCanBeConvertedToQuery

@@ -76,7 +76,6 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var context = new ClassContext (typeof (BaseType5), new MixinContext[0], new Type[0]);
       Assert.That (context.CompleteInterfaces.Count, Is.EqualTo (0));
       Assert.That (context.CompleteInterfaces, Is.Empty);
-      Assert.That (context.CompleteInterfaces.ContainsKey (typeof (IBT5MixinC1)), Is.False);
     }
 
     [Test]
@@ -85,7 +84,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       var context = new ClassContext (typeof (BaseType5), new MixinContext[0], new[] { typeof (IBT5MixinC1) });
       Assert.That (context.CompleteInterfaces.Count, Is.EqualTo (1));
       Assert.That (context.CompleteInterfaces, Has.Member (typeof (IBT5MixinC1)));
-      Assert.That (context.CompleteInterfaces.ContainsKey (typeof (IBT5MixinC1)), Is.True);
+      Assert.That (context.CompleteInterfaces, Has.Member (typeof (IBT5MixinC1)));
     }
 
     [Test]

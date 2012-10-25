@@ -173,7 +173,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
 
       ClassContext inheritor = ClassContextObjectMother.Create(typeof (double)).InheritFrom (new[] { baseContext });
 
-      Assert.That (inheritor.CompleteInterfaces.ContainsKey (typeof (object)), Is.True);
+      Assert.That (inheritor.CompleteInterfaces, Has.Member (typeof (object)));
     }
 
     [Test]
@@ -184,7 +184,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       ClassContext inheritor = new ClassContext (typeof (double), new MixinContext[0], new[] {typeof (object)}).InheritFrom (new[] { baseContext });
 
       Assert.That (inheritor.CompleteInterfaces.Count, Is.EqualTo (1));
-      Assert.That (inheritor.CompleteInterfaces.ContainsKey (typeof (object)), Is.True);
+      Assert.That (inheritor.CompleteInterfaces, Has.Member (typeof (object)));
     }
 
     [Test]
