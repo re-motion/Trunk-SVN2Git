@@ -260,7 +260,7 @@ function BocList_UnselectRow (bocList, rowBlock)
 
 function BocList_SetSelectAllRowsSelectorOnDemand (selectedRows)
 {
-  if (selectedRows.DataRowCount == selectedRows.Length)
+  if (selectedRows.DataRowCount == selectedRows.Length && selectedRows.DataRowCount > 0)
     selectedRows.SelectAllSelectorControls.each (function () { this.checked = true; });
 }
 

@@ -118,7 +118,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelecto
       }
     }
     selectedRows.SelectAllSelectorControls = document.getElementById(selectAllSelectorControlID);
-    if (selectedRows.DataRowCount == selectedRows.Length && selectedRows.SelectAllSelectorControls != null)
+    if (selectedRows.DataRowCount == selectedRows.Length && selectedRows.DataRowCount > 0 && selectedRows.SelectAllSelectorControls != null)
       selectedRows.SelectAllSelectorControls.checked = true;
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
@@ -222,7 +222,7 @@ function BocList_SelectRow (bocList, rowBlock)
   rowBlock.Row.className = _bocList_TrClassNameSelected;
   rowBlock.SelectorControl.checked = true;
 
-  if (selectedRows.DataRowCount == selectedRows.Length && selectedRows.SelectAllSelectorControls != null)
+  if (selectedRows.DataRowCount == selectedRows.Length && selectedRows.DataRowCount > 0 && selectedRows.SelectAllSelectorControls != null)
     selectedRows.SelectAllSelectorControls.checked = true;
 }
 
