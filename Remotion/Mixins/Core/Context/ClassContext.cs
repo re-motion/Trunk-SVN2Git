@@ -212,22 +212,6 @@ namespace Remotion.Mixins.Context
     }
 
     /// <summary>
-    /// Creates a new <see cref="ClassContext"/> inheriting all data from the given <paramref name="baseContext"/> and applying overriding rules for
-    /// mixins and concrete interfaces already defined for this <see cref="ClassContext"/>.
-    /// </summary>
-    /// <param name="baseContext">The base context to inherit data from.</param>
-    /// <returns>A new <see cref="ClassContext"/> combining the mixins of this object with those from the <paramref name="baseContext"/>.</returns>
-    /// <exception cref="ConfigurationException">The <paramref name="baseContext"/> contains mixins whose base types or generic
-    /// type definitions are already defined on this mixin. The derived context cannot have concrete mixins whose base types
-    /// are defined on the parent context.
-    /// </exception>
-    public ClassContext InheritFrom (ClassContext baseContext)
-    {
-      ArgumentUtility.CheckNotNull ("baseContext", baseContext);
-      return InheritFrom (new[] {baseContext});
-    }
-
-    /// <summary>
     /// Creates a new <see cref="ClassContext"/> inheriting all data from the given <paramref name="baseContexts"/> and applying overriding rules for
     /// mixins and concrete interfaces already defined for this <see cref="ClassContext"/>.
     /// </summary>
@@ -239,6 +223,7 @@ namespace Remotion.Mixins.Context
     /// </exception>
     public ClassContext InheritFrom (IEnumerable<ClassContext> baseContexts)
     {
+      ArgumentUtility.CheckNotNull ("baseContexts", baseContexts);
       return ClassContextDeriver.Instance.DeriveContext (this, baseContexts);
     }
 
