@@ -64,13 +64,18 @@ namespace Remotion.Mixins.Context
     /// <param name="completeInterfaces">The complete interfaces supported by the class.</param>
     /// <exception cref="ArgumentNullException">The <paramref name="type"/> parameter is <see langword="null"/>.</exception>
     public ClassContext (Type type, IEnumerable<MixinContext> mixins, IEnumerable<Type> completeInterfaces)
+        : this (
+            ArgumentUtility.CheckNotNull ("type", type),
+            new MixinContextCollection (ArgumentUtility.CheckNotNull ("mixins", mixins)),
+            new HashSet<Type> (ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces)).AsReadOnly())
     {
-      ArgumentUtility.CheckNotNull ("type", type);
+    }
 
+    private ClassContext (Type type, MixinContextCollection mixins, ReadOnlyCollectionDecorator<Type> completeInterfaces)
+    {
       _type = type;
-
-      _mixins = new MixinContextCollection (mixins);
-      _completeInterfaces = new HashSet<Type> (completeInterfaces).AsReadOnly();
+      _mixins = mixins;
+      _completeInterfaces = completeInterfaces;
 
       _cachedHashCode = CalculateHashCode (this);
     }
@@ -243,7 +248,7 @@ namespace Remotion.Mixins.Context
       foreach (var rule in suppressionRules)
         rule.RemoveAffectedMixins (mixinsAfterSuppression);
 
-      return new ClassContext (Type, mixinsAfterSuppression.Values, CompleteInterfaces);
+      return new ClassContext (_type, new MixinContextCollection (mixinsAfterSuppression.Values), _completeInterfaces);
     }
 
     /// <summary>
@@ -272,7 +277,7 @@ namespace Remotion.Mixins.Context
         newMixinContexts[originalMixinContext.MixinType] = newMixinContext;
       }
 
-      return new ClassContext (_type, newMixinContexts.Values, _completeInterfaces);
+      return new ClassContext (_type, new MixinContextCollection (newMixinContexts.Values), _completeInterfaces);
     }
 
     public void Serialize (IClassContextSerializer serializer)
