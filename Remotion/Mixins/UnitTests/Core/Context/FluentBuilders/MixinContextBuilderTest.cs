@@ -353,6 +353,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
         _parentBuilderMock.Expect (mock => mock.SuppressMixins (typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
         _parentBuilderMock.Expect (mock => mock.SuppressMixins<BT1Mixin1, BT1Mixin2> ()).Return (r1);
         _parentBuilderMock.Expect (mock => mock.SuppressMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> ()).Return (r1);
+        _parentBuilderMock.Expect (mock => mock.WithMixinDependency (typeof (BT1Mixin1), typeof (BT1Mixin2))).Return (r1);
+        _parentBuilderMock.Expect (mock => mock.WithMixinDependency<BT1Mixin1, BT1Mixin2> ()).Return (r1);
         _parentBuilderMock.Expect (mock => mock.BuildClassContext (inheritedContexts)).Return (r5);
         _parentBuilderMock.Expect (mock => mock.BuildClassContext ()).Return (r5);
 
@@ -403,6 +405,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
       Assert.That (_mixinBuilder.SuppressMixins (typeof (BT1Mixin1), typeof (BT1Mixin2)), Is.SameAs (r1));
       Assert.That (_mixinBuilder.SuppressMixins<BT1Mixin1, BT1Mixin2> (), Is.SameAs (r1));
       Assert.That (_mixinBuilder.SuppressMixins<BT1Mixin1, BT1Mixin2, BT3Mixin1> (), Is.SameAs (r1));
+      Assert.That (_mixinBuilder.WithMixinDependency (typeof (BT1Mixin1), typeof (BT1Mixin2)), Is.SameAs (r1));
+      Assert.That (_mixinBuilder.WithMixinDependency<BT1Mixin1, BT1Mixin2> (), Is.SameAs (r1));
       Assert.That (_mixinBuilder.BuildClassContext (inheritedContexts), Is.SameAs (r5));
       Assert.That (_mixinBuilder.BuildClassContext (), Is.SameAs (r5));
 
