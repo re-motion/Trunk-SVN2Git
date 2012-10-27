@@ -15,41 +15,34 @@
 // under the License.
 // 
 using System;
+using System.Collections.Generic;
 using Microsoft.Scripting.Ast;
 using Remotion.Utilities;
 
 namespace Remotion.TypePipe.Expressions
 {
   /// <summary>
-  /// Checks if an <see cref="Expression"/> tree contains a node of a certain type (assignable).
-  /// The result can be accessed via the property <see cref="Result"/>.
+  /// Provides extension methods for working with <see cref="Expression"/> trees.
   /// </summary>
-  public class ContainsNodeOfTypeExpressionVisitor : ExpressionVisitor
+  public static class ExpressionExtensions
   {
-    private readonly Type _nodeType;
-
-    public ContainsNodeOfTypeExpressionVisitor (Type nodeType)
+    public static Expression Replace (this Expression expression, IDictionary<Expression, Expression> replacements)
     {
-      ArgumentUtility.CheckNotNull ("nodeType", nodeType);
-      _nodeType = nodeType;
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("replacements", replacements);
+
+      return new ReplacingExpressionVisitor (replacements).Visit (expression);
     }
 
-    public bool Result { get; private set; }
-
-    public override Expression Visit (Expression node)
+    public static bool Contains (this Expression expression, Predicate<Expression> predicate)
     {
-      ArgumentUtility.CheckNotNull ("node", node);
+      ArgumentUtility.CheckNotNull ("expression", expression);
+      ArgumentUtility.CheckNotNull ("predicate", predicate);
 
-      if (Result)
-        return node;
+      var visitor = new ContainsExpressionVisitor (predicate);
+      visitor.Visit (expression);
 
-      if (_nodeType.IsInstanceOfType (node))
-      {
-        Result = true;
-        return node;
-      }
-
-      return base.Visit (node);
+      return visitor.Result;
     }
   }
 }

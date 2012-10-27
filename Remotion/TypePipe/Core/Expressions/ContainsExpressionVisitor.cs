@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,31 +15,41 @@
 // under the License.
 // 
 using System;
-using System.Collections.Generic;
 using Microsoft.Scripting.Ast;
 using Remotion.Utilities;
-using Remotion.Collections;
 
 namespace Remotion.TypePipe.Expressions
 {
   /// <summary>
-  /// Replaces <see cref="Expression"/>s in an expression tree non-recursively, i.e. occurrences within replacements are not replaced.
+  /// Checks if an <see cref="Expression"/> tree contains a node that matches the given <see cref="Predicate{Expression}"/>.
+  /// The result can be accessed via the property <see cref="Result"/>.
   /// </summary>
-  public class ReplacingExpressionVisitor : ExpressionVisitor
+  public class ContainsExpressionVisitor : ExpressionVisitor
   {
-    private readonly IDictionary<Expression, Expression> _replacements;
+    private readonly Predicate<Expression> _predicate;
 
-    public ReplacingExpressionVisitor (IDictionary<Expression, Expression> replacements)
+    public ContainsExpressionVisitor (Predicate<Expression> predicate)
     {
-      ArgumentUtility.CheckNotNull ("replacements", replacements);
-      _replacements = replacements;
+      ArgumentUtility.CheckNotNull ("predicate", predicate);
+      _predicate = predicate;
     }
+
+    public bool Result { get; private set; }
 
     public override Expression Visit (Expression node)
     {
       ArgumentUtility.CheckNotNull ("node", node);
 
-      return _replacements.GetValueOrDefault (node) ?? base.Visit (node);
+      if (Result)
+        return node;
+
+      if (_predicate (node))
+      {
+        Result = true;
+        return node;
+      }
+
+      return base.Visit (node);
     }
   }
 }
