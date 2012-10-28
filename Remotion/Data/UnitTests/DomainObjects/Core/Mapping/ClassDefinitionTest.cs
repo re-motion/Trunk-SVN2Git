@@ -1248,11 +1248,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     [ExpectedException (typeof (MappingException), ExpectedMessage =
         "The mixin configuration for domain object type 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order' "
         + "was changed after the mapping information was built.\r\n"
-        + "Original configuration: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order + "
-        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA.\r\n"
-        + "Active configuration: Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order + "
-        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.NonDomainObjectMixin + "
-        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA")]
+        + "Original configuration: ClassContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        + "  Mixins: \r\n"
+        + "    MixinContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA' (Extending,Private,Dependencies=())\r\n"
+        + "  CompleteInterfaces: ().\r\n"
+        + "Active configuration: ClassContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order'\r\n"
+        + "  Mixins: \r\n"
+        + "    MixinContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.NonDomainObjectMixin' (Extending,Private,Dependencies=())\r\n"
+        + "    MixinContext: 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.MixinTestDomain.MixinA' (Extending,Private,Dependencies=())\r\n"
+        + "  CompleteInterfaces: ()")]
     public void ValidateCurrentMixinConfiguration_ThrowsWhenAnyChanges_EvenToNonPersistentMixins ()
     {
       var classDefinition = ClassDefinitionObjectMother.CreateClassDefinitionWithMixins (typeof (Order), typeof (MixinA));
