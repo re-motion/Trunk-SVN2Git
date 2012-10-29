@@ -15,14 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.Context.FluentBuilders;
 
-namespace Remotion.Mixins.Context.DeclarativeAnalyzers
+namespace Remotion.Mixins
 {
-  public class UsesAnalyzer : MixinConfigurationAttributeAnalyzer<Type>
+  /// <summary>
+  /// Defines a way of applying an attribute to a <see cref="MixinConfigurationBuilder"/> so that the attribute's configuration
+  /// information is included into the <see cref="MixinConfiguration"/> built by the <see cref="MixinConfigurationBuilder"/>.
+  /// </summary>
+  /// <typeparam name="TTarget">The type of entity the <see cref="IMixinConfigurationAttribute{TTarget}"/> is applied to.</typeparam>
+  public interface IMixinConfigurationAttribute<in TTarget>
   {
-    public UsesAnalyzer ()
-      : base (t => (UsesAttribute[]) t.GetCustomAttributes (typeof (UsesAttribute), false))
-    {
-    }
+    void Apply (MixinConfigurationBuilder configurationBuilder, TTarget attributeTarget);
   }
 }

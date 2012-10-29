@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -68,7 +69,7 @@ namespace Remotion.Mixins
   /// </code>
   /// </example>
   [AttributeUsage (AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
-  public class CompleteInterfaceAttribute : Attribute
+  public class CompleteInterfaceAttribute : Attribute, IMixinConfigurationAttribute<Type>
   {
     private readonly Type _targetType;
 
@@ -88,6 +89,14 @@ namespace Remotion.Mixins
     public Type TargetType
     {
       get { return _targetType; }
+    }
+
+    public void Apply (MixinConfigurationBuilder mixinConfigurationBuilder, Type interfaceType)
+    {
+      ArgumentUtility.CheckNotNull ("mixinConfigurationBuilder", mixinConfigurationBuilder);
+      ArgumentUtility.CheckNotNull ("interfaceType", interfaceType);
+
+      mixinConfigurationBuilder.ForClass (TargetType).AddCompleteInterface (interfaceType);
     }
   }
 }

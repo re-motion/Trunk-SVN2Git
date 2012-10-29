@@ -26,10 +26,10 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
   public class DeclarativeConfigurationAnalyzerTest
   {
     private MockRepository _mockRepository;
-    private MixinConfigurationBuilder _configurationBuilderMock;
+    private MixinConfigurationBuilder _fakeConfigurationBuilder;
     private ExtendsAnalyzer _extendsAnalyzerMock;
     private UsesAnalyzer _usesAnalyzerMock;
-    private CompleteInterfaceAnalyzer _completeInterfaceAnalyzerMock;
+    private HasCompleteInterfaceMarkerAnalyzer _hasCompleteInterfaceMarkerAnalyzerMock;
     private MixAnalyzer _mixAnalyzerMock;
     private IgnoresAnalyzer _ignoresAnalyzerMock;
 
@@ -37,43 +37,43 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
     public void SetUp ()
     {
       _mockRepository = new MockRepository();
-      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+      _fakeConfigurationBuilder = _mockRepository.Stub<MixinConfigurationBuilder> ((MixinConfiguration) null);
 
-      _extendsAnalyzerMock = _mockRepository.StrictMock<ExtendsAnalyzer> (_configurationBuilderMock);
-      _usesAnalyzerMock = _mockRepository.StrictMock<UsesAnalyzer> (_configurationBuilderMock);
-      _completeInterfaceAnalyzerMock = _mockRepository.StrictMock<CompleteInterfaceAnalyzer> (_configurationBuilderMock);
-      _mixAnalyzerMock = _mockRepository.StrictMock<MixAnalyzer> (_configurationBuilderMock);
-      _ignoresAnalyzerMock = _mockRepository.StrictMock<IgnoresAnalyzer> (_configurationBuilderMock);
+      _extendsAnalyzerMock = _mockRepository.StrictMock<ExtendsAnalyzer> ();
+      _usesAnalyzerMock = _mockRepository.StrictMock<UsesAnalyzer> ();
+      _hasCompleteInterfaceMarkerAnalyzerMock = _mockRepository.StrictMock<HasCompleteInterfaceMarkerAnalyzer> ();
+      _mixAnalyzerMock = _mockRepository.StrictMock<MixAnalyzer> ();
+      _ignoresAnalyzerMock = _mockRepository.StrictMock<IgnoresAnalyzer> ();
     }
 
     [Test]
     public void Analyze ()
     {
-      Type[] types = new Type[] { typeof (object), typeof (string), typeof (DeclarativeConfigurationAnalyzerTest) };
+      Type[] types = new[] { typeof (object), typeof (string), typeof (DeclarativeConfigurationAnalyzerTest) };
 
       using (_mockRepository.Unordered ())
       {
-        _extendsAnalyzerMock.Analyze (typeof (object)); // expectation
-        _extendsAnalyzerMock.Analyze (typeof (string)); // expectation
-        _extendsAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest)); // expectation
-        _usesAnalyzerMock.Analyze (typeof (object)); // expectation
-        _usesAnalyzerMock.Analyze (typeof (string)); // expectation
-        _usesAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest)); // expectation
-        _completeInterfaceAnalyzerMock.Analyze (typeof (object)); // expectation
-        _completeInterfaceAnalyzerMock.Analyze (typeof (string)); // expectation
-        _completeInterfaceAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest)); // expectation
-        _mixAnalyzerMock.Analyze (typeof (object).Assembly);
-        _mixAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest).Assembly);
-        _ignoresAnalyzerMock.Analyze (typeof (object)); // expectation
-        _ignoresAnalyzerMock.Analyze (typeof (string)); // expectation
-        _ignoresAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest)); // expectation
+        _extendsAnalyzerMock.Analyze (typeof (object), _fakeConfigurationBuilder); // expectation
+        _extendsAnalyzerMock.Analyze (typeof (string), _fakeConfigurationBuilder); // expectation
+        _extendsAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest), _fakeConfigurationBuilder); // expectation
+        _usesAnalyzerMock.Analyze (typeof (object), _fakeConfigurationBuilder); // expectation
+        _usesAnalyzerMock.Analyze (typeof (string), _fakeConfigurationBuilder); // expectation
+        _usesAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest), _fakeConfigurationBuilder); // expectation
+        _hasCompleteInterfaceMarkerAnalyzerMock.Analyze (typeof (object), _fakeConfigurationBuilder); // expectation
+        _hasCompleteInterfaceMarkerAnalyzerMock.Analyze (typeof (string), _fakeConfigurationBuilder); // expectation
+        _hasCompleteInterfaceMarkerAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest), _fakeConfigurationBuilder); // expectation
+        _mixAnalyzerMock.Analyze (typeof (object).Assembly, _fakeConfigurationBuilder);
+        _mixAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest).Assembly, _fakeConfigurationBuilder);
+        _ignoresAnalyzerMock.Analyze (typeof (object), _fakeConfigurationBuilder); // expectation
+        _ignoresAnalyzerMock.Analyze (typeof (string), _fakeConfigurationBuilder); // expectation
+        _ignoresAnalyzerMock.Analyze (typeof (DeclarativeConfigurationAnalyzerTest), _fakeConfigurationBuilder); // expectation
       }
 
       _mockRepository.ReplayAll();
 
       DeclarativeConfigurationAnalyzer analyzer = new DeclarativeConfigurationAnalyzer (_extendsAnalyzerMock, _usesAnalyzerMock, 
-          _completeInterfaceAnalyzerMock, _mixAnalyzerMock, _ignoresAnalyzerMock);
-      analyzer.Analyze (types);
+          _hasCompleteInterfaceMarkerAnalyzerMock, _mixAnalyzerMock, _ignoresAnalyzerMock);
+      analyzer.Analyze (types, _fakeConfigurationBuilder);
 
       _mockRepository.VerifyAll();
     }

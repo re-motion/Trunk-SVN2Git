@@ -15,42 +15,17 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using Remotion.Mixins.Context.FluentBuilders;
-using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
-  public class IgnoresAnalyzer
+  public class IgnoresAnalyzer : MixinConfigurationAttributeAnalyzer<Type>
   {
-    private readonly MixinConfigurationBuilder _configurationBuilder;
-
-    public IgnoresAnalyzer (MixinConfigurationBuilder configurationBuilder)
+    public IgnoresAnalyzer ()
+      : base (t => t.GetCustomAttributes (typeof (IgnoresClassAttribute), false)
+            .Cast<IMixinConfigurationAttribute<Type>>()
+            .Concat (t.GetCustomAttributes (typeof (IgnoresMixinAttribute), false).Cast<IMixinConfigurationAttribute<Type>>()))
     {
-      ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
-      _configurationBuilder = configurationBuilder;
-    }
-
-    public virtual void Analyze (Type type)
-    {
-      ArgumentUtility.CheckNotNull ("type", type);
-      foreach (IgnoresClassAttribute attribute in type.GetCustomAttributes (typeof (IgnoresClassAttribute), false))
-        AnalyzeIgnoresClassAttribute (type, attribute);
-      foreach (IgnoresMixinAttribute attribute in type.GetCustomAttributes (typeof (IgnoresMixinAttribute), false))
-        AnalyzeIgnoresMixinAttribute (type, attribute);
-    }
-
-    public virtual void AnalyzeIgnoresClassAttribute (Type mixinType, IgnoresClassAttribute attribute)
-    {
-      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
-      ArgumentUtility.CheckNotNull ("attribute", attribute);
-      _configurationBuilder.ForClass (attribute.ClassToIgnore).SuppressMixin (mixinType);
-    }
-
-    public virtual void AnalyzeIgnoresMixinAttribute (Type targetClassType, IgnoresMixinAttribute attribute)
-    {
-      ArgumentUtility.CheckNotNull ("targetClassType", targetClassType);
-      ArgumentUtility.CheckNotNull ("attribute", attribute);
-      _configurationBuilder.ForClass (targetClassType).SuppressMixin (attribute.MixinToIgnore);
     }
   }
 }

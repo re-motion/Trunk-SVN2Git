@@ -134,12 +134,13 @@
     <Compile Include="Context\ClassContextCombiner.cs" />
     <Compile Include="Context\ClassContextDeriver.cs" />
     <Compile Include="Context\ClassContextEventArgs.cs" />
-    <Compile Include="Context\DeclarativeAnalyzers\CompleteInterfaceAnalyzer.cs" />
+    <Compile Include="Context\DeclarativeAnalyzers\HasCompleteInterfaceMarkerAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\ExtendsAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\IgnoresAnalyzer.cs" />
+    <Compile Include="Context\DeclarativeAnalyzers\IMixinDeclarationAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\MixAnalyzer.cs" />
-    <Compile Include="Context\DeclarativeAnalyzers\RelationAnalyzerBase.cs" />
+    <Compile Include="Context\DeclarativeAnalyzers\MixinConfigurationAttributeAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\UsesAnalyzer.cs" />
     <Compile Include="Context\DeclarativeConfigurationBuilder.cs" />
     <Compile Include="Context\DefaultMixinInheritancePolicy.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="IInitializableMixin.cs" />
     <Compile Include="IMixinTarget.cs" />
     <Compile Include="IOverrideAttribute.cs" />
+    <Compile Include="IMixinConfigurationAttribute.cs" />
     <Compile Include="MemberVisibility.cs" />
     <Compile Include="MemberVisibilityAttribute.cs" />
     <Compile Include="MixAttribute.cs" />

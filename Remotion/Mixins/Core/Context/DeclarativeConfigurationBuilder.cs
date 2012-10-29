@@ -216,12 +216,11 @@ namespace Remotion.Mixins.Context
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration: {elapsed}."))
       {
-        var configurationBuilder = new MixinConfigurationBuilder (_parentConfiguration);
-        var extendsAnalyzer = new ExtendsAnalyzer (configurationBuilder);
-        var usesAnalyzer = new UsesAnalyzer (configurationBuilder);
-        var completeInterfaceAnalyzer = new CompleteInterfaceAnalyzer (configurationBuilder);
-        var mixAnalyzer = new MixAnalyzer (configurationBuilder);
-        var ignoresAnalyzer = new IgnoresAnalyzer (configurationBuilder);
+        var extendsAnalyzer = new ExtendsAnalyzer ();
+        var usesAnalyzer = new UsesAnalyzer ();
+        var completeInterfaceAnalyzer = new HasCompleteInterfaceMarkerAnalyzer ();
+        var mixAnalyzer = new MixAnalyzer ();
+        var ignoresAnalyzer = new IgnoresAnalyzer ();
 
         var configurationAnalyzer = new DeclarativeConfigurationAnalyzer (
             extendsAnalyzer, 
@@ -230,8 +229,8 @@ namespace Remotion.Mixins.Context
             mixAnalyzer, 
             ignoresAnalyzer);
 
-        configurationAnalyzer.Analyze (_allTypes);
-
+        var configurationBuilder = new MixinConfigurationBuilder (_parentConfiguration);
+        configurationAnalyzer.Analyze (_allTypes, configurationBuilder);
         return configurationBuilder.BuildConfiguration();
       }
     }

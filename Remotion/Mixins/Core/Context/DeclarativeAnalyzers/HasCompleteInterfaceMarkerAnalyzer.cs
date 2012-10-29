@@ -21,20 +21,24 @@ using System.Linq;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
-  public class CompleteInterfaceAnalyzer
+  /// <summary>
+  /// Analyzes <see cref="IHasCompleteInterface{TInterface}"/> markers implemented by a type and applies the respective configuration information
+  /// to the <see cref="MixinConfigurationBuilder"/>.
+  /// </summary>
+  public class HasCompleteInterfaceMarkerAnalyzer : MixinConfigurationAttributeAnalyzer<Type>
   {
-    private readonly MixinConfigurationBuilder _configurationBuilder;
-
-    public CompleteInterfaceAnalyzer (MixinConfigurationBuilder configurationBuilder)
+    public HasCompleteInterfaceMarkerAnalyzer ()
+        : base (t => (CompleteInterfaceAttribute[]) t.GetCustomAttributes (typeof (CompleteInterfaceAttribute), false))
     {
-      ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
-      _configurationBuilder = configurationBuilder;
     }
 
-    public void Analyze (Type type)
+    public override void Analyze (Type type, MixinConfigurationBuilder configurationBuilder)
     {
-      foreach (CompleteInterfaceAttribute interfaceAttribute in type.GetCustomAttributes (typeof (CompleteInterfaceAttribute), false))
-        AnalyzeCompleteInterfaceAttribute (type, interfaceAttribute);
+      ArgumentUtility.CheckNotNull ("type", type);
+      ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
+
+      // TODO 5141: Remove this line, remove base class
+      base.Analyze (type, configurationBuilder);
 
       var completeInterfaceMarkers = (from ifc in type.GetInterfaces()
                                       where ifc.IsGenericType
@@ -45,12 +49,7 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
                                       select completeInterfaceType).ToArray();
 
       if (completeInterfaceMarkers.Length > 0)
-        _configurationBuilder.ForClass (type).AddCompleteInterfaces (completeInterfaceMarkers);
-    }
-
-    public void AnalyzeCompleteInterfaceAttribute (Type interfaceType, CompleteInterfaceAttribute completeInterfaceAttribute)
-    {
-      _configurationBuilder.ForClass (completeInterfaceAttribute.TargetType).AddCompleteInterface (interfaceType);
+        configurationBuilder.ForClass (type).AddCompleteInterfaces (completeInterfaceMarkers);
     }
   }
 }

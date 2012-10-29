@@ -18,19 +18,225 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.FluentBuilders;
+using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core
 {
   [TestFixture]
   public class MixAttributeTest
   {
-    [Test]
-    public void Default_MixinKind_IsExtending ()
+    private MockRepository _mockRepository;
+    private MixinConfigurationBuilder _configurationBuilderMock;
+
+    private Assembly _assembly;
+
+    [SetUp]
+    public void SetUp ()
     {
-      var attribute1 = new MixAttribute (typeof (string), typeof (object));
-      Assert.That (attribute1.MixinKind, Is.EqualTo (MixinKind.Extending));
+      _mockRepository = new MockRepository ();
+      _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
+
+      _assembly = GetType ().Assembly;
     }
 
+    [Test]
+    public void MixAttribute_Defaults ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (string), typeof (int));
+      Assert.That (attribute.AdditionalDependencies, Is.Empty);
+      Assert.That (attribute.SuppressedMixins, Is.Empty);
+      Assert.That (attribute.IntroducedMemberVisibility, Is.EqualTo (MemberVisibility.Private));
+      Assert.That (attribute.MixinKind, Is.EqualTo (MixinKind.Extending));
+      Assert.That (attribute.TargetType, Is.EqualTo (typeof (string)));
+      Assert.That (attribute.MixinType, Is.EqualTo (typeof (int)));
+    }
+
+    [Test]
+    public void Apply ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Extending,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Apply_SuppressedMixins ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.SuppressedMixins = new[] { typeof (int) };
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Extending,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Apply_AdditionalDependencies ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.AdditionalDependencies = new[] { typeof (string) };
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Extending,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Apply_Extending ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.MixinKind = MixinKind.Extending;
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Extending,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Apply_Used ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.MixinKind = MixinKind.Used;
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Used,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Apply_PrivateVisibility ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.IntroducedMemberVisibility = MemberVisibility.Private;
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Extending,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    public void Apply_PublicVisibility ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.IntroducedMemberVisibility = MemberVisibility.Public;
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Extending,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Public,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Return (null);
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+      _mockRepository.VerifyAll ();
+    }
+
+    [Test]
+    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "Supper?")]
+    public void Apply_InvalidOperation ()
+    {
+      MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));
+      attribute.SuppressedMixins = new[] { typeof (int) };
+      attribute.AdditionalDependencies = new[] { typeof (string) };
+
+      _configurationBuilderMock
+          .Expect (
+              mock => mock.AddMixinToClass (
+                  MixinKind.Extending,
+                  typeof (object),
+                  typeof (float),
+                  MemberVisibility.Private,
+                  attribute.AdditionalDependencies,
+                  attribute.SuppressedMixins,
+                  CreateExpectedOrigin (attribute)))
+          .Throw (new InvalidOperationException ("Supper?"));
+
+      _mockRepository.ReplayAll ();
+      attribute.Apply (_configurationBuilderMock, _assembly);
+    }
+    
     [Test]
     public void Equals_True ()
     {
@@ -142,6 +348,12 @@ namespace Remotion.Mixins.UnitTests.Core
       };
 
       Assert.That (attribute1.GetHashCode (), Is.EqualTo (attribute2.GetHashCode ()));
+    }
+
+
+    private MixinContextOrigin CreateExpectedOrigin (MixAttribute attribute)
+    {
+      return MixinContextOrigin.CreateForCustomAttribute (attribute, _assembly);
     }
   }
 }

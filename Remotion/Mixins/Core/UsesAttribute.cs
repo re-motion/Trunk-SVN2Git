@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -38,7 +40,7 @@ namespace Remotion.Mixins
   /// </para>
   /// </remarks>
   [AttributeUsage (AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
-  public class UsesAttribute : MixinRelationshipAttribute
+  public class UsesAttribute : MixinRelationshipAttribute, IMixinConfigurationAttribute<Type>
   {
     private readonly Type _mixinType;
 
@@ -58,6 +60,15 @@ namespace Remotion.Mixins
     public Type MixinType
     {
       get { return _mixinType; }
+    }
+
+    public void Apply (MixinConfigurationBuilder configurationBuilder, Type attributeTarget)
+    {
+      ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
+      ArgumentUtility.CheckNotNull ("attributeTarget", attributeTarget);
+
+      var origin = MixinContextOrigin.CreateForCustomAttribute (this, attributeTarget);
+      Apply (configurationBuilder, MixinKind.Used, attributeTarget, MixinType, origin);
     }
   }
 }

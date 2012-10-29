@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Linq;
+using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -86,6 +88,28 @@ namespace Remotion.Mixins
           ^ SuppressedMixins.Aggregate (0, (acc, t) => acc ^ t.GetHashCode())
           ^ AdditionalDependencies.Aggregate (0, (acc, t) => acc ^ t.GetHashCode ());
       return hc;
+    }
+
+    protected void Apply (
+        MixinConfigurationBuilder configurationBuilder,
+        MixinKind mixinKind,
+        Type targetType,
+        Type mixinType,
+        MixinContextOrigin origin)
+    {
+      ArgumentUtility.CheckNotNull ("targetType", targetType);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+      ArgumentUtility.CheckNotNull ("origin", origin);
+
+      try
+      {
+        configurationBuilder.AddMixinToClass (
+            mixinKind, targetType, mixinType, IntroducedMemberVisibility, AdditionalDependencies, SuppressedMixins, origin);
+      }
+      catch (Exception ex)
+      {
+        throw new ConfigurationException (ex.Message, ex);
+      }
     }
   }
 }

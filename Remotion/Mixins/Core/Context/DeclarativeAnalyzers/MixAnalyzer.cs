@@ -16,47 +16,14 @@
 // 
 using System;
 using System.Reflection;
-using Remotion.Collections;
-using Remotion.Mixins.Context.FluentBuilders;
-using Remotion.Utilities;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
-  public class MixAnalyzer : RelationAnalyzerBase
+  public class MixAnalyzer : MixinConfigurationAttributeAnalyzer<Assembly>
   {
-    private readonly Set<MixAttribute> _handledBindings = new Set<MixAttribute>();
-
-    public MixAnalyzer (MixinConfigurationBuilder configurationBuilder) : base (configurationBuilder)
+    public MixAnalyzer () 
+        : base (a => (MixAttribute[]) a.GetCustomAttributes (typeof (MixAttribute), false))
     {
     }
-
-    public virtual void Analyze (Assembly assembly)
-    {
-      ArgumentUtility.CheckNotNull ("assembly", assembly);
-
-      foreach (MixAttribute attribute in assembly.GetCustomAttributes (typeof (MixAttribute), false))
-      {
-        if (!_handledBindings.Contains (attribute))
-        {
-          AnalyzeMixAttribute (attribute, assembly);
-          _handledBindings.Add (attribute);
-        }
-      }
-    }
-
-    public virtual void AnalyzeMixAttribute (MixAttribute mixAttribute, Assembly assembly)
-    {
-      ArgumentUtility.CheckNotNull ("mixAttribute", mixAttribute);
-      ArgumentUtility.CheckNotNull ("assembly", assembly);
-
-      AddMixinAndAdjustException (
-          mixAttribute.MixinKind,
-          mixAttribute.TargetType,
-          mixAttribute.MixinType,
-          mixAttribute.IntroducedMemberVisibility,
-          mixAttribute.AdditionalDependencies,
-          mixAttribute.SuppressedMixins,
-          MixinContextOrigin.CreateForCustomAttribute (mixAttribute, assembly));
-    }
- }
+  }
 }

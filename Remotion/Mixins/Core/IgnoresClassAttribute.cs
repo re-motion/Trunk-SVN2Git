@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.Context.FluentBuilders;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins
 {
@@ -34,7 +36,7 @@ namespace Remotion.Mixins
   /// </para>
   /// </remarks>
   [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-  public class IgnoresClassAttribute : Attribute
+  public class IgnoresClassAttribute : Attribute, IMixinConfigurationAttribute<Type>
   {
     private readonly Type _classToIgnore;
 
@@ -55,6 +57,14 @@ namespace Remotion.Mixins
     public Type ClassToIgnore
     {
       get { return _classToIgnore; }
+    }
+
+    public void Apply (MixinConfigurationBuilder mixinConfigurationBuilder, Type mixinType)
+    {
+      ArgumentUtility.CheckNotNull ("mixinConfigurationBuilder", mixinConfigurationBuilder);
+      ArgumentUtility.CheckNotNull ("mixinType", mixinType);
+
+      mixinConfigurationBuilder.ForClass (ClassToIgnore).SuppressMixin (mixinType);
     }
   }
 }

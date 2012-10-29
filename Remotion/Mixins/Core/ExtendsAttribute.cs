@@ -15,6 +15,8 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using Remotion.Mixins.Context;
+using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins
@@ -38,7 +40,7 @@ namespace Remotion.Mixins
   /// </para>
   /// </remarks>
   [AttributeUsage (AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-  public class ExtendsAttribute : MixinRelationshipAttribute
+  public class ExtendsAttribute : MixinRelationshipAttribute, IMixinConfigurationAttribute<Type>
   {
     private readonly Type _targetType;
 
@@ -76,6 +78,67 @@ namespace Remotion.Mixins
       set
       {
         _mixinTypeArguments = ArgumentUtility.CheckNotNull ("value", value);
+      }
+    }
+
+    public void Apply (MixinConfigurationBuilder configurationBuilder, Type attributeTarget)
+    {
+      ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
+      ArgumentUtility.CheckNotNull ("attributeTarget", attributeTarget);
+
+      Type mixinType = CloseOverMixinTypeArguments (attributeTarget);
+      var origin = MixinContextOrigin.CreateForCustomAttribute (this, attributeTarget);
+      Apply (configurationBuilder, MixinKind.Extending, TargetType, mixinType, origin);
+    }
+
+    private Type CloseOverMixinTypeArguments (Type mixinType)
+    {
+      if (MixinTypeArguments.Length == 0)
+        return mixinType;
+
+      CheckNumberOfTypeArguments (mixinType);
+      CheckMixinIsOpenGeneric (mixinType);
+
+      try
+      {
+        return mixinType.MakeGenericType (MixinTypeArguments);
+      }
+      catch (ArgumentException ex)
+      {
+        string message = string.Format (
+            "The ExtendsAttribute for target class '{0}' applied to mixin type '{1}' specified invalid generic type arguments: {2}",
+            TargetType,
+            mixinType,
+            ex.Message);
+        throw new ConfigurationException (message, ex);
+      }
+    }
+
+    private void CheckMixinIsOpenGeneric (Type mixinType)
+    {
+      if (!mixinType.IsGenericTypeDefinition)
+      {
+        string message = string.Format (
+            "The ExtendsAttribute for target class '{0}' applied to mixin type '{1}' specified generic type arguments, but the mixin type already has "
+            + "type arguments specified.",
+            TargetType,
+            mixinType);
+        throw new ConfigurationException (message);
+      }
+    }
+
+    private void CheckNumberOfTypeArguments (Type mixinType)
+    {
+      int expectedTypeArgumentLength = mixinType.IsGenericType ? mixinType.GetGenericArguments ().Length : 0;
+      if (MixinTypeArguments.Length != expectedTypeArgumentLength)
+      {
+        string message = string.Format (
+            "The ExtendsAttribute for target class {0} applied to mixin type {1} specified {2} generic type argument(s) when {3} argument(s) were expected.",
+            TargetType.FullName,
+            mixinType.FullName,
+            MixinTypeArguments.Length,
+            expectedTypeArgumentLength);
+        throw new ConfigurationException (message);
       }
     }
   }
