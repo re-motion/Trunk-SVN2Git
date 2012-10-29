@@ -33,7 +33,7 @@
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
     <TempDirectory>$(MSBuildProjectDirectory)\BuildOutput\temp\</TempDirectory>
     <ArchiveDirectory>$(MSBuildProjectDirectory)\BuildOutput\Archive\</ArchiveDirectory>
-    <DependDBDirectory>$(MSBuildProjectDirectory)\BuildOutput\DependDB\</DependDBDirectory>
+    <DependDBDirectory>$(TempDirectory)DependDB\</DependDBDirectory>
     <WebShareDirectory>$(MSBuildProjectDirectory)\BuildOutput\WebShare\</WebShareDirectory>
     <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
