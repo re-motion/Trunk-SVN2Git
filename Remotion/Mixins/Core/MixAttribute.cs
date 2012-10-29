@@ -101,10 +101,6 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
       ArgumentUtility.CheckNotNull ("attributeTarget", attributeTarget);
 
-      // TODO 5141: Should ignore multiple applications - how can we solve this?
-      // E.g., check if an equivalent mixin builder is already present?
-      // Or use Distinct in the attribute provider...
-
       var origin = MixinContextOrigin.CreateForCustomAttribute (this, attributeTarget);
       Apply (configurationBuilder, MixinKind, TargetType, MixinType, origin);
     }
