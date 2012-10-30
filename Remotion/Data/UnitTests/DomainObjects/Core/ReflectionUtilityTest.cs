@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     [Test]
     public void GetAssemblyPath ()
     {
-      Assert.AreEqual (AppDomain.CurrentDomain.BaseDirectory, ReflectionUtility.GetAssemblyDirectory (typeof (ReflectionUtilityTest).Assembly));
+      Assert.AreEqual (AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\'), ReflectionUtility.GetAssemblyDirectory (typeof (ReflectionUtilityTest).Assembly));
     }
 
     [Test]
