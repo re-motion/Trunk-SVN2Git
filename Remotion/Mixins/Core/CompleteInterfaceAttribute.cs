@@ -91,6 +91,11 @@ namespace Remotion.Mixins
       get { return _targetType; }
     }
 
+    public bool IgnoresDuplicates
+    {
+      get { return false; }
+    }
+
     public void Apply (MixinConfigurationBuilder mixinConfigurationBuilder, Type interfaceType)
     {
       ArgumentUtility.CheckNotNull ("mixinConfigurationBuilder", mixinConfigurationBuilder);

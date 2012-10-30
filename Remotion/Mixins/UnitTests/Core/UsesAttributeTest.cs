@@ -49,6 +49,13 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
+    public void IgnoresDuplicates ()
+    {
+      var attribute = new UsesAttribute (typeof (string));
+      Assert.That (attribute.IgnoresDuplicates, Is.False);
+    }
+
+    [Test]
     public void Apply ()
     {
       UsesAttribute attribute = new UsesAttribute (typeof (string));

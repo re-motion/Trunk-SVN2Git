@@ -41,6 +41,13 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
+    public void IgnoresDuplicates ()
+    {
+      var attribute = new IgnoresClassAttribute (typeof (string));
+      Assert.That (attribute.IgnoresDuplicates, Is.False);
+    }
+
+    [Test]
     public void AnalyzeIgnoresClassAttribute ()
     {
       IgnoresClassAttribute attribute = new IgnoresClassAttribute (s_targetClassType);

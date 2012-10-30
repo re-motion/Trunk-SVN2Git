@@ -31,12 +31,14 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
   public class MixinConfigurationAttributeAnalyzer<TAnalyzedEntity> : IMixinDeclarationAnalyzer<TAnalyzedEntity>
   {
     private readonly Func<TAnalyzedEntity, IEnumerable<IMixinConfigurationAttribute<TAnalyzedEntity>>> _attributeProvider;
+    private HashSet<IMixinConfigurationAttribute<TAnalyzedEntity>> _handledAttributesIgnoringDuplicates;
 
     public MixinConfigurationAttributeAnalyzer (Func<TAnalyzedEntity, IEnumerable<IMixinConfigurationAttribute<TAnalyzedEntity>>> attributeProvider)
     {
       ArgumentUtility.CheckNotNull ("attributeProvider", attributeProvider);
 
       _attributeProvider = attributeProvider;
+      _handledAttributesIgnoringDuplicates = new HashSet<IMixinConfigurationAttribute<TAnalyzedEntity>>();
     }
 
     public virtual void Analyze (TAnalyzedEntity entity, MixinConfigurationBuilder configurationBuilder)
@@ -46,7 +48,13 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 
       var attributes = _attributeProvider (entity);
       foreach (var attribute in attributes)
-        attribute.Apply (configurationBuilder, entity);
+      {
+        if (!attribute.IgnoresDuplicates || !_handledAttributesIgnoringDuplicates.Contains (attribute))
+          attribute.Apply (configurationBuilder, entity);
+
+        if (attribute.IgnoresDuplicates)
+          _handledAttributesIgnoringDuplicates.Add (attribute);
+      }
     }
   }
 }

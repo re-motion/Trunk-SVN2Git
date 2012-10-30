@@ -54,6 +54,13 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
+    public void IgnoresDuplicates ()
+    {
+      var attribute = new MixAttribute (typeof (string), typeof (int));
+      Assert.That (attribute.IgnoresDuplicates, Is.True);
+    }
+
+    [Test]
     public void Apply ()
     {
       MixAttribute attribute = new MixAttribute (typeof (object), typeof (float));

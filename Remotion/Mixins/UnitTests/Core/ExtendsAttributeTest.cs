@@ -50,6 +50,13 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
+    public void IgnoresDuplicates ()
+    {
+      var attribute = new ExtendsAttribute (typeof (string));
+      Assert.That (attribute.IgnoresDuplicates, Is.False);
+    }
+
+    [Test]
     public void Apply ()
     {
       ExtendsAttribute attribute = new ExtendsAttribute (typeof (object));

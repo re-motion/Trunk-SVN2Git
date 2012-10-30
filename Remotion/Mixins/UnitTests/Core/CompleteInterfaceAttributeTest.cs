@@ -36,9 +36,16 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
+    public void IgnoresDuplicates ()
+    {
+      var attribute = new CompleteInterfaceAttribute (typeof (string));
+      Assert.That (attribute.IgnoresDuplicates, Is.False);
+    }
+
+    [Test]
     public void Apply ()
     {
-      CompleteInterfaceAttribute attribute = new CompleteInterfaceAttribute (typeof (string));
+      var attribute = new CompleteInterfaceAttribute (typeof (string));
       ClassContextBuilder classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, typeof (string));
 
       _configurationBuilderMock.Expect (mock => mock.ForClass (typeof (string))).Return (classBuilderMock);

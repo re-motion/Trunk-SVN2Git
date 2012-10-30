@@ -51,6 +51,9 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
       };
       var analyzer = new MixinConfigurationAttributeAnalyzer<string> (fakeAttributeProvider);
 
+      attributeMock1.Stub (mock => mock.IgnoresDuplicates).Return (false);
+      attributeMock2.Stub (mock => mock.IgnoresDuplicates).Return (false);
+
       attributeMock1.Expect (mock => mock.Apply (_fakeConfigurationBuilder, _fakeEntity));
       attributeMock2.Expect (mock => mock.Apply (_fakeConfigurationBuilder, _fakeEntity));
       
@@ -58,6 +61,68 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeAnalyzers
 
       attributeMock1.VerifyAllExpectations ();
       attributeMock2.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Analyze_Duplicates_NotIgnored ()
+    {
+      var attributeMock1 = MockRepository.GeneratePartialMock<AttributeWithEquality> (false);
+      var attributeMock2 = MockRepository.GeneratePartialMock<AttributeWithEquality> (false);
+
+      Func<string, IEnumerable<IMixinConfigurationAttribute<string>>> fakeAttributeProvider = s => new[] { attributeMock1, attributeMock2 };
+      var analyzer = new MixinConfigurationAttributeAnalyzer<string> (fakeAttributeProvider);
+
+      attributeMock1.Expect (mock => mock.Apply (_fakeConfigurationBuilder, _fakeEntity));
+      attributeMock2.Expect (mock => mock.Apply (_fakeConfigurationBuilder, _fakeEntity));
+
+      analyzer.Analyze (_fakeEntity, _fakeConfigurationBuilder);
+
+      attributeMock1.VerifyAllExpectations ();
+      attributeMock2.VerifyAllExpectations ();
+    }
+
+    [Test]
+    public void Analyze_Duplicates_Ignored ()
+    {
+      var attributeMock1 = MockRepository.GeneratePartialMock<AttributeWithEquality> (true);
+      var attributeMock2 = MockRepository.GeneratePartialMock<AttributeWithEquality> (true);
+
+      Func<string, IEnumerable<IMixinConfigurationAttribute<string>>> fakeAttributeProvider = s => new[] { attributeMock1, attributeMock2 };
+      var analyzer = new MixinConfigurationAttributeAnalyzer<string> (fakeAttributeProvider);
+
+      attributeMock1.Expect (mock => mock.Apply (_fakeConfigurationBuilder, _fakeEntity));
+
+      analyzer.Analyze (_fakeEntity, _fakeConfigurationBuilder);
+
+      attributeMock1.VerifyAllExpectations ();
+      attributeMock2.AssertWasNotCalled (mock => mock.Apply (Arg<MixinConfigurationBuilder>.Is.Anything, Arg<string>.Is.Anything));
+    }
+
+    public abstract class AttributeWithEquality : IMixinConfigurationAttribute<string>
+    {
+      private readonly bool _ignoreDuplicates;
+
+      protected AttributeWithEquality (bool ignoreDuplicates)
+      {
+        _ignoreDuplicates = ignoreDuplicates;
+      }
+
+      public bool IgnoresDuplicates
+      {
+        get { return _ignoreDuplicates; }
+      }
+
+      public override bool Equals (object obj)
+      {
+        return true;
+      }
+
+      public override int GetHashCode ()
+      {
+        return typeof (AttributeWithEquality).GetHashCode();
+      }
+
+      public abstract void Apply (MixinConfigurationBuilder configurationBuilder, string attributeTarget);
     }
   }
 }

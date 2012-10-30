@@ -96,6 +96,11 @@ namespace Remotion.Mixins
           ^ base.GetHashCode ();
     }
 
+    public bool IgnoresDuplicates
+    {
+      get { return true; }
+    }
+
     public void Apply (MixinConfigurationBuilder configurationBuilder, Assembly attributeTarget)
     {
       ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);

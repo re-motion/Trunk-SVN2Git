@@ -26,6 +26,7 @@ namespace Remotion.Mixins
   /// <typeparam name="TTarget">The type of entity the <see cref="IMixinConfigurationAttribute{TTarget}"/> is applied to.</typeparam>
   public interface IMixinConfigurationAttribute<in TTarget>
   {
+    bool IgnoresDuplicates { get; }
     void Apply (MixinConfigurationBuilder configurationBuilder, TTarget attributeTarget);
   }
 }

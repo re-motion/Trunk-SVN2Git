@@ -39,6 +39,13 @@ namespace Remotion.Mixins.UnitTests.Core
       _configurationBuilderMock = _mockRepository.StrictMock<MixinConfigurationBuilder> ((MixinConfiguration) null);
       _classBuilderMock = _mockRepository.StrictMock<ClassContextBuilder> (_configurationBuilderMock, s_targetClassType);
     }
+
+    [Test]
+    public void IgnoresDuplicates ()
+    {
+      var attribute = new IgnoresMixinAttribute (typeof (string));
+      Assert.That (attribute.IgnoresDuplicates, Is.False);
+    }
     
     [Test]
     public void AnalyzeIgnoresMixinAttribute ()

@@ -14,7 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+using System.CodeDom.Compiler;
+using System.IO;
+using System.Reflection;
+using System.Reflection.Emit;
+using Microsoft.CSharp;
 using NUnit.Framework;
+using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 
@@ -53,5 +61,34 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       Assert.That (context.Mixins.ContainsKey (typeof (SuppressedMixinForGlobalMix)), Is.False);
     }
 
+    [Test]
+    public void DuplicatesAreIgnored ()
+    {
+      // For some reason, the C# compiler will strip duplicate instances of MixAttribute from the assembly, so in order to test duplicate removal,
+      // we need to use generated assemblies.
+
+      var assemblyBuilder1 = DefineDynamicAssemblyWithMixAttribute ("Test1", typeof (TargetClassForGlobalMix), typeof (MixinForGlobalMix));
+      var assemblyBuilder2 = DefineDynamicAssemblyWithMixAttribute ("Test2", typeof (TargetClassForGlobalMix), typeof (MixinForGlobalMix));
+
+      var mixinConfiguration = DeclarativeConfigurationBuilder.BuildConfigurationFromAssemblies (assemblyBuilder1, assemblyBuilder2);
+
+      ClassContext context = mixinConfiguration.GetContext (typeof (TargetClassForGlobalMix));
+      Assert.That (context.Mixins.ContainsKey (typeof (MixinForGlobalMix)), Is.True);
+      Assert.That (context.Mixins.Count, Is.EqualTo (1));
+    }
+
+    private static AssemblyBuilder DefineDynamicAssemblyWithMixAttribute (string assemblyName, Type targetType, Type mixinType)
+    {
+      var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly (new AssemblyName (assemblyName), AssemblyBuilderAccess.Run);
+
+      var constructor = typeof (MixAttribute).GetConstructor (new[] { typeof (Type), typeof (Type) });
+      var customAttributeBuilder = new CustomAttributeBuilder (constructor, new[] { targetType, mixinType });
+      assemblyBuilder.SetCustomAttribute (customAttributeBuilder);
+
+      // RM-
+      var moduleBuilder = assemblyBuilder.DefineDynamicModule (assemblyName + ".dll");
+      moduleBuilder.DefineType ("Dummy", TypeAttributes.Public, typeof (object)).CreateType();
+      return assemblyBuilder;
+    }
   }
 }
