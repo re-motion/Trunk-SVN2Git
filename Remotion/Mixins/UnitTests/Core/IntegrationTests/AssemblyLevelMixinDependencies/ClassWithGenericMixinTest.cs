@@ -14,46 +14,28 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
-
-// Configuration and attribute match, so the dependency is valid
-[assembly: AdditionalMixinDependency (
-    typeof (ClassWithGenericMixinTest.ClassWithOpenMixin_WithDependencyForOpenMixin),
-    typeof (ClassWithGenericMixinTest.M1<>),
-    typeof (ClassWithGenericMixinTest.M2))]
-
-// Configuration and attribute don't match, so the dependency is valid - the mixin can't be found
-[assembly: AdditionalMixinDependency (
-    typeof (ClassWithGenericMixinTest.ClassWithOpenMixin_WithDependencyForClosedMixin),
-    typeof (ClassWithGenericMixinTest.M1<ClassWithGenericMixinTest.ClassWithOpenMixin_WithDependencyForClosedMixin>),
-    typeof (ClassWithGenericMixinTest.M2))]
-
-// Configuration and attribute don't match, but it's obvious which mixin is meant, so the dependency is valid
-[assembly: AdditionalMixinDependency (
-    typeof (ClassWithGenericMixinTest.ClassWithClosedMixin_WithDependencyForOpenMixin),
-    typeof (ClassWithGenericMixinTest.M1<>),
-    typeof (ClassWithGenericMixinTest.M2))]
-
-// Configuration and attribute match, so the dependency is valid
-[assembly: AdditionalMixinDependency (
-    typeof (ClassWithGenericMixinTest.ClassWithClosedMixin_WithDependencyForClosedMixin),
-    typeof (ClassWithGenericMixinTest.M1<int>),
-    typeof (ClassWithGenericMixinTest.M2))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
-  [Ignore ("TODO 5142")]
-  public class ClassWithGenericMixinTest
+  public class ClassWithGenericMixinTest : AssemblyLevelMixinDependenciesTestBase
   {
     [Test]
     public void DependencyAddedToOpenGenericMixin_ViaAssemblyLevelAttribute_AppliesWhenMixinIsConfiguredOpenGeneric ()
     {
-      var instance = ObjectFactory.Create<ClassWithOpenMixin_WithDependencyForOpenMixin> ();
+      // Configuration and attribute match, so the dependency is valid
+      PrepareMixinConfigurationWithAttributeDeclarations (
+          new AdditionalMixinDependencyAttribute (
+              typeof (ClassWithOpenMixin_WithDependencyForOpenMixin),
+              typeof (M1<>),
+              typeof (M2)));
 
-      var result = instance.M ();
+      var instance = ObjectFactory.Create<ClassWithOpenMixin_WithDependencyForOpenMixin>();
+
+      var result = instance.M();
 
       Assert.That (result, Is.EqualTo ("M1<ClassWithOpenMixin_WithDependencyForOpenMixin> M2 ClassWithOpenMixin_WithDependencyForOpenMixin"));
     }
@@ -61,17 +43,36 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
     [Test]
     public void DependencyAddedToClosedGenericMixin_ViaAssemblyLevelAttribute_ErrorWhenMixinIsConfiguredOpenGeneric ()
     {
+      // Configuration and attribute don't match, so the dependency is invalid - the mixin can't be found
       Assert.That (
-          () => ObjectFactory.Create<ClassWithOpenMixin_WithDependencyForClosedMixin> (),
-          Throws.TypeOf<ConfigurationException> ().With.Message.EqualTo ("... no configured mixin of type M1<ClassWithOpenMixin_WithDependencyForClosedMixin> ..."));
+          () => PrepareMixinConfigurationWithAttributeDeclarations (
+              new AdditionalMixinDependencyAttribute (
+                  typeof (ClassWithOpenMixin_WithDependencyForClosedMixin),
+                  typeof (M1<ClassWithOpenMixin_WithDependencyForClosedMixin>),
+                  typeof (M2))),
+          Throws.TypeOf<ConfigurationException>().With.Message.EqualTo (
+              "The mixin dependencies configured for type 'Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies."
+              + "ClassWithGenericMixinTest+ClassWithOpenMixin_WithDependencyForClosedMixin' could not be processed: The mixin "
+              + "'Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies.ClassWithGenericMixinTest+M1`1"
+              + "[Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies."
+              + "ClassWithGenericMixinTest+ClassWithOpenMixin_WithDependencyForClosedMixin]' is not configured for class "
+              + "'Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies."
+              + "ClassWithGenericMixinTest+ClassWithOpenMixin_WithDependencyForClosedMixin'."));
     }
 
     [Test]
     public void DependencyAddedToOpenGenericMixin_ViaAssemblyLevelAttribute_AppliesWhenMixinIsConfiguredClosedGeneric ()
     {
-      var instance = ObjectFactory.Create<ClassWithClosedMixin_WithDependencyForOpenMixin> ();
+      // Configuration and attribute don't match, but it's obvious which mixin is meant, so the dependency is valid
+      PrepareMixinConfigurationWithAttributeDeclarations (
+          new AdditionalMixinDependencyAttribute (
+              typeof (ClassWithClosedMixin_WithDependencyForOpenMixin),
+              typeof (M1<>),
+              typeof (M2)));
 
-      var result = instance.M ();
+      var instance = ObjectFactory.Create<ClassWithClosedMixin_WithDependencyForOpenMixin>();
+
+      var result = instance.M();
 
       Assert.That (result, Is.EqualTo ("M1<Int32> M2 ClassWithClosedMixin_WithDependencyForOpenMixin"));
     }
@@ -79,9 +80,16 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
     [Test]
     public void DependencyAddedToClosedGenericMixin_ViaAssemblyLevelAttribute_AppliesWhenMixinIsConfiguredClosedGeneric ()
     {
-      var instance = ObjectFactory.Create<ClassWithClosedMixin_WithDependencyForClosedMixin> ();
+      // Configuration and attribute match, so the dependency is valid
+      PrepareMixinConfigurationWithAttributeDeclarations (
+          new AdditionalMixinDependencyAttribute (
+              typeof (ClassWithClosedMixin_WithDependencyForClosedMixin),
+              typeof (M1<int>),
+              typeof (M2)));
 
-      var result = instance.M ();
+      var instance = ObjectFactory.Create<ClassWithClosedMixin_WithDependencyForClosedMixin>();
+
+      var result = instance.M();
 
       Assert.That (result, Is.EqualTo ("M1<Int32> M2 ClassWithClosedMixin_WithDependencyForClosedMixin"));
     }
@@ -132,7 +140,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
       [OverrideTarget]
       public string M ()
       {
-        return "M1<" + typeof (T).Name + "> " + Next.M ();
+        return "M1<" + typeof (T).Name + "> " + Next.M();
       }
     }
 
@@ -145,7 +153,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
       [OverrideTarget]
       public string M ()
       {
-        return "M2 " + Next.M ();
+        return "M2 " + Next.M();
       }
     }
   }

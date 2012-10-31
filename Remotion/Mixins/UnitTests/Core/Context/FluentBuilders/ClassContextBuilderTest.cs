@@ -849,17 +849,31 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     }
 
     [Test]
-    public void BuildContext_MixinDependencies_AppliedAfterSuppression ()
+    public void BuildContext_MixinDependencies_Error ()
     {
-      _classBuilder
-          .WithMixinDependency<BT1Mixin1, BT1Mixin2>()
-          .AddMixin<BT1Mixin1>()
-          .SuppressMixin<BT1Mixin1>();
+      _classBuilder.WithMixinDependency<BT1Mixin1, BT1Mixin2> ();
 
       Assert.That (
           () => _classBuilder.BuildClassContext (), 
-          Throws.TypeOf<InvalidOperationException> ().With.Message.EqualTo (
-              "The mixin 'Remotion.Mixins.UnitTests.Core.TestDomain.BT1Mixin1' is not configured for class "
+          Throws.TypeOf<ConfigurationException>().With.Message.EqualTo (
+              "The mixin dependencies configured for type 'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType2' could not be processed: "
+              + "The mixin 'Remotion.Mixins.UnitTests.Core.TestDomain.BT1Mixin1' is not configured for class "
+              + "'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType2'."));
+    }
+
+    [Test]
+    public void BuildContext_MixinDependencies_AppliedAfterSuppression ()
+    {
+      _classBuilder
+          .WithMixinDependency<BT1Mixin1, BT1Mixin2> ()
+          .AddMixin<BT1Mixin1> ()
+          .SuppressMixin<BT1Mixin1> ();
+
+      Assert.That (
+          () => _classBuilder.BuildClassContext (),
+          Throws.TypeOf<ConfigurationException> ().With.Message.EqualTo (
+              "The mixin dependencies configured for type 'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType2' could not be processed: "
+              + "The mixin 'Remotion.Mixins.UnitTests.Core.TestDomain.BT1Mixin1' is not configured for class "
               + "'Remotion.Mixins.UnitTests.Core.TestDomain.BaseType2'."));
     }
 

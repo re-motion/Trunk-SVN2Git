@@ -16,22 +16,17 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
-
-[assembly: AdditionalMixinDependency (
-    typeof (ResolvingOrderingConflictTest.C), 
-    typeof (ResolvingOrderingConflictTest.M1),
-    typeof (ResolvingOrderingConflictTest.M2))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
-  [Ignore ("TODO 5142")]
-  public class ResolvingOrderingConflictTest
+  public class ResolvingOrderingConflictTest : AssemblyLevelMixinDependenciesTestBase
   {
     [Test]
     public void OrderingConflictIsResolved_ViaAssemblyLevelAttribute ()
     {
+      PrepareMixinConfigurationWithAttributeDeclarations (new AdditionalMixinDependencyAttribute (typeof (C), typeof (M1), typeof (M2)));
+
       var instance = ObjectFactory.Create<C>();
 
       var result = instance.M();

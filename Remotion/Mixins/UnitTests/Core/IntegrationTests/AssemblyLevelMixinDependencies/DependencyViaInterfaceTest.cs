@@ -16,22 +16,17 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
-
-[assembly: AdditionalMixinDependency (
-    typeof (DependencyViaInterfaceTest.C),
-    typeof (DependencyViaInterfaceTest.M1),
-    typeof (DependencyViaInterfaceTest.IM2))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
-  [Ignore ("TODO 5142")]
-  public class DependencyViaInterfaceTest
+  public class DependencyViaInterfaceTest : AssemblyLevelMixinDependenciesTestBase
   {
     [Test]
     public void DependencyOnInterface_ViaAssemblyLevelAttribute_IsResolvedToImplementingMixin ()
     {
+      PrepareMixinConfigurationWithAttributeDeclarations (new AdditionalMixinDependencyAttribute (typeof (C), typeof (M1), typeof (IM2)));
+      
       var instance = ObjectFactory.Create<C>();
 
       var result = instance.M();

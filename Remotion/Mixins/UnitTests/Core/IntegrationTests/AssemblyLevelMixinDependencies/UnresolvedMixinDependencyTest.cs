@@ -16,24 +16,22 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
 using Remotion.Mixins.Validation;
-
-[assembly: AdditionalMixinDependency (
-    typeof (UnresolvedMixinDependencyTest.C),
-    typeof (UnresolvedMixinDependencyTest.M1),
-    typeof (UnresolvedMixinDependencyTest.M2))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
-  [Ignore ("TODO 5142")]
-  public class UnresolvedMixinDependencyTest
+  public class UnresolvedMixinDependencyTest : AssemblyLevelMixinDependenciesTestBase
   {
     [Test]
-    public void OrderingConflictIsResolved_ViaAssemblyLevelAttribute ()
+    public void UnresolvedDependency_ViaAssemblyLevelAttribute ()
     {
-      Assert.That (() => ObjectFactory.Create<C>(), Throws.TypeOf<ValidationException>().With.Message.EqualTo ("... dependency not fulfilled ..."));
+      PrepareMixinConfigurationWithAttributeDeclarations (new AdditionalMixinDependencyAttribute (typeof (C), typeof (M1), typeof (M2)));
+
+      Assert.That (
+          () => ObjectFactory.Create<C> (), 
+          Throws.TypeOf<ValidationException> ().With.Message.StringContaining (
+              "A mixin is configured with a dependency to another mixin, but that dependency is not satisfied."));
     }
 
     public class C : IC

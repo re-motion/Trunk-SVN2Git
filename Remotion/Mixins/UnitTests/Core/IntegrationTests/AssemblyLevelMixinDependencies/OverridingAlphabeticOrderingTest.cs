@@ -16,22 +16,17 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
-
-[assembly: AdditionalMixinDependency (
-    typeof (OverridingAlphabeticOrderingTest.C),
-    typeof (OverridingAlphabeticOrderingTest.M2),
-    typeof (OverridingAlphabeticOrderingTest.M1))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
-  [Ignore ("TODO 5142")]
-  public class OverridingAlphabeticOrderingTest
+  public class OverridingAlphabeticOrderingTest : AssemblyLevelMixinDependenciesTestBase
   {
     [Test]
     public void AssemblyLevelAttribute_TakesPrecedence_OverAlphabeticOrdering ()
     {
+      PrepareMixinConfigurationWithAttributeDeclarations (new AdditionalMixinDependencyAttribute (typeof (C), typeof (M2), typeof (M1)));
+
       var instance = ObjectFactory.Create<C>();
 
       var result = instance.M();

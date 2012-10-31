@@ -16,12 +16,14 @@
 // 
 
 using System;
+using System.Reflection;
+using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [AttributeUsage (AttributeTargets.Assembly, AllowMultiple = true)]
-  public class AdditionalMixinDependencyAttribute : Attribute
+  public class AdditionalMixinDependencyAttribute : Attribute, IMixinConfigurationAttribute<Assembly>
   {
     private readonly Type _targetType;
     private readonly Type _dependentMixin;
@@ -51,6 +53,19 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
     public Type Dependency
     {
       get { return _dependency; }
+    }
+
+    public bool IgnoresDuplicates
+    {
+      get { return false; }
+    }
+
+    public void Apply (MixinConfigurationBuilder configurationBuilder, Assembly attributeTarget)
+    {
+      ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
+      ArgumentUtility.CheckNotNull ("attributeTarget", attributeTarget);
+
+      configurationBuilder.ForClass (TargetType).WithMixinDependency (DependentMixin, Dependency);
     }
   }
 }

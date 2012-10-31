@@ -16,26 +16,19 @@
 // 
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
-
-[assembly: AdditionalMixinDependency (
-    typeof (PuttingMixinInTheMiddleTest.C),
-    typeof (PuttingMixinInTheMiddleTest.M1),
-    typeof (PuttingMixinInTheMiddleTest.M3))]
-[assembly: AdditionalMixinDependency (
-    typeof (PuttingMixinInTheMiddleTest.C),
-    typeof (PuttingMixinInTheMiddleTest.M3),
-    typeof (PuttingMixinInTheMiddleTest.M2))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
-  [Ignore ("TODO 5142")]
-  public class PuttingMixinInTheMiddleTest
+  public class PuttingMixinInTheMiddleTest : AssemblyLevelMixinDependenciesTestBase
   {
     [Test]
     public void AssemblyLevelAttribute_CanBeUsedToPutAMixinInTheMiddle ()
     {
+      PrepareMixinConfigurationWithAttributeDeclarations (
+          new AdditionalMixinDependencyAttribute (typeof (C), typeof (M1), typeof (M3)),
+          new AdditionalMixinDependencyAttribute (typeof (C), typeof (M3), typeof (M2)));
+
       var instance = ObjectFactory.Create<C> ();
 
       var result = instance.M ();

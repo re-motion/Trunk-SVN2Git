@@ -14,24 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies;
-
-[assembly: AdditionalMixinDependency (
-    typeof (AddingDependencyWithinDerivedClassTest.D),
-    typeof (AddingDependencyWithinDerivedClassTest.M1),
-    typeof (AddingDependencyWithinDerivedClassTest.M2))]
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
   [TestFixture]
-  [Ignore ("TODO 5142")]
-  public class AddingDependencyWithinDerivedClassTest
+  public class AddingDependencyWithinDerivedClassTest : AssemblyLevelMixinDependenciesTestBase
   {
     [Test]
     public void DependencyAddedToDerivedClass_FromBaseClassMixin_ToDerivedClassMixin_ViaAssemblyLevelAttribute ()
     {
+      PrepareMixinConfigurationWithAttributeDeclarations (new AdditionalMixinDependencyAttribute (typeof (D), typeof (M1), typeof (M2)));
+
       var instance = ObjectFactory.Create<D>();
 
       var result = instance.M();
@@ -42,16 +38,18 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
     [Test]
     public void DependencyAddedToDerivedClass_HasNoEffectOnBaseClass ()
     {
-      var instance = ObjectFactory.Create<C> ();
+      PrepareMixinConfigurationWithAttributeDeclarations (new AdditionalMixinDependencyAttribute (typeof (D), typeof (M1), typeof (M2)));
 
-      var result = instance.M ();
+      var instance = ObjectFactory.Create<C>();
+
+      var result = instance.M();
 
       Assert.That (result, Is.EqualTo ("M1 C"));
     }
 
     public class C : IC
     {
-      public virtual string M()
+      public virtual string M ()
       {
         return "C";
       }
@@ -82,9 +80,8 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDepe
       [OverrideTarget]
       public string M ()
       {
-        return "M2 " + Next.M ();
+        return "M2 " + Next.M();
       }
     }
-
   }
 }

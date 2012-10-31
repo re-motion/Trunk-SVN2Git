@@ -728,7 +728,15 @@ namespace Remotion.Mixins.Context.FluentBuilders
       var classContext = new ClassContext (_targetType, mixinContexts, CompleteInterfaces);
       classContext = ApplyInheritance (classContext, inheritedContexts);
       classContext = classContext.SuppressMixins (SuppressedMixins);
-      classContext = classContext.ApplyMixinDependencies (_mixinDependencies.Select (kvp => new MixinDependencySpecification (kvp.Key, kvp.Value)));
+      try
+      {
+        classContext = classContext.ApplyMixinDependencies (_mixinDependencies.Select (kvp => new MixinDependencySpecification (kvp.Key, kvp.Value)));
+      }
+      catch (InvalidOperationException ex)
+      {
+        var message = string.Format ("The mixin dependencies configured for type '{0}' could not be processed: {1}", TargetType, ex.Message);
+        throw new ConfigurationException (message, ex);
+      }
       return classContext;
     }
 
