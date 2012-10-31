@@ -222,12 +222,10 @@ namespace Remotion.Mixins.Context
         var mixAnalyzer = new MixAnalyzer ();
         var ignoresAnalyzer = new IgnoresAnalyzer ();
 
-        var configurationAnalyzer = new DeclarativeConfigurationAnalyzer (
-            extendsAnalyzer, 
-            usesAnalyzer, 
-            completeInterfaceAnalyzer, 
-            mixAnalyzer, 
-            ignoresAnalyzer);
+        var typeAnalyzers = new IMixinDeclarationAnalyzer<Type>[] { extendsAnalyzer, usesAnalyzer, completeInterfaceAnalyzer, ignoresAnalyzer };
+        var assemblyAnalyzers = new IMixinDeclarationAnalyzer<Assembly>[] { mixAnalyzer };
+        
+        var configurationAnalyzer = new DeclarativeConfigurationAnalyzer (typeAnalyzers, assemblyAnalyzers);
 
         var configurationBuilder = new MixinConfigurationBuilder (_parentConfiguration);
         configurationAnalyzer.Analyze (_allTypes, configurationBuilder);

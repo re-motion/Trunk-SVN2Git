@@ -17,51 +17,43 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Remotion.Collections;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
   public class DeclarativeConfigurationAnalyzer
   {
-    private readonly ExtendsAnalyzer _extendsAnalyzer;
-    private readonly UsesAnalyzer _usesAnalyzer;
-    private readonly HasCompleteInterfaceMarkerAnalyzer _hasCompleteInterfaceMarkerAnalyzer;
-    private readonly MixAnalyzer _mixAnalyzer;
-    private readonly IgnoresAnalyzer _ignoresAnalyzer;
+    private readonly ICollection<IMixinDeclarationAnalyzer<Type>> _typeAnalyzers;
+    private readonly ICollection<IMixinDeclarationAnalyzer<Assembly>> _assemblyAnalyzers;
 
-    public DeclarativeConfigurationAnalyzer (ExtendsAnalyzer extendsAnalyzer, UsesAnalyzer usesAnalyzer, HasCompleteInterfaceMarkerAnalyzer interfaceMarkerAnalyzer, 
-        MixAnalyzer mixAnalyzer, IgnoresAnalyzer ignoresAnalyzer)
+    public DeclarativeConfigurationAnalyzer (
+        IEnumerable<IMixinDeclarationAnalyzer<Type>> typeAnalyzers, 
+        IEnumerable<IMixinDeclarationAnalyzer<Assembly>> assemblyAnalyzers)
     {
-      ArgumentUtility.CheckNotNull ("extendsAnalyzer", extendsAnalyzer);
-      ArgumentUtility.CheckNotNull ("usesAnalyzer", usesAnalyzer);
-      ArgumentUtility.CheckNotNull ("interfaceMarkerAnalyzer", interfaceMarkerAnalyzer);
-      ArgumentUtility.CheckNotNull ("mixAnalyzer", mixAnalyzer);
-      ArgumentUtility.CheckNotNull ("ignoresAnalyzer", ignoresAnalyzer);
+      ArgumentUtility.CheckNotNull ("typeAnalyzers", typeAnalyzers);
+      ArgumentUtility.CheckNotNull ("assemblyAnalyzers", assemblyAnalyzers);
 
-      _extendsAnalyzer = extendsAnalyzer;
-      _usesAnalyzer = usesAnalyzer;
-      _hasCompleteInterfaceMarkerAnalyzer = interfaceMarkerAnalyzer;
-      _mixAnalyzer = mixAnalyzer;
-      _ignoresAnalyzer = ignoresAnalyzer;
+      _typeAnalyzers = typeAnalyzers.ConvertToCollection ();
+      _assemblyAnalyzers = assemblyAnalyzers.ConvertToCollection ();
     }
     
     public void Analyze (IEnumerable<Type> types, MixinConfigurationBuilder configurationBuilder)
     {
-      Set<Assembly> assemblies = new Set<Assembly>();
+      var assemblies = new HashSet<Assembly>();
 
-      foreach (Type type in types)
+      foreach (var type in types)
       {
-        _extendsAnalyzer.Analyze (type, configurationBuilder);
-        _usesAnalyzer.Analyze (type, configurationBuilder);
-        _hasCompleteInterfaceMarkerAnalyzer.Analyze (type, configurationBuilder);
-        _ignoresAnalyzer.Analyze (type, configurationBuilder);
+        foreach (var typeAnalyzer in _typeAnalyzers)
+          typeAnalyzer.Analyze (type, configurationBuilder);
 
         if (!assemblies.Contains (type.Assembly))
         {
           assemblies.Add (type.Assembly);
-          _mixAnalyzer.Analyze (type.Assembly, configurationBuilder);
+
+          foreach (var assemblyAnalyzer in _assemblyAnalyzers)
+            assemblyAnalyzer.Analyze (type.Assembly, configurationBuilder);
         }
       }
     }
