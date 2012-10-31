@@ -216,22 +216,38 @@ namespace Remotion.Mixins.Context
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration: {elapsed}."))
       {
-        var typeAttributeAnalyzer =
-            new MixinConfigurationAttributeAnalyzer<Type> (
-                t => (IMixinConfigurationAttribute<Type>[]) t.GetCustomAttributes (typeof (IMixinConfigurationAttribute<Type>), false));
-        var assemblyAttributeAnalyzer =
-            new MixinConfigurationAttributeAnalyzer<Assembly> (
-                a => (IMixinConfigurationAttribute<Assembly>[]) a.GetCustomAttributes (typeof (IMixinConfigurationAttribute<Assembly>), false));
-        var completeInterfaceMarkerAnalyzer = new HasCompleteInterfaceMarkerAnalyzer ();
-
-        var typeAnalyzers = new IMixinDeclarationAnalyzer<Type>[] { typeAttributeAnalyzer, completeInterfaceMarkerAnalyzer };
-        var assemblyAnalyzers = new IMixinDeclarationAnalyzer<Assembly>[] { assemblyAttributeAnalyzer };
+        var typeAnalyzers = new IMixinDeclarationAnalyzer<Type>[] { CreateAttributeAnalyzer<Type>(), new HasCompleteInterfaceMarkerAnalyzer () };
+        var assemblyAnalyzers = new IMixinDeclarationAnalyzer<Assembly>[] { CreateAttributeAnalyzer<Assembly> () };
         
         var configurationAnalyzer = new DeclarativeConfigurationAnalyzer (typeAnalyzers, assemblyAnalyzers);
 
         var configurationBuilder = new MixinConfigurationBuilder (_parentConfiguration);
         configurationAnalyzer.Analyze (_allTypes, configurationBuilder);
         return configurationBuilder.BuildConfiguration();
+      }
+    }
+
+    private static MixinConfigurationAttributeAnalyzer<T> CreateAttributeAnalyzer<T> () 
+        where T : ICustomAttributeProvider
+    {
+      var handledAttributeContext = new HashSet<IMixinConfigurationAttribute<T>>();
+      return new MixinConfigurationAttributeAnalyzer<T> (a => GetCustomAttributesWithDuplicateHandling (a, handledAttributeContext));
+    }
+
+    private static IEnumerable<IMixinConfigurationAttribute<T>> GetCustomAttributesWithDuplicateHandling<T> (
+        T attributeProvider, HashSet<IMixinConfigurationAttribute<T>> handledAttributeContext)
+        where T : ICustomAttributeProvider
+    {
+      var customAttributes =
+          (IMixinConfigurationAttribute<T>[]) attributeProvider.GetCustomAttributes (typeof (IMixinConfigurationAttribute<T>), false);
+
+      foreach (var attribute in customAttributes)
+      {
+        if (!attribute.IgnoresDuplicates || !handledAttributeContext.Contains (attribute))
+          yield return attribute;
+
+        if (attribute.IgnoresDuplicates)
+          handledAttributeContext.Add (attribute);
       }
     }
   }

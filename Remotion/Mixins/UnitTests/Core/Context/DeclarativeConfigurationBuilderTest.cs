@@ -178,6 +178,28 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (configuration.ClassContexts,
           Is.EquivalentTo (new object[] { c1, parentConfiguration.GetContext (typeof (int)), _globalClassContext }));
     }
+    
+    [Test]
+    public void BuildConfiguration_Duplicates_NotIgnoredInGeneral ()
+    {
+      var builder = new DeclarativeConfigurationBuilder(null);
+      builder.AddType (typeof (TypeWithDuplicateAttributeNotIgnoringDuplicates));
+
+      Assert.That (() => builder.BuildConfiguration (), Throws.TypeOf<ConfigurationException>().With.Message.StringContaining ("already configured"));
+    }
+
+    [Test]
+    public void BuildConfiguration_Duplicates_IgnoredIfIndicatedByAttribute ()
+    {
+      var builder = new DeclarativeConfigurationBuilder (null);
+      builder.AddType (typeof (TypeWithDuplicateAttributeIgnoringDuplicates1));
+      builder.AddType (typeof (TypeWithDuplicateAttributeIgnoringDuplicates2));
+
+      var configuration = builder.BuildConfiguration();
+
+      Assert.That (configuration.GetContext (typeof (TypeWithDuplicateAttributeIgnoringDuplicates1)).Mixins, Has.Count.EqualTo (1));
+      Assert.That (configuration.GetContext (typeof (TypeWithDuplicateAttributeIgnoringDuplicates2)), Is.Null, "Ignored attributes - no mixins.");
+    }
 
     [Test]
     public void BuildConfigurationFromAssemblies ()
@@ -201,5 +223,51 @@ namespace Remotion.Mixins.UnitTests.Core.Context
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
       Assert.That (configuration.ClassContexts.ContainsWithInheritance (typeof (DisposableMixinTest.C)), Is.True);
     }
+
+    [AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
+    public class TestAttributeWithEquality : Attribute, IMixinConfigurationAttribute<Type>
+    {
+      private readonly bool _ignoreDuplicates;
+
+      public TestAttributeWithEquality (bool ignoreDuplicates)
+      {
+        _ignoreDuplicates = ignoreDuplicates;
+      }
+
+      public bool IgnoresDuplicates
+      {
+        get { return _ignoreDuplicates; }
+      }
+
+      public override bool Equals (object obj)
+      {
+        return true;
+      }
+
+      public override int GetHashCode ()
+      {
+        return typeof (TestAttributeWithEquality).GetHashCode ();
+      }
+
+      public void Apply (MixinConfigurationBuilder configurationBuilder, Type attributeTarget)
+      {
+        try
+        {
+          configurationBuilder.ForClass (attributeTarget).AddMixin<NullMixin> ();
+        }
+        catch (Exception ex)
+        {
+          throw new ConfigurationException (ex.Message, ex);
+        }
+      }
+    }
+
+    [TestAttributeWithEquality (true), TestAttributeWithEquality (true), IgnoreForMixinConfiguration]
+    public class TypeWithDuplicateAttributeIgnoringDuplicates1 { }
+    [TestAttributeWithEquality (true), TestAttributeWithEquality (true), IgnoreForMixinConfiguration]
+    public class TypeWithDuplicateAttributeIgnoringDuplicates2 { }
+
+    [TestAttributeWithEquality (false), TestAttributeWithEquality (false), IgnoreForMixinConfiguration]
+    public class TypeWithDuplicateAttributeNotIgnoringDuplicates { }
   }
 }
