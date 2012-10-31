@@ -25,20 +25,12 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
   /// Analyzes <see cref="IHasCompleteInterface{TInterface}"/> markers implemented by a type and applies the respective configuration information
   /// to the <see cref="MixinConfigurationBuilder"/>.
   /// </summary>
-  public class HasCompleteInterfaceMarkerAnalyzer : MixinConfigurationAttributeAnalyzer<Type>
+  public class HasCompleteInterfaceMarkerAnalyzer : IMixinDeclarationAnalyzer<Type>
   {
-    public HasCompleteInterfaceMarkerAnalyzer ()
-        : base (t => (CompleteInterfaceAttribute[]) t.GetCustomAttributes (typeof (CompleteInterfaceAttribute), false))
-    {
-    }
-
-    public override void Analyze (Type type, MixinConfigurationBuilder configurationBuilder)
+    public void Analyze (Type type, MixinConfigurationBuilder configurationBuilder)
     {
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
-
-      // TODO 5141: Remove this line, remove base class
-      base.Analyze (type, configurationBuilder);
 
       var completeInterfaceMarkers = (from ifc in type.GetInterfaces()
                                       where ifc.IsGenericType

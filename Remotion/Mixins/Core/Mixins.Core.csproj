@@ -136,12 +136,8 @@
     <Compile Include="Context\ClassContextEventArgs.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\HasCompleteInterfaceMarkerAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzer.cs" />
-    <Compile Include="Context\DeclarativeAnalyzers\ExtendsAnalyzer.cs" />
-    <Compile Include="Context\DeclarativeAnalyzers\IgnoresAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\IMixinDeclarationAnalyzer.cs" />
-    <Compile Include="Context\DeclarativeAnalyzers\MixAnalyzer.cs" />
     <Compile Include="Context\DeclarativeAnalyzers\MixinConfigurationAttributeAnalyzer.cs" />
-    <Compile Include="Context\DeclarativeAnalyzers\UsesAnalyzer.cs" />
     <Compile Include="Context\DeclarativeConfigurationBuilder.cs" />
     <Compile Include="Context\DefaultMixinInheritancePolicy.cs" />
     <Compile Include="Context\FluentBuilders\ClassContextBuilder.cs" />

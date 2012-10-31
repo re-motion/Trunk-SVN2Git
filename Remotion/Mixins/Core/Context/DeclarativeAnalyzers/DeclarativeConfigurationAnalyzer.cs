@@ -23,6 +23,9 @@ using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 {
+  /// <summary>
+  /// Analyzes the given types and their containing assemblies via a set of <see cref="IMixinDeclarationAnalyzer{TAnalyzedObject}"/> implementations.
+  /// </summary>
   public class DeclarativeConfigurationAnalyzer
   {
     private readonly ICollection<IMixinDeclarationAnalyzer<Type>> _typeAnalyzers;
@@ -48,17 +51,27 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
 
       foreach (var type in types)
       {
-        foreach (var typeAnalyzer in _typeAnalyzers)
-          typeAnalyzer.Analyze (type, configurationBuilder);
+        AnalyzeType (configurationBuilder, type);
 
         if (!assemblies.Contains (type.Assembly))
         {
           assemblies.Add (type.Assembly);
-
-          foreach (var assemblyAnalyzer in _assemblyAnalyzers)
-            assemblyAnalyzer.Analyze (type.Assembly, configurationBuilder);
+          AnalyzeAssembly (configurationBuilder, type.Assembly);
         }
       }
     }
+
+    private void AnalyzeType (MixinConfigurationBuilder configurationBuilder, Type type)
+    {
+      foreach (var typeAnalyzer in _typeAnalyzers)
+        typeAnalyzer.Analyze (type, configurationBuilder);
+    }
+
+    private void AnalyzeAssembly (MixinConfigurationBuilder configurationBuilder, Assembly assembly)
+    {
+      foreach (var assemblyAnalyzer in _assemblyAnalyzers)
+        assemblyAnalyzer.Analyze (assembly, configurationBuilder);
+    }
+
   }
 }

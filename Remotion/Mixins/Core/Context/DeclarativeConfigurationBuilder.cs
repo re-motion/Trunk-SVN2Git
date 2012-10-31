@@ -216,14 +216,16 @@ namespace Remotion.Mixins.Context
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to build mixin configuration: {elapsed}."))
       {
-        var extendsAnalyzer = new ExtendsAnalyzer ();
-        var usesAnalyzer = new UsesAnalyzer ();
-        var completeInterfaceAnalyzer = new HasCompleteInterfaceMarkerAnalyzer ();
-        var mixAnalyzer = new MixAnalyzer ();
-        var ignoresAnalyzer = new IgnoresAnalyzer ();
+        var typeAttributeAnalyzer =
+            new MixinConfigurationAttributeAnalyzer<Type> (
+                t => (IMixinConfigurationAttribute<Type>[]) t.GetCustomAttributes (typeof (IMixinConfigurationAttribute<Type>), false));
+        var assemblyAttributeAnalyzer =
+            new MixinConfigurationAttributeAnalyzer<Assembly> (
+                a => (IMixinConfigurationAttribute<Assembly>[]) a.GetCustomAttributes (typeof (IMixinConfigurationAttribute<Assembly>), false));
+        var completeInterfaceMarkerAnalyzer = new HasCompleteInterfaceMarkerAnalyzer ();
 
-        var typeAnalyzers = new IMixinDeclarationAnalyzer<Type>[] { extendsAnalyzer, usesAnalyzer, completeInterfaceAnalyzer, ignoresAnalyzer };
-        var assemblyAnalyzers = new IMixinDeclarationAnalyzer<Assembly>[] { mixAnalyzer };
+        var typeAnalyzers = new IMixinDeclarationAnalyzer<Type>[] { typeAttributeAnalyzer, completeInterfaceMarkerAnalyzer };
+        var assemblyAnalyzers = new IMixinDeclarationAnalyzer<Assembly>[] { assemblyAttributeAnalyzer };
         
         var configurationAnalyzer = new DeclarativeConfigurationAnalyzer (typeAnalyzers, assemblyAnalyzers);
 
