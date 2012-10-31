@@ -41,6 +41,9 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
     
     public void Analyze (IEnumerable<Type> types, MixinConfigurationBuilder configurationBuilder)
     {
+      ArgumentUtility.CheckNotNull ("types", types);
+      ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
+
       var assemblies = new HashSet<Assembly>();
 
       foreach (var type in types)
