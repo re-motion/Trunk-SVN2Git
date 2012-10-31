@@ -31,7 +31,7 @@ namespace Remotion.Mixins.Context.DeclarativeAnalyzers
   public class MixinConfigurationAttributeAnalyzer<TAnalyzedEntity> : IMixinDeclarationAnalyzer<TAnalyzedEntity>
   {
     private readonly Func<TAnalyzedEntity, IEnumerable<IMixinConfigurationAttribute<TAnalyzedEntity>>> _attributeProvider;
-    private HashSet<IMixinConfigurationAttribute<TAnalyzedEntity>> _handledAttributesIgnoringDuplicates;
+    private readonly HashSet<IMixinConfigurationAttribute<TAnalyzedEntity>> _handledAttributesIgnoringDuplicates;
 
     public MixinConfigurationAttributeAnalyzer (Func<TAnalyzedEntity, IEnumerable<IMixinConfigurationAttribute<TAnalyzedEntity>>> attributeProvider)
     {
