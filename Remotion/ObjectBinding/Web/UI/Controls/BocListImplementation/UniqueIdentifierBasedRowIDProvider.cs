@@ -62,7 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
       {
         for (int indexDown = rowIndex - 1, indexUp = rowIndex + 1; indexDown >= 0 || indexUp < values.Count; indexDown--, indexUp++)
         {
-          if (indexDown >= 0 && ((IBusinessObjectWithIdentity) values[indexDown]).UniqueIdentifier == uniqueIdentifier)
+          if (indexDown >= 0 && indexDown < values.Count && ((IBusinessObjectWithIdentity) values[indexDown]).UniqueIdentifier == uniqueIdentifier)
             return new BocListRow (indexDown, ((IBusinessObjectWithIdentity) values[indexDown]));
 
           if (indexUp < values.Count && ((IBusinessObjectWithIdentity)values[indexUp]).UniqueIdentifier == uniqueIdentifier)

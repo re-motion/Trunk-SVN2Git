@@ -73,7 +73,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetRowFromItemRowID_IndexDoesNotMatches_IndexTooBig ()
+    public void GetRowFromItemRowID_IndexDoesNotMatch_IndexTooBig ()
     {
       var values = new[]
                    {
@@ -95,7 +95,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetRowFromItemRowID_IndexDoesNotMatches_IndexTooSmall ()
+    public void GetRowFromItemRowID_IndexDoesNotMatch_IndexTooSmall ()
     {
       var values = new[]
                    {
@@ -117,7 +117,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    public void GetRowFromItemRowID_IndexGreaterThanValueLength ()
+    public void GetRowFromItemRowID_ItemInValueList_IndexGreaterThanValueLength ()
     {
       var values = new[]
                    {
@@ -144,6 +144,22 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                    };
 
       var row = rowIDProvider.GetRowFromItemRowID (values, "1|d");
+
+      Assert.That (row, Is.Null);
+    }
+
+    [Test]
+    public void GetRowFromItemRowID_ItemNotInValueList_IndexTooBig ()
+    {
+      var rowIDProvider = new UniqueIdentifierBasedRowIDProvider();
+      var values = new[]
+                   {
+                       CreateObject ("a"),
+                       CreateObject ("c"),
+                       CreateObject ("b")
+                   };
+
+      var row = rowIDProvider.GetRowFromItemRowID (values, "4|d");
 
       Assert.That (row, Is.Null);
     }
