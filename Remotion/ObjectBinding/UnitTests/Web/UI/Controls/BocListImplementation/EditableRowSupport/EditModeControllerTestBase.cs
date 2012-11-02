@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
@@ -31,6 +32,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 {
   public class EditModeControllerTestBase : BocTest
   {
+    protected enum EditMode
+    {
+      None,
+      RowEditMode,
+      ListEditMode,
+    }
+
     private StringCollection _actualEvents;
 
     private FakeEditModeHost _editModeHost;
@@ -228,17 +236,13 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       return "ValidateEditableRows ()";
     }
 
-    protected object CreateControlState (
-        object baseControlState,
-        bool isListEditModeActive,
-        string editedRowID,
-        bool isEditNewRow)
+    protected object CreateControlState (object baseControlState, EditMode editMode, List<string> editedRowIDs, bool isEditNewRow)
     {
       object[] values = new object[4];
 
       values[0] = baseControlState;
-      values[1] = isListEditModeActive;
-      values[2] = editedRowID;
+      values[1] = editMode;
+      values[2] = editedRowIDs;
       values[3] = isEditNewRow;
 
       return values;

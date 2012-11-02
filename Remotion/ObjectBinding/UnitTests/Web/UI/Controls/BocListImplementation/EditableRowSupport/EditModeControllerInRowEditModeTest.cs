@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Web.UI.WebControls;
 using NUnit.Framework;
@@ -605,7 +606,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void EnsureEditModeRestored ()
     {
       Assert.IsFalse (Controller.IsRowEditModeActive);
-      ControllerInvoker.LoadControlState (CreateControlState (null, false, "2", false));
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.RowEditMode, new List<string> { "2" }, false));
       Assert.IsTrue (Controller.IsRowEditModeActive);
     
       Controller.EnsureEditModeRestored (Columns);
@@ -613,12 +614,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     }
 
     [Test]
-    [ExpectedException (typeof (InvalidOperationException), 
-        ExpectedMessage = "Cannot restore row edit mode: The Value collection of the BocList 'BocList' no longer contains the previously edited row.")]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "Cannot create edit mode controls for the row with ID '6'. The BocList 'BocList' does not contain the row in its Value collection.")]
     public void EnsureEditModeRestoredWithInvalidRowIndex ()
     {
       Assert.IsFalse (Controller.IsRowEditModeActive);
-      ControllerInvoker.LoadControlState (CreateControlState (null, false, "6", false));
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.RowEditMode, new List<string> { "6" }, false));
       Assert.IsTrue (Controller.IsRowEditModeActive);
  
       Controller.EnsureEditModeRestored (Columns);
@@ -630,7 +631,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void EnsureEditModeRestoredWithValueNull ()
     {
       Assert.IsFalse (Controller.IsRowEditModeActive);
-      ControllerInvoker.LoadControlState (CreateControlState (null, false, "6", false));
+      ControllerInvoker.LoadControlState (CreateControlState (null, EditMode.RowEditMode, new List<string> { "6" }, false));
       Assert.IsTrue (Controller.IsRowEditModeActive);
       EditModeHost.Value = null;
 

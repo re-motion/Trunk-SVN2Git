@@ -17,6 +17,7 @@
 
 using System;
 using System.Collections;
+using System.Linq;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
@@ -57,14 +58,24 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public BocListRow[] AddRows (IBusinessObject[] businessObjects)
     {
       if (NotifyAddRows != null)
-        return NotifyAddRows (businessObjects);
+      {
+        var addedRows = NotifyAddRows (businessObjects);
+        foreach (var addedRow in addedRows.OrderBy (r=>r.Index))
+          RowIDProvider.AddRow (addedRow);
+        return addedRows;
+      }
       return new BocListRow[0];
     }
 
     public BocListRow[] RemoveRows (IBusinessObject[] bocListRows)
     {
-     if (NotifyRemoveRows != null)
-        return NotifyRemoveRows (bocListRows); 
+      if (NotifyRemoveRows != null)
+      {
+        var removedRows = NotifyRemoveRows (bocListRows);
+        foreach (var removedRow in removedRows.OrderByDescending (r=>r.Index))
+          RowIDProvider.RemoveRow (removedRow);
+        return removedRows;
+      }
       return new BocListRow[0];
     }
 
