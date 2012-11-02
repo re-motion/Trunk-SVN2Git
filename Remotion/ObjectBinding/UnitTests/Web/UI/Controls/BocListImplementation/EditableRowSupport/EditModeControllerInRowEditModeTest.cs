@@ -605,7 +605,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void EnsureEditModeRestored ()
     {
       Assert.IsFalse (Controller.IsRowEditModeActive);
-      ControllerInvoker.LoadControlState (CreateControlState (null, false, 2, false));
+      ControllerInvoker.LoadControlState (CreateControlState (null, false, "2", false));
       Assert.IsTrue (Controller.IsRowEditModeActive);
     
       Controller.EnsureEditModeRestored (Columns);
@@ -618,7 +618,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void EnsureEditModeRestoredWithInvalidRowIndex ()
     {
       Assert.IsFalse (Controller.IsRowEditModeActive);
-      ControllerInvoker.LoadControlState (CreateControlState (null, false, 6, false));
+      ControllerInvoker.LoadControlState (CreateControlState (null, false, "6", false));
       Assert.IsTrue (Controller.IsRowEditModeActive);
  
       Controller.EnsureEditModeRestored (Columns);
@@ -630,7 +630,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void EnsureEditModeRestoredWithValueNull ()
     {
       Assert.IsFalse (Controller.IsRowEditModeActive);
-      ControllerInvoker.LoadControlState (CreateControlState (null, false, 6, false));
+      ControllerInvoker.LoadControlState (CreateControlState (null, false, "6", false));
       Assert.IsTrue (Controller.IsRowEditModeActive);
       EditModeHost.Value = null;
 

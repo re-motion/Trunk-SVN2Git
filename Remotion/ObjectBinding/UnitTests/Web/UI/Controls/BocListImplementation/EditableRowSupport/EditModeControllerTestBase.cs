@@ -231,14 +231,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     protected object CreateControlState (
         object baseControlState,
         bool isListEditModeActive,
-        int? editableRowIndex,
+        string editedRowID,
         bool isEditNewRow)
     {
       object[] values = new object[4];
 
       values[0] = baseControlState;
       values[1] = isListEditModeActive;
-      values[2] = editableRowIndex;
+      values[2] = editedRowID;
       values[3] = isEditNewRow;
 
       return values;

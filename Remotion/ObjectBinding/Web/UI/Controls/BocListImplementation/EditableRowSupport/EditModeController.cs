@@ -44,7 +44,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     private readonly IEditModeHost _editModeHost;
 
     private bool _isListEditModeActive;
-    private int? _editableRowIndex;
+    private string _editedRowID;
     private bool _isEditNewRow;
 
     private bool _isEditModeRestored;
@@ -93,7 +93,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       if (_editModeHost.IsReadOnly || IsListEditModeActive || IsRowEditModeActive)
         return;
 
-      _editableRowIndex = index;
+      _editedRowID = _editModeHost.RowIDProvider.GetItemRowID (new BocListRow (index, (IBusinessObject) _editModeHost.Value[index]));
       CreateEditModeControls (columns);
       LoadValues (false);
     }
@@ -195,7 +195,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       }
 
       RemoveEditModeControls();
-      _editableRowIndex = null;
+      _editedRowID = null;
       _isEditNewRow = false;
     }
 
@@ -307,7 +307,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           throw new InvalidOperationException (
               string.Format ("Cannot restore edit mode: The BocList '{0}' does not have a Value.", _editModeHost.ID));
         }
-        if (IsRowEditModeActive && _editableRowIndex.Value >= _editModeHost.Value.Count)
+        if (IsRowEditModeActive && _editModeHost.RowIDProvider.GetRowFromItemRowID (_editModeHost.Value, _editedRowID) == null)
         {
           throw new InvalidOperationException (
               string.Format (
@@ -410,7 +410,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     public bool IsRowEditModeActive
     {
-      get { return _editableRowIndex.HasValue; }
+      get { return _editedRowID != null; }
     }
 
     public bool IsListEditModeActive
@@ -425,12 +425,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         throw new InvalidOperationException (
             string.Format ("Cannot retrieve edited row: The BocList '{0}' is not in row edit mode.", _editModeHost.ID));
       }
+
       if (_editModeHost.Value == null)
       {
         throw new InvalidOperationException (string.Format ("Cannot retrieve edited row: The BocList '{0}' does not have a Value.", _editModeHost.ID));
       }
 
-      return new BocListRow (_editableRowIndex.Value, (IBusinessObject) _editModeHost.Value[_editableRowIndex.Value]);
+      var editedRow = _editModeHost.RowIDProvider.GetRowFromItemRowID (_editModeHost.Value, _editedRowID);
+      if (editedRow == null)
+      {
+        throw new InvalidOperationException (
+            string.Format (
+                "Cannot retrieve edited row: The BocList '{0}' no longer contains the edited row in its Value collection.", _editModeHost.ID));
+      }
+
+      return editedRow;
     }
 
     public BaseValidator[] CreateValidators (IResourceManager resourceManager)
@@ -575,7 +584,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
         base.LoadControlState (values[0]);
         _isListEditModeActive = (bool) values[1];
-        _editableRowIndex = (int?) values[2];
+        _editedRowID = (string) values[2];
         _isEditNewRow = (bool) values[3];
       }
     }
@@ -586,7 +595,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
       values[0] = base.SaveControlState();
       values[1] = _isListEditModeActive;
-      values[2] = _editableRowIndex;
+      values[2] = _editedRowID;
       values[3] = _isEditNewRow;
 
       return values;

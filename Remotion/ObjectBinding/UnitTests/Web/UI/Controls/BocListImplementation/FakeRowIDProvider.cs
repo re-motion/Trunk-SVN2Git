@@ -44,6 +44,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public BocListRow GetRowFromItemRowID (IList rows, string rowID)
     {
       var rowIndex = int.Parse (rowID);
+      if (rowIndex >= rows.Count)
+        return null;
       var obj = (IBusinessObject) rows[rowIndex];
       return new BocListRow (rowIndex, obj);
     }
