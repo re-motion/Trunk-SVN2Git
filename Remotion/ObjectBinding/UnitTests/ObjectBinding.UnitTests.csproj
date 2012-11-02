@@ -88,6 +88,7 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="Web\UI\Controls\BocListImplementation\BocListRowTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\ListUtilityTest.cs" />
     <Compile Include="Web.Legacy\BocLegacyServiceConfigurationServiceTest.cs" />
     <Compile Include="Core\BindableObject\BindableObjectBaseImplementationTest.cs" />

@@ -297,7 +297,7 @@
         editing, you can also use the <see cref="SwitchRowIntoEditMode"/> and <see cref="EndRowEditMode"/> methods
         to start and end the row edit mode.
       </para><para>
-        You can query the row row currently being edited through the <see cref="EditableRowIndex"/> property. Use the
+        You can query the row row currently being edited through the <see cref="GetEditedRow"/> method. Use the
         <see cref="IsRowEditModeActive"/> flag to determine whether the <b>BocList</b> is currently in row edit mode.
       </para><para>
         If you must validate the row being edited, you can call the <see cref="ValidateEditableRows"/> method. If

@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
   {
     bool IsRowEditModeActive { get; }
     bool IsListEditModeActive { get; }
-    int? EditableRowIndex { get; }
+    BocListRow GetEditedRow ();
     void SwitchRowIntoEditMode (int index, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
     void SwitchListIntoEditMode (BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
     bool AddAndEditRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);

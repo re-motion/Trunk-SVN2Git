@@ -124,5 +124,14 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     
       Assert.IsFalse (Controller.IsRowEditModeActive);
     }
+
+    [Test]
+    public void GetEditedRow ()
+    {
+      Assert.Throws<InvalidOperationException> (
+          () => Controller.GetEditedRow(),
+          "Cannot retrieve edited row: The BocList '{0}' is not in row edit mode.",
+          EditModeHost.ID);
+    }
   }
 }

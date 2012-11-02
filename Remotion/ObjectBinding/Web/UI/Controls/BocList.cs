@@ -1019,10 +1019,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_editModeController.IsRowEditModeActive)
       {
         BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
+        BocListRow editedRow = _editModeController.GetEditedRow();
         for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
         {
-          int originalRowIndex = sortedRows[idxRows].Index;
-          if (_editModeController.EditableRowIndex.Value == originalRowIndex)
+          if (sortedRows[idxRows] == editedRow)
           {
             _currentRow = idxRows;
             break;
@@ -1883,18 +1883,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                idxAbsoluteRows++, idxRelativeRows++)
           {
             BocListRow row = rows[idxAbsoluteRows];
-            int originalRowIndex = row.Index;
 
-            if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
-                && (_editModeController.EditableRowIndex == null
-                    || _editModeController.EditableRowIndex.Value != originalRowIndex))
-              continue;
-
-            BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
-            Control control = customColumn.CustomCell.CreateControlInternal (args);
-            control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + originalRowIndex;
-            placeHolder.Controls.Add (control);
-            customColumnTuples[idxRelativeRows] = new BocListCustomColumnTuple (row.BusinessObject, originalRowIndex, control);
+            if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
+                || (_editModeController.IsRowEditModeActive && _editModeController.GetEditedRow() == row))
+            {
+              BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
+              Control control = customColumn.CustomCell.CreateControlInternal (args);
+              control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + row.Index;
+              placeHolder.Controls.Add (control);
+              customColumnTuples[idxRelativeRows] = new BocListCustomColumnTuple (row.BusinessObject, row.Index, control);
+            }
           }
         }
       }
@@ -1903,15 +1901,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Invokes the <see cref="BocCustomColumnDefinitionCell.Init"/> method for each custom column. </summary>
     private void InitCustomColumns ()
     {
-      BocColumnDefinition[] columns = EnsureColumnsForPreviousLifeCycleGot();
-      for (int idxColumns = 0; idxColumns < columns.Length; idxColumns++)
-      {
-        BocCustomColumnDefinition customColumn = columns[idxColumns] as BocCustomColumnDefinition;
-        if (customColumn != null
-            && (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
-                || (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
-                    && _editModeController.IsRowEditModeActive)))
+      var customColumns = EnsureColumnsForPreviousLifeCycleGot()
+          .OfType<BocCustomColumnDefinition>()
+          .Where (c => c.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow || c.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows);
 
+      foreach (var customColumn in customColumns)
+      {
+        if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
+            || (_editModeController.IsRowEditModeActive))
         {
           BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
           customColumn.CustomCell.Init (args);
@@ -1928,32 +1925,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_customColumns == null)
         return;
 
-      BocColumnDefinition[] columns = EnsureColumnsForPreviousLifeCycleGot();
-      for (int idxColumns = 0; idxColumns < columns.Length; idxColumns++)
-      {
-        BocCustomColumnDefinition customColumn = columns[idxColumns] as BocCustomColumnDefinition;
-        if (customColumn != null
-            && (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
-                || customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow))
-        {
-          BocListCustomColumnTuple[] customColumnTuples = _customColumns[customColumn];
-          for (int idxRows = 0; idxRows < customColumnTuples.Length; idxRows++)
-          {
-            BocListCustomColumnTuple customColumnTuple = customColumnTuples[idxRows];
-            if (customColumnTuple != null)
-            {
-              int originalRowIndex = customColumnTuple.Item2;
-              if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow
-                  && (_editModeController.EditableRowIndex == null
-                      || _editModeController.EditableRowIndex.Value != originalRowIndex))
-                continue;
-              IBusinessObject businessObject = customColumnTuple.Item1;
-              Control control = customColumnTuple.Item3;
+      var customColumns = EnsureColumnsForPreviousLifeCycleGot()
+          .OfType<BocCustomColumnDefinition>()
+          .Where (c => c.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow || c.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows);
 
-              BocCustomCellLoadArguments args =
-                  new BocCustomCellLoadArguments (this, businessObject, customColumn, originalRowIndex, control);
-              customColumn.CustomCell.Load (args);
-            }
+      foreach (var customColumn in customColumns)
+      {
+        var customColumnTuples = _customColumns[customColumn].Where (t => t != null);
+        foreach (var customColumnTuple in customColumnTuples)
+        {
+          int originalRowIndex = customColumnTuple.Item2;
+          if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
+              || (_editModeController.IsRowEditModeActive && _editModeController.GetEditedRow().Index == originalRowIndex))
+          {
+            IBusinessObject businessObject = customColumnTuple.Item1;
+            Control control = customColumnTuple.Item3;
+
+            var args = new BocCustomCellLoadArguments (this, businessObject, customColumn, originalRowIndex, control);
+            customColumn.CustomCell.Load (args);
           }
         }
       }
@@ -1967,32 +1956,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!_editModeController.IsRowEditModeActive)
         return true;
 
+      var editedRow = _editModeController.GetEditedRow();
       bool isValid = true;
-      BocColumnDefinition[] columns = EnsureColumnsForPreviousLifeCycleGot();
-      for (int idxColumns = 0; idxColumns < columns.Length; idxColumns++)
+
+      var customColumns = EnsureColumnsForPreviousLifeCycleGot()
+          .OfType<BocCustomColumnDefinition>()
+          .Where (c => c.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow);
+
+      foreach (var customColumn in customColumns)
       {
-        BocCustomColumnDefinition customColumn = columns[idxColumns] as BocCustomColumnDefinition;
-        if (customColumn != null
-            && customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow)
+        var editedCustomColumnTuple = _customColumns[customColumn].Where (t => t != null).SingleOrDefault (t => t.Item2 == editedRow.Index);
+
+        if (editedCustomColumnTuple != null)
         {
-          BocListCustomColumnTuple[] customColumnTuples = _customColumns[customColumn];
-          for (int idxRows = 0; idxRows < customColumnTuples.Length; idxRows++)
-          {
-            BocListCustomColumnTuple customColumnTuple = customColumnTuples[idxRows];
-            if (customColumnTuple != null)
-            {
-              int originalRowIndex = customColumnTuple.Item2;
-              if (_editModeController.EditableRowIndex.Value == originalRowIndex)
-              {
-                IBusinessObject businessObject = customColumnTuple.Item1;
-                Control control = customColumnTuple.Item3;
-                BocCustomCellValidationArguments args =
-                    new BocCustomCellValidationArguments (this, businessObject, customColumn, control);
-                customColumn.CustomCell.Validate (args);
-                isValid &= args.IsValid;
-              }
-            }
-          }
+          IBusinessObject businessObject = editedCustomColumnTuple.Item1;
+          Control control = editedCustomColumnTuple.Item3;
+          var args = new BocCustomCellValidationArguments (this, businessObject, customColumn, control);
+          customColumn.CustomCell.Validate (args);
+          isValid &= args.IsValid;
         }
       }
       return isValid;
@@ -3029,8 +3010,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
         for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
         {
-          int originalRowIndex = sortedRows[idxRows].Index;
-          if (modifiedRowIndex == originalRowIndex)
+          if (sortedRows[idxRows].Index == modifiedRowIndex)
           {
             _currentRow = idxRows;
             break;
@@ -3057,6 +3037,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return _validators.OfType<EditModeValidator>().FirstOrDefault();
     }
 
+    /// <summary>
+    /// Gets the <see cref="BocListRow"/> currently being edited in row-edit-mode.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if the <see cref="BocList"/> is not currently in row-edit-mode or the <see cref="Value"/> has not yet been set.
+    /// </exception>
+    public BocListRow GetEditedRow()
+    {
+      return _editModeController.GetEditedRow();
+    }
+
     /// <summary> Gets a flag that determines wheter the <see cref="BocList"/> is n row edit mode. </summary>
     /// <remarks>
     ///   Queried where the rendering depends on whether the list is in edit mode. 
@@ -3077,13 +3068,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public bool IsListEditModeActive
     {
       get { return _editModeController.IsListEditModeActive; }
-    }
-
-    /// <summary> Gets the index of the currently modified row. </summary>
-    [Browsable (false)]
-    public int? EditableRowIndex
-    {
-      get { return _editModeController.EditableRowIndex; }
     }
 
     /// <summary>

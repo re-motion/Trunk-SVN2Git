@@ -20,8 +20,18 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
-  public class BocListRow
+  public sealed class BocListRow : IEquatable<BocListRow>
   {
+    public static bool operator== (BocListRow row1, BocListRow row2)
+    {
+      return Equals (row1, row2);
+    }
+
+    public static bool operator!= (BocListRow row1, BocListRow row2)
+    {
+      return !(row1 == row2);
+    }
+
     private readonly int _index;
     private readonly IBusinessObject _businessObject;
 
@@ -43,6 +53,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public IBusinessObject BusinessObject
     {
       get { return _businessObject; }
+    }
+
+    public bool Equals (BocListRow other)
+    {
+      if (other == null)
+        return false;
+
+      return this._index == other._index && this._businessObject.Equals (other._businessObject);
+    }
+
+    public override bool Equals (object obj)
+    {
+      return Equals (obj as BocListRow);
+    }
+
+    public override int GetHashCode ()
+    {
+      return _index.GetHashCode();
     }
   }
 }

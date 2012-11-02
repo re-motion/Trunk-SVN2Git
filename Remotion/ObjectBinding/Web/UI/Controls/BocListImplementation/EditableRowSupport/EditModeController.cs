@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     public EditableRow GetEditableRow (int originalRowIndex)
     {
-      if (IsRowEditModeActive && (EditableRowIndex.Value == originalRowIndex))
+      if (IsRowEditModeActive && (GetEditedRow().Index == originalRowIndex))
         return _rows[0];
       else if (IsListEditModeActive)
         return _rows[originalRowIndex];
@@ -428,9 +428,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       get { return _isListEditModeActive; }
     }
 
-    public int? EditableRowIndex
+    public BocListRow GetEditedRow()
     {
-      get { return _editableRowIndex; }
+      if (!IsRowEditModeActive)
+      {
+        throw new InvalidOperationException (
+            string.Format ("Cannot retrieve edited row: The BocList '{0}' is not in row edit mode.", _editModeHost.ID));
+      }
+      if (_editModeHost.Value == null)
+      {
+        throw new InvalidOperationException (string.Format ("Cannot retrieve edited row: The BocList '{0}' does not have a Value.", _editModeHost.ID));
+      }
+
+      return new BocListRow (_editableRowIndex.Value, (IBusinessObject) _editModeHost.Value[_editableRowIndex.Value]);
     }
 
     public BaseValidator[] CreateValidators (IResourceManager resourceManager)

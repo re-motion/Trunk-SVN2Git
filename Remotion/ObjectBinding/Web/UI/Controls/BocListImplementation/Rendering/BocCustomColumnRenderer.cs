@@ -68,14 +68,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       int originalRowIndex = dataRowRenderEventArgs.ListIndex;
       IBusinessObject businessObject = dataRowRenderEventArgs.BusinessObject;
-      bool isEditedRow = renderingContext.Control.EditModeController.EditableRowIndex.HasValue
-                         && renderingContext.Control.EditModeController.EditableRowIndex == originalRowIndex;
+      bool isEditedRow = renderingContext.Control.EditModeController.IsRowEditModeActive
+                         && renderingContext.Control.EditModeController.GetEditedRow().Index == originalRowIndex;
 
-      if (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.NoControls
-          || (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow))
-        RenderCustomCellDirectly (renderingContext, businessObject, originalRowIndex);
-      else
+      if (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
+          || (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && isEditedRow))
         RenderCustomCellInnerControls (renderingContext, rowIndex);
+      else
+        RenderCustomCellDirectly (renderingContext, businessObject, originalRowIndex);
     }
 
     private void RenderCustomCellInnerControls (BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext, int rowIndex)
