@@ -1884,8 +1884,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           {
             BocListRow row = rows[idxAbsoluteRows];
 
+            bool isEditedRow = _editModeController.IsRowEditModeActive && _editModeController.GetEditableRow (row.Index) != null;
+
             if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
-                || (_editModeController.IsRowEditModeActive && _editModeController.GetEditedRow() == row))
+                || (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && isEditedRow))
             {
               BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
               Control control = customColumn.CustomCell.CreateControlInternal (args);
@@ -1935,8 +1937,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         foreach (var customColumnTuple in customColumnTuples)
         {
           int originalRowIndex = customColumnTuple.Item2;
+          bool isEditedRow = _editModeController.IsRowEditModeActive && _editModeController.GetEditableRow (originalRowIndex) != null;
+
           if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
-              || (_editModeController.IsRowEditModeActive && _editModeController.GetEditedRow().Index == originalRowIndex))
+              || (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && isEditedRow))
           {
             IBusinessObject businessObject = customColumnTuple.Item1;
             Control control = customColumnTuple.Item3;
