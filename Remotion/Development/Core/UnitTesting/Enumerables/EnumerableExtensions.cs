@@ -16,6 +16,7 @@
 // 
 using System.Collections.Generic;
 using Remotion.Utilities;
+using System.Linq;
 
 namespace Remotion.Development.UnitTesting.Enumerables
 {
@@ -35,6 +36,19 @@ namespace Remotion.Development.UnitTesting.Enumerables
       ArgumentUtility.CheckNotNull ("source", source);
 
       return new OneTimeEnumerable<T> (source);
+    }
+
+    /// <summary>
+    /// Forces the enumeration of the <see cref="IEnumerable{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The element type of the <see cref="IEnumerable{T}"/>.</typeparam>
+    /// <param name="source">The source <see cref="IEnumerable{T}"/>.</param>
+    /// <returns>An array containing all values computed by <paramref name="source"/>.</returns>
+    public static T[] ForceEnumeration<T> (this IEnumerable<T> source)
+    {
+      ArgumentUtility.CheckNotNull ("source", source);
+
+      return source.ToArray();
     }
   }
 }

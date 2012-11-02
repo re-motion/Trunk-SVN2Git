@@ -17,6 +17,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Enumerables;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting.Enumerables
 {
@@ -29,6 +30,19 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Enumerables
       var source = new[] { 1, 2, 3 };
 
       OneTimeEnumerable<int> result = source.AsOneTime();
+
+      Assert.That (result, Is.EqualTo (source));
+    }
+
+    [Test]
+    public void ForceEnumeration ()
+    {
+      var wasCalled = false;
+      var source = new[] { 7 }.ApplySideEffect (x => wasCalled = true);
+
+      Assert.That (wasCalled, Is.False);
+      var result = source.ForceEnumeration();
+      Assert.That (wasCalled, Is.True);
 
       Assert.That (result, Is.EqualTo (source));
     }
