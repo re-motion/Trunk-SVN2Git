@@ -62,12 +62,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
 
     // methods and properties
 
-    IEditableRow IEditModeController.GetEditableRow (int originalRowIndex)
-    {
-      return GetEditableRow (originalRowIndex);
-    }
-
-    public EditableRow GetEditableRow (int originalRowIndex)
+    public IEditableRow GetEditableRow (int originalRowIndex)
     {
       if (IsRowEditModeActive && (GetEditedRow().Index == originalRowIndex))
         return _rows[0];
