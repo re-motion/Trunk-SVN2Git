@@ -108,7 +108,7 @@
         <Value>$(Copyright)</Value>
       </_properties>
       <_properties Include="HelpFileVersion">
-        <Value>$([System.Version]::Parse ($(Version))).0</Value>
+        <Value>$([System.Version]::Parse ($(Version)))</Value>
       </_properties>
       <_properties Include="VendorName">
         <Value>$(CompanyName)</Value>
@@ -221,10 +221,10 @@
   <Target Name="CheckVersion">
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
 
-    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Major) == -1" />
-    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Minor) == -1" />
-    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Build) == -1" />
-    <Error Text="Only 3-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Revision) != -1" />
+    <Error Text="Only 4-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Major) == -1" />
+    <Error Text="Only 4-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Minor) == -1" />
+    <Error Text="Only 4-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Build) == -1" />
+    <Error Text="Only 4-part version numbers are supported." Condition="$([System.Version]::Parse ($(Version)).Revision) == -1" />
 
   </Target>
 

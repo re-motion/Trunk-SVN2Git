@@ -133,7 +133,7 @@
     <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
 
     <PropertyGroup>
-      <_regexVersionPatten>(\d+\.\d+\.\d+)</_regexVersionPatten>
+      <_regexVersionPatten>(\d+\.\d+\.\d+.\d+)</_regexVersionPatten>
     </PropertyGroup>
 
     <ItemGroup>
