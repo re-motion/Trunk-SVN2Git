@@ -22,6 +22,45 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
 {
+  /// <summary>
+  /// Defines a dependency from a mixin to another mixin or interface type in the context of a given target class, 
+  /// as if that dependency was specified via an <see cref="ExtendsAttribute"/>'s, <see cref="UsesAttribute"/>'s, or <see cref="MixAttribute"/>'s 
+  /// <see cref="MixinRelationshipAttribute.AdditionalDependencies"/> property. If the type depended upon is not present within the target type's 
+  /// mixin configuration, an error is raised.
+  /// </summary>
+  /// <remarks>
+  /// <para>
+  /// This can be used to augment an existing mixin declaration with a dependency in situations where the mixin declaration cannot be changed. It 
+  /// implements the following use cases:
+  /// <list type="bullet">
+  /// <item>
+  ///   <description>
+  ///     Resolving an ordering conflict between mixins added to a single class by different components oblivious to each other. 
+  ///     An application or additional component that combines the components with conflicting mixins can resolve that conflict by adding 
+  ///     dependencies using the <see cref="AdditionalMixinDependencyAttribute"/>.
+  ///   </description>
+  /// </item>
+  /// <item>
+  ///   <description>
+  ///     Adding a mixin in the middle of two existing mixins.
+  ///   </description>
+  /// </item>
+  /// <item>
+  ///   <description>
+  ///     Overriding the alphabetic ordering (see <see cref="AcceptsAlphabeticOrderingAttribute"/>) between existing mixins.
+  ///   </description>
+  /// </item>
+  /// </list>
+  /// </para>
+  /// <para>
+  /// Assembly-level mixin dependencies influence the mixin configuration of the class specified via the <see cref="TargetType"/>parameter. 
+  /// If a derived class inherits a mixin with a dependency, the dependency is inherited together with the mixin.
+  /// </para>
+  /// <para>
+  /// When an assembly-level mixin dependency is specified for a class that does not have the given dependent mixin, an error of type 
+  /// <see cref="ConfigurationException"/> is raised at attribute analysis time.
+  /// </para>
+  /// </remarks>
   [AttributeUsage (AttributeTargets.Assembly, AllowMultiple = true)]
   public class AdditionalMixinDependencyAttribute : Attribute, IMixinConfigurationAttribute<Assembly>
   {
