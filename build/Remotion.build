@@ -40,7 +40,7 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit-2.6.2\bin</NUnitToolPath>
+    <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit-2.6\bin</NUnitToolPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
