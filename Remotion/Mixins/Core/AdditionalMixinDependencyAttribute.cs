@@ -20,7 +20,7 @@ using System.Reflection;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Utilities;
 
-namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.AssemblyLevelMixinDependencies
+namespace Remotion.Mixins
 {
   /// <summary>
   /// Defines a dependency from a mixin to another mixin or interface type in the context of a given target class, 

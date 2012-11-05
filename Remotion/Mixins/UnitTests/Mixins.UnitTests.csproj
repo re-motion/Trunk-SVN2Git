@@ -71,6 +71,7 @@
     <Compile Include="CoreComponentIntegration\TestDomain\MixinAddingInheritedAttribute.cs" />
     <Compile Include="CoreComponentIntegration\TestDomain\MixinAddingSuppressAttribute.cs" />
     <Compile Include="CoreComponentIntegration\TestDomain\MixinSuppressingNonInheritedAttribute.cs" />
+    <Compile Include="Core\AdditionalMixinDependencyAttributeTest.cs" />
     <Compile Include="Core\ClassContextObjectMother.cs" />
     <Compile Include="Core\CodeGenerationStatisticsTest.cs" />
     <Compile Include="Core\CodeGenerationTypeMother.cs" />
@@ -258,7 +259,6 @@
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedBaseMixin.cs" />
     <Compile Include="Core\Context\Suppression\TestDomain\SuppressedMixin.cs" />
     <Compile Include="Core\Definitions\CompleteInterfaceDependencyDefinitionTest.cs" />
-    <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AdditionalMixinDependencyAttribute.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AddingDependencyWithinDerivedClassTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\ClassWithGenericMixinTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\GenericClassTest.cs" />

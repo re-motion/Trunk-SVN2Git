@@ -58,6 +58,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="AcceptsAlphabeticOrderingAttribute.cs" />
+    <Compile Include="AdditionalMixinDependencyAttribute.cs" />
     <Compile Include="BindToConstraintsAttribute.cs" />
     <Compile Include="BindToGenericTargetParameterAttribute.cs" />
     <Compile Include="BindToTargetTypeAttribute.cs" />
