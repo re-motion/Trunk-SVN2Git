@@ -15,14 +15,15 @@
 // under the License.
 // 
 using System;
+using Microsoft.Scripting.Ast;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.Reflection;
 
 namespace TypePipe.IntegrationTests
 {
-  [Ignore("TODO 5119")]
+  [Ignore ("TODO 5119")]
   [TestFixture]
-  public class AddTypeInitializerTest : TypeAssemblerIntegrationTestBase
+  public class AddTypeInitializationTest : TypeAssemblerIntegrationTestBase
   {
     [Test]
     public void Standard ()
@@ -32,14 +33,15 @@ namespace TypePipe.IntegrationTests
       var type = AssembleType<DomainType> (
           mutableType =>
           {
-            Assert.That (mutableType.TypeInitializer, Is.Null);
-            //var typeInitializer = mutableType.GetOrAddTypeInitializer();
+            Assert.That (mutableType.TypeInitializations, Is.Empty);
 
-            //Assert.That (mutableType.TypeInitializer, Is.SameAs (typeInitializer));
-            //Assert.That (mutableType.GetOrAddTypeInitializer(), Is.SameAs (typeInitializer));
-            //Assert.That (mutableType.AddedConstructors, Is.EqualTo (new[] { typeInitializer }));
+            var initializationExpression = Expression.Assign (Expression.Field (null, field), Expression.Constant ("abc"));
+            mutableType.AddTypeInitialization (initializationExpression);
 
-            //typeInitializer.SetBody (ctx => Expression.Assign (Expression.Field (null, field), Expression.Constant ("abc")));
+            Assert.That (mutableType.TypeInitializations, Is.EqualTo (new[] { initializationExpression }));
+
+            // TODO 5119 whats happens if we modify type with a type initializer
+            // TODO 5119 what should be returned for mutableType.TypeInitializer
           });
 
       // Force type to be loaded.
@@ -47,27 +49,6 @@ namespace TypePipe.IntegrationTests
       Activator.CreateInstance (type);
 
       Assert.That (DomainType.StaticField, Is.EqualTo ("abc"));
-    }
-
-    // TODO 5119: With the subclass proxy model we can never prevent the base initializer from executing.
-    // Should we therefore force the user to include the previous body into the new body?
-
-    [Test]
-    public void TypeInitializerCannotUseThis ()
-    {
-      AssembleType<DomainType> (
-          mutableType =>
-          {
-            //var typeInitializer = mutableType.GetOrAddTypeInitializer();
-            //Assert.That (typeInitializer.IsStatic, Is.True);
-
-            //typeInitializer.SetBody (
-            //    ctx =>
-            //    {
-            //      Assert.That (() => ctx.This, Throws.InvalidOperationException.With.Message.EqualTo ("Static methods cannot use 'This'."));
-            //      return Expression.Empty();
-            //    });
-          });
     }
 
     public class DomainType
