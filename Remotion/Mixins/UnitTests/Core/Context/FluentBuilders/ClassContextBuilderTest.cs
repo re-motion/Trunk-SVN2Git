@@ -467,8 +467,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       var origin = MixinContextOriginObjectMother.Create();
 
-      Expect
-          .Call (_classBuilderMock.EnsureMixins (origin, typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)))
+      _classBuilderMock
+          .Expect (mock => mock.EnsureMixins (origin, typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)))
           .CallOriginalMethod (OriginalCallOptions.CreateExpectation);
       _classBuilderMock.Expect (mock => mock.EnsureMixin (typeof (BT2Mixin1), origin)).Return (_mixinBuilderMock);
       _classBuilderMock.Expect (mock => mock.EnsureMixin (typeof (BT3Mixin1), origin)).Return (_mixinBuilderMock);
@@ -485,8 +485,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     {
       var expectedOrigin = MixinContextOrigin.CreateForMethod (MethodBase.GetCurrentMethod());
 
-      Expect
-          .Call (_classBuilderMock.EnsureMixins (expectedOrigin, typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)))
+      _classBuilderMock
+          .Expect (mock => mock.EnsureMixins (expectedOrigin, typeof (BT2Mixin1), typeof (BT3Mixin1), typeof (BT3Mixin2)))
           .Return (_classBuilderMock);
 
       _mockRepository.Replay (_classBuilderMock);
@@ -683,13 +683,13 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     }
 
     [Test]
-    public void WithMixinDependency_NonGeneric ()
+    public void AddMixinDependency_NonGeneric ()
     {
-      var result = _classBuilder.WithMixinDependency (typeof (BT1Mixin1), typeof (int));
+      var result = _classBuilder.AddMixinDependency (typeof (BT1Mixin1), typeof (int));
       Assert.That (result, Is.SameAs (_classBuilder));
 
-      _classBuilder.WithMixinDependency (typeof (BT1Mixin1), typeof (float));
-      _classBuilder.WithMixinDependency (typeof (BT1Mixin2), typeof (double));
+      _classBuilder.AddMixinDependency (typeof (BT1Mixin1), typeof (float));
+      _classBuilder.AddMixinDependency (typeof (BT1Mixin2), typeof (double));
 
       Assert.That (_classBuilder.MixinDependencies.Count(), Is.EqualTo (2));
       
@@ -701,13 +701,13 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     }
 
     [Test]
-    public void WithMixinDependency_Generic ()
+    public void AddMixinDependency_Generic ()
     {
-      _classBuilderMock.Expect (mock => mock.WithMixinDependency<BT2Mixin1, int> ()).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
-      _classBuilderMock.Expect (mock => mock.WithMixinDependency (typeof (BT2Mixin1), typeof (int))).Return (_classBuilderMock);
+      _classBuilderMock.Expect (mock => mock.AddMixinDependency<BT2Mixin1, int> ()).CallOriginalMethod (OriginalCallOptions.CreateExpectation);
+      _classBuilderMock.Expect (mock => mock.AddMixinDependency (typeof (BT2Mixin1), typeof (int))).Return (_classBuilderMock);
 
       _mockRepository.Replay (_classBuilderMock);
-      Assert.That (_classBuilderMock.WithMixinDependency<BT2Mixin1, int>(), Is.SameAs (_classBuilderMock));
+      Assert.That (_classBuilderMock.AddMixinDependency<BT2Mixin1, int>(), Is.SameAs (_classBuilderMock));
       _mockRepository.Verify (_classBuilderMock);
     }
 
@@ -826,7 +826,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void BuildContext_MixinDependencies ()
     {
       _classBuilder
-          .WithMixinDependency<BT1Mixin1, BT1Mixin2>()
+          .AddMixinDependency<BT1Mixin1, BT1Mixin2>()
           .AddMixin<BT1Mixin1>();
 
       var builtContext = _classBuilder.BuildClassContext ();
@@ -837,8 +837,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void BuildContext_MixinDependencies_AppliedWithInheritance ()
     {
-      _classBuilder.WithMixinDependency<BT1Mixin1, BT1Mixin2> ();
-      _classBuilder.WithMixinDependency<BT1Mixin2, BT2Mixin1> ();
+      _classBuilder.AddMixinDependency<BT1Mixin1, BT1Mixin2> ();
+      _classBuilder.AddMixinDependency<BT1Mixin2, BT2Mixin1> ();
 
       var inheritedContext1 = ClassContextObjectMother.Create (typeof (NullTarget), typeof (BT1Mixin1));
       var inheritedContext2 = ClassContextObjectMother.Create (typeof (NullTarget), typeof (BT1Mixin2));
@@ -851,7 +851,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     [Test]
     public void BuildContext_MixinDependencies_Error ()
     {
-      _classBuilder.WithMixinDependency<BT1Mixin1, BT1Mixin2> ();
+      _classBuilder.AddMixinDependency<BT1Mixin1, BT1Mixin2> ();
 
       Assert.That (
           () => _classBuilder.BuildClassContext (), 
@@ -865,7 +865,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.FluentBuilders
     public void BuildContext_MixinDependencies_AppliedAfterSuppression ()
     {
       _classBuilder
-          .WithMixinDependency<BT1Mixin1, BT1Mixin2> ()
+          .AddMixinDependency<BT1Mixin1, BT1Mixin2> ()
           .AddMixin<BT1Mixin1> ()
           .SuppressMixin<BT1Mixin1> ();
 

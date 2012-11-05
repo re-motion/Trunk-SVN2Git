@@ -695,7 +695,7 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <param name="dependentMixin">The mixin for which the dependency is to be added.</param>
     /// <param name="requiredMixin">The type on which <paramref name="dependentMixin"/> should have a dependency.</param>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder WithMixinDependency (Type dependentMixin, Type requiredMixin)
+    public virtual ClassContextBuilder AddMixinDependency (Type dependentMixin, Type requiredMixin)
     {
       ArgumentUtility.CheckNotNull ("dependentMixin", dependentMixin);
       ArgumentUtility.CheckNotNull ("requiredMixin", requiredMixin);
@@ -712,9 +712,9 @@ namespace Remotion.Mixins.Context.FluentBuilders
     /// <typeparam name="TDependentMixin">The mixin for which the dependency is to be added.</typeparam>
     /// <typeparam name="TRequiredMixin">The type on which <typeparamref name="TDependentMixin"/> should have a dependency.</typeparam>
     /// <returns>This object for further configuration of the <see cref="TargetType"/>.</returns>
-    public virtual ClassContextBuilder WithMixinDependency<TDependentMixin, TRequiredMixin> ()
+    public virtual ClassContextBuilder AddMixinDependency<TDependentMixin, TRequiredMixin> ()
     {
-      return WithMixinDependency (typeof (TDependentMixin), typeof (TRequiredMixin));
+      return AddMixinDependency (typeof (TDependentMixin), typeof (TRequiredMixin));
     }
 
     /// <summary>

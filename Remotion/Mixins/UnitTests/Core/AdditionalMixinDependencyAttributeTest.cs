@@ -33,7 +33,7 @@ namespace Remotion.Mixins.UnitTests.Core
       var classContextBuilderMock = MockRepository.GenerateStrictMock<ClassContextBuilder> (typeof (string));
       
       configurationBuilderStub.Stub (stub => stub.ForClass (typeof (string))).Return (classContextBuilderMock);
-      classContextBuilderMock.Expect (mock => mock.WithMixinDependency (typeof (int), typeof (double))).Return (classContextBuilderMock);
+      classContextBuilderMock.Expect (mock => mock.AddMixinDependency (typeof (int), typeof (double))).Return (classContextBuilderMock);
 
       attribute.Apply (configurationBuilderStub, GetType().Assembly);
 

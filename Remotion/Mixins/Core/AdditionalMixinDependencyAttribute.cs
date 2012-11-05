@@ -104,7 +104,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("configurationBuilder", configurationBuilder);
       ArgumentUtility.CheckNotNull ("attributeTarget", attributeTarget);
 
-      configurationBuilder.ForClass (TargetType).WithMixinDependency (DependentMixin, Dependency);
+      configurationBuilder.ForClass (TargetType).AddMixinDependency (DependentMixin, Dependency);
     }
   }
 }
