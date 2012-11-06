@@ -23,14 +23,12 @@
       <Name>Release</Name>
       <Framework>net-3.5</Framework>
       <OutputDirectory>net-3.5\bin\release\</OutputDirectory>
-      <AssemblyRevision>1</AssemblyRevision>
     </AllConfigurations>
 
     <AllConfigurations Include="Debug">
       <Name>Debug</Name>
       <Framework>net-3.5</Framework>
       <OutputDirectory>net-3.5\bin\debug\</OutputDirectory>
-      <AssemblyRevision>2</AssemblyRevision>
     </AllConfigurations>
 
   </ItemGroup>

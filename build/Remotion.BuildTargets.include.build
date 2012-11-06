@@ -28,7 +28,6 @@
       <ActiveConfigurationName>%(_activeConfiguration.Name)</ActiveConfigurationName>
       <ActiveConfigurationOutputDirectory>$(BinariesDirectory)%(_activeConfiguration.OutputDirectory)</ActiveConfigurationOutputDirectory>
       <ActiveConfigurationFramework>%(_activeConfiguration.Framework)</ActiveConfigurationFramework>
-      <ActiveConfigurationAssemblyRevision>%(_activeConfiguration.AssemblyRevision)</ActiveConfigurationAssemblyRevision>
     </PropertyGroup>
   </Target>
 
