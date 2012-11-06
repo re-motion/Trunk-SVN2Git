@@ -14,16 +14,22 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using Microsoft.Scripting.Ast;
 
-namespace TypePipe.IntegrationTests
+using System;
+using Remotion.TypePipe.MutableReflection;
+
+namespace TypePipe.IntegrationTests.MutableReflection
 {
-  public static class ExpressionHelper
+  public static class MutableTypeObjectMother
   {
-    public static BinaryExpression StringConcat (Expression left, Expression right)
+    public static MutableType CreateForExisting (Type underlyingType)
     {
-      var concatMethod = typeof (string).GetMethod ("Concat", new[] { typeof (string), typeof (string) });
-      return Expression.Add (left, right, concatMethod);
+      var underlyingTypeDescriptor = UnderlyingTypeDescriptor.Create (underlyingType);
+      var memberSelector = new MemberSelector (new BindingFlagsEvaluator ());
+      var relatedMethodFinder = new RelatedMethodFinder ();
+      var mutableMemberFactory = new MutableMemberFactory (memberSelector, relatedMethodFinder);
+
+      return new MutableType (underlyingTypeDescriptor, memberSelector, relatedMethodFinder, mutableMemberFactory);
     }
   }
 }
