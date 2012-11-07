@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
+using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.Definitions.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
@@ -188,6 +189,24 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (targetClassDefinition.Mixins.Select (m => m.MixinIndex).ToArray (), Is.EqualTo (new[] { 0, 1, 2, 3, 4, 5, 6 }));
+    }
+
+    [Test]
+    public void Build_DetectsCyclicDependencies ()
+    {
+      var classContext =
+          ClassContextObjectMother.Create (typeof (NullTarget), typeof (NullMixin), typeof (NullMixin2)).ApplyMixinDependencies (
+              new[]
+              {
+                  new MixinDependencySpecification (typeof (NullMixin), new[] { typeof (NullMixin2) }),
+                  new MixinDependencySpecification (typeof (NullMixin2), new[] { typeof (NullMixin) })
+              });
+
+      Assert.That (
+          () => _builder.Build (classContext),
+          Throws.TypeOf<ConfigurationException> ().With.Message.EqualTo (
+              "The following group of mixins, applied to target class 'Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget', contains circular "
+              + "dependencies: Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin, Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2."));
     }
 
     [Test]

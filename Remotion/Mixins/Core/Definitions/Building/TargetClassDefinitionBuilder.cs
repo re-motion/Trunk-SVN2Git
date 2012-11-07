@@ -15,12 +15,15 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.Utilities.DependencySort;
+using Remotion.Text;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 using System.Linq;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Definitions.Building
 {
@@ -80,7 +83,7 @@ namespace Remotion.Mixins.Definitions.Building
       foreach (var mixinContext in classContext.Mixins)
           mixinDefinitionBuilder.Apply (mixinContext, -1);
 
-      var sortedMixins = _sorter.SortMixins (classDefinition);
+      var sortedMixins = SortMixins(classDefinition);
 
       classDefinition.Mixins.Clear();
       foreach (var mixinDefinition in sortedMixins)
@@ -89,7 +92,23 @@ namespace Remotion.Mixins.Definitions.Building
         classDefinition.Mixins.Add (mixinDefinition);
       }
     }
-    
+
+    private ICollection<MixinDefinition> SortMixins (TargetClassDefinition targetClassDefinition)
+    {
+      try
+      {
+        return _sorter.SortMixins (targetClassDefinition.Mixins).ConvertToCollection ();
+      }
+      catch (CircularDependenciesException<MixinDefinition> ex)
+      {
+        string message = string.Format (
+            "The following group of mixins, applied to target class '{0}', contains circular dependencies: {1}.",
+            targetClassDefinition.FullName,
+            SeparatedStringBuilder.Build (", ", ex.Circulars, m => m.FullName));
+        throw new ConfigurationException (message, ex);
+      }
+    }
+
     // This can only be done once all the mixins are available, therefore, the TargetClassDefinitionBuilder has to do it.
     private void ApplyMethodRequirements (TargetClassDefinition classDefinition)
     {

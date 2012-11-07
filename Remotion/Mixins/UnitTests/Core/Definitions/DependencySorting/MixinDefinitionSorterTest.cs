@@ -53,13 +53,15 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     [Test]
     public void SortMixins_PartitionsAndSortsAlphabetically ()
     {
+      var mixinDefinitions = new[] { _mixinDefinition4, _mixinDefinition2, _mixinDefinition1, _mixinDefinition3 };
+
       var fakeSortedGroup1 = new[] { _mixinDefinition4, _mixinDefinition1 };
       var fakeSortedGroup2 = new[] { _mixinDefinition3, _mixinDefinition2 };
 
       var mockRepository = new MockRepository ();
 
       var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper>();
-      innerGrouperMock.Expect (mock => mock.GroupMixins (_targetClassDefinition.Mixins)).Return (_fakeGroupings);
+      innerGrouperMock.Expect (mock => mock.GroupMixins (mixinDefinitions)).Return (_fakeGroupings);
 
       var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>>();
       using (mockRepository.Ordered ())
@@ -71,36 +73,11 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       mockRepository.ReplayAll();
 
       var sorter = new MixinDefinitionSorter (innerGrouperMock, innerSorterMock);
-      var sorted = sorter.SortMixins (_targetClassDefinition);
+      var sorted = sorter.SortMixins (mixinDefinitions);
 
       mockRepository.VerifyAll ();
 
       Assert.That (sorted, Is.EqualTo (new[] { _mixinDefinition3, _mixinDefinition2, _mixinDefinition4, _mixinDefinition1 }));
-    }
-
-    [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
-        "The following group of mixins, applied to target class 'Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget', contains circular dependencies: "
-        + "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin, Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4.")]
-    public void SortMixins_CircularDependencies ()
-    {
-      var mockRepository = new MockRepository ();
-
-      var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper> ();
-      innerGrouperMock.Expect (mock => mock.GroupMixins (_targetClassDefinition.Mixins)).Return (_fakeGroupings);
-
-      var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>> ();
-      using (mockRepository.Ordered ())
-      {
-        innerSorterMock
-            .Expect (mock => mock.SortDependencies (_fakeGroupings[0]))
-            .Throw (new CircularDependenciesException<MixinDefinition> ("bla", _fakeGroupings[0]));
-      }
-
-      mockRepository.ReplayAll ();
-
-      var sorter = new MixinDefinitionSorter (innerGrouperMock, innerSorterMock);
-      sorter.SortMixins (_targetClassDefinition);
     }
   }
 }
