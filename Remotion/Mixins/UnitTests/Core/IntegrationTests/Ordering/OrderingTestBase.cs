@@ -72,9 +72,9 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 
     protected void CheckCycleException (ActualValueDelegate action, Type targetClass, params Type[] mixinTypes)
     {
-      // TODO 5157: Target class should be mentioned in exception message.
       var expectedMessage = string.Format (
-          "The following group of mixins contains circular dependencies: {0}.", 
+          "The following group of mixins, applied to target class '{0}', contains circular dependencies: {1}.", 
+          targetClass.FullName,
           SeparatedStringBuilder.Build (", ", mixinTypes, m => m.FullName));
       Assert.That (action, Throws.TypeOf<ConfigurationException> ().With.Message.EqualTo (expectedMessage));
     }

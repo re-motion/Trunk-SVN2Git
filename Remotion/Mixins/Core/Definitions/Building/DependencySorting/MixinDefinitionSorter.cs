@@ -53,20 +53,20 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
     /// </summary>
     /// <param name="targetClassDefinition">The target class definition holding the mixins.</param>
     /// <returns>A list with the mixins held by <paramref name="targetClassDefinition"/>, but in the correct order.</returns>
-    public List<MixinDefinition> SortMixins (TargetClassDefinition targetClassDefinition)
+    public IEnumerable<MixinDefinition> SortMixins (TargetClassDefinition targetClassDefinition)
     {
-      var sortedMixinGroups = PartitionAndSortMixins (targetClassDefinition.Mixins);
+      var sortedMixinGroups = PartitionAndSortMixins (targetClassDefinition);
 
       // flatten ordered groups of sorted mixins
       return sortedMixinGroups.SelectMany (mixinGroup => mixinGroup).ToList();
     }
 
-    private List<List<MixinDefinition>> PartitionAndSortMixins (IEnumerable<MixinDefinition> unsortedMixins)
+    private IEnumerable<List<MixinDefinition>> PartitionAndSortMixins (TargetClassDefinition targetClassDefinition)
     {
       var sortedMixinGroups = new List<List<MixinDefinition>> ();
 
       // partition mixins into independent groups
-      foreach (HashSet<MixinDefinition> mixinGroup in _grouper.GroupMixins (unsortedMixins))
+      foreach (HashSet<MixinDefinition> mixinGroup in _grouper.GroupMixins (targetClassDefinition.Mixins))
       {
         try
         {
@@ -75,14 +75,16 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
         }
         catch (CircularDependenciesException<MixinDefinition> ex)
         {
-          string message = string.Format ("The following group of mixins contains circular dependencies: {0}.",
-                                          SeparatedStringBuilder.Build (", ", ex.Circulars, m => m.FullName));
+          string message = string.Format (
+              "The following group of mixins, applied to target class '{0}', contains circular dependencies: {1}.",
+              targetClassDefinition.FullName,
+              SeparatedStringBuilder.Build (", ", ex.Circulars, m => m.FullName));
           throw new ConfigurationException (message, ex);
         }
       }
 
       // order groups alphabetically
-      sortedMixinGroups.Sort ((one, two) => one[0].FullName.CompareTo (two[0].FullName));
+      sortedMixinGroups.Sort ((one, two) => System.String.Compare(one[0].FullName, two[0].FullName, System.StringComparison.Ordinal));
 
       return sortedMixinGroups;
     }
