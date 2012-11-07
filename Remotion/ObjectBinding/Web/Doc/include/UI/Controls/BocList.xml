@@ -187,7 +187,6 @@
         exceeds the page size, it is possible to page through the values one page at a time or move to the first or 
         last page.
       </para><para>
-        The text rendered for the current page information can be set through the <see cref="PageInfo"/> property.
         By setting the <see cref="AlwaysShowPageInfo"/> flag to <see langword="false"/>, the current page information
         and the paging buttons are only rendered if more than one page is available.
       </para>
@@ -435,13 +434,6 @@
           <description>
             <para> &lt;BocList Resource ID&gt;:OptionsMenuItems:&lt;Menu Item ID&gt;:Text </para>
             <para> e.g. auto:MyBocList:OptionsMenuItems:MyItem:Text </para>
-          </description>
-        </item>
-        <item>
-          <term> <see cref="PageInfo"/> </term>
-          <description>
-            <para> &lt;BocList Resource ID&gt;:PageInfo </para>
-            <para> e.g. auto:MyBocList:PageInfo </para>
           </description>
         </item>
       </list>

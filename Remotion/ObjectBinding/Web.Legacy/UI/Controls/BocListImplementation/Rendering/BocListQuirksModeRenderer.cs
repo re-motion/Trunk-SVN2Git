@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Web.UI;
 using System.Web;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -286,21 +287,28 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       if (renderingContext.Control.HasClientScript && renderingContext.Control.IsSelectionEnabled)
       {
         //  Render the init script for the client side selection handling
+        int startIndex = 0;
         int count = 0;
         if (renderingContext.Control.IsPagingEnabled)
+        {
+          startIndex = renderingContext.Control.PageSize.Value * renderingContext.Control.CurrentPageIndex;
           count = renderingContext.Control.PageSize.Value;
+        }
         else if (renderingContext.Control.Value != null)
+        {
           count = renderingContext.Control.Value.Count;
+        }
 
         bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive &&
                                      renderingContext.Control.AreDataRowsClickSensitive();
 
-        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', '{2}', {3}, {4}, {5}, {6});";
+        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', '{2}', {3}, {4}, {5}, {6}, {7});";
         string script = string.Format (
             scriptTemplate,
             renderingContext.Control.ClientID,
-            renderingContext.Control.GetSelectorControlClientID (null),
-            renderingContext.Control.GetSelectAllControlClientID(),
+            renderingContext.Control.GetSelectorControlName ().Replace('$', '_'),
+            renderingContext.Control.GetSelectAllControlName(),
+            startIndex,
             count,
             (int) renderingContext.Control.Selection,
             hasClickSensitiveRows ? "true" : "false",

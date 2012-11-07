@@ -129,14 +129,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 
     private int ParseRowID (string rowID)
     {
-      try
-      {
-        return int.Parse (rowID, CultureInfo.InvariantCulture);
-      }
-      catch (Exception ex)
-      {
-        throw new FormatException (string.Format ("RowID '{0}' could not be parsed as an integer.", rowID), ex);
-      }
+      int result;
+      if (!int.TryParse (rowID, NumberStyles.None, CultureInfo.InvariantCulture, out result))
+        throw new FormatException (string.Format ("RowID '{0}' could not be parsed as an integer.", rowID));
+      return result;
     }
   }
 }

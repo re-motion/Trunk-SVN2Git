@@ -123,7 +123,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       var originalRowIndex = rowRenderingContext.Row.Index;
       var businessObject = rowRenderingContext.Row.BusinessObject;
 
-      string selectorControlID = renderingContext.Control.GetSelectorControlClientID (rowIndex);
       bool isChecked = rowRenderingContext.IsSelected;
       bool isOddRow = (rowIndex % 2 == 0); // row index is zero-based here, but one-based in rendering => invert even/odd
 
@@ -133,8 +132,8 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableRow);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Tr);
 
-      _indexColumnRenderer.RenderDataCell (renderingContext, originalRowIndex, selectorControlID, absoluteRowIndex, cssClassTableCell);
-      _selectorColumnRenderer.RenderDataCell (renderingContext, rowRenderingContext, selectorControlID, cssClassTableCell);
+      _indexColumnRenderer.RenderDataCell (renderingContext, originalRowIndex, absoluteRowIndex, cssClassTableCell);
+      _selectorColumnRenderer.RenderDataCell (renderingContext, rowRenderingContext, cssClassTableCell);
 
       var dataRowRenderEventArgs = new BocListDataRowRenderEventArgs (originalRowIndex, businessObject, true, isOddRow);
       renderingContext.Control.OnDataRowRendering (dataRowRenderEventArgs);

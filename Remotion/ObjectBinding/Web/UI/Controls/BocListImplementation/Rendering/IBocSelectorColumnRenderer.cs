@@ -35,8 +35,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <param name="renderingContext">The <see cref="BocListRenderingContext"/>.</param>
     /// <param name="rowRenderingContext">The <see cref="BocListRowRenderingContext"/> for the current data row.</param>
-    /// <param name="selectorControlID">The ID to apply to the selector control.</param>
     /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
-    void RenderDataCell (BocListRenderingContext renderingContext, BocListRowRenderingContext rowRenderingContext, string selectorControlID, string cssClassTableCell);
+    void RenderDataCell (BocListRenderingContext renderingContext, BocListRowRenderingContext rowRenderingContext, string cssClassTableCell);
   }
 }

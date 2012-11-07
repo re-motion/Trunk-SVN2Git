@@ -62,15 +62,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// <value> <see cref="Controls.RowMenuDisplay.Undefined"/> is interpreted as <see cref="Controls.RowMenuDisplay.Disabled"/>. </value>
     RowMenuDisplay RowMenuDisplay { get; }
 
-    /// <summary>
-    ///   Gets or sets a value that indicating the row selection mode.
-    /// </summary>
-    /// <remarks> 
-    ///   If row selection is enabled, the control displays a checkbox in front of each row
-    ///   and highlights selected data rows.
-    /// </remarks>
-    RowSelection Selection { get; }
-
     bool IsIndexEnabled { get; }
 
     /// <summary> Gets or sets a value that indicating the row index is enabled. </summary>
@@ -89,27 +80,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// <summary> Gets or sets the text that is displayed in the index column's title row. </summary>
     /// <remarks> The value will not be HTML encoded. </remarks>
     string IndexColumnTitle { get; }
-
-    /// <summary> The number of rows displayed per page. </summary>
-    /// <value> 
-    ///   An integer greater than zero to limit the number of rows per page to the specified value,
-    ///   or zero, less than zero or <see langword="null"/> to show all rows.
-    /// </value>
-    int? PageSize { get; }
-
-    /// <summary>
-    ///   Gets or sets a flag that indicates whether to the show the page count even when there 
-    ///   is just one page.
-    /// </summary>
-    /// <value> 
-    ///   <see langword="true"/> to force showing the page info, even if the rows fit onto a single 
-    ///   page.
-    /// </value>
-    bool AlwaysShowPageInfo { get; }
-
-    /// <summary> Gets or sets the text providing the current page information to the user. </summary>
-    /// <remarks> Use {0} for the current page and {1} for the total page count. The value will not be HTML encoded. </remarks>
-    string PageInfo { get; }
 
     /// <summary> Gets or sets the text rendered if the list is empty. </summary>
     /// <remarks> The value will not be HTML encoded. </remarks>
@@ -134,12 +104,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// <remarks> The <see cref="MenuBlockOffset"/> is applied as a <c>padding</c> attribute. </remarks>
     Unit MenuBlockOffset { get; }
 
-    /// <summary>
-    ///   Gets or sets a value that indicates whether the control displays a drop down list 
-    ///   containing the available column definition sets.
-    /// </summary>
-    bool ShowAvailableViewsList { get; }
-
     /// <summary> Gets or sets the text that is rendered as a title for the drop list of additional columns. </summary>
     /// <remarks> The value will not be HTML encoded. </remarks>
     string AvailableViewsListTitle { get; }
@@ -147,10 +111,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     /// <summary> Gets or sets the text that is rendered as a label for the <c>options menu</c>. </summary>
     string OptionsTitle { get; }
 
-    int CurrentPage { get; }
-    int PageCount { get; }
     bool HasClientScript { get; }
-    DropDownList AvailableViewsList { get; }
+    DropDownList GetAvailableViewsList ();
     IDropDownMenu OptionsMenu { get; }
 
     IEditModeController EditModeController { get; }
@@ -162,7 +124,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     bool HasOptionsMenu { get; }
     bool HasAvailableViewsList { get; }
     bool HasMenuBlock { get; }
-    bool IsPagingEnabled { get; }
     bool IsShowSortingOrderEnabled { get; }
     IListMenu ListMenu { get; }
 
@@ -190,10 +151,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     IResourceManager GetResourceManager ();
     BocListRowRenderingContext[] GetRowsToDisplay ();
     void OnDataRowRendering (BocListDataRowRenderEventArgs args);
+
+    RowSelection Selection { get; }
     bool AreDataRowsClickSensitive ();
-    string GetSelectorControlClientID (int? absoluteRowIndex);
+    string GetSelectorControlName ();
     string GetSelectorControlValue (BocListRow row);
-    string GetSelectAllControlClientID ();
+    string GetSelectAllControlName ();
     string GetSelectionChangedHandlerScript ();
+
+    bool IsPagingEnabled { get; }
+    int PageCount { get; }
+    int? PageSize { get; }
+    int CurrentPageIndex { get; }
+    string GetCurrentPageControlName ();
   }
 }

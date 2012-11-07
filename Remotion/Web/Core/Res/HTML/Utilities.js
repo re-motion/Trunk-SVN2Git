@@ -29,6 +29,10 @@ TypeUtility.IsNumber = function(value) {
     return typeof (value) == 'number';
 };
 
+TypeUtility.IsInteger = function (value) {
+  return TypeUtility.IsNumber (value) && value %1 === 0;
+};
+
 TypeUtility.IsBoolean = function(value) {
     return typeof (value) == 'boolean';
 };

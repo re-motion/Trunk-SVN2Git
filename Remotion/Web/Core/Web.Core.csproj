@@ -206,6 +206,7 @@
     <Compile Include="UI\Controls\Hotkey\UnderscoreHotkeyFormatter.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\IListMenuRenderer.cs" />
     <Compile Include="UI\Controls\ListMenuImplementation\Rendering\ListMenuRenderingContext.cs" />
+    <Compile Include="UI\Controls\PostBackTargets\ScalarLoadPostDataTarget.cs" />
     <Compile Include="UI\Controls\RenderingContext.cs" />
     <Compile Include="UI\Controls\Rendering\RenderOnlyTextBox.cs" />
     <Compile Include="UI\Controls\SingleViewImplementation\Rendering\ISingleViewRenderer.cs" />

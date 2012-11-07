@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </remarks>
     [ResourceIdentifiers]
     [MultiLingualResources ("Remotion.ObjectBinding.Web.Globalization.BocReferenceValue")]
-    public enum ResourceIdentifier
+    protected enum ResourceIdentifier
     {
       /// <summary> Label displayed in the OptionsMenu. </summary>
       OptionsTitle,

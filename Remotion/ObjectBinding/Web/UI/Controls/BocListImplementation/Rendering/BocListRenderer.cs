@@ -198,22 +198,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (renderingContext.Control.HasClientScript)
       {
         //  Render the init script for the client side selection handling
-        int count = 0;
-        if (renderingContext.Control.IsPagingEnabled)
-          count = renderingContext.Control.PageSize.Value;
-        else if (renderingContext.Control.Value != null)
-          count = renderingContext.Control.Value.Count;
 
         bool hasClickSensitiveRows = renderingContext.Control.IsSelectionEnabled && !renderingContext.Control.EditModeController.IsRowEditModeActive
                                      && renderingContext.Control.AreDataRowsClickSensitive();
 
-        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', '{2}', {3}, {4}, {5}, {6});";
+        const string scriptTemplate = "BocList_InitializeList ( $('#{0}')[0], '{1}', '{2}', {3}, {4}, {5});";
         string script = string.Format (
             scriptTemplate,
             renderingContext.Control.ClientID,
-            renderingContext.Control.GetSelectorControlClientID (null),
-            renderingContext.Control.GetSelectAllControlClientID(),
-            count,
+            renderingContext.Control.GetSelectorControlName (),
+            renderingContext.Control.GetSelectAllControlName(),
             (int) renderingContext.Control.Selection,
             hasClickSensitiveRows ? "true" : "false",
             renderingContext.Control.GetSelectionChangedHandlerScript());

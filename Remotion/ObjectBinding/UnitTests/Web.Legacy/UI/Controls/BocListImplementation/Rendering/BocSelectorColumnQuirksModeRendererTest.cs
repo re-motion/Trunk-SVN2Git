@@ -54,7 +54,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       var input = Html.GetAssertedChildElement (th, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
-      Html.AssertAttribute (input, "name", List.GetSelectAllControlClientID());
+      Html.AssertAttribute (input, "name", List.GetSelectAllControlName());
       Html.AssertNoAttribute (input, "value");
       Html.AssertAttribute (input, "alt", "Select all rows.");
     }
@@ -69,7 +69,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       renderer.RenderDataCell (
           new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]),
           new BocListRowRenderingContext (row, 0, false),
-          "checkboxControl",
           "bocListTableCell");
       var document = Html.GetResultDocument();
 
@@ -78,7 +77,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "checkbox");
-      Html.AssertAttribute (input, "name", "checkboxControl");
+      Html.AssertAttribute (input, "id", "SelectRowControl_UnqiueID_0");
+      Html.AssertAttribute (input, "name", "SelectRowControl$UnqiueID");
       Html.AssertAttribute (input, "value", "row1");
       Html.AssertAttribute (input, "alt", "Select this row.");
     }
@@ -108,7 +108,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       renderer.RenderDataCell (
           new BocListRenderingContext (HttpContext, Html.Writer, List, new BocColumnRenderer[0]),
           new BocListRowRenderingContext (row, 0, false),
-          "radioControl",
           "bocListTableCell");
       var document = Html.GetResultDocument();
 
@@ -117,7 +116,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
 
       var input = Html.GetAssertedChildElement (td, "input", 0);
       Html.AssertAttribute (input, "type", "radio");
-      Html.AssertAttribute (input, "name", "radioControl");
+      Html.AssertAttribute (input, "id", "SelectRowControl_UnqiueID_0");
+      Html.AssertAttribute (input, "name", "SelectRowControl$UnqiueID");
       Html.AssertAttribute (input, "value", "row1");
       Html.AssertAttribute (input, "alt", "Select this row.");
     }

@@ -61,7 +61,9 @@ function BocList_SelectedRows (selection)
     this.Rows = new Object();
   };
   this.SelectAllSelectorControls = null;
+  this.DataRowIDStartIndex = 0;
   this.DataRowCount = 0;
+  this.OnSelectionChanged = function () { };
 }
 
 function BocList_RowBlock (row, selectorControl)
@@ -92,7 +94,7 @@ function BocList_InitializeGlobals (trClassName, trClassNameSelected)
 //  selection: The RowSelection enum value defining the selection mode (disabled/single/multiple)
 //  hasClickSensitiveRows: true if the click event handler is bound to the data rows.
 //  updateListMenuHandler: A function to be invoked when the BocList's selection changes.
-function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelectorControlID, count, selection, hasClickSensitiveRows, onSelectionChangedHandler)
+function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelectorControlID, startIndex, count, selection, hasClickSensitiveRows, onSelectionChangedHandler)
 {
   var selectedRows = new BocList_SelectedRows (selection);
   if (   selectedRows.Selection != _bocList_rowSelectionUndefined
@@ -100,7 +102,7 @@ function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelecto
   {
     for (var i = 0; i < count; i++)
     {
-      var selectorControlID = selectorControlPrefix + i;
+      var selectorControlID = selectorControlPrefix + '_' + (startIndex + i);
       var selectorControl = document.getElementById (selectorControlID);
       if (selectorControl == null)
         continue;
@@ -120,10 +122,12 @@ function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelecto
     selectedRows.SelectAllSelectorControls = document.getElementById(selectAllSelectorControlID);
     if (selectedRows.DataRowCount == selectedRows.Length && selectedRows.DataRowCount > 0 && selectedRows.SelectAllSelectorControls != null)
       selectedRows.SelectAllSelectorControls.checked = true;
+    selectedRows.DataRowIDStartIndex = startIndex;
+    selectedRows.OnSelectionChanged = onSelectionChangedHandler;
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
-  onSelectionChangedHandler(bocList);
+  selectedRows.OnSelectionChanged(bocList);
 }
 
 function BocList_BindRowClickEventHandler(bocList, row, selectorControl, onSelectionChangedHandler)
@@ -268,8 +272,7 @@ function BocList_UnselectRow (bocList, rowBlock)
 //  Applies the checked state of the title's selectorControl to all data rows' selectu=ion selectorControles.
 //  bocList: The BocList to which the selectorControl belongs.
 //  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
-//  count: The number of data rows in the BocList.
-function BocList_OnSelectAllSelectorControlClick(bocList, selectAllSelectorControl, selectorControlPrefix, count, listMenu)
+function BocList_OnSelectAllSelectorControlClick(bocList, selectAllSelectorControl, selectorControlPrefix)
 {
   var selectedRows = _bocList_selectedRows[bocList.id];
 
@@ -279,24 +282,24 @@ function BocList_OnSelectAllSelectorControlClick(bocList, selectAllSelectorContr
   if (selectAllSelectorControl.checked)      
     selectedRows.Length = 0;
 
-  for (var i = 0; i < count; i++)
+  for (var i = 0; i < selectedRows.DataRowCount; i++)
   {
-    var selectorControlID = selectorControlPrefix + i;
+    var selectorControlID = selectorControlPrefix + '_' + (selectedRows.DataRowIDStartIndex + i);
     var selectorControl = document.getElementById (selectorControlID);
     if (selectorControl == null)
       continue;
     var row =  selectorControl.parentNode.parentNode;
     var rowBlock = new BocList_RowBlock (row, selectorControl);
-    if (selectAllSelectorControl.checked)      
-      BocList_SelectRow (bocList, rowBlock)
+    if (selectAllSelectorControl.checked)
+      BocList_SelectRow(bocList, rowBlock);
     else
-      BocList_UnselectRow (bocList, rowBlock)
+      BocList_UnselectRow(bocList, rowBlock);
   }
   
-  if (! selectAllSelectorControl.checked)      
+  if (! selectAllSelectorControl.checked)
     selectedRows.Length = 0;
 
-  ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
+  selectedRows.OnSelectionChanged (bocList);
 }
 
 //  Event handler for the selection selectorControl in a data row.

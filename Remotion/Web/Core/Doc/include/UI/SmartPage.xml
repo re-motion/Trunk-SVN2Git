@@ -86,7 +86,8 @@
         <see cref="EnableSmartScrolling"/> and <see cref="EnableSmartFocusing"/> properties, which allow you to 
         disable the smart navigation individually for each page. Override the <see cref="IsSmartScrollingEnabled"/> 
         and <see cref="IsSmartFocusingEnabled"/> properties to use additional criteria (besides the application 
-        configuration and the properties) for disabling smart navigation.
+        configuration and the properties) for disabling smart navigation. Note that the scrolled DOM elements 
+        must have the ID attribute set for the scroll position to be restored.
       </para>
       
       <h4 class="dtH4">Additional Features of the <see cref="SmartPage"/></h4>

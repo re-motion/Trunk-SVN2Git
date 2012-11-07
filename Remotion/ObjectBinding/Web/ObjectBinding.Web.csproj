@@ -463,6 +463,12 @@
     <EmbeddedResource Include="Globalization\BocReferenceValueRenderer.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocListNavigationBlockRenderer.de.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\BocListNavigationBlockRenderer.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>

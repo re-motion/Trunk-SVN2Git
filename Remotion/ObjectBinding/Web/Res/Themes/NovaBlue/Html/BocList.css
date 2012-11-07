@@ -22,10 +22,35 @@ div.bocListNavigator
   margin-top: 0.25em;
 }
 
+
 div.bocList.hasDimensions div.bocListNavigator
 {
   position: absolute;
   bottom: 0;
+}
+
+/*  Style applied to the BocList's navigator, page information. */
+div.bocListNavigator > span
+{
+  padding-right: 0.35em
+}
+
+div.bocListNavigator > span > input
+{
+  margin-left: 0.35em;
+  margin-right: 0.35em;
+}
+
+body.msie7 div.bocListNavigator > span > input
+{
+  vertical-align: middle;
+}
+
+div.bocListNavigator img
+{
+  padding-left: 0.35em;
+  padding-right: 0.35em;
+  vertical-align: -0.1em;
 }
 
 /*  Style applied to the BocList's menu block. */
@@ -92,7 +117,7 @@ div.bocList.hasDimensions div.bocListTableBlock div.bocListTableContainer
 /*  Style applied to the div surrounding the BocList's table when the BocList has a defined width or height and a navigation block.  */
 div.bocList.hasDimensions div.bocListTableBlock.hasNavigator div.bocListTableContainer
 {
-  bottom: 1.5em;
+  bottom: 1.85em;
 }
 
 /* Style applied to the div allowing the BocList's table to scroll. */

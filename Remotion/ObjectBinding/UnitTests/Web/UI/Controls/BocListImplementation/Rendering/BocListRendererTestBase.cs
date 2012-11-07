@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Globalization;
@@ -26,6 +25,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.Web.Infrastructure;
 using Remotion.Web.UI;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 using Rhino.Mocks;
 
@@ -99,14 +99,18 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       var clientScriptManager = MockRepository.GenerateMock<IClientScriptManager>();
       page.Stub (pageMock => pageMock.ClientScript).Return (clientScriptManager);
 
-      clientScriptManager.Stub (scriptManagerMock => scriptManagerMock.GetPostBackEventReference (null, ""))
+      clientScriptManager.Stub (scriptManagerMock => scriptManagerMock.GetPostBackEventReference ((IControl) null, ""))
+          .IgnoreArguments().Return ("postBackEventReference");
+
+      clientScriptManager.Stub (scriptManagerMock => scriptManagerMock.GetPostBackEventReference ((PostBackOptions) null))
           .IgnoreArguments().Return ("postBackEventReference");
 
       var editModeController = MockRepository.GenerateMock<IEditModeController>();
       List.Stub (list => list.EditModeController).Return (editModeController);
 
-      List.Stub (stub => stub.GetSelectorControlClientID (Arg<int>.Is.Anything)).Return ("SelectRowControlID");
-      List.Stub (stub => stub.GetSelectAllControlClientID()).Return ("SelectAllControlID");
+      List.Stub (stub => stub.GetSelectorControlName ()).Return ("SelectRowControl$UnqiueID");
+      List.Stub (stub => stub.GetSelectAllControlName()).Return ("SelectAllControl$UniqueID");
+      List.Stub (stub => stub.GetCurrentPageControlName()).Return ("CurrentPageControl$UniqueID");
 
       List.Stub (list => list.GetResourceManager()).Return (
           MultiLingualResources.GetResourceManager (typeof (ObjectBinding.Web.UI.Controls.BocList.ResourceIdentifier)));

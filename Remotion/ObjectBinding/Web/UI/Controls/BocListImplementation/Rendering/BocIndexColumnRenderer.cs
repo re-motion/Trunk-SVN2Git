@@ -41,7 +41,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _cssClasses; }
     }
 
-    public void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell)
+    public void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, int absoluteRowIndex, string cssClassTableCell)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("cssClassTableCell", cssClassTableCell);
@@ -49,6 +49,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       if (!renderingContext.Control.IsIndexEnabled)
         return;
 
+      string selectorControlID = renderingContext.Control.GetSelectorControlName ().Replace('$', '_') + "_" + originalRowIndex;
       string cssClass = cssClassTableCell + " " + CssClasses.DataCellIndex;
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClass);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);

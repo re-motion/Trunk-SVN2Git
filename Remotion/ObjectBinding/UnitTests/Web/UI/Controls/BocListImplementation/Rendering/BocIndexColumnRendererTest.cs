@@ -77,7 +77,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     {
       IBocIndexColumnRenderer renderer = new BocIndexColumnRenderer (_bocListCssClassDefinition);
       const string cssClassTableCell = "bocListTableCell";
-      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, "selectorID", 0, cssClassTableCell);
+      renderer.RenderDataCell (new BocListRenderingContext(HttpContext, Html.Writer, List, new BocColumnRenderer[0]), 0, 0, cssClassTableCell);
 
       var document = Html.GetResultDocument();
 
@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var label = Html.GetAssertedChildElement (td, "label", 0);
       Html.AssertAttribute (label, "class", _bocListCssClassDefinition.Content);
-      Html.AssertAttribute (label, "for", "selectorID");
+      Html.AssertAttribute (label, "for", "SelectRowControl_UnqiueID_0");
 
       Html.AssertTextNode (label, (1 + indexOffset).ToString(), 0);
     }

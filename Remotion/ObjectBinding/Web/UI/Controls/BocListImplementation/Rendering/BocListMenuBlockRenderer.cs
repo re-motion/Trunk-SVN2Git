@@ -111,12 +111,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderEndTag();
 
       renderingContext.Writer.Write (c_whiteSpace);
+      
+      var availableViewsList = renderingContext.Control.GetAvailableViewsList();
       if (renderingContext.Control.IsDesignMode)
-        renderingContext.Control.AvailableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
-      renderingContext.Control.AvailableViewsList.Enabled = !renderingContext.Control.EditModeController.IsRowEditModeActive && 
+        availableViewsList.Width = Unit.Point (c_designModeAvailableViewsListWidthInPoints);
+      availableViewsList.Enabled = !renderingContext.Control.EditModeController.IsRowEditModeActive && 
         !renderingContext.Control.EditModeController.IsListEditModeActive;
-      renderingContext.Control.AvailableViewsList.CssClass = CssClasses.AvailableViewsListDropDownList;
-      renderingContext.Control.AvailableViewsList.RenderControl (renderingContext.Writer);
+      availableViewsList.CssClass = CssClasses.AvailableViewsListDropDownList;
+      availableViewsList.RenderControl (renderingContext.Writer);
+
       renderingContext.Writer.RenderEndTag();
     }
   }

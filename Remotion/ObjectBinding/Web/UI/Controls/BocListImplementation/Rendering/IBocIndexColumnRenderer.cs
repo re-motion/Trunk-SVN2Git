@@ -35,9 +35,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
     /// </summary>
     /// <param name="renderingContext">The <see cref="BocListRenderingContext"/>.</param>
     /// <param name="originalRowIndex">The absolute row index in the original (unsorted) item collection.</param>
-    /// <param name="selectorControlID">The ID of the control used for selecting the row. See <see cref="IBocSelectorColumnRenderer"/>.</param>
     /// <param name="absoluteRowIndex">The absolute row index (including previous pages) after sorting.</param>
     /// <param name="cssClassTableCell">The CSS class to apply to the cell.</param>
-    void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, string selectorControlID, int absoluteRowIndex, string cssClassTableCell);
+    void RenderDataCell (BocListRenderingContext renderingContext, int originalRowIndex, int absoluteRowIndex, string cssClassTableCell);
   }
 }

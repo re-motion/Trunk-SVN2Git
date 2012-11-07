@@ -46,9 +46,20 @@
       -moz-box-flex: 1;
       -webkit-box-flex: 1;
       flex: 1;
+      position:relative; /* allows inner box to use percentage height */
 
       width: 100%;
       background-color: Yellow;
+    }
+    #box2content
+    {
+      position: absolute;
+      height: 100%;
+
+      width: 100%;
+      background-color: gold;
+      box-sizing: border-box;
+      border: 5px solid hotpink;
     }
     #box3
     {
@@ -60,8 +71,11 @@
       width: 100%;
       background-color: Teal;
     }
-    
-    /* IE8, IE9 
+    </style>
+  
+<!--[if lte IE 9]>
+  <style type="text/css">
+
     #flexbox
     {
        display: table;
@@ -87,21 +101,33 @@
       display: table-row;
       height: 1%;
     }
-     */
     
-
   </style>
+
+<![endif]-->
 </head>
 <body>
   <div id="flexbox">
     <div id="box1">
-      box 1</div>
+      box 1
+    </div>
     <div id="box1a">
       box 1a</div>
     <div id="box2">
-      box 2</div>
+      <div id="box2content">
+        <!-- table is just for show -->
+        <table style="height:100%; width: 100%; border-collapse: collapse;" >
+          <tr>
+            <td style="border: solid 5px indigo">
+               box 2
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
     <div id="box3">
-      box 3</div>
+      box 3
+    </div>
   </div>
 </body>
 </html>

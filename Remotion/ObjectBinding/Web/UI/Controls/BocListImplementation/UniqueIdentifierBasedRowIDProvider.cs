@@ -90,28 +90,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     {
       var parts = rowID.Split (new[] { '|' }, 2);
       if (parts.Length != 2)
-        throw CreateItemRowIDFormatException (rowID, null);
+        throw CreateItemRowIDFormatException (rowID);
 
       int rowIndex;
-      try
-      {
-        rowIndex = int.Parse (parts[0], CultureInfo.InvariantCulture);
-      }
-      catch (Exception ex)
-      {
-        throw CreateItemRowIDFormatException (rowID, ex);
-      }
+      if (!int.TryParse (parts[0], NumberStyles.None, CultureInfo.InvariantCulture, out rowIndex))
+        throw CreateItemRowIDFormatException (rowID);
 
       var uniqueIdentifier = parts[1];
       var tuple = Tuple.Create (rowIndex, uniqueIdentifier);
       return tuple;
     }
 
-    private FormatException CreateItemRowIDFormatException (string rowID, Exception innerException)
+    private FormatException CreateItemRowIDFormatException (string rowID)
     {
       return new FormatException (
-          string.Format ("RowID '{0}' could not be parsed. Expected format: '<rowIndex>|<unqiueIdentifier>'", rowID),
-          innerException);
+          string.Format ("RowID '{0}' could not be parsed. Expected format: '<rowIndex>|<unqiueIdentifier>'", rowID));
     }
 
     private static string EscapeUniqueIdentifier (string uniqueIdentifier)

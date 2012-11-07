@@ -21,12 +21,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Remotion.Collections;
-using Remotion.FunctionalProgramming;
 using Remotion.Globalization;
 using Remotion.Logging;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
@@ -42,8 +42,8 @@ using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
+using Remotion.Web.UI.Controls.PostBackTargets;
 using Remotion.Web.UI.Globalization;
-using Remotion.Web.Utilities;
 using StringArrayConverter=Remotion.Web.UI.Design.StringArrayConverter;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -81,8 +81,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     #endregion
 
     //  constants
-    private const string c_dataRowSelectorControlIDSuffix = "_Boc_SelectorControl_";
-    private const string c_titleRowSelectorControlIDSuffix = "_Boc_SelectorControl_SelectAll";
+    private const string c_currentPageControlName = "_Boc_CurrentPage";
     private const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
     private const string c_optionsMenuIDSuffix = "_Boc_OptionsMenu";
     private const string c_listMenuIDSuffix = "_Boc_ListMenu";
@@ -99,9 +98,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     /// <summary> Prefix applied to the post back argument of the sort buttons. </summary>
     public const string SortCommandPrefix = "Sort=";
-
-    public const string GoToCommandPrefix = "GoTo=";
-
 
     /// <summary> The key identifying a fixed column resource entry. </summary>
     private const string c_resourceKeyFixedColumns = "FixedColumns";
@@ -124,7 +120,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public enum ResourceIdentifier
     {
       EmptyListMessage,
-      PageInfo,
       OptionsTitle,
       AvailableViewsListTitle,
       /// <summary>The alternate text for the required icon.</summary>
@@ -142,30 +137,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       RowEditModeEditAlternateText,
       RowEditModeSaveAlternateText,
       RowEditModeCancelAlternateText,
-      GoToFirstAlternateText,
-      GoToLastAlternateText,
-      GoToNextAlternateText,
-      GoToPreviousAlternateText,
       SelectAllRowsAlternateText,
       SelectRowAlternateText,
       IndexColumnTitle,
       /// <summary> The menu title text used for an automatically generated row menu column. </summary>
       RowMenuTitle
-    }
-
-    /// <summary> The possible directions for paging through the list. </summary>
-    private enum GoToOption
-    {
-      /// <summary> Don't page. </summary>
-      Undefined,
-      /// <summary> Move to first page. </summary>
-      First,
-      /// <summary> Move to last page. </summary>
-      Last,
-      /// <summary> Move to previous page. </summary>
-      Previous,
-      /// <summary> Move to next page. </summary>
-      Next
     }
 
     public enum RowEditModeCommand
@@ -199,10 +175,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     
     private IRowIDProvider _rowIDProvider = new NullValueRowIDProvider();
 
-    /// <summary> The <see cref="DropDownList"/> used to select the column configuration. </summary>
-    private readonly DropDownList _availableViewsList;
+    private readonly PlaceHolder _availableViewsListPlaceHolder;
 
-    /// <summary> The <see cref="string"/> that is rendered in front of the <see cref="_availableViewsList"/>. </summary>
     private string _availableViewsListTitle;
 
     /// <summary> The predefined column definition sets that the user can choose from at run-time. </summary>
@@ -220,7 +194,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private int? _selectedViewIndex;
 
-    private string _availableViewsListSelectedValue = string.Empty;
     private bool _isSelectedViewIndexSet;
 
     /// <summary> The <see cref="IList"/> displayed by the <see cref="BocList"/>. </summary>
@@ -321,25 +294,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private bool _alwaysShowPageInfo;
 
-    /// <summary> The text providing the current page information to the user. </summary>
-    private string _pageInfo;
-
-    /// <summary> 
-    ///   The navigation bar command that caused the post back. 
-    ///   <see cref="GoToOption.Undefined"/> unless the navigation bar caused a post back.
-    /// </summary>
-    private GoToOption _goTo = GoToOption.Undefined;
-
-    /// <summary> 
-    ///   The index of the current row in the <see cref="IBusinessObject"/> this control is bound to.
-    /// </summary>
-    private int _currentRow;
-
     /// <summary> The index of the current page. </summary>
-    private int _currentPage;
+    private int _currentPageIndex;
 
     /// <summary> The total number of pages required for paging through the entire list. </summary>
     private int _pageCount;
+    private int? _newPageIndex;
 
     /// <summary> Determines whether the client script is enabled. </summary>
     private bool _enableClientScript = true;
@@ -355,12 +315,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private string _errorMessage;
     private readonly List<IValidator> _validators;
     private bool? _isBrowserCapableOfSCripting;
+    private ScalarLoadPostDataTarget _currentPagePostBackTarget;
 
     // construction and disposing
 
     public BocList ()
     {
-      _availableViewsList = new DropDownList();
+      _availableViewsListPlaceHolder = new PlaceHolder();
       _editModeController = new EditModeController (new EditModeHost (this));
       _optionsMenu = new DropDownMenu (this);
       _listMenu = new ListMenu (this);
@@ -385,10 +346,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       _listMenu.WxeFunctionCommandClick += MenuItemWxeFunctionCommandClick;
       Controls.Add (_listMenu);
 
-      _availableViewsList.ID = ID + c_availableViewsListIDSuffix;
-      _availableViewsList.EnableViewState = false;
-      _availableViewsList.AutoPostBack = true;
-      Controls.Add (_availableViewsList);
+      Controls.Add (_availableViewsListPlaceHolder);
+
+      var availableViewsListPostBackTarget = new ScalarLoadPostDataTarget();
+      availableViewsListPostBackTarget.ID = ID + c_availableViewsListIDSuffix;
+      availableViewsListPostBackTarget.DataChanged += HandleSelectedViewChanged;
+      _availableViewsListPlaceHolder.Controls.Add (availableViewsListPostBackTarget);
+
+      _currentPagePostBackTarget = new ScalarLoadPostDataTarget();
+      _currentPagePostBackTarget.ID = ID + c_currentPageControlName;
+      _currentPagePostBackTarget.DataChanged += HandleCurrentPageChanged;
+      Controls.Add (_currentPagePostBackTarget);
 
       _editModeController.ID = ID + "_EditModeController";
       Controls.Add ((Control) _editModeController);
@@ -458,8 +426,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         HandleCustomCellEvent (eventArgument.Substring (c_customCellEventPrefix.Length));
       else if (eventArgument.StartsWith (c_eventRowEditModePrefix))
         HandleRowEditModeEvent (eventArgument.Substring (c_eventRowEditModePrefix.Length));
-      else if (eventArgument.StartsWith (GoToCommandPrefix))
-        HandleGoToEvent (eventArgument.Substring (GoToCommandPrefix.Length));
       else
         throw new ArgumentException ("Argument 'eventArgument' has unknown prefix: '" + eventArgument + "'.");
     }
@@ -488,45 +454,51 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (_editModeController.IsRowEditModeActive)
         return false;
 
-      string dataRowSelectorControlFilter = ClientID + c_dataRowSelectorControlIDSuffix;
-      string titleRowSelectorControlFilter = ClientID + c_titleRowSelectorControlIDSuffix;
+      LoadSelectionPostData (postCollection);
 
+      return false;
+    }
+
+    private void HandleSelectedViewChanged (object sender, EventArgs e)
+    {
+      if (!RequiresLoadPostData)
+        return;
+
+      SelectedViewIndex = int.Parse (((ScalarLoadPostDataTarget) sender).Value);
+    }
+
+    private void HandleCurrentPageChanged (object sender, EventArgs e)
+    {
+      if (!RequiresLoadPostData)
+        return;
+
+      if (!IsPagingEnabled)
+        return;
+
+      _newPageIndex = int.Parse (((ScalarLoadPostDataTarget) sender).Value);
+    }
+
+    private void LoadSelectionPostData (NameValueCollection postCollection)
+    {
       _selectorControlCheckedState.Clear();
-      for (int i = 0; i < postCollection.Count; i++)
+
+      string dataRowSelectorControlFilter = ((IBocList) this).GetSelectorControlName ();
+      var values = postCollection.GetValues (dataRowSelectorControlFilter);
+      if (values == null)
+        return;
+
+      foreach (string rowID in values)
       {
-        string key = postCollection.Keys[i];
-        if (string.IsNullOrEmpty (key))
-          continue;
+        if ((_selection == RowSelection.SingleCheckBox || _selection == RowSelection.SingleRadioButton) && (_selectorControlCheckedState.Count == 1))
+          break;
 
-        bool isDataRowSelectorControl = key.StartsWith (dataRowSelectorControlFilter);
-        bool isTitleRowSelectorControl = (key == titleRowSelectorControlFilter);
-        if (isDataRowSelectorControl && !isTitleRowSelectorControl)
-        {
-          if ((_selection == RowSelection.SingleCheckBox || _selection == RowSelection.SingleRadioButton) && (_selectorControlCheckedState.Count == 1))
-            continue;
-
-          string rowID = postCollection[i];
-          _selectorControlCheckedState.Add (rowID);
-        }
+        _selectorControlCheckedState.Add (rowID);
       }
-
-      string newAvailableViewsListSelectedValue = postCollection[_availableViewsList.UniqueID];
-      if (! StringUtility.IsNullOrEmpty (newAvailableViewsListSelectedValue)
-          && _availableViewsListSelectedValue != newAvailableViewsListSelectedValue)
-        return true;
-      else
-        return false;
     }
 
     /// <summary> Called when the state of the control has changed between postbacks. </summary>
     protected virtual void RaisePostDataChangedEvent ()
     {
-      if (_availableViews.Count > 0)
-      {
-        string newAvailableViewsListSelectedValue =
-            PageUtility.GetPostBackCollectionItem (Page, _availableViewsList.UniqueID);
-        SelectedViewIndex = int.Parse (newAvailableViewsListSelectedValue);
-      }
     }
 
     /// <summary> Handles post back events raised by a list item event. </summary>
@@ -737,22 +709,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         {
           break;
         }
-      }
-    }
-
-    /// <summary> Handles post back events raised by a go-to button. </summary>
-    /// <param name="eventArgument"> &lt;GoToOption&gt; </param>
-    private void HandleGoToEvent (string eventArgument)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("eventArgument", eventArgument);
-
-      try
-      {
-        _goTo = (GoToOption) Enum.Parse (typeof (GoToOption), eventArgument);
-      }
-      catch (ArgumentException)
-      {
-        throw new ArgumentException ("Argument 'eventArgument' must be a value of the GoToOption enum.");
       }
     }
 
@@ -1018,18 +974,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       // Must be executed before CalculateCurrentPage
       if (_editModeController.IsRowEditModeActive)
       {
-        BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
-        BocListRow editedRow = _editModeController.GetEditedRow();
-        for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
+        if (IsPagingEnabled)
         {
-          if (sortedRows[idxRows] == editedRow)
+          BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
+          BocListRow editedRow = _editModeController.GetEditedRow();
+          for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
           {
-            _currentRow = idxRows;
-            break;
+            if (sortedRows[idxRows] == editedRow)
+            {
+              _newPageIndex = _currentPageIndex = idxRows / _pageSize.Value;
+              break;
+            }
           }
         }
       }
-      CalculateCurrentPage (true);
+
+      CalculateCurrentPage (_newPageIndex);
 
       EnsureEditModeValidatorsRestored();
 
@@ -1050,8 +1010,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
         _optionsMenu.GetSelectionCount = GetSelectionCountScript();
       }
-
-      PopulateAvailableViewsList();
     }
 
     /// <summary> Gets a <see cref="HtmlTextWriterTag.Div"/> as the <see cref="WebControl.TagKey"/>. </summary>
@@ -1060,66 +1018,48 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HtmlTextWriterTag.Div; }
     }
 
-    protected void CalculateCurrentPage (bool evaluateGoTo)
+    /// <summary>
+    /// Sets the page index for <see cref="BocList"/> during the next render phase.
+    /// </summary>
+    /// <remarks>Note: The page index will be ignored if row edit mode is active since the <see cref="BocList"/> will always page to the edited row.</remarks>
+    /// <exception cref="InvalidOperationException">Thrown if paging is not enabled.</exception>
+    protected void SetPageIndex (int pageIndex)
     {
+      if (pageIndex < 0)
+        throw new ArgumentOutOfRangeException ("pageIndex", "The page index must not be less then zero.");
+
+      if (!IsPagingEnabled)
+        throw new InvalidOperationException ("The page index cannot be set unless paging is enabled.");
+
+      _newPageIndex = pageIndex;
+    }
+
+    private void CalculateCurrentPage (int? newPageIndex)
+    {
+      var oldPageIndex = _currentPageIndex;
+
       if (!IsPagingEnabled || Value == null)
+      {
         _pageCount = 1;
+        _currentPageIndex = 0;
+      }
       else
       {
-        _currentPage = _currentRow / _pageSize.Value;
+        Assertion.IsFalse (_editModeController.IsListEditModeActive, "ListEditMode cannot be enabled when paging is enabled and vice versa.");
+
+        if (newPageIndex.HasValue)
+          _currentPageIndex = newPageIndex.Value;
+
         _pageCount = (int) Math.Ceiling ((double) Value.Count / _pageSize.Value);
+        if (_currentPageIndex >= _pageCount)
+          _currentPageIndex = _pageCount - 1;
 
-        if (evaluateGoTo)
-        {
-          switch (_goTo)
-          {
-            case GoToOption.First:
-            {
-              _currentPage = 0;
-              _currentRow = 0;
-              break;
-            }
-            case GoToOption.Last:
-            {
-              _currentPage = _pageCount - 1;
-              _currentRow = _currentPage * _pageSize.Value;
-              break;
-            }
-            case GoToOption.Previous:
-            {
-              _currentPage--;
-              _currentRow = _currentPage * _pageSize.Value;
-              break;
-            }
-            case GoToOption.Next:
-            {
-              _currentPage++;
-              _currentRow = _currentPage * _pageSize.Value;
-              break;
-            }
-            default:
-            {
-              break;
-            }
-          }
-        }
-
-        if (_currentPage >= _pageCount || _currentRow >= Value.Count)
-        {
-          _currentPage = _pageCount - 1;
-          _currentRow = Value.Count - 1;
-        }
-        if (_currentPage < 0 || _currentRow < 0)
-        {
-          _currentPage = 0;
-          _currentRow = 0;
-        }
-
-        if (_goTo != GoToOption.Undefined && evaluateGoTo)
-        {
-          OnDisplayedRowsChanged();
-        }
+        if (_currentPageIndex < 0)
+          _currentPageIndex = 0;
       }
+
+      if (_currentPageIndex != oldPageIndex)
+        OnDisplayedRowsChanged();
     }
 
     protected override void Render (HtmlTextWriter writer)
@@ -1128,6 +1068,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (Page != null)
         Page.VerifyRenderingInServerForm (this);
+
+      CreateAvailableViewsList();
 
       BocColumnDefinition[] renderColumns = EnsureColumnsGot (IsDesignMode);
       EvaluateWaiConformity (renderColumns);
@@ -1270,9 +1212,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return HasListMenu; }
     }
 
-    private void PopulateAvailableViewsList ()
+    private void CreateAvailableViewsList ()
     {
-      _availableViewsList.Items.Clear();
+      var availableViewsList = new DropDownList();
+      availableViewsList.ID = ID + c_availableViewsListIDSuffix;
+      availableViewsList.EnableViewState = false;
+      availableViewsList.AutoPostBack = true;
+      _availableViewsListPlaceHolder.Controls.Clear();
+      _availableViewsListPlaceHolder.Controls.Add (availableViewsList);
+
+      Assertion.IsTrue (availableViewsList.Items.Count == 0, "availableViewsList should never have values after it is created.");
 
       if (_availableViews != null)
       {
@@ -1281,9 +1230,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           BocListView columnDefinitionCollection = _availableViews[i];
 
           ListItem item = new ListItem (columnDefinitionCollection.Title, i.ToString());
-          _availableViewsList.Items.Add (item);
-          if (_selectedViewIndex != null
-              && _selectedViewIndex == i)
+          availableViewsList.Items.Add (item);
+          if (_selectedViewIndex != null && _selectedViewIndex == i)
             item.Selected = true;
         }
       }
@@ -1371,11 +1319,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       base.LoadControlState (values[0]);
       _selectedViewIndex = (int?) values[1];
-      _availableViewsListSelectedValue = (string) values[2];
-      _currentRow = (int) values[3];
+      _availableViewsListPlaceHolder.Controls.Cast<ScalarLoadPostDataTarget>().Single().Value = (string) values[2];
+      _currentPageIndex = (int) values[3];
       _sortingOrder = (List<BocListSortingOrderEntry>) values[4];
       _selectorControlCheckedState = (HashSet<string>) values[5];
       _rowIDProvider = (IRowIDProvider) values[6];
+
+      _currentPagePostBackTarget.Value = _currentPageIndex.ToString (CultureInfo.InvariantCulture);
     }
 
     protected override object SaveControlState ()
@@ -1388,8 +1338,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       values[0] = base.SaveControlState();
       values[1] = _selectedViewIndex;
-      values[2] = _availableViewsListSelectedValue;
-      values[3] = _currentRow;
+      values[2] = _availableViewsListPlaceHolder.Controls.Cast<ScalarLoadPostDataTarget>().Single().Value;
+      values[3] = _currentPageIndex;
       values[4] = _sortingOrder;
       values[5] = _selectorControlCheckedState;
       values[6] = _rowIDProvider;
@@ -1596,7 +1546,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
 
       EnsureChildControls();
-      CalculateCurrentPage (false);
+      CalculateCurrentPage (null);
 
       if (IsPagingEnabled)
         _rowMenus = new BocListRowMenuTuple[PageSize.Value];
@@ -1611,7 +1561,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (IsPagingEnabled)
       {
-        firstRow = _currentPage * _pageSize.Value;
+        firstRow = _currentPageIndex * _pageSize.Value;
         rowCountWithOffset = firstRow + _pageSize.Value;
         //  Check row count on last page
         rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
@@ -1791,7 +1741,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (IsPagingEnabled)
       {
-        firstRow = _currentPage * _pageSize.Value;
+        firstRow = _currentPageIndex * _pageSize.Value;
         rowCountWithOffset = firstRow + _pageSize.Value;
         //  Check row count on last page
         rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
@@ -1843,7 +1793,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       EnsureChildControls();
 
-      CalculateCurrentPage (false);
+      CalculateCurrentPage (null);
 
       _customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>();
 
@@ -1853,7 +1803,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       if (IsPagingEnabled)
       {
-        firstRow = _currentPage * _pageSize.Value;
+        firstRow = _currentPageIndex * _pageSize.Value;
         rowCountWithOffset = firstRow + _pageSize.Value;
         //  Check row count on last page
         rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
@@ -2281,7 +2231,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         // ReSharper disable PossibleInvalidOperationException
         int pageSize = PageSize.Value;
         // ReSharper restore PossibleInvalidOperationException
-        result = result.Skip (CurrentPage * pageSize).Take (pageSize);
+        result = result.Skip (_currentPageIndex * pageSize).Take (pageSize);
       }
 
       return result
@@ -2421,10 +2371,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       key = ResourceManagerUtility.GetGlobalResourceKey (IndexColumnTitle);
       if (! StringUtility.IsNullOrEmpty (key))
         IndexColumnTitle = resourceManager.GetString (key);
-
-      key = ResourceManagerUtility.GetGlobalResourceKey (PageInfo);
-      if (! StringUtility.IsNullOrEmpty (key))
-        PageInfo = resourceManager.GetString (key);
 
       key = ResourceManagerUtility.GetGlobalResourceKey (EmptyListMessage);
       if (! StringUtility.IsNullOrEmpty (key))
@@ -3011,13 +2957,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (! IsReadOnly)
       {
         OnStateOfDisplayedRowsChanged();
-        BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
-        for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
+        if (IsPagingEnabled)
         {
-          if (sortedRows[idxRows].Index == modifiedRowIndex)
+          BocListRow[] sortedRows = EnsureSortedBocListRowsGot();
+          for (int idxRows = 0; idxRows < sortedRows.Length; idxRows++)
           {
-            _currentRow = idxRows;
-            break;
+            if (sortedRows[idxRows].Index == modifiedRowIndex)
+            {
+              _newPageIndex = _currentPageIndex = idxRows / _pageSize.Value;
+              break;
+            }
           }
         }
       }
@@ -3642,7 +3591,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///   or zero, less than zero or <see langword="null"/> to show all rows.
     /// </value>
     [Category ("Appearance")]
-    [Description ("The number of rows displayed per page. Set PageSize to 0 to show all rows.")]
+    [Description ("The number of rows displayed per page. Set PageSize to null/0 to show all rows.")]
     [DefaultValue (typeof (int?), "")]
     public virtual int? PageSize
     {
@@ -3651,6 +3600,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (value == null || value.Value < 0)
           _pageSize = null;
+        else if (_editModeController.IsListEditModeActive)
+          throw new InvalidOperationException ("Paging cannot be enabled (i.e. the PageSize cannot be set) when ListEditMode is active.");
         else
           _pageSize = value;
       }
@@ -3677,23 +3628,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     [Category ("Behavior")]
     [Description ("Indicates whether to the show the page count even when there is just one page.")]
     [DefaultValue (false)]
-    public virtual bool AlwaysShowPageInfo
+    public bool AlwaysShowPageInfo
     {
       get { return _alwaysShowPageInfo; }
       set { _alwaysShowPageInfo = value; }
-    }
-
-    /// <summary> Gets or sets the text providing the current page information to the user. </summary>
-    /// <remarks> Use {0} for the current page and {1} for the total page count. The value will not be HTML encoded. </remarks>
-    [Category ("Appearance")]
-    [Description (
-        "The text providing the current page information to the user. Use {0} for the current page and {1} for the total page count. The value will not be HTML encoded."
-        )]
-    [DefaultValue (null)]
-    public string PageInfo
-    {
-      get { return _pageInfo; }
-      set { _pageInfo = value; }
     }
 
     /// <summary> Gets or sets the text rendered if the list is empty. </summary>
@@ -3721,7 +3659,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <remarks> Effects only advanced scripts used for selcting data rows. </remarks>
     /// <value> <see langref="true"/> to enable the client script. </value>
     [Category ("Behavior")]
-    [Description (" True to enable the client script for the pop-up calendar. ")]
+    [Description (" True to enable the client script for BocList features. ")]
     [DefaultValue (true)]
     public bool EnableClientScript
     {
@@ -3895,24 +3833,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    public int CurrentPage
+    bool IBocList.HasClientScript
     {
-      get { return _currentPage; }
+      get { return HasClientScript; }
     }
 
-    public int PageCount
-    {
-      get { return _pageCount; }
-    }
-
-    public bool HasClientScript
+    protected bool HasClientScript
     {
       get { return (!IsDesignMode && EnableClientScript); }
     }
 
-    DropDownList IBocList.AvailableViewsList
+    DropDownList IBocList.GetAvailableViewsList ()
     {
-      get { return _availableViewsList; }
+      return _availableViewsListPlaceHolder.Controls.OfType<DropDownList>().SingleOrDefault();
     }
 
     IDropDownMenu IBocList.OptionsMenu
@@ -3968,14 +3901,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return RowIDProvider.GetItemRowID (row);
     }
 
-    string IBocList.GetSelectorControlClientID (int? rowIndex)
+    string IBocList.GetSelectorControlName ()
     {
-      return ClientID + c_dataRowSelectorControlIDSuffix + (rowIndex.HasValue ? rowIndex.Value.ToString() : string.Empty);
+      return UniqueID + "_Boc_SelectRowControl";
     }
 
-    string IBocList.GetSelectAllControlClientID ()
+    string IBocList.GetSelectAllControlName ()
     {
-      return ClientID + c_titleRowSelectorControlIDSuffix;
+      return UniqueID + "_Boc_SelectAllControl";
     }
 
     string IBocList.GetSelectionChangedHandlerScript()
@@ -4029,6 +3962,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private void OnStateOfDisplayedRowsChanged ()
     {
       _rowMenus = null;
+    }
+
+    int IBocList.CurrentPageIndex
+    {
+      get { return _currentPageIndex; }
+    }
+
+    int IBocList.PageCount
+    {
+      get { return _pageCount; }
+    }
+
+    string IBocList.GetCurrentPageControlName ()
+    {
+      return UniqueID + c_currentPageControlName;
     }
   }
 

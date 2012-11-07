@@ -38,6 +38,7 @@ public class BocListUserControl : BaseUserControl
   protected TestBocList EmptyList;
   protected Button ChildrenListEndEditModeButton;
   protected Button ChildrenListAddAndEditButton;
+  protected Button ChildrenListSetPageButton;
   protected CheckBox ChildrenListEventCheckBox;
   protected Label ChildrenListEventArgsLabel;
   protected FormGridManager FormGridManager;
@@ -55,7 +56,8 @@ public class BocListUserControl : BaseUserControl
 
     ChildrenListAddAndEditButton.Click += new EventHandler(AddAndEditButton_Click);
     ChildrenListEndEditModeButton.Click += new EventHandler(ChildrenListEndEditModeButton_Click);
-    
+    ChildrenListSetPageButton.Click += ChildrenListSetPageButton_Click;
+
     ChildrenList.ListItemCommandClick += new BocListItemCommandClickEventHandler (ChildrenList_ListItemCommandClick);
     ChildrenList.MenuItemClick += new WebMenuItemClickEventHandler (ChildrenList_MenuItemClick);
     
@@ -77,7 +79,6 @@ public class BocListUserControl : BaseUserControl
 
   override protected void OnInit(EventArgs e)
   {
-    InitializeComponent();
     base.OnInit (e);
     InitializeMenuItems();
   }
@@ -337,6 +338,11 @@ public class BocListUserControl : BaseUserControl
     ChildrenList.EndRowEditMode (true);
   }
 
+  private void ChildrenListSetPageButton_Click (object sender, EventArgs eventArgs)
+  {
+    ChildrenList.SetPageIndex (0);
+  }
+
   private void ChildrenList_ListItemCommandClick(object sender, BocListItemCommandClickEventArgs e)
   {
     ChildrenListEventCheckBox.Checked = true;
@@ -390,17 +396,6 @@ public class BocListUserControl : BaseUserControl
   {
   
   }
-
-  #region Web Form Designer generated code	
-  /// <summary>
-  ///		Required method for Designer support - do not modify
-  ///		the contents of this method with the code editor.
-  /// </summary>
-  private void InitializeComponent()
-  {
-
-  }
-  #endregion
 }
 
 }

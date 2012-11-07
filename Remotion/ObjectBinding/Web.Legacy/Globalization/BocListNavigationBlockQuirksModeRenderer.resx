@@ -117,49 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.OptionsTitle" xml:space="preserve">
-    <value>Optionen</value>
+  <data name="Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockQuirksModeRenderer.PageInfo" xml:space="preserve">
+    <value>Page {0} of {1}</value>
   </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.AvailableViewsListTitle" xml:space="preserve">
-    <value>Ansicht</value>
+  <data name="Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockQuirksModeRenderer.GoToFirstAlternateText" xml:space="preserve">
+    <value>Go to First Page.</value>
   </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeErrorMessage" xml:space="preserve">
-    <value>In der gerade bearbeiteten Zeile sind Fehler aufgetreten.</value>
+  <data name="Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockQuirksModeRenderer.GoToLastAlternateText" xml:space="preserve">
+    <value>Go to Last Page.</value>
   </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RequiredFieldTitle" xml:space="preserve">
-    <value>Eingabe benötigt in der gerade bearbeiteten Zeile.</value>
+  <data name="Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockQuirksModeRenderer.GoToNextAlternateText" xml:space="preserve">
+    <value>Go to Next Page.</value>
   </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.EmptyListMessage" xml:space="preserve">
-    <value>Keine Daten vorhanden.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SortAscendingAlternateText" xml:space="preserve">
-    <value>Aufsteigend sortiert.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SortDescendingAlternateText" xml:space="preserve">
-    <value>Absteigend sortiert.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeEditAlternateText" xml:space="preserve">
-    <value>Zeile bearbeiten.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeSaveAlternateText" xml:space="preserve">
-    <value>Änderungen an der Zeile übernehmen.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowEditModeCancelAlternateText" xml:space="preserve">
-    <value>Änderungen an der Zeile verwerfen.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SelectRowAlternateText" xml:space="preserve">
-    <value>Diese Zeile markieren.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.SelectAllRowsAlternateText" xml:space="preserve">
-    <value>Alle Zeilen markieren.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.IndexColumnTitle" xml:space="preserve">
-    <value>Nr.</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.RowMenuTitle" xml:space="preserve">
-    <value>Optionen</value>
-  </data>
-  <data name="Remotion.ObjectBinding.Web.UI.Controls.BocList.ListEditModeErrorMessage" xml:space="preserve">
-    <value>In zumindest einer Zeile ist ein Fehler aufgetreten.</value>
+  <data name="Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Rendering.BocListNavigationBlockQuirksModeRenderer.GoToPreviousAlternateText" xml:space="preserve">
+    <value>Go To Previous Page.</value>
   </data>
 </root>

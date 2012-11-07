@@ -34,6 +34,7 @@ public interface ISmartNavigablePage: IPage
 {
   /// <summary> Gets or sets the flag that determines whether smart scrolling is enabled on this page.  </summary>
   /// <value> <see langword="true"/> to enable smart scrolling. </value>
+  /// <remarks>In order for the scroll position to be restored on a DOM element, the DOM element must have an ID set. </remarks>
   bool IsSmartScrollingEnabled { get; }
 
   /// <summary> Gets or sets the flag that determines whether smart naviagtion is enabled on this page.  </summary>

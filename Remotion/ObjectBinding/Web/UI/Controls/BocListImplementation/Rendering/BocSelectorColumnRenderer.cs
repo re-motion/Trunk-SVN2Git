@@ -42,26 +42,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       get { return _cssClasses; }
     }
 
-    public void RenderDataCell (
-        BocListRenderingContext renderingContext,
-        BocListRowRenderingContext rowRenderingContext,
-        string selectorControlID,
-        string cssClassTableCell)
+    public void RenderDataCell (BocListRenderingContext renderingContext, BocListRowRenderingContext rowRenderingContext, string cssClassTableCell)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("cssClassTableCell", cssClassTableCell);
-      ArgumentUtility.CheckNotNullOrEmpty ("selectorControlID", selectorControlID);
       ArgumentUtility.CheckNotNullOrEmpty ("cssClassTableCell", cssClassTableCell);
 
       if (!renderingContext.Control.IsSelectionEnabled)
         return;
 
+      string selectorControlID = renderingContext.Control.GetSelectorControlName().Replace ('$', '_') + "_" + rowRenderingContext.Row.Index;
+      var selectorControlName = renderingContext.Control.GetSelectorControlName();
       var selectorControlValue = renderingContext.Control.GetSelectorControlValue (rowRenderingContext.Row);
       var isChecked = rowRenderingContext.IsSelected;
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Class, cssClassTableCell);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Td);
-      RenderDataRowSelectorControl (renderingContext, selectorControlID, selectorControlValue, isChecked);
+      RenderDataRowSelectorControl (renderingContext, selectorControlID, selectorControlName, selectorControlValue, isChecked);
       renderingContext.Writer.RenderEndTag();
     }
 
@@ -76,7 +73,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Th);
       if (renderingContext.Control.Selection == RowSelection.Multiple)
       {
-        string selectorControlName = renderingContext.Control.GetSelectAllControlClientID();
+        string selectorControlName = renderingContext.Control.GetSelectAllControlName();
         RenderTitleRowSelectorControl (renderingContext, selectorControlName);
       }
       else
@@ -84,14 +81,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderEndTag();
     }
     
-    private void RenderTitleRowSelectorControl (BocListRenderingContext renderingContext, string id)
+    private void RenderTitleRowSelectorControl (BocListRenderingContext renderingContext, string name)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
-      ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
 
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Name, name);
 
       if (renderingContext.Control.EditModeController.IsRowEditModeActive)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Disabled, "disabled");
@@ -99,20 +96,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       string alternateText = renderingContext.Control.GetResourceManager().GetString (BocList.ResourceIdentifier.SelectAllRowsAlternateText);
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Alt, alternateText);
 
-      int count = 0;
-      if (renderingContext.Control.IsPagingEnabled)
-        count = renderingContext.Control.PageSize.Value;
-      else if (renderingContext.Control.HasValue)
-        count = renderingContext.Control.Value.Count;
-
       if (renderingContext.Control.HasClientScript)
       {
         string script = "BocList_OnSelectAllSelectorControlClick ("
                         + "document.getElementById ('" + renderingContext.Control.ClientID + "'), "
-                        + "this , '"
-                        + renderingContext.Control.GetSelectorControlClientID (null) + "', "
-                        + count + ", "
-                        + "document.getElementById ('" + renderingContext.Control.ListMenu.ClientID + "'));";
+                        + "this);";
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, script);
       }
 
@@ -120,10 +108,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       renderingContext.Writer.RenderEndTag();
     }
 
-    private void RenderDataRowSelectorControl (BocListRenderingContext renderingContext, string id, string value, bool isChecked)
+    private void RenderDataRowSelectorControl (BocListRenderingContext renderingContext, string id, string name, string value, bool isChecked)
     {
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNullOrEmpty ("id", id);
+      ArgumentUtility.CheckNotNullOrEmpty ("name", name);
+      
 
       if (renderingContext.Control.Selection == RowSelection.SingleRadioButton)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Type, "radio");
@@ -131,7 +121,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Type, "checkbox");
 
       renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Id, id);
-      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Name, id);
+      renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Name, name);
 
       if (isChecked)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Checked, "checked");

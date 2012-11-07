@@ -61,7 +61,11 @@ namespace Remotion.ObjectBinding.Sample
       // Set IsVisible
       // Set isDisabled
     }
-
+    
+    public new void SetPageIndex (int pageIndex)
+    {
+      base.SetPageIndex (pageIndex);
+    }
   }
 
   public class TestBocMenuItem: BocMenuItem
@@ -109,7 +113,5 @@ namespace Remotion.ObjectBinding.Sample
       // else
       //   do your own stuff
     }
-
-
   }
 }

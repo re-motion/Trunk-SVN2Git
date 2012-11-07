@@ -50,8 +50,10 @@ function BocList_SelectedRows (selection)
     this.Length = 0;
     this.Rows = new Object();
   };
+  this.SelectRowSelectorControls = null;
   this.SelectAllSelectorControls = null;
   this.DataRowCount = 0;
+  this.OnSelectionChanged = function () {};
 }
 
 function BocList_RowBlock (row, selectorControl)
@@ -73,13 +75,12 @@ function BocList_InitializeGlobals ()
 //  arrays with the BocList's selected rows.
 //  Call this method once for each BocList on the page.
 //  bocList: The BocList to which the row belongs.
-//  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
-//  selectAllSelectorControlName: The name of the select-all selector control
-//  count: The number of data rows in the BocList.
+//  selectRowSelectorControlName: The name of the row selector controls.
+//  selectAllSelectorControlName: The name of the select-all selector control.
 //  selection: The RowSelection enum value defining the selection mode (disabled/single/multiple)
 //  hasClickSensitiveRows: true if the click event handler is bound to the data rows.
 //  updateListMenuHandler: A function to be invoked when the BocList's selection changes.
-function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelectorControlName, count, selection, hasClickSensitiveRows, onSelectionChangedHandler)
+function BocList_InitializeList(bocList, selectRowSelectorControlName, selectAllSelectorControlName, selection, hasClickSensitiveRows, onSelectionChangedHandler)
 {
   if (BocList_HasDimensions (bocList))
   {
@@ -91,40 +92,40 @@ function BocList_InitializeList(bocList, selectorControlPrefix, selectAllSelecto
   if (   selectedRows.Selection != _bocList_rowSelectionUndefined
       && selectedRows.Selection != _bocList_rowSelectionDisabled)
   {
-    for (var i = 0; i < count; i++)
+    selectedRows.SelectRowSelectorControls = $('input[name="' + selectRowSelectorControlName + '"]');
+    selectedRows.SelectAllSelectorControls = $('input[name="' + selectAllSelectorControlName + '"]');
+    selectedRows.OnSelectionChanged = onSelectionChangedHandler;
+
+    selectedRows.SelectRowSelectorControls.each (function ()
     {
-      var selectorControlID = selectorControlPrefix + i;
-      var selectorControl = document.getElementById (selectorControlID);
-      if (selectorControl == null)
-        continue;
       selectedRows.DataRowCount++;
-      var row = selectorControl.parentNode.parentNode;
-  
+      var row = this.parentNode.parentNode;
+
       if (hasClickSensitiveRows)
-        BocList_BindRowClickEventHandler(bocList, row, selectorControl, onSelectionChangedHandler);
+        BocList_BindRowClickEventHandler(bocList, row, this);
   
-      if (selectorControl.checked)
+      if (this.checked)
       {
-        var rowBlock = new BocList_RowBlock (row, selectorControl);
-        selectedRows.Rows[selectorControl.id] = rowBlock;
+        var rowBlock = new BocList_RowBlock (row, this);
+        selectedRows.Rows[this.id] = rowBlock;
         selectedRows.Length++;
       }
-    }
+    });
 
-    selectedRows.SelectAllSelectorControls = $("input[name=" + selectAllSelectorControlName + "]");
     BocList_SetSelectAllRowsSelectorOnDemand (selectedRows);
   }
   _bocList_selectedRows[bocList.id] = selectedRows;
 
-  onSelectionChangedHandler(bocList);
+  selectedRows.OnSelectionChanged (bocList);
 }
 
-function BocList_BindRowClickEventHandler(bocList, row, selectorControl, onSelectionChangedHandler)
+function BocList_BindRowClickEventHandler(bocList, row, selectorControl)
 {
   $(row).click( function(evt)
   {
-    BocList_OnRowClick (evt, bocList, row, selectorControl);
-    onSelectionChangedHandler(bocList);
+    BocList_OnRowClick(evt, bocList, row, selectorControl);
+    var selectedRows = _bocList_selectedRows[bocList.id];
+    selectedRows.OnSelectionChanged (bocList);
   });
 }
 
@@ -266,15 +267,14 @@ function BocList_SetSelectAllRowsSelectorOnDemand (selectedRows)
 
 function BocList_ClearSelectAllRowsSelector (selectedRows)
 {
-  selectedRows.SelectAllSelectorControls.each(function () { this.checked = false; });
+  selectedRows.SelectAllSelectorControls.each (function () { this.checked = false; });
 }
 
 //  Event handler for the selection selectorControl in the title row.
 //  Applies the checked state of the title's selectorControl to all data rows' selectu=ion selectorControles.
 //  bocList: The BocList to which the selectorControl belongs.
-//  selectorControlPrefix: The common part of the selectorControles' ID (everything before the index).
-//  count: The number of data rows in the BocList.
-function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorControl, selectorControlPrefix, count, listMenu)
+//  selectRowControlName: The name of the row selector controls.
+function BocList_OnSelectAllSelectorControlClick(bocList, selectAllSelectorControl)
 {
   var selectedRows = _bocList_selectedRows[bocList.id];
 
@@ -284,24 +284,20 @@ function BocList_OnSelectAllSelectorControlClick (bocList, selectAllSelectorCont
   if (selectAllSelectorControl.checked)
     selectedRows.Length = 0;
 
-  for (var i = 0; i < count; i++)
+  selectedRows.SelectRowSelectorControls.each (function ()
   {
-    var selectorControlID = selectorControlPrefix + i;
-    var selectorControl = document.getElementById (selectorControlID);
-    if (selectorControl == null)
-      continue;
-    var row =  selectorControl.parentNode.parentNode;
-    var rowBlock = new BocList_RowBlock (row, selectorControl);
+    var row =  this.parentNode.parentNode;
+    var rowBlock = new BocList_RowBlock (row, this);
     if (selectAllSelectorControl.checked)
       BocList_SelectRow (bocList, rowBlock);
     else
       BocList_UnselectRow (bocList, rowBlock);
-  }
+  });
   
   if (! selectAllSelectorControl.checked)
     selectedRows.Length = 0;
 
-  ListMenu_Update(listMenu, function() { return BocList_GetSelectionCount(bocList.id); });
+  selectedRows.OnSelectionChanged (bocList);
 }
 
 //  Event handler for the selection selectorControl in a data row.
@@ -463,9 +459,8 @@ function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
   checkboxes.click(function ()
   {
     var checkName = $(this).attr('name');
-    var realCheckName = checkName.replace('_fake', '');
     var checkStatus = $(this).prop('checked');
-    $('input[name*=' + realCheckName + ']').prop('checked', checkStatus);
+    $('input[name="' + checkName + '"]').prop('checked', checkStatus);
   });
 
   if ($('body').is('.msie'))
@@ -526,4 +521,44 @@ function BocList_FixHeaderPosition(tableContainer, scrollableContainer)
   var scrollTop = 0;
   var scrollLeft = scrollableContainer.scrollLeft();
   fakeTableHeadContainer.css({ 'top': scrollTop, 'left': scrollLeft * -1 });
+}
+
+function BocListNavigationBlock_Initialize(pageNumberField, pageIndexField)
+{
+  ArgumentUtility.CheckNotNullAndTypeIsObject ('pageNumberField', pageNumberField);
+  ArgumentUtility.CheckNotNullAndTypeIsObject('pageIndexField', pageIndexField);
+
+  pageNumberField.bind('change', function () {
+    var pageNumber = Number.parseInvariant (pageNumberField.val());
+    if (isNaN (pageNumber) || !TypeUtility.IsInteger (pageNumber))
+    {
+      if (pageNumberField.val().length > 0)
+        setTimeout(function () { pageNumberField.focus(); }, 0);
+
+      pageNumberField.val(parseInt(pageIndexField.val(), 10) + 1);
+      return false;
+    }
+    else
+    {
+      pageIndexField.val (pageNumber - 1);
+      pageIndexField.trigger('change');
+      return true;
+    }
+  });
+
+  pageNumberField.bind('keydown', function (event) {
+    var zeroKey = 48;
+    var nineKey = 57;
+    var zeroKeyNumBlock = 96;
+    var nineKeyNumBlock = 105;
+    var f1Key = 112;
+    var f12Key = 123;
+    var isControlKey = event.keyCode < zeroKey || event.keyCode >= f1Key && event.keyCode <= f12Key;
+    var isNumericKey = event.keyCode >= zeroKey && event.keyCode <= nineKey || event.keyCode >= zeroKeyNumBlock && event.keyCode <= nineKeyNumBlock;
+
+    if (event.altKey || event.ctrlKey || isControlKey || isNumericKey)
+      return true;
+    else
+      return false;
+  });
 }

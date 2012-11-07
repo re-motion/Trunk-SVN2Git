@@ -42,7 +42,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
     public void RenderWithAvailableViews ()
     {
       DropDownList dropDownList = MockRepository.GenerateMock<DropDownList>();
-      List.Stub (mock => mock.AvailableViewsList).Return (dropDownList);
+      List.Stub (mock => mock.GetAvailableViewsList()).Return (dropDownList);
       List.Stub (mock => mock.HasAvailableViewsList).Return (true);
       List.Stub (mock => mock.AvailableViewsListTitle).Return ("Views List Title");
 
