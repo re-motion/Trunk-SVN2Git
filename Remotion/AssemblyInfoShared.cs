@@ -27,7 +27,7 @@ using System.Reflection;
 [assembly: AssemblyProduct("re-motion core framework (www.re-motion.org)")]
 [assembly: AssemblyCopyright ("(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU LGPL 2.1 (or later)")]
 [assembly: AssemblyTrademark ("")]
-[assembly: AssemblyInformationalVersion ("1.13.173.0")]
+[assembly: AssemblyInformationalVersion ("1.13.174.0")]
 
 //
 // Version information for an assembly consists of the following four values:
@@ -40,5 +40,5 @@ using System.Reflection;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("1.13.173.2")]
-[assembly: AssemblyFileVersion ("1.13.173.2")]
+[assembly: AssemblyVersion("1.13.174.0")]
+[assembly: AssemblyFileVersion ("1.13.174.0")]
