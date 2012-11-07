@@ -212,6 +212,15 @@
     <Compile Include="Core\ExtendsAttributeTest.cs" />
     <Compile Include="Core\IgnoresClassAttributeTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AssemblyLevelMixinDependenciesTestBase.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OrderingViaTTargetTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OrderingViaTNextTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OrderingViaAttributeDependencyTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OrderingViaInterfaceDependencyTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\CyclesTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OverlappingMixinsTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\NonOverlappingMixinsWithThirdOverlappingMixinTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\NonOverlappingMixinsTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OrderingTestBase.cs" />
     <Compile Include="Core\UsesAttributeTest.cs" />
     <Compile Include="Core\Context\DeclarativeConfigurationBuilderTest.cs" />
     <Compile Include="Core\Context\DeclarativeConfigurationBuilder_IntegrationTests\CompleteInterfaceAnalyisTest.cs" />
