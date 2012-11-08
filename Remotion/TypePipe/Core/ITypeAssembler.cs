@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,24 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+using System;
 
-using System.Runtime.CompilerServices;
-using Remotion.Utilities;
-
-namespace Remotion.TypePipe.UnitTests
+namespace Remotion.TypePipe
 {
-  public class IdentityCacheKey : CacheKey
+  /// <summary>
+  /// Generates types for requested types and computes <see cref="CompoundCacheKey"/>s to enabled efficient caching of generated types.
+  /// </summary>
+  public interface ITypeAssembler
   {
-    public override bool Equals (object other)
-    {
-      ArgumentUtility.CheckNotNull ("other", other);
-
-      return this == other;
-    }
-
-    public override int GetHashCode ()
-    {
-      return RuntimeHelpers.GetHashCode (this);
-    }
+    Type AssembleType (Type requestedType);
+    CompoundCacheKey GetCompoundCacheKey (Type requestedType);
   }
 }
