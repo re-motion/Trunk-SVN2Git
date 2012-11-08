@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Linq;
+using Microsoft.Practices.ServiceLocation;
 using Remotion.Context;
 using Remotion.Logging;
 using Remotion.Mixins.Context;
@@ -221,7 +222,7 @@ namespace Remotion.Mixins
     /// <see cref="TargetClassDefinitionFactory.CreateTargetClassDefinition(ClassContext)"/>.</exception>
     public ValidationLogData Validate()
     {
-      var builder = new TargetClassDefinitionBuilder ();
+      var builder = ServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder> ();
 
       var definitions = from classContext in ClassContexts
                         where !classContext.Type.IsGenericTypeDefinition && !classContext.Type.IsInterface

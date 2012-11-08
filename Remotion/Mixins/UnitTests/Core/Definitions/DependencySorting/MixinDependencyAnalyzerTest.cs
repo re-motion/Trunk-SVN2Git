@@ -25,6 +25,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities.DependencySort;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 {
@@ -60,6 +61,15 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       _dependentThird = targetClassDefinition.Mixins[typeof (NullMixin4)];
       _alphabeticAccepter = targetClassDefinition.Mixins[typeof (MixinAcceptingAlphabeticOrdering1)];
       _alphabeticAccepter2 = targetClassDefinition.Mixins[typeof (MixinAcceptingAlphabeticOrdering2)];
+    }
+
+    [Test]
+    public void Singleton_RegisteredAsDefaultInterfaceImplementation ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IMixinDependencyAnalyzer> ();
+      Assert.That (instance, Is.TypeOf<MixinDependencyAnalyzer> ());
+
+      Assert.That (instance, Is.SameAs (SafeServiceLocator.Current.GetInstance<IMixinDependencyAnalyzer> ()));
     }
 
     [Test]

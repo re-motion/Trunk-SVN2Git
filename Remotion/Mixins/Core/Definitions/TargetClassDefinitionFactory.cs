@@ -18,6 +18,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.Validation;
 using Remotion.Logging;
+using Remotion.ServiceLocation;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Definitions
@@ -32,16 +33,14 @@ namespace Remotion.Mixins.Definitions
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LogManager));
 
-    // This doesn't hold any state and can thus safely be used from multiple threads at the same time
-    private static readonly TargetClassDefinitionBuilder s_definitionBuilder = new TargetClassDefinitionBuilder();
-
     public static TargetClassDefinition CreateTargetClassDefinition (ClassContext context)
     {
       s_log.DebugFormat ("Creating a class definition for: {0}.", context);
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to create and validate class definition: {elapsed}."))
       {
-        TargetClassDefinition definition = s_definitionBuilder.Build (context);
+        var builder = SafeServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder>();
+        var definition = builder.Build (context);
         Validate (definition);
         return definition;
       }

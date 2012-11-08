@@ -19,11 +19,10 @@ using System.Collections.Generic;
 using Remotion.Collections;
 using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.Text;
-using System.Linq;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
-  public class MixinDependencyAnalyzer : IDependencyAnalyzer<MixinDefinition>
+  public class MixinDependencyAnalyzer : IMixinDependencyAnalyzer
   {
     public DependencyKind AnalyzeDirectDependency (MixinDefinition first, MixinDefinition second)
     {

@@ -18,8 +18,6 @@ using System;
 using System.Collections.Generic;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
-using Remotion.Mixins.Utilities.DependencySort;
-using Remotion.Text;
 using Remotion.Utilities;
 using ReflectionUtility=Remotion.Mixins.Utilities.ReflectionUtility;
 using System.Linq;
@@ -27,11 +25,18 @@ using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Definitions.Building
 {
-  public class TargetClassDefinitionBuilder
+  /// <summary>
+  /// Builds <see cref="TargetClassDefinition"/> objects containing all metadata required for code generation from a <see cref="ClassContext"/>.
+  /// </summary>
+  public class TargetClassDefinitionBuilder : ITargetClassDefinitionBuilder
   {
-    private readonly MixinDefinitionSorter _sorter = new MixinDefinitionSorter (
-        new DependentMixinGrouper (), 
-        new DependentObjectSorter<MixinDefinition> (new MixinDependencyAnalyzer ()));
+    private readonly IMixinDefinitionSorter _mixinSorter;
+
+    public TargetClassDefinitionBuilder (IMixinDefinitionSorter mixinSorter)
+    {
+      ArgumentUtility.CheckNotNull ("mixinSorter", mixinSorter);
+      _mixinSorter = mixinSorter;
+    }
 
     public TargetClassDefinition Build (ClassContext classContext)
     {
@@ -97,7 +102,7 @@ namespace Remotion.Mixins.Definitions.Building
     {
       try
       {
-        return _sorter.SortMixins (targetClassDefinition.Mixins).ConvertToCollection ();
+        return _mixinSorter.SortMixins (targetClassDefinition.Mixins).ConvertToCollection ();
       }
       catch (InvalidOperationException ex)
       {

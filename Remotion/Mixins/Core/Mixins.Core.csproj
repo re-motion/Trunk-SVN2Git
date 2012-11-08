@@ -181,6 +181,8 @@
     <Compile Include="Definitions\Building\AttributeDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\AttributeIntroductionDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\DependencySorting\IMixinDefinitionSorter.cs" />
+    <Compile Include="Definitions\Building\DependencySorting\IMixinDependencyAnalyzer.cs" />
+    <Compile Include="Definitions\Building\ITargetClassDefinitionBuilder.cs" />
     <Compile Include="Definitions\CompleteInterfaceDependencyDefinition.cs" />
     <Compile Include="Definitions\Building\CompleteInterfaceDependencyDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\DependencyDefinitionBuilderBase.cs" />
@@ -286,10 +288,11 @@
     <Compile Include="Utilities\ConstraintBasedGenericParameterInstantiator.cs" />
     <Compile Include="Utilities\DependencySort\CircularDependenciesException.cs" />
     <Compile Include="Utilities\DependencySort\DependencyKind.cs" />
+    <Compile Include="Definitions\Building\DependencySorting\DependentMixinSorter.cs" />
     <Compile Include="Utilities\DependencySort\DependentObjectSorter.cs" />
     <Compile Include="Utilities\DependencySort\DependentObjectSorterAlgorithm.cs" />
     <Compile Include="Utilities\DependencySort\IDependencyAnalyzer.cs" />
-    <Compile Include="Utilities\DependencySort\IDependentObjectSorter.cs" />
+    <Compile Include="Definitions\Building\DependencySorting\IDependentMixinSorter.cs" />
     <Compile Include="Utilities\MixedObjectInstantiationScope.cs" />
     <Compile Include="Utilities\MixedTypeConstructorLookupInfo.cs" />
     <Compile Include="Utilities\MixinGenericArgumentFinder.cs" />

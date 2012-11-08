@@ -48,6 +48,10 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\prereq\Assemblies\NUnit-2.6\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Remotion.Mixins, Version=1.13.173.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Web\Test\Bin\Remotion.Mixins.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
     </Reference>

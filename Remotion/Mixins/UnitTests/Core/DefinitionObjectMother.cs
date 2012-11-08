@@ -23,6 +23,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -289,7 +290,7 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       ArgumentUtility.CheckNotNull ("context", context);
 
-      var builder = new TargetClassDefinitionBuilder();
+      var builder = SafeServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder>();
       return builder.Build (context);
     }
 

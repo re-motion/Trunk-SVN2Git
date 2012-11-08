@@ -20,8 +20,10 @@ using System.Reflection;
 using NUnit.Framework;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building;
+using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.UnitTests.Core.Definitions.TestDomain;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 {
@@ -33,7 +35,19 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     [SetUp]
     public void SetUp ()
     {
-      _builder = new TargetClassDefinitionBuilder ();
+      var sorter = new MixinDefinitionSorter (
+          new DependentMixinGrouper (), 
+          new DependentMixinSorter (new MixinDependencyAnalyzer ()));
+      _builder = new TargetClassDefinitionBuilder (sorter);
+    }
+
+    [Test]
+    public void Singleton_RegisteredAsDefaultInterfaceImplementation ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder> ();
+      Assert.That (instance, Is.TypeOf<TargetClassDefinitionBuilder> ());
+
+      Assert.That (instance, Is.SameAs (SafeServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder> ()));
     }
 
     [Test]

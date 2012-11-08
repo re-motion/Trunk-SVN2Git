@@ -31,9 +31,9 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
   public class MixinDefinitionSorter : IMixinDefinitionSorter
   {
     private readonly IDependentMixinGrouper _grouper;
-    private readonly IDependentObjectSorter<MixinDefinition> _sorter;
+    private readonly IDependentMixinSorter _sorter;
 
-    public MixinDefinitionSorter (IDependentMixinGrouper grouper, IDependentObjectSorter<MixinDefinition> sorter)
+    public MixinDefinitionSorter (IDependentMixinGrouper grouper, IDependentMixinSorter sorter)
     {
       _grouper = grouper;
       _sorter = sorter;
@@ -44,7 +44,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       get { return _grouper; }
     }
 
-    public IDependentObjectSorter<MixinDefinition> Sorter
+    public IDependentMixinSorter Sorter
     {
       get { return _sorter; }
     }

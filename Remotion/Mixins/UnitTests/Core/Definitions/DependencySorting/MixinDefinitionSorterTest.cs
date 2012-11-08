@@ -22,6 +22,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities.DependencySort;
+using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
@@ -53,6 +54,15 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     }
 
     [Test]
+    public void Singleton_RegisteredAsDefaultInterfaceImplementation ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IMixinDefinitionSorter> ();
+      Assert.That (instance, Is.TypeOf<MixinDefinitionSorter> ());
+
+      Assert.That (instance, Is.SameAs (SafeServiceLocator.Current.GetInstance<IMixinDefinitionSorter> ()));
+    }
+
+    [Test]
     public void SortMixins_PartitionsAndSortsAlphabetically ()
     {
       var mixinDefinitions = new[] { _mixinDefinition4, _mixinDefinition2, _mixinDefinition1, _mixinDefinition3 };
@@ -65,7 +75,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper>();
       innerGrouperMock.Expect (mock => mock.GroupMixins (mixinDefinitions)).Return (_fakeGroupings);
 
-      var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>>();
+      var innerSorterMock = mockRepository.StrictMock<IDependentMixinSorter>();
       using (mockRepository.Ordered ())
       {
         innerSorterMock.Expect (mock => mock.SortDependencies (_fakeGroupings[0])).Return (fakeSortedGroup1);
@@ -94,7 +104,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper> ();
       innerGrouperMock.Expect (mock => mock.GroupMixins (_targetClassDefinition.Mixins)).Return (_fakeGroupings);
 
-      var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>> ();
+      var innerSorterMock = mockRepository.StrictMock<IDependentMixinSorter> ();
       using (mockRepository.Ordered ())
       {
         innerSorterMock

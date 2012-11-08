@@ -21,6 +21,7 @@ using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting.TestDomain;
 using System.Linq;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 {
@@ -76,6 +77,15 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       _additionalDependency1 = targetClassDefinition.Mixins[typeof (MixinWithAdditionalDependency)];
 
       _grouper = new DependentMixinGrouper();
+    }
+
+    [Test]
+    public void Singleton_RegisteredAsDefaultInterfaceImplementation ()
+    {
+      var instance = SafeServiceLocator.Current.GetInstance<IDependentMixinGrouper>();
+      Assert.That (instance, Is.TypeOf<DependentMixinGrouper>());
+
+      Assert.That (instance, Is.SameAs (SafeServiceLocator.Current.GetInstance<IDependentMixinGrouper>()));
     }
 
     [Test]

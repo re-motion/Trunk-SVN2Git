@@ -19,7 +19,7 @@ using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities.DependencySort
 {
-  public class DependentObjectSorter<T> : IDependentObjectSorter<T>
+  public class DependentObjectSorter<T>
   {
     private readonly IDependencyAnalyzer<T> _analyzer;
 

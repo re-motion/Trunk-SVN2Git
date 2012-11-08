@@ -14,26 +14,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
-using System.Collections.Generic;
+using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
-  /// <summary>
-  /// Defines an interface for classes sorting a sequence of <see cref="MixinDefinition"/> objects based on the dependencies between the mixins and 
-  /// other ordering-relevant information.
-  /// </summary>
-  [ConcreteImplementation (typeof (MixinDefinitionSorter), Lifetime = LifetimeKind.Singleton)]
-  public interface IMixinDefinitionSorter
+  [ConcreteImplementation (typeof (MixinDependencyAnalyzer), Lifetime = LifetimeKind.Singleton)]
+  public interface IMixinDependencyAnalyzer : IDependencyAnalyzer<MixinDefinition>
   {
-    /// <summary>
-    /// Sorts the given mixins.
-    /// </summary>
-    /// <param name="mixinDefinitions">The <see cref="MixinDefinition"/> objects to sort relative to each other.</param>
-    /// <returns>A sequence with the given mixins, but in the correct order.</returns>
-    /// <exception cref="InvalidOperationException">The <paramref name="mixinDefinitions"/> cannot be sorted.</exception>
-    IEnumerable<MixinDefinition> SortMixins (IEnumerable<MixinDefinition> mixinDefinitions);
   }
 }
