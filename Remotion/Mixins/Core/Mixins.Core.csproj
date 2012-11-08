@@ -180,6 +180,7 @@
     <Compile Include="Definitions\AttributeIntroductionDefinition.cs" />
     <Compile Include="Definitions\Building\AttributeDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\AttributeIntroductionDefinitionBuilder.cs" />
+    <Compile Include="Definitions\Building\DependencySorting\IMixinDefinitionSorter.cs" />
     <Compile Include="Definitions\CompleteInterfaceDependencyDefinition.cs" />
     <Compile Include="Definitions\Building\CompleteInterfaceDependencyDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\DependencyDefinitionBuilderBase.cs" />

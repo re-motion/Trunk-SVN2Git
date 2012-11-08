@@ -87,13 +87,12 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
     {
       string message =
           string.Format (
-              "The following mixins are applied to the same base class {0} and require a clear base call ordering, but do not "
-              + "provide enough dependency information: {1}.{2}Please supply additional dependencies to the mixin definitions, use the "
+              "The following mixins require a clear base call ordering, but do not "
+              + "provide enough dependency information:{1}{0}.{1}Please supply additional dependencies to the mixin definitions, use the "
               + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.",
-              equalRoots.First().TargetClass.FullName,
-              SeparatedStringBuilder.Build (", ", equalRoots, m => m.FullName),
+              SeparatedStringBuilder.Build ("," + Environment.NewLine, equalRoots, m => "'" + m.FullName + "'"),
               Environment.NewLine);
-      return new ConfigurationException (message);
+      return new InvalidOperationException (message);
     }
   }
 }

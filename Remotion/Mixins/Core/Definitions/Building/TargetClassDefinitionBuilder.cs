@@ -99,12 +99,12 @@ namespace Remotion.Mixins.Definitions.Building
       {
         return _sorter.SortMixins (targetClassDefinition.Mixins).ConvertToCollection ();
       }
-      catch (CircularDependenciesException<MixinDefinition> ex)
+      catch (InvalidOperationException ex)
       {
         string message = string.Format (
-            "The following group of mixins, applied to target class '{0}', contains circular dependencies: {1}.",
+            "The mixins applied to target class '{0}' cannot be ordered. {1}",
             targetClassDefinition.FullName,
-            SeparatedStringBuilder.Build (", ", ex.Circulars, m => m.FullName));
+            ex.Message);
         throw new ConfigurationException (message, ex);
       }
     }

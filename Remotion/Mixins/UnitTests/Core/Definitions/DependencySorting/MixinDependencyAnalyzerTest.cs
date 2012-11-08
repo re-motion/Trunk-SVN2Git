@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -87,10 +89,12 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The following mixins are applied to the same base class "
-        + "Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget and require a clear base call ordering, but do not provide enough dependency information: "
-        + "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin, Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2, "
-        + "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4.\r\nPlease supply additional dependencies to the mixin definitions, use the "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The following mixins require a clear base call ordering, but do not provide enough dependency information:\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin',\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2',\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4'.\r\n"
+        + "Please supply additional dependencies to the mixin definitions, use the "
         + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.")]
     public void ResolveEqualRoots_Throws ()
     {
@@ -166,15 +170,64 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage = "The following mixins are applied to the same base class "
-        + "Remotion.Mixins.UnitTests.Core.TestDomain.NullTarget and require a clear base call ordering, but do not provide enough dependency information: "
-        + "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin, Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2, Remotion.Mixins.UnitTests.Core.TestDomain."
-       + "MixinAcceptingAlphabeticOrdering1.\r\nPlease supply additional dependencies to the mixin definitions, use the "
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = 
+        "The following mixins require a clear base call ordering, but do not provide enough dependency information:\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin',\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2',\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.MixinAcceptingAlphabeticOrdering1'.\r\n"
+        + "Please supply additional dependencies to the mixin definitions, use the "
        + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.")]
     public void ResolveEqualRoots_WithEnabledAlphabeticOrdering_TwoNonAccepters ()
     {
       _analyzer.ResolveEqualRoots (new[] { _independent1, _independent2, _alphabeticAccepter });
       Assert.Fail();
+    }
+
+    [Test]
+    public void BigTestDomain ()
+    {
+      using (MixinConfiguration.BuildFromActive ().ForClass<BaseType7> ().Clear ()
+          .AddMixin (typeof (BT7Mixin0)).WithDependency (typeof (IBT7Mixin7))
+          .AddMixin (typeof (BT7Mixin7)).WithDependency (typeof (IBT7Mixin4))
+          .AddMixin (typeof (BT7Mixin4)).WithDependency (typeof (IBT7Mixin6))
+          .AddMixin (typeof (BT7Mixin6)).WithDependency (typeof (IBT7Mixin2))
+          .AddMixin (typeof (BT7Mixin9)).WithDependency (typeof (IBT7Mixin8))
+          .AddMixins (typeof (BT7Mixin1), typeof (BT7Mixin2), typeof (BT7Mixin3), typeof (BT7Mixin5), typeof (BT7Mixin8), typeof (BT7Mixin10))
+          .EnterScope ())
+      {
+        TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
+        var analyzer = new MixinDependencyAnalyzer ();
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin0)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin0)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (DependencyKind.None));
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin2)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (DependencyKind.None));
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin0)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (DependencyKind.None));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin4)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (DependencyKind.None));
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin0)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                                                                                                                            DependencyKind.FirstOnSecond));
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin1)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (
+                                                                                                                            DependencyKind.SecondOnFirst));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin1)]), Is.EqualTo (
+                                                                                                                            DependencyKind.FirstOnSecond));
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin2)], bt7.Mixins[typeof (BT7Mixin3)]), Is.EqualTo (
+                                                                                                                            DependencyKind.FirstOnSecond));
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                                                                                                                            DependencyKind.SecondOnFirst));
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin3)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                                                                                                                            DependencyKind.SecondOnFirst));
+
+        Assert.That (analyzer.AnalyzeDirectDependency (bt7.Mixins[typeof (BT7Mixin7)], bt7.Mixins[typeof (BT7Mixin2)]), Is.EqualTo (
+                                                                                                                            DependencyKind.FirstOnSecond));
+      }
     }
   }
 }

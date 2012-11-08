@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Mixins.Utilities.DependencySort;
+using Remotion.Text;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
@@ -27,7 +28,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
   /// <see cref="DependentMixinGrouper"/> and then sorting the mixins in the groups via <see cref="DependentObjectSorter{T}"/>. 
   /// The groups are alphabetically sorted according to the full name of the first mixin in the group.
   /// </summary>
-  public class MixinDefinitionSorter
+  public class MixinDefinitionSorter : IMixinDefinitionSorter
   {
     private readonly IDependentMixinGrouper _grouper;
     private readonly IDependentObjectSorter<MixinDefinition> _sorter;
@@ -48,11 +49,6 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       get { return _sorter; }
     }
 
-    /// <summary>
-    /// Sorts the given mixins.
-    /// </summary>
-    /// <param name="mixinDefinitions">The <see cref="MixinDefinition"/> objects to sort relative to each other.</param>
-    /// <returns>A sequence with the given mixins, but in the correct order.</returns>
     public IEnumerable<MixinDefinition> SortMixins (IEnumerable<MixinDefinition> mixinDefinitions)
     {
       var sortedMixinGroups = PartitionAndSortMixins (mixinDefinitions);
@@ -66,7 +62,22 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       // partition mixins into independent groups
       var sortedMixinGroups = _grouper
           .GroupMixins (mixinDefinitions)
-          .Select (mixinGroup => _sorter.SortDependencies (mixinGroup).ToList())
+          .Select (
+              mixinGroup =>
+              {
+                try
+                {
+                  return _sorter.SortDependencies (mixinGroup).ToList();
+                }
+                catch (CircularDependenciesException<MixinDefinition> ex)
+                {
+                  string message = string.Format (
+                      "The following group of mixins contains circular dependencies:{1}{0}.",
+                      SeparatedStringBuilder.Build ("," + Environment.NewLine, ex.Circulars, m => "'" + m.FullName + "'"),
+                      Environment.NewLine);
+                  throw new InvalidOperationException (message, ex);
+                }
+              })
           .ToList();
 
       // order groups alphabetically

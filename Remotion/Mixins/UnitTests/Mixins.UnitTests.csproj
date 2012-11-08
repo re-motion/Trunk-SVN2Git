@@ -212,6 +212,7 @@
     <Compile Include="Core\ExtendsAttributeTest.cs" />
     <Compile Include="Core\IgnoresClassAttributeTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AssemblyLevelMixinDependenciesTestBase.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\BigTestDomainScenarioTest.cs" />
     <Compile Include="Core\IntegrationTests\Ordering\OrderingViaTTargetTest.cs" />
     <Compile Include="Core\IntegrationTests\Ordering\OrderingViaTNextTest.cs" />
     <Compile Include="Core\IntegrationTests\Ordering\OrderingViaAttributeDependencyTest.cs" />
@@ -286,7 +287,6 @@
     <Compile Include="Core\Definitions\Building\InterfaceIntroductionDefinitionBuildingIntegrationTest.cs" />
     <Compile Include="Core\Definitions\Building\MemberDefinitionBuilderTest.cs" />
     <Compile Include="Core\Definitions\Building\MixinDefinitionBuilderTest.cs" />
-    <Compile Include="Core\Definitions\Building\MixinDependencySortingIntegrationTest.cs" />
     <Compile Include="Core\Definitions\Building\OverriddenMemberFilterTest.cs" />
     <Compile Include="Core\Definitions\Building\OverrideAnalyzerTest.cs" />
     <Compile Include="Core\Definitions\Building\OverrideAttributeHierarchyIntegrationTest.cs" />

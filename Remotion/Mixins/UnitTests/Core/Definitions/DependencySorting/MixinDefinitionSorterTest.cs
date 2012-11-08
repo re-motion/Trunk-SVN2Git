@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Mixins.Definitions;
@@ -78,6 +80,32 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       mockRepository.VerifyAll ();
 
       Assert.That (sorted, Is.EqualTo (new[] { _mixinDefinition3, _mixinDefinition2, _mixinDefinition4, _mixinDefinition1 }));
+    }
+
+    [Test]
+    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage =
+        "The following group of mixins contains circular dependencies:\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin',\r\n"
+        + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4'.")]
+    public void SortMixins_CircularDependencies ()
+    {
+      var mockRepository = new MockRepository ();
+
+      var innerGrouperMock = mockRepository.StrictMock<IDependentMixinGrouper> ();
+      innerGrouperMock.Expect (mock => mock.GroupMixins (_targetClassDefinition.Mixins)).Return (_fakeGroupings);
+
+      var innerSorterMock = mockRepository.StrictMock<IDependentObjectSorter<MixinDefinition>> ();
+      using (mockRepository.Ordered ())
+      {
+        innerSorterMock
+            .Expect (mock => mock.SortDependencies (_fakeGroupings[0]))
+            .Throw (new CircularDependenciesException<MixinDefinition> ("bla", _fakeGroupings[0]));
+      }
+
+      mockRepository.ReplayAll ();
+
+      var sorter = new MixinDefinitionSorter (innerGrouperMock, innerSorterMock);
+      sorter.SortMixins (_targetClassDefinition.Mixins);
     }
   }
 }

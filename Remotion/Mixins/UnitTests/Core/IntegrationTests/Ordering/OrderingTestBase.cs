@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Remotion.FunctionalProgramming;
@@ -62,21 +63,29 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     protected void CheckOrderingException (ActualValueDelegate action, Type targetClass, params Type[] conflictingMixins)
     {
       var expectedMessage = string.Format (
-          "The following mixins are applied to the same base class {0} and require a clear base call ordering, but do not provide enough "
-          + "dependency information: {1}.\r\nPlease supply additional dependencies to the mixin definitions, use the "
-          + "AcceptsAlphabeticOrderingAttribute, or adjust the mixin configuration accordingly.", 
+          "The mixins applied to target class '{0}' cannot be ordered. The following mixins require a clear base call ordering, but do not provide "
+          + "enough dependency information:{2}{1}.{2}"
+          + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the "
+          + "mixin configuration accordingly.", 
           targetClass.FullName, 
-          SeparatedStringBuilder.Build (", ", conflictingMixins, m => m.FullName));
+          BuildMixinListForExceptionMessage (conflictingMixins),
+          Environment.NewLine);
       Assert.That (action, Throws.TypeOf<ConfigurationException>().With.Message.EqualTo (expectedMessage));
     }
 
     protected void CheckCycleException (ActualValueDelegate action, Type targetClass, params Type[] mixinTypes)
     {
       var expectedMessage = string.Format (
-          "The following group of mixins, applied to target class '{0}', contains circular dependencies: {1}.", 
+          "The mixins applied to target class '{0}' cannot be ordered. The following group of mixins contains circular dependencies:{2}{1}.", 
           targetClass.FullName,
-          SeparatedStringBuilder.Build (", ", mixinTypes, m => m.FullName));
+          BuildMixinListForExceptionMessage (mixinTypes),
+          Environment.NewLine);
       Assert.That (action, Throws.TypeOf<ConfigurationException> ().With.Message.EqualTo (expectedMessage));
+    }
+
+    private static string BuildMixinListForExceptionMessage (IEnumerable<Type> mixinTypes)
+    {
+      return SeparatedStringBuilder.Build ("," + Environment.NewLine, mixinTypes, m => "'" + m.FullName + "'");
     }
   }
 }

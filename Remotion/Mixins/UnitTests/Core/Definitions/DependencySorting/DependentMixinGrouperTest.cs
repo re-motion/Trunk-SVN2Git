@@ -20,6 +20,7 @@ using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting.TestDomain;
 using System.Linq;
+using Remotion.Mixins.UnitTests.Core.TestDomain;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 {
@@ -168,6 +169,47 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
       var groups = GetGroups (_additionalDependency1, _additionalDependency0);
       Assert.AreEqual (1, groups.Length);
       Assert.That (groups[0].ToArray (), Is.EquivalentTo (new object[] { _additionalDependency0, _additionalDependency1 }));
+    }
+
+    [Test]
+    public void BigTestDomain ()
+    {
+      using (MixinConfiguration.BuildFromActive ().ForClass<BaseType7> ().Clear ()
+          .AddMixin (typeof (BT7Mixin0)).WithDependency (typeof (IBT7Mixin7))
+          .AddMixin (typeof (BT7Mixin7)).WithDependency (typeof (IBT7Mixin4))
+          .AddMixin (typeof (BT7Mixin4)).WithDependency (typeof (IBT7Mixin6))
+          .AddMixin (typeof (BT7Mixin6)).WithDependency (typeof (IBT7Mixin2))
+          .AddMixin (typeof (BT7Mixin9)).WithDependency (typeof (IBT7Mixin8))
+          .AddMixins (typeof (BT7Mixin1), typeof (BT7Mixin2), typeof (BT7Mixin3), typeof (BT7Mixin5), typeof (BT7Mixin8), typeof (BT7Mixin10))
+          .EnterScope ())
+      {
+        TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
+        var mixinGroups = GetGroups (bt7.Mixins.ToArray()).ToList();
+        Assert.That (mixinGroups.Count, Is.EqualTo (3));
+
+        mixinGroups.Sort ((one, two) => one.Count.CompareTo (two.Count));
+
+        var smaller = mixinGroups[0];
+        var medium = mixinGroups[1];
+        var larger = mixinGroups[2];
+
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin0)], larger.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin1)], larger.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin2)], larger.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin3)], larger.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin4)], larger.ToArray (), "method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin6)], larger.ToArray (), "method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin7)], larger.ToArray (), "dependency");
+        Assert.That (larger.Count, Is.EqualTo (7));
+
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin8)], medium.ToArray (), "method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin9)], medium.ToArray (), "dependency+method");
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin10)], medium.ToArray (), "dependency");
+        Assert.That (medium.Count, Is.EqualTo (3));
+
+        Assert.Contains (bt7.Mixins[typeof (BT7Mixin5)], smaller.ToArray (), "nothing");
+        Assert.That (smaller.Count, Is.EqualTo (1));
+      }
     }
 
     private HashSet<MixinDefinition>[] GetGroups (params MixinDefinition[] mixins)
