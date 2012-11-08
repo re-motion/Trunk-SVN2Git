@@ -240,7 +240,7 @@ namespace Remotion.Mixins.UnitTests.Core
       var classContext = MixinConfiguration.ActiveConfiguration.GetContext (type);
 
       Assert.That (classContext, Is.Not.Null, "The given type '" + type.Name + "' must be configured as a mixin target.");
-      return TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
+      return TargetClassDefinitionFactory.CreateAndValidate (classContext);
     }
 
     public static TargetClassDefinition GetActiveTargetClassDefinition_Force (Type type)
@@ -255,7 +255,7 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
 
-      return TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
+      return TargetClassDefinitionFactory.CreateAndValidate (classContext);
     }
 
     public static TargetClassDefinition GetTargetClassDefinition (Type targetClass, params Type[] mixins)
@@ -273,7 +273,7 @@ namespace Remotion.Mixins.UnitTests.Core
       ArgumentUtility.CheckNotNull ("mixinTypes", mixinTypes);
 
       var context = ClassContextObjectMother.Create(baseType, mixinTypes);
-      return BuildUnvalidatedDefinition(context);
+      return TargetClassDefinitionFactory.CreateWithoutValidation (context);
     }
 
     public static TargetClassDefinition BuildUnvalidatedDefinition (Type baseType, Type[] mixinTypes, Type[] completeInterfaces)
@@ -283,15 +283,7 @@ namespace Remotion.Mixins.UnitTests.Core
       ArgumentUtility.CheckNotNull ("completeInterfaces", completeInterfaces);
 
       var context = ClassContextObjectMother.Create (baseType, mixinTypes, completeInterfaces);
-      return BuildUnvalidatedDefinition (context);
-    }
-
-    public static TargetClassDefinition BuildUnvalidatedDefinition (ClassContext context)
-    {
-      ArgumentUtility.CheckNotNull ("context", context);
-
-      var builder = SafeServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder>();
-      return builder.Build (context);
+      return TargetClassDefinitionFactory.CreateWithoutValidation (context);
     }
 
     public static void AddRequiringDependency (RequirementDefinitionBase requirement, DependencyDefinitionBase dependency)

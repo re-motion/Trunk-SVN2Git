@@ -33,17 +33,36 @@ namespace Remotion.Mixins.Definitions
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LogManager));
 
-    public static TargetClassDefinition CreateTargetClassDefinition (ClassContext context)
+    public static TargetClassDefinition CreateAndValidate (ClassContext context)
     {
-      s_log.DebugFormat ("Creating a class definition for: {0}.", context);
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      s_log.DebugFormat ("Creating a validated class definition for: {0}.", context);
 
       using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to create and validate class definition: {elapsed}."))
       {
-        var builder = SafeServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder>();
-        var definition = builder.Build (context);
+        var definition = CreateInternal (context);
         Validate (definition);
         return definition;
       }
+    }
+
+    public static TargetClassDefinition CreateWithoutValidation (ClassContext context)
+    {
+      ArgumentUtility.CheckNotNull ("context", context);
+
+      s_log.DebugFormat ("Creating an unvalidated class definition for: {0}.", context);
+
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Debug, "Time needed to create class definition: {elapsed}."))
+      {
+        return CreateInternal(context);
+      }
+    }
+
+    private static TargetClassDefinition CreateInternal (ClassContext context)
+    {
+      var builder = SafeServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder>();
+      return builder.Build (context);
     }
 
     private static void Validate (TargetClassDefinition definition)

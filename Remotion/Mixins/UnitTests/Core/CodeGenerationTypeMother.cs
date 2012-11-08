@@ -54,7 +54,7 @@ namespace Remotion.Mixins.UnitTests.Core
     public static ConcreteMixinType GetGeneratedMixinTypeAndMetadata (ClassContext requestingClass, Type mixinType)
     {
       MixinDefinition mixinDefinition = TargetClassDefinitionFactory
-          .CreateTargetClassDefinition (requestingClass)
+          .CreateAndValidate (requestingClass)
           .GetMixinByConfiguredType (mixinType);
       Assert.That (mixinDefinition, Is.Not.Null);
 

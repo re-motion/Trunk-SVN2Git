@@ -111,7 +111,7 @@ namespace Remotion.Mixins.CodeGeneration
       using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete type: {elapsed}."))
       using (new CodeGenerationTimer ())
       {
-        var targetClassDefinition = TargetClassDefinitionFactory.CreateTargetClassDefinition (classContext);
+        var targetClassDefinition = TargetClassDefinitionFactory.CreateAndValidate (classContext);
         var generator = moduleManager.CreateTypeGenerator (targetClassDefinition, nameProvider, concreteMixinTypeProvider);
 
         return generator.GetBuiltType();

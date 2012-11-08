@@ -219,14 +219,12 @@ namespace Remotion.Mixins
     /// <exception cref="NotSupportedException">The <see cref="MixinConfiguration"/> contains a <see cref="ClassContext"/> for a generic type, of
     /// which it cannot make a closed generic type. Because closed types are needed for validation, this <see cref="MixinConfiguration"/>
     /// cannot be validated as a whole. Even in this case, the configuration might still be correct, but validation is deferred to
-    /// <see cref="TargetClassDefinitionFactory.CreateTargetClassDefinition(ClassContext)"/>.</exception>
+    /// <see cref="TargetClassDefinitionFactory.CreateAndValidate"/>.</exception>
     public ValidationLogData Validate()
     {
-      var builder = ServiceLocator.Current.GetInstance<ITargetClassDefinitionBuilder> ();
-
       var definitions = from classContext in ClassContexts
                         where !classContext.Type.IsGenericTypeDefinition && !classContext.Type.IsInterface
-                        select (IVisitableDefinition) builder.Build (classContext);
+                        select (IVisitableDefinition) TargetClassDefinitionFactory.CreateWithoutValidation (classContext);
 
       return Validator.Validate (definitions);
     }
