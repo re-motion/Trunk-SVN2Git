@@ -20,19 +20,23 @@ using Remotion.Utilities;
 
 namespace Remotion.TypePipe.UnitTests
 {
-  public class DummyCacheKey : CacheKey
+  public class ContentCacheKey : CacheKey
   {
     private readonly string _backingString;
 
-    public DummyCacheKey (string backingString)
+    public ContentCacheKey (string backingString)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("backingString", backingString);
+
       _backingString = backingString;
     }
 
     public override bool Equals (object other)
     {
-      Assertion.IsTrue (other is DummyCacheKey);
-      return _backingString.Equals (((DummyCacheKey) other)._backingString);
+      ArgumentUtility.CheckNotNull ("other", other);
+
+      Assertion.IsTrue (other is ContentCacheKey);
+      return _backingString.Equals (((ContentCacheKey) other)._backingString);
     }
 
     public override int GetHashCode ()
