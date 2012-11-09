@@ -463,18 +463,19 @@ function BocList_CreateFakeTableHead(tableContainer, scrollableContainer)
     $('input[name="' + checkName + '"]').prop('checked', checkStatus);
   });
 
-  if ($('body').is('.msie'))
+  var ieVersion = BrowserUtility.GetIEVersion();
+  if (isNaN (ieVersion))
+  {
+    setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 50);
+  }
+  else if (ieVersion > 8)
   {
     $(document).ready(function () { BocList_FixHeaderSize(scrollableContainer); });
   }
-  else if ($('body').is('.msie8') || $('body').is('.msie7'))
+  else
   {
     BocList_FixHeaderSize(scrollableContainer);
     setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 0);
-  }
-  else
-  {
-    setTimeout(function () { BocList_FixHeaderSize(scrollableContainer); }, 50);
   }
 }
 
