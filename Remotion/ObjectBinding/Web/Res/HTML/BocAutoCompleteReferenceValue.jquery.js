@@ -1169,7 +1169,7 @@
                     else {
                         list.scrollTop(0);
                     }
-                    if ($.browser.msie && typeof document.body.style.maxHeight === "undefined") {
+                    if (BrowserUtility.GetIEVersion() > 0 && typeof document.body.style.maxHeight === "undefined") {
                         var listHeight = 0;
                         listItems.each(function() {
                             listHeight += this.offsetHeight;
@@ -1348,7 +1348,7 @@
       if (!isVisibe)
       {
         contentWidth = Math.max(0, Math.max(popUp.children('div').children().map(function () { return this.offsetWidth + this.offsetLeft; }).get()));
-        if ($.Autocompleter.getIEVersion() == 7)
+        if (BrowserUtility.GetIEVersion() == 7)
         {
           // IE7 has problem with getting the content width
           contentWidth = 0;
@@ -1414,30 +1414,11 @@
         'max-width' : 'none'
       });
 
-      if ($.Autocompleter.getIEVersion() == 8)
+      if (BrowserUtility.GetIEVersion() == 8)
       {
         //IE8 shows scrollbar because of 1px margin error
         var overflowY = (requiredHeight > popUpInnerHeight && requiredHeight < maxHeightSafe) ? 'hidden' : '';
         popUp.children('div').css('overflow-y', overflowY);
       }
     };
-
-  $.Autocompleter.getIEVersion = function ()
-  {
-    if ($.browser.msie)
-    {
-      var majorVersion;
-      if (TypeUtility.IsDefined (window.document.documentMode))
-        majorVersion = parseInt (window.document.documentMode);
-      else
-        majorVersion = parseInt ($.browser.version);
-
-      return majorVersion;
-    }
-    else
-    {
-      return 0;
-    }
-  };
-
 })(jQuery);
