@@ -180,6 +180,7 @@
     <Compile Include="Definitions\AttributeIntroductionDefinition.cs" />
     <Compile Include="Definitions\Building\AttributeDefinitionBuilder.cs" />
     <Compile Include="Definitions\Building\AttributeIntroductionDefinitionBuilder.cs" />
+    <Compile Include="Definitions\Building\DependencySorting\MixinDefinitionSorter2.cs" />
     <Compile Include="Definitions\Building\DependencySorting\IMixinDefinitionSorter.cs" />
     <Compile Include="Definitions\Building\DependencySorting\IMixinDependencyAnalyzer.cs" />
     <Compile Include="Definitions\Building\ITargetClassDefinitionBuilder.cs" />

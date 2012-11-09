@@ -48,10 +48,6 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\..\prereq\Assemblies\NUnit-2.6\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Remotion.Mixins, Version=1.13.173.2, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Web\Test\Bin\Remotion.Mixins.dll</HintPath>
-    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\..\..\prereq\Assemblies\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -212,6 +208,7 @@
     <Compile Include="Core\Context\DeclarativeAnalyzers\HasCompleteInterfaceMarkerAnalyzerTest.cs" />
     <Compile Include="Core\Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzerTest.cs" />
     <Compile Include="Core\Context\DeclarativeAnalyzers\MixinConfigurationAttributeAnalyzerTest.cs" />
+    <Compile Include="Core\Definitions\DependencySorting\MixinDefinitionSorter2Test.cs" />
     <Compile Include="Core\IgnoresMixinAttributeTest.cs" />
     <Compile Include="Core\ExtendsAttributeTest.cs" />
     <Compile Include="Core\IgnoresClassAttributeTest.cs" />

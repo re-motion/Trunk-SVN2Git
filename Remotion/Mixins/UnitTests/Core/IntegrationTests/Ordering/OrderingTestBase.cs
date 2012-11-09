@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Remotion.FunctionalProgramming;
@@ -49,7 +50,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       configuration (classContextBuilder);
       using (classContextBuilder.EnterScope ())
       {
-        return ObjectFactory.Create<T> ();
+        return ObjectFactory.Create<T>();
       }
     }
 
@@ -64,13 +65,13 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 
     protected T BuildMixedInstanceWithActiveConfiguration<T> ()
     {
-      return ObjectFactory.Create<T> ();
+      return ObjectFactory.Create<T>();
     }
 
     protected void CheckOrderingException (ActualValueDelegate action, Type targetClass, params Type[][] conflictingMixinGroups)
     {
       var conflictingMixins = conflictingMixinGroups.SelectMany (ts => ts).Distinct();
-      var expectedMessage = string.Format (
+      var expectedMessage = String.Format (
           "The mixins applied to target class '{0}' cannot be ordered. The following mixins require a clear base call ordering, but do not provide "
           + "enough dependency information:{2}{1}.{2}"
           + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the "
@@ -84,12 +85,15 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 
     protected void CheckCycleException (ActualValueDelegate action, Type targetClass, params Type[] mixinTypes)
     {
-      var expectedMessage = string.Format (
+      var expectedMessage = String.Format (
           "The mixins applied to target class '{0}' cannot be ordered. The following group of mixins contains circular dependencies:{2}{1}.", 
           targetClass.FullName,
-          BuildMixinListForExceptionMessage (mixinTypes),
+          SeparatedStringBuilder.Build ("," + Environment.NewLine, mixinTypes.Select (m => "'{item}'")),
           Environment.NewLine);
-      Assert.That (action, Throws.TypeOf<ConfigurationException> ().With.Message.EqualTo (expectedMessage));
+      Assert.That (
+          action, 
+          Throws.TypeOf<ConfigurationException>().With.Message.Matches<string> (
+              m => CheckMessageWithUnorderedItems (m, expectedMessage, mixinTypes.Select (t => t.FullName).ToArray())));
     }
 
     private static string BuildMixinListForExceptionMessage (IEnumerable<Type> mixinTypes)
@@ -101,6 +105,24 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     {
       var groupStrings = mixinTypeGroups.Select (g => SeparatedStringBuilder.Build (", ", g, m => "'" + m.FullName + "'"));
       return SeparatedStringBuilder.Build ("," + Environment.NewLine, groupStrings, groupString => "{" + groupString + "}");
+    }
+
+    public static bool CheckMessageWithUnorderedItems (string message, string pattern, params string[] items)
+    {
+      var escapedMessage = Regex.Escape (pattern);
+      var escapedMessageWithReplacedGroups = escapedMessage.Replace ("\\{item}", "(.*)");
+
+      var result = Regex.Match (message, escapedMessageWithReplacedGroups);
+
+      Assert.That (
+          result.Success, 
+          Is.True, 
+          "Expected message matching:" + Environment.NewLine + "\"" + pattern + "\" - But was:" + Environment.NewLine + "\"" + message + "\"");
+
+      var capturedValues = result.Groups.Cast<Group>().Skip (1).Select (g => g.Value);
+      Assert.That (capturedValues, Is.EquivalentTo (items));
+
+      return true;
     }
   }
 }

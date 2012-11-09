@@ -46,12 +46,12 @@ namespace Remotion.Mixins.UnitTests.Core
       return result;
     }
 
-    public static MixinDefinition CreateMixinDefinition (TargetClassDefinition targetClassDefinition, Type mixinType)
+    public static MixinDefinition CreateMixinDefinition (TargetClassDefinition targetClassDefinition, Type mixinType, bool acceptsAlphabeticOrdering = true)
     {
       ArgumentUtility.CheckNotNull ("targetClassDefinition", targetClassDefinition);
       ArgumentUtility.CheckNotNull ("mixinType", mixinType);
 
-      var mixinDefinition = new MixinDefinition (MixinKind.Used, mixinType, targetClassDefinition, true);
+      var mixinDefinition = new MixinDefinition (MixinKind.Used, mixinType, targetClassDefinition, acceptsAlphabeticOrdering);
       PrivateInvoke.InvokeNonPublicMethod (targetClassDefinition.Mixins, "Add", mixinDefinition);
       return mixinDefinition;
     }
@@ -70,6 +70,16 @@ namespace Remotion.Mixins.UnitTests.Core
 
       var mixinDependency = new MixinDependencyDefinition (new RequiredMixinTypeDefinition (definition.TargetClass, typeof (IBaseType2)), definition, null);
       PrivateInvoke.InvokeNonPublicMethod (definition.MixinDependencies, "Add", mixinDependency);
+      return mixinDependency;
+    }
+
+    public static MixinDependencyDefinition CreateMixinDependencyDefinition (MixinDefinition from, MixinDefinition to)
+    {
+      ArgumentUtility.CheckNotNull ("from", from);
+      ArgumentUtility.CheckNotNull ("to", to);
+
+      var mixinDependency = new MixinDependencyDefinition (new RequiredMixinTypeDefinition (from.TargetClass, to.Type), from, null);
+      PrivateInvoke.InvokeNonPublicMethod (from.MixinDependencies, "Add", mixinDependency);
       return mixinDependency;
     }
 
