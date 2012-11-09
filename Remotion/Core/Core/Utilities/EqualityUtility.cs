@@ -122,12 +122,8 @@ namespace Remotion.Utilities
       int hc = 0;
       for (int i = 0; i < fields.Length; ++i)
       {
-        object value = fields[i];
-        if (value != null)
-        {
-          hc ^= value.GetHashCode ();
-          Rotate (ref hc);
-        }
+        hc ^= SafeGetHashCode (fields[i]);
+        Rotate (ref hc);
       }
       return hc;
     }

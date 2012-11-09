@@ -51,5 +51,22 @@ namespace Remotion.UnitTests.Utilities
       IEnumerable objects4 = new int[] { 1, 2, 17 };
       Assert.AreNotEqual (EqualityUtility.GetXorHashCode (objects1), EqualityUtility.GetXorHashCode (objects4));
     }
+
+    [Test]
+    public void GetRotatedHashCode_Nulls ()
+    {
+      var array1 = new object[] { 1, null, 2 };
+      var array2 = new object[] { 1, null, 2 };
+      var array3 = new object[] { 1, null, null, 2 };
+
+      Assert.That (EqualityUtility.GetRotatedHashCode (array1), Is.EqualTo (EqualityUtility.GetRotatedHashCode (array2)));
+      Assert.That (EqualityUtility.GetRotatedHashCode (array1), Is.Not.EqualTo (EqualityUtility.GetRotatedHashCode (array3)));
+
+      Assert.That (EqualityUtility.GetRotatedHashCode ((IEnumerable) array1), Is.EqualTo (EqualityUtility.GetRotatedHashCode ((IEnumerable) array2)));
+      Assert.That (EqualityUtility.GetRotatedHashCode ((IEnumerable) array1), Is.Not.EqualTo (EqualityUtility.GetRotatedHashCode ((IEnumerable) array3)));
+
+      Assert.That (EqualityUtility.GetRotatedHashCode (array1), Is.EqualTo (EqualityUtility.GetRotatedHashCode ((IEnumerable) array1)));
+      Assert.That (EqualityUtility.GetRotatedHashCode (array3), Is.EqualTo (EqualityUtility.GetRotatedHashCode ((IEnumerable) array3)));
+    }
   }
 }
