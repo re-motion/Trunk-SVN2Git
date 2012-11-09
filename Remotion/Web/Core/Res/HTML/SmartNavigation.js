@@ -196,25 +196,31 @@ function SmartFocus_SetFocus(element)
     {
       try
       {
-        if (!TypeUtility.IsDefined (window.document.activeElement))
+        if (window.document.activeElement =! null)
           return;
       }
       catch (e)
       {
       }
 
-      if (window.document.activeElement == !null)
-        return;
-
       element.focus();
 
-      if (ieVersion === 8)
+      if (ieVersion == 8)
         return;
 
       // special handling for IE7, requires extensive decoupling in some cases
       setTimeout(function ()
       {
-        if (window.document.activeElement ==! null || !element.is (':visible'))
+        try
+        {
+          if (window.document.activeElement =! null)
+            return;
+        }
+        catch (e1)
+        {
+        }
+
+        if (!element.is (':visible'))
           return;
 
         element.css("visibility", "hidden");
