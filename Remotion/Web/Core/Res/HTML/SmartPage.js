@@ -90,7 +90,7 @@ function SmartPage_Context(
   var _trackedIDs = new Array();
   var _synchronousPostBackCommands = new Array();
 
-  var _isMsIE = $.browser.msie;
+  var _isMsIE = !isNaN (BrowserUtility.GetIEVersion());
   var _cacheStateHasSubmitted = 'hasSubmitted';
   var _cacheStateHasLoaded = 'hasLoaded';
   
@@ -269,7 +269,7 @@ function SmartPage_Context(
   // Attaches the event handlers to the OnFocus and OnBlur events.
   function AttachFocusEventHandlers(currentElement)
   {
-    if ($.browser.msie)
+    if (_isMsIE)
     {
       //  Special work-around for not accessing window.document.activeElement during page load in IE, 
       //  since this throws an error if the page is inside an iframe
