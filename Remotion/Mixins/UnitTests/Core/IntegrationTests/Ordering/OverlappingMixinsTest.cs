@@ -42,7 +42,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       CheckOrderingException (
           () => BuildMixedInstance<C> (typeof (MixinB), typeof (MixinA)),
           typeof (C), 
-          typeof (MixinB), typeof (MixinA));
+          new[] { typeof (MixinB), typeof (MixinA) });
     }
 
     [Test]
@@ -70,13 +70,13 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       CheckOrderingException (
           () => BuildMixedInstance<C> (typeof (MixinB), typeof (MixinA), typeof (MixinC)),
           typeof (C),
-          typeof (MixinB), typeof (MixinA), typeof (MixinC));
+          new[] { typeof (MixinB), typeof (MixinA), typeof (MixinC) });
       CheckOrderingException (
           () => BuildMixedInstance<C> (
               b => b.AddMixinDependency<MixinA, MixinB> ().AddMixinDependency<MixinA, MixinC> (), 
               typeof (MixinB), typeof (MixinA), typeof (MixinC)),
           typeof (C),
-          typeof (MixinB), typeof (MixinC));
+          new[] { typeof (MixinB), typeof (MixinC) });
     }
 
     public class C

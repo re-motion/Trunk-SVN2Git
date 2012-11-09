@@ -15,33 +15,101 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using NUnit.Framework;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
+using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 {
   [TestFixture]
-  public class BigTestDomainScenarioTest
+  public class BigTestDomainScenarioTest : OrderingTestBase
   {
+    public static Type[] ExpectedBaseType7OrderedMixinTypesSmall
+    {
+      get
+      {
+        return new[]
+               {
+                   typeof (BT7Mixin0),
+                   typeof (BT7Mixin2),
+                   typeof (BT7Mixin3),
+                   typeof (BT7Mixin1),
+                   typeof (BT7Mixin10),
+                   typeof (BT7Mixin9),
+                   typeof (BT7Mixin5)
+               };
+      }
+    }
+
     [Test]
     public void MixinDefinitionsAreSortedCorrectlySmall ()
     {
-      TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
-      Assert.That (bt7.Mixins.Count, Is.EqualTo (7));
-      // group 1
-      Assert.That (bt7.Mixins[typeof (BT7Mixin0)].MixinIndex, Is.EqualTo (0));
+      var bt7 = BuildMixedInstanceWithActiveConfiguration<BaseType7>();
+      Assert.That (
+          bt7.One (5),
+          Is.EqualTo (
+              "BT7Mixin0.One(5)-BT7Mixin2.One(5)"
+              + "-BT7Mixin3.One(5)-BT7Mixin1.BT7Mixin1Specific"
+              + "-BaseType7.Three"
+              + "-BT7Mixin2.Three"
+              + "-BaseType7.Three-BT7Mixin1.One(5)-BaseType7.One(5)"
+              + "-BT7Mixin3.One(5)-BT7Mixin1.BT7Mixin1Specific"
+              + "-BaseType7.Three"
+              + "-BT7Mixin2.Three"
+              + "-BaseType7.Three-BT7Mixin1.One(5)-BaseType7.One(5)"
+              + "-BaseType7.Two-BT7Mixin2.Two"));
 
-      Assert.That (bt7.Mixins[typeof (BT7Mixin2)].MixinIndex, Is.EqualTo (1));
-      Assert.That (bt7.Mixins[typeof (BT7Mixin3)].MixinIndex, Is.EqualTo (2));
-      Assert.That (bt7.Mixins[typeof (BT7Mixin1)].MixinIndex, Is.EqualTo (3));
+      Assert.That (
+          bt7.One ("foo"),
+          Is.EqualTo (
+              "BT7Mixin0.One(foo)-BT7Mixin2.One(foo)"
+              + "-BT7Mixin3.One(foo)-BT7Mixin1.BT7Mixin1Specific"
+              + "-BaseType7.Three"
+              + "-BT7Mixin2.Three"
+              + "-BaseType7.Three-BT7Mixin1.One(foo)-BaseType7.One(foo)"
+              + "-BT7Mixin3.One(foo)-BT7Mixin1.BT7Mixin1Specific"
+              + "-BaseType7.Three"
+              + "-BT7Mixin2.Three"
+              + "-BaseType7.Three-BT7Mixin1.One(foo)-BaseType7.One(foo)"
+              + "-BaseType7.Two-BT7Mixin2.Two"));
 
-      // group 2
-      Assert.That (bt7.Mixins[typeof (BT7Mixin10)].MixinIndex, Is.EqualTo (4));
-      Assert.That (bt7.Mixins[typeof (BT7Mixin9)].MixinIndex, Is.EqualTo (5));
+      Assert.That (bt7.Two (), Is.EqualTo ("BT7Mixin2.Two"));
+      Assert.That (bt7.Three (), Is.EqualTo ("BT7Mixin2.Three-BaseType7.Three"));
+      Assert.That (bt7.Four (), Is.EqualTo ("BT7Mixin2.Four-BaseType7.Four-BT7Mixin9.Five-BaseType7.Five-BaseType7.NotOverridden"));
+      Assert.That (bt7.Five (), Is.EqualTo ("BT7Mixin9.Five-BaseType7.Five"));
 
-      // group 3
-      Assert.That (bt7.Mixins[typeof (BT7Mixin5)].MixinIndex, Is.EqualTo (6));
+      TargetClassDefinition targetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
+      Assert.That (targetClassDefinition.Mixins.Count, Is.EqualTo (7));
+
+      // This part is fixed, independent of the algorithm:
+
+      // Group 1 with internal ordering
+      CheckRelativeMixinOrdering (
+          targetClassDefinition,
+          typeof (BT7Mixin0),
+          typeof (BT7Mixin2),
+          typeof (BT7Mixin3),
+          typeof (BT7Mixin1));
+
+      // Group 2 with internal ordering
+      CheckRelativeMixinOrdering (
+          targetClassDefinition,
+          typeof (BT7Mixin10),
+          typeof (BT7Mixin9));
+
+      // Group 3 consists of just BT7Mixin5
+
+      // The three groups must be ordered lexicographically
+      CheckRelativeMixinOrdering (
+          targetClassDefinition,
+          typeof (BT7Mixin0),
+          typeof (BT7Mixin10),
+          typeof (BT7Mixin5));
+
+      // This part depends on the algorithm:
+      Assert.That (targetClassDefinition.Mixins.Select (m => m.Type), Is.EqualTo (ExpectedBaseType7OrderedMixinTypesSmall));
     }
 
     [Test]
@@ -111,11 +179,6 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     }
 
     [Test]
-    [ExpectedException (typeof (ConfigurationException), ExpectedMessage =
-        "The mixins applied to target class '.*BaseType7' cannot be ordered. The following mixins "
-        + "require a clear base call ordering, but do not provide enough dependency information:\r\n"
-        + "(('.*BT7Mixin0'(,\r\n)?)|('.*BT7Mixin4'(,\r\n)?)|('.*BT7Mixin6'(,\r\n)?)|('.*BT7Mixin7'(,\r\n)?)){4}\\.",
-        MatchType = MessageMatch.Regex)]
     public void ThrowsIfConnectedMixinsCannotBeSorted ()
     {
       using (
@@ -126,7 +189,10 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
               .AddMixins (typeof (BT7Mixin0), typeof (BT7Mixin4), typeof (BT7Mixin6), typeof (BT7Mixin7), typeof (BT7Mixin2), typeof (BT7Mixin5))
               .EnterScope ())
       {
-        DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
+        CheckOrderingException (
+            () => DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7)),
+            typeof (BaseType7),
+            new[] { typeof (BT7Mixin0), typeof (BT7Mixin4), typeof (BT7Mixin6), typeof (BT7Mixin7) });
       }
     }
 
@@ -140,26 +206,91 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
           .EnsureMixin (typeof (BT7Mixin9)).WithDependency<IBT7Mixin8> ()
           .EnterScope ())
       {
-        TargetClassDefinition bt7 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
-        Assert.That (bt7.Mixins.Count, Is.EqualTo (11));
-        // group 1
-        Assert.That (bt7.Mixins[typeof (BT7Mixin0)].MixinIndex, Is.EqualTo (0)); // u
-        Assert.That (bt7.Mixins[typeof (BT7Mixin7)].MixinIndex, Is.EqualTo (1)); // u
-        Assert.That (bt7.Mixins[typeof (BT7Mixin4)].MixinIndex, Is.EqualTo (2)); // u
-        Assert.That (bt7.Mixins[typeof (BT7Mixin6)].MixinIndex, Is.EqualTo (3)); // u
+        var bt7 = BuildMixedInstanceWithActiveConfiguration<BaseType7>();
+        Assert.That (
+            bt7.One (7),
+            Is.EqualTo (
+                "BT7Mixin0.One(7)-BT7Mixin4.One(7)-BT7Mixin6.One(7)-BT7Mixin2.One(7)"
+                + "-BT7Mixin3.One(7)-BT7Mixin1.BT7Mixin1Specific"
+                + "-BaseType7.Three"
+                + "-BT7Mixin2.Three-BaseType7.Three"
+                + "-BT7Mixin1.One(7)-BaseType7.One(7)"
+                + "-BT7Mixin3.One(7)-BT7Mixin1.BT7Mixin1Specific"
+                + "-BaseType7.Three"
+                + "-BT7Mixin2.Three-BaseType7.Three"
+                + "-BT7Mixin1.One(7)-BaseType7.One(7)"
+                + "-BaseType7.Two"
+                + "-BT7Mixin2.Two"));
 
-        Assert.That (bt7.Mixins[typeof (BT7Mixin2)].MixinIndex, Is.EqualTo (4));
-        Assert.That (bt7.Mixins[typeof (BT7Mixin3)].MixinIndex, Is.EqualTo (5));
-        Assert.That (bt7.Mixins[typeof (BT7Mixin1)].MixinIndex, Is.EqualTo (6));
+        Assert.That (
+            bt7.One ("bar"),
+            Is.EqualTo (
+                "BT7Mixin0.One(bar)-BT7Mixin4.One(bar)-BT7Mixin6.One(bar)-BT7Mixin2.One(bar)"
+                + "-BT7Mixin3.One(bar)-BT7Mixin1.BT7Mixin1Specific"
+                + "-BaseType7.Three"
+                + "-BT7Mixin2.Three-BaseType7.Three"
+                + "-BT7Mixin1.One(bar)-BaseType7.One(bar)"
+                + "-BT7Mixin3.One(bar)-BT7Mixin1.BT7Mixin1Specific"
+                + "-BaseType7.Three"
+                + "-BT7Mixin2.Three-BaseType7.Three"
+                + "-BT7Mixin1.One(bar)-BaseType7.One(bar)"
+                + "-BaseType7.Two"
+                + "-BT7Mixin2.Two"));
 
-        // group 2
-        Assert.That (bt7.Mixins[typeof (BT7Mixin10)].MixinIndex, Is.EqualTo (7));
-        Assert.That (bt7.Mixins[typeof (BT7Mixin9)].MixinIndex, Is.EqualTo (8)); // u
-        Assert.That (bt7.Mixins[typeof (BT7Mixin8)].MixinIndex, Is.EqualTo (9)); // u
+        Assert.That (bt7.Two (), Is.EqualTo ("BT7Mixin2.Two"));
+        Assert.That (bt7.Three (), Is.EqualTo ("BT7Mixin2.Three-BaseType7.Three"));
+        Assert.That (bt7.Four (), Is.EqualTo ("BT7Mixin2.Four-BaseType7.Four-BT7Mixin9.Five-BT7Mixin8.Five-BaseType7.Five-BaseType7.NotOverridden"));
+        Assert.That (bt7.Five (), Is.EqualTo ("BT7Mixin9.Five-BT7Mixin8.Five-BaseType7.Five"));
 
-        // group 3
-        Assert.That (bt7.Mixins[typeof (BT7Mixin5)].MixinIndex, Is.EqualTo (10));
+        var targetClassDefinition = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7));
+        Assert.That (targetClassDefinition.Mixins.Count, Is.EqualTo (11));
+
+        // This part is fixed, independent of the algorithm:
+
+        // Group 1 with internal ordering
+        CheckRelativeMixinOrdering (
+            targetClassDefinition,
+            typeof (BT7Mixin0),
+            typeof (BT7Mixin7),
+            typeof (BT7Mixin4),
+            typeof (BT7Mixin6),
+            typeof (BT7Mixin2),
+            typeof (BT7Mixin3),
+            typeof (BT7Mixin1));
+
+        // Group 2 with internal ordering
+        CheckRelativeMixinOrdering (
+            targetClassDefinition,
+            typeof (BT7Mixin10),
+            typeof (BT7Mixin9),
+            typeof (BT7Mixin8));
+
+        // Group 3 consists of just BT7Mixin5
+
+        // This part depends on the algorithm:
+        var expectedBaseType7OrderedMixinTypesGrand =
+            new[]
+            {
+                typeof (BT7Mixin0), 
+                typeof (BT7Mixin7),
+                typeof (BT7Mixin4), 
+                typeof (BT7Mixin6),
+                typeof (BT7Mixin2),
+                typeof (BT7Mixin3),
+                typeof (BT7Mixin1),
+                typeof (BT7Mixin10), 
+                typeof (BT7Mixin9), 
+                typeof (BT7Mixin8), 
+                typeof (BT7Mixin5)
+            };
+        Assert.That (targetClassDefinition.Mixins.Select (m => m.Type), Is.EqualTo (expectedBaseType7OrderedMixinTypesGrand));
       }
+    }
+
+    private static void CheckRelativeMixinOrdering (TargetClassDefinition targetClassDefinition, params Type[] mixinTypes)
+    {
+      var group = targetClassDefinition.Mixins.Where (m => mixinTypes.Contains (m.Type)).OrderBy (m => m.MixinIndex);
+      Assert.That (group.Select (m => m.Type), Is.EqualTo (mixinTypes));
     }
   }
 }

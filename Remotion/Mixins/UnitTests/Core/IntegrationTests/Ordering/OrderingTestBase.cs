@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using Remotion.FunctionalProgramming;
@@ -27,10 +28,11 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 {
   public class OrderingTestBase
   {
-    protected static void CheckOrderedMixinTypes (object instance, params Type[] expected)
+    protected static void CheckOrderedMixinTypes (object instance, params Type[] expectedMixinTypes)
     {
-      var mixinTypes = MixinTypeUtility.GetMixinTypesExact (instance.GetType());
-      Assert.That (mixinTypes, Is.EqualTo (expected));
+      var type = instance.GetType();
+      var mixinTypes = MixinTypeUtility.GetMixinTypesExact (type);
+      Assert.That (mixinTypes, Is.EqualTo (expectedMixinTypes));
     }
 
     protected T BuildMixedInstance<T> (params Type[] mixins)
@@ -60,8 +62,14 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       }
     }
 
-    protected void CheckOrderingException (ActualValueDelegate action, Type targetClass, params Type[] conflictingMixins)
+    protected T BuildMixedInstanceWithActiveConfiguration<T> ()
     {
+      return ObjectFactory.Create<T> ();
+    }
+
+    protected void CheckOrderingException (ActualValueDelegate action, Type targetClass, params Type[][] conflictingMixinGroups)
+    {
+      var conflictingMixins = conflictingMixinGroups.SelectMany (ts => ts).Distinct();
       var expectedMessage = string.Format (
           "The mixins applied to target class '{0}' cannot be ordered. The following mixins require a clear base call ordering, but do not provide "
           + "enough dependency information:{2}{1}.{2}"
@@ -86,6 +94,12 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     private static string BuildMixinListForExceptionMessage (IEnumerable<Type> mixinTypes)
     {
       return SeparatedStringBuilder.Build ("," + Environment.NewLine, mixinTypes, m => "'" + m.FullName + "'");
+    }
+
+    private static string BuildMixinListForExceptionMessage (IEnumerable<Type[]> mixinTypeGroups)
+    {
+      var groupStrings = mixinTypeGroups.Select (g => SeparatedStringBuilder.Build (", ", g, m => "'" + m.FullName + "'"));
+      return SeparatedStringBuilder.Build ("," + Environment.NewLine, groupStrings, groupString => "{" + groupString + "}");
     }
   }
 }

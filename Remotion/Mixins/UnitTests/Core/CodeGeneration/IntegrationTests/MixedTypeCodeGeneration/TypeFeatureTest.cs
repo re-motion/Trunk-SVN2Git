@@ -24,6 +24,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTypeCodeGeneration.TestDomain;
 using Remotion.Mixins.UnitTests.Core.CodeGeneration.TestDomain;
+using Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Reflection;
 using Rhino.Mocks;
@@ -164,15 +165,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType7));
       var attributes = (ConcreteMixedTypeAttribute[]) generatedType.GetCustomAttributes (typeof (ConcreteMixedTypeAttribute), false);
 
-      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
-      Assert.That (attributes[0].OrderedMixinTypes, Is.EqualTo (new[] { 
-          typeof (BT7Mixin0), 
-          typeof (BT7Mixin2), 
-          typeof (BT7Mixin3), 
-          typeof (BT7Mixin1), 
-          typeof (BT7Mixin10), 
-          typeof (BT7Mixin9), 
-          typeof (BT7Mixin5) }));
+      Assert.That (attributes[0].OrderedMixinTypes, Is.EqualTo (BigTestDomainScenarioTest.ExpectedBaseType7OrderedMixinTypesSmall));
     }
 
     [Test]

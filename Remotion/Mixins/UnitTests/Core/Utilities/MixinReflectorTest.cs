@@ -16,12 +16,11 @@
 // 
 using System;
 using System.Reflection;
-using Castle.DynamicProxy;
 using NUnit.Framework;
+using Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
-using Remotion.Reflection.CodeGeneration;
 
 namespace Remotion.Mixins.UnitTests.Core.Utilities
 {
@@ -95,16 +94,10 @@ namespace Remotion.Mixins.UnitTests.Core.Utilities
     public void GetOrderedMixinTypes_OrderedMixinTypes ()
     {
       var concreteMixedType = MixinTypeUtility.GetConcreteMixedType (typeof (BaseType7));
-      
-      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
-      Assert.That (MixinReflector.GetOrderedMixinTypesFromConcreteType (concreteMixedType), Is.EqualTo (new[] { 
-          typeof (BT7Mixin0), 
-          typeof (BT7Mixin2), 
-          typeof (BT7Mixin3), 
-          typeof (BT7Mixin1), 
-          typeof (BT7Mixin10), 
-          typeof (BT7Mixin9), 
-          typeof (BT7Mixin5) }));
+
+      Assert.That (
+          MixinReflector.GetOrderedMixinTypesFromConcreteType (concreteMixedType),
+          Is.EqualTo (BigTestDomainScenarioTest.ExpectedBaseType7OrderedMixinTypesSmall));
     }
 
     [Test]

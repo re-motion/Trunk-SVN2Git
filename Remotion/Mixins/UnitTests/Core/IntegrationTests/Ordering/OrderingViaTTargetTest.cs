@@ -28,7 +28,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       CheckOrderingException (
           () => BuildMixedInstance<C> (typeof (MixinA), typeof (MixinB)), 
           typeof (C), 
-          typeof (MixinA), typeof (MixinB));
+          new[] { typeof (MixinA), typeof (MixinB) });
     }
 
     public class C

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using Castle.DynamicProxy;
 using NUnit.Framework;
+using Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.Mixins.Utilities;
 using Remotion.Reflection;
@@ -434,16 +435,9 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void GetMixinTypesExact_OnMixedTypes ()
     {
-      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
-
-      Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType7)), Is.EqualTo (new[] { 
-          typeof (BT7Mixin0), 
-          typeof (BT7Mixin2), 
-          typeof (BT7Mixin3), 
-          typeof (BT7Mixin1), 
-          typeof (BT7Mixin10), 
-          typeof (BT7Mixin9), 
-          typeof (BT7Mixin5) }));
+      Assert.That (
+          MixinTypeUtility.GetMixinTypesExact (typeof (BaseType7)), 
+          Is.EqualTo (BigTestDomainScenarioTest.ExpectedBaseType7OrderedMixinTypesSmall));
 
       Assert.That (MixinTypeUtility.GetMixinTypesExact (typeof (BaseType3)), Has.Member(typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
@@ -464,16 +458,9 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void GetMixinTypesExact_OnGeneratedTypes ()
     {
-      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
-
-      Assert.That (MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType7))), Is.EqualTo (new[] { 
-          typeof (BT7Mixin0), 
-          typeof (BT7Mixin2), 
-          typeof (BT7Mixin3), 
-          typeof (BT7Mixin1), 
-          typeof (BT7Mixin10), 
-          typeof (BT7Mixin9), 
-          typeof (BT7Mixin5) }));
+      Assert.That (
+          MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType7))),
+          Is.EqualTo (BigTestDomainScenarioTest.ExpectedBaseType7OrderedMixinTypesSmall));
 
       Assert.That (MixinTypeUtility.GetMixinTypesExact (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType3))), Has.Member(typeof (BT3Mixin3<BaseType3, IBaseType33>)));
     }
