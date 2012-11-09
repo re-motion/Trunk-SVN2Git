@@ -188,15 +188,20 @@ function SmartFocus_SetFocus(element)
     element.focus();
 
     var ieVersion = BrowserUtility.GetIEVersion();
-    if (isNaN (ieVersion) || ieVersion > 8)
+    var isAffectedIEVersion = ieVersion == 7 || ieVersion == 8;
+    if (!isAffectedIEVersion)
+      return;
+
+    if (element.is('a') || element.is('button') || element.is('input[type=submit]') || element.is('input[type=button]'))
       return;
 
     // special handling for IE7 and IE8
+    // Note: for autopostbacks on an input field that results in a new window being opened, this will cause the parent window to jump back into front.
     setTimeout(function ()
     {
       try
       {
-        if (window.document.activeElement =! null)
+        if (window.document.activeElement = ! null)
           return;
       }
       catch (e)
@@ -213,14 +218,14 @@ function SmartFocus_SetFocus(element)
       {
         try
         {
-          if (window.document.activeElement =! null)
+          if (window.document.activeElement = ! null)
             return;
         }
         catch (e1)
         {
         }
 
-        if (!element.is (':visible'))
+        if (!element.is(':visible'))
           return;
 
         element.css("visibility", "hidden");
