@@ -30,6 +30,18 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     {
       get
       {
+        // TODO 5159
+        //return new[]
+        //       {
+        //           typeof (BT7Mixin0),
+        //           typeof (BT7Mixin10),
+        //           typeof (BT7Mixin5),
+        //           typeof (BT7Mixin2),
+        //           typeof (BT7Mixin9),
+        //           typeof (BT7Mixin3),
+        //           typeof (BT7Mixin1)
+        //       };
+
         return new[]
                {
                    typeof (BT7Mixin0),
@@ -268,6 +280,22 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
         // Group 3 consists of just BT7Mixin5
 
         // This part depends on the algorithm:
+        // TODO 5159
+        //var expectedBaseType7OrderedMixinTypesGrand =
+        //    new[]
+        //    {
+        //        typeof (BT7Mixin0), 
+        //        typeof (BT7Mixin10), 
+        //        typeof (BT7Mixin5), 
+        //        typeof (BT7Mixin7),
+        //        typeof (BT7Mixin9), 
+        //        typeof (BT7Mixin4), 
+        //        typeof (BT7Mixin8), 
+        //        typeof (BT7Mixin6),
+        //        typeof (BT7Mixin2),
+        //        typeof (BT7Mixin3),
+        //        typeof (BT7Mixin1)
+        //    };
         var expectedBaseType7OrderedMixinTypesGrand =
             new[]
             {

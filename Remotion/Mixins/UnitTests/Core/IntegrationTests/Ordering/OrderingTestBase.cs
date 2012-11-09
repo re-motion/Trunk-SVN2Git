@@ -75,7 +75,8 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
           + "enough dependency information:{2}{1}.{2}"
           + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the "
           + "mixin configuration accordingly.", 
-          targetClass.FullName, 
+          targetClass.FullName,
+        // TODO 5159: BuildMixinListForExceptionMessage (conflictingMixinGroups),
           BuildMixinListForExceptionMessage (conflictingMixins),
           Environment.NewLine);
       Assert.That (action, Throws.TypeOf<ConfigurationException>().With.Message.EqualTo (expectedMessage));
