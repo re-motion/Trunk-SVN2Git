@@ -20,67 +20,46 @@ function StyleUtility()
 
 StyleUtility.CreateBorderSpans = function (selector)
 {
-}
+};
 
 StyleUtility.AddBrowserSwitch = function ()
 {
   var browser;
   if ($.browser.msie)
   {
-    var majorVersion;
-    if (TypeUtility.IsDefined(window.document.documentMode))
-      majorVersion = parseInt(window.document.documentMode);
-    else
-      majorVersion = parseInt($.browser.version);
-
+    var majorVersion = BrowserUtility.GetIEVersion();
     if (majorVersion < 9)
-      browser = 'msie' + majorVersion
+      browser = 'msie' + majorVersion;
     else
       browser = 'msie';
   }
   else if ($.browser.mozilla)
-  {
     browser = 'mozilla';
-  }
   else if ($.browser.webkit)
-  {
     browser = 'webkit';
-  }
   else if ($.browser.opera)
-  {
     browser = 'opera';
-  }
   else
-  {
     browser = 'browserUnknown';
-  }
 
   StyleUtility.AddPlatformSwitch();
 
-  if (!$('body').hasClass(browser))
-    $('body').addClass(browser);
-}
+  if (!$ ('body').hasClass (browser))
+    $ ('body').addClass (browser);
+};
 
 StyleUtility.AddPlatformSwitch = function ()
 {
   var platform;
-  if (navigator.appVersion.indexOf("Win") != -1)
-  {
+  if (navigator.appVersion.indexOf ("Win") != -1)
     platform = "win";
-  }
-  else if (navigator.appVersion.indexOf("Mac") != -1)
-  {
+  else if (navigator.appVersion.indexOf ("Mac") != -1)
     platform = "mac";
-  }
-  else if (navigator.appVersion.indexOf("X11") != -1)
-  {
+  else if (navigator.appVersion.indexOf ("X11") != -1)
     platform = "x11";
-  }
   else
-  {
-    platform = "platformUnknown"; 
-  }
+    platform = "platformUnknown";
 
-  if (!$('body').hasClass(platform))
-    $('body').addClass(platform);
-}
+  if (!$ ('body').hasClass (platform))
+    $ ('body').addClass (platform);
+};
