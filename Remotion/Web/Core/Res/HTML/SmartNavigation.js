@@ -134,7 +134,6 @@ function SmartFocus_Backup (activeElement)
   {
     data += activeElement.id;
   }
-  
   return data;
 }
 
@@ -148,17 +147,17 @@ function SmartFocus_Restore (data)
     {
       var isEnabledFilter = function ()
       {
-        var _this = $(this);
-        if ( _this.is('a') && _this.is('a[href]') )
+        var _this = $ (this);
+        if (_this.is ('a') && _this.is ('a[href]'))
           return true;
-        if ( !_this.is('a') && _this.is(':enabled') && !_this.is('input[type=hidden]') )
+        if (!_this.is ('a') && _this.is (':enabled') && !_this.is ('input[type=hidden]'))
           return true;
         return false;
-      }
+      };
 
       if (activeElement.is(isEnabledFilter))
       {
-        setTimeout(function () { activeElement.focus(); }, 0);
+        SmartFocus_SetFocus (activeElement);
       }
       else
       {
@@ -167,17 +166,61 @@ function SmartFocus_Restore (data)
         var fallBackElement = focusableElements.slice(elementIndex).filter(isEnabledFilter).first();
         if (fallBackElement.length > 0)
         {
-          setTimeout(function () { fallBackElement.focus(); }, 0);
+          SmartFocus_SetFocus (fallBackElement);
         }
         else
         {
           fallBackElement = focusableElements.slice(0, elementIndex).filter(isEnabledFilter).last();
           if (fallBackElement)
           {
-            setTimeout(function () { fallBackElement.focus(); }, 0);
+            SmartFocus_SetFocus (fallBackElement);
           }
         }
       }
     }
   }
+}
+
+function SmartFocus_SetFocus(element)
+{
+  setTimeout(function ()
+  {
+    element.focus();
+
+    var ieVersion = BrowserUtility.GetIEVersion();
+    if (isNaN (ieVersion) || ieVersion > 8)
+      return;
+
+    // special handling for IE7 and IE8
+    setTimeout(function ()
+    {
+      try
+      {
+        if (!TypeUtility.IsDefined (window.document.activeElement))
+          return;
+      }
+      catch (e)
+      {
+      }
+
+      if (window.document.activeElement == !null)
+        return;
+
+      element.focus();
+
+      if (ieVersion === 8)
+        return;
+
+      // special handling for IE7, requires extensive decoupling in some cases
+      setTimeout(function ()
+      {
+        if (window.document.activeElement ==! null || !element.is (':visible'))
+          return;
+
+        element.css("visibility", "hidden");
+        element.css("visibility", "");
+        element.focus();
+      }, 1);
+    }, 1);
+  }, 0);
 }

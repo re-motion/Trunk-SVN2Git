@@ -14,34 +14,42 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-function TypeUtility() {
+function TypeUtility()
+{
 }
 
-TypeUtility.IsObject = function(value) {
+TypeUtility.IsObject = function (value)
+{
     return typeof (value) == 'object';
 };
 
-TypeUtility.IsString = function(value) {
+TypeUtility.IsString = function (value)
+{
     return typeof (value) == 'string';
 };
 
-TypeUtility.IsNumber = function(value) {
+TypeUtility.IsNumber = function (value)
+{
     return typeof (value) == 'number';
 };
 
-TypeUtility.IsInteger = function (value) {
+TypeUtility.IsInteger = function (value)
+{
   return TypeUtility.IsNumber (value) && value %1 === 0;
 };
 
-TypeUtility.IsBoolean = function(value) {
+TypeUtility.IsBoolean = function (value)
+{
     return typeof (value) == 'boolean';
 };
 
-TypeUtility.IsFunction = function(value) {
+TypeUtility.IsFunction = function (value)
+{
     return typeof (value) == 'function';
 };
 
-TypeUtility.IsUndefined = function(value) {
+TypeUtility.IsUndefined = function (value)
+{
     return typeof (value) == 'undefined';
 };
 
@@ -50,31 +58,37 @@ TypeUtility.IsDefined = function (value)
   return !TypeUtility.IsUndefined(value);
 };
 
-TypeUtility.IsNull = function(value) {
+TypeUtility.IsNull = function (value)
+{
   return TypeUtility.IsDefined(value) && value == null;
 };
 
 
-function StringUtility() {
+function StringUtility()
+{
 }
 
-StringUtility.IsNullOrEmpty = function(value) {
+StringUtility.IsNullOrEmpty = function (value)
+{
     ArgumentUtility.CheckTypeIsString('value', value);
     return TypeUtility.IsNull(value) || value.length == 0;
 };
 
 
-function ArgumentUtility() {
+function ArgumentUtility()
+{
 }
 
 // Checks that value is not null.
-ArgumentUtility.CheckNotNull = function(name, value) {
+ArgumentUtility.CheckNotNull = function (name, value)
+{
     if (TypeUtility.IsNull(value))
         throw ('Error: The value of parameter "' + name + '" is null.');
 };
 
 // Checks that value is not null and of type string.
-ArgumentUtility.CheckTypeIsString = function(name, value) {
+ArgumentUtility.CheckTypeIsString = function (name, value)
+{
     if (TypeUtility.IsNull(value))
         return;
     if (!TypeUtility.IsString(value))
@@ -82,13 +96,15 @@ ArgumentUtility.CheckTypeIsString = function(name, value) {
 };
 
 // Checks that value is not null and of type string.
-ArgumentUtility.CheckNotNullAndTypeIsString = function(name, value) {
+ArgumentUtility.CheckNotNullAndTypeIsString = function (name, value)
+{
     ArgumentUtility.CheckNotNull(name, value);
     ArgumentUtility.CheckTypeIsString(name, value);
 };
 
 // Checks that value is not null and of type string.
-ArgumentUtility.CheckTypeIsObject = function(name, value) {
+ArgumentUtility.CheckTypeIsObject = function (name, value)
+{
     if (TypeUtility.IsNull(value))
         return;
     if (!TypeUtility.IsObject(value))
@@ -96,13 +112,15 @@ ArgumentUtility.CheckTypeIsObject = function(name, value) {
 };
 
 // Checks that value is not null and of type string.
-ArgumentUtility.CheckNotNullAndTypeIsObject = function(name, value) {
+ArgumentUtility.CheckNotNullAndTypeIsObject = function (name, value)
+{
     ArgumentUtility.CheckNotNull(name, value);
     ArgumentUtility.CheckTypeIsObject(name, value);
 };
 
 // Checks that value is not null and of type number.
-ArgumentUtility.CheckTypeIsNumber = function(name, value) {
+ArgumentUtility.CheckTypeIsNumber = function (name, value)
+{
     if (TypeUtility.IsNull(value))
         return;
     if (!TypeUtility.IsNumber(value))
@@ -110,13 +128,15 @@ ArgumentUtility.CheckTypeIsNumber = function(name, value) {
 };
 
 // Checks that value is not null and of type number.
-ArgumentUtility.CheckNotNullAndTypeIsNumber = function(name, value) {
+ArgumentUtility.CheckNotNullAndTypeIsNumber = function (name, value)
+{
     ArgumentUtility.CheckNotNull(name, value);
     ArgumentUtility.CheckTypeIsNumber(name, value);
 };
 
 // Checks that value is not null and of type boolean.
-ArgumentUtility.CheckTypeIsBoolean = function(name, value) {
+ArgumentUtility.CheckTypeIsBoolean = function (name, value)
+{
     if (TypeUtility.IsNull(value))
         return;
     if (!TypeUtility.IsBoolean(value))
@@ -124,13 +144,15 @@ ArgumentUtility.CheckTypeIsBoolean = function(name, value) {
 };
 
 // Checks that value is not null and of type boolean.
-ArgumentUtility.CheckNotNullAndTypeIsBoolean = function(name, value) {
+ArgumentUtility.CheckNotNullAndTypeIsBoolean = function (name, value)
+{
     ArgumentUtility.CheckNotNull(name, value);
     ArgumentUtility.CheckTypeIsBoolean(name, value);
 };
 
 // Checks that value is not null and of type function.
-ArgumentUtility.CheckTypeIsFunction = function(name, value) {
+ArgumentUtility.CheckTypeIsFunction = function (name, value)
+{
     if (TypeUtility.IsNull(value))
         return;
     if (!TypeUtility.IsFunction(value))
@@ -138,9 +160,32 @@ ArgumentUtility.CheckTypeIsFunction = function(name, value) {
 };
 
 // Checks that value is not null and of type function.
-ArgumentUtility.CheckNotNullAndTypeIsFunction = function(name, value) {
+ArgumentUtility.CheckNotNullAndTypeIsFunction = function (name, value)
+{
     ArgumentUtility.CheckNotNull(name, value);
     ArgumentUtility.CheckTypeIsFunction(name, value);
+};
+
+function BrowserUtility ()
+{
+}
+
+BrowserUtility.GetIEVersion = function ()
+{
+  if ($.browser.msie)
+  {
+    var majorVersion;
+    if (TypeUtility.IsDefined (window.document.documentMode))
+      majorVersion = parseInt (window.document.documentMode);
+    else
+      majorVersion = parseInt ($.browser.version);
+
+    return majorVersion;
+  }
+  else
+  {
+    return NaN;
+  }
 };
 
 function PageUtility()
@@ -154,10 +199,10 @@ function PageUtility()
     $(window).bind('resize', function() { PageUtility.Instance.PrepareExecuteResizeHandlers(); });
   });
 
-  this.RegisterResizeHandler = function(selector, handler)
+  this.RegisterResizeHandler = function (selector, handler)
   {
-    ArgumentUtility.CheckNotNullAndTypeIsString('selector', selector);
-    ArgumentUtility.CheckNotNull('handler', handler);
+    ArgumentUtility.CheckNotNullAndTypeIsString ('selector', selector);
+    ArgumentUtility.CheckNotNull ('handler', handler);
 
     for (var i = 0; i < _resizeHandlers.length; i++)
     {
@@ -168,32 +213,32 @@ function PageUtility()
         return;
       }
     }
-    _resizeHandlers[_resizeHandlers.length] = new PageUtility_ResizeHandlerItem(selector, handler);
-  }
+    _resizeHandlers[_resizeHandlers.length] = new PageUtility_ResizeHandlerItem (selector, handler);
+  };
 
-  this.PrepareExecuteResizeHandlers = function()
+  this.PrepareExecuteResizeHandlers = function ()
   {
     if (_resizeTimeoutID != null)
-      window.clearTimeout(_resizeTimeoutID);
+      window.clearTimeout (_resizeTimeoutID);
 
-    _resizeTimeoutID = window.setTimeout(function() { PageUtility.Instance.ExecuteResizeHandlers(); }, _resizeTimeoutInMilliSeconds);
-  }
+    _resizeTimeoutID = window.setTimeout (function () { PageUtility.Instance.ExecuteResizeHandlers(); }, _resizeTimeoutInMilliSeconds);
+  };
 
-  this.ExecuteResizeHandlers = function()
+  this.ExecuteResizeHandlers = function ()
   {
     var existingResizeHandlers = new Array();
     for (var i = 0; i < _resizeHandlers.length; i++)
     {
       var item = _resizeHandlers[i];
-      var element = $(item.Selector);
+      var element = $ (item.Selector);
       if (element != null && element.length > 0)
       {
-        item.Handler(element);
+        item.Handler (element);
         existingResizeHandlers[existingResizeHandlers.length] = item;
       }
     }
     _resizeHandlers = existingResizeHandlers;
-  }
+  };
 }
 
 function PageUtility_ResizeHandlerItem(selector, handler)
