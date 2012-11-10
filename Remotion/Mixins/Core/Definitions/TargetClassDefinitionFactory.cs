@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.Validation;
@@ -32,6 +34,12 @@ namespace Remotion.Mixins.Definitions
   public static class TargetClassDefinitionFactory
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LogManager));
+
+    [Obsolete ("Use CreateAndValidate (...) instead. (Version 1.13.174)", true)]
+    public static TargetClassDefinition CreateTargetClassDefinition (ClassContext classContext)
+    {
+      return CreateAndValidate (classContext);
+    }
 
     public static TargetClassDefinition CreateAndValidate (ClassContext context)
     {
