@@ -222,8 +222,8 @@
       <_assemblyInfos Include="$(SolutionDirectory)%(AllPackages.AssemblyInfoFile)"/>
     </ItemGroup>
 
-    <Error Text="The version ($(Version) is not valid. It must be in the format 'Major.Minor.Build.Revision'."
-           Condition="$([System.Version]::Parse ($(Version))) == $(Version)"/>
+    <Error Text="The version $(Version) is not valid. It must be in the format 'Major.Minor.Build.Revision'."
+           Condition="$([System.Version]::Parse ($(Version))) != $(Version)"/>
 
     <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="%(_assemblyInfos.Identity)"
                                                   AssemblyInformationalVersion="$(Version)"
