@@ -133,7 +133,7 @@
     <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
 
     <PropertyGroup>
-      <_regexVersionPatten>(\d+\.\d+\.\d+\.\d+)</_regexVersionPatten>
+      <_regexVersionPatten>v(?&lt;version&gt;\d+\.\d+\.\d+(\.\d+)?)\.html</_regexVersionPatten>
     </PropertyGroup>
 
     <ItemGroup>
@@ -146,7 +146,7 @@
 
       <_futureReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)"/>
       <_futureReleaseNoteFiles Include="@(_releaseNoteFiles)" 
-                               Condition="$([System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse ( $([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Value) )) ) ) &lt; 0"/>
+                               Condition="$([System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse ( $([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Groups[&quot;version&quot;].Value) )) ) ) &lt; 0"/>
 
       <_releaseNoteFiles Remove="@(_emptyReleaseNoteFiles)" />
       <_releaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
