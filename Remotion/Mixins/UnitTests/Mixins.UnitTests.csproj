@@ -214,6 +214,8 @@
     <Compile Include="Core\IgnoresClassAttributeTest.cs" />
     <Compile Include="Core\IntegrationTests\AssemblyLevelMixinDependencies\AssemblyLevelMixinDependenciesTestBase.cs" />
     <Compile Include="Core\IntegrationTests\Ordering\BigTestDomainScenarioTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OverlappingMixinsInMultipleMethodsTest.cs" />
+    <Compile Include="Core\IntegrationTests\Ordering\OverlappingMixinsWithAlphabeticOrderingTest.cs" />
     <Compile Include="Core\IntegrationTests\Ordering\OrderingViaTTargetTest.cs" />
     <Compile Include="Core\IntegrationTests\Ordering\OrderingViaTNextTest.cs" />
     <Compile Include="Core\IntegrationTests\Ordering\OrderingViaAttributeDependencyTest.cs" />
