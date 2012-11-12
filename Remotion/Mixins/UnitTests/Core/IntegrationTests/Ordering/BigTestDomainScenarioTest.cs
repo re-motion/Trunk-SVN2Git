@@ -17,6 +17,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Rhino.Mocks;
@@ -204,7 +205,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
         CheckOrderingException (
             () => DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType7)),
             typeof (BaseType7),
-            new[] { typeof (BT7Mixin0), typeof (BT7Mixin4), typeof (BT7Mixin6), typeof (BT7Mixin7) });
+            Tuple.Create (new[] { typeof (BT7Mixin0), typeof (BT7Mixin4), typeof (BT7Mixin6), typeof (BT7Mixin7) }, "One"));
       }
     }
 

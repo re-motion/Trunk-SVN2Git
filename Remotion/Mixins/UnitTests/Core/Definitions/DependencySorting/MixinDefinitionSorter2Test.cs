@@ -17,12 +17,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Mixins.Definitions;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
-using Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.ServiceLocation;
 using System.Linq;
@@ -76,18 +74,12 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 
       Assert.That (
           () =>_sorter.SortMixins (targetClassDefinition.Mixins).ToArray(),
-          Throws.InvalidOperationException.With.Message.Matches<string> (t => 
-              OrderingTestBase.CheckMessageWithUnorderedItems (
-                  t,
+          Throws.InvalidOperationException.With.Message.EqualTo (
                   "The following group of mixins contains circular dependencies:" + Environment.NewLine
-                  + "'{item}'," + Environment.NewLine
-                  + "'{item}'," + Environment.NewLine
-                  + "'{item}'," + Environment.NewLine
-                  + "'{item}'.",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin3",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4")));
+                  + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin'," + Environment.NewLine
+                  + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2'," + Environment.NewLine
+                  + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin3'," + Environment.NewLine
+                  + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4'."));
     }
 
     [Test]
@@ -172,17 +164,14 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 
       Assert.That (
           () => _sorter.SortMixins (targetClassDefinition.Mixins).ToArray(),
-          Throws.InvalidOperationException.With.Message.Matches<string> (
-              m => OrderingTestBase.CheckMessageWithUnorderedItems (
-                  m,
-                  "The following mixin groups require a clear base call ordering, but do not provide enough dependency information:"
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The following mixin groups require a clear base call ordering, but do not provide enough dependency information:"
                   + Environment.NewLine
-                  + "{'{item}', '{item}', '{item}'}." + Environment.NewLine
+                  + "{'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin', "
+                  + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2', "
+                  + "'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin3'} (overriding: 'ToString')." + Environment.NewLine
                   + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the "
-                  + "mixin configuration accordingly.",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin3")));
+                  + "mixin configuration accordingly."));
     }
 
     [Test]
@@ -202,19 +191,41 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 
       Assert.That (
           () => _sorter.SortMixins (targetClassDefinition.Mixins).ToArray (),
-          Throws.InvalidOperationException.With.Message.Matches<string> (
-              m => OrderingTestBase.CheckMessageWithUnorderedItems (
-                  m,
+          Throws.InvalidOperationException.With.Message.EqualTo (
                   "The following mixin groups require a clear base call ordering, but do not provide enough dependency information:"
                   + Environment.NewLine
-                  + "{'{item}', '{item}'}," + Environment.NewLine
-                  + "{'{item}', '{item}'}." + Environment.NewLine
+                  + "{'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin', 'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2'} "
+                  + "(overriding: 'ToString')," + Environment.NewLine
+                  + "{'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin3', 'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4'} "
+                  + "(overriding: 'GetHashCode')." + Environment.NewLine
                   + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the "
-                  + "mixin configuration accordingly.",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin3",
-                  "Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin4")));
+                  + "mixin configuration accordingly."));
+    }
+
+    [Test]
+    public void SortMixins_MultipleRoots_WithOverlaps_Throws_IfAcceptsAlphabeticalOrderingIsDisaccepted_MoreThanOnce_WithMultipleEqualGroups ()
+    {
+      // NullMixin / NullMixin2 + NullMixin3 / NullMixin4
+      var targetClassDefinition = CreateTargetClassDefinition (
+          Tuple.Create (typeof (NullMixin3), false, Type.EmptyTypes),
+          Tuple.Create (typeof (NullMixin), false, Type.EmptyTypes),
+          Tuple.Create (typeof (NullMixin4), false, Type.EmptyTypes),
+          Tuple.Create (typeof (NullMixin2), false, Type.EmptyTypes));
+
+      AddOverride (targetClassDefinition, typeof (NullMixin), "ToString");
+      AddOverride (targetClassDefinition, typeof (NullMixin2), "ToString");
+      AddOverride (targetClassDefinition, typeof (NullMixin), "GetHashCode");
+      AddOverride (targetClassDefinition, typeof (NullMixin2), "GetHashCode");
+
+      Assert.That (
+          () => _sorter.SortMixins (targetClassDefinition.Mixins).ToArray (),
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "The following mixin groups require a clear base call ordering, but do not provide enough dependency information:"
+              + Environment.NewLine
+              + "{'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin', 'Remotion.Mixins.UnitTests.Core.TestDomain.NullMixin2'} "
+              + "(overriding: 'ToString', 'GetHashCode')." + Environment.NewLine
+              + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the "
+              + "mixin configuration accordingly."));
     }
 
     private void AddOverride (TargetClassDefinition targetClassDefinition, Type mixinType, string methodName)

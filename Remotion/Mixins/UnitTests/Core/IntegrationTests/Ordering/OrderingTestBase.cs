@@ -20,10 +20,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using NUnit.Framework.Constraints;
+using Remotion.Collections;
 using Remotion.FunctionalProgramming;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Context.FluentBuilders;
 using Remotion.Text;
+using Castle.Core.Internal;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 {
@@ -68,9 +70,9 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       return ObjectFactory.Create<T>();
     }
 
-    protected void CheckOrderingException (ActualValueDelegate action, Type targetClass, params Type[][] conflictingMixinGroups)
+    protected void CheckOrderingException (ActualValueDelegate action, Type targetClass, params Tuple<Type[], string>[] conflictingMixinGroups)
     {
-      var conflictingMixins = conflictingMixinGroups.SelectMany (ts => ts).Distinct();
+      var conflictingMixins = conflictingMixinGroups.SelectMany (ts => ts.Item1).Distinct();
       var expectedMessage = String.Format (
           "The mixins applied to target class '{0}' cannot be ordered. The following mixins require a clear base call ordering, but do not provide "
           + "enough dependency information:{2}{1}.{2}"
@@ -101,10 +103,11 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       return SeparatedStringBuilder.Build ("," + Environment.NewLine, mixinTypes, m => "'" + m.FullName + "'");
     }
 
-    private static string BuildMixinListForExceptionMessage (IEnumerable<Type[]> mixinTypeGroups)
+    private static string BuildMixinListForExceptionMessage (IEnumerable<Tuple<Type[], string>> mixinTypeGroups)
     {
-      var groupStrings = mixinTypeGroups.Select (g => SeparatedStringBuilder.Build (", ", g, m => "'" + m.FullName + "'"));
-      return SeparatedStringBuilder.Build ("," + Environment.NewLine, groupStrings, groupString => "{" + groupString + "}");
+      var groupStrings = mixinTypeGroups
+          .Select (g => "{" + SeparatedStringBuilder.Build (", ", g.Item1, m => "'" + m.FullName + "'") + "} (overriding: '" + g.Item2 + "')");
+      return SeparatedStringBuilder.Build ("," + Environment.NewLine, groupStrings, groupString => groupString);
     }
 
     public static bool CheckMessageWithUnorderedItems (string message, string pattern, params string[] items)

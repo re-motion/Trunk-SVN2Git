@@ -16,6 +16,7 @@
 // 
 using System;
 using NUnit.Framework;
+using Remotion.Collections;
 
 namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
 {
@@ -28,8 +29,8 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       CheckOrderingException (
           () => BuildMixedInstance<C> (typeof (MixinB), typeof (MixinC), typeof (MixinA)),
           typeof (C),
-          new[] { typeof (MixinB), typeof (MixinC) },
-          new[] { typeof (MixinC), typeof (MixinA) });
+          Tuple.Create (new[] { typeof (MixinB), typeof (MixinC) }, "Method2"),
+          Tuple.Create (new[] { typeof (MixinC), typeof (MixinA) }, "Method1"));
     }
 
     [Test]

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Remotion.Text;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
@@ -60,13 +61,16 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       var unprocessedMixins = new HashSet<MixinDefinition> (mixinDefinitions);
       while (unprocessedMixins.Any ())
       {
-        var roots = GetRoots (unprocessedMixins).ToList ();
+        var roots = GetRoots (unprocessedMixins).ConvertToCollection();
         unprocessedMixins.ExceptWith (roots);
         if (roots.Count == 0)
         {
+          // Ordering mixins guarantees a stable error message.
+          // (This is required for the unit tests, but it's nice for the resulting exception message anyway.)
+          var orderedUnprocessedMixins = unprocessedMixins.OrderBy (m => m.FullName, StringComparer.Ordinal);
           var message = string.Format (
               "The following group of mixins contains circular dependencies:{1}{0}.",
-              SeparatedStringBuilder.Build ("," + Environment.NewLine, unprocessedMixins, m => "'" + m.FullName + "'"),
+              SeparatedStringBuilder.Build ("," + Environment.NewLine, orderedUnprocessedMixins, m => "'" + m.FullName + "'"),
               Environment.NewLine);
           throw new InvalidOperationException (message);
         }
@@ -80,9 +84,12 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       }
     }
 
-    private IEnumerable<MixinDefinition> GetOrderedMixinsOnSameLevel (ICollection<MixinDefinition> mixins)
+    private IEnumerable<MixinDefinition> GetOrderedMixinsOnSameLevel (IEnumerable<MixinDefinition> mixins)
     {
-      var groupedMixins = (from mixin in mixins
+      // Ordering mixins before grouping guarantees a stable error message (if any).
+      // (This is required for the unit tests, but it's nice for the resulting exception message anyway.)
+      var orderedMixins = mixins.OrderBy (m => m.FullName, StringComparer.Ordinal).ConvertToCollection();
+      var groupedMixins = (from mixin in orderedMixins
                            from ovr in mixin.GetAllMethods ().Select (m => m.Base)
                            where ovr != null
                            select new { Mixin = mixin, OverriddenMethod = ovr })
@@ -90,22 +97,25 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
 
       var badGroups = groupedMixins
           .Where (group => group.Count (m => !m.Mixin.AcceptsAlphabeticOrdering) > 1)
-          .ToList ();
+          .ConvertToCollection();
 
       if (badGroups.Any ())
       {
-        var badGroupStrings = badGroups.Select (g => SeparatedStringBuilder.Build (", ", g, m => "'" + m.Mixin.FullName + "'"));
-
+        var badGroupStrings = badGroups
+            .Select (g => new { Text = SeparatedStringBuilder.Build (", ", g, m => "'" + m.Mixin.FullName + "'"), Group = g })
+            .GroupBy (g => g.Text, g => g.Group.Key)
+            .Select (g => string.Format ("{{{0}}} (overriding: {1})", g.Key, SeparatedStringBuilder.Build (", ", g, m => "'" + m.Name + "'")));
+        
         var message = string.Format (
             "The following mixin groups require a clear base call ordering, but do not provide enough dependency information:{1}{0}.{1}"
             + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the mixin "
             + "configuration accordingly.",
-            SeparatedStringBuilder.Build ("," + Environment.NewLine, badGroupStrings, groupString => "{" + groupString + "}"),
+            SeparatedStringBuilder.Build ("," + Environment.NewLine, badGroupStrings),
             Environment.NewLine);
         throw new InvalidOperationException (message);
       }
 
-      return mixins.OrderBy (m => m.FullName, StringComparer.Ordinal);
+      return orderedMixins;
     }
 
     private IEnumerable<MixinDefinition> GetRoots (HashSet<MixinDefinition> unprocessedMixins)
