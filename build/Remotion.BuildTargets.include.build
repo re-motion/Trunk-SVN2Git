@@ -31,16 +31,6 @@
     </PropertyGroup>
   </Target>
 
-  <Target Name="CreateActiveBuildInformation">
-    <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
-    <Error Text="The property 'ReleaseType' is not set." Condition="'$(ReleaseType)' == ''" />
-    <Error Text="The property 'AdditionalBuildMetadata' is not set." Condition="'$(AdditionalBuildMetadata)' == ''" />
-
-    <PropertyGroup>
-      <ActiveBuildInformation>$(Version) $(ReleaseType) %(_activeConfiguration.Name); $(AdditionalBuildMetadata)</ActiveBuildInformation>
-    </PropertyGroup>
-  </Target>
-
   <Target Name="AddAdditionalMetadataToReleaseOutputFiles">
     <ItemGroup>
       <_projectFiles Remove="@(_projectFiles)" />
@@ -174,13 +164,12 @@
       <Output TaskParameter="Errors" ItemName="NumberOfTestErrorsPerProject"/>
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
   </Target>
-  
-  <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration;CreateActiveBuildInformation" Condition="$(Version) != ''">
+
+  <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration" Condition="$(Version) != ''">
     <Message Text="Updating assembly infos, ConfigurationID=$(ConfigurationID)" Importance="High"/>
 
     <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
     <Error Text="The property 'ConfigurationID' is not set." Condition="'$(ConfigurationID)' == ''" />
-    <Error Text="The property 'ActiveBuildInformation' is not set." Condition="'$(ActiveBuildInformation)' == ''" />
 
     <ItemGroup>
       <_assemblyInfos Remove="@(_assemblyInfoFiles)"/>
@@ -192,13 +181,17 @@
     </ItemGroup>
 
     <PropertyGroup>
-      <_fullVersion>$(Version)</_fullVersion>
       <_configuration>.NET Framework: $(ActiveConfigurationFramework), build type: $(ConfigurationID)</_configuration>
     </PropertyGroup>
 
-    <Error Text="The version ($(Version) is not valid. It must be in the format 'Major.Minor.Build.Revision'."
-           Condition="$([System.Version]::Parse ($(_fullVersion))) == $(fullVersion)"/>
-    
+    <PropertyGroup Condition="$(ReleaseType) != 'LOCAL'">
+      <_assemblyInformationalVersion>$(Version) $(ReleaseType) %(_activeConfiguration.Name); $(AdditionalBuildMetadata)</_assemblyInformationalVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(ReleaseType) == 'LOCAL'">
+      <_assemblyInformationalVersion>$(Version)</_assemblyInformationalVersion>
+    </PropertyGroup>
+
     <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="%(_assemblyInfos.Identity)"
                                                   AssemblyVersion="$(_fullVersion)"
                                                   AssemblyFileVersion="$(_fullVersion)"
@@ -206,30 +199,10 @@
                                                   AssemblyCopyright="%(_assemblyInfos.Copyright)"
                                                   AssemblyCompany="%(_assemblyInfos.CompanyName)"
                                                   AssemblyProduct="%(_assemblyInfos.ProductName)"
-                                                  AssemblyInformationalVersion="$(ActiveBuildInformation)"
+                                                  AssemblyInformationalVersion="$(_assemblyInformationalVersion)"
                                                   UpdateAssemblyInformationalVersion="True" />
 
     <Message Text="Done updating assembly infos, ConfigurationID=$(ConfigurationID)" Importance="High"/>
-  </Target>
-  
-  <Target Name="ResetAssemblyInfosToLocal">
-    <Message Text="Resetting assembly infos to local version" Importance="High"/>
-
-    <Error Text="The property 'SolutionDirectory' is not set." Condition="'$(SolutionDirectory)' == ''" />
-
-    <ItemGroup>
-      <_assemblyInfos Remove="@(_assemblyInfoFiles)"/>
-      <_assemblyInfos Include="$(SolutionDirectory)%(AllPackages.AssemblyInfoFile)"/>
-    </ItemGroup>
-
-    <Error Text="The version $(Version) is not valid. It must be in the format 'Major.Minor.Build.Revision'."
-           Condition="$([System.Version]::Parse ($(Version))) != $(Version)"/>
-
-    <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="%(_assemblyInfos.Identity)"
-                                                  AssemblyInformationalVersion="$(Version)"
-                                                  UpdateAssemblyInformationalVersion="True" />
-
-    <Message Text="Done resetting assembly infos to local version" Importance="High"/>
   </Target>
 
 </Project>

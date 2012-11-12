@@ -167,13 +167,12 @@
                  Version=0.0.0.0;"/>
   </Target>
 
-  <Target Name="ResetAssemblyInfosToLocalAll">
+  <Target Name="UpdateAssemblyInfosLocalBuild" DependsOnTargets="CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="ResetAssemblyInfosToLocal"
+             Targets="UpdateAssemblyInfos"
              Properties="
-                ConfigurationID=Debug;
-                SolutionKeyFile=$(SolutionKeyFile)"/>
+                ConfigurationID=Debug;"/>
   </Target>
   
 </Project>
