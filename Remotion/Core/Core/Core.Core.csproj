@@ -149,6 +149,8 @@
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
+    <Compile Include="Reflection\ConstructorProvider.cs" />
+    <Compile Include="Reflection\IConstructorProvider.cs" />
     <Compile Include="Reflection\MemberSignatures\EventSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\FieldSignature.cs" />
     <Compile Include="Reflection\MemberSignatures\IMemberSignature.cs" />
