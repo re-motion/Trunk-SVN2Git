@@ -38,6 +38,11 @@
   <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal" Condition="$(UploadToDependDB) == 'True'"/>
   
   
+  <!-- Abstract internal targets -->
+  <Target Name="CreateDependDBBinaryFiles">
+	<Error Text="The target 'CreateDependDBBinaryFiles' is not implemented." />
+  </Target>
+  
   <!-- Internal targets: Build processing -->    
   <Target Name="DependDBBuildProcessing" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBConfigurationFile">
     <Message Text="Started DependDB build processing, ProjectName=$(DependDBProjectName)" Importance="High"/>
