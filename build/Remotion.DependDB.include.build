@@ -209,7 +209,7 @@
   </Target>
   
   <!-- Internal targets: Uploading -->
-  <Target Name="UploadToDependDBInternal" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackages">
+  <Target Name="UploadToDependDBInternal" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties">
     <Error Text="The property 'DependDBProjectName' is not set." Condition="'$(DependDBProjectName)' == ''" />
     <Error Text="The property 'DependDBProjectOutputDirectory' is not set." Condition="'$(DependDBProjectOutputDirectory)' == ''" />
     <Error Text="The property 'DependDBUploadPath' is not set." Condition="'$(DependDBUploadPath)' == ''" />
