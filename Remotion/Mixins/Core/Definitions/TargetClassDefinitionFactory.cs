@@ -35,12 +35,6 @@ namespace Remotion.Mixins.Definitions
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (LogManager));
 
-    [Obsolete ("Use CreateAndValidate (...) instead. (Version 1.13.174)", true)]
-    public static TargetClassDefinition CreateTargetClassDefinition (ClassContext classContext)
-    {
-      return CreateAndValidate (classContext);
-    }
-
     public static TargetClassDefinition CreateAndValidate (ClassContext context)
     {
       ArgumentUtility.CheckNotNull ("context", context);
