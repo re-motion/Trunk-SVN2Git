@@ -119,11 +119,12 @@
           //See also SmartPage.js:270
           //The input-element will be focused later in the page life cycle.
         }
-        var lastKeyPressCode = -1;
-        var config = {
+
+        var state = {
+            lastKeyPressCode: -1,
             mouseDownOnSelect: false
         };
-        var select = $.Autocompleter.Select(options, input, selectCurrent, config);
+        var select = $.Autocompleter.Select(options, input, selectCurrent, state);
         var informationPopUp = $.Autocompleter.InformationPopUp(options, input);
         var blockSubmit;
 
@@ -140,8 +141,7 @@
         // only opera doesn't trigger keydown multiple times while pressed, others don't work with keypress at all
         $input.bind(($.browser.opera ? "keypress" : "keydown") + ".autocomplete", function(event) {
             // track last key pressed
-            lastKeyPressCode = event.keyCode;
-
+            state.lastKeyPressCode = event.keyCode;
             clearTimeout(timeout);
             // re-motion: cancel an already running request
             stopLoading();
@@ -204,10 +204,9 @@
                     event.stopPropagation();
                     clearTimeout(timeout);
                     var wasVisible = select.visible();
-                    config.mouseDownOnSelect = false;
+                    state.mouseDownOnSelect = false;
 
-                    var isCancelKey = event.keyCode == KEY.TAB || event.keyCode == KEY.ESC;
-                    if (!isCancelKey && selectCurrent()) {
+                    if (event.keyCode == KEY.RETURN && selectCurrent()) {
                         //SelectCurrent already does everything that's needed.
                     } else {
                         acceptCurrent(true);
@@ -262,7 +261,7 @@
             } else if (event.type == 'paste') {
                 clearTimeout(timeout);
                 invalidateResult();
-                lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
+                state.lastKeyPressCode = KEY.FIRSTTEXTCHARACTER;
                 setTimeout(handleInput, 0);
             } else {
                 clearTimeout(timeout);
@@ -297,7 +296,6 @@
             hasFocus = true;
         }).blur(function() {
             hasFocus = false;
-            informationPopUp.hide();
             if (!select.visible()) {
                 clearTimeout(timeout);
                 if ($input.val() == '')  {
@@ -305,14 +303,18 @@
                 }
             }
 
-            var isLastKeyPressBeforeBlurHandled = lastKeyPressCode == -1;
-            if (!config.mouseDownOnSelect && !isLastKeyPressBeforeBlurHandled) {
-                clearTimeout(timeout);
-                timeout = setTimeout(
-                    function() {
-                        acceptInput (lastKeyPressCode);
-                    }, 
-                    200);
+            if (state.mouseDownOnSelect) {
+                informationPopUp.hide();
+            } else {
+                var isLastKeyPressBeforeBlurHandled = state.lastKeyPressCode == -1;
+                if (isLastKeyPressBeforeBlurHandled) {
+                  closeDropDownListAndSetValue($input.val());
+                  updateResult ({ DisplayName : $input.val(), UniqueIdentifier : options.nullValue });
+                } else {
+                  clearTimeout(timeout);
+                  var lastKeyPressCode = state.lastKeyPressCode;
+                  timeout = setTimeout (function () { acceptInput (lastKeyPressCode); }, 200);
+                }
             }
         }).click(function() {
 
@@ -354,11 +356,11 @@
         var dropdownButton = $('#' + options.dropDownButtonId);
         if (dropdownButton.length > 0) {
             dropdownButton.mousedown(function() {
-                config.mouseDownOnSelect = true;
+                state.mouseDownOnSelect = true;
             });
 
             dropdownButton.mouseup(function() {
-                config.mouseDownOnSelect = false;
+                state.mouseDownOnSelect = false;
             });
 
             dropdownButton.click(function(event) {
@@ -366,7 +368,7 @@
                 event.stopPropagation();
 
                 if (select.visible()) {
-                    acceptInput (lastKeyPressCode);
+                    acceptInput (state.lastKeyPressCode);
                 } else {
                     $input.focus();
                     onChange(true, $input.val());
@@ -540,7 +542,7 @@
                 return;
 
             // if the last user key pressed was backspace or delete, don't autofill
-            if (lastKeyPressCode == KEY.BACKSPACE || lastKeyPressCode == KEY.DEL)
+            if (state.lastKeyPressCode == KEY.BACKSPACE || state.lastKeyPressCode == KEY.DEL)
                 return;
 
             if (query == '')
@@ -578,7 +580,7 @@
         }
 
         function hideResults() {
-            if (config.mouseDownOnSelect)
+            if (state.mouseDownOnSelect)
                 return;
 
             var wasVisible = select.visible();
@@ -592,8 +594,8 @@
         };
 
         function resetState() {
-            lastKeyPressCode = -1;
-            config.mouseDownOnSelect = false;
+            state.lastKeyPressCode = -1;
+            state.mouseDownOnSelect = false;
         };
 
         function receiveData(q, data) {
