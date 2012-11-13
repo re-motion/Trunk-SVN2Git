@@ -15,6 +15,8 @@
 // under the License.
 // 
 using System;
+using Remotion.ServiceLocation;
+using Remotion.TypePipe.CodeGeneration.ReflectionEmit;
 using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.TypePipe.CodeGeneration
@@ -22,6 +24,7 @@ namespace Remotion.TypePipe.CodeGeneration
   /// <summary>
   /// Defines an interface for code generation components which perform the modifications recorded by an <see cref="MutableType"/>.
   /// </summary>
+  [ConcreteImplementation (typeof (TypeModifier))]
   public interface ITypeModifier
   {
     Type ApplyModifications (MutableType mutableTpe);
