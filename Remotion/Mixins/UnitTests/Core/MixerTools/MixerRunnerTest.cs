@@ -80,12 +80,22 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
     public void RunDefault ()
     {
       _parameters.AssemblyOutputDirectory = "MixerRunnerTest";
+      _parameters.BaseDirectory = "MixerRunnerTest_Input";
       var unsignedAssemblyPath = Path.Combine (_parameters.AssemblyOutputDirectory, _parameters.UnsignedAssemblyName + ".dll");
       
       try
       {
         Assert.That (Directory.Exists (_parameters.AssemblyOutputDirectory), Is.False);
         Assert.That (File.Exists (unsignedAssemblyPath), Is.False);
+
+        Assert.That (Directory.Exists (_parameters.BaseDirectory), Is.False);
+        Directory.CreateDirectory (_parameters.BaseDirectory);
+
+        var compiler = new AssemblyCompiler (
+            @"Core\MixerTools\SampleAssembly",
+            Path.Combine (_parameters.BaseDirectory, "SampleAssembly.dll"), 
+            typeof (Mixin).Assembly.Location);
+        compiler.Compile();
 
         var runner = new MixerRunner (_parameters);
         runner.Run ();
@@ -96,6 +106,7 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
       finally
       {
         Directory.Delete (_parameters.AssemblyOutputDirectory, true);
+        Directory.Delete (_parameters.BaseDirectory, true);
       }
     }
 
