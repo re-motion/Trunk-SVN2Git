@@ -104,8 +104,6 @@
         var executingRequest = null;
         var timeout;
         var autoFillTimeout;
-        // holds the last text the user entered into the input element
-        var previousValue = '';
         var isInvalidated = false;
         var cache = $.Autocompleter.Cache(options);
         var hasFocus = false;
@@ -122,7 +120,10 @@
 
         var state = {
             lastKeyPressCode: -1,
-            mouseDownOnSelect: false
+            mouseDownOnSelect: false,
+            // holds the last text the user entered into the input element
+            previousValue: '',
+            lastKeyPressValue: ''
         };
         var select = $.Autocompleter.Select(options, input, selectCurrent, state);
         var informationPopUp = $.Autocompleter.InformationPopUp(options, input);
@@ -146,6 +147,10 @@
             // re-motion: cancel an already running request
             stopLoading();
             abortRequest();
+            if ($input.val() != state.lastKeyPressValue) {
+                invalidateResult();
+            }
+            state.lastKeyPressValue = $input.val();
 
             switch (event.keyCode)
             {
@@ -241,6 +246,8 @@
                     dropDownDelay);
             };
 
+            state.lastKeyPressValue = $input.val();
+
             if (event.type == 'keyup') {
                 var isTextChangeKey =
                        event.keyCode >= KEY.FIRSTTEXTCHARACTER
@@ -248,7 +255,7 @@
                     || event.keyCode == KEY.DEL
                     || event.keyCode == KEY.SPACE;
 
-                var hasValueChanged = $input.val() != previousValue;
+                var hasValueChanged = $input.val() != state.previousValue;
 
                 if (isTextChangeKey) {
                     clearTimeout(timeout);
@@ -408,7 +415,7 @@
             } else if (lastKeyPressCode != -1) {
                 acceptCurrent(true);
             } else {
-                closeDropDownListAndSetValue(previousValue);
+                closeDropDownListAndSetValue(state.previousValue);
             }
         };
 
@@ -427,12 +434,12 @@
             }
             closeDropDownListAndSetValue(term);
 
-            if (previousValue == term && selectedItem != null) {
+            if (state.previousValue == term && selectedItem != null) {
                 updateResult(selectedItem.data);
                 return;
             }
 
-            previousValue = term;
+            state.previousValue = term;
 
             if (selectedItem == null) {
               options.clearRequestError();
@@ -476,7 +483,8 @@
 
         function updateResult(item) {
             var actualItem = $input.trigger("updateResult", item);
-            previousValue = actualItem.DisplayName;
+            //state.previousValue = actualItem.DisplayName; // Does not work, actualItem would be the input-element
+            state.previousValue = '';
             isInvalidated = false;
           };
 
@@ -499,10 +507,10 @@
         function onChange(dropDownTriggered, currentValue) {
             informationPopUp.hide();
 
-            if (!dropDownTriggered && currentValue == previousValue)
+            if (!dropDownTriggered && currentValue == state.previousValue)
                 return;
 
-            previousValue = currentValue;
+            state.previousValue = currentValue;
 
             var openFromInput = !dropDownTriggered && options.searchStringValidationParams.inputRegex.test (currentValue);
             var openFromTrigger = dropDownTriggered && options.searchStringValidationParams.dropDownTriggerRegex.test (currentValue);
@@ -524,7 +532,7 @@
                 };
                 var failureHandler = function () {
                     stopLoading();
-                    closeDropDownListAndSetValue(previousValue);
+                    closeDropDownListAndSetValue(state.previousValue);
                 };
 
                 requestData(searchString, successHandler, failureHandler);
