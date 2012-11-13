@@ -208,7 +208,7 @@
     <Compile Include="Core\Context\DeclarativeAnalyzers\HasCompleteInterfaceMarkerAnalyzerTest.cs" />
     <Compile Include="Core\Context\DeclarativeAnalyzers\DeclarativeConfigurationAnalyzerTest.cs" />
     <Compile Include="Core\Context\DeclarativeAnalyzers\MixinConfigurationAttributeAnalyzerTest.cs" />
-    <Compile Include="Core\Definitions\DependencySorting\MixinDefinitionSorter2Test.cs" />
+    <Compile Include="Core\Definitions\DependencySorting\MixinDefinitionSorterTest.cs" />
     <Compile Include="Core\IgnoresMixinAttributeTest.cs" />
     <Compile Include="Core\ExtendsAttributeTest.cs" />
     <Compile Include="Core\IgnoresClassAttributeTest.cs" />
@@ -303,7 +303,7 @@
     <Compile Include="Core\Definitions\Building\TargetClassDefinitionBuilderTest.cs" />
     <Compile Include="Core\Definitions\ClassDefinitionBaseTest.cs" />
     <Compile Include="Core\Definitions\DependencySorting\DependentMixinGrouperTest.cs" />
-    <Compile Include="Core\Definitions\DependencySorting\MixinDefinitionSorterTest.cs" />
+    <Compile Include="Core\Definitions\DependencySorting\LegacyMixinDefinitionSorterTest.cs" />
     <Compile Include="Core\Definitions\DependencySorting\MixinDependencyAnalyzerTest.cs" />
     <Compile Include="Core\Definitions\DependencySorting\TestDomain\IndependentMixin1.cs" />
     <Compile Include="Core\Definitions\DependencySorting\TestDomain\IndependentMixin2.cs" />

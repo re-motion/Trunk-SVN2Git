@@ -17,12 +17,13 @@
 
 using System;
 using System.Collections.Generic;
-using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.ServiceLocation;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
-  [ConcreteImplementation (typeof(DependentMixinSorter), Lifetime = LifetimeKind.Singleton)]
+  // TODO 5179: Remove.
+  [Obsolete ("This class will been removed. Use MixinDefinitionSorter instead. (1.13.175.0)")]
+  [ConcreteImplementation (typeof (DependentMixinSorter), Lifetime = LifetimeKind.Singleton)]
   public interface IDependentMixinSorter
   {
     IEnumerable<MixinDefinition> SortDependencies (IEnumerable<MixinDefinition> dependentObjects);

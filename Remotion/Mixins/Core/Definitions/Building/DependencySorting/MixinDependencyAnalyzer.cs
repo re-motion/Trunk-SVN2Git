@@ -22,6 +22,8 @@ using Remotion.Text;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
+  // TODO 5179: Remove.
+  [Obsolete ("This class will been removed. Use MixinDefinitionSorter instead. (1.13.175.0)")]
   public class MixinDependencyAnalyzer : IMixinDependencyAnalyzer
   {
     public DependencyKind AnalyzeDirectDependency (MixinDefinition first, MixinDefinition second)

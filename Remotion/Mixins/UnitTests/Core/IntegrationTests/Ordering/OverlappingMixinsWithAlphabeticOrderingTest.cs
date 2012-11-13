@@ -69,8 +69,7 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       CheckOrderingException (
           () => BuildMixedInstance<C> (typeof (MixinB), typeof (MixinA), typeof (MixinD_NoAlphabeticOrdering), typeof (MixinE_NoAlphabeticOrdering)),
           typeof (C),
-          // TODO 5159: Should be A,B,D,E
-          Tuple.Create (new[] { typeof (MixinB), typeof (MixinA), typeof (MixinD_NoAlphabeticOrdering), typeof (MixinE_NoAlphabeticOrdering)}, "Method1"));
+          Tuple.Create (new[] { typeof (MixinA), typeof (MixinB), typeof (MixinD_NoAlphabeticOrdering), typeof (MixinE_NoAlphabeticOrdering)}, "Method1"));
     }
 
     public class C

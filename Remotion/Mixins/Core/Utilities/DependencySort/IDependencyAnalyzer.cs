@@ -19,6 +19,8 @@ using System.Collections.Generic;
 
 namespace Remotion.Mixins.Utilities.DependencySort
 {
+  // TODO 5179: Remove.
+  [Obsolete ("This class will been removed. Use MixinDefinitionSorter instead. (1.13.175.0)")]
   public interface IDependencyAnalyzer<T>
   {
     DependencyKind AnalyzeDirectDependency (T first, T second);

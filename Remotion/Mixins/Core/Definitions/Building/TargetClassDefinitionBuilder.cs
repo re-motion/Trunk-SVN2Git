@@ -38,6 +38,11 @@ namespace Remotion.Mixins.Definitions.Building
       _mixinSorter = mixinSorter;
     }
 
+    public IMixinDefinitionSorter MixinSorter
+    {
+      get { return _mixinSorter; }
+    }
+
     public TargetClassDefinition Build (ClassContext classContext)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
@@ -81,7 +86,7 @@ namespace Remotion.Mixins.Definitions.Building
       ArgumentUtility.CheckNotNull ("classDefinition", classDefinition);
       ArgumentUtility.CheckNotNull ("classContext", classContext);
 
-      // The MixinDefinitionSorter requires that the mixins have already been added to the class (and that the dependencoes have been set up
+      // The IMixinDefinitionSorter requires that the mixins have already been added to the class (and that the dependencoes have been set up
       // correctly). Therefore, we add all the mixins, then sort them, then re-add them in the correct order.
 
       var mixinDefinitionBuilder = new MixinDefinitionBuilder (classDefinition);

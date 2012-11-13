@@ -14,11 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.Mixins.Utilities.DependencySort
 {
+  // TODO 5179: Remove.
+  [Obsolete ("This class will been removed. Use MixinDefinitionSorter instead. (1.13.175.0)")]
   public class DependentObjectSorter<T>
   {
     private readonly IDependencyAnalyzer<T> _analyzer;

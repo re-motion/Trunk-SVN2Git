@@ -42,7 +42,9 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
           () => BuildMixedInstance<C> (typeof (MixinA), typeof (MixinB), typeof (MixinC)),
           typeof (C), 
           Tuple.Create (new[] { typeof (MixinA), typeof (MixinC) }, "Method1"),
-          Tuple.Create (new[] { typeof (MixinA), typeof (MixinB) }, "Method2"));
+          Tuple.Create (new[] { typeof (MixinA), typeof (MixinB) }, "Method2"),
+          Tuple.Create (new[] { typeof (MixinA), typeof (MixinB), typeof (MixinC) }, "Method4"),
+          Tuple.Create (new[] { typeof (MixinB), typeof (MixinC) }, "Method3"));
     }
 
     public class C

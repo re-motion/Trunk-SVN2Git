@@ -29,8 +29,8 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
       CheckOrderingException (
           () => BuildMixedInstance<C> (typeof (MixinB), typeof (MixinC), typeof (MixinA)),
           typeof (C),
-          Tuple.Create (new[] { typeof (MixinB), typeof (MixinC) }, "Method2"),
-          Tuple.Create (new[] { typeof (MixinC), typeof (MixinA) }, "Method1"));
+          Tuple.Create (new[] { typeof (MixinA), typeof (MixinC) }, "Method1"),
+          Tuple.Create (new[] { typeof (MixinB), typeof (MixinC) }, "Method2"));
     }
 
     [Test]

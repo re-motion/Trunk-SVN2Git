@@ -22,6 +22,7 @@ using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.Definitions.Building.DependencySorting;
 using Remotion.Mixins.UnitTests.Core.Definitions.TestDomain;
+using Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.ServiceLocation;
 
@@ -35,9 +36,7 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
     [SetUp]
     public void SetUp ()
     {
-      var sorter = new MixinDefinitionSorter (
-          new DependentMixinGrouper (), 
-          new DependentMixinSorter (new MixinDependencyAnalyzer ()));
+      var sorter = new MixinDefinitionSorter ();
       _builder = new TargetClassDefinitionBuilder (sorter);
     }
 
@@ -175,33 +174,24 @@ namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
-      Assert.That (targetClassDefinition.Mixins.Select (m => m.Type).ToArray (), Is.EqualTo (new[] {
-          typeof (BT7Mixin0), 
-          typeof (BT7Mixin2), 
-          typeof (BT7Mixin3), 
-          typeof (BT7Mixin1), 
-          typeof (BT7Mixin10), 
-          typeof (BT7Mixin9), 
-          typeof (BT7Mixin5)
-      }));
+      Assert.That (targetClassDefinition.Mixins.Select (m => m.Type).ToArray (), Is.EqualTo (BigTestDomainScenarioTest.ExpectedBaseType7OrderedMixinTypesSmall));
     }
 
     [Test]
     public void Build_SetsIndexesOfSortedMixins ()
     {
-      var classContext = ClassContextObjectMother.Create(typeof (BaseType7),
-                                typeof (BT7Mixin0),
-                                typeof (BT7Mixin1),
-                                typeof (BT7Mixin2),
-                                typeof (BT7Mixin3),
-                                typeof (BT7Mixin5),
-                                typeof (BT7Mixin9),
-                                typeof (BT7Mixin10));
+      var classContext = ClassContextObjectMother.Create(
+          typeof (BaseType7),
+          typeof (BT7Mixin0),
+          typeof (BT7Mixin1),
+          typeof (BT7Mixin2),
+          typeof (BT7Mixin3),
+          typeof (BT7Mixin5),
+          typeof (BT7Mixin9),
+          typeof (BT7Mixin10));
 
       var targetClassDefinition = _builder.Build (classContext);
 
-      // see MixinDependencySortingIntegrationTest.MixinDefinitionsAreSortedCorrectlySmall
       Assert.That (targetClassDefinition.Mixins.Select (m => m.MixinIndex).ToArray (), Is.EqualTo (new[] { 0, 1, 2, 3, 4, 5, 6 }));
     }
 

@@ -18,71 +18,114 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Remotion.Mixins.Utilities.DependencySort;
 using Remotion.Text;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
   /// <summary>
-  /// Sorts the mixin definitions of a <see cref="TargetClassDefinition"/> by first grouping them into independent groups via 
-  /// <see cref="DependentMixinGrouper"/> and then sorting the mixins in the groups via <see cref="DependentObjectSorter{T}"/>. 
-  /// The groups are alphabetically sorted according to the full name of the first mixin in the group.
+  /// Implements <see cref="IMixinDefinitionSorter"/> by sorting the mixins according to their dependencies and using lexicographic ordering when
+  /// no dependencies are defined. For all mixins that are sorted lexicographically but overlap in overriding the same method, the algorithm 
+  /// requires the <see cref="MixinDefinition.AcceptsAlphabeticOrdering"/> flag to be set. In such a group of mixins overlapping in an overridden 
+  /// method, at most one mixin can have the <see cref="MixinDefinition.AcceptsAlphabeticOrdering"/> flag unset. (Rationale: If just one mixin
+  /// cares about its ordering, but all others don't, an "undefined", i.e., lexicographical, ordering is acceptable.)
   /// </summary>
+  /// <remarks>
+  /// The algorithm works as follows:
+  /// <list type="bullet">
+  /// <item><description>If there are no mixins left, stop.</description></item>
+  /// <item>
+  /// <description>
+  /// From the set of mixins (that have not been processed yet), take those on which there are no ordering dependencies.
+  /// <list type="bullet">
+  /// <item><description>If you find 0, throw (cyclic dependency).</description></item>
+  /// </list>
+  /// </description>
+  /// </item>
+  /// <item><description>If you find 1, append this mixin to the returned sequence.</description></item>
+  /// <item><description>If you find more than 1:
+  /// <list type="bullet">
+  /// <item><description>Group the mixins based on the methods overridden by the mixins.</description></item>
+  /// <item><description>Check that within each group, alphabetic ordering is accepted.</description></item>
+  /// <item><description>Order the (ungrouped) mixins lexicographicsally, and append the ordered result to the returned sequence.</description></item>
+  /// </list>
+  /// </description>
+  /// </item>
+  /// <item><description>Repeat.</description></item>
+  /// </list>
+  /// </remarks>
   public class MixinDefinitionSorter : IMixinDefinitionSorter
   {
-    private readonly IDependentMixinGrouper _grouper;
-    private readonly IDependentMixinSorter _sorter;
-
-    public MixinDefinitionSorter (IDependentMixinGrouper grouper, IDependentMixinSorter sorter)
-    {
-      _grouper = grouper;
-      _sorter = sorter;
-    }
-
-    public IDependentMixinGrouper Grouper
-    {
-      get { return _grouper; }
-    }
-
-    public IDependentMixinSorter Sorter
-    {
-      get { return _sorter; }
-    }
-
     public IEnumerable<MixinDefinition> SortMixins (IEnumerable<MixinDefinition> mixinDefinitions)
     {
-      var sortedMixinGroups = PartitionAndSortMixins (mixinDefinitions);
-
-      // flatten ordered groups of sorted mixins
-      return sortedMixinGroups.SelectMany (mixinGroup => mixinGroup);
+      var unprocessedMixins = new HashSet<MixinDefinition> (mixinDefinitions);
+      while (unprocessedMixins.Any ())
+      {
+        var roots = GetRoots (unprocessedMixins).ConvertToCollection();
+        unprocessedMixins.ExceptWith (roots);
+        if (roots.Count == 0)
+        {
+          // Ordering mixins guarantees a stable error message.
+          // (This is required for the unit tests, but it's nice for the resulting exception message anyway.)
+          var orderedUnprocessedMixins = unprocessedMixins.OrderBy (m => m.FullName, StringComparer.Ordinal);
+          var message = string.Format (
+              "The following group of mixins contains circular dependencies:{1}{0}.",
+              SeparatedStringBuilder.Build ("," + Environment.NewLine, orderedUnprocessedMixins, m => "'" + m.FullName + "'"),
+              Environment.NewLine);
+          throw new InvalidOperationException (message);
+        }
+        else if (roots.Count == 1)
+          yield return roots.Single ();
+        else
+        {
+          foreach (var mixinDefinition in GetOrderedMixinsOnSameLevel (roots))
+            yield return mixinDefinition;
+        }
+      }
     }
 
-    private IEnumerable<List<MixinDefinition>> PartitionAndSortMixins (IEnumerable<MixinDefinition> mixinDefinitions)
+    private IEnumerable<MixinDefinition> GetOrderedMixinsOnSameLevel (IEnumerable<MixinDefinition> mixins)
     {
-      // partition mixins into independent groups
-      var sortedMixinGroups = _grouper
-          .GroupMixins (mixinDefinitions)
-          .Select (
-              mixinGroup =>
-              {
-                try
-                {
-                  return _sorter.SortDependencies (mixinGroup).ToList();
-                }
-                catch (CircularDependenciesException<MixinDefinition> ex)
-                {
-                  string message = string.Format (
-                      "The following group of mixins contains circular dependencies:{1}{0}.",
-                      SeparatedStringBuilder.Build ("," + Environment.NewLine, ex.Circulars, m => "'" + m.FullName + "'"),
-                      Environment.NewLine);
-                  throw new InvalidOperationException (message, ex);
-                }
-              })
-          .ToList();
+      // Ordering mixins before grouping guarantees a stable error message (if any).
+      // (This is required for the unit tests, but it's nice for the resulting exception message anyway.)
+      var orderedMixins = mixins.OrderBy (m => m.FullName, StringComparer.Ordinal).ConvertToCollection();
+      var groupedMixins = (from mixin in orderedMixins
+                           from ovr in mixin.GetAllMethods ().Select (m => m.Base)
+                           where ovr != null
+                           select new { Mixin = mixin, OverriddenMethod = ovr })
+                           .GroupBy (t => t.OverriddenMethod);
 
-      // order groups alphabetically
-      sortedMixinGroups.Sort ((one, two) => System.String.Compare(one[0].FullName, two[0].FullName, System.StringComparison.Ordinal));
-      return sortedMixinGroups;
+      var badGroups = groupedMixins
+          .Where (group => group.Count (m => !m.Mixin.AcceptsAlphabeticOrdering) > 1)
+          .ConvertToCollection();
+
+      if (badGroups.Any ())
+      {
+        var badGroupStrings = badGroups
+            .Select (g => new { Text = SeparatedStringBuilder.Build (", ", g, m => "'" + m.Mixin.FullName + "'"), Group = g })
+            .GroupBy (g => g.Text, g => g.Group.Key)
+            .Select (g => string.Format ("{{{0}}} (overriding: {1})", g.Key, SeparatedStringBuilder.Build (", ", g, m => "'" + m.Name + "'")));
+        
+        var message = string.Format (
+            "The following mixin groups require a clear base call ordering, but do not provide enough dependency information:{1}{0}.{1}"
+            + "Please supply additional dependencies to the mixin definitions, use the AcceptsAlphabeticOrderingAttribute, or adjust the mixin "
+            + "configuration accordingly.",
+            SeparatedStringBuilder.Build ("," + Environment.NewLine, badGroupStrings),
+            Environment.NewLine);
+        throw new InvalidOperationException (message);
+      }
+
+      return orderedMixins;
+    }
+
+    private IEnumerable<MixinDefinition> GetRoots (HashSet<MixinDefinition> unprocessedMixins)
+    {
+      return unprocessedMixins.Where (m => unprocessedMixins.All (other => !HasDependency (other, m)));
+    }
+
+    private bool HasDependency (MixinDefinition from, MixinDefinition to)
+    {
+      return from.GetOrderRelevantDependencies ().Any (dep => dep.GetImplementer () == to);
     }
   }
 }

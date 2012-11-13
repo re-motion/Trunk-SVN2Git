@@ -30,6 +30,7 @@ using Remotion.ServiceLocation;
 namespace Remotion.Mixins.UnitTests.Core.Definitions.DependencySorting
 {
   [TestFixture]
+  [Obsolete ("This class will been removed. Use MixinDefinitionSorter instead. (1.13.175.0)")]
   public class MixinDependencyAnalyzerTest
   {
     private MixinDependencyAnalyzer _analyzer;

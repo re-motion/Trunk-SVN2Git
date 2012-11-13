@@ -14,11 +14,15 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
+  // TODO 5179: Remove.
+  [Obsolete ("This class will been removed. Use MixinDefinitionSorter instead. (1.13.175.0)")]
   internal class DependentMixinGrouperAlgorithm
   {
     private readonly HashSet<MixinDefinition> _mixins;

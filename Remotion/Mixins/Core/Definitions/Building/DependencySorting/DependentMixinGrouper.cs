@@ -19,7 +19,9 @@ using System.Collections.Generic;
 
 namespace Remotion.Mixins.Definitions.Building.DependencySorting
 {
+  // TODO 5179: Remove.
   // groups mixins based on dependencies and common overridden methods
+  [Obsolete ("This class will been removed. Use MixinDefinitionSorter instead. (1.13.175.0)")]
   public class DependentMixinGrouper : IDependentMixinGrouper
   {
     public IEnumerable<HashSet<MixinDefinition>> GroupMixins (IEnumerable<MixinDefinition> mixins)
