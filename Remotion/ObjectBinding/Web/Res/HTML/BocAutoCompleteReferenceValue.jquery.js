@@ -147,7 +147,7 @@
             // re-motion: cancel an already running request
             stopLoading();
             abortRequest();
-            if ($input.val() != state.lastKeyPressValue) {
+            if (state.lastKeyPressValue != '' && state.lastKeyPressValue != $input.val()) {
                 invalidateResult();
             }
             state.lastKeyPressValue = $input.val();
