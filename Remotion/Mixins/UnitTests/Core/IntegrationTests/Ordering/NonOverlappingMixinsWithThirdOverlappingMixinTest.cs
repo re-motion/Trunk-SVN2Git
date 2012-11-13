@@ -34,7 +34,6 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     }
 
     [Test]
-    [Ignore ("TODO 5159")]
     public void NonOverlappingMixins_AreSortedAlphabetically_ThirdMixin_SortedAccordingToDependencies_Front ()
     {
       var instance = BuildMixedInstance<C> (
@@ -48,7 +47,6 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     }
 
     [Test]
-    [Ignore ("TODO 5159")]
     public void NonOverlappingMixins_AreSortedAlphabetically_ThirdMixin_SortedAccordingToDependencies_Back ()
     {
       var instance = BuildMixedInstance<C> (

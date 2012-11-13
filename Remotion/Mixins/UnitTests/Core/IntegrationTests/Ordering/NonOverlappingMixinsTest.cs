@@ -54,7 +54,6 @@ namespace Remotion.Mixins.UnitTests.Core.IntegrationTests.Ordering
     }
 
     [Test]
-    [Ignore ("TODO 5159")]
     public void NonOverlappingMixins_WithSomeDependencies ()
     {
       var instance = BuildMixedInstance<C> (
