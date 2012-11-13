@@ -164,6 +164,22 @@
       <Output TaskParameter="Errors" ItemName="NumberOfTestErrorsPerProject"/>
     </MSBuild.ExtensionPack.CodeQuality.NUnit>
   </Target>
+  
+  <Target Name="RunMixinXRefTest">
+    <Message Text="Check whether the full API required for MixinXRef is available" Importance="High"/>
+
+    <PropertyGroup>
+      <_directory>$(BinariesDirectory)net-3.5\bin\debug</_directory>
+    </PropertyGroup>
+    
+    <Exec Command="$(MixinXRefToolPath)MixinXRefConsole.exe -i &quot;$(_directory)&quot; -o &quot;$(_directory)&quot; -f -s -r &quot;$(MixinXRefToolPath)MixinXRef.Reflectors*.dll&quot;"
+          WorkingDirectory="$(_directory)">
+      <Output TaskParameter="ExitCode" PropertyName="ExitCode"/>
+    </Exec>
+    
+    <Error Text="MixinXRef did not finish correctly - have you made any API changes which have broken MixinXRef?" Condition="$(ExitCode) != 0"/>
+    <Message Text="MixinXRef API check successfully finished" Importance="High"/>
+  </Target>
 
   <Target Name="UpdateAssemblyInfos" DependsOnTargets="CreateActiveConfiguration" Condition="$(Version) != ''">
     <Message Text="Updating assembly infos, ConfigurationID=$(ConfigurationID)" Importance="High"/>

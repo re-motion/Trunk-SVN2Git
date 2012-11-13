@@ -43,6 +43,7 @@
   
   <PropertyGroup>
     <NUnitToolPath>$(SolutionDirectory)prereq\Tools\NUnit-2.6\bin</NUnitToolPath>
+    <MixinXRefToolPath>$(SolutionDirectory)prereq\Tools\DependDB\DependDB.BuildProcessor\ReportGenerators\XRef\</MixinXRefToolPath>
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
@@ -131,12 +132,12 @@
                  DependDBUploadPath=$(DependDBUploadPath);"/>
   </Target>
 
-  <Target Name="FullBuild" DependsOnTargets="BuildAll;DocumentAll;PackageAll" />
+  <Target Name="FullBuild" DependsOnTargets="BuildAll;RunMixinXRefTest;DocumentAll;PackageAll" />
 
   <Target Name="TestBuild" DependsOnTargets="CleanFolders" >
     <MSBuild Projects="$(MSBuildProjectFile)"
              BuildInParallel="false"
-             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
+             Targets="BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;RunMixinXRefTest"
              Properties="
                  ConfigurationID=Debug;
                  SolutionKeyFile=$(SolutionKeyFile);"/>
