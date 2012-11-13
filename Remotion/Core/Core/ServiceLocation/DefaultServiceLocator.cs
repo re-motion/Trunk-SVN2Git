@@ -65,6 +65,7 @@ namespace Remotion.ServiceLocation
   public class DefaultServiceLocator : IServiceLocator
   {
     private static readonly MethodInfo s_genericGetInstanceMethod = typeof (IServiceLocator).GetMethod ("GetInstance", Type.EmptyTypes);
+    private static readonly MethodInfo s_genericGetAllInstancesMethod = typeof (IServiceLocator).GetMethod ("GetAllInstances", Type.EmptyTypes);
 
     private readonly IDataStore<Type, Func<object>[]> _dataStore = DataStoreFactory.CreateWithLocking<Type, Func<object>[]> ();
 
@@ -376,11 +377,24 @@ namespace Remotion.ServiceLocation
       var serviceLocator = Expression.Constant (this);
 
       var parameterInfos = ctorInfo.GetParameters();
-      var ctorArgExpressions = 
-          parameterInfos.Select (p => (Expression) Expression.Call (serviceLocator, s_genericGetInstanceMethod.MakeGenericMethod (p.ParameterType)));
+      var ctorArgExpressions = parameterInfos.Select (x => GetResolutionCall (serviceLocator, x.ParameterType));
 
       var factoryLambda = Expression.Lambda<Func<object>> (Expression.New (ctorInfo, ctorArgExpressions));
       return factoryLambda.Compile();
+    }
+
+    private Expression GetResolutionCall (Expression serviceLocator, Type parameterType)
+    {
+      MethodInfo resolutionMethod;
+      if (parameterType.IsGenericType && parameterType.GetGenericTypeDefinition() == typeof (IEnumerable<>))
+      {
+        var elementType = parameterType.GetGenericArguments().Single();
+        resolutionMethod = s_genericGetAllInstancesMethod.MakeGenericMethod (elementType);
+      }
+      else
+        resolutionMethod = s_genericGetInstanceMethod.MakeGenericMethod (parameterType);
+
+      return Expression.Call (serviceLocator, resolutionMethod);
     }
   }
 }

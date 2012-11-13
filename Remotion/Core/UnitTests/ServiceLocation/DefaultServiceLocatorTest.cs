@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
@@ -505,6 +506,31 @@ namespace Remotion.UnitTests.ServiceLocation
       Assert.That (instances, Has.Length.EqualTo (2));
       Assert.That (instances[0], Is.TypeOf<TestMultipleRegistrationType1> ());
       Assert.That (instances[1], Is.TypeOf<TestMultipleRegistrationType2> ());
+    }
+
+    [Test]
+    public void GetInstance_IEnumerable ()
+    {
+      var implementation1 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType1), LifetimeKind.Singleton);
+      var implementation2 = new ServiceImplementationInfo (typeof (TestMultipleRegistrationType2), LifetimeKind.Singleton);
+      _serviceLocator.Register (new ServiceConfigurationEntry (typeof (ITestMultipleRegistrationsType), implementation1, implementation2));
+      _serviceLocator.Register (typeof (DomainType), typeof (DomainType), LifetimeKind.Singleton);
+
+      var instances = ((DomainType) _serviceLocator.GetInstance (typeof (DomainType))).AllInstances.ToArray();
+
+      Assert.That (instances, Has.Length.EqualTo (2));
+      Assert.That (instances[0], Is.TypeOf<TestMultipleRegistrationType1> ());
+      Assert.That (instances[1], Is.TypeOf<TestMultipleRegistrationType2> ());
+    }
+
+    class DomainType
+    {
+      public readonly IEnumerable<ITestMultipleRegistrationsType> AllInstances;
+
+      public DomainType (IEnumerable<ITestMultipleRegistrationsType> allInstances)
+      {
+        AllInstances = allInstances;
+      }
     }
 
     public interface ISomeInterface { }
