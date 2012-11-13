@@ -308,12 +308,15 @@
             } else {
                 var isLastKeyPressBeforeBlurHandled = state.lastKeyPressCode == -1;
                 if (isLastKeyPressBeforeBlurHandled) {
-                  closeDropDownListAndSetValue($input.val());
-                  updateResult ({ DisplayName : $input.val(), UniqueIdentifier : options.nullValue });
+                    closeDropDownListAndSetValue($input.val());
+                    updateResult ({ DisplayName : $input.val(), UniqueIdentifier : options.nullValue });
                 } else {
-                  clearTimeout(timeout);
-                  var lastKeyPressCode = state.lastKeyPressCode;
-                  timeout = setTimeout (function () { acceptInput (lastKeyPressCode); }, 200);
+                    clearTimeout(timeout);
+                    var lastKeyPressCode = state.lastKeyPressCode;
+                    timeout = setTimeout(function () {
+                        invalidateResult();
+                        acceptInput(lastKeyPressCode);
+                    }, 200);
                 }
             }
         }).click(function() {
