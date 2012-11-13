@@ -207,7 +207,7 @@
     <Compile Include="Globalization\ResourceManagerCacheEntryTest.cs" />
     <Compile Include="BridgeInterfaces\IAdapterRegistryImplementationTest.cs" />
     <Compile Include="BridgeInterfaces\IParamListCreateImplementationTest.cs" />
-    <Compile Include="Reflection\ConstructorDelegateFactoryTest.cs" />
+    <Compile Include="Reflection\DelegateFactoryTest.cs" />
     <Compile Include="Reflection\MemberLookupInfoTest.cs" />
     <Compile Include="Reflection\MemberSignatures\EventSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\FieldSignatureTest.cs" />
