@@ -123,7 +123,7 @@
             mouseDownOnSelect: false,
             // holds the last text the user entered into the input element
             previousValue: '',
-            lastKeyPressValue: ''
+            lastKeyPressValue: null
         };
         var select = $.Autocompleter.Select(options, input, selectCurrent, state);
         var informationPopUp = $.Autocompleter.InformationPopUp(options, input);
@@ -147,7 +147,7 @@
             // re-motion: cancel an already running request
             stopLoading();
             abortRequest();
-            if (state.lastKeyPressValue != '' && state.lastKeyPressValue != $input.val()) {
+            if (state.lastKeyPressValue !== null && state.lastKeyPressValue != $input.val()) {
                 invalidateResult();
             }
             state.lastKeyPressValue = $input.val();
@@ -482,9 +482,9 @@
         };
 
         function updateResult(item) {
-            var actualItem = $input.trigger("updateResult", item);
-            //state.previousValue = actualItem.DisplayName; // Does not work, actualItem would be the input-element
-            state.previousValue = '';
+            var out = { Value : null };
+            $input.trigger("updateResult", [item, out]);
+            state.previousValue = out.Value.DisplayName;
             isInvalidated = false;
           };
 
@@ -605,8 +605,9 @@
         };
 
         function resetState() {
-            state.lastKeyPressCode = -1;
             state.mouseDownOnSelect = false;
+            state.lastKeyPressCode = -1;
+            state.lastKeyPressValue = null;
         };
 
         function receiveData(q, data) {

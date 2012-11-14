@@ -137,7 +137,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
       hiddenField.val(nullValueString);
       UpdateCommand(nullValueString);
       //Do not fire change-event
-    }).updateResult(function (e, item)
+    }).updateResult(function (e, item, out)
     {
       try
       {
@@ -168,7 +168,7 @@ BocAutoCompleteReferenceValue.Initialize = function (
             RestoreCommand();
           }
         }
-        return actualItem;
+        out.Value = actualItem;
       }
       finally
       {
