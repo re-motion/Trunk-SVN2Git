@@ -529,6 +529,10 @@
                     if (dropDownTriggered && !select.visible() && options.noDataFoundMessage) {
                         informationPopUp.show (options.noDataFoundMessage);
                     }
+                    else if (dropDownTriggered && select.visible()) {
+                        var index = select.findItem(currentValue);
+                        select.selectItem(index);
+                    }
                 };
                 var failureHandler = function () {
                     stopLoading();
