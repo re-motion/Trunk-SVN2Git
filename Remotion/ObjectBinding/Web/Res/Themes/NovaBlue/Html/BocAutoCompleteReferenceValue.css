@@ -236,8 +236,14 @@ span.bocAutoCompleteReferenceValue.readOnly img > span.content
 
 span.bocAutoCompleteReferenceValue a.command > img
 {
+  display: none;
+}
+
+span.bocAutoCompleteReferenceValue a.command.hasIcon > img
+{
   width: 16px;
   height: 16px;
+  display: inline;
 }
 
 span.bocAutoCompleteReferenceValue span.optionsMenu

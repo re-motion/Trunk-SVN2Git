@@ -231,6 +231,18 @@ span.bocAutoCompleteReferenceValue.disabled span.content.hasIcon
   left: 22px; /* width of a.command icon + desired space between */
 }
 
+span.bocAutoCompleteReferenceValue a.command > img
+{
+  display: none;
+}
+
+span.bocAutoCompleteReferenceValue a.command.hasIcon > img
+{
+  width: 16px;
+  height: 16px;
+  display: inline;
+}
+
 span.bocAutoCompleteReferenceValue span.optionsMenu
 {
   position: absolute;

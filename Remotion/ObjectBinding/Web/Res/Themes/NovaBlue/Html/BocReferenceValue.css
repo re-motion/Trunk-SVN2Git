@@ -170,10 +170,16 @@ span.bocReferenceValue.readOnly img > span.content
   left: 22px; /* width of a.command icon + desired space between */
 }
 
-span.bocReferenceValue a.command img
+span.bocReferenceValue a.command > img
+{
+  display: none;
+}
+
+span.bocReferenceValue a.command.hasIcon > img
 {
   width: 16px;
   height: 16px;
+  display: inline;
 }
 
 span.bocReferenceValue span.optionsMenu

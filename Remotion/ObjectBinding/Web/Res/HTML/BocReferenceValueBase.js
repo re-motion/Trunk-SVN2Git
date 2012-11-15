@@ -41,6 +41,7 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
   newCommand.append(newIcon);
 
   oldCommand.replaceWith(newCommand);
+  BocReferenceValueBase.FixLayout(newCommand);
 
   if (iconServiceUrl != null && iconContext != null)
   {
@@ -60,11 +61,13 @@ BocReferenceValueBase.UpdateCommand = function (oldCommand, businessObject, icon
         function (result, context, methodName)
         {
           BocReferenceValueBase.UpdateIconFromWebService(newCommand, newIcon, result);
+          BocReferenceValueBase.FixLayout(newCommand);
         },
         function (err, context, methodName)
         {
           onFailure(err);
           BocReferenceValueBase.ResetCommand(newCommand);
+          BocReferenceValueBase.FixLayout(newCommand);
         });
   }
 
@@ -151,7 +154,7 @@ BocReferenceValueBase.UpdateIconFromWebService = function (command, icon, iconIn
   if (!StringUtility.IsNullOrEmpty(iconInformation.ToolTip) && StringUtility.IsNullOrEmpty(icon.prop('title')))
     icon.attr({ title: iconInformation.ToolTip });
 
-  icon.css({ width: iconInformation.Width, heght: iconInformation.Height });
+  icon.css({ width: iconInformation.Width, height: iconInformation.Height });
 
   command.addClass('hasIcon');
 };
@@ -164,4 +167,16 @@ BocReferenceValueBase.ResetCommand = function (command)
   command.removeAttr('title');
   command.removeAttr('target');
   command.removeClass('hasIcon');
+};
+
+BocReferenceValueBase.FixLayout = function (command)
+{
+  // IE7 and IE8 cannot detect a change of the '+' CSS selector condition without a forced refresh
+  if (BrowserUtility.GetIEVersion() < 9)
+  {
+    var nextSibling = command.next();
+    if (nextSibling.length == 0)
+      return;
+    nextSibling[0].className = nextSibling[0].className;
+  }
 };
