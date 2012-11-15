@@ -405,8 +405,6 @@
     <Compile Include="Globalization\TestDomain\InheritedClassWithoutMultiLingualResourcesAttributes.cs" />
     <Compile Include="Globalization\TestDomain\InheritedClassWithMultiLingualResourcesAttributes.cs" />
     <Compile Include="ServiceLocation\ConcreteImplementationAttributeTest.cs" />
-    <Compile Include="ServiceLocation\FrameworkVersionRetrieverTest.cs" />
-    <Compile Include="ServiceLocation\FrameworkVersionTest.cs" />
     <Compile Include="Logging\Log4NetLogManagerTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\BaseTest.cs" />
     <Compile Include="Logging\Log4NetLogTests\ConvertTest.cs" />

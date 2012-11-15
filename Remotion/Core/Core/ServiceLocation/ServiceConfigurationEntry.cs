@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Utilities;
 using Remotion.FunctionalProgramming;
@@ -48,7 +49,7 @@ namespace Remotion.ServiceLocation
       var attributesAndResolvedTypes =
           (from attribute in attributes
            orderby attribute.Position
-           let resolvedType = ResolveType(attribute)
+           let resolvedType = ResolveType (attribute, serviceType.Assembly)
            where resolvedType != null
            select new { Attribute = attribute, ResolvedType = resolvedType }).ConvertToCollection();
 
@@ -63,11 +64,11 @@ namespace Remotion.ServiceLocation
       return new ServiceConfigurationEntry (serviceType, serviceImplementationInfos);
     }
 
-    private static Type ResolveType (ConcreteImplementationAttribute attribute)
+    private static Type ResolveType (ConcreteImplementationAttribute attribute, Assembly referenceAssembly)
     {
       try
       {
-        return TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate);
+        return TypeNameTemplateResolver.ResolveToType (attribute.TypeNameTemplate, referenceAssembly);
       }
       catch (FileNotFoundException) // Invalid assembly
       {
