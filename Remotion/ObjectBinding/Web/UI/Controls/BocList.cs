@@ -1423,9 +1423,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!interim)
       {
         if (_editModeController.IsRowEditModeActive)
+        {
           EndRowEditMode (true);
+          if (_editModeController.IsRowEditModeActive)
+          {
+            throw new InvalidOperationException (
+                string.Format ("Could not end row edit mode on BocList '{0}'. The edited row contains contains a validation error.", ID));
+          }
+        }
         else if (_editModeController.IsListEditModeActive)
+        {
           EndListEditMode (true);
+          if (_editModeController.IsListEditModeActive)
+          {
+            throw new InvalidOperationException (
+                string.Format ("Could not end list edit mode on BocList '{0}'. At least one edited row contains a validation error.", ID));
+          }
+        }
       }
 
       if (IsDirty && SaveValueToDomainModel())
