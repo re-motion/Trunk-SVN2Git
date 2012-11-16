@@ -28,7 +28,7 @@ using System.Reflection;
 [assembly: AssemblyProduct ("re-strict (www.re-motion.org)")]
 [assembly: AssemblyCopyright ("(c) rubicon IT GmbH, www.rubicon.eu - Licensed under GNU AGPL 3.0")]
 [assembly: AssemblyTrademark ("")]
-[assembly: AssemblyInformationalVersion ("1.13.174.0")]
+[assembly: AssemblyInformationalVersion ("1.13.175.0")]
 
 //
 // Version information for an assembly consists of the following four values:
