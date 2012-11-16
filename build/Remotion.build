@@ -28,17 +28,25 @@
     <Version></Version>
     <ReleaseType>LOCAL</ReleaseType>
     <AdditionalBuildMetadata></AdditionalBuildMetadata>
-    <CodePlexUsername></CodePlexUsername>
-    <CodePlexPassword></CodePlexPassword>
+
     <SolutionDirectory>$(MSBuildProjectDirectory)\..\</SolutionDirectory>
     <OutputDirectory>$(MSBuildProjectDirectory)\BuildOutput\$(Version)\</OutputDirectory>
     <LogDirectory>$(OutputDirectory)log\</LogDirectory>
     <TempDirectory>$(MSBuildProjectDirectory)\BuildOutput\temp\</TempDirectory>
     <ArchiveDirectory>$(MSBuildProjectDirectory)\BuildOutput\Archive\</ArchiveDirectory>
-    <DependDBDirectory>$(TempDirectory)DependDB\</DependDBDirectory>
     <WebShareDirectory>$(MSBuildProjectDirectory)\BuildOutput\WebShare\</WebShareDirectory>
-    <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
     <BinariesDirectory>$(TempDirectory)Binaries\</BinariesDirectory>
+
+    <SolutionKeyFile>$(SolutionDirectory)remotion.snk</SolutionKeyFile>
+
+    <CodePlexUsername></CodePlexUsername>
+    <CodePlexPassword></CodePlexPassword>
+
+    <DependDBProjectBranch></DependDBProjectBranch>
+    <DependDBProjectVersion></DependDBProjectVersion>
+    <DependDBProjectVCSUrlTemplate></DependDBProjectVCSUrlTemplate>
+    <DependDBProjectImportNotificationMailAddress></DependDBProjectImportNotificationMailAddress>
+    <DependDBUploadPath>$(MSBuildProjectDirectory)\BuildOutput\DependDB\</DependDBUploadPath>
   </PropertyGroup>
   
   <PropertyGroup>
@@ -47,11 +55,6 @@
     <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
-  
-  <PropertyGroup>
-    <DependDBProjectVCSUrlTemplate>https://svn.re-motion.org:443/svn/Remotion/!svn/bc/$(DependDBProjectRevision)/branches/ActaNova/trunk/{0}</DependDBProjectVCSUrlTemplate>
-    <DependDBProjectImportNotificationMailAddress>$(UserName)@rubicon.eu</DependDBProjectImportNotificationMailAddress>
-  </PropertyGroup>
 
   <Target Name="BuildAll" DependsOnTargets="CleanFolders;CheckVersion">
     <MSBuild Projects="$(MSBuildProjectFile)"
@@ -59,7 +62,9 @@
              Targets="LogConfiguration;CleanProjects;BuildReleaseProjects;BuildTestProjects;RunTests;AssembleBuildOutput;"
              Properties="
                  ConfigurationID=%(AllConfigurations.Identity);
-                 SolutionKeyFile=$(SolutionKeyFile);"/>
+                 SolutionKeyFile=$(SolutionKeyFile);
+                 ReleaseType=$(ReleaseType);
+                 AdditionalBuildMetadata=$(AdditionalBuildMetadata);"/>
   </Target>
 
   <Target Name="DocumentAll">
@@ -90,12 +95,10 @@
                  OutputDirectory=$(OutputDirectory);
                  TempDirectory=$(TempDirectory);
                  Version=$(Version);
-                 DependDBDirectory=$(DependDBDirectory);
                  DependDBProjectBranch=$(DependDBProjectBranch);
                  DependDBProjectVersion=$(DependDBProjectVersion);
                  DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
-                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
-                 DependDBUploadPath=$(DependDBUploadPath);"/>
+                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);"/>
   </Target>
   
   <Target Name="ZipPackageAll">
@@ -124,11 +127,6 @@
                  WebShareDirectory=$(WebShareDirectory);
                  CodeplexUserName=$(CodePlexUsername);
                  CodeplexPassword=$(CodePlexPassword);
-                 DependDBDirectory=$(DependDBDirectory);
-                 DependDBProjectBranch=$(DependDBProjectBranch);
-                 DependDBProjectVersion=$(DependDBProjectVersion);
-                 DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
-                 DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);
                  DependDBUploadPath=$(DependDBUploadPath);"/>
   </Target>
 

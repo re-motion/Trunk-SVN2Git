@@ -55,7 +55,7 @@
   
   <Target Name="CreateDependDBProperties" DependsOnTargets="CreatePackageProperties">
     <PropertyGroup>
-      <DependDBProjectDirectory>$(DependDBDirectory)$([System.Guid]::NewGuid())\</DependDBProjectDirectory>
+      <DependDBProjectDirectory>$(TempDirectory)DependDB\$([System.Guid]::NewGuid())\</DependDBProjectDirectory>
       <DependDBConfigurationTemplate>$(MSBuildProjectDirectory)\DependDB.ConfigurationTemplate.xml</DependDBConfigurationTemplate>
       <DependDBConfigurationFile>$(DependDBProjectDirectory)DependDB.Configuration.xml</DependDBConfigurationFile>
       <DependDBBinariesDirectory>$(DependDBProjectDirectory)Temp\</DependDBBinariesDirectory>
