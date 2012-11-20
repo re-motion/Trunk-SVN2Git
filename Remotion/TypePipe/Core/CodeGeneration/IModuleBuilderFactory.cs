@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -15,19 +15,13 @@
 // under the License.
 // 
 using System;
-using System.Reflection;
-using System.Reflection.Emit;
+using Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions;
 
-namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
+namespace Remotion.TypePipe.CodeGeneration
 {
-  /// <summary>
-  /// Defines an interface for <see cref="ModuleBuilder"/>.
-  /// </summary>
   [CLSCompliant (false)]
-  public interface IModuleBuilder
+  public interface IModuleBuilderFactory
   {
-    ITypeBuilder DefineType (string name, TypeAttributes attr, Type parent);
-
-    string SaveToDisk ();
+    IModuleBuilder CreateModuleBuilder (string assemblyName);
   }
 }
