@@ -87,7 +87,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("sourceEndPointDefinition", sourceEndPointDefinition);
 
-      var oppositeEndPointDefinition = sourceEndPointDefinition.GetMandatoryOppositeEndPointDefinition ();
+      var oppositeEndPointDefinition = sourceEndPointDefinition.GetOppositeEndPointDefinition();
       return Create (oppositeObjectID, oppositeEndPointDefinition);
     }
 

@@ -115,7 +115,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        found &= endPoints[i % endPoints.Count].GetMandatoryOppositeEndPointDefinition() != null;
+        found &= endPoints[i % endPoints.Count].GetOppositeEndPointDefinition() != null;
       stopwatch.Stop();
 
       Console.WriteLine (found);

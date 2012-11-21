@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
             DataManager.EndPointID.Definition.PropertyName,
             DataManager.EndPointID.ObjectID,
-            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName,
             UnsynchronizedOppositeEndPoints.First().ObjectID);
         throw new InvalidOperationException (message);
       }
@@ -140,7 +140,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{0}' property.",
             DataManager.EndPointID.Definition.PropertyName,
             DataManager.EndPointID.ObjectID,
-            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName,
             DataManager.OriginalItemsWithoutEndPoints.First().ID);
         throw new InvalidOperationException (message);
       }
@@ -171,7 +171,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{2}' property.",
             DataManager.EndPointID.ObjectID,
             DataManager.EndPointID.Definition.PropertyName,
-            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName,
             UnsynchronizedOppositeEndPoints.First().ObjectID);
         throw new InvalidOperationException (message);
       }
@@ -184,7 +184,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEn
             + "'BidirectionalRelationSyncService.Synchronize' method on the '{1}' property.",
             DataManager.EndPointID.ObjectID,
             DataManager.EndPointID.Definition.PropertyName,
-            DataManager.EndPointID.Definition.GetMandatoryOppositeEndPointDefinition().PropertyName,
+            DataManager.EndPointID.Definition.GetOppositeEndPointDefinition().PropertyName,
             DataManager.OriginalItemsWithoutEndPoints.First().ID);
         throw new InvalidOperationException (message);
       }

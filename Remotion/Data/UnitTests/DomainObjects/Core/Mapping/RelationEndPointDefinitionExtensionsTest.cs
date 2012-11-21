@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
 {
@@ -38,32 +39,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetMandatoryOppositeEndPointDefinition ()
+    public void GetOppositeEndPointDefinition_EndPointDefinitionWithoutRelation ()
     {
-      var endPointDefinition = DomainObjectIDs.Order1.ClassDefinition.GetMandatoryRelationEndPointDefinition (
-          typeof (Order).FullName + ".OrderTicket");
-
-      var oppositeEndPointDefinition = endPointDefinition.GetMandatoryOppositeEndPointDefinition();
+      var endPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition>();
+      endPointDefinition.Stub (stub => stub.RelationDefinition).Return (null);
 
       Assert.That (
-          oppositeEndPointDefinition,
-          Is.SameAs (DomainObjectIDs.OrderTicket1.ClassDefinition.GetMandatoryRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order")));
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage =
-        "Relation 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem:"
-        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderItem.Order->"
-        + "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderItems' has no association with "
-        + "class 'Order' and property 'Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer'.")]
-    public void GetMandatoryOppositeEndPointDefinition_Failure ()
-    {
-      var propertyDefinition = DomainObjectIDs.Order1.ClassDefinition[typeof (Order).FullName + ".Customer"];
-      var fakeEndPointDefinition = new RelationEndPointDefinition (propertyDefinition, true);
-      fakeEndPointDefinition.SetRelationDefinition (
-          DomainObjectIDs.Order1.ClassDefinition.MyRelationEndPointDefinitions[typeof (Order).FullName + ".OrderItems"].RelationDefinition);
-
-      fakeEndPointDefinition.GetMandatoryOppositeEndPointDefinition();
+          () => endPointDefinition.GetOppositeEndPointDefinition (), 
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The given IRelationEndPointDefinition object must be part of a RelationDefinition.\r\nParameter name: relationEndPointDefinition"));
     }
 
     [Test]
@@ -75,6 +59,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       var oppositeEndPointDefinition = endPointDefinition.GetOppositeClassDefinition();
 
       Assert.That (oppositeEndPointDefinition, Is.SameAs (DomainObjectIDs.OrderTicket1.ClassDefinition));
+    }
+
+    [Test]
+    public void GetOppositeClassDefinition_EndPointDefinitionWithoutRelation ()
+    {
+      var endPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition> ();
+      endPointDefinition.Stub (stub => stub.RelationDefinition).Return (null);
+
+      Assert.That (
+          () => endPointDefinition.GetOppositeClassDefinition (),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The given IRelationEndPointDefinition object must be part of a RelationDefinition.\r\nParameter name: relationEndPointDefinition"));
     }
   }
 }

@@ -123,7 +123,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       try
       {
-        var parser = new SortExpressionParser (this.GetMandatoryOppositeEndPointDefinition().ClassDefinition);
+        var parser = new SortExpressionParser (this.GetOppositeEndPointDefinition().ClassDefinition);
         return parser.Parse (sortExpressionText);
       }
       catch (MappingException ex)
