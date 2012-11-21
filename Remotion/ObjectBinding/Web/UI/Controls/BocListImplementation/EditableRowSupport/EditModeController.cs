@@ -101,9 +101,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return _rows[editedIndex];
     }
 
-    public void SwitchRowIntoEditMode (int index, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
+    public void SwitchRowIntoEditMode (int index, BocColumnDefinition[] columns)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
       if (_editModeHost.Value == null)
@@ -117,7 +116,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       if (index >= _editModeHost.Value.Count)
         throw new ArgumentOutOfRangeException ("index");
 
-      RestoreAndEndEditMode (oldColumns);
+      RestoreAndEndEditMode (columns);
 
       if (_editModeHost.IsReadOnly || IsListEditModeActive || IsRowEditModeActive)
         return;
@@ -129,9 +128,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       LoadValues (false);
     }
 
-    public void SwitchListIntoEditMode (BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
+    public void SwitchListIntoEditMode (BocColumnDefinition[] columns)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
       if (_editModeHost.Value == null)
@@ -140,7 +138,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
             string.Format ("Cannot initialize list edit mode: The BocList '{0}' does not have a Value.", _editModeHost.ID));
       }
 
-      RestoreAndEndEditMode (oldColumns);
+      RestoreAndEndEditMode (columns);
 
       if (_editModeHost.IsReadOnly || IsRowEditModeActive || IsListEditModeActive)
         return;
@@ -152,21 +150,21 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       LoadValues (false);
     }
 
-    public bool AddAndEditRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
+    public bool AddAndEditRow (IBusinessObject businessObject, BocColumnDefinition[] columns)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
+      ArgumentUtility.CheckNotNull ("businessObject", businessObject);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
-      RestoreAndEndEditMode (oldColumns);
+      RestoreAndEndEditMode (columns);
 
       if (_editModeHost.IsReadOnly || IsListEditModeActive || IsRowEditModeActive)
         return false;
 
-      int index = AddRow (businessObject, oldColumns, columns);
+      int index = AddRow (businessObject, columns);
       if (index < 0)
         return false;
 
-      SwitchRowIntoEditMode (index, oldColumns, columns);
+      SwitchRowIntoEditMode (index, columns);
 
       if (! IsRowEditModeActive)
       {
@@ -177,22 +175,24 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return true;
     }
 
-    private void RestoreAndEndEditMode (BocColumnDefinition[] oldColumns)
+    private void RestoreAndEndEditMode (BocColumnDefinition[] columns)
     {
-      EnsureEditModeRestored (oldColumns);
+      EnsureEditModeRestored (columns);
 
       if (IsRowEditModeActive)
-        EndRowEditMode (true, oldColumns);
+        EndRowEditMode (true, columns);
       else if (IsListEditModeActive)
-        EndListEditMode (true, oldColumns);
+        EndListEditMode (true, columns);
     }
 
-    public void EndRowEditMode (bool saveChanges, BocColumnDefinition[] oldColumns)
+    public void EndRowEditMode (bool saveChanges, BocColumnDefinition[] columns)
     {
+      ArgumentUtility.CheckNotNull ("columns", columns);
+
       if (! IsRowEditModeActive)
         return;
 
-      EnsureEditModeRestored (oldColumns);
+      EnsureEditModeRestored (columns);
 
       if (! _editModeHost.IsReadOnly)
       {
@@ -233,12 +233,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       _isEditNewRow = false;
     }
 
-    public void EndListEditMode (bool saveChanges, BocColumnDefinition[] oldColumns)
+    public void EndListEditMode (bool saveChanges, BocColumnDefinition[] columns)
     {
+      ArgumentUtility.CheckNotNull ("columns", columns);
+      
       if (! IsListEditModeActive)
         return;
 
-      EnsureEditModeRestored (oldColumns);
+      EnsureEditModeRestored (columns);
 
       if (! _editModeHost.IsReadOnly)
       {
@@ -330,9 +332,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         _rows[i].GetDataSource().LoadValues (interim);
     }
 
-    public void EnsureEditModeRestored (BocColumnDefinition[] oldColumns)
+    public void EnsureEditModeRestored (BocColumnDefinition[] columns)
     {
-      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
+      ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
       if (_isEditModeRestored)
         return;
@@ -345,7 +347,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
           throw new InvalidOperationException (
               string.Format ("Cannot restore edit mode: The BocList '{0}' does not have a Value.", _editModeHost.ID));
         }
-        CreateEditModeControls (oldColumns);
+        CreateEditModeControls (columns);
       }
     }
 
@@ -355,17 +357,16 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
         RemoveRowFromDataStructure (i);
     }
 
-    public BocListRow[] AddRows (IBusinessObject[] businessObjects, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
+    public BocListRow[] AddRows (IBusinessObject[] businessObjects, BocColumnDefinition[] columns)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("businessObjects", businessObjects);
-      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
       var bocListRows = _editModeHost.AddRows (businessObjects);
 
       if (_editModeHost.Value != null)
       {
-        EnsureEditModeRestored (oldColumns);
+        EnsureEditModeRestored (columns);
         if (IsListEditModeActive)
         {
           foreach (var bocListRow in bocListRows.OrderBy (r=>r.Index))
@@ -380,13 +381,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       return bocListRows;
     }
 
-    public int AddRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
+    public int AddRow (IBusinessObject businessObject, BocColumnDefinition[] columns)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
-      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
-      var bocListRows = AddRows (new[] { businessObject }, oldColumns, columns);
+      var bocListRows = AddRows (new[] { businessObject }, columns);
 
       if (bocListRows.Length == 0)
         return -1;

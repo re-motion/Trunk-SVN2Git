@@ -27,14 +27,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     bool IsRowEditModeActive { get; }
     bool IsListEditModeActive { get; }
     BocListRow GetEditedRow ();
-    void SwitchRowIntoEditMode (int index, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
-    void SwitchListIntoEditMode (BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
-    bool AddAndEditRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
-    void EndRowEditMode (bool saveChanges, BocColumnDefinition[] oldColumns);
-    void EndListEditMode (bool saveChanges, BocColumnDefinition[] oldColumns);
-    void EnsureEditModeRestored (BocColumnDefinition[] oldColumns);
-    BocListRow[] AddRows (IBusinessObject[] businessObjects, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
-    int AddRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns);
+    void SwitchRowIntoEditMode (int index, BocColumnDefinition[] columns);
+    void SwitchListIntoEditMode (BocColumnDefinition[] columns);
+    bool AddAndEditRow (IBusinessObject businessObject, BocColumnDefinition[] columns);
+    void EndRowEditMode (bool saveChanges, BocColumnDefinition[] columns);
+    void EndListEditMode (bool saveChanges, BocColumnDefinition[] columns);
+    void EnsureEditModeRestored (BocColumnDefinition[] columns);
+    BocListRow[] AddRows (IBusinessObject[] businessObjects, BocColumnDefinition[] columns);
+    int AddRow (IBusinessObject businessObject, BocColumnDefinition[] columns);
     void RemoveRows (IBusinessObject[] businessObjects);
     void RemoveRow (IBusinessObject businessObject);
     BaseValidator[] CreateValidators (IResourceManager resourceManager);

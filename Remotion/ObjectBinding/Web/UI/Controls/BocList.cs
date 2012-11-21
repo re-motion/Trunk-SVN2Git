@@ -2334,7 +2334,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("businessObjects", businessObjects);
 
-      _editModeController.AddRows (businessObjects, EnsureColumnsForPreviousLifeCycleGot(), EnsureColumnsGot());
+      _editModeController.AddRows (businessObjects, EnsureColumnsGot());
     }
 
     /// <summary> Adds the <paramref name="businessObject"/> to the <see cref="Value"/> collection. </summary>
@@ -2343,7 +2343,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
 
-      return _editModeController.AddRow (businessObject, EnsureColumnsForPreviousLifeCycleGot(), EnsureColumnsGot());
+      return _editModeController.AddRow (businessObject, EnsureColumnsGot());
     }
 
     /// <summary> Removes the <paramref name="businessObjects"/> from the <see cref="Value"/> collection. </summary>
@@ -2447,7 +2447,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="index"> The index of the row to be edited. </param>
     public void SwitchRowIntoEditMode (int index)
     {
-      _editModeController.SwitchRowIntoEditMode (index, EnsureColumnsForPreviousLifeCycleGot(), EnsureColumnsGot());
+      _editModeController.SwitchRowIntoEditMode (index, EnsureColumnsGot());
     }
 
     /// <summary>
@@ -2469,7 +2469,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                 "Cannot switch BocList '{0}' in to List Edit Mode: Paging Enabled.", ID));
       }
 
-      _editModeController.SwitchListIntoEditMode (EnsureColumnsForPreviousLifeCycleGot(), EnsureColumnsGot());
+      _editModeController.SwitchListIntoEditMode (EnsureColumnsGot());
     }
 
     /// <summary> 
@@ -2482,7 +2482,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <param name="businessObject"> The <see cref="IBusinessObject"/> to add. Must not be <see langword="null"/>. </param>
     public bool AddAndEditRow (IBusinessObject businessObject)
     {
-      return _editModeController.AddAndEditRow (businessObject, EnsureColumnsForPreviousLifeCycleGot(), EnsureColumnsGot());
+      return _editModeController.AddAndEditRow (businessObject, EnsureColumnsGot());
     }
 
     /// <summary>
