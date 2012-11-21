@@ -1554,19 +1554,19 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       ResetRowMenus();
 
-      var rows = GetSortedBocListRows();
+      var rows = GetRowsForCurrentPage();
       foreach (var row in rows)
       {
         DropDownMenu dropDownMenu = new DropDownMenu (this);
-        dropDownMenu.ID = GetRowMenuID(row);
+        dropDownMenu.ID = GetRowMenuID(row.ValueRow);
         dropDownMenu.EventCommandClick += RowMenu_EventCommandClick;
         dropDownMenu.WxeFunctionCommandClick += RowMenu_WxeFunctionCommandClick;
 
         _rowMenusPlaceHolder.Controls.Add (dropDownMenu);
-        WebMenuItem[] menuItems = InitializeRowMenuItems (row.BusinessObject, row.Index);
+        WebMenuItem[] menuItems = InitializeRowMenuItems (row.ValueRow.BusinessObject, row.ValueRow.Index);
         dropDownMenu.MenuItems.AddRange (menuItems);
 
-        _rowMenus.Add (new BocListRowMenuTuple (row.BusinessObject, row.Index, dropDownMenu));
+        _rowMenus.Add (new BocListRowMenuTuple (row.ValueRow.BusinessObject, row.ValueRow.Index, dropDownMenu));
       }
     }
 
