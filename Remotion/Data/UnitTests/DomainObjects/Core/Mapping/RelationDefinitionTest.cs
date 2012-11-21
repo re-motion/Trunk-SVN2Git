@@ -18,7 +18,6 @@ using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.Mapping;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration;
 using Rhino.Mocks;
 
@@ -51,8 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       RelationDefinition relation = new RelationDefinition ("RelationID", _customerEndPoint, _orderEndPoint);
 
-      Assert.That (relation.EndPointDefinitions, Is.TypeOf (typeof (ReadOnlyCollection<IRelationEndPointDefinition>)));
-      Assert.That (relation.EndPointDefinitions.Count, Is.EqualTo (2));
+      Assert.That (relation.EndPointDefinitions.Length, Is.EqualTo (2));
       Assert.That (relation.EndPointDefinitions[0], Is.SameAs (_customerEndPoint));
       Assert.That (relation.EndPointDefinitions[1], Is.SameAs (_orderEndPoint));
     }
@@ -62,7 +60,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     {
       RelationDefinition relation = new RelationDefinition ("RelationID", _customerEndPoint, _orderEndPoint);
 
-      Assert.That (relation.ToString(), Is.EqualTo (typeof (RelationDefinition).FullName + ": RelationID"));
+      Assert.That (relation.ToString(), Is.EqualTo ("RelationDefinition: RelationID"));
     }
 
     [Test]

@@ -15,20 +15,16 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects.Mapping
 {
   // Note: No properties and methods of this class are inheritance-aware!
-  [DebuggerDisplay (
-      "{GetType().Name}: {_id}/{_endPointDefinitions[0].PropertyName} ({_endPointDefinitions[0].Cardinality})-{_endPointDefinitions[1].PropertyName} ({_endPointDefinitions[1].Cardinality})"
-      )]
   public class RelationDefinition
   {
     private readonly string _id;
-    private readonly IRelationEndPointDefinition[] _endPointDefinitions = new IRelationEndPointDefinition[2];
+    private readonly IRelationEndPointDefinition _endPointDefinition1;
+    private readonly IRelationEndPointDefinition _endPointDefinition2;
 
     public RelationDefinition (
         string id,
@@ -41,8 +37,8 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       _id = id;
 
-      _endPointDefinitions[0] = endPointDefinition1;
-      _endPointDefinitions[1] = endPointDefinition2;
+      _endPointDefinition1 = endPointDefinition1;
+      _endPointDefinition2 = endPointDefinition2;
     }
 
     public IRelationEndPointDefinition GetMandatoryOppositeRelationEndPointDefinition (IRelationEndPointDefinition endPointDefinition)
@@ -71,31 +67,29 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       get 
       {
-        foreach (IRelationEndPointDefinition endPointDefinition in _endPointDefinitions)
-        {
-          if (endPointDefinition is AnonymousRelationEndPointDefinition)
-            return RelationKindType.Unidirectional;
-          else if (endPointDefinition.Cardinality == CardinalityType.Many)
-            return RelationKindType.OneToMany;
-        }
-        return RelationKindType.OneToOne; 
+        if (_endPointDefinition1 is AnonymousRelationEndPointDefinition || _endPointDefinition2 is AnonymousRelationEndPointDefinition)
+          return RelationKindType.Unidirectional;
+        else if (_endPointDefinition1.Cardinality == CardinalityType.Many || _endPointDefinition2.Cardinality == CardinalityType.Many)
+          return RelationKindType.OneToMany;
+        else
+          return RelationKindType.OneToOne;
       }
     }
 
-    public ReadOnlyCollection<IRelationEndPointDefinition> EndPointDefinitions
+    public IRelationEndPointDefinition[] EndPointDefinitions
     {
-      get { return new ReadOnlyCollection<IRelationEndPointDefinition> (_endPointDefinitions); }
+      get { return new[] { _endPointDefinition1, _endPointDefinition2 }; }
     }
 
     public IRelationEndPointDefinition GetEndPointDefinition (string classID, string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
 
-      if (_endPointDefinitions[0].ClassDefinition.ID == classID && _endPointDefinitions[0].PropertyName == propertyName)
-        return _endPointDefinitions[0];
+      if (_endPointDefinition1.ClassDefinition.ID == classID && _endPointDefinition1.PropertyName == propertyName)
+        return _endPointDefinition1;
 
-      if (_endPointDefinitions[1].ClassDefinition.ID == classID && _endPointDefinitions[1].PropertyName == propertyName)
-        return _endPointDefinitions[1];
+      if (_endPointDefinition2.ClassDefinition.ID == classID && _endPointDefinition2.PropertyName == propertyName)
+        return _endPointDefinition2;
 
       return null;
     }
@@ -104,10 +98,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
 
-      if (endPointDefinition == _endPointDefinitions[0])
-        return _endPointDefinitions[1];
-      else if (endPointDefinition == _endPointDefinitions[1])
-        return _endPointDefinitions[0];
+      if (endPointDefinition == _endPointDefinition1)
+        return _endPointDefinition2;
+      else if (endPointDefinition == _endPointDefinition2)
+        return _endPointDefinition1;
       else
         return null;
     }
@@ -124,8 +118,8 @@ namespace Remotion.Data.DomainObjects.Mapping
     }
 
     [Obsolete (
-    "This method is obsolete because it can lead to inefficient code. Use 'endPointDefinition.GetOppositeEndPointDefinition().ClassDefinition' "
-    + "instead. (1.13.176)")]
+        "This method is obsolete because it can lead to inefficient code. Use 'endPointDefinition.GetOppositeEndPointDefinition().ClassDefinition' "
+        + "instead. (1.13.176)")]
     public ClassDefinition GetOppositeClassDefinition (IRelationEndPointDefinition endPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
@@ -158,12 +152,12 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
 
-      return endPointDefinition == _endPointDefinitions[0] || endPointDefinition == _endPointDefinitions[1];
+      return endPointDefinition == _endPointDefinition1 || endPointDefinition == _endPointDefinition2;
     }
 
     public override string ToString ()
     {
-      return GetType().FullName + ": " + _id;
+      return GetType().Name + ": " + _id;
     }
 
     private MappingException CreateMappingException (string message, params object[] args)
