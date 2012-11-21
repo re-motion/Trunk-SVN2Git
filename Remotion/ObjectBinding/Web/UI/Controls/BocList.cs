@@ -1825,7 +1825,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow)
             continue;
 
-          BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
+          var args = new BocCustomCellArguments (this, customColumn);
           Control control = customColumn.CustomCell.CreateControlInternal (args);
           control.ID = ID + "_CustomColumnControl_" + customColumnData.Index + "_" + RowIDProvider.GetControlRowID (row.ValueRow);
           placeHolder.Controls.Add (control);
