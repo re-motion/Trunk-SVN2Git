@@ -1827,9 +1827,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
           BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
           Control control = customColumn.CustomCell.CreateControlInternal (args);
-          control.ID = ID + "_CustomColumnControl_" + customColumnData.Index + "_" + row.ValueRow.Index;
-          //TODO RM-5088
-          //control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + RowIDProvider.GetControlRowID (row.Row);
+          control.ID = ID + "_CustomColumnControl_" + customColumnData.Index + "_" + RowIDProvider.GetControlRowID (row.ValueRow);
           placeHolder.Controls.Add (control);
           customColumnTuples.Add (new BocListCustomColumnTuple (row.ValueRow.BusinessObject, row.ValueRow.Index, control));
         }
