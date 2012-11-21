@@ -1554,8 +1554,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       ResetRowMenus();
 
-      var rows = GetRowsForCurrentPage();
-      foreach (var row in rows)
+      foreach (var row in GetRowsForCurrentPage())
       {
         DropDownMenu dropDownMenu = new DropDownMenu (this);
         dropDownMenu.ID = GetRowMenuID(row.ValueRow);
@@ -1695,37 +1694,22 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       if (!HasValue)
         return;
 
-      int firstRow = 0;
-      int totalRowCount = Value.Count;
-      int rowCountWithOffset = totalRowCount;
-
-      if (IsPagingEnabled)
-      {
-        firstRow = _currentPageIndex * _pageSize.Value;
-        rowCountWithOffset = firstRow + _pageSize.Value;
-        //  Check row count on last page
-        rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
-      }
-
       BocColumnDefinition[] columns = EnsureColumnsGot (false);
-      BocListRow[] rows = EnsureSortedBocListRowsGot();
+      var commandColumns =
+          columns.Select ((column, index) => new { Column = column as BocCommandEnabledColumnDefinition, Index = index })
+                 .Where (d => d.Column != null && d.Column.Command != null)
+                 .ToArray();
 
-      for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
-           idxAbsoluteRows < rowCountWithOffset;
-           idxAbsoluteRows++, idxRelativeRows++)
+      //TODO: Change to Lazy after upgrade to .NET 4.0
+      var rows = new DoubleCheckedLockingContainer<SortedRow[]> (() => GetRowsForCurrentPage().ToArray());
+      foreach (var commandColumn in commandColumns)
       {
-        BocListRow row = rows[idxAbsoluteRows];
-
-        for (int idxColumns = 0; idxColumns < columns.Length; idxColumns++)
+        foreach (var row in rows.Value)
         {
-          BocCommandEnabledColumnDefinition commandColumn = columns[idxColumns] as BocCommandEnabledColumnDefinition;
-          if (commandColumn != null && commandColumn.Command != null)
-          {
-            commandColumn.Command.RegisterForSynchronousPostBack (
-                this,
-                GetListItemCommandArgument (idxColumns, row),
-                string.Format ("BocList '{0}', Column '{1}'", ID, commandColumn.ItemID));
-          }
+          commandColumn.Column.Command.RegisterForSynchronousPostBack (
+              this,
+              GetListItemCommandArgument (commandColumn.Index, row.ValueRow),
+              string.Format ("BocList '{0}', Column '{1}'", ID, commandColumn.Column.ItemID));
         }
       }
     }
