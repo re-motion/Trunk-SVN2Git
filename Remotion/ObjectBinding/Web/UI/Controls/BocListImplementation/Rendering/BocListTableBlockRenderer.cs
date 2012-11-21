@@ -153,7 +153,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       }
       else
       {
-        var rowRenderingContexts = renderingContext.Control.GetRowsToDisplay();
+        var rowRenderingContexts = renderingContext.Control.GetRowsToRender();
         for (int index = 0; index < rowRenderingContexts.Length; index++)
         {
           RowRenderer.RenderDataRow (renderingContext, rowRenderingContexts[index], index);

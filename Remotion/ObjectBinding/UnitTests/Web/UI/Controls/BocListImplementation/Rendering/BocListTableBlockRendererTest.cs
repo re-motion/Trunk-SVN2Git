@@ -161,7 +161,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
                             new BocListRowRenderingContext(new BocListRow (0, firstObject), 0, false),
                             new BocListRowRenderingContext(new BocListRow (1, secondObject), 1, false)
                           };
-      List.Stub (list => list.GetRowsToDisplay ()).Return (rows);
+      List.Stub (list => list.GetRowsToRender ()).Return (rows);
     }
   }
 }

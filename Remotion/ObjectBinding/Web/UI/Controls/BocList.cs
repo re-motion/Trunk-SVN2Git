@@ -243,7 +243,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     ///       Key = CustomColumn, 
     ///       Value = Triplet[] &lt; IBusinessObject, listIndex, Control &gt; &gt;
     /// </summary>
-    private Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]> _customColumns;
+    private Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]> _customColumnsWithControls;
 
     private readonly PlaceHolder _customColumnsPlaceHolder;
 
@@ -1797,7 +1797,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> Creates the controls for the custom columns in the <paramref name="columns"/> array. </summary>
     private void CreateCustomColumnControls (BocColumnDefinition[] columns)
     {
-      _customColumns = null;
+      _customColumnsWithControls = null;
       _customColumnsPlaceHolder.Controls.Clear();
 
       if (IsDesignMode)
@@ -1809,22 +1809,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       CalculateCurrentPage (null);
 
-      _customColumns = new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>();
+      _customColumnsWithControls = new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>();
 
-      int firstRow = 0;
-      int totalRowCount = Value.Count;
-      int rowCountWithOffset = totalRowCount;
-
-      if (IsPagingEnabled)
-      {
-        firstRow = _currentPageIndex * _pageSize.Value;
-        rowCountWithOffset = firstRow + _pageSize.Value;
-        //  Check row count on last page
-        rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
-      }
-
-      BocListRow[] rows = EnsureSortedBocListRowsGot();
-
+      var sortedRows = GetRowsForCurrentPage().ToArray();
       for (int idxColumns = 0; idxColumns < columns.Length; idxColumns++)
       {
         BocCustomColumnDefinition customColumn = columns[idxColumns] as BocCustomColumnDefinition;
@@ -1833,33 +1820,26 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                 || customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow))
         {
           PlaceHolder placeHolder = new PlaceHolder();
-          _customColumnsPlaceHolder.Controls.Add (placeHolder);
 
-          BocListCustomColumnTuple[] customColumnTuples;
-          if (IsPagingEnabled)
-            customColumnTuples = new BocListCustomColumnTuple[PageSize.Value];
-          else
-            customColumnTuples = new BocListCustomColumnTuple[Value.Count];
-          _customColumns[customColumn] = customColumnTuples;
-
-          for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
-               idxAbsoluteRows < rowCountWithOffset;
-               idxAbsoluteRows++, idxRelativeRows++)
+          var customColumnTuples = new List<BocListCustomColumnTuple>();
+          foreach (var row in sortedRows)
           {
-            BocListRow row = rows[idxAbsoluteRows];
-
-            bool isEditedRow = _editModeController.IsRowEditModeActive && _editModeController.GetEditableRow (row.Index) != null;
+            bool isEditedRow = _editModeController.IsRowEditModeActive && _editModeController.GetEditableRow (row.ValueRow.Index) != null;
 
             if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
                 || (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && isEditedRow))
             {
               BocCustomCellArguments args = new BocCustomCellArguments (this, customColumn);
               Control control = customColumn.CustomCell.CreateControlInternal (args);
-              control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + row.Index;
+              control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + row.ValueRow.Index;
+              //TODO RM-5088
+              //control.ID = ID + "_CustomColumnControl_" + idxColumns + "_" + RowIDProvider.GetControlRowID (row.Row);
               placeHolder.Controls.Add (control);
-              customColumnTuples[idxRelativeRows] = new BocListCustomColumnTuple (row.BusinessObject, row.Index, control);
+              customColumnTuples.Add (new BocListCustomColumnTuple (row.ValueRow.BusinessObject, row.ValueRow.Index, control));
             }
           }
+          _customColumnsPlaceHolder.Controls.Add (placeHolder);
+          _customColumnsWithControls[customColumn] = customColumnTuples.ToArray();
         }
       }
     }
@@ -1888,7 +1868,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private void LoadCustomColumns ()
     {
-      if (_customColumns == null)
+      if (_customColumnsWithControls == null)
         return;
 
       var customColumns = EnsureColumnsForPreviousLifeCycleGot()
@@ -1897,7 +1877,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       foreach (var customColumn in customColumns)
       {
-        var customColumnTuples = _customColumns[customColumn].Where (t => t != null);
+        var customColumnTuples = _customColumnsWithControls[customColumn].Where (t => t != null);
         foreach (var customColumnTuple in customColumnTuples)
         {
           int originalRowIndex = customColumnTuple.Item2;
@@ -1918,7 +1898,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private bool ValidateCustomColumns ()
     {
-      if (_customColumns == null)
+      if (_customColumnsWithControls == null)
         return true;
 
       if (!_editModeController.IsRowEditModeActive)
@@ -1933,7 +1913,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
       foreach (var customColumn in customColumns)
       {
-        var editedCustomColumnTuple = _customColumns[customColumn].Where (t => t != null).SingleOrDefault (t => t.Item2 == editedRow.Index);
+        var editedCustomColumnTuple = _customColumnsWithControls[customColumn].Where (t => t != null).SingleOrDefault (t => t.Item2 == editedRow.Index);
 
         if (editedCustomColumnTuple != null)
         {
@@ -2230,15 +2210,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return rows.OrderBy (sortingOrder);
     }
 
-    BocListRowRenderingContext[] IBocList.GetRowsToDisplay ()
+    protected IEnumerable<SortedRow> GetRowsForCurrentPage ()
     {
-      var result = EnsureSortedBocListRowsGot().Select (
-          (row, index) => new
-                          {
-                              Row = row,
-                              SortedIndex = index,
-                              ItemRowID = RowIDProvider.GetItemRowID (row)
-                          });
+      var result = EnsureSortedBocListRowsGot().Select ((row, index) => new SortedRow (row, index));
 
       if (IsPagingEnabled)
       {
@@ -2248,8 +2222,17 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         result = result.Skip (_currentPageIndex * pageSize).Take (pageSize);
       }
 
-      return result
-          .Select (data => new BocListRowRenderingContext (data.Row, data.SortedIndex, _selectorControlCheckedState.Contains (data.ItemRowID)))
+      return result;
+    }
+
+    BocListRowRenderingContext[] IBocList.GetRowsToRender ()
+    {
+      return GetRowsForCurrentPage()
+          .Select (
+              data => new BocListRowRenderingContext (
+                          data.ValueRow,
+                          data.SortedIndex,
+                          _selectorControlCheckedState.Contains (RowIDProvider.GetItemRowID (data.ValueRow))))
           .ToArray();
     }
 
@@ -3900,7 +3883,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> IBocList.CustomColumns
     {
-      get { return _customColumns == null ? null : new ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> (_customColumns); }
+      get { return _customColumnsWithControls == null ? null : new ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> (_customColumnsWithControls); }
     }
 
     bool IBocRenderableControl.IsDesignMode

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -73,15 +74,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
 
       if (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.ControlsInAllRows
           || (renderingContext.ColumnDefinition.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && isEditedRow))
-        RenderCustomCellInnerControls (renderingContext, rowIndex);
+        RenderCustomCellInnerControls (renderingContext, originalRowIndex, rowIndex);
       else
         RenderCustomCellDirectly (renderingContext, businessObject, originalRowIndex);
     }
 
-    private void RenderCustomCellInnerControls (BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext, int rowIndex)
+    private void RenderCustomCellInnerControls (BocColumnRenderingContext<BocCustomColumnDefinition> renderingContext, int originalRowIndex, int rowIndex)
     {
       BocListCustomColumnTuple[] customColumnTuples = renderingContext.Control.CustomColumns[renderingContext.ColumnDefinition];
-      BocListCustomColumnTuple customColumnTuple = customColumnTuples[rowIndex];
+      BocListCustomColumnTuple customColumnTuple;
+      if (customColumnTuples.Length > rowIndex && customColumnTuples[rowIndex].Item2 == originalRowIndex)
+        customColumnTuple = customColumnTuples[rowIndex];
+      else
+        customColumnTuple = customColumnTuples.FirstOrDefault (t => t.Item2 == originalRowIndex);
+
       if (customColumnTuple == null)
       {
         renderingContext.Writer.Write (c_whiteSpace);

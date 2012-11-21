@@ -149,7 +149,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     string GetListItemCommandArgument (int columnIndex, BocListRow row);
     string GetRowEditCommandArgument (BocListRow row, BocList.RowEditModeCommand command);
     IResourceManager GetResourceManager ();
-    BocListRowRenderingContext[] GetRowsToDisplay ();
+    BocListRowRenderingContext[] GetRowsToRender ();
     void OnDataRowRendering (BocListDataRowRenderEventArgs args);
 
     RowSelection Selection { get; }

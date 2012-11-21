@@ -50,8 +50,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       IBusinessObject secondObject = (IBusinessObject) ((TypeWithReference) BusinessObject).SecondValue;
       var triplets = new[]
                      {
-                         new BocListCustomColumnTuple (firstObject, 0, new WebControl (HtmlTextWriterTag.Div)),
-                         new BocListCustomColumnTuple (secondObject, 1, new HtmlGenericControl ("div"))
+                         new BocListCustomColumnTuple (firstObject, 10, new WebControl (HtmlTextWriterTag.Div)),
+                         new BocListCustomColumnTuple (secondObject, 20, new HtmlGenericControl ("div"))
                      };
       var customColumns =
           new ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> (
@@ -71,7 +71,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
 
       IBocColumnRenderer renderer = new BocCustomColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+      var args = new BocListDataRowRenderEventArgs (10, EventArgs.BusinessObject, EventArgs.IsEditableRow, EventArgs.IsOddRow);
+      renderer.RenderDataCell (_renderingContext, 0, false, args);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
@@ -87,7 +88,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       Column.Mode = BocCustomColumnDefinitionMode.ControlsInAllRows;
 
       IBocColumnRenderer renderer = new BocCustomColumnRenderer (MockRepository.GenerateStub<IResourceUrlFactory>(), _bocListCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
+      var args = new BocListDataRowRenderEventArgs (20, EventArgs.BusinessObject, EventArgs.IsEditableRow, EventArgs.IsOddRow);
+      renderer.RenderDataCell (_renderingContext, 0, false,args);
 
       var document = Html.GetResultDocument();
       var td = Html.GetAssertedChildElement (document, "td", 0);
