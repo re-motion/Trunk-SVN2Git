@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web;
 using System.Web.UI;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
@@ -64,15 +63,14 @@ namespace Remotion.Web.UI.Controls
     protected override void OnInit (EventArgs e)
     {
       base.OnInit (e);
-      if (!IsDesignMode && Page != null)
+      if (!IsDesignMode)
       {
-        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (HtmlHeadAppender.Current);
       }
     }
 
-    public void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var renderer = CreateRenderer();

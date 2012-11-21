@@ -19,7 +19,6 @@ using System.ComponentModel;
 using System.Web.UI;
 using Remotion.ServiceLocation;
 using Remotion.Utilities;
-using System.Web;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation.Rendering;
 using Remotion.Web.UI.Design;
@@ -63,13 +62,12 @@ namespace Remotion.Web.UI.Controls
       {
         var clientScriptBahavior = SafeServiceLocator.Current.GetInstance<IClientScriptBehavior> ();
         _isBrowserCapableOfScripting = clientScriptBahavior.IsBrowserCapableOfScripting(Page.Context, this);
-        RegisterHtmlHeadContents (Page.Context, HtmlHeadAppender.Current);
+        RegisterHtmlHeadContents (HtmlHeadAppender.Current);
       }
     }
 
-    public void RegisterHtmlHeadContents (HttpContextBase httpContext, HtmlHeadAppender htmlHeadAppender)
+    public void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)
     {
-      ArgumentUtility.CheckNotNull ("httpContext", httpContext);
       ArgumentUtility.CheckNotNull ("htmlHeadAppender", htmlHeadAppender);
 
       var renderer = CreateRenderer();

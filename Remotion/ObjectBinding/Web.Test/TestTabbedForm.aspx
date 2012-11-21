@@ -22,7 +22,7 @@
   <asp:ScriptManager ID="ScriptManager" runat="server" EnablePartialRendering="true" />
   <remotion:WebUpdatePanel ID="UpdatePanel" runat="server" style="height:100%">          
     <contenttemplate>
-    <remotion:TabbedMultiView ID="MultiView" runat="server" CssClass="tabbedMultiView">
+    <remotion:TabbedMultiView ID="MultiView" runat="server" CssClass="tabbedMultiView" EnableLazyLoading="False">
       <TopControls>
         <remotion:TabbedMenu ID="NavigationTabs" runat="server" StatusText="Status Text">
           <Tabs>
@@ -178,4 +178,5 @@
     </remotion:TabbedMultiView>
     </contenttemplate>
   </remotion:WebUpdatePanel>
+  <remotion:FormGridManager runat="server" ID="DummyFormGridManager" />
 </asp:Content>

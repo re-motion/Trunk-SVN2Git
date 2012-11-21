@@ -214,6 +214,10 @@ public class TestTabbedForm : TestWxeBasePage
     this.ShowAbortConfirmation = ShowAbortConfirmation.OnlyIfDirty;
 
 	  LoadUserControls();
+
+	  new BocList().RegisterHtmlHeadContents (HtmlHeadAppender.Current);
+	  new DropDownMenu().RegisterHtmlHeadContents (HtmlHeadAppender.Current);
+	  new ListMenu().RegisterHtmlHeadContents (HtmlHeadAppender.Current);
 	}
 	#region Web Form Designer generated code
 
