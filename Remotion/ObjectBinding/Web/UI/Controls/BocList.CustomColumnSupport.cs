@@ -69,14 +69,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
                    || d.Column.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow)
           .ToArray();
 
-      var sortedRows = GetRowsForCurrentPage().ToArray();
+       //TODO: Change to Lazy after upgrade to .NET 4.0
+      var rows = new DoubleCheckedLockingContainer<SortedRow[]> (() => GetRowsForCurrentPage().ToArray());
       foreach (var customColumnData in controlEnabledCustomColumns)
       {
         var customColumn = customColumnData.Column;
-        PlaceHolder placeHolder = new PlaceHolder();
+        var placeHolder = new PlaceHolder();
 
         var customColumnTuples = new List<BocListCustomColumnTuple>();
-        foreach (var row in sortedRows)
+        foreach (var row in rows.Value)
         {
           bool isEditedRow = _editModeController.IsRowEditModeActive && _editModeController.GetEditableRow (row.ValueRow.Index) != null;
           if (customColumn.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow && !isEditedRow)
