@@ -118,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
     IEditModeController EditModeController { get; }
     ReadOnlyCollection<IValidator> Validators { get; }
     ReadOnlyCollection<BocListRowMenuTuple> RowMenus { get; }
-    ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
+    ReadOnlyDictionary<BocCustomColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
     bool HasListMenu { get; }
     bool IsClientSideSortingEnabled { get; }
     bool HasOptionsMenu { get; }

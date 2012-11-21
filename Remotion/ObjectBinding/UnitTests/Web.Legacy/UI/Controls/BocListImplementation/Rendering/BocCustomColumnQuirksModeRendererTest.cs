@@ -53,8 +53,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
                          new BocListCustomColumnTuple (secondObject, 20, new HtmlGenericControl ("div"))
                      };
       var customColumns =
-          new ReadOnlyDictionary<BocColumnDefinition, BocListCustomColumnTuple[]> (
-              new Dictionary<BocColumnDefinition, BocListCustomColumnTuple[]>
+          new ReadOnlyDictionary<BocCustomColumnDefinition, BocListCustomColumnTuple[]> (
+              new Dictionary<BocCustomColumnDefinition, BocListCustomColumnTuple[]>
               {
                   { Column, triplets }
               });
