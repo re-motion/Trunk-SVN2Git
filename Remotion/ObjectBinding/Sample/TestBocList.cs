@@ -17,35 +17,35 @@
 using System;
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
-using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Sample
 {
   public class TestBocList: BocList
   {
+    public EventHandler<BocListItemEventArgs> RowMenuItemClick;
 
     protected override WebMenuItem[] InitializeRowMenuItems(IBusinessObject businessObject, int listIndex)
     {
       WebMenuItem[] baseMenuItems = base.InitializeRowMenuItems (businessObject, listIndex);
 
       WebMenuItem[] menuItems = new WebMenuItem[3];
-      WebMenuItem menuItem = new WebMenuItem();
-      menuItem.ItemID = listIndex.ToString() + "_0";
-      menuItem.Text = menuItem.ItemID;
-      menuItems[0] = menuItem;
+      var menuItem0 = new WebMenuItem();
+      menuItem0.ItemID = listIndex.ToString() + "_0";
+      menuItem0.Text = menuItem0.ItemID;
+      menuItems[0] = menuItem0;
 
-      menuItem = new TestBocMenuItem (businessObject);
-      menuItem.ItemID = listIndex.ToString() + "_1";
-      menuItem.Text = menuItem.ItemID;
-      menuItems[1] = menuItem;
+      var menuItem1 = new TestBocMenuItem (businessObject);
+      menuItem1.ItemID = listIndex.ToString() + "_1";
+      menuItem1.Text = menuItem1.ItemID;
+      menuItems[1] = menuItem1;
 
-      menuItem = new WebMenuItem();
-      menuItem.ItemID = listIndex.ToString() + "_2";
-      menuItem.Text =  menuItem.ItemID;
-      menuItems[2] = menuItem;
+      var menuItem2 = new WebMenuItem();
+      menuItem2.ItemID = listIndex.ToString() + "_2";
+      menuItem2.Text =  menuItem2.ItemID;
+      menuItems[2] = menuItem2;
 
-      return (WebMenuItem[]) ArrayUtility.Combine (baseMenuItems, menuItems);
+      return ArrayUtility.Combine (baseMenuItems, menuItems);
     }
 
     protected override void PreRenderRowMenuItems(WebMenuItemCollection menuItems, IBusinessObject businessObject, int listIndex)
@@ -61,7 +61,14 @@ namespace Remotion.ObjectBinding.Sample
       // Set IsVisible
       // Set isDisabled
     }
-    
+
+    protected override void OnRowMenuItemEventCommandClick (WebMenuItem menuItem, IBusinessObject businessObject, int listIndex)
+    {
+      base.OnRowMenuItemEventCommandClick (menuItem, businessObject, listIndex);
+      if (RowMenuItemClick != null)
+        RowMenuItemClick (menuItem, new BocListItemEventArgs (listIndex, businessObject));
+    }
+
     public new void SetPageIndex (int pageIndex)
     {
       base.SetPageIndex (pageIndex);

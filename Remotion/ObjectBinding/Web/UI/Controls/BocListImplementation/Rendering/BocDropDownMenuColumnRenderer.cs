@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
       ArgumentUtility.CheckNotNull ("renderingContext", renderingContext);
       ArgumentUtility.CheckNotNull ("dataRowRenderEventArgs", dataRowRenderEventArgs);
 
-      if (renderingContext.Control.RowMenus == null || renderingContext.Control.RowMenus.Count < rowIndex || renderingContext.Control.RowMenus[rowIndex] == null)
+      if (renderingContext.Control.RowMenus.Count < rowIndex)
       {
         renderingContext.Writer.Write (c_whiteSpace);
         return;

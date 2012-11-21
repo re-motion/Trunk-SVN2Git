@@ -108,20 +108,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.Legacy.UI.Controls.BocListImpleme
       Html.AssertTextNode (div, "mocked dropdown menu", 0);
     }
 
-    [Test]
-    public void RenderCellWithNullMenu ()
-    {
-      IBocColumnRenderer renderer = new BocDropDownMenuColumnQuirksModeRenderer (_bocListQuirksModeCssClassDefinition);
-      renderer.RenderDataCell (_renderingContext, 0, false, EventArgs);
-
-      var document = Html.GetResultDocument();
-
-      var td = Html.GetAssertedChildElement (document, "td", 0);
-      Html.AssertAttribute (td, "class", _bocListQuirksModeCssClassDefinition.DataCellOdd);
-
-      Html.AssertChildElementCount (td, 0);
-    }
-
     private void InitializeRowMenus ()
     {
       var rowMenus = new ReadOnlyCollection<BocListRowMenuTuple> (

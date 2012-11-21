@@ -85,6 +85,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private const string c_availableViewsListIDSuffix = "_Boc_AvailableViewsList";
     private const string c_optionsMenuIDSuffix = "_Boc_OptionsMenu";
     private const string c_listMenuIDSuffix = "_Boc_ListMenu";
+    private const string c_rowMenuIDPrefix = "_RowMenu_";
 
     /// <summary> Prefix applied to the post back argument of the event type column commands. </summary>
     private const string c_eventListItemCommandPrefix = "ListCommand=";
@@ -233,7 +234,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private readonly ListMenu _listMenu;
 
-    private BocListRowMenuTuple[] _rowMenus;
+    private readonly List<BocListRowMenuTuple> _rowMenus = new List<BocListRowMenuTuple>();
 
     private readonly PlaceHolder _rowMenusPlaceHolder;
 
@@ -1545,47 +1546,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void EnsureRowMenusInitialized ()
     {
-      if (_rowMenus != null)
-        return;
       if (! AreRowMenusEnabled)
         return;
       if (IsDesignMode)
         return;
       if (!HasValue)
         return;
+      if (_rowMenus.Any())
+        return;
 
       EnsureChildControls();
       CalculateCurrentPage (null);
 
-      if (IsPagingEnabled)
-        _rowMenus = new BocListRowMenuTuple[PageSize.Value];
-      else
-        _rowMenus = new BocListRowMenuTuple[Value.Count];
-      _rowMenusPlaceHolder.Controls.Clear();
+      ResetRowMenus();
 
-
-      int firstRow = 0;
-      int totalRowCount = Value.Count;
-      int rowCountWithOffset = totalRowCount;
-
-      if (IsPagingEnabled)
+      var rows = GetSortedBocListRows();
+      foreach (var row in rows)
       {
-        firstRow = _currentPageIndex * _pageSize.Value;
-        rowCountWithOffset = firstRow + _pageSize.Value;
-        //  Check row count on last page
-        rowCountWithOffset = (rowCountWithOffset < Value.Count) ? rowCountWithOffset : Value.Count;
-      }
-
-      BocListRow[] rows = EnsureSortedBocListRowsGot();
-
-      for (int idxAbsoluteRows = firstRow, idxRelativeRows = 0;
-           idxAbsoluteRows < rowCountWithOffset;
-           idxAbsoluteRows++, idxRelativeRows++)
-      {
-        BocListRow row = rows[idxAbsoluteRows];
-
         DropDownMenu dropDownMenu = new DropDownMenu (this);
-        dropDownMenu.ID = ID + "_RowMenu_" + RowIDProvider.GetControlRowID (row);
+        dropDownMenu.ID = GetRowMenuID(row);
         dropDownMenu.EventCommandClick += RowMenu_EventCommandClick;
         dropDownMenu.WxeFunctionCommandClick += RowMenu_WxeFunctionCommandClick;
 
@@ -1593,7 +1572,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         WebMenuItem[] menuItems = InitializeRowMenuItems (row.BusinessObject, row.Index);
         dropDownMenu.MenuItems.AddRange (menuItems);
 
-        _rowMenus[idxRelativeRows] = new BocListRowMenuTuple (row.BusinessObject, row.Index, dropDownMenu);
+        _rowMenus.Add (new BocListRowMenuTuple (row.BusinessObject, row.Index, dropDownMenu));
       }
     }
 
@@ -1611,20 +1590,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> PreRenders the menu items for all row menus. </summary>
     private void PreRenderRowMenusItems ()
     {
-      if (_rowMenus == null)
-        return;
-
-      for (int i = 0; i < _rowMenus.Length; i++)
+      foreach (var rowMenuTuple in _rowMenus)
       {
-        BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
-        if (rowMenuTuple != null)
-        {
-          IBusinessObject businessObject = rowMenuTuple.Item1;
-          int listIndex = rowMenuTuple.Item2;
-          DropDownMenu dropDownMenu = rowMenuTuple.Item3;
-          PreRenderRowMenuItems (dropDownMenu.MenuItems, businessObject, listIndex);
-          dropDownMenu.Visible = dropDownMenu.MenuItems.Cast<WebMenuItem>().Any (item => item.EvaluateVisible());
-        }
+        IBusinessObject businessObject = rowMenuTuple.Item1;
+        int listIndex = rowMenuTuple.Item2;
+        DropDownMenu dropDownMenu = rowMenuTuple.Item3;
+        PreRenderRowMenuItems (dropDownMenu.MenuItems, businessObject, listIndex);
+        dropDownMenu.Visible = dropDownMenu.MenuItems.Cast<WebMenuItem>().Any (item => item.EvaluateVisible());
       }
     }
 
@@ -1643,21 +1615,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private void RowMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
-      for (int i = 0; i < _rowMenus.Length; i++)
-      {
-        BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
-        if (rowMenuTuple != null)
-        {
-          DropDownMenu rowMenu = rowMenuTuple.Item3;
-          if (rowMenu == sender)
-          {
-            IBusinessObject businessObject = rowMenuTuple.Item1;
-            int listIndex = rowMenuTuple.Item2;
-            OnRowMenuItemEventCommandClick (e.Item, businessObject, listIndex);
-            return;
-          }
-        }
-      }
+      var rowMenuTuple = _rowMenus.Single (t => t.Item3 == (DropDownMenu) sender);
+
+      IBusinessObject businessObject = rowMenuTuple.Item1;
+      int listIndex = rowMenuTuple.Item2;
+      OnRowMenuItemEventCommandClick (e.Item, businessObject, listIndex);
     }
 
     /// <summary> Handles the click on an Event command of a row menu. </summary>
@@ -1678,21 +1640,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private void RowMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
-      for (int i = 0; i < _rowMenus.Length; i++)
-      {
-        BocListRowMenuTuple rowMenuTuple = _rowMenus[i];
-        if (rowMenuTuple != null)
-        {
-          DropDownMenu rowMenu = rowMenuTuple.Item3;
-          if (rowMenu == sender)
-          {
-            IBusinessObject businessObject = rowMenuTuple.Item1;
-            int listIndex = rowMenuTuple.Item2;
-            OnRowMenuItemWxeFunctionCommandClick (e.Item, businessObject, listIndex);
-            return;
-          }
-        }
-      }
+      var rowMenuTuple = _rowMenus.Single (t => t.Item3 == (DropDownMenu) sender);
+
+      IBusinessObject businessObject = rowMenuTuple.Item1;
+      int listIndex = rowMenuTuple.Item2;
+      OnRowMenuItemWxeFunctionCommandClick (e.Item, businessObject, listIndex);
     }
 
     /// <summary> Handles the click to a WXE function command or a row menu. </summary>
@@ -1735,6 +1687,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           return false;
         return true;
       }
+    }
+    
+    private string GetRowMenuID (BocListRow row)
+    {
+      return ID + c_rowMenuIDPrefix + RowIDProvider.GetControlRowID (row);
     }
 
     private void PreRenderListItemCommands ()
@@ -3835,7 +3792,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     ReadOnlyCollection<BocListRowMenuTuple> IBocList.RowMenus
     {
-      get { return _rowMenus == null ? null : new ReadOnlyCollection<BocListRowMenuTuple> (_rowMenus); }
+      get { return new ReadOnlyCollection<BocListRowMenuTuple> (_rowMenus); }
     }
 
     ReadOnlyDictionary<BocCustomColumnDefinition, BocListCustomColumnTuple[]> IBocList.CustomColumns
@@ -3904,7 +3861,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private void OnSortedRowsChanged ()
     {
       _indexedRowsSorted = null;
-      _rowMenus = null;
+      ResetRowMenus();
     }
 
     private void OnDisplayedRowsChanged ()
@@ -3915,7 +3872,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void OnStateOfDisplayedRowsChanged ()
     {
-      _rowMenus = null;
+      ResetRowMenus();
+    }
+    
+    private void ResetRowMenus ()
+    {
+      _rowMenus.Clear();
+      _rowMenusPlaceHolder.Controls.Clear();
     }
 
     int IBocList.CurrentPageIndex

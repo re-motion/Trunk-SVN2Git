@@ -60,7 +60,7 @@ public class BocListUserControl : BaseUserControl
 
     ChildrenList.ListItemCommandClick += new BocListItemCommandClickEventHandler (ChildrenList_ListItemCommandClick);
     ChildrenList.MenuItemClick += new WebMenuItemClickEventHandler (ChildrenList_MenuItemClick);
-    
+ChildrenList.RowMenuItemClick += ChildrenList_RowMenuItemClick;
     ChildrenList.DataRowRender += new BocListDataRowRenderEventHandler(ChildrenList_DataRowRender);
     
     ChildrenList.EditableRowChangesCanceling += new BocListEditableRowChangesEventHandler (ChildrenList_EditableRowChangesCanceling);
@@ -361,6 +361,15 @@ public class BocListUserControl : BaseUserControl
     if (e.Item.ItemID == c_deleteItemID)
       ChildrenList.RemoveRows (ChildrenList.GetSelectedBusinessObjects());
   }
+
+  private void ChildrenList_RowMenuItemClick (object sender, BocListItemEventArgs e)
+  {
+    ChildrenListEventArgsLabel.Text += string.Format ("MenuItemID: {0}<br />", ((WebMenuItem) sender).ItemID);
+    if (e.BusinessObject is IBusinessObjectWithIdentity)
+      ChildrenListEventArgsLabel.Text += string.Format ("BusinessObjectID: {0}<br />", ((IBusinessObjectWithIdentity) e.BusinessObject).UniqueIdentifier);
+    ChildrenListEventArgsLabel.Text += string.Format ("ListIndex: {0}<br />", e.ListIndex);
+  }
+
 
   private void ChildrenList_DataRowRender(object sender, BocListDataRowRenderEventArgs e)
   {
