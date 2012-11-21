@@ -48,18 +48,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void CorrespondsToTrue ()
-    {
-      Assert.IsTrue (_definition.CorrespondsTo (_clientDefinition.ID, null));
-    }
-
-    [Test]
-    public void CorrespondsToFalse ()
-    {
-      Assert.IsFalse (_definition.CorrespondsTo (_clientDefinition.ID, "PropertyName"));
-    }
-
-    [Test]
     public void RelationDefinitionNull ()
     {
       AnonymousRelationEndPointDefinition definition = new AnonymousRelationEndPointDefinition (MappingConfiguration.Current.GetTypeDefinition (typeof (Client)));

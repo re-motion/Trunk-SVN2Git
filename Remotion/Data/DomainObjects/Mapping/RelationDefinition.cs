@@ -91,10 +91,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
 
-      if (_endPointDefinitions[0].CorrespondsTo (classID, propertyName))
+      if (_endPointDefinitions[0].ClassDefinition.ID == classID && _endPointDefinitions[0].PropertyName == propertyName)
         return _endPointDefinitions[0];
 
-      if (_endPointDefinitions[1].CorrespondsTo (classID, propertyName))
+      if (_endPointDefinitions[1].ClassDefinition.ID == classID && _endPointDefinitions[1].PropertyName == propertyName)
         return _endPointDefinitions[1];
 
       return null;
@@ -103,21 +103,24 @@ namespace Remotion.Data.DomainObjects.Mapping
     public IRelationEndPointDefinition GetOppositeEndPointDefinition (IRelationEndPointDefinition endPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
-      // TODO 3176: This should throw an ArgumentException if the opposite is null, and GetOppositeEndPointDefinition should always return a non-null item.
-      return GetOppositeEndPointDefinition (endPointDefinition.ClassDefinition.ID, endPointDefinition.PropertyName);
+
+      if (endPointDefinition == _endPointDefinitions[0])
+        return _endPointDefinitions[1];
+      else if (endPointDefinition == _endPointDefinitions[1])
+        return _endPointDefinitions[0];
+      else
+        return null;
     }
 
     public IRelationEndPointDefinition GetOppositeEndPointDefinition (string classID, string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
 
-      if (_endPointDefinitions[0].CorrespondsTo (classID, propertyName))
-        return _endPointDefinitions[1];
+      var matchingEndPointDefinition = GetEndPointDefinition (classID, propertyName);
+      if (matchingEndPointDefinition == null)
+        return null;
 
-      if (_endPointDefinitions[1].CorrespondsTo (classID, propertyName))
-        return _endPointDefinitions[0];
-
-      return null;
+      return GetOppositeEndPointDefinition (matchingEndPointDefinition);
     }
 
     [Obsolete (
@@ -144,33 +147,18 @@ namespace Remotion.Data.DomainObjects.Mapping
       return oppositeEndPointDefinition.ClassDefinition;
     }
 
-    public bool IsEndPoint (IRelationEndPointDefinition endPointDefinition)
-    {
-      ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
-      return IsEndPoint (endPointDefinition.ClassDefinition.ID, endPointDefinition.PropertyName);
-    }
-
     public bool IsEndPoint (string classID, string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
 
-      foreach (IRelationEndPointDefinition endPointDefinition in _endPointDefinitions)
-      {
-        if (endPointDefinition.CorrespondsTo (classID, propertyName))
-          return true;
-      }
-
-      return false;
+      return GetEndPointDefinition (classID, propertyName) != null;
     }
 
     public bool Contains (IRelationEndPointDefinition endPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
 
-      if (object.ReferenceEquals (endPointDefinition, _endPointDefinitions[0]))
-        return true;
-
-      return object.ReferenceEquals (endPointDefinition, _endPointDefinitions[1]);
+      return endPointDefinition == _endPointDefinitions[0] || endPointDefinition == _endPointDefinitions[1];
     }
 
     public override string ToString ()
@@ -180,16 +168,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
     private MappingException CreateMappingException (string message, params object[] args)
     {
-      return new MappingException (string.Format (message, args));
-    }
-  }
-
-  // TODO 3176: Refactor to use reference equality, then inline into class above.
-  public static class Temporary
-  {
-    public static bool CorrespondsTo (this IRelationEndPointDefinition source, string classID, string propertyName)
-    {
-      return source.ClassDefinition.ID == classID && source.PropertyName == propertyName;
+      return new MappingException (String.Format (message, args));
     }
   }
 }
