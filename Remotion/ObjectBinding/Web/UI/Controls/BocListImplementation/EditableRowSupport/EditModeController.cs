@@ -358,6 +358,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     public BocListRow[] AddRows (IBusinessObject[] businessObjects, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
     {
       ArgumentUtility.CheckNotNullOrItemsNull ("businessObjects", businessObjects);
+      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
       var bocListRows = _editModeHost.AddRows (businessObjects);
@@ -382,6 +383,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     public int AddRow (IBusinessObject businessObject, BocColumnDefinition[] oldColumns, BocColumnDefinition[] columns)
     {
       ArgumentUtility.CheckNotNull ("businessObject", businessObject);
+      ArgumentUtility.CheckNotNullOrItemsNull ("oldColumns", oldColumns);
       ArgumentUtility.CheckNotNullOrItemsNull ("columns", columns);
 
       var bocListRows = AddRows (new[] { businessObject }, oldColumns, columns);
