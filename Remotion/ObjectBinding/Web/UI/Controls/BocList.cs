@@ -1872,9 +1872,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private bool ValidateCustomColumns ()
     {
-      if (!_editModeController.IsRowEditModeActive)
-        return true;
-
       bool isValid = true;
 
       foreach (var keyValuePair in _customColumnControls.Where (p => p.Key.Mode == BocCustomColumnDefinitionMode.ControlInEditedRow))
