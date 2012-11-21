@@ -145,7 +145,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       return isValid;
     }
 
-    /// <summary> Invokes the <see cref="BocCustomColumnDefinitionCell.PreRender"/> method for each custom column.  </summary>
+    /// <summary> 
+    /// Invokes the <see cref="BocCustomColumnDefinitionCell.PreRender"/> method for each custom column. 
+    /// Used by postback-links which must be registered for synchronous postbacks.
+    /// </summary>
     private void PreRenderCustomColumns ()
     {
       var columns = EnsureColumnsGot (true);
