@@ -66,11 +66,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       get { return false;  }
     }
 
-    public bool CorrespondsTo (string classID, string propertyName)
-    {
-      return false;
-    }
-
     public void SetRelationDefinition (RelationDefinition relationDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);

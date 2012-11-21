@@ -15,15 +15,11 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects.Configuration;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.PerformanceTests.TestDomain;
-using Remotion.Data.DomainObjects.Persistence.Rdbms.Model;
 
 namespace Remotion.Data.DomainObjects.PerformanceTests
 {
@@ -35,7 +31,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void GetOppositeClassDefinition ()
     {
-      Console.WriteLine ("Expected average duration of GetOppositeClassDefinition on reference system: ~0,25 탎");
+      Console.WriteLine ("Expected average duration of GetOppositeClassDefinition on reference system: ~0,05 탎");
 
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
@@ -44,7 +40,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        found &= classDefinition.GetMandatoryOppositeClassDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
+        found &= endPoints[i % endPoints.Count].GetOppositeEndPointDefinition().ClassDefinition != null;
       stopwatch.Stop();
 
       Console.WriteLine (found);
@@ -60,7 +56,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void GetMandatoryOppositeClassDefinition ()
     {
-      Console.WriteLine ("Expected average duration of GetMandatoryOppositeClassDefinition on reference system: ~0,25 탎");
+      Console.WriteLine ("Expected average duration of GetMandatoryOppositeClassDefinition on reference system: ~0,05 탎");
 
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
@@ -69,7 +65,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        found &= classDefinition.GetMandatoryOppositeClassDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
+        found &= endPoints[i % endPoints.Count].GetOppositeEndPointDefinition().ClassDefinition != null;
       stopwatch.Stop();
 
       Console.WriteLine (found);
@@ -85,7 +81,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void GetOppositeEndPointDefinition ()
     {
-      Console.WriteLine ("Expected average duration of GetOppositeEndPointDefinition on reference system: ~0,25 탎");
+      Console.WriteLine ("Expected average duration of GetOppositeEndPointDefinition on reference system: ~0,04 탎");
 
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
@@ -94,7 +90,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        found &= classDefinition.GetOppositeEndPointDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
+        found &= endPoints[i % endPoints.Count].GetOppositeEndPointDefinition() != null;
       stopwatch.Stop();
 
       Console.WriteLine (found);
@@ -110,7 +106,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     [Test]
     public void GetMandatoryOppositeEndPointDefinition ()
     {
-      Console.WriteLine ("Expected average duration of GetMandatoryOppositeEndPointDefinition on reference system: ~0,25 탎");
+      Console.WriteLine ("Expected average duration of GetMandatoryOppositeEndPointDefinition on reference system: ~0,04 탎");
 
       var classDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (ClassWithRelationProperties));
       var endPoints = classDefinition.GetRelationEndPointDefinitions().ToList();
@@ -119,7 +115,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
       var stopwatch = new Stopwatch();
       stopwatch.Start();
       for (int i = 0; i < TestRepititions; i++)
-        found &= classDefinition.GetMandatoryOppositeEndPointDefinition (endPoints[i % endPoints.Count].PropertyName) != null;
+        found &= endPoints[i % endPoints.Count].GetMandatoryOppositeEndPointDefinition() != null;
       stopwatch.Stop();
 
       Console.WriteLine (found);

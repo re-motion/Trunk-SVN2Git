@@ -300,26 +300,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetRelatedClassDefinition ()
-    {
-      Assert.That (
-          _distributorClass.GetOppositeClassDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Company.Ceo"),
-          Is.Not.Null);
-      Assert.That (
-          _distributorClass.GetOppositeClassDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Partner.ContactPerson"),
-          Is.Not.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (ArgumentEmptyException))]
-    public void GetRelatedClassDefinitionWithEmtpyPropertyName ()
-    {
-      _distributorClass.GetOppositeClassDefinition (string.Empty);
-    }
-
-    [Test]
     public void GetRelationEndPointDefinition ()
     {
       Assert.That (
@@ -533,19 +513,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     public void GetMandatoryRelationEndPointDefinitionForUndefinedProperty ()
     {
       _orderClass.GetMandatoryRelationEndPointDefinition ("UndefinedProperty");
-    }
-
-    [Test]
-    public void GetMandatoryOppositeEndPointDefinition ()
-    {
-      IRelationEndPointDefinition oppositeEndPointDefinition =
-          _orderClass.GetMandatoryOppositeEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.OrderTicket");
-      Assert.That (oppositeEndPointDefinition, Is.Not.Null);
-      Assert.That (
-          oppositeEndPointDefinition.PropertyName,
-          Is.EqualTo (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Order"));
     }
 
     [Test]
@@ -843,130 +810,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
           folderDefinition.GetRelationEndPointDefinition (
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"),
           Is.Not.Null);
-    }
-
-    [Test]
-    public void GetOppositeClassDefinitionCompositeBaseClass ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
-
-      Assert.That (
-          fileSystemItemDefinition.GetOppositeClassDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"),
-          Is.SameAs (
-              folderDefinition));
-      Assert.That (
-          fileSystemItemDefinition.GetOppositeClassDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"),
-          Is.Null);
-    }
-
-    [Test]
-    public void GetOppositeClassDefinitionCompositeDerivedClass ()
-    {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-
-      Assert.That (
-          folderDefinition.GetOppositeClassDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"),
-          Is.SameAs (
-              folderDefinition));
-      Assert.That (
-          folderDefinition.GetOppositeClassDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"),
-          Is.SameAs (
-              fileSystemItemDefinition));
-    }
-
-    [Test]
-    public void GetMandatoryOppositeEndPointDefinitionCompositeBaseClass ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-
-      Assert.That (
-          fileSystemItemDefinition.GetMandatoryOppositeEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"),
-          Is.Not.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'FileSystemItem' and property 'Invalid'.")]
-    public void GetMandatoryOppositeEndPointDefinition_InvalidProperty ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-
-      fileSystemItemDefinition.GetMandatoryOppositeEndPointDefinition ("Invalid");
-    }
-
-    [Test]
-    public void GetOppositeEndPointDefinitionCompositeBaseClass ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-
-      Assert.That (
-          fileSystemItemDefinition.GetOppositeEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"),
-          Is.Not.Null);
-      Assert.That (
-          fileSystemItemDefinition.GetOppositeEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"),
-          Is.Null);
-    }
-
-    [Test]
-    public void GetOppositeEndPointDefinition_InvalidProperty ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-
-      Assert.That (fileSystemItemDefinition.GetOppositeEndPointDefinition ("Invalid"), Is.Null);
-    }
-
-    [Test]
-    public void GetMandatoryOppositeEndPointDefinitionCompositeDerivedClass ()
-    {
-      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
-
-      Assert.That (
-          folderDefinition.GetMandatoryOppositeEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"),
-          Is.Not.Null);
-      Assert.That (
-          folderDefinition.GetMandatoryOppositeEndPointDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Folder.FileSystemItems"),
-          Is.Not.Null);
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'FileSystemItem' and property 'InvalidProperty'.")]
-    public void GetMandatoryOppositeEndPointDefinitionWithInvalidPropertyName ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-
-      Assert.That (fileSystemItemDefinition.GetMandatoryOppositeEndPointDefinition ("InvalidProperty"), Is.Not.Null);
-    }
-
-    [Test]
-    public void GetMandatoryOppositeClassDefinition ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-      ClassDefinition folderDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (Folder));
-
-      Assert.That (
-          fileSystemItemDefinition.GetMandatoryOppositeClassDefinition (
-              "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.FileSystemItem.ParentFolder"),
-          Is.SameAs (
-              folderDefinition));
-    }
-
-    [Test]
-    [ExpectedException (typeof (MappingException), ExpectedMessage = "No relation found for class 'FileSystemItem' and property 'InvalidProperty'.")]
-    public void GetMandatoryOppositeClassDefinitionWithInvalidPropertyName ()
-    {
-      ClassDefinition fileSystemItemDefinition = MappingConfiguration.Current.GetTypeDefinition (typeof (FileSystemItem));
-
-      fileSystemItemDefinition.GetMandatoryOppositeClassDefinition ("InvalidProperty");
     }
 
     [Test]

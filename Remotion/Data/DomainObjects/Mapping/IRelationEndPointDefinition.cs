@@ -30,7 +30,6 @@ public interface IRelationEndPointDefinition
   bool IsVirtual { get; }
   bool IsAnonymous { get; }
 
-  bool CorrespondsTo (string classID, string propertyName);
   void SetRelationDefinition (RelationDefinition relationDefinition);
 }
 }

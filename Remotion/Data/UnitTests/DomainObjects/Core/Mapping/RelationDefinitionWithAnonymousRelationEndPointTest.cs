@@ -46,13 +46,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
     }
 
     [Test]
-    public void GetOppositeClassDefinition ()
-    {
-      Assert.AreSame (FakeMappingConfiguration.Current.TypeDefinitions[typeof (Client)], _relation.GetOppositeClassDefinition ("Location", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"));
-      Assert.AreSame (FakeMappingConfiguration.Current.TypeDefinitions[typeof (Location)], _relation.GetOppositeClassDefinition ("Client", null));
-    }
-
-    [Test]
     public void IsEndPoint ()
     {
       Assert.IsTrue (_relation.IsEndPoint ("Location", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Location.Client"));

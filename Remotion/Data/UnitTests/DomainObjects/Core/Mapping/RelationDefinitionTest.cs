@@ -25,7 +25,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
   [TestFixture]
   public class RelationDefinitionTest : MappingReflectionTestBase
   {
-    private ClassDefinition _orderClass;
     private ClassDefinition _customerClass;
     private VirtualRelationEndPointDefinition _customerEndPoint;
     private RelationEndPointDefinition _orderEndPoint;
@@ -36,7 +35,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
       base.SetUp();
 
       _customerClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Customer)];
-      _orderClass = FakeMappingConfiguration.Current.TypeDefinitions[typeof (Order)];
       _customerToOrder =
           FakeMappingConfiguration.Current.RelationDefinitions[
               "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order:Remotion.Data.UnitTests.DomainObjects.Core.Mapping."
@@ -133,18 +131,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Mapping
               "OrderTicket", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.OrderTicket.Customer"));
     }
 
-    [Test]
-    public void GetOppositeClassDefinition ()
-    {
-      Assert.AreSame (
-          _customerClass,
-          _customerToOrder.GetOppositeClassDefinition (
-              "Order", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Order.Customer"));
-      Assert.AreSame (
-          _orderClass,
-          _customerToOrder.GetOppositeClassDefinition (
-              "Customer", "Remotion.Data.UnitTests.DomainObjects.Core.Mapping.TestDomain.Integration.Customer.Orders"));
-    }
 
     [Test]
     [ExpectedException (typeof (MappingException), ExpectedMessage =

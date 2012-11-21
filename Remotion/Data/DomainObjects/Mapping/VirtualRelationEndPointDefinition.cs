@@ -60,13 +60,6 @@ namespace Remotion.Data.DomainObjects.Mapping
       _propertyInfo = propertyInfo;
     }
 
-    public bool CorrespondsTo (string classID, string propertyName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
-
-      return (_classDefinition.ID == classID && PropertyName == propertyName);
-    }
-
     public void SetRelationDefinition (RelationDefinition relationDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationDefinition", relationDefinition);
@@ -130,7 +123,7 @@ namespace Remotion.Data.DomainObjects.Mapping
 
       try
       {
-        var parser = new SortExpressionParser (this.GetOppositeClassDefinition());
+        var parser = new SortExpressionParser (this.GetMandatoryOppositeEndPointDefinition().ClassDefinition);
         return parser.Parse (sortExpressionText);
       }
       catch (MappingException ex)

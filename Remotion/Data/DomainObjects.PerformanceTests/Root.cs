@@ -185,10 +185,10 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     {
       var test = new ClassDefinitionTest();
       test.SetUp ();
-      // test.GetOppositeClassDefinition ();
-      // test.GetMandatoryOppositeClassDefinition ();
+      test.GetOppositeClassDefinition ();
+      test.GetMandatoryOppositeClassDefinition ();
       test.GetOppositeEndPointDefinition ();
-      // test.GetMandatoryOppositeEndPointDefinition ();
+      test.GetMandatoryOppositeEndPointDefinition ();
       test.TearDown ();
     }
   }

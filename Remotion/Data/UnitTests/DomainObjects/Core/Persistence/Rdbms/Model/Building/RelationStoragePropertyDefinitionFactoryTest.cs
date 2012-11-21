@@ -58,7 +58,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void CreateStoragePropertyDefinition_RelationToClassDefinitionWithoutHierarchy ()
     {
       var endPointDefinition = GetNonVirtualEndPointDefinition (typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
-      Assert.That (endPointDefinition.GetOppositeClassDefinition ().IsPartOfInheritanceHierarchy, Is.False);
+      var oppositeClassDefinition = endPointDefinition.GetMandatoryOppositeEndPointDefinition().ClassDefinition;
+      Assert.That (oppositeClassDefinition.IsPartOfInheritanceHierarchy, Is.False);
       
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageTypeForID (true))
@@ -72,7 +73,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeRelationClassIDColumnName");
 
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (endPointDefinition.GetOppositeClassDefinition (), null))
+          .Stub (stub => stub.GetStorageProviderDefinition (oppositeClassDefinition, null))
           .Return (_factory.StorageProviderDefinition);
 
       var result = _factory.CreateStoragePropertyDefinition (endPointDefinition);
@@ -93,14 +94,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
 
       Assert.That (
           objectIDWithoutClassIDStorageProperty.ClassDefinition,
-          Is.SameAs (endPointDefinition.GetOppositeClassDefinition()));
+          Is.SameAs (endPointDefinition.GetMandatoryOppositeEndPointDefinition().ClassDefinition));
     }
 
     [Test]
     public void CreateStoragePropertyDefinition_RelationToClassDefinitionWithoutHierarchy_WithForceClassIDTrue ()
     {
       var endPointDefinition = GetNonVirtualEndPointDefinition (typeof (ClassWithManySideRelationProperties), "BidirectionalOneToOne");
-      Assert.That (endPointDefinition.GetOppositeClassDefinition ().IsPartOfInheritanceHierarchy, Is.False);
+      Assert.That (endPointDefinition.GetMandatoryOppositeEndPointDefinition().ClassDefinition.IsPartOfInheritanceHierarchy, Is.False);
 
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageTypeForID (true))
@@ -117,7 +118,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeRelationClassIDColumnName");
 
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (endPointDefinition.GetOppositeClassDefinition(), null))
+          .Stub (stub => stub.GetStorageProviderDefinition (endPointDefinition.GetMandatoryOppositeEndPointDefinition().ClassDefinition, null))
           .Return (_factory.StorageProviderDefinition);
 
       var factoryForcingClassID = new RelationStoragePropertyDefinitionFactory (TestDomainStorageProviderDefinition,
@@ -138,7 +139,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
     public void CreateStoragePropertyDefinition_RelationToClassWithInheritanceHierarchy ()
     {
       var relationEndPointDefinition = GetNonVirtualEndPointDefinition (typeof (Ceo), "Company");
-      Assert.That (relationEndPointDefinition.GetOppositeClassDefinition ().IsPartOfInheritanceHierarchy, Is.True);
+      Assert.That (relationEndPointDefinition.GetMandatoryOppositeEndPointDefinition().ClassDefinition.IsPartOfInheritanceHierarchy, Is.True);
 
       _storageTypeInformationProviderStrictMock
           .Expect (mock => mock.GetStorageTypeForID (true))
@@ -155,7 +156,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Persistence.Rdbms.Model.Bui
           .Return ("FakeRelationClassIDColumnName");
 
       _storageProviderDefinitionFinderStub
-          .Stub (stub => stub.GetStorageProviderDefinition (relationEndPointDefinition.GetOppositeClassDefinition (), null))
+          .Stub (stub => stub.GetStorageProviderDefinition (relationEndPointDefinition.GetMandatoryOppositeEndPointDefinition().ClassDefinition, null))
           .Return (_factory.StorageProviderDefinition);
 
       var result = _factory.CreateStoragePropertyDefinition (relationEndPointDefinition);

@@ -103,6 +103,7 @@ namespace Remotion.Data.DomainObjects.Mapping
     public IRelationEndPointDefinition GetOppositeEndPointDefinition (IRelationEndPointDefinition endPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
+      // TODO 3176: This should throw an ArgumentException if the opposite is null, and GetOppositeEndPointDefinition should always return a non-null item.
       return GetOppositeEndPointDefinition (endPointDefinition.ClassDefinition.ID, endPointDefinition.PropertyName);
     }
 
@@ -119,12 +120,19 @@ namespace Remotion.Data.DomainObjects.Mapping
       return null;
     }
 
+    [Obsolete (
+    "This method is obsolete because it can lead to inefficient code. Use 'endPointDefinition.GetOppositeEndPointDefinition().ClassDefinition' "
+    + "instead. (1.13.176)")]
     public ClassDefinition GetOppositeClassDefinition (IRelationEndPointDefinition endPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("endPointDefinition", endPointDefinition);
       return GetOppositeClassDefinition (endPointDefinition.ClassDefinition.ID, endPointDefinition.PropertyName);
     }
 
+    [Obsolete (
+        "This method is obsolete because it can lead to inefficient code. Use "
+        + "'GetEndPointDefinition (classID, propertyName).GetOppositeEndPointDefinition().ClassDefinition' instead. If you already have an "
+        + "IRelationEndPointDefinition, just use 'endPointDefinition.GetOppositeEndPointDefinition().ClassDefinition'. (1.13.176)")]
     public ClassDefinition GetOppositeClassDefinition (string classID, string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("classID", classID);
@@ -173,6 +181,15 @@ namespace Remotion.Data.DomainObjects.Mapping
     private MappingException CreateMappingException (string message, params object[] args)
     {
       return new MappingException (string.Format (message, args));
+    }
+  }
+
+  // TODO 3176: Refactor to use reference equality, then inline into class above.
+  public static class Temporary
+  {
+    public static bool CorrespondsTo (this IRelationEndPointDefinition source, string classID, string propertyName)
+    {
+      return source.ClassDefinition.ID == classID && source.PropertyName == propertyName;
     }
   }
 }

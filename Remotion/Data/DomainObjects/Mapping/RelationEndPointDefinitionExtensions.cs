@@ -24,9 +24,11 @@ namespace Remotion.Data.DomainObjects.Mapping
   /// </summary>
   public static class RelationEndPointDefinitionExtensions
   {
+    // TODO 3176: This should always return a value or throw an exception. Remove GetMandatoryOppositeEndPointDefinition.
     public static IRelationEndPointDefinition GetOppositeEndPointDefinition (this IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      // TODO 3176: This should be an ArgumentException instead.
       Assertion.IsNotNull (relationEndPointDefinition.RelationDefinition, "Only fully initialized end points can be used.");
 
       return relationEndPointDefinition.RelationDefinition.GetOppositeEndPointDefinition (relationEndPointDefinition);
@@ -43,9 +45,10 @@ namespace Remotion.Data.DomainObjects.Mapping
     public static ClassDefinition GetOppositeClassDefinition (this IRelationEndPointDefinition relationEndPointDefinition)
     {
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
+      // TODO 3176: This should be an ArgumentException instead.
       Assertion.IsNotNull (relationEndPointDefinition.RelationDefinition, "Only fully initialized end points can be used.");
 
-      return relationEndPointDefinition.RelationDefinition.GetOppositeClassDefinition (relationEndPointDefinition);
+      return relationEndPointDefinition.GetOppositeEndPointDefinition().ClassDefinition;
     }
   }
 }

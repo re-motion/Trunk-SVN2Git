@@ -134,6 +134,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       return MyPropertyDefinitions.Contains (propertyDefinition);
     }
 
+    [Obsolete (
+        "This method is obsolete because it can lead to inefficient code. Use 'GetEndPointDefinition (propertyName).GetOppositeEndPointDefinition()' "
+        + "instead. If you already have an IRelationEndPointDefinition, just use 'endPointDefinition.GetOppositeEndPointDefinition()'. (1.13.176)")]
     public IRelationEndPointDefinition GetOppositeEndPointDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -145,6 +148,9 @@ namespace Remotion.Data.DomainObjects.Mapping
       return relationEndPointDefinition.GetOppositeEndPointDefinition();
     }
 
+    [Obsolete (
+        "This method is obsolete because it can lead to inefficient code. Use 'GetMandatoryEndPointDefinition (propertyName).GetOppositeEndPointDefinition()' "
+        + "instead. If you already have an IRelationEndPointDefinition, just use 'endPointDefinition.GetOppositeEndPointDefinition()'. (1.13.176)")]
     public IRelationEndPointDefinition GetMandatoryOppositeEndPointDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -163,6 +169,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       return _cachedRelationEndPointDefinitions.Value;
     }
 
+    [Obsolete (
+        "This method is obsolete because it can lead to inefficient code. Use "
+        + "'GetEndPointDefinition (propertyName).GetOppositeEndPointDefinition().ClassDefinition' instead. If you already have an "
+        + "IRelationEndPointDefinition, just use 'endPointDefinition.GetOppositeEndPointDefinition().ClassDefinition'. (1.13.176)")]
     public ClassDefinition GetOppositeClassDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
@@ -174,6 +184,10 @@ namespace Remotion.Data.DomainObjects.Mapping
       return endPointDefinition.GetOppositeClassDefinition();
     }
 
+    [Obsolete (
+        "This method is obsolete because it can lead to inefficient code. Use "
+        + "'GetEndPointDefinition (propertyName).GetMandatoryOppositeEndPointDefinition().ClassDefinition' instead. If you already have an "
+        + "IRelationEndPointDefinition, just use 'endPointDefinition.GetOppositeEndPointDefinition().ClassDefinition'. (1.13.176)")]
     public ClassDefinition GetMandatoryOppositeClassDefinition (string propertyName)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyName", propertyName);
