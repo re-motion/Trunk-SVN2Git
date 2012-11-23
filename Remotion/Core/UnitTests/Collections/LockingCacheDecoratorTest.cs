@@ -14,9 +14,11 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -25,71 +27,50 @@ namespace Remotion.UnitTests.Collections
   [TestFixture]
   public class LockingCacheDecoratorTest
   {
-    private ICache<string, int> _innerCacheMock;
-    private LockingCacheDecorator<string, int> _cache;
+    private LockingCacheDecorator<string, int> _decorator;
+
+    private LockingDecoratorTestHelper<ICache<string, int>> _helper;
 
     [SetUp]
     public void SetUp ()
     {
-      _innerCacheMock = MockRepository.GenerateStrictMock<ICache<string, int>> ();
-      _cache = new LockingCacheDecorator<string, int> (_innerCacheMock);
+      var innerCacheMock = MockRepository.GenerateStrictMock<ICache<string, int>>();
+
+      _decorator = new LockingCacheDecorator<string, int> (innerCacheMock);
+
+      var lockObject = PrivateInvoke.GetNonPublicField (_decorator, "_lock");
+      _helper = new LockingDecoratorTestHelper<ICache<string, int>> (_decorator, lockObject, innerCacheMock);
     }
 
     [Test]
     public void IsNull ()
     {
-      Assert.That (((INullObject) _cache).IsNull, Is.False);
+      Assert.That (((INullObject) _decorator).IsNull, Is.False);
     }
 
     [Test]
     public void GetOrCreateValue ()
     {
-      ExpectSynchronizedDelegation (cache => cache.GetOrCreateValue ("hugo", delegate { return 3; }), 17);
+      _helper.ExpectSynchronizedDelegation (cache => cache.GetOrCreateValue ("hugo", delegate { return 3; }), 17);
     }
 
     [Test]
     public void TryGetValue ()
     {
       int value;
-      ExpectSynchronizedDelegation (store => store.TryGetValue ("hugo", out value), true);
+      _helper.ExpectSynchronizedDelegation (store => store.TryGetValue ("hugo", out value), true);
     }
 
     [Test]
     public void Clear ()
     {
-      ExpectSynchronizedDelegation (store => store.Clear ());
+      _helper.ExpectSynchronizedDelegation (store => store.Clear());
     }
 
     [Test]
     public void Serializable ()
     {
-      Serializer.SerializeAndDeserialize (new LockingCacheDecorator<string, int> (new Cache<string, int> ()));
-    }
-
-    private void ExpectSynchronizedDelegation<TResult> (Func<ICache<string, int>, TResult> action, TResult fakeResult)
-    {
-      _innerCacheMock
-          .Expect (mock => action (mock))
-          .Return (fakeResult)
-          .WhenCalled (mi => LockingCacheDecoratorTestHelper.CheckLockIsHeld (_cache));
-      _innerCacheMock.Replay ();
-
-      TResult actualResult = action (_cache);
-
-      _innerCacheMock.VerifyAllExpectations ();
-      Assert.That (actualResult, Is.EqualTo (fakeResult));
-    }
-
-    private void ExpectSynchronizedDelegation (Action<ICache<string, int>> action)
-    {
-      _innerCacheMock
-          .Expect (action)
-          .WhenCalled (mi => LockingCacheDecoratorTestHelper.CheckLockIsHeld (_cache));
-      _innerCacheMock.Replay ();
-
-      action (_cache);
-
-      _innerCacheMock.VerifyAllExpectations ();
+      Serializer.SerializeAndDeserialize (new LockingCacheDecorator<string, int> (new Cache<string, int>()));
     }
   }
 }

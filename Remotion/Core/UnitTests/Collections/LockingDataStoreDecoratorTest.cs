@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 
@@ -26,107 +27,86 @@ namespace Remotion.UnitTests.Collections
   [TestFixture]
   public class LockingDataStoreDecoratorTest
   {
-    private IDataStore<string, int> _innerDataStoreMock;
-    private LockingDataStoreDecorator<string, int> _store;
+    private LockingDataStoreDecorator<string, int> _decorator;
+
+    private LockingDecoratorTestHelper<IDataStore<string, int>> _helper;
 
     [SetUp]
     public void SetUp ()
     {
-      _innerDataStoreMock = MockRepository.GenerateStrictMock<IDataStore<string, int>> ();
-      _store = new LockingDataStoreDecorator<string, int> (_innerDataStoreMock);
+      var innerDataStoreMock = MockRepository.GenerateStrictMock<IDataStore<string, int>>();
+
+      _decorator = new LockingDataStoreDecorator<string, int> (innerDataStoreMock);
+
+      var lockObject = PrivateInvoke.GetNonPublicField (_decorator, "_lock");
+      _helper = new LockingDecoratorTestHelper<IDataStore<string, int>> (_decorator, lockObject, innerDataStoreMock);
     }
 
     [Test]
     public void IsNull ()
     {
-      Assert.That (((INullObject) _store).IsNull, Is.False);
+      Assert.That (((INullObject) _decorator).IsNull, Is.False);
     }
 
     [Test]
     public void ContainsKey ()
     {
-      ExpectSynchronizedDelegation (store => store.ContainsKey ("a"), true);
+      _helper.ExpectSynchronizedDelegation (store => store.ContainsKey ("a"), true);
     }
 
     [Test]
     public void Add ()
     {
-      ExpectSynchronizedDelegation (store => store.Add ("a", 1));
+      _helper.ExpectSynchronizedDelegation (store => store.Add ("a", 1));
     }
 
     [Test]
     public void Remove ()
     {
-      ExpectSynchronizedDelegation (store => store.Remove ("b"), true);
+      _helper.ExpectSynchronizedDelegation (store => store.Remove ("b"), true);
     }
 
     [Test]
     public void Clear ()
     {
-      ExpectSynchronizedDelegation (store => store.Clear ());
+      _helper.ExpectSynchronizedDelegation (store => store.Clear());
     }
 
     [Test]
     public void Get_Value ()
     {
-      ExpectSynchronizedDelegation (store => store["c"], 47);
+      _helper.ExpectSynchronizedDelegation (store => store["c"], 47);
     }
 
     [Test]
     public void Set_Value ()
     {
-      ExpectSynchronizedDelegation (store => store["c"] = 17);
+      _helper.ExpectSynchronizedDelegation (store => store["c"] = 17);
     }
 
     [Test]
     public void GetValueOrDefault ()
     {
-      ExpectSynchronizedDelegation (store => store.GetValueOrDefault ("hugo"), 7);
+      _helper.ExpectSynchronizedDelegation (store => store.GetValueOrDefault ("hugo"), 7);
     }
 
     [Test]
     public void TryGetValue ()
     {
       int value;
-      ExpectSynchronizedDelegation (store => store.TryGetValue ("hugo", out value), true);
+      _helper.ExpectSynchronizedDelegation (store => store.TryGetValue ("hugo", out value), true);
     }
 
     [Test]
     public void GetOrCreateValue ()
     {
-      ExpectSynchronizedDelegation (store => store.GetOrCreateValue ("hugo", delegate { return 3; }), 17);
+      _helper.ExpectSynchronizedDelegation (store => store.GetOrCreateValue ("hugo", delegate { return 3; }), 17);
     }
 
     [Test]
     public void Serializable ()
     {
-      Serializer.SerializeAndDeserialize (new LockingDataStoreDecorator<string, int>(new SimpleDataStore<string, int>()));
-    }
-
-    private void ExpectSynchronizedDelegation<TResult> (Func<IDataStore<string, int>, TResult> action, TResult fakeResult)
-    {
-      _innerDataStoreMock
-          .Expect (mock => action(mock))
-          .Return (fakeResult)
-          .WhenCalled (mi => LockingDataStoreDecoratorTestHelper.CheckLockIsHeld (_store));
-      _innerDataStoreMock.Replay();
-
-      TResult actualResult = action (_store);
-
-      _innerDataStoreMock.VerifyAllExpectations();
-      Assert.That (actualResult, Is.EqualTo (fakeResult));
-    }
-
-    private void ExpectSynchronizedDelegation (Action<IDataStore<string, int>> action)
-    {
-      _innerDataStoreMock
-          .Expect (action)
-          .WhenCalled (mi => LockingDataStoreDecoratorTestHelper.CheckLockIsHeld (_store));
-      _innerDataStoreMock.Replay ();
-
-      action (_store);
-
-      _innerDataStoreMock.VerifyAllExpectations ();
+      Serializer.SerializeAndDeserialize (new LockingDataStoreDecorator<string, int> (new SimpleDataStore<string, int>()));
     }
   }
 }
