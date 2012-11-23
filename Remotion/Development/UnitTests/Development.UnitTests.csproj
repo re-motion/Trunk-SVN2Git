@@ -145,6 +145,10 @@
       <Project>{EBBF3A56-5B7B-4CD7-9AA9-74AF17B0B7ED}</Project>
       <Name>Development.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RhinoMocks\Development.RhinoMocks.csproj">
+      <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
+      <Name>Development.RhinoMocks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Web\Development.Web.csproj">
       <Project>{44924ED6-8C12-416D-972F-F1F10417E7EF}</Project>
       <Name>Development.Web</Name>
@@ -185,7 +189,7 @@
     <Compile Include="Data\UnitTesting\DomainObjects\Linq\ExpressionTreeComparerTest.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\SetUpFixture.cs" />
     <Compile Include="Data\UnitTesting\DomainObjects\TestDomain\SimpleDomainObject.cs" />
-    <Compile Include="ObjectMotherTest.cs" />
+    <Compile Include="Core\UnitTesting\ObjectMothers\ObjectMotherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -244,7 +248,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Core\UnitTesting\Resources\TestEmbeddedResource.txt" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="RhinoMocks\Threading\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

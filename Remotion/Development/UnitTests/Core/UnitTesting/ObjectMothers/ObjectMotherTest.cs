@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting.ObjectMothers;
 
-namespace Remotion.Development.UnitTests
+namespace Remotion.Development.UnitTests.Core.UnitTesting.ObjectMothers
 {
   [NUnit.Framework.TestFixture]
   public class ObjectMotherTest
