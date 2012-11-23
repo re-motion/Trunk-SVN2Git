@@ -58,7 +58,11 @@ namespace Remotion.Development.UnitTests.RhinoMocks.Threading
               inner.Get();
             return "faulty";
           },
-          inner => s => inner.Do ("faulty"),
+          inner => s =>
+          {
+            lock (lockObject)
+              inner.Do ("faulty");
+          },
           lockObject);
     }
 
