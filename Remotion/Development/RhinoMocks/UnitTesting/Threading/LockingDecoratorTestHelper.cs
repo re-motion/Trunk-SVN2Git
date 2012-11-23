@@ -16,9 +16,7 @@
 // 
 
 using System;
-using System.Threading;
 using NUnit.Framework;
-using Remotion.Development.UnitTesting;
 using Remotion.Dms.Shared.Utilities;
 using Rhino.Mocks;
 
@@ -29,18 +27,8 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
   /// </summary>
   /// <typeparam name="T">The interface type of the decorator.</typeparam>
   public class LockingDecoratorTestHelper<T>
-    where T : class // Needed for RhinoMocks (Expect method).
+      where T : class // Needed for RhinoMocks (Expect method).
   {
-    public static void CheckLockIsHeld (object lockObject)
-    {
-      ArgumentUtility.CheckNotNull ("lockObject", lockObject);
-
-      var lockAcquired = true;
-      ThreadRunner.Run (() => lockAcquired = Monitor.TryEnter (lockObject));
-
-      Assert.That (lockAcquired, Is.False, "Parallel thread should have been blocked.");
-    }
-
     private readonly T _lockingDecorator;
     private readonly object _lockObject;
     private readonly T _innerMock;
@@ -64,7 +52,7 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
       _innerMock
           .Expect (mock => action (mock))
           .Return (fakeResult)
-          .WhenCalled (mi => CheckLockIsHeld (_lockObject));
+          .WhenCalled (mi => LockTestHelper.CheckLockIsHeld (_lockObject));
 
       var actualResult = action (_lockingDecorator);
 
@@ -78,7 +66,7 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
 
       _innerMock
           .Expect (action)
-          .WhenCalled (mi => CheckLockIsHeld (_lockObject));
+          .WhenCalled (mi => LockTestHelper.CheckLockIsHeld (_lockObject));
 
       action (_lockingDecorator);
 

@@ -23,6 +23,7 @@ using Rhino.Mocks.Exceptions;
 
 namespace Remotion.Development.UnitTests.RhinoMocks.Threading
 {
+  [TestFixture]
   public class LockingDecoratorTestHelperTest
   {
     private LockingDecoratorTestHelper<IMyInterface> _helperForLockingDecorator;
