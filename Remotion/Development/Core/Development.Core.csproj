@@ -122,7 +122,6 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="UnitTesting\AmbiguousMethodNameException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -152,7 +151,6 @@
     <Compile Include="UnitTesting\IO\TempFile.cs" />
     <Compile Include="UnitTesting\PEVerifyPathSources\IPEVerifyPathSource.cs" />
     <Compile Include="UnitTesting\ISerializationEventReceiver.cs" />
-    <Compile Include="UnitTesting\MethodNotFoundException.cs" />
     <Compile Include="UnitTesting\MixinWithSerializationCallbacks.cs" />
     <Compile Include="UnitTesting\ObjectMothers\DictionaryObjectMother.cs" />
     <Compile Include="UnitTesting\ObjectMothers\ListObjectMother.cs" />

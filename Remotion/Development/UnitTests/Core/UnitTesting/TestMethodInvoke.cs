@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -100,14 +101,14 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     }
 
     [Test]
-    [ExpectedException (typeof (AmbiguousMethodNameException))]
+    [ExpectedException (typeof (AmbiguousMatchException))]
     public void TestPublicInvokeAmbiguous()
     {
       PrivateInvoke.InvokePublicMethod (_twm, "f", null);
     }
 
     [Test]
-    [ExpectedException (typeof (MethodNotFoundException))]
+    [ExpectedException (typeof (MissingMethodException))]
     public void TestPublicInvokeMethodNotFound()
     {
       PrivateInvoke.InvokePublicMethod (_twm, "f", 1.0);

@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Reflection;
 using System.Text;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
@@ -83,7 +84,7 @@ public class TestCreateInstance
   }
 
   [Test]
-  [ExpectedException (typeof (AmbiguousMethodNameException))]
+  [ExpectedException (typeof (AmbiguousMatchException))]
   public void TestCreateInstanceAmbiguous()
   {
     PublicClass internalInstance = (PublicClass) PrivateInvoke.CreateInstancePublicCtor (

@@ -68,14 +68,18 @@ namespace Remotion.Development.UnitTesting
             if (isMatch)
             {
               if (callMethod != null)
-                throw new AmbiguousMethodNameException (methodName, type);
+              {
+                var message = string.Format ("There is no method \"{0}\" in type {1} that accepts the specified argument types.", methodName, type);
+                throw new AmbiguousMatchException (message);
+              }
+
               callMethod = method;
             }
           }
         }
       }
       if (callMethod == null)
-        throw new MethodNotFoundException (methodName, type);
+        throw new MissingMethodException (type.Name, methodName);
 
       return callMethod;
     }
