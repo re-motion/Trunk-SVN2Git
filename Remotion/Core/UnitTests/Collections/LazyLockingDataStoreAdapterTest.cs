@@ -19,6 +19,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
@@ -266,13 +267,17 @@ namespace Remotion.UnitTests.Collections
     private void CheckInnerDataStoreIsProtected ()
     {
       var lockingDataStoreDecorator = GetLockingDataStoreDecorator (_store);
-      LockingDataStoreDecoratorTestHelper.CheckLockIsHeld (lockingDataStoreDecorator);
+      var lockObject = PrivateInvoke.GetNonPublicField (lockingDataStoreDecorator, "_lock");
+
+      LockTestHelper.CheckLockIsHeld (lockObject);
     }
 
     private void CheckInnerDataStoreIsNotProtected ()
     {
       var lockingDataStoreDecorator = GetLockingDataStoreDecorator (_store);
-      LockingDataStoreDecoratorTestHelper.CheckLockIsNotHeld (lockingDataStoreDecorator);
+      var lockObject = PrivateInvoke.GetNonPublicField (lockingDataStoreDecorator, "_lock");
+
+      LockTestHelper.CheckLockIsNotHeld (lockObject);
     }
 
     private DoubleCheckedLockingContainer<Wrapper> CreateContainerThatChecksForNotProtected (object value)

@@ -19,6 +19,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.Collections;
+using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using Wrapper = Remotion.Collections.LazyLockingCachingAdapter<string, object>.Wrapper;
@@ -161,13 +162,17 @@ namespace Remotion.UnitTests.Collections
     private void CheckInnerCacheIsProtected ()
     {
       var lockingCacheDecorator = GetLockingCacheDecorator (_cachingAdapter);
-      LockingCacheDecoratorTestHelper.CheckLockIsHeld (lockingCacheDecorator);
+      var lockObject = PrivateInvoke.GetNonPublicField (lockingCacheDecorator, "_lock");
+
+      LockTestHelper.CheckLockIsHeld (lockObject);
     }
 
     private void CheckInnerCacheIsNotProtected ()
     {
       var lockingCacheDecorator = GetLockingCacheDecorator (_cachingAdapter);
-      LockingCacheDecoratorTestHelper.CheckLockIsNotHeld (lockingCacheDecorator);
+      var lockObject = PrivateInvoke.GetNonPublicField (lockingCacheDecorator, "_lock");
+
+      LockTestHelper.CheckLockIsNotHeld (lockObject);
     }
 
     private DoubleCheckedLockingContainer<Wrapper> CreateContainerThatChecksForNotProtected (object value)

@@ -163,8 +163,6 @@
     <Compile Include="Collections\LazyLockingCachingAdapterTest.cs" />
     <Compile Include="Collections\LazyLockingDataStoreAdapterTest.cs" />
     <Compile Include="Collections\ListAdapterTest.cs" />
-    <Compile Include="Collections\LockingCacheDecoratorTestHelper.cs" />
-    <Compile Include="Collections\LockingDataStoreDecoratorTestHelper.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecoratorTest.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicyTest.cs" />
     <Compile Include="Configuration\TypeDiscovery\IntegrationTests\SpecificRootAssemblies\SpecificRootAssembliesAreNotSubjectToApplicationFilterTest.cs" />
