@@ -37,5 +37,15 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
 
       Assert.That (lockAcquired, Is.False, "Parallel thread should have been blocked.");
     }
+
+    public static void CheckLockIsNotHeld (object lockObject)
+    {
+      ArgumentUtility.CheckNotNull ("lockObject", lockObject);
+
+      var lockAcquired = true;
+      ThreadRunner.Run (() => lockAcquired = Monitor.TryEnter (lockObject));
+
+      Assert.That (lockAcquired, Is.True, "Parallel thread should NOT have been blocked.");
+    }
   }
 }

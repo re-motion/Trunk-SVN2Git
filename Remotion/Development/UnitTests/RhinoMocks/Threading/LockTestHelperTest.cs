@@ -36,5 +36,18 @@ namespace Remotion.Development.UnitTests.RhinoMocks.Threading
           () => LockTestHelper.CheckLockIsHeld (lockObject),
           Throws.TypeOf<AssertionException>().With.Message.StartsWith ("  Parallel thread should have been blocked."));
     }
+
+    [Test]
+    public void CheckLockIsNotHeld ()
+    {
+      var lockObject = new object();
+
+      lock (lockObject)
+        Assert.That (
+            () => LockTestHelper.CheckLockIsNotHeld (lockObject),
+            Throws.TypeOf<AssertionException>().With.Message.StartsWith ("  Parallel thread should NOT have been blocked."));
+
+      Assert.That (() => LockTestHelper.CheckLockIsNotHeld (lockObject), Throws.Nothing);
+    }
   }
 }
