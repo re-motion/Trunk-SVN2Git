@@ -113,13 +113,25 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Sandboxing
     }
 
     [Test]
-    public void RunTestMethod_IgnoredTest ()
+    public void RunTestMethod_IgnoredTestMethod ()
     {
       var instance = new DummyTest5();
       var testMethod = typeof (DummyTest5).GetMethod ("TestIgnored");
 
       var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, null);
       testResult.EnsureNotFailed();
+      Assert.That (testResult.Status, Is.EqualTo (SandboxTestStatus.Ignored));
+    }
+
+    [Test]
+    public void RunTestMethod_IgnoredTestFixture ()
+    {
+      var instance = new DummyTestIgnored ();
+      var testMethod = typeof (DummyTestIgnored).GetMethod ("TestIgnored");
+
+      var testResult = _sandboxTestRunner.RunTestMethod (instance, testMethod, null, null);
+      testResult.EnsureNotFailed ();
+      Assert.That (testResult.Status, Is.EqualTo (SandboxTestStatus.Ignored));
     }
 
     [Test]

@@ -69,7 +69,7 @@ namespace Remotion.Development.UnitTesting.Sandboxing
     public TestResult RunTestMethod (object testFixtureInstance, MethodInfo testMethod, MethodInfo setupMethod, MethodInfo tearDownMethod)
     {
       Exception exception;
-      if (IsDefined (testMethod, "NUnit.Framework.IgnoreAttribute"))
+      if (IsDefined (testMethod, "NUnit.Framework.IgnoreAttribute") || IsDefined (testMethod.DeclaringType, "NUnit.Framework.IgnoreAttribute"))
         return TestResult.CreateIgnored (testMethod);
 
       if (setupMethod!=null && !(TryInvokeMethod (setupMethod, testFixtureInstance, out exception)))

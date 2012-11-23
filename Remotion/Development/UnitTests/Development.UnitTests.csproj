@@ -175,6 +175,7 @@
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FilteringTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Reflection\TypeDiscovery\FixedTypeDiscoveryServiceTest.cs" />
     <Compile Include="Core\UnitTesting\Resources\ResourceUtilityTest.cs" />
+    <Compile Include="Core\UnitTesting\Sandboxing\DummyTestIgnored.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\DummyTest1.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\DummyTest2.cs" />
     <Compile Include="Core\UnitTesting\Sandboxing\DummyTest3.cs" />
