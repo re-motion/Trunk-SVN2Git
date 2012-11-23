@@ -32,9 +32,7 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
     {
       ArgumentUtility.CheckNotNull ("lockObject", lockObject);
 
-      var lockAcquired = true;
-      ThreadRunner.Run (() => lockAcquired = Monitor.TryEnter (lockObject));
-
+      var lockAcquired = CouldAcquireLockFromOtherThread (lockObject);
       Assert.That (lockAcquired, Is.False, "Parallel thread should have been blocked.");
     }
 
@@ -42,10 +40,24 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
     {
       ArgumentUtility.CheckNotNull ("lockObject", lockObject);
 
-      var lockAcquired = true;
-      ThreadRunner.Run (() => lockAcquired = Monitor.TryEnter (lockObject));
-
+      var lockAcquired = CouldAcquireLockFromOtherThread (lockObject);
       Assert.That (lockAcquired, Is.True, "Parallel thread should NOT have been blocked.");
+    }
+
+    public static bool CouldAcquireLockFromOtherThread (object lockObject)
+    {
+      ArgumentUtility.CheckNotNull ("lockObject", lockObject);
+
+      var lockAcquired = false;
+      ThreadRunner.Run (
+          () =>
+          {
+            lockAcquired = Monitor.TryEnter (lockObject);
+            if (lockAcquired)
+              Monitor.Exit (lockObject);
+          });
+
+      return lockAcquired;
     }
   }
 }

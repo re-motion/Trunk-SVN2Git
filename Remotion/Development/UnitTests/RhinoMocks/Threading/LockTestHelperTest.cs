@@ -16,6 +16,7 @@
 // 
 
 using System;
+using System.Threading;
 using NUnit.Framework;
 using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 
@@ -24,30 +25,61 @@ namespace Remotion.Development.UnitTests.RhinoMocks.Threading
   [TestFixture]
   public class LockTestHelperTest
   {
+    private object _lockObject;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _lockObject = new object();
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      Assert.That (Monitor.TryEnter (_lockObject), Is.True, "Lock should have been released.");
+    }
+
     [Test]
     public void CheckLockIsHeld ()
     {
-      var lockObject = new object();
+      lock (_lockObject)
+        LockTestHelper.CheckLockIsHeld (_lockObject);
+    }
 
-      lock (lockObject)
-        Assert.That (() => LockTestHelper.CheckLockIsHeld (lockObject), Throws.Nothing);
-
-      Assert.That (
-          () => LockTestHelper.CheckLockIsHeld (lockObject),
-          Throws.TypeOf<AssertionException>().With.Message.StartsWith ("  Parallel thread should have been blocked."));
+    [Test]
+    [ExpectedException (typeof (AssertionException), MatchType = MessageMatch.Contains,
+        ExpectedMessage = "Parallel thread should have been blocked.")]
+    public void CheckLockIsHeld_Throws ()
+    {
+      LockTestHelper.CheckLockIsHeld (_lockObject);
     }
 
     [Test]
     public void CheckLockIsNotHeld ()
     {
-      var lockObject = new object();
+      LockTestHelper.CheckLockIsNotHeld (_lockObject);
+    }
 
-      lock (lockObject)
-        Assert.That (
-            () => LockTestHelper.CheckLockIsNotHeld (lockObject),
-            Throws.TypeOf<AssertionException>().With.Message.StartsWith ("  Parallel thread should NOT have been blocked."));
+    [Test]
+    [ExpectedException (typeof (AssertionException), MatchType = MessageMatch.Contains,
+        ExpectedMessage = "Parallel thread should NOT have been blocked.")]
+    public void CheckLockIsNotHeld_Throws ()
+    {
+      lock (_lockObject)
+        LockTestHelper.CheckLockIsNotHeld (_lockObject);
+    }
 
-      Assert.That (() => LockTestHelper.CheckLockIsNotHeld (lockObject), Throws.Nothing);
+    [Test]
+    public void CouldAcquireLockFromOtherThread_True ()
+    {
+      Assert.That (LockTestHelper.CouldAcquireLockFromOtherThread (_lockObject), Is.True);
+    }
+
+    [Test]
+    public void CouldAcquireLockFromOtherThread_False ()
+    {
+      lock (_lockObject)
+        Assert.That (LockTestHelper.CouldAcquireLockFromOtherThread (_lockObject), Is.False);
     }
   }
 }
