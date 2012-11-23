@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
+using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
@@ -28,6 +29,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 {
   public partial class BocList
   {
+    private bool _rowMenusInitialized;
+
     private readonly List<BocListRowMenuTuple> _rowMenus = new List<BocListRowMenuTuple>();
 
     private readonly PlaceHolder _rowMenusPlaceHolder = new PlaceHolder();
@@ -41,66 +44,28 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       _rowMenus.Clear();
       _rowMenusPlaceHolder.Controls.Clear();
-    }
-
-    /// <summary> 
-    ///   Creates a <see cref="BocDropDownMenuColumnDefinition"/> if <see cref="RowMenuDisplay"/> is set to
-    ///   <see cref="Controls.RowMenuDisplay.Automatic"/>.
-    /// </summary>
-    /// <returns> A <see cref="BocDropDownMenuColumnDefinition"/> instance or <see langword="null"/>. </returns>
-    private BocDropDownMenuColumnDefinition GetRowMenuColumn ()
-    {
-      if (_rowMenuDisplay == RowMenuDisplay.Automatic)
-      {
-        BocDropDownMenuColumnDefinition dropDownMenuColumn = new BocDropDownMenuColumnDefinition();
-        dropDownMenuColumn.Width = Unit.Percentage (0);
-        dropDownMenuColumn.MenuTitleText = GetResourceManager().GetString (ResourceIdentifier.RowMenuTitle);
-        return dropDownMenuColumn;
-      }
-      return null;
-    }
-
-    /// <summary> 
-    ///   Tests that the <paramref name="columnDefinitions"/> array holds exactly one
-    ///   <see cref="BocDropDownMenuColumnDefinition"/> if the <see cref="RowMenuDisplay"/> is set to 
-    ///   <see cref="Controls.RowMenuDisplay.Automatic"/> or <see cref="Controls.RowMenuDisplay.Manual"/>.
-    /// </summary>
-    private void CheckRowMenuColumns (BocColumnDefinition[] columnDefinitions)
-    {
-      bool isFound = false;
-      for (int i = 0; i < columnDefinitions.Length; i++)
-      {
-        if (columnDefinitions[i] is BocDropDownMenuColumnDefinition)
-        {
-          if (isFound)
-            throw new InvalidOperationException ("Only a single BocDropDownMenuColumnDefinition is allowed in the BocList '" + ID + "'.");
-          isFound = true;
-        }
-      }
-      if (RowMenuDisplay == RowMenuDisplay.Manual && ! isFound)
-      {
-        throw new InvalidOperationException (
-            "No BocDropDownMenuColumnDefinition was found in the BocList '" + ID + "' but the RowMenuDisplay was set to manual.");
-      }
+      _rowMenusInitialized = false;
     }
 
     private void EnsureRowMenusInitialized ()
     {
+      if (_rowMenusInitialized)
+        return;
+
+      _rowMenusInitialized = true;
+
       if (! AreRowMenusEnabled)
         return;
       if (IsDesignMode)
         return;
       if (!HasValue)
         return;
-      if (_rowMenus.Any())
-        return;
-
       EnsureChildControls();
-      CalculateCurrentPage (null);
 
-      ResetRowMenus();
+      Assertion.IsTrue (_rowMenus.Count == 0);
+      Assertion.IsTrue (_rowMenusPlaceHolder.Controls.Count == 0);
 
-      foreach (var row in GetRowsForCurrentPage())
+      foreach (var row in EnsureBocListRowsForCurrentPageGot())
       {
         DropDownMenu dropDownMenu = new DropDownMenu (this);
         dropDownMenu.ID = GetRowMenuID (row.ValueRow);
@@ -208,6 +173,47 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           //else
           //  command.ExecuteWxeFunction (Page, null, new NameValueCollection (0));
         }
+      }
+    }
+    
+    /// <summary> 
+    ///   Creates a <see cref="BocDropDownMenuColumnDefinition"/> if <see cref="RowMenuDisplay"/> is set to
+    ///   <see cref="Controls.RowMenuDisplay.Automatic"/>.
+    /// </summary>
+    /// <returns> A <see cref="BocDropDownMenuColumnDefinition"/> instance or <see langword="null"/>. </returns>
+    private BocDropDownMenuColumnDefinition GetRowMenuColumn ()
+    {
+      if (_rowMenuDisplay == RowMenuDisplay.Automatic)
+      {
+        BocDropDownMenuColumnDefinition dropDownMenuColumn = new BocDropDownMenuColumnDefinition();
+        dropDownMenuColumn.Width = Unit.Percentage (0);
+        dropDownMenuColumn.MenuTitleText = GetResourceManager().GetString (ResourceIdentifier.RowMenuTitle);
+        return dropDownMenuColumn;
+      }
+      return null;
+    }
+
+    /// <summary> 
+    ///   Tests that the <paramref name="columnDefinitions"/> array holds exactly one
+    ///   <see cref="BocDropDownMenuColumnDefinition"/> if the <see cref="RowMenuDisplay"/> is set to 
+    ///   <see cref="Controls.RowMenuDisplay.Automatic"/> or <see cref="Controls.RowMenuDisplay.Manual"/>.
+    /// </summary>
+    private void CheckRowMenuColumns (BocColumnDefinition[] columnDefinitions)
+    {
+      bool isFound = false;
+      for (int i = 0; i < columnDefinitions.Length; i++)
+      {
+        if (columnDefinitions[i] is BocDropDownMenuColumnDefinition)
+        {
+          if (isFound)
+            throw new InvalidOperationException ("Only a single BocDropDownMenuColumnDefinition is allowed in the BocList '" + ID + "'.");
+          isFound = true;
+        }
+      }
+      if (RowMenuDisplay == RowMenuDisplay.Manual && ! isFound)
+      {
+        throw new InvalidOperationException (
+            "No BocDropDownMenuColumnDefinition was found in the BocList '" + ID + "' but the RowMenuDisplay was set to manual.");
       }
     }
 
