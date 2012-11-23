@@ -43,6 +43,12 @@
     <AssemblyOriginatorKeyFile>..\..\..\remotion.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\..\Core\UnitTests\bin\Debug\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>..\..\Core\UnitTests\bin\Debug\Rhino.Mocks.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -60,6 +66,19 @@
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Dms\Shared\Dms.Shared.csproj">
+      <Project>{B79940B8-1949-406D-9CCA-E6349898E11A}</Project>
+      <Name>Dms.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Development.Core.csproj">
+      <Project>{b719a305-0493-4c72-88fe-9a2fc6964578}</Project>
+      <Name>Development.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

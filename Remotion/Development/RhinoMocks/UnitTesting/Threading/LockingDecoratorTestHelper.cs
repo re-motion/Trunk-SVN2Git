@@ -16,10 +16,73 @@
 // 
 
 using System;
+using System.Threading;
+using NUnit.Framework;
+using Remotion.Development.UnitTesting;
+using Remotion.Dms.Shared.Utilities;
+using Rhino.Mocks;
 
 namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
 {
-  public class LockingDecoratorTestHelper
+  /// <summary>
+  /// A helper class for testing locking decorators.
+  /// </summary>
+  /// <typeparam name="T">The interface type of the decorator.</typeparam>
+  public class LockingDecoratorTestHelper<T>
+    where T : class // Needed for RhinoMocks (Expect method).
   {
+    public static void CheckLockIsHeld (object lockObject)
+    {
+      ArgumentUtility.CheckNotNull ("lockObject", lockObject);
+
+      var lockAcquired = true;
+      ThreadRunner.Run (() => lockAcquired = Monitor.TryEnter (lockObject));
+
+      Assert.That (lockAcquired, Is.False, "Parallel thread should have been blocked.");
+    }
+
+    private readonly T _lockingDecorator;
+    private readonly object _lockObject;
+    private readonly T _innerMock;
+
+    public LockingDecoratorTestHelper (T lockingDecorator, object lockObject, T innerMock)
+    {
+      ArgumentUtility.CheckNotNull ("lockingDecorator", lockingDecorator);
+      ArgumentUtility.CheckNotNull ("lockObject", lockObject);
+      ArgumentUtility.CheckNotNull ("innerMock", innerMock);
+
+      _lockingDecorator = lockingDecorator;
+      _lockObject = lockObject;
+      _innerMock = innerMock;
+    }
+
+    public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> action, TResult fakeResult)
+    {
+      ArgumentUtility.CheckNotNull ("action", action);
+      ArgumentUtility.CheckNotNull ("fakeResult", fakeResult);
+
+      _innerMock
+          .Expect (mock => action (mock))
+          .Return (fakeResult)
+          .WhenCalled (mi => CheckLockIsHeld (_lockObject));
+
+      var actualResult = action (_lockingDecorator);
+
+      _innerMock.VerifyAllExpectations();
+      Assert.That (actualResult, Is.EqualTo (fakeResult));
+    }
+
+    public void ExpectSynchronizedDelegation (Action<T> action)
+    {
+      ArgumentUtility.CheckNotNull ("action", action);
+
+      _innerMock
+          .Expect (action)
+          .WhenCalled (mi => CheckLockIsHeld (_lockObject));
+
+      action (_lockingDecorator);
+
+      _innerMock.VerifyAllExpectations();
+    }
   }
 }

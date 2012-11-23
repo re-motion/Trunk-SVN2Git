@@ -214,6 +214,7 @@
     <Compile Include="Core\UnitTesting\TestPropertyAccess.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="RhinoMocks\Threading\LockingDecoratorTestHelperTest.cs" />
     <Compile Include="Web\UnitTesting\UI\Controls\ControlInvokerTest.cs" />
     <Compile Include="Web\UnitTesting\UI\Controls\Rendering\ConcreteHtmlHelper.cs" />
     <Compile Include="Web\UnitTesting\UI\Controls\Rendering\HtmlHelperBaseTest.cs" />
@@ -248,9 +249,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Core\UnitTesting\Resources\TestEmbeddedResource.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="RhinoMocks\Threading\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
