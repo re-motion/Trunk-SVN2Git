@@ -52,7 +52,14 @@ namespace Remotion.Development.UnitTests.RhinoMocks.Threading
       _helperForNonLockingDecorator = CreateLockingDecoratorTestHelper (inner => () => inner.Get(), inner => s => inner.Do (s), lockObject);
       _helperForNonDelegatingDecorator = CreateLockingDecoratorTestHelper (inner => () => "Abc", inner => s => { }, lockObject);
       _helperForFaultyDecorator = CreateLockingDecoratorTestHelper (
-          inner => () => { inner.Get(); return "faulty"; }, inner => s => inner.Do ("faulty"), lockObject);
+          inner => () =>
+          {
+            lock (lockObject)
+              inner.Get();
+            return "faulty";
+          },
+          inner => s => inner.Do ("faulty"),
+          lockObject);
     }
 
     [Test]
