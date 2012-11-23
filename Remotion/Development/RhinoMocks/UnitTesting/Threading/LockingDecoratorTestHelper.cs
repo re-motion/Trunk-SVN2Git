@@ -17,7 +17,7 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.Dms.Shared.Utilities;
+using Remotion.Utilities;
 using Rhino.Mocks;
 
 namespace Remotion.Development.RhinoMocks.UnitTesting.Threading

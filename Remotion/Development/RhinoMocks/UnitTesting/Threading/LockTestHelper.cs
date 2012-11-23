@@ -19,7 +19,7 @@ using System;
 using System.Threading;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Dms.Shared.Utilities;
+using Remotion.Utilities;
 
 namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
 {
