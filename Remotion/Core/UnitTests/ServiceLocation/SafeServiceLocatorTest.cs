@@ -15,9 +15,12 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Configuration;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using Remotion.Configuration.ServiceLocation;
 using Remotion.Development.UnitTesting;
+using Remotion.Development.UnitTesting.Configuration;
 using Remotion.ServiceLocation;
 using Rhino.Mocks;
 
@@ -27,6 +30,7 @@ namespace Remotion.UnitTests.ServiceLocation
   public class SafeServiceLocatorTest
   {
     private ServiceLocatorProvider _serviceLocatorProviderBackup;
+    private ServiceLocationConfiguration _previousConfiguration;
 
     [TestFixtureSetUp]
     public void TestFixtureSetUp ()
@@ -39,6 +43,19 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       PrivateInvoke.SetNonPublicStaticField (typeof (ServiceLocator), "currentProvider", _serviceLocatorProviderBackup);
     }
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _previousConfiguration = ServiceLocationConfiguration.Current;
+    }
+
+    [TearDown]
+    public void TearDown ()
+    {
+      ServiceLocationConfiguration.SetCurrent (_previousConfiguration);
+      ResetDefaultServiceLocator ();
+    }
  
     [Test]
     public void GetCurrent_WithLocatorProvider()
@@ -50,11 +67,32 @@ namespace Remotion.UnitTests.ServiceLocation
     }
 
     [Test]
-    public void GetCurrent_WithoutLocatorProvider_ReturnsNullServiceLocator ()
+    public void GetCurrent_WithLocatorProvider_IgnoresServiceConfiguration ()
+    {
+      var serviceLocatorStub = MockRepository.GenerateStub<IServiceLocator> ();
+      ServiceLocator.SetLocatorProvider (() => serviceLocatorStub);
+
+      ConfigureFakeServiceLocatorProvider ();
+
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (serviceLocatorStub));
+    }
+
+    [Test]
+    public void GetCurrent_WithoutLocatorProvider_ReturnsDefaultServiceLocator ()
     {
       ServiceLocator.SetLocatorProvider (null);
 
-      Assert.That (SafeServiceLocator.Current, Is.TypeOf(typeof(DefaultServiceLocator)));
+      Assert.That (SafeServiceLocator.Current, Is.TypeOf (typeof (DefaultServiceLocator)));
+    }
+
+    [Test]
+    public void GetCurrent_WithoutLocatorProvider_ReturnsConfiguredServiceLocator ()
+    {
+      ServiceLocator.SetLocatorProvider (null);
+
+      ConfigureFakeServiceLocatorProvider ();
+
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (FakeServiceLocatorProvider.Instance));
     }
 
     [Test]
@@ -62,16 +100,26 @@ namespace Remotion.UnitTests.ServiceLocation
     {
       ServiceLocator.SetLocatorProvider (null);
 
-      Dev.Null = SafeServiceLocator.Current;
-      Assert.That (ServiceLocator.Current, Is.TypeOf(typeof(DefaultServiceLocator)));
+      var safeCurrent = SafeServiceLocator.Current;
+      Assert.That (ServiceLocator.Current, Is.Not.Null.And.SameAs (safeCurrent));
     }
 
     [Test]
-    public void GetCurrent_WithLocatorProviderReturningNull_ReturnsNullServiceLocator ()
+    public void GetCurrent_WithLocatorProviderReturningNull_ReturnsDefaultServiceLocator ()
     {
       ServiceLocator.SetLocatorProvider (() => null);
 
       Assert.That (SafeServiceLocator.Current, Is.TypeOf(typeof(DefaultServiceLocator)));
+    }
+
+    [Test]
+    public void GetCurrent_WithLocatorProviderReturningNull_ReturnsConfiguredServiceLocator ()
+    {
+      ServiceLocator.SetLocatorProvider (() => null);
+
+      ConfigureFakeServiceLocatorProvider();
+
+      Assert.That (SafeServiceLocator.Current, Is.SameAs (FakeServiceLocatorProvider.Instance));
     }
 
     [Test]
@@ -82,5 +130,52 @@ namespace Remotion.UnitTests.ServiceLocation
       Dev.Null = SafeServiceLocator.Current;
       Assert.That (ServiceLocator.Current, Is.Null);
     }
- }
+
+    [Test]
+    public void GetCurrent_WithInvalidServiceLocationConfiguration ()
+    {
+      ServiceLocator.SetLocatorProvider (() => null);
+
+      ConfigureServiceLocatorProvider ("Blah");
+
+      Assert.That (
+          () => SafeServiceLocator.Current,
+          Throws.InstanceOf<ConfigurationException>().With.Message.StartsWith (
+              "The value of the property 'type' cannot be parsed. The error is: Could not load type 'Blah'"));
+    }
+
+    private class FakeServiceLocatorProvider : IServiceLocatorProvider
+    {
+      public static readonly IServiceLocator Instance = MockRepository.GenerateStub<IServiceLocator>();
+
+      public IServiceLocator GetServiceLocator ()
+      {
+        return Instance;
+      }
+    }
+
+    private void ConfigureFakeServiceLocatorProvider ()
+    {
+      var serviceLocatorTypeName = typeof (FakeServiceLocatorProvider).AssemblyQualifiedName;
+      ConfigureServiceLocatorProvider(serviceLocatorTypeName);
+    }
+
+    private void ConfigureServiceLocatorProvider (string serviceLocatorTypeName)
+    {
+      var serviceLocationConfiguration = new ServiceLocationConfiguration();
+      var xmlFragment = string.Format (@"<serviceLocation xmlns=""..."">
+        <serviceLocatorProvider type=""{0}"" />
+      </serviceLocation>", serviceLocatorTypeName);
+      ConfigurationHelper.DeserializeSection (serviceLocationConfiguration, xmlFragment);
+      ServiceLocationConfiguration.SetCurrent (serviceLocationConfiguration);
+      ResetDefaultServiceLocator();
+    }
+
+    private void ResetDefaultServiceLocator ()
+    {
+      var defaultServiceLocatorContainer = 
+          (DoubleCheckedLockingContainer<IServiceLocator>) PrivateInvoke.GetNonPublicStaticField (typeof (SafeServiceLocator), "s_defaultServiceLocator");
+      defaultServiceLocatorContainer.Value = null;
+    }
+  }
 }

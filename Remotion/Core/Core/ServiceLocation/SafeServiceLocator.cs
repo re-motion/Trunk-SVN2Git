@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using Microsoft.Practices.ServiceLocation;
+using Remotion.Configuration.ServiceLocation;
 
 namespace Remotion.ServiceLocation
 {
@@ -32,20 +33,11 @@ namespace Remotion.ServiceLocation
   /// </remarks>
   public static class SafeServiceLocator
   {
-    // This class holds lazily initialized, readonly static fields. It relies on the fact that the .NET runtime will reliably initialize fields in a 
-    // nested static class with a static constructor as lazily as possible on first access of the static field.
-    // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
-    static class LazyStaticFields
-    {
-      public static readonly IServiceLocator DefaultServiceLocatorInstance = GetServiceLocatorProvider().GetServiceLocator();
-
-      // ReSharper disable EmptyConstructor
-      // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
-      static LazyStaticFields ()
-      {
-      }
-      // ReSharper restore EmptyConstructor
-    }
+    // This is a DoubleCheckedLockingContainer rather than a static field (maybe wrapped in a nested class to improve laziness) because we want
+    // any exceptions thrown by GetDefaultServiceLocator to bubble up to the caller normally. (Exceptions during static field initialization get
+    // wrapped in a TypeInitializationException.)
+    private static readonly DoubleCheckedLockingContainer<IServiceLocator> s_defaultServiceLocator = 
+        new DoubleCheckedLockingContainer<IServiceLocator> (GetDefaultServiceLocator);
     
     /// <summary>
     /// Gets the currently configured <see cref="IServiceLocator"/>. 
@@ -60,19 +52,20 @@ namespace Remotion.ServiceLocation
       {
         try
         {
-          return ServiceLocator.Current ?? LazyStaticFields.DefaultServiceLocatorInstance;
+          return ServiceLocator.Current ?? s_defaultServiceLocator.Value;
         }
         catch (NullReferenceException)
         {
-          ServiceLocator.SetLocatorProvider (() => LazyStaticFields.DefaultServiceLocatorInstance);
-          return LazyStaticFields.DefaultServiceLocatorInstance;
+          ServiceLocator.SetLocatorProvider (() => s_defaultServiceLocator.Value);
+          return s_defaultServiceLocator.Value;
         }
       }
     }
 
-    private static IServiceLocatorProvider GetServiceLocatorProvider ()
+    private static IServiceLocator GetDefaultServiceLocator ()
     {
-      return new DefaultServiceLocatorProvider ();
+      var serviceLocatorProvider = ServiceLocationConfiguration.Current.CreateServiceLocatorProvider();
+      return serviceLocatorProvider.GetServiceLocator ();
     }
   }
 }
