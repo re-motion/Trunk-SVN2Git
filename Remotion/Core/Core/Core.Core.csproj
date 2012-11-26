@@ -146,6 +146,7 @@
     <Compile Include="Collections\LazyLockingDataStoreAdapter.cs" />
     <Compile Include="Collections\ReadOnlyCollectionDecorator.cs" />
     <Compile Include="Collections\TimeSpanBasedExpirationPolicy.cs" />
+    <Compile Include="Configuration\ServiceLocation\ServiceLocationConfiguration.cs" />
     <Compile Include="Context\ISafeContextStorageProvider.cs" />
     <Compile Include="Context\SafeContext.cs" />
     <Compile Include="Context\SafeContextKeys.cs" />
@@ -550,6 +551,9 @@
       <Link>remotion.snk</Link>
     </None>
     <EmbeddedResource Include="Configuration\TypeDiscovery\TypeDiscoveryConfiguration.xsd" />
+    <EmbeddedResource Include="Configuration\ServiceLocation\ServiceLocationConfiguration.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="doc\include\GettingStartedWithRemotion.aml" />
     <Content Include="doc\include\Globalization\MultiLingualResourcesAttribute.xml" />
     <Content Include="doc\include\Globalization\ResourceManagerWrapper.xml" />
