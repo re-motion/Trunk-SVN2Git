@@ -37,7 +37,7 @@ namespace Remotion.ServiceLocation
     // Singleton implementations with nested classes are documented here: http://csharpindepth.com/Articles/General/Singleton.aspx.
     static class LazyStaticFields
     {
-      public static readonly IServiceLocator DefaultServiceLocatorInstance = new DefaultServiceLocator();
+      public static readonly IServiceLocator DefaultServiceLocatorInstance = GetServiceLocatorProvider().GetServiceLocator();
 
       // ReSharper disable EmptyConstructor
       // Explicit static constructor to tell C# compiler not to mark type as beforefieldinit; this will make the static fields as lazy as possible.
@@ -68,6 +68,11 @@ namespace Remotion.ServiceLocation
           return LazyStaticFields.DefaultServiceLocatorInstance;
         }
       }
+    }
+
+    private static IServiceLocatorProvider GetServiceLocatorProvider ()
+    {
+      return new DefaultServiceLocatorProvider ();
     }
   }
 }

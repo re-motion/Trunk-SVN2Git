@@ -163,6 +163,8 @@
     <Compile Include="Diagnostics\IDebuggerInterface.cs" />
     <Compile Include="IAdapter.cs" />
     <Compile Include="ServiceLocation\ConcreteImplementationAttribute.cs" />
+    <Compile Include="ServiceLocation\DefaultServiceLocatorProvider.cs" />
+    <Compile Include="ServiceLocation\IServiceLocatorProvider.cs" />
     <Compile Include="ServiceLocation\LifetimeKind.cs" />
     <Compile Include="ServiceLocation\ServiceImplementationInfo.cs" />
     <Compile Include="ServiceLocation\TypeNameTemplateResolver.cs" />
