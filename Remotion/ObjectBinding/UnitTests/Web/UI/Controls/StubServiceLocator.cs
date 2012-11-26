@@ -16,11 +16,9 @@
 // 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Collections;
-using Remotion.Context;
-using Remotion.Mixins;
+using Remotion.ObjectBinding.Web.UI.Controls;
 using Remotion.ObjectBinding.Web.UI.Controls.BocBooleanValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocDateTimeValueImplementation.Rendering;
 using Remotion.ObjectBinding.Web.UI.Controls.BocEnumValueImplementation.Rendering;
@@ -42,9 +40,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 {
   public class StubServiceLocator : ServiceLocatorImplBase
   {
-    private static readonly Set<Assembly> s_coreAssemblies = new Set<Assembly>
-                                                             { typeof (ISafeContextStorageProvider).Assembly, typeof (Mixin).Assembly };
-
     private readonly IDataStore<Type, object> _instances = new SimpleDataStore<Type, object>();
     private readonly IServiceLocator _defaultServiceLocator = new DefaultServiceLocator();
 
@@ -142,7 +137,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
     private bool IsCoreType (Type serviceType)
     {
-      return s_coreAssemblies.Contains (serviceType.Assembly);
+      return serviceType.Assembly != typeof (BocList).Assembly;
     }
   }
 }
