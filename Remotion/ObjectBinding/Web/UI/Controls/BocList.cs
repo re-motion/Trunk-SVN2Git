@@ -3551,9 +3551,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       ResetRowMenus();
     }
 
-    int IBocList.CurrentPageIndex
+    protected int CurrentPageIndex
     {
       get { return _currentPageIndex; }
+    }
+
+    int IBocList.CurrentPageIndex
+    {
+      get { return CurrentPageIndex; }
     }
 
     int IBocList.PageCount
