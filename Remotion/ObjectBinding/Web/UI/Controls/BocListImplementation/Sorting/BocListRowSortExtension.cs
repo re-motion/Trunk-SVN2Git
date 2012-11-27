@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       var baseComparer = entry.Column.CreateCellValueComparer();
 
       if (entry.Direction == SortingDirection.Descending)
-        return new DelegateBasedComparer<BocListRow> ((r1, r2) => baseComparer.Compare (r2, r1));
+        return new InvertedComparerDecorator<BocListRow> (baseComparer);
 
       return baseComparer;
     }
