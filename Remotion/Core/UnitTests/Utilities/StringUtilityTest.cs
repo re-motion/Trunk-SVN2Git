@@ -34,7 +34,7 @@ public class StringUtilityTest
 
   private CultureInfo _cultureBackup;
   private CultureInfo _cultureEnUs;
-  private CultureInfo _cultureDeAt;
+  private CultureInfo _cultureDeDe;
 
   private readonly Type _int32 = typeof (int);
   private readonly Type _nullableInt32 = typeof (int?);
@@ -53,7 +53,7 @@ public class StringUtilityTest
   public void SetUp()
   {
     _cultureEnUs = new CultureInfo ("en-US");
-    _cultureDeAt = new CultureInfo ("de-AT");
+    _cultureDeDe = new CultureInfo ("de-DE");
     
     _cultureBackup = Thread.CurrentThread.CurrentCulture;
     Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
@@ -280,7 +280,7 @@ public class StringUtilityTest
   [Test]
   public void ParseDoubleWithCultureInvariant()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_double, "4,321.123", CultureInfo.InvariantCulture);
     Assert.IsNotNull (value);
     Assert.AreEqual (_double, value.GetType());
@@ -290,7 +290,7 @@ public class StringUtilityTest
   [Test]
   public void ParseDoubleWithCultureEnUs()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_double, "4,321.123", _cultureEnUs);
     Assert.IsNotNull (value);
     Assert.AreEqual (_double, value.GetType());
@@ -299,17 +299,17 @@ public class StringUtilityTest
 
   [Test]
   [ExpectedException (typeof (ParseException))]
-  public void ParseDoubleEnUsWithCultureDeAt()
+  public void ParseDoubleEnUsWithCultureDeDe()
   {
     Thread.CurrentThread.CurrentCulture = _cultureEnUs;
-    StringUtility.Parse (_double, "4,321.123", _cultureDeAt);
+    StringUtility.Parse (_double, "4,321.123", _cultureDeDe);
   }
 
   [Test]
-  public void ParseDoubleWithCultureDeAt()
+  public void ParseDoubleWithCultureDeDe()
   {
     Thread.CurrentThread.CurrentCulture = _cultureEnUs;
-    object value = StringUtility.Parse (_double, "4.321,123", _cultureDeAt);
+    object value = StringUtility.Parse (_double, "4.321,123", _cultureDeDe);
     Assert.IsNotNull (value);
     Assert.AreEqual (_double, value.GetType());
     Assert.AreEqual (4321.123, value);
@@ -317,9 +317,9 @@ public class StringUtilityTest
 
   [Test]
   [ExpectedException (typeof (ParseException))]
-  public void ParseDoubleDeAtWithCultureEnUs()
+  public void ParseDoubleDeDeWithCultureEnUs()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     StringUtility.Parse (_double, "4.321,123", _cultureEnUs);
   }
 
@@ -327,7 +327,7 @@ public class StringUtilityTest
   [Ignore (@"Bug in ParseArrayItem: Escape Sequence '\,' does not work.")]
   public void ParseDoubleArrayWithCultureInvariant()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6\,543.123,5\,432.123,4\,321.123", CultureInfo.InvariantCulture);
     Assert.IsNotNull (value);
     Assert.AreEqual (_doubleArray, value.GetType());
@@ -341,7 +341,7 @@ public class StringUtilityTest
   [Test]
   public void ParseDoubleArrayWithCultureInvariantNoThousands()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6543.123,5432.123,4321.123", CultureInfo.InvariantCulture);
     Assert.IsNotNull (value);
     Assert.AreEqual (_doubleArray, value.GetType());
@@ -356,7 +356,7 @@ public class StringUtilityTest
   [Ignore (@"Bug in ParseArrayItem: Escape Sequence '\,' does not work.")]
   public void ParseDoubleArrayWithCultureEnUs()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6\,543.123,5\,432.123,4\,321.123", _cultureEnUs);
     Assert.IsNotNull (value);
     Assert.AreEqual (_doubleArray, value.GetType());
@@ -370,7 +370,7 @@ public class StringUtilityTest
   [Test]
   public void ParseDoubleArrayWithCultureEnUsNoThousands()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     object value = StringUtility.Parse (_doubleArray, @"6543.123,5432.123,4321.123", _cultureEnUs);
     Assert.IsNotNull (value);
     Assert.AreEqual (_doubleArray, value.GetType());
@@ -383,10 +383,10 @@ public class StringUtilityTest
 
   [Test]
   [Ignore (@"Bug in ParseArrayItem: Escape Sequence '\,' does not work.")]
-  public void ParseDoubleArrayWithCultureDeAt()
+  public void ParseDoubleArrayWithCultureDeDe()
   {
     Thread.CurrentThread.CurrentCulture = _cultureEnUs;
-    object value = StringUtility.Parse (_doubleArray, @"6.543\,123,5.432\,123,4.321\,123", _cultureDeAt);
+    object value = StringUtility.Parse (_doubleArray, @"6.543\,123,5.432\,123,4.321\,123", _cultureDeDe);
     Assert.IsNotNull (value);
     Assert.AreEqual (_doubleArray, value.GetType());
     double[] values = (double[]) value;
@@ -527,15 +527,15 @@ public class StringUtilityTest
   [Test]
   public void FormatDoubleWithCultureEnUs()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     Assert.AreEqual ("4321.123", StringUtility.Format (4321.123, _cultureEnUs));
   }
 
   [Test]
-  public void FormatDoubleWithCultureDeAt()
+  public void FormatDoubleWithCultureDeDe()
   {
     Thread.CurrentThread.CurrentCulture = _cultureEnUs;
-    Assert.AreEqual ("4321,123", StringUtility.Format (4321.123, _cultureDeAt));
+    Assert.AreEqual ("4321,123", StringUtility.Format (4321.123, _cultureDeDe));
   }
 
   [Test]
@@ -548,7 +548,7 @@ public class StringUtilityTest
   [Test]
   public void FormatDoubleArrayWithCultureEnUsNoThousands()
   {
-    Thread.CurrentThread.CurrentCulture = _cultureDeAt;
+    Thread.CurrentThread.CurrentCulture = _cultureDeDe;
     double[] values = new double[] {6543.123, 5432.123, 4321.123};
     Assert.AreEqual (@"6543.123,5432.123,4321.123", StringUtility.Format (values, _cultureEnUs));
   }
