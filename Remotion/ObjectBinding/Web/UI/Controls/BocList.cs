@@ -2025,6 +2025,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     private void SetValue (IList value)
     {
       _value = value;
+      _currentPageIndex = 0;
       OnSortedRowsChanged();
       OnDisplayedRowsChanged();
     }
