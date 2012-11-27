@@ -566,6 +566,7 @@
     </Compile>
     <Compile Include="Utilities\EqualityUtilityTest.cs" />
     <Compile Include="Utilities\FileUtilityTest.cs" />
+    <Compile Include="Utilities\InvertedComparerDecoratorTest.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtilityTest.cs" />
     <Compile Include="Utilities\NameValueCollectionUtilityTest.cs">
       <SubType>Code</SubType>

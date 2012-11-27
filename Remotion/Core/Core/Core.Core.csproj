@@ -466,6 +466,7 @@
     <Compile Include="Utilities\FileUtility.cs" />
     <Compile Include="Utilities\IConsoleManager.cs" />
     <Compile Include="Utilities\DelegateBasedComparer.cs" />
+    <Compile Include="Utilities\InvertedComparerDecorator.cs" />
     <Compile Include="Utilities\IUtcNowProvider.cs" />
     <Compile Include="Utilities\MemberInfoEqualityComparer.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
