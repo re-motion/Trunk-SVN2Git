@@ -34,7 +34,7 @@ namespace Remotion.UnitTests.Configuration.ServiceLocation
     public void Deserialization_Default ()
     {
       var section = Deserialize (_xmlFragmentDefault);
-      Assert.That (section.ServiceLocatorProvider.Type, Is.Null);
+      Assert.That (section.ServiceLocatorProvider.Type, Is.SameAs (typeof (DefaultServiceLocatorProvider)));
     }
 
     [Test]

@@ -72,9 +72,9 @@ namespace Remotion.Configuration.ServiceLocation
     /// </summary>
     /// <value>A <see cref="TypeElement{TBase}"/> describing the custom <see cref="IServiceLocatorProvider"/> type to be used.</value>
     [ConfigurationProperty ("serviceLocatorProvider", IsRequired = false)]
-    public TypeElement<IServiceLocatorProvider> ServiceLocatorProvider
+    public TypeElement<IServiceLocatorProvider, DefaultServiceLocatorProvider> ServiceLocatorProvider
     {
-      get { return (TypeElement<IServiceLocatorProvider>) this["serviceLocatorProvider"]; }
+      get { return (TypeElement<IServiceLocatorProvider, DefaultServiceLocatorProvider>) this["serviceLocatorProvider"]; }
     }
 
     /// <summary>
@@ -84,9 +84,6 @@ namespace Remotion.Configuration.ServiceLocation
     /// <returns>An new <see cref="IServiceLocatorProvider"/> instance.</returns>
     public IServiceLocatorProvider CreateServiceLocatorProvider ()
     {
-      if (ServiceLocatorProvider.Type == null)
-        return new DefaultServiceLocatorProvider();
-
       return ServiceLocatorProvider.CreateInstance();
     }
   }
