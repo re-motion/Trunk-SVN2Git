@@ -24,12 +24,32 @@ namespace Remotion.ServiceLocation
   /// <summary>
   /// <see cref="SafeServiceLocator"/> is intended as a wrapper for <see cref="ServiceLocator"/>, specifically the 
   /// <see cref="ServiceLocator.Current"/> property. In contrast to <see cref="ServiceLocator"/>, <see cref="SafeServiceLocator"/> will never throw
-  /// a <see cref="NullReferenceException"/> but instead register an instance of the DefaultServiceLocatorClass if no custom service locator was
+  /// a <see cref="NullReferenceException"/> but instead register an default <see cref="IServiceLocator"/> instance if no custom service locator was
   /// registered.
   /// </summary>
   /// <remarks>
+  /// <para>
   /// Accessing <see cref="ServiceLocator"/> will always lead to a <see cref="NullReferenceException"/> if no service locator is 
-  /// configured. Using <see cref="SafeServiceLocator"/> instead will catch the exception and register an instance of the DefaultServiceLocator class.
+  /// configured. Using <see cref="SafeServiceLocator"/> instead will catch the exception and register a default <see cref="IServiceLocator"/> instance.
+  /// A provider for the default instance can be defined in the application configuration file (handled by 
+  /// <see cref="ServiceLocationConfiguration"/>). The provider needs to implement <see cref="IServiceLocatorProvider"/> and must have a default 
+  /// constructor.
+  /// <code>
+  /// &lt;?xml version="1.0" encoding="utf-8" ?&gt;
+  /// &lt;configuration&gt;
+  ///   &lt;configSections&gt;
+  ///     &lt;section name="remotion.serviceLocation" type="Remotion.Configuration.ServiceLocation.ServiceLocationConfiguration,Remotion" /&gt;
+  ///   &lt;/configSections&gt;
+  /// 
+  ///   &lt;remotion.serviceLocation xmlns="http://www.re-motion.org/serviceLocation/configuration"&gt;
+  ///     &lt;serviceLocatorProvider type="MyAssembly::MyServiceLocatorProvider"/&gt;
+  ///   &lt;/remotion.serviceLocation&gt;
+  /// &lt;/configuration&gt;
+  /// </code>
+  /// </para>
+  /// <para>
+  /// If no provider is configured, a <see cref="DefaultServiceLocator"/> instance is used as the default instance.
+  /// </para>
   /// </remarks>
   public static class SafeServiceLocator
   {
