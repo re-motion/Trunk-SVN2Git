@@ -70,12 +70,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
     }
 
     [Test]
+    [Obsolete ("This feature has not yet been implemented - at the moment, queries cannot return duplicates. (1.13.176.0, RM-791).")]
     public void ContainsDuplicates_False ()
     {
       Assert.That (_result.ContainsDuplicates(), Is.False);
     }
 
     [Test]
+    [Obsolete ("This feature has not yet been implemented - at the moment, queries cannot return duplicates. (1.13.176.0, RM-791).")]
     public void ContainsDuplicates_True ()
     {
       Assert.That (_resultWithDuplicates.ContainsDuplicates(), Is.True);
