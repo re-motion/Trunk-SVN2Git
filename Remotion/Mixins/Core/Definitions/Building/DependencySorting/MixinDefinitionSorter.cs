@@ -56,7 +56,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
   /// </remarks>
   public class MixinDefinitionSorter : IMixinDefinitionSorter
   {
-    public IEnumerable<MixinDefinition> SortMixins (IEnumerable<MixinDefinition> mixinDefinitions)
+    public virtual IEnumerable<MixinDefinition> SortMixins (IEnumerable<MixinDefinition> mixinDefinitions)
     {
       var unprocessedMixins = new HashSet<MixinDefinition> (mixinDefinitions);
       while (unprocessedMixins.Any ())
@@ -84,7 +84,7 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       }
     }
 
-    private IEnumerable<MixinDefinition> GetOrderedMixinsOnSameLevel (IEnumerable<MixinDefinition> mixins)
+    protected virtual IEnumerable<MixinDefinition> GetOrderedMixinsOnSameLevel (IEnumerable<MixinDefinition> mixins)
     {
       // Ordering mixins before grouping guarantees a stable error message (if any).
       // (This is required for the unit tests, but it's nice for the resulting exception message anyway.)
@@ -118,12 +118,12 @@ namespace Remotion.Mixins.Definitions.Building.DependencySorting
       return orderedMixins;
     }
 
-    private IEnumerable<MixinDefinition> GetRoots (HashSet<MixinDefinition> unprocessedMixins)
+    protected virtual IEnumerable<MixinDefinition> GetRoots (HashSet<MixinDefinition> unprocessedMixins)
     {
       return unprocessedMixins.Where (m => unprocessedMixins.All (other => !HasDependency (other, m)));
     }
 
-    private bool HasDependency (MixinDefinition from, MixinDefinition to)
+    protected virtual bool HasDependency (MixinDefinition from, MixinDefinition to)
     {
       return from.GetOrderRelevantDependencies ().Any (dep => dep.GetImplementer () == to);
     }
