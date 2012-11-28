@@ -215,6 +215,7 @@
     <Compile Include="Reflection\MemberLookupInfoTest.cs" />
     <Compile Include="Reflection\MemberSignatures\EventSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\FieldSignatureTest.cs" />
+    <Compile Include="Reflection\MemberSignatures\MemberNamedAndSignatureEqualityComparerTest.cs" />
     <Compile Include="Reflection\MemberSignatures\MemberSignatureProviderTest.cs" />
     <Compile Include="Reflection\MemberSignatures\MethodSignatureTest.cs" />
     <Compile Include="Reflection\MemberSignatures\PropertySignatureTest.cs" />
