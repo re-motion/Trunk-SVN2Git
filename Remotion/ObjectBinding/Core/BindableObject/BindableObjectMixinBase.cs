@@ -127,10 +127,10 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       get
       {
-        if (!BusinessObjectClass.HasPropertyDefinition ("DisplayName"))
+        var displayNameProperty = BusinessObjectClass.GetPropertyDefinition ("DisplayName");
+        if (displayNameProperty == null)
           return DisplayName;
 
-        IBusinessObjectProperty displayNameProperty = BusinessObjectClass.GetPropertyDefinition ("DisplayName");
         if (displayNameProperty.IsAccessible (BusinessObjectClass, (IBusinessObject) Target))
           return DisplayName;
 

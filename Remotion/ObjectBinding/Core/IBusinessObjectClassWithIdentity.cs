@@ -17,7 +17,7 @@
 namespace Remotion.ObjectBinding
 {
   /// <summary>
-  ///   The <b>IBusinessObjectClassWithIdentity</b> interface provides functionality for defining the <b>Class</b> of an 
+  ///   The <see cref="IBusinessObjectClassWithIdentity"/> interface provides functionality for defining the <b>class</b> of an 
   ///   <see cref="IBusinessObjectWithIdentity"/>. 
   /// </summary>
   /// <remarks>

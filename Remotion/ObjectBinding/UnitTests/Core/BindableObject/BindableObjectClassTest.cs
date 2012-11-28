@@ -137,15 +137,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
-    [ExpectedException (typeof (KeyNotFoundException), ExpectedMessage =
-        "The property 'Invalid' was not found on business object class "
-        + "'Remotion.ObjectBinding.UnitTests.Core.TestDomain.ClassWithAllDataTypes, Remotion.ObjectBinding.UnitTests'.")]
     public void GetPropertyDefinition_WithInvalidPropertyName ()
     {
-      var classReflector = new ClassReflector (typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
+      var classReflector = new ClassReflector (
+          typeof (ClassWithAllDataTypes), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
       BindableObjectClass bindableObjectClass = classReflector.GetMetadata();
 
-      bindableObjectClass.GetPropertyDefinition ("Invalid");
+      Assert.That (bindableObjectClass.GetPropertyDefinition ("Invalid"), Is.Null);
+    }
+
+    [Test]
+    public void GetPropertyDefinition_FromOverriddenPropertiesProperty_WithInvalidPropertyName ()
+    {
+      StubBindableObjectClass bindableObjectClass = CreateStubBindableObjectClass(CreateStubProperty());
+
+      Assert.That (bindableObjectClass.GetPropertyDefinition ("Invalid"), Is.Null);
     }
 
     [Test]
@@ -202,6 +208,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    [Obsolete]
     public void HasPropertyDefinition ()
     {
       var classReflector = new ClassReflector (
@@ -213,6 +220,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    [Obsolete]
     public void HasPropertyDefinition_ForMixedProperty ()
     {
       var classReflector = new ClassReflector (typeof (ClassWithMixedProperty), _bindableObjectProvider, BindableObjectMetadataFactory.Create());
@@ -222,6 +230,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject
     }
 
     [Test]
+    [Obsolete]
     public void HasPropertyDefinition_FromOverriddenPropertiesProperty ()
     {
       StubBindableObjectClass bindableObjectClass = CreateStubBindableObjectClass(CreateStubProperty());

@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Remotion.Mixins;
 using Remotion.ObjectBinding.BindableObject.Properties;
 using Remotion.Utilities;
@@ -38,35 +39,32 @@ namespace Remotion.ObjectBinding.BindableObject
       ArgumentUtility.CheckNotNull ("concreteType", concreteType);
       Assertion.IsFalse (concreteType.IsValueType, "mixed types cannot be value types");
       ArgumentUtility.CheckNotNull ("businessObjectProvider", businessObjectProvider);
-      ArgumentUtility.CheckNotNullOrItemsNull ("properties", properties);
+      ArgumentUtility.CheckNotNull ("properties", properties);
       
       _targetType = MixinTypeUtility.GetUnderlyingTargetType (concreteType);
       _concreteType = concreteType;
       _businessObjectProvider = businessObjectProvider;
       _businessObjectProviderAttribute = AttributeUtility.GetCustomAttribute<BusinessObjectProviderAttribute> (concreteType, true);
-
-      foreach (PropertyBase property in properties)
-        property.SetReflectedClass (this);
-
       _properties = new PropertyCollection (properties);
+
+      foreach (PropertyBase property in _properties.ToArray())
+        property.SetReflectedClass (this);
     }
 
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
     /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> uniquely identifying an <see cref="IBusinessObjectProperty"/> in this
-    ///   business object class.
+    ///   A <see cref="String"/> uniquely identifying an <see cref="IBusinessObjectProperty"/> in this <see cref="BindableObjectClass"/>.
     /// </param>
-    /// <returns> Returns the <see cref="IBusinessObjectProperty"/>. </returns>
-    /// <exception cref="KeyNotFoundException">Thrown if no property with the <paramref name="propertyIdentifier"/> was found.</exception>
+    /// <returns> 
+    ///   Returns the <see cref="IBusinessObjectProperty"/> 
+    ///   or <see langword="null" /> if the <see cref="IBusinessObjectProperty"/> does not exist on this <see cref="BindableObjectClass"/>. 
+    /// </returns>
     public IBusinessObjectProperty GetPropertyDefinition (string propertyIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);
 
-      if (!HasPropertyDefinition (propertyIdentifier))
-      {
-        throw new KeyNotFoundException (
-            string.Format ("The property '{0}' was not found on business object class '{1}'.", propertyIdentifier, Identifier));
-      }
+      if (!Properties.Contains  (propertyIdentifier))
+        return null;
 
       return Properties[propertyIdentifier];
     }
@@ -78,6 +76,7 @@ namespace Remotion.ObjectBinding.BindableObject
     /// <returns>
     ///   <see langword="true" /> if a property with the <paramref name="propertyIdentifier"/> exists, otherwise <see langword="false" />.
     /// </returns>
+    [Obsolete ("Use GetPropertyDefinition (string) instead. If the call returns null, the property does not exist on the BindableObjectClass. (1.13.177.0)")]
     public bool HasPropertyDefinition (string propertyIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyIdentifier", propertyIdentifier);

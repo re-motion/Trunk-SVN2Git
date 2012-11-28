@@ -19,13 +19,13 @@ using System;
 namespace Remotion.ObjectBinding
 {
   /// <summary>
-  ///   The <b>IBusinessObjectClassWithIdentity</b> interface provides functionality for defining the <b>Class</b> of an 
+  ///   The <see cref="IBusinessObjectClass"/> interface provides functionality for defining the <b>class</b> of an 
   ///   <see cref="IBusinessObject"/>. 
   /// </summary>
   /// <remarks>
   ///   <para>
-  ///     The <b>IBusinessObjectClass</b> interface provides the list of <see cref="IBusinessObjectProperty"/> instances
-  ///     available by an <see cref="IBusinessObject"/> of this <b>Class</b>'s type. 
+  ///     The <see cref="IBusinessObjectClass"/> interface provides the list of <see cref="IBusinessObjectProperty"/> instances
+  ///     available by an <see cref="IBusinessObject"/> of this <see cref="IBusinessObjectClass"/>'s type. 
   ///   </para><para>
   ///     It also provides services for accessing class specific meta data.
   ///   </para>
@@ -34,14 +34,12 @@ namespace Remotion.ObjectBinding
   {
     /// <summary> Returns the <see cref="IBusinessObjectProperty"/> for the passed <paramref name="propertyIdentifier"/>. </summary>
     /// <param name="propertyIdentifier"> 
-    ///   A <see cref="String"/> uniquely identifying an <see cref="IBusinessObjectProperty"/> in this
-    ///   business object class.
+    ///   A <see cref="String"/> uniquely identifying an <see cref="IBusinessObjectProperty"/> in this <see cref="IBusinessObjectClass"/>.
     /// </param>
-    /// <returns> Returns the <see cref="IBusinessObjectProperty"/> or <see langword="null"/>. </returns>
-    /// <remarks> 
-    ///   It is not specified wheter an exception is thrown or <see langword="null"/> is returned if the 
-    ///   <see cref="IBusinessObjectProperty"/> could not be found.
-    /// </remarks>
+    /// <returns>
+    ///   Returns the <see cref="IBusinessObjectProperty"/> 
+    ///   or <see langword="null" /> if the <see cref="IBusinessObjectProperty"/> does not exist on this <see cref="IBusinessObjectClass"/>. 
+    ///  </returns>
     IBusinessObjectProperty GetPropertyDefinition (string propertyIdentifier);
 
     /// <summary> 

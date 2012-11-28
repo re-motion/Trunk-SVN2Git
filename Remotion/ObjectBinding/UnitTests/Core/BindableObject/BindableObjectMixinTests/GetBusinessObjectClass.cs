@@ -87,7 +87,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
 
       // lazy initialization here - should use mixin configuration from above
       var businessObjectClass = (BindableObjectClass) businessObject.BusinessObjectClass;
-      Assert.That (businessObjectClass.HasPropertyDefinition ("MixedProperty"), Is.True);
+      Assert.That (businessObjectClass.GetPropertyDefinition ("MixedProperty"), Is.Not.Null);
     }
 
     [Test]
@@ -105,7 +105,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BindableObject.BindableObjectMix
 
       // lazy initialization here - should use mixin configuration from above
       var businessObjectClass = (BindableObjectClass) businessObject.BusinessObjectClass;
-      Assert.That (businessObjectClass.HasPropertyDefinition ("MixedProperty"), Is.True);
+      Assert.That (businessObjectClass.GetPropertyDefinition ("MixedProperty"), Is.Not.Null);
     }
   }
 }
