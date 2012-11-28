@@ -23,9 +23,6 @@ namespace Remotion.ObjectBinding
     /// <summary> Gets the list of properties in this path. </summary>
     IBusinessObjectProperty[] Properties { get; }
 
-    /// <summary> Gets the last property in this property path. </summary>
-    IBusinessObjectProperty LastProperty { get; }
-
     /// <summary> Gets the value of this property path for the specified object. </summary>
     /// <param name="obj"> The object that has the first property in the path. Must not be <see langword="null"/>. </param>
     /// <param name="throwExceptionIfNotReachable"> 

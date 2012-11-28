@@ -15,6 +15,8 @@
 // 
 // Additional permissions are listed in the file re-motion_exceptions.txt.
 // 
+
+using System.Linq;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.Web.UI.Controls;
@@ -86,7 +88,8 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
     {
       ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
 
-      bool isScalarReferenceProperty = !propertyPath.LastProperty.IsList && propertyPath.LastProperty is IBusinessObjectReferenceProperty;
+      var lastProperty = propertyPath.Properties.Last();
+      bool isScalarReferenceProperty = !lastProperty.IsList && lastProperty is IBusinessObjectReferenceProperty;
       if (isScalarReferenceProperty)
         return true;
 
@@ -96,7 +99,7 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.OrganizationalStructure
     private bool Is<T> (IBusinessObjectPropertyPath propertyPath)
         where T: OrganizationalStructureObject
     {
-      return typeof (T).IsAssignableFrom (propertyPath.LastProperty.PropertyType);
+      return typeof (T).IsAssignableFrom (propertyPath.Properties.Last().PropertyType);
     }
   }
 }

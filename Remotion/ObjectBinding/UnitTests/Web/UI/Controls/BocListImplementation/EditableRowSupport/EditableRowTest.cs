@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Microsoft.Practices.ServiceLocation;
@@ -185,12 +186,12 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       IBusinessObjectBoundEditableWebControl textBoxFirstValue = _editableRow.GetEditControl (0);
       Assert.IsTrue (textBoxFirstValue is BocTextValue);
       Assert.AreSame (dataSource, textBoxFirstValue.DataSource);
-      Assert.AreSame (_typeWithAllDataTypesStringValuePath.LastProperty, textBoxFirstValue.Property);
+      Assert.AreSame (_typeWithAllDataTypesStringValuePath.Properties.Last(), textBoxFirstValue.Property);
 
       IBusinessObjectBoundEditableWebControl textBoxSecondValue = _editableRow.GetEditControl (6);
       Assert.IsTrue (textBoxSecondValue is BocTextValue);
       Assert.AreSame (dataSource, textBoxSecondValue.DataSource);
-      Assert.AreSame (_typeWithAllDataTypesInt32ValuePath.LastProperty, textBoxSecondValue.Property);
+      Assert.AreSame (_typeWithAllDataTypesInt32ValuePath.Properties.Last(), textBoxSecondValue.Property);
     }
 
     [Test]

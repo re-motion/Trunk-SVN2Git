@@ -20,6 +20,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
@@ -201,10 +202,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (_propertyPathBinding.IsDynamic)
           return string.Empty;
 
+        IBusinessObjectPropertyPath propertyPath;
         try
         {
-          var propertyPath = _propertyPathBinding.GetPropertyPath();
-          return propertyPath.LastProperty.DisplayName;
+          propertyPath = _propertyPathBinding.GetPropertyPath();
         }
         catch (ArgumentException)
         {
@@ -212,6 +213,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           // gracefully recover in column header
           return string.Empty;
         }
+
+        var lastProperty = propertyPath.Properties.LastOrDefault();
+        if (lastProperty == null)
+          return string.Empty;
+
+        return lastProperty.DisplayName;
       }
     }
 

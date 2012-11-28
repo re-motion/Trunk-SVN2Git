@@ -73,9 +73,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       string formatString = _formatString;
       if (string.IsNullOrEmpty (formatString))
       {
-        if (propertyPath.Properties.Any() && propertyPath.LastProperty is IBusinessObjectDateTimeProperty)
+        var lastProperty = propertyPath.Properties.LastOrDefault() as IBusinessObjectDateTimeProperty;
+        if (lastProperty != null)
         {
-          if (((IBusinessObjectDateTimeProperty) propertyPath.LastProperty).Type == DateTimeType.Date)
+          if (lastProperty.Type == DateTimeType.Date)
             formatString = "d";
           else
             formatString = "g";
@@ -224,10 +225,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (_propertyPathBinding.IsDynamic)
           return string.Empty;
 
+        IBusinessObjectPropertyPath propertyPath;
         try
         {
-          var propertyPath = _propertyPathBinding.GetPropertyPath();
-          return propertyPath.LastProperty.DisplayName;
+          propertyPath = _propertyPathBinding.GetPropertyPath();
         }
         catch (ArgumentException)
         {
@@ -235,6 +236,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
           // gracefully recover in column header
           return string.Empty;
         }
+
+        var lastProperty = propertyPath.Properties.LastOrDefault();
+        if (lastProperty == null)
+          return string.Empty;
+
+        return lastProperty.DisplayName;
       }
     }
 

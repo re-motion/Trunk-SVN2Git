@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 
 namespace Remotion.ObjectBinding
 {
   internal class NullPropertyPath : IBusinessObjectPropertyPath
   {
-    public IBusinessObjectProperty[] Properties {
-      get { return new IBusinessObjectProperty[0];}
+    public IBusinessObjectProperty[] Properties
+    {
+      get { return new IBusinessObjectProperty[0]; }
     }
-    public IBusinessObjectProperty LastProperty {
-      get { throw new InvalidOperationException ("Property path does not contain any properties."); }
-    }
+
     public object GetValue (IBusinessObject obj, bool throwExceptionIfNotReachable, bool getFirstListEntry)
     {
       return null;
@@ -45,7 +45,8 @@ namespace Remotion.ObjectBinding
     {
     }
 
-    public string Identifier {
+    public string Identifier
+    {
       get { return string.Empty; }
     }
   }

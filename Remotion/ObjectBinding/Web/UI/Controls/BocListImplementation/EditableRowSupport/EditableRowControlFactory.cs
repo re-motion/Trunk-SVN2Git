@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Web;
 using Remotion.Mixins;
 using Remotion.Reflection;
@@ -52,7 +53,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     {
       ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
 
-      return (IBusinessObjectBoundEditableWebControl) ControlFactory.CreateControl (propertyPath.LastProperty, ControlFactory.EditMode.InlineEdit);
+      return (IBusinessObjectBoundEditableWebControl) ControlFactory.CreateControl (propertyPath.Properties.Last(), ControlFactory.EditMode.InlineEdit);
     }
 
     public virtual void RegisterHtmlHeadContents (HtmlHeadAppender htmlHeadAppender)

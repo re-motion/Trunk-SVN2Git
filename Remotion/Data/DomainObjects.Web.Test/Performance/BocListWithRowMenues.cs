@@ -24,15 +24,15 @@ namespace Remotion.Data.DomainObjects.Web.Test.Performance
     protected override Remotion.Web.UI.Controls.WebMenuItem[] InitializeRowMenuItems (Remotion.ObjectBinding.IBusinessObject businessObject, int listIndex)
     {
       return new WebMenuItem[] { 
-      new WebMenuItem {Text = "Item 1", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 2", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 3", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 4", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 5", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 6", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 7", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 8", Command = new Command (CommandType.Event)},
-      new WebMenuItem {Text = "Item 9", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 1", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 2", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 3", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 4", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 5", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 6", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 7", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 8", Command = new Command (CommandType.Event)},
+      //new WebMenuItem {Text = "Item 9", Command = new Command (CommandType.Event)},
       };
     }
   }
