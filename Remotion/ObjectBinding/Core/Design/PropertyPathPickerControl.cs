@@ -316,7 +316,7 @@ namespace Remotion.ObjectBinding.Design
           IBusinessObjectPropertyPath propertyPath = null;
           try
           {
-            propertyPath = BusinessObjectPropertyPath.Parse (_classSource.BusinessObjectClass, (string)value);
+            propertyPath = BusinessObjectPropertyPath.ParseStatic (_classSource.BusinessObjectClass, (string)value);
           }
           catch (ArgumentException)
           {

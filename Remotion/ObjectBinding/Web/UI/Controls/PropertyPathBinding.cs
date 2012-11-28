@@ -128,7 +128,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (isDataSourceNull)
           throw new InvalidOperationException ("The property path could not be resolved because the DataSource is not set.");
 
-        _propertyPath = BusinessObjectPropertyPath.Parse (BusinessObjectClass, _propertyPathIdentifier);
+        _propertyPath = BusinessObjectPropertyPath.ParseStatic (BusinessObjectClass, _propertyPathIdentifier);
       }
       _isPropertyPathEvaluated = true;
 
@@ -144,7 +144,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       IBusinessObjectPropertyPath propertyPath = null;
 
       if (!StringUtility.IsNullOrEmpty (_propertyPathIdentifier))
-        propertyPath = BusinessObjectPropertyPath.Parse (businessObjectClass, _propertyPathIdentifier);
+        propertyPath = BusinessObjectPropertyPath.ParseDynamic (businessObjectClass, _propertyPathIdentifier);
 
       _propertyPath = null;
       _isPropertyPathEvaluated = false;

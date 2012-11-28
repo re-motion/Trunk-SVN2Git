@@ -77,8 +77,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _typeWithAllDataTypesClass = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithAllDataTypes));
 
-      _typeWithAllDataTypesStringValuePath = BusinessObjectPropertyPath.Parse (_typeWithAllDataTypesClass, "String");
-      _typeWithAllDataTypesInt32ValuePath = BusinessObjectPropertyPath.Parse (_typeWithAllDataTypesClass, "Int32");
+      _typeWithAllDataTypesStringValuePath = BusinessObjectPropertyPath.ParseStatic (_typeWithAllDataTypesClass, "String");
+      _typeWithAllDataTypesInt32ValuePath = BusinessObjectPropertyPath.ParseStatic (_typeWithAllDataTypesClass, "Int32");
 
       _typeWithAllDataTypesStringValueSimpleColumn = new BocSimpleColumnDefinition();
       _typeWithAllDataTypesStringValueSimpleColumn.SetPropertyPath (_typeWithAllDataTypesStringValuePath);

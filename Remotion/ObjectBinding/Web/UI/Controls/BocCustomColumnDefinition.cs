@@ -198,23 +198,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (! isTitleEmpty)
           return ColumnTitle;
 
-        IBusinessObjectPropertyPath propertyPath = null;
-        if (!_propertyPathBinding.IsDynamic)
+        if (_propertyPathBinding.IsDynamic)
+          return string.Empty;
+
+        try
         {
-          try
-          {
-            propertyPath = _propertyPathBinding.GetPropertyPath();
-          }
-              // TODO: Why is this catch block required?
-          catch (ArgumentException)
-          {
-          }
-        }
-
-        if (propertyPath != null)
+          var propertyPath = _propertyPathBinding.GetPropertyPath();
           return propertyPath.LastProperty.DisplayName;
-
-        return string.Empty;
+        }
+        catch (ArgumentException)
+        {
+          // TODO: find a better solution than an ArgumentException
+          // gracefully recover in column header
+          return string.Empty;
+        }
       }
     }
 

@@ -57,8 +57,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls
 
       _typeWithStringClass = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithString));
 
-      _typeWithStringFirstValuePath = BusinessObjectPropertyPath.Parse (_typeWithStringClass, "FirstValue");
-      _typeWithStringSecondValuePath = BusinessObjectPropertyPath.Parse (_typeWithStringClass, "SecondValue");
+      _typeWithStringFirstValuePath = BusinessObjectPropertyPath.ParseStatic (_typeWithStringClass, "FirstValue");
+      _typeWithStringSecondValuePath = BusinessObjectPropertyPath.ParseStatic (_typeWithStringClass, "SecondValue");
 
       _typeWithStringFirstValueSimpleColumn = new BocSimpleColumnDefinition();
       _typeWithStringFirstValueSimpleColumn.SetPropertyPath (_typeWithStringFirstValuePath);

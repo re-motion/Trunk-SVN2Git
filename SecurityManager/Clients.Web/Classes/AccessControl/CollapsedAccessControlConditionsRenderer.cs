@@ -156,14 +156,14 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
     private void RenderPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)
     {
       IBusinessObject businessObject = _accessControlEntry;
-      var propertyPath = BusinessObjectPropertyPath.Parse (businessObject.BusinessObjectClass, propertyPathIdentifier);
+      var propertyPath = BusinessObjectPropertyPath.ParseStatic (businessObject.BusinessObjectClass, propertyPathIdentifier);
       writer.WriteEncodedText (propertyPath.GetString (businessObject, null));
     }
 
     private string GetPropertyDisplayName (string propertyPathIdentifier)
     {
       IBusinessObject businessObject = _accessControlEntry;
-      var propertyPath = BusinessObjectPropertyPath.Parse (businessObject.BusinessObjectClass, propertyPathIdentifier);
+      var propertyPath = BusinessObjectPropertyPath.ParseStatic (businessObject.BusinessObjectClass, propertyPathIdentifier);
       Assertion.IsTrue (propertyPath.Properties.Length >= 2);
       return propertyPath.Properties[propertyPath.Properties.Length - 2].DisplayName;
     }

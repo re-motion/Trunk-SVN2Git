@@ -64,8 +64,22 @@ namespace Remotion.ObjectBinding
     /// <summary> Parses the string representation of a property path into a list of properties. </summary>
     /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> containing the first property in the path. Must no be <see langword="null"/>. </param>
     /// <param name="propertyPathIdentifier"> A string with a valid property path syntax. Must no be <see langword="null"/> or empty. </param>
-    /// <returns> A <see cref="BusinessObjectPropertyPath"/>. </returns>
-    public static IBusinessObjectPropertyPath Parse (IBusinessObjectClass objectClass, string propertyPathIdentifier)
+    /// <returns> An object implementing <see cref="IBusinessObjectPropertyPath"/>. </returns>
+    public static IBusinessObjectPropertyPath ParseStatic (IBusinessObjectClass objectClass, string propertyPathIdentifier)
+    {
+      return Parse(objectClass, propertyPathIdentifier, true);
+    }
+
+    /// <summary> Parses the string representation of a property path into a list of properties. </summary>
+    /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> containing the first property in the path. Must no be <see langword="null"/>. </param>
+    /// <param name="propertyPathIdentifier"> A string with a valid property path syntax. Must no be <see langword="null"/> or empty. </param>
+    /// <returns> An object implementing <see cref="IBusinessObjectPropertyPath"/>. </returns>
+    public static IBusinessObjectPropertyPath ParseDynamic (IBusinessObjectClass objectClass, string propertyPathIdentifier)
+    {
+      return Parse (objectClass, propertyPathIdentifier, false) ?? new NullPropertyPath();
+    }
+
+    private static IBusinessObjectPropertyPath Parse (IBusinessObjectClass objectClass, string propertyPathIdentifier, bool throwOnError)
     {
       ArgumentUtility.CheckNotNull ("objectClass", objectClass);
       ArgumentUtility.CheckNotNullOrEmpty ("propertyPathIdentifier", propertyPathIdentifier);
@@ -82,18 +96,32 @@ namespace Remotion.ObjectBinding
         properties[i] = objectClass.GetPropertyDefinition (propertyIdentifiers[i]);
         if (properties[i] == null)
         {
-          throw new ArgumentException (
-              string.Format ("BusinessObjectClass '{0}' does not contain a property named '{1}'.", objectClass.Identifier, propertyIdentifiers[i]),
-              "propertyPathIdentifier");
+          if (throwOnError)
+          {
+            throw new ArgumentException (
+                string.Format ("BusinessObjectClass '{0}' does not contain a property named '{1}'.", objectClass.Identifier, propertyIdentifiers[i]),
+                "propertyPathIdentifier");
+          }
+          else
+          {
+            return null;
+          }
         }
         var referenceProperty = properties[i] as IBusinessObjectReferenceProperty;
         if (referenceProperty == null)
         {
-          throw new ArgumentException (
-              string.Format (
-                  "Each property in a property path except the last one must be a reference property. Property {0} is of type {1}.",
-                  i,
-                  properties[i].GetType().FullName));
+          if (throwOnError)
+          {
+            throw new ArgumentException (
+                string.Format (
+                    "Each property in a property path except the last one must be a reference property. Property {0} is of type {1}.",
+                    i,
+                    properties[i].GetType().FullName));
+          }
+          else
+          {
+            return null;
+          }
         }
 
         objectClass = referenceProperty.ReferenceClass;
@@ -102,12 +130,19 @@ namespace Remotion.ObjectBinding
       properties[lastProperty] = objectClass.GetPropertyDefinition (propertyIdentifiers[lastProperty]);
       if (properties[lastProperty] == null)
       {
-        throw new ArgumentException (
-            string.Format (
-                "BusinessObjectClass '{0}' does not contain a property named '{1}'.",
-                objectClass.Identifier,
-                propertyIdentifiers[lastProperty]),
-            "propertyPathIdentifier");
+        if (throwOnError)
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "BusinessObjectClass '{0}' does not contain a property named '{1}'.",
+                  objectClass.Identifier,
+                  propertyIdentifiers[lastProperty]),
+              "propertyPathIdentifier");
+        }
+        else
+        {
+          return null;
+        }
       }
 
       return objectClass.BusinessObjectProvider.CreatePropertyPath (properties);

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.Mixins;
@@ -69,13 +70,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       else
         propertyPath = _propertyPathBinding.GetDynamicPropertyPath (obj.BusinessObjectClass);
 
-      if (propertyPath == null)
-        return string.Empty;
-
       string formatString = _formatString;
       if (string.IsNullOrEmpty (formatString))
       {
-        if (propertyPath.LastProperty is IBusinessObjectDateTimeProperty)
+        if (propertyPath.Properties.Any() && propertyPath.LastProperty is IBusinessObjectDateTimeProperty)
         {
           if (((IBusinessObjectDateTimeProperty) propertyPath.LastProperty).Type == DateTimeType.Date)
             formatString = "d";
@@ -223,23 +221,20 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (!isTitleEmpty)
           return ColumnTitle;
 
-        IBusinessObjectPropertyPath propertyPath = null;
-        if (!_propertyPathBinding.IsDynamic)
+        if (_propertyPathBinding.IsDynamic)
+          return string.Empty;
+
+        try
         {
-          try
-          {
-            propertyPath = _propertyPathBinding.GetPropertyPath ();
-          }
-          // TODO: Why is this catch block required?
-          catch (ArgumentException)
-          {
-          }
-        }
-
-        if (propertyPath != null)
+          var propertyPath = _propertyPathBinding.GetPropertyPath();
           return propertyPath.LastProperty.DisplayName;
-
-        return string.Empty;
+        }
+        catch (ArgumentException)
+        {
+          // TODO: find a better solution than an ArgumentException
+          // gracefully recover in column header
+          return string.Empty;
+        }
       }
     }
 

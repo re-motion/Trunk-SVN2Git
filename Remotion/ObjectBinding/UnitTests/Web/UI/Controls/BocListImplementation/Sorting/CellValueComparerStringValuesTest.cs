@@ -63,8 +63,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _class = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithString));
 
 
-      _firstValuePath = BusinessObjectPropertyPath.Parse (_class, "FirstValue");
-      _secondValuePath = BusinessObjectPropertyPath.Parse (_class, "SecondValue");
+      _firstValuePath = BusinessObjectPropertyPath.ParseStatic (_class, "FirstValue");
+      _secondValuePath = BusinessObjectPropertyPath.ParseStatic (_class, "SecondValue");
 
 
       _firstValueSimpleColumn = new BocSimpleColumnDefinition();
