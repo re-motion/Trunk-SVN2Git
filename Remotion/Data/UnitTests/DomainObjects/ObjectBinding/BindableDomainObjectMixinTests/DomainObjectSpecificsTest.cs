@@ -43,7 +43,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void OrdinaryProperty ()
     {
-      Assert.IsTrue (_businessObjectSampleClass.HasPropertyDefinition ("Name"));
+      Assert.IsNotNull (_businessObjectSampleClass.GetPropertyDefinition ("Name"));
     }
 
     [Test]
@@ -57,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void NoIDProperty ()
     {
-      Assert.IsFalse (_businessObjectSampleClass.HasPropertyDefinition ("ID"));
+      Assert.IsNull (_businessObjectSampleClass.GetPropertyDefinition ("ID"));
     }
 
     [Test]
@@ -72,19 +72,19 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void PropertyNotInMapping ()
     {
-      Assert.IsTrue (_businessObjectClassWithProperties.HasPropertyDefinition ("RequiredPropertyNotInMapping"));
+      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredPropertyNotInMapping"));
     }
 
     [Test]
     public void PropertyInMapping ()
     {
-      Assert.IsTrue (_businessObjectClassWithProperties.HasPropertyDefinition ("RequiredStringProperty"));
+      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("RequiredStringProperty"));
     }
 
     [Test]
     public void ProtectedPropertyInMapping ()
     {
-      Assert.IsFalse (_businessObjectClassWithProperties.HasPropertyDefinition ("ProtectedStringProperty"));
+      Assert.IsNull (_businessObjectClassWithProperties.GetPropertyDefinition ("ProtectedStringProperty"));
     }
 
     [Test]
@@ -123,8 +123,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.ObjectBinding.BindableDomainObje
     [Test]
     public void InheritanceAndOverriding ()
     {
-      Assert.IsTrue (_businessObjectClassWithProperties.HasPropertyDefinition ("BasePropertyWithMaxLength3"));
-      Assert.IsTrue (_businessObjectClassWithProperties.HasPropertyDefinition ("BasePropertyWithMaxLength4"));
+      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength3"));
+      Assert.IsNotNull (_businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength4"));
 
       Assert.AreEqual (33, ((IBusinessObjectStringProperty)
           _businessObjectClassWithProperties.GetPropertyDefinition ("BasePropertyWithMaxLength3")).MaxLength);
