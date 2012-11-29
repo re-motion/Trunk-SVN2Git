@@ -45,7 +45,7 @@ namespace Remotion.ObjectBinding
       get { throw new NotSupportedException(); }
     }
 
-    public IBusinessObjectPropertyPathResult GetResult (IBusinessObject root)
+    public IBusinessObjectPropertyPathResult GetResult_Inline (IBusinessObject root)
     {
       ArgumentUtility.CheckNotNull ("root", root);
 
@@ -75,12 +75,102 @@ namespace Remotion.ObjectBinding
 
         remainingPropertyPathIdentifier = propertyIdentifierAndRemainder[1];
         currentObject = (IBusinessObject) currentObject.GetProperty (currentProperty);
-
       } while (currentObject != null);
 
-      return new NullPropertyPathResult ();
+      return new NullPropertyPathResult();
+    }
+
+    public IBusinessObjectPropertyPathResult GetResult_Enumerator (IBusinessObject root)
+    {
+      ArgumentUtility.CheckNotNull ("root", root);
+
+      var currentObject = root;
+      var propertyEnumerator = new PropertyPathPropertyEnumerator (_propertyPathIdentifier);
+
+      if (!propertyEnumerator.MoveNext (currentObject.BusinessObjectClass))
+        throw new InvalidOperationException();
+
+      while (true)
+      {
+        var currentProperty = propertyEnumerator.Current;
+
+        if (currentProperty == null)
+          return new NullPropertyPathResult();
+
+        if (!currentProperty.IsAccessible (currentObject.BusinessObjectClass, currentObject))
+          return new NotAccessiblePropertyPathResult (currentObject.BusinessObjectClass.BusinessObjectProvider);
+
+        if (!propertyEnumerator.MoveNext (currentObject.BusinessObjectClass))
+          return new BusinessObjectPropertyPathResult (currentObject, currentProperty);
+
+        currentObject = (IBusinessObject) currentObject.GetProperty (currentProperty);
+        if (currentObject == null)
+          return new NullPropertyPathResult();
+      }
     }
   }
+
+  public class PropertyPathPropertyEnumerator
+  {
+    private string _remainingPropertyPathIdentifier;
+    private IBusinessObjectProperty _currentProperty;
+
+    public PropertyPathPropertyEnumerator (string propertyPathIdentifier)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("propertyPathIdentifier", propertyPathIdentifier);
+
+      _remainingPropertyPathIdentifier = propertyPathIdentifier;
+    }
+
+    public IBusinessObjectProperty Current
+    {
+      get { return _currentProperty; }
+    }
+
+    public bool MoveNext (IBusinessObjectClass businessObjectClass)
+    {
+      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
+
+      _currentProperty = null;
+      if (!HasNext)
+        return false;
+
+      var propertyIdentifierAndRemainder =
+          _remainingPropertyPathIdentifier.Split (
+              new[] { businessObjectClass.BusinessObjectProvider.GetPropertyPathSeparator() }, 2, StringSplitOptions.None);
+
+      if (propertyIdentifierAndRemainder.Length == 2)
+        _remainingPropertyPathIdentifier = propertyIdentifierAndRemainder[1];
+      else
+        _remainingPropertyPathIdentifier = string.Empty;
+
+      var propertyIdentifier = propertyIdentifierAndRemainder[0];
+      var property = businessObjectClass.GetPropertyDefinition (propertyIdentifier);
+
+      if (property == null)
+        HandlePropertyNotFound (businessObjectClass, propertyIdentifier);
+      else if (HasNext && ! (property is IBusinessObjectReferenceProperty))
+        HandlePropertyNotLastPropertyAndNotReferenceProperty (businessObjectClass, property);
+      else
+        _currentProperty = property;
+
+      return true;
+    }
+    
+    private bool HasNext
+    {
+      get { return _remainingPropertyPathIdentifier.Length > 0; }
+    }
+
+    private void HandlePropertyNotFound (IBusinessObjectClass businessObjectClass, string propertyIdentifier)
+    {
+    }
+
+    private void HandlePropertyNotLastPropertyAndNotReferenceProperty (IBusinessObjectClass businessObjectClass, IBusinessObjectProperty property)
+    {
+    }
+  }
+
 
   public interface IBusinessObjectPropertyPathResult
   {
@@ -163,7 +253,7 @@ namespace Remotion.ObjectBinding
     {
       ArgumentUtility.CheckNotNull ("resultObject", resultObject);
       ArgumentUtility.CheckNotNull ("resultProperty", resultProperty);
-      
+
       _resultObject = resultObject;
       _resultProperty = resultProperty;
     }
