@@ -41,11 +41,17 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 
     public object GetValue ()
     {
+      if (!_resultProperty.IsAccessible (_resultObject.BusinessObjectClass, _resultObject))
+        return null;
+
       return _resultObject.GetProperty (_resultProperty);
     }
 
     public string GetString (string format)
     {
+      if (!_resultProperty.IsAccessible (_resultObject.BusinessObjectClass, _resultObject))
+        return _resultObject.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
+
       return _resultObject.GetPropertyString (_resultProperty, format);
     }
 

@@ -16,25 +16,33 @@
 // 
 
 using System;
+using Remotion.Mixins;
+using Remotion.Reflection;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
+namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.TestDomain
 {
-  public sealed class DynamicBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
+  [BindableObjectWithIdentity]
+  public class TypeTwo
   {
-    public DynamicBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)
-        : base (propertyPathIdentifier)
+    public static TypeTwo Create ()
     {
+      return ObjectFactory.Create<TypeTwo> (true, ParamList.Empty);
     }
 
-    protected override void HandlePropertyNotFound (IBusinessObjectClass businessObjectClass, string propertyIdentifier)
+    protected TypeTwo ()
     {
-      //NOP
+      TypeThreeValue = TypeThree.Create();
+      IntValue = 2;
     }
 
-    protected override void HandlePropertyNotLastPropertyAndNotReferenceProperty (
-        IBusinessObjectClass businessObjectClass, IBusinessObjectProperty property)
+    [OverrideMixin]
+    public string UniqueIdentifier
     {
-      //NOP
+      get { return "Type Two ID"; }
     }
+
+    public TypeThree TypeThreeValue { get; set; }
+
+    public int IntValue { get; set; }
   }
 }

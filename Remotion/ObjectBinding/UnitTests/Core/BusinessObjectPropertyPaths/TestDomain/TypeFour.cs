@@ -14,27 +14,31 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-
 using System;
+using Remotion.Mixins;
+using Remotion.Reflection;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
+namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.TestDomain
 {
-  public sealed class DynamicBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
+  [BindableObjectWithIdentity]
+  public class TypeFour
   {
-    public DynamicBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)
-        : base (propertyPathIdentifier)
+    public static TypeFour Create ()
     {
+      return ObjectFactory.Create<TypeFour> (true, ParamList.Empty);
     }
 
-    protected override void HandlePropertyNotFound (IBusinessObjectClass businessObjectClass, string propertyIdentifier)
+    protected TypeFour ()
     {
-      //NOP
+      IntValue = 4;
     }
 
-    protected override void HandlePropertyNotLastPropertyAndNotReferenceProperty (
-        IBusinessObjectClass businessObjectClass, IBusinessObjectProperty property)
+    [OverrideMixin]
+    public string UniqueIdentifier
     {
-      //NOP
+      get { return "Type Four ID"; }
     }
+
+    public int IntValue { get; set; }
   }
 }

@@ -19,7 +19,7 @@ using System;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
-  public class StaticBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
+  public sealed class StaticBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
   {
     public StaticBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)
         : base (propertyPathIdentifier)

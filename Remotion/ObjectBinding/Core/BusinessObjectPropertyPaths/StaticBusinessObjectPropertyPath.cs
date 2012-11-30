@@ -23,7 +23,7 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 {
-  public class StaticBusinessObjectPropertyPath : BusinessObjectPropertyPathBase
+  public sealed class StaticBusinessObjectPropertyPath : BusinessObjectPropertyPathBase
   {
     private readonly string _propertyPathIdentifier;
     private readonly IBusinessObjectProperty[] _properties;

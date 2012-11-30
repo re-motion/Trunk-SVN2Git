@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
-  public class EvaluatedBusinessObjectPropertyPathPropertyEnumerator : IBusinessObjectPropertyPathPropertyEnumerator
+  public sealed class EvaluatedBusinessObjectPropertyPathPropertyEnumerator : IBusinessObjectPropertyPathPropertyEnumerator
   {
     private readonly IEnumerator<IBusinessObjectProperty> _propertyEnumerator;
 
