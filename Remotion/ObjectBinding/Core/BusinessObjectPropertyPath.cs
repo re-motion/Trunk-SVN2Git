@@ -36,6 +36,18 @@ namespace Remotion.ObjectBinding
   /// </remarks>
   public class BusinessObjectPropertyPath : IBusinessObjectPropertyPath
   {
+    public enum ListValueBehavior
+    {
+      GetResultForFirstListEntry,
+      FailForListProperties
+    }
+
+    public enum UnreachableValueBehavior
+    {
+      ReturnNullForUnreachableValue,
+      FailForUnreachableValue
+    }
+    
     /// <summary> Property path formatters can be passed to <see cref="string.Format(string,object[])"/> for full <see cref="IFormattable"/> support. </summary>
     public class Formatter : IFormattable
     {
