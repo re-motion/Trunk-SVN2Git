@@ -299,6 +299,18 @@ namespace Remotion.UnitTests.Reflection.TypeDiscovery.AssemblyLoading
     }
 
     [Test]
+    public void PerformGuardedLoadOperation_WithFileNotFoundException_WorkaroundForSystemIdentityModelSelectors ()
+    {
+      var fileNotFoundException = new FileNotFoundException ("xy");
+      Assert.That (
+          () => _loader.PerformGuardedLoadOperation<string> (
+              "System.IdentityModel.Selectors, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+              "z",
+              () => { throw fileNotFoundException; }),
+          Throws.Nothing);
+    }
+
+    [Test]
     public void PerformGuardedLoadOperation_WithUnexpectedException ()
     {
       var unexpected = new IndexOutOfRangeException ("xy");

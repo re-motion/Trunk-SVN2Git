@@ -124,6 +124,16 @@ namespace Remotion.Reflection.TypeDiscovery.AssemblyLoading
       {
         string message = string.Format ("The assembly {0} triggered a FileNotFoundException - maybe the assembly does not exist or a referenced assembly "
                                         + "is missing?\r\nFileNotFoundException message: {1}", assemblyDescriptionText, ex.Message);
+
+        // This is a workaround for an issue in Windows 8 with .NET 3.5, where System.ServiceModel references a 
+        // non-existing System.IdentityModel.Selectors.dll,
+        // https://www.re-motion.org/jira/browse/RM-5089
+        if (assemblyDescription.Contains ("System.IdentityModel.Selectors"))
+        {
+          s_log.WarnFormat (message, ex);
+          return default (T);
+        }
+
         throw new AssemblyLoaderException (message, ex);
       }
       catch (Exception ex)
