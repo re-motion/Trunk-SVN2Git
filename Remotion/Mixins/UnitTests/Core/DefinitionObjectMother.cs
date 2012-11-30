@@ -25,6 +25,7 @@ using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using Remotion.ServiceLocation;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;
 using Rhino.Mocks;
 

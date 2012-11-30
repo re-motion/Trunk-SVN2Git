@@ -23,6 +23,7 @@ using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
 using System.Linq;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.Implementation;
 
 namespace Remotion.Mixins.UnitTests.Core.Definitions.Building
 {

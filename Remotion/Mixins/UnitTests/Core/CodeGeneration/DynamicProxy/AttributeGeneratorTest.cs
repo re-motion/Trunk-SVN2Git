@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Reflection.CodeGeneration;
 using Remotion.TypePipe.MutableReflection;
+using Remotion.TypePipe.MutableReflection.Implementation;
 using Rhino.Mocks;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
