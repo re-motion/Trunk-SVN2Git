@@ -32,14 +32,14 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
     public abstract string Identifier { get; }
     public abstract ReadOnlyCollection<IBusinessObjectProperty> Properties { get; }
 
-    protected abstract IBusinessObjectPropertyPathPropertyEnumerator GetPropertyEnumerator ();
+    protected abstract IBusinessObjectPropertyPathPropertyEnumerator GetResultPropertyEnumerator ();
 
     public IBusinessObjectPropertyPathResult GetResult (IBusinessObject root)
     {
       ArgumentUtility.CheckNotNull ("root", root);
 
       var currentObject = root;
-      var propertyEnumerator = GetPropertyEnumerator();
+      var propertyEnumerator = GetResultPropertyEnumerator();
 
       while (propertyEnumerator.MoveNext (currentObject.BusinessObjectClass))
       {

@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
       get { throw new NotSupportedException(); }
     }
 
-    protected override IBusinessObjectPropertyPathPropertyEnumerator GetPropertyEnumerator ()
+    protected override IBusinessObjectPropertyPathPropertyEnumerator GetResultPropertyEnumerator ()
     {
       return new DynamicBusinessObjectPropertyPathPropertyEnumerator (_propertyPathIdentifier);
     }

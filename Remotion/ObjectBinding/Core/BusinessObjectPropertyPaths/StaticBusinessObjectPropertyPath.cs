@@ -69,7 +69,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
       get { return new ReadOnlyCollection<IBusinessObjectProperty> (_properties); }
     }
 
-    protected override IBusinessObjectPropertyPathPropertyEnumerator GetPropertyEnumerator ()
+    protected override IBusinessObjectPropertyPathPropertyEnumerator GetResultPropertyEnumerator ()
     {
       return new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (_properties);
     }
