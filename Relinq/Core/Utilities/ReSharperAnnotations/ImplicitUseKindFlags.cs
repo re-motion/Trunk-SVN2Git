@@ -14,32 +14,35 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+
 namespace JetBrains.Annotations
 {
-  /// <summary>
-  /// Specifies assertion type. If the assertion method argument satisifes the condition, then the execution continues. 
-  /// Otherwise, execution is assumed to be halted
-  /// </summary>
-  internal enum AssertionConditionType
+  [Flags]
+  internal enum ImplicitUseKindFlags
   {
-    /// <summary>
-    /// Indicates that the marked parameter should be evaluated to true
-    /// </summary>
-    IS_TRUE = 0,
+    Default = Access | Assign | InstantiatedWithFixedConstructorSignature,
 
     /// <summary>
-    /// Indicates that the marked parameter should be evaluated to false
+    /// Only entity marked with attribute considered used
     /// </summary>
-    IS_FALSE = 1,
+    Access = 1,
 
     /// <summary>
-    /// Indicates that the marked parameter should be evaluated to null value
+    /// Indicates implicit assignment to a member
     /// </summary>
-    IS_NULL = 2,
+    Assign = 2,
 
     /// <summary>
-    /// Indicates that the marked parameter should be evaluated to not null value
+    /// Indicates implicit instantiation of a type with fixed constructor signature.
+    /// That means any unused constructor parameters won't be reported as such.
     /// </summary>
-    IS_NOT_NULL = 3,
+    InstantiatedWithFixedConstructorSignature = 4,
+
+    /// <summary>
+    /// Indicates implicit instantiation of a type
+    /// </summary>
+    InstantiatedNoFixedConstructorSignature = 8,
   }
 }

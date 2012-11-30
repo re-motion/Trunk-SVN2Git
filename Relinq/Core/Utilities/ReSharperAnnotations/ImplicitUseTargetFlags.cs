@@ -14,32 +14,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-linq; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
+
 namespace JetBrains.Annotations
 {
   /// <summary>
-  /// Specifies assertion type. If the assertion method argument satisifes the condition, then the execution continues. 
-  /// Otherwise, execution is assumed to be halted
+  /// Specify what is considered used implicitly when marked with <see cref="MeansImplicitUseAttribute"/> or <see cref="UsedImplicitlyAttribute"/>
   /// </summary>
-  internal enum AssertionConditionType
+  [Flags]
+  internal enum ImplicitUseTargetFlags
   {
-    /// <summary>
-    /// Indicates that the marked parameter should be evaluated to true
-    /// </summary>
-    IS_TRUE = 0,
+    Default = Itself,
+
+    Itself = 1,
 
     /// <summary>
-    /// Indicates that the marked parameter should be evaluated to false
+    /// Members of entity marked with attribute are considered used
     /// </summary>
-    IS_FALSE = 1,
+    Members = 2,
 
     /// <summary>
-    /// Indicates that the marked parameter should be evaluated to null value
+    /// Entity marked with attribute and all its members considered used
     /// </summary>
-    IS_NULL = 2,
-
-    /// <summary>
-    /// Indicates that the marked parameter should be evaluated to not null value
-    /// </summary>
-    IS_NOT_NULL = 3,
+    WithMembers = Itself | Members
   }
 }
