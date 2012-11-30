@@ -14,32 +14,27 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
-using System.Collections.Generic;
-using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
+namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
-  public class EvaluatedBusinessObjectPropertyPathPropertyEnumerator : IBusinessObjectPropertyPathPropertyEnumerator
+  public class DynamicBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
   {
-    private readonly IEnumerator<IBusinessObjectProperty> _propertyEnumerator;
-
-    public EvaluatedBusinessObjectPropertyPathPropertyEnumerator (IEnumerable<IBusinessObjectProperty> properties)
+    public DynamicBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)
+        : base (propertyPathIdentifier)
     {
-      ArgumentUtility.CheckNotNull ("properties", properties);
-      _propertyEnumerator = properties.GetEnumerator();
     }
 
-    public IBusinessObjectProperty Current
+    protected override void HandlePropertyNotFound (IBusinessObjectClass businessObjectClass, string propertyIdentifier)
     {
-      get { return _propertyEnumerator.Current; }
+      //NOP
     }
 
-    public bool MoveNext (IBusinessObjectClass businessObjectClass)
+    protected override void HandlePropertyNotLastPropertyAndNotReferenceProperty (
+        IBusinessObjectClass businessObjectClass, IBusinessObjectProperty property)
     {
-      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
-
-      return _propertyEnumerator.MoveNext();
+      //NOP
     }
   }
 }

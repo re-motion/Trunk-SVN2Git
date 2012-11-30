@@ -16,25 +16,31 @@
 // 
 
 using System;
+using System.Collections.Generic;
+using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
+namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
-  public class StaticBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
+  public class EvaluatedBusinessObjectPropertyPathPropertyEnumerator : IBusinessObjectPropertyPathPropertyEnumerator
   {
-    public StaticBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)
-        : base (propertyPathIdentifier)
+    private readonly IEnumerator<IBusinessObjectProperty> _propertyEnumerator;
+
+    public EvaluatedBusinessObjectPropertyPathPropertyEnumerator (IEnumerable<IBusinessObjectProperty> properties)
     {
+      ArgumentUtility.CheckNotNull ("properties", properties);
+      _propertyEnumerator = properties.GetEnumerator();
     }
 
-    protected override void HandlePropertyNotFound (IBusinessObjectClass businessObjectClass, string propertyIdentifier)
+    public IBusinessObjectProperty Current
     {
-      throw new ArgumentException();
+      get { return _propertyEnumerator.Current; }
     }
 
-    protected override void HandlePropertyNotLastPropertyAndNotReferenceProperty (
-        IBusinessObjectClass businessObjectClass, IBusinessObjectProperty property)
+    public bool MoveNext (IBusinessObjectClass businessObjectClass)
     {
-      throw new ArgumentException();
+      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
+
+      return _propertyEnumerator.MoveNext();
     }
   }
 }

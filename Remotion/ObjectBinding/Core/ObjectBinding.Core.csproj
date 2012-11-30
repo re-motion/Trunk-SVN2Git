@@ -173,10 +173,10 @@
     <Compile Include="BindableObject\Properties\ExtensibleEnumerationProperty.cs" />
     <Compile Include="BusinessObjectExtensions.cs" />
     <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathBase.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\BusinessObjectPropertyPathPropertyEnumeratorBase.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\DynamicBusinessObjectPropertyPathPropertyEnumerator.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\StaticBusinessObjectPropertyPathPropertyEnumerator.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\EvaluatedBusinessObjectPropertyPathPropertyEnumerator.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Enumerators\BusinessObjectPropertyPathPropertyEnumeratorBase.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Enumerators\DynamicBusinessObjectPropertyPathPropertyEnumerator.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Enumerators\StaticBusinessObjectPropertyPathPropertyEnumerator.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Enumerators\EvaluatedBusinessObjectPropertyPathPropertyEnumerator.cs" />
     <Compile Include="DefaultSearchArguments.cs" />
     <Compile Include="IBusinessObject.cs" />
     <Compile Include="IBusinessObjectBooleanProperty.cs" />
@@ -310,7 +310,7 @@
     <Compile Include="BusinessObjectPropertyPaths\EvaluatedBusinessObjectPropertyPathResult.cs" />
     <Compile Include="BusinessObjectPropertyPaths\DynamicBusinessObjectPropertyPath.cs" />
     <Compile Include="BusinessObjectPropertyPaths\IBusinessObjectPropertyPathResult.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\IBusinessObjectPropertyPathPropertyEnumerator.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Enumerators\IBusinessObjectPropertyPathPropertyEnumerator.cs" />
     <Compile Include="BusinessObjectPropertyPaths\NotAccessibleBusinessObjectPropertyPathResult.cs" />
     <Compile Include="BusinessObjectPropertyPaths\NullBusinessObjectPropertyPathResult.cs" />
     <Compile Include="BusinessObjectPropertyPaths\StaticBusinessObjectPropertyPath.cs" />
