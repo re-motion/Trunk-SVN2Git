@@ -25,7 +25,6 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
   public class StaticBusinessObjectPropertyPath : BusinessObjectPropertyPathBase
   {
     private readonly string _propertyPathIdentifier;
-    private readonly IBusinessObjectClass _root;
     private readonly IBusinessObjectProperty[] _properties;
 
     public StaticBusinessObjectPropertyPath (string propertyPathIdentifier, IBusinessObjectClass root)
@@ -51,7 +50,6 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
       }
 
       _propertyPathIdentifier = propertyPathIdentifier;
-      _root = root;
       _properties = properties.ToArray();
     }
 
@@ -62,7 +60,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 
     public override string Identifier
     {
-      get { return string.Empty; }
+      get { return _propertyPathIdentifier; }
     }
 
     public override ReadOnlyCollection<IBusinessObjectProperty> Properties
