@@ -53,40 +53,5 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
     {
       return new DynamicBusinessObjectPropertyPathPropertyEnumerator (_propertyPathIdentifier);
     }
-
-    public IBusinessObjectPropertyPathResult GetResult_Inline (IBusinessObject root)
-    {
-      ArgumentUtility.CheckNotNull ("root", root);
-
-      var currentObject = root;
-      var remainingPropertyPathIdentifier = _propertyPathIdentifier;
-
-      do
-      {
-        var currentClass = currentObject.BusinessObjectClass;
-        var propertyIdentifierAndRemainder =
-            remainingPropertyPathIdentifier.Split (
-                new[] { currentClass.BusinessObjectProvider.GetPropertyPathSeparator() }, 2, StringSplitOptions.None);
-        var currentPropertyIdentifier = propertyIdentifierAndRemainder[0];
-        var currentProperty = currentClass.GetPropertyDefinition (currentPropertyIdentifier);
-
-        if (currentProperty == null)
-          return new NullBusinessObjectPropertyPathResult();
-
-        if (!currentProperty.IsAccessible (currentClass, currentObject))
-          return new NotAccessibleBusinessObjectPropertyPathResult (currentClass.BusinessObjectProvider);
-
-        if (propertyIdentifierAndRemainder.Length == 1)
-          return new EvaluatedBusinessObjectPropertyPathResult (currentObject, currentProperty);
-
-        if (! (currentProperty is IBusinessObjectReferenceProperty))
-          return new NullBusinessObjectPropertyPathResult();
-
-        remainingPropertyPathIdentifier = propertyIdentifierAndRemainder[1];
-        currentObject = (IBusinessObject) currentObject.GetProperty (currentProperty);
-      } while (currentObject != null);
-
-      return new NullBusinessObjectPropertyPathResult();
-    }
   }
 }

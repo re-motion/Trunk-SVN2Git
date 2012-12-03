@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
       Assert.That (enumerator.Current, Is.SameAs (thirdPropertyStub));
 
       Assert.That (enumerator.MoveNext (MockRepository.GenerateStub<IBusinessObjectClass>()), Is.False);
-      Assert.That (enumerator.Current, Is.Null);
+      Assert.That (()=>enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
     }
 
     [Test]

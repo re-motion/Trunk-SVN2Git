@@ -26,21 +26,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
   public class SingleValuePropertyPath_BusinessObjectPropertyPathBaseTest
   {
     private BusinessObjectPropertyPathTestHelper _testHelper;
-    private BusinessObjectPropertyPathBase _path;
     
     [SetUp]
     public void SetUp ()
     {
       _testHelper = new BusinessObjectPropertyPathTestHelper ();
-      _path = new TestableBusinessObjectPropertyPathBase (_testHelper.Property);
     }
 
     [Test]
     public void GetValue ()
     {
+      var path = new TestableBusinessObjectPropertyPathBase (_testHelper.Property);
       _testHelper.ReplayAll();
 
-      var actual = _path.GetResult (
+      var actual = path.GetResult (
           _testHelper.BusinessObjectWithIdentity,
           BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
           BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
@@ -50,6 +49,25 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
       Assert.That (actual, Is.InstanceOf<EvaluatedBusinessObjectPropertyPathResult>());
       Assert.That (actual.ResultObject, Is.SameAs (_testHelper.BusinessObjectWithIdentity));
       Assert.That (actual.ResultProperty, Is.SameAs (_testHelper.Property));
+    }
+
+    [Test]
+    [Ignore ("TODO Implement")]
+    public void GetValue_LastPropertyIsReferenceProperty ()
+    {
+      var path = new TestableBusinessObjectPropertyPathBase (_testHelper.ReferenceProperty);
+      _testHelper.ReplayAll();
+
+      var actual = path.GetResult (
+          _testHelper.BusinessObject,
+          BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
+          BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
+
+      _testHelper.VerifyAll();
+
+      Assert.That (actual, Is.InstanceOf<EvaluatedBusinessObjectPropertyPathResult>());
+      Assert.That (actual.ResultObject, Is.SameAs (_testHelper.BusinessObject));
+      Assert.That (actual.ResultProperty, Is.SameAs (_testHelper.ReferenceProperty));
     }
   }
 }

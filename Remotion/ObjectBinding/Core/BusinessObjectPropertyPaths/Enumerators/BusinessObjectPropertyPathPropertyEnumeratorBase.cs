@@ -23,6 +23,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
   public abstract class BusinessObjectPropertyPathPropertyEnumeratorBase : IBusinessObjectPropertyPathPropertyEnumerator
   {
     private string _remainingPropertyPathIdentifier;
+    private bool _isEnumerationFinished;
     private IBusinessObjectProperty _currentProperty;
 
     protected BusinessObjectPropertyPathPropertyEnumeratorBase (string propertyPathIdentifier)
@@ -42,7 +43,17 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 
     public IBusinessObjectProperty Current
     {
-      get { return _currentProperty; }
+      get
+      {
+        if (_isEnumerationFinished)
+          throw new InvalidOperationException ("Enumeration already finished.");
+
+        return _currentProperty; }
+    }
+
+    public bool HasNext
+    {
+      get { return _remainingPropertyPathIdentifier.Length > 0; }
     }
 
     public bool MoveNext (IBusinessObjectClass currentClass)
@@ -51,7 +62,10 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 
       _currentProperty = null;
       if (!HasNext)
+      {
+        _isEnumerationFinished = true;
         return false;
+      }
 
       var propertyIdentifierAndRemainder =
           _remainingPropertyPathIdentifier.Split (
@@ -73,11 +87,6 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
         _currentProperty = property;
 
       return true;
-    }
-
-    private bool HasNext
-    {
-      get { return _remainingPropertyPathIdentifier.Length > 0; }
     }
   }
 }

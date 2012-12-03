@@ -93,6 +93,9 @@
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\BusinessObjectPropertyPathTestHelper.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\TestableBusinessObjectPropertyPathBase.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\EvaluatedBusinessObjectPropertyPathPropertyEnumeratorTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\StaticBusinessObjectPropertyPathTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\DynamicBusinessObjectPropertyPathTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\BusinessObjectPropertyPathPropertyEnumeratorBaseTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\BusinessObjectPropertyPathPropertyEnumeratorTestBase.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\DynamicBusinessObjectPropertyPathPropertyEnumeratorTest.cs" />

@@ -37,7 +37,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
       var currentClass = root;
       var propertyEnumerator = new StaticBusinessObjectPropertyPathPropertyEnumerator (propertyPathIdentifier);
 
-      while (propertyEnumerator.MoveNext (currentClass))
+      while (currentClass != null && propertyEnumerator.MoveNext (currentClass))
       {
         var currentProperty = propertyEnumerator.Current;
         Assertion.IsNotNull (currentProperty, "StaticPropertyPathPropertyEnumerator never returns null on successful enumeration.");
