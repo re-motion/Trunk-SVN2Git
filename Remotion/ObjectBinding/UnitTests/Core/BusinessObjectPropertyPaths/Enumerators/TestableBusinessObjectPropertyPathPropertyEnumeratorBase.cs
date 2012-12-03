@@ -16,22 +16,22 @@
 // 
 
 using System;
-using Remotion.Utilities;
+using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
+namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enumerators
 {
-  public sealed class StaticBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
+  public class TestableBusinessObjectPropertyPathPropertyEnumeratorBase : BusinessObjectPropertyPathPropertyEnumeratorBase
   {
-    public StaticBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)
+    public TestableBusinessObjectPropertyPathPropertyEnumeratorBase (string propertyPathIdentifier)
         : base (propertyPathIdentifier)
     {
     }
 
     protected override void HandlePropertyNotFound (IBusinessObjectClass businessObjectClass, string propertyIdentifier)
     {
-      throw new ParseException (
+      throw new Exception (
           string.Format (
-              "BusinessObjectClass '{0}' does not contain a property named '{1}'.",
+              "HandlePropertyNotFound, class: {0}, property: {1}",
               businessObjectClass.Identifier,
               propertyIdentifier));
     }
@@ -39,11 +39,11 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
     protected override void HandlePropertyNotLastPropertyAndNotReferenceProperty (
         IBusinessObjectClass businessObjectClass, IBusinessObjectProperty property)
     {
-      throw new ParseException (
+      throw new Exception (
           string.Format (
-              "Each property in a property path except the last one must be a reference property. Property '{0}' is of type '{1}'.",
-              property.Identifier,
-              property.GetType().Name));
+              "HandlePropertyNotLastPropertyAndNotReferenceProperty, class: {0}, property: {1}",
+              businessObjectClass.Identifier,
+              property.Identifier));
     }
   }
 }

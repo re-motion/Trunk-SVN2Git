@@ -22,11 +22,11 @@ using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests
 {
-  public class TestBusinessObjectPropertyPathBase : BusinessObjectPropertyPathBase
+  public class TestableBusinessObjectPropertyPathBase : BusinessObjectPropertyPathBase
   {
     private readonly IBusinessObjectProperty[] _properties;
 
-    public TestBusinessObjectPropertyPathBase (params IBusinessObjectProperty[] properties)
+    public TestableBusinessObjectPropertyPathBase (params IBusinessObjectProperty[] properties)
     {
       _properties = properties;
     }

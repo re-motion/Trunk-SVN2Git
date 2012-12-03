@@ -22,6 +22,6 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
   public interface IBusinessObjectPropertyPathPropertyEnumerator
   {
     IBusinessObjectProperty Current { get; }
-    bool MoveNext (IBusinessObjectClass businessObjectClass);
+    bool MoveNext (IBusinessObjectClass currentClass);
   }
 }

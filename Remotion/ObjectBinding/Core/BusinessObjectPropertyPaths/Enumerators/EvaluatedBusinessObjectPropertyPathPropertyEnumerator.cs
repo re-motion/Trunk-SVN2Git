@@ -36,9 +36,9 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
       get { return _propertyEnumerator.Current; }
     }
 
-    public bool MoveNext (IBusinessObjectClass businessObjectClass)
+    public bool MoveNext (IBusinessObjectClass currentClass)
     {
-      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
+      ArgumentUtility.CheckNotNull ("currentClass", currentClass);
 
       return _propertyEnumerator.MoveNext();
     }

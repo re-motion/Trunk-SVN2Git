@@ -45,9 +45,9 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
       get { return _currentProperty; }
     }
 
-    public bool MoveNext (IBusinessObjectClass businessObjectClass)
+    public bool MoveNext (IBusinessObjectClass currentClass)
     {
-      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
+      ArgumentUtility.CheckNotNull ("currentClass", currentClass);
 
       _currentProperty = null;
       if (!HasNext)
@@ -55,7 +55,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 
       var propertyIdentifierAndRemainder =
           _remainingPropertyPathIdentifier.Split (
-              new[] { businessObjectClass.BusinessObjectProvider.GetPropertyPathSeparator() }, 2, StringSplitOptions.None);
+              new[] { currentClass.BusinessObjectProvider.GetPropertyPathSeparator() }, 2, StringSplitOptions.None);
 
       if (propertyIdentifierAndRemainder.Length == 2)
         _remainingPropertyPathIdentifier = propertyIdentifierAndRemainder[1];
@@ -63,12 +63,12 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
         _remainingPropertyPathIdentifier = string.Empty;
 
       var propertyIdentifier = propertyIdentifierAndRemainder[0];
-      var property = businessObjectClass.GetPropertyDefinition (propertyIdentifier);
+      var property = currentClass.GetPropertyDefinition (propertyIdentifier);
 
       if (property == null)
-        HandlePropertyNotFound (businessObjectClass, propertyIdentifier);
+        HandlePropertyNotFound (currentClass, propertyIdentifier);
       else if (HasNext && ! (property is IBusinessObjectReferenceProperty))
-        HandlePropertyNotLastPropertyAndNotReferenceProperty (businessObjectClass, property);
+        HandlePropertyNotLastPropertyAndNotReferenceProperty (currentClass, property);
       else
         _currentProperty = property;
 

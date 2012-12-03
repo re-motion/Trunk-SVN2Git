@@ -22,7 +22,7 @@ using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests
 {
   [TestFixture]
-  public class SingleValuePropertyPathTest
+  public class SingleValuePropertyPath_BusinessObjectPropertyPathBaseTest
   {
     private BusinessObjectPropertyPathTestHelper _testHelper;
     private BusinessObjectPropertyPathBase _path;
@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     public void SetUp ()
     {
       _testHelper = new BusinessObjectPropertyPathTestHelper ();
-      _path = new TestBusinessObjectPropertyPathBase (_testHelper.Property);
+      _path = new TestableBusinessObjectPropertyPathBase (_testHelper.Property);
     }
 
     [Test]

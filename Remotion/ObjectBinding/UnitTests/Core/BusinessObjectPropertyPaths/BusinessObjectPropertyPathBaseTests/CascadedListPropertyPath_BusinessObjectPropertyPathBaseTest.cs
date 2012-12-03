@@ -22,7 +22,7 @@ using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests
 {
   [TestFixture]
-  public class CascadedPropertyPathTest
+  public class CascadedListPropertyPath_BusinessObjectPropertyPathBaseTest
   {
     private BusinessObjectPropertyPathTestHelper _testHelper;
     private BusinessObjectPropertyPathBase _path;
@@ -31,16 +31,16 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     public void SetUp ()
     {
       _testHelper = new BusinessObjectPropertyPathTestHelper();
-      _path = new TestBusinessObjectPropertyPathBase (_testHelper.ReferenceProperty, _testHelper.Property);
+      _path = new TestableBusinessObjectPropertyPathBase (_testHelper.ReferenceListProperty, _testHelper.Property);
     }
 
     [Test]
-    public void GetResult ()
+    public void GetValue ()
     {
       using (_testHelper.Ordered())
       {
-        ExpectOnceOnReferencePropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentity);
+        ExpectOnceOnReferenceListPropertyIsAccessible (true);
+        ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentityList);
       }
       _testHelper.ReplayAll();
 
@@ -57,12 +57,13 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     }
 
     [Test]
-    public void GetResult_WithUnreachableObject ()
+    public void GetValue_WithUnreachableObject ()
     {
+      IBusinessObjectWithIdentity[] businessObjects = new IBusinessObjectWithIdentity[0];
       using (_testHelper.Ordered())
       {
-        ExpectOnceOnReferencePropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (null);
+        ExpectOnceOnReferenceListPropertyIsAccessible (true);
+        ExpectOnceOnBusinessObjectGetProperty (businessObjects);
       }
       _testHelper.ReplayAll();
 
@@ -77,12 +78,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     }
 
     [Test]
-    public void GetResult_WithUnreachableObject_ThrowsInvalidOperationException ()
+    public void GetValue_WithUnreachableObject_ThrowsInvalidOperationException ()
     {
       using (_testHelper.Ordered())
       {
-        ExpectOnceOnReferencePropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (null);
+        ExpectOnceOnReferenceListPropertyIsAccessible (true);
+        ExpectOnceOnBusinessObjectGetProperty (new IBusinessObjectWithIdentity[0]);
       }
       _testHelper.ReplayAll();
 
@@ -97,11 +98,31 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     }
 
     [Test]
-    public void GetResult_WithAccessDenied ()
+    public void GetValue_ThrowsInvalidOperationExceptionBecauseOfListProperty ()
     {
       using (_testHelper.Ordered())
       {
-        ExpectOnceOnReferencePropertyIsAccessible (false);
+        ExpectOnceOnReferenceListPropertyIsAccessible (true);
+        ExpectOnceOnBusinessObjectGetProperty (_testHelper.BusinessObjectWithIdentityList);
+      }
+      _testHelper.ReplayAll();
+
+      Assert.That (
+          () =>
+          _path.GetResult (
+              _testHelper.BusinessObject,
+              BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
+              BusinessObjectPropertyPath.ListValueBehavior.FailForListProperties),
+          Throws.InvalidOperationException.With.Message
+                .EqualTo ("Element 0 of property path 'Identifier' is not a single-value property."));
+    }
+
+    [Test]
+    public void GetValue_WithAccessDenied ()
+    {
+      using (_testHelper.Ordered())
+      {
+        ExpectOnceOnReferenceListPropertyIsAccessible (false);
       }
       _testHelper.ReplayAll();
 
@@ -111,20 +132,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
           BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
 
       _testHelper.VerifyAll();
+
       Assert.That (actual, Is.InstanceOf<NotAccessibleBusinessObjectPropertyPathResult>());
     }
 
-    private void ExpectOnceOnReferencePropertyIsAccessible (bool returnValue)
+    private void ExpectOnceOnReferenceListPropertyIsAccessible (bool returnValue)
     {
       _testHelper.ExpectOnceOnIsAccessible (
           _testHelper.BusinessObjectClass,
           _testHelper.BusinessObject,
-          _testHelper.ReferenceProperty, returnValue);
+          _testHelper.ReferenceListProperty, returnValue);
     }
 
-    private void ExpectOnceOnBusinessObjectGetProperty (IBusinessObjectWithIdentity businessObejctWithIdentity)
+    private void ExpectOnceOnBusinessObjectGetProperty (IBusinessObjectWithIdentity[] businessObjectsWithIdentity)
     {
-      _testHelper.ExpectOnceOnGetProperty (_testHelper.BusinessObject, _testHelper.ReferenceProperty, businessObejctWithIdentity);
+      _testHelper.ExpectOnceOnGetProperty (_testHelper.BusinessObject, _testHelper.ReferenceListProperty, businessObjectsWithIdentity);
     }
   }
 }

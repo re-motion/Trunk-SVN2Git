@@ -88,11 +88,16 @@
     <Compile Include="..\..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPathTest.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\SingleValuePropertyPathTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\SingleValuePropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathTestHelper.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedPropertyPathTest.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\TestBusinessObjectPropertyPathBase.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedPropertyPath_BusinessObjectPropertyPathBaseTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\TestableBusinessObjectPropertyPathBase.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\BusinessObjectPropertyPathPropertyEnumeratorBaseTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\BusinessObjectPropertyPathPropertyEnumeratorTestBase.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\DynamicBusinessObjectPropertyPathPropertyEnumeratorTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\StaticBusinessObjectPropertyPathPropertyEnumeratorTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\Enumerators\TestableBusinessObjectPropertyPathPropertyEnumeratorBase.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\EvaluatedBusinessObjectPropertyPathResultTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeFour.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeOne.cs" />
