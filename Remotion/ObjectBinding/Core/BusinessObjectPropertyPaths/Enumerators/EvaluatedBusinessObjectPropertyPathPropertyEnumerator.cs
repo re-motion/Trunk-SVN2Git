@@ -16,31 +16,54 @@
 // 
 
 using System;
-using System.Collections.Generic;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
   public sealed class EvaluatedBusinessObjectPropertyPathPropertyEnumerator : IBusinessObjectPropertyPathPropertyEnumerator
   {
-    private readonly IEnumerator<IBusinessObjectProperty> _propertyEnumerator;
+    private readonly IBusinessObjectProperty[] _properties;
+    private int _index = -1;
 
-    public EvaluatedBusinessObjectPropertyPathPropertyEnumerator (IEnumerable<IBusinessObjectProperty> properties)
+    public EvaluatedBusinessObjectPropertyPathPropertyEnumerator (IBusinessObjectProperty[] properties)
     {
       ArgumentUtility.CheckNotNull ("properties", properties);
-      _propertyEnumerator = properties.GetEnumerator();
+
+      _properties = properties;
     }
 
     public IBusinessObjectProperty Current
     {
-      get { return _propertyEnumerator.Current; }
+      get
+      {
+        if (_index < 0)
+          throw new InvalidOperationException ("Enumeration has not started. Call MoveNext.");
+
+        if (_index == _properties.Length)
+          throw new InvalidOperationException ("Enumeration already finished.");
+
+        return _properties[_index];
+      }
+    }
+
+    public bool HasNext
+    {
+      get { return _index + 1 < _properties.Length; }
     }
 
     public bool MoveNext (IBusinessObjectClass currentClass)
     {
       ArgumentUtility.CheckNotNull ("currentClass", currentClass);
 
-      return _propertyEnumerator.MoveNext();
+      if (_index == _properties.Length)
+        return false;
+
+      _index++;
+
+      if (_index == _properties.Length)
+        return false;
+
+      return true;
     }
   }
 }

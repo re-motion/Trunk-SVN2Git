@@ -26,7 +26,19 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
   public class EvaluatedBusinessObjectPropertyPathPropertyEnumeratorTest : BusinessObjectPropertyPathPropertyEnumeratorTestBase
   {
     [Test]
-    public void MoveNext_OnceWithSingleProperty_ReturnsTrue_CurrentIsSetToProperty ()
+    public void MoveNext_NeverWithSingleProperty_CurrentThrows_HasNextIsTrue ()
+    {
+      var classStub = CreateClassStub();
+      var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
+
+      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
+
+      Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration has not started. Call MoveNext."));
+      Assert.That (enumerator.HasNext, Is.True);
+    }
+
+    [Test]
+    public void MoveNext_OnceWithSingleProperty_ReturnsTrue_CurrentIsSetToProperty_HasNextIsFalse ()
     {
       var classStub = CreateClassStub();
       var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
@@ -35,10 +47,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
 
       Assert.That (enumerator.MoveNext (classStub), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (propertyStub));
+      Assert.That (enumerator.HasNext, Is.False);
     }
 
     [Test]
-    public void MoveNext_TwiceWithSingleProperty_ReturnsFalse_CurrentIsSetToNull ()
+    public void MoveNext_TwiceWithSingleProperty_ReturnsFalse_CurrentThrows_HasNextIsFalse ()
     {
       var classStub = CreateClassStub();
       var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
@@ -48,26 +61,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
       Assert.That (enumerator.MoveNext (classStub), Is.True);
 
       Assert.That (enumerator.MoveNext (MockRepository.GenerateStub<IBusinessObjectClass>()), Is.False);
-      Assert.That (()=>enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
+      Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
+      Assert.That (enumerator.HasNext, Is.False);
     }
 
     [Test]
-    public void MoveNext_TwiceWithSingleProperty_LastPropertyIsReferenceProperty_ReturnsFalse_CurrentIsSetToNull ()
-    {
-      var classStub = CreateClassStub();
-      var referenceClassStub = CreateClassStub();
-      var propertyStub = CreateReferencePropertyStub (classStub, "FirstProperty", referenceClassStub);
-
-      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
-
-      Assert.That (enumerator.MoveNext (classStub), Is.True);
-
-      Assert.That (enumerator.MoveNext (MockRepository.GenerateStub<IBusinessObjectClass>()), Is.False);
-      Assert.That (()=>enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
-    }
-
-    [Test]
-    public void MoveNext_WithMultipleProperties_ReturnsFalseAfterLastProperty_CurrentIsSetToNull ()
+    public void MoveNext_WithMultipleProperties_ReturnsFalseAfterLastProperty_CurrentThrows_HasNextIsFalse ()
     {
       var firstClassStub = CreateClassStub();
       var secondClassStub = CreateClassStub();
@@ -78,34 +77,15 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
 
       Assert.That (enumerator.MoveNext (firstClassStub), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (firstPropertyStub));
+      Assert.That (enumerator.HasNext, Is.True);
 
       Assert.That (enumerator.MoveNext (secondClassStub), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (secondPropertyStub));
+      Assert.That (enumerator.HasNext, Is.False);
 
       Assert.That (enumerator.MoveNext (MockRepository.GenerateStub<IBusinessObjectClass>()), Is.False);
-      Assert.That (()=>enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
-    }
-
-    [Test]
-    public void MoveNext_WithMultipleProperties_LastPropertyIsReferenceProperty_ReturnsFalseAfterLastProperty_CurrentIsSetToNull ()
-    {
-      var firstClassStub = CreateClassStub();
-      var secondClassStub = CreateClassStub();
-      var thirdClassStub = CreateClassStub();
-
-      var firstPropertyStub = CreateReferencePropertyStub (firstClassStub, "FirstProperty", secondClassStub);
-      var secondPropertyStub = CreateReferencePropertyStub (secondClassStub, "SecondProperty", thirdClassStub);
-
-      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { firstPropertyStub, secondPropertyStub });
-
-      Assert.That (enumerator.MoveNext (firstClassStub), Is.True);
-      Assert.That (enumerator.Current, Is.SameAs (firstPropertyStub));
-
-      Assert.That (enumerator.MoveNext (secondClassStub), Is.True);
-      Assert.That (enumerator.Current, Is.SameAs (secondPropertyStub));
-
-      Assert.That (enumerator.MoveNext (MockRepository.GenerateStub<IBusinessObjectClass>()), Is.False);
-      Assert.That (()=>enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
+      Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
+      Assert.That (enumerator.HasNext, Is.False);
     }
   }
 }

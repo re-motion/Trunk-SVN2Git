@@ -25,6 +25,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
     private string _remainingPropertyPathIdentifier;
     private bool _isEnumerationFinished;
     private IBusinessObjectProperty _currentProperty;
+    private bool _isEnumerationStarted;
 
     protected BusinessObjectPropertyPathPropertyEnumeratorBase (string propertyPathIdentifier)
     {
@@ -45,6 +46,9 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
     {
       get
       {
+        if (!_isEnumerationStarted)
+          throw new InvalidOperationException ("Enumeration has not started. Call MoveNext.");
+
         if (_isEnumerationFinished)
           throw new InvalidOperationException ("Enumeration already finished.");
 
@@ -60,7 +64,9 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
     {
       ArgumentUtility.CheckNotNull ("currentClass", currentClass);
 
+      _isEnumerationStarted = true;
       _currentProperty = null;
+
       if (!HasNext)
       {
         _isEnumerationFinished = true;
