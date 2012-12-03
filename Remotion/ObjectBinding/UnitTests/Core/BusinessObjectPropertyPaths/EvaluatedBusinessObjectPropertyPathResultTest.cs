@@ -110,11 +110,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
 
     private void ExpectOnceOnPropertyIsAccessible (bool returnValue)
     {
-      _testHelper.ExpectOnceOnIsAccessible (
-          _testHelper.Property,
-          _testHelper.BusinessObjectClassWithIdentity,
+      _testHelper.ExpectOnceOnIsAccessible (_testHelper.BusinessObjectClassWithIdentity,
           _testHelper.BusinessObjectWithIdentity,
-          returnValue);
+          _testHelper.Property, returnValue);
     }
 
     private void ExpectOnceOnBusinessObjectWithIdentityGetProperty (int returnValue)

@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     public void SetUp ()
     {
       _testHelper = new BusinessObjectPropertyPathTestHelper();
-      _path = new TestBusinessObjectPropertyPath (_testHelper.ReferenceProperty, _testHelper.Property);
+      _path = new TestBusinessObjectPropertyPathBase (_testHelper.ReferenceProperty, _testHelper.Property);
     }
 
     [Test]
@@ -117,10 +117,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     private void ExpectOnceOnReferencePropertyIsAccessible (bool returnValue)
     {
       _testHelper.ExpectOnceOnIsAccessible (
-          _testHelper.ReferenceProperty,
           _testHelper.BusinessObjectClass,
           _testHelper.BusinessObject,
-          returnValue);
+          _testHelper.ReferenceProperty, returnValue);
     }
 
     private void ExpectOnceOnBusinessObjectGetProperty (IBusinessObjectWithIdentity businessObejctWithIdentity)

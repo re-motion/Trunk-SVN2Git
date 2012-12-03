@@ -89,9 +89,10 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedListPropertyPathTest.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\SingleValuePropertyPathTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathTestHelper.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\CascadedPropertyPathTest.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\TestBusinessObjectPropertyPath.cs" />
+    <Compile Include="Core\BusinessObjectPropertyPaths\BusinessObjectPropertyPathBaseTests\TestBusinessObjectPropertyPathBase.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\EvaluatedBusinessObjectPropertyPathResultTest.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeFour.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeOne.cs" />

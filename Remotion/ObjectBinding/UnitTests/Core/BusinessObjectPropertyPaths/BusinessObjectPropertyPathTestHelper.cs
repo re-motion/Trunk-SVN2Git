@@ -152,9 +152,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     }
 
     public void ExpectOnceOnIsAccessible (
-        IBusinessObjectProperty property,
-        IBusinessObjectClass businessObjectClass,
-        IBusinessObject businessObject,
+        IBusinessObjectClass businessObjectClass, 
+        IBusinessObject businessObject, 
+        IBusinessObjectProperty property, 
         bool returnValue)
     {
       Expect.Call (property.IsAccessible (businessObjectClass, businessObject)).Return (returnValue);
