@@ -46,7 +46,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     }
 
     [Test]
-    [Ignore ("TODO Implement")]
     public void GetResult_ValidPropertyPath_EndsWithReferenceProperty ()
     {
       var root = TypeOne.Create();

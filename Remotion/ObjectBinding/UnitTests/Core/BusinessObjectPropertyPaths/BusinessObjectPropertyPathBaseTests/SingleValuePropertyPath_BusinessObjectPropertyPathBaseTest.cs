@@ -52,7 +52,6 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     }
 
     [Test]
-    [Ignore ("TODO Implement")]
     public void GetValue_LastPropertyIsReferenceProperty ()
     {
       var path = new TestableBusinessObjectPropertyPathBase (_testHelper.ReferenceProperty);

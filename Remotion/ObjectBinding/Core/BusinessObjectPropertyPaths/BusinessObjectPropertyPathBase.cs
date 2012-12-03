@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
         if (currentProperty == null)
           return new NullBusinessObjectPropertyPathResult();
 
-        if (!(currentProperty is IBusinessObjectReferenceProperty))
+        if (!propertyEnumerator.HasNext)
           return new EvaluatedBusinessObjectPropertyPathResult (currentObject, currentProperty);
 
         if (!currentProperty.IsAccessible (currentObject.BusinessObjectClass, currentObject))
