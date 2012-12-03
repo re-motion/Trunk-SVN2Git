@@ -17,7 +17,7 @@
 
 using System;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
+namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
   public class NotAccessibleBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {

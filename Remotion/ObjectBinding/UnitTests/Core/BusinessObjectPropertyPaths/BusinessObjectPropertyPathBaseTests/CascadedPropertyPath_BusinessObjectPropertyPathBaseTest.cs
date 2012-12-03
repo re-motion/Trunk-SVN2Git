@@ -18,6 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
+using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests
 {

@@ -17,9 +17,10 @@
 
 using System;
 using NUnit.Framework;
-using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
+using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
+using Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
+namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Results
 {
   [TestFixture]
   public class EvaluatedBusinessObjectPropertyPathResultTest

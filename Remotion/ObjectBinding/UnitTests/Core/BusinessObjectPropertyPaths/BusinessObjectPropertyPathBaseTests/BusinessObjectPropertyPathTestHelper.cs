@@ -18,7 +18,7 @@
 using System;
 using Rhino.Mocks;
 
-namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
+namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests
 {
   public class BusinessObjectPropertyPathTestHelper
   {

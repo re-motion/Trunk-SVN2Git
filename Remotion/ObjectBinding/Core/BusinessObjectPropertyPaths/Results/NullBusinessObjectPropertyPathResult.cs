@@ -17,14 +17,33 @@
 
 using System;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
+namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
-  public interface IBusinessObjectPropertyPathResult
+  public class NullBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {
-    bool IsEvaluated { get; }
-    object GetValue ();
-    string GetString (string format);
-    IBusinessObjectProperty ResultProperty { get; }
-    IBusinessObject ResultObject { get; }
+    public bool IsEvaluated
+    {
+      get { return false; }
+    }
+
+    public object GetValue ()
+    {
+      return null;
+    }
+
+    public string GetString (string format)
+    {
+      return string.Empty;
+    }
+
+    public IBusinessObjectProperty ResultProperty
+    {
+      get { throw new NotSupportedException(); }
+    }
+
+    public IBusinessObject ResultObject
+    {
+      get { throw new NotSupportedException(); }
+    }
   }
 }

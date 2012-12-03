@@ -307,12 +307,12 @@
     <Compile Include="IBusinessObjectClassSource.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BusinessObjectPropertyPaths\EvaluatedBusinessObjectPropertyPathResult.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Results\EvaluatedBusinessObjectPropertyPathResult.cs" />
     <Compile Include="BusinessObjectPropertyPaths\DynamicBusinessObjectPropertyPath.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\IBusinessObjectPropertyPathResult.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Results\IBusinessObjectPropertyPathResult.cs" />
     <Compile Include="BusinessObjectPropertyPaths\Enumerators\IBusinessObjectPropertyPathPropertyEnumerator.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\NotAccessibleBusinessObjectPropertyPathResult.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\NullBusinessObjectPropertyPathResult.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Results\NotAccessibleBusinessObjectPropertyPathResult.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Results\NullBusinessObjectPropertyPathResult.cs" />
     <Compile Include="BusinessObjectPropertyPaths\StaticBusinessObjectPropertyPath.cs" />
     <Compile Include="UndefinedEnumValueAttribute.cs" />
     <None Include="..\..\Remotion LGPL.licenseheader">

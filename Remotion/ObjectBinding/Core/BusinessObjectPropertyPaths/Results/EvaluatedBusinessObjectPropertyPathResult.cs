@@ -18,7 +18,7 @@
 using System;
 using Remotion.Utilities;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
+namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
   public class EvaluatedBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {
