@@ -34,17 +34,19 @@
   
   
   <!-- Targets -->
-  <Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;DependDBBuildProcessing" Condition="$(UploadToDependDB) == 'True'"/>
-  <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal" Condition="$(UploadToDependDB) == 'True'"/>
+  <Target Name="CreateDependDBPackages" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBPackagesInternal"/>
+  <Target Name="UploadToDependDB" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;UploadToDependDBInternal"/>
   
   
   <!-- Abstract internal targets -->
   <Target Name="CreateDependDBBinaryFiles">
-	<Error Text="The target 'CreateDependDBBinaryFiles' is not implemented." />
+    <Error Text="The target 'CreateDependDBBinaryFiles' is not implemented." />
   </Target>
   
-  <!-- Internal targets: Build processing -->    
-  <Target Name="DependDBBuildProcessing" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBConfigurationFile">
+  <!-- Internal targets: Build processing -->
+  <Target Name="CreateDependDBPackagesInternal"
+          DependsOnTargets="CreatePackageProperties;CreateDependDBProperties;CreateDependDBConfigurationFile"
+          Condition="$(UploadToDependDB) == 'True'">
     <Message Text="Started DependDB build processing, ProjectName=$(DependDBProjectName)" Importance="High"/>
   
     <!-- Execute build processor -->
@@ -214,7 +216,7 @@
   </Target>
   
   <!-- Internal targets: Uploading -->
-  <Target Name="UploadToDependDBInternal" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties">
+  <Target Name="UploadToDependDBInternal" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties" Condition="$(UploadToDependDB) == 'True'">
     <Error Text="The property 'DependDBProjectName' is not set." Condition="'$(DependDBProjectName)' == ''" />
     <Error Text="The property 'DependDBProjectOutputDirectory' is not set." Condition="'$(DependDBProjectOutputDirectory)' == ''" />
     <Error Text="The property 'DependDBUploadPath' is not set." Condition="'$(DependDBUploadPath)' == ''" />
