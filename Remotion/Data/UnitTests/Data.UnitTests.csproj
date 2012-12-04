@@ -209,6 +209,8 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializablePersistenceStrategyFake.cs" />
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTransactionHierarchyManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\ResurrectionServiceTest.cs" />
+    <Compile Include="UnitTesting\RootClientTransactionComponentFactoryMixin.cs" />
+    <Compile Include="UnitTesting\RootPersistenceStrategyMockFacade.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\PostActionDisposableDecorator.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
     <Compile Include="DomainObjects\Core\Infrastructure\ClientTransactionInactiveExceptionTest.cs" />
