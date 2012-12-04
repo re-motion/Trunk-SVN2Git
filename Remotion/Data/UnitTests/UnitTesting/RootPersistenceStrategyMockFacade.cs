@@ -18,12 +18,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
+using Remotion.Mixins;
 using Remotion.Utilities;
 using Rhino.Mocks;
 using Rhino.Mocks.Interfaces;
+using PostActionDisposableDecorator = Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transport.PostActionDisposableDecorator;
 
 namespace Remotion.Data.UnitTests.UnitTesting
 {
@@ -52,11 +56,48 @@ namespace Remotion.Data.UnitTests.UnitTesting
       get { return _mock; }
     }
 
+    /// <summary>
+    /// Opens a scope in which every newly created <see cref="ClientTransaction"/> will use the <see cref="Mock"/> strategy for loading
+    /// objects into its root transaciton.
+    /// </summary>
+    public IDisposable CreateScope ()
+    {
+      return RootClientTransactionComponentFactoryMixin.CreatePersistenceStrategyScope (Mock);
+    }
+
     public IMethodOptions<IEnumerable<ILoadedObjectData>> ExpectLoadObjectData (IEnumerable<ObjectID> loadedObjectIDs)
     {
       return Mock
           .Expect (mock => mock.LoadObjectData (Arg<IEnumerable<ObjectID>>.List.Equal (loadedObjectIDs)))
           .Return (loadedObjectIDs.Select (id => (ILoadedObjectData) new FreshlyLoadedObjectData (DataContainerObjectMother.CreateExisting (id))));
+    }
+
+    public class RootClientTransactionComponentFactoryMixin : Mixin<RootClientTransactionComponentFactory>
+    {
+      public static IDisposable CreatePersistenceStrategyScope (IFetchEnabledPersistenceStrategy persistenceStrategy)
+      {
+        var mixinConfigurationScope = MixinConfiguration.BuildFromActive ()
+                                                        .ForClass<RootClientTransactionComponentFactory> ()
+                                                        .AddMixin<RootClientTransactionComponentFactoryMixin> ()
+                                                        .EnterScope ();
+        s_persistenceStrategy = persistenceStrategy;
+        return new PostActionDisposableDecorator (mixinConfigurationScope, () => { s_persistenceStrategy = null; });
+      }
+
+      [ThreadStatic]
+      private static IFetchEnabledPersistenceStrategy s_persistenceStrategy;
+
+      public RootClientTransactionComponentFactoryMixin ()
+      {
+      }
+
+      [OverrideTarget]
+      public IPersistenceStrategy CreatePersistenceStrategy ([UsedImplicitly] ClientTransaction constructedTransaction)
+      {
+        if (s_persistenceStrategy == null)
+          throw new InvalidOperationException ("No persistence strategy has been given.");
+        return s_persistenceStrategy;
+      }
     }
   }
 }
