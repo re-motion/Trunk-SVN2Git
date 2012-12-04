@@ -66,6 +66,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
     }
 
     [Test]
+    public void MoveNext_AgainAfterEnumerationFinished_ReturnsFalse_CurrentThrows_HasNextIsFalse ()
+    {
+      var classStub = CreateClassStub();
+      var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
+
+      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
+
+      Assert.That (enumerator.MoveNext (classStub), Is.True);
+
+      Assert.That (enumerator.MoveNext (MockRepository.GenerateStub<IBusinessObjectClass>()), Is.False);
+      Assert.That (enumerator.MoveNext (MockRepository.GenerateStub<IBusinessObjectClass>()), Is.False);
+      Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration already finished."));
+      Assert.That (enumerator.HasNext, Is.False);
+    }
+
+    [Test]
     public void MoveNext_WithMultipleProperties_ReturnsFalseAfterLastProperty_CurrentThrows_HasNextIsFalse ()
     {
       var firstClassStub = CreateClassStub();
