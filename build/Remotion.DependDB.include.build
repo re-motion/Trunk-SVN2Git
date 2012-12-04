@@ -162,8 +162,7 @@
       </_configAttributes>
     </ItemGroup>
     
-    <!-- Ensure DependDB temp directory is present and empty -->
-    <RemoveDir Directories="$(DependDBOutputDirectory)"/>
+    <!-- Ensure DependDB temp directory is present -->
     <MakeDir Directories="$(DependDBOutputDirectory)"/>
                     
     <!-- Create configuration file from template -->
