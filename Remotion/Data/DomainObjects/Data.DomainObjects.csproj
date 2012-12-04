@@ -203,6 +203,7 @@
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\IVirtualObjectEndPointDataManagerFactory.cs" />
     <Compile Include="DataManagement\RelationEndPoints\VirtualEndPoints\VirtualObjectEndPoints\StateUpdateRaisingCollectionEndPointDecorator.cs" />
     <Compile Include="DomainImplementation\ResurrectionService.cs" />
+    <Compile Include="DomainImplementation\Transport\IDomainObjectImporterCallback.cs" />
     <Compile Include="DomainObjectCommittingEventArgs.cs" />
     <Compile Include="Infrastructure\CommitRollbackAgent.cs" />
     <Compile Include="Infrastructure\ClientTransactionComponentFactoryBase.cs" />

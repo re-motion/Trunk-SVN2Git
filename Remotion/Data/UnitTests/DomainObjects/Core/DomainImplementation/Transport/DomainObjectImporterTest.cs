@@ -25,16 +25,14 @@ using Remotion.Data.DomainObjects.DomainImplementation.Transport;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Persistence;
-using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement;
 using Remotion.Data.UnitTests.DomainObjects.Factories;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Data.UnitTests.UnitTesting;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins;
 using Remotion.Reflection;
-using Remotion.Utilities;
 using Rhino.Mocks;
 using System.Linq;
-using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transport
 {
@@ -382,7 +380,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
 
       byte[] binaryData = DomainObjectTransporterTestHelper.GetBinaryDataFor (transporter);
 
-      var facade = PersistenceStrategyMockFacade.CreateWithStrictMock();
+      var facade = RootPersistenceStrategyMockFacade.CreateWithStrictMock();
       facade.ExpectLoadObjectData (new[] { instance.ID });
       using (facade.CreateScope())
       {
@@ -391,34 +389,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
         var importedInstance = (DomainObjectWithImportCallback) imported.Single();
         Assert.That (importedInstance.CallbackCalled, Is.True);
         Assert.That (importedInstance.PropertyValueInCallback, Is.EqualTo (17));
-      }
-    }
-
-    public class RootClientTransactionComponentFactoryMixin : Mixin<RootClientTransactionComponentFactory>
-    {
-      public static IDisposable CreatePersistenceStrategyScope (IFetchEnabledPersistenceStrategy persistenceStrategy)
-      {
-        var mixinConfigurationScope = MixinConfiguration.BuildFromActive ()
-                                                        .ForClass<RootClientTransactionComponentFactory> ()
-                                                        .AddMixin<RootClientTransactionComponentFactoryMixin> ()
-                                                        .EnterScope ();
-        s_persistenceStrategy = persistenceStrategy;
-        return new PostActionDisposableDecorator (mixinConfigurationScope, () => { s_persistenceStrategy = null; });
-      }
-
-      [ThreadStatic]
-      private static IFetchEnabledPersistenceStrategy s_persistenceStrategy;
-
-      public RootClientTransactionComponentFactoryMixin ()
-      {
-      }
-
-      [OverrideTarget]
-      public IPersistenceStrategy CreatePersistenceStrategy (ClientTransaction constructedTransaction)
-      {
-        if (s_persistenceStrategy == null)
-          throw new InvalidOperationException ("No persistence strategy has been given.");
-        return s_persistenceStrategy;
+        Assert.That (importedInstance.CallbackTransaction, Is.SameAs (importedInstance.GetBindingTransaction()));
       }
     }
 
@@ -442,12 +413,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
     }
 
     [DBTable]
-    public class DomainObjectWithImportCallback : DomainObject
+    public class DomainObjectWithImportCallback : DomainObject, IDomainObjectImporterCallback
     {
       [StorageClassNone]
       public bool CallbackCalled { get; private set; }
       [StorageClassNone]
       public int PropertyValueInCallback { get; private set; }
+      [StorageClassNone]
+      public ClientTransaction CallbackTransaction { get; private set; }
 
       public virtual int Property { get; set; }
 
@@ -455,42 +428,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Transp
       {
         CallbackCalled = true;
         PropertyValueInCallback = Property;
-      }
-    }
-
-    public class PersistenceStrategyMockFacade
-    {
-      private readonly IFetchEnabledPersistenceStrategy _mock;
-
-      public PersistenceStrategyMockFacade (IFetchEnabledPersistenceStrategy mock)
-      {
-        ArgumentUtility.CheckNotNull ("mock", mock);
-        _mock = mock;
+        CallbackTransaction = importTransaction;
       }
 
-      public IFetchEnabledPersistenceStrategy Mock
-      {
-        get { return _mock; }
-      }
 
-      public IMethodOptions<IEnumerable<ILoadedObjectData>> ExpectLoadObjectData (IEnumerable<ObjectID> loadedObjectIDs)
-      {
-        return Mock
-              .Expect (mock => mock.LoadObjectData (Arg<IEnumerable<ObjectID>>.List.Equal (loadedObjectIDs)))
-              .Return (loadedObjectIDs.Select (id => (ILoadedObjectData) new FreshlyLoadedObjectData (DataContainerObjectMother.CreateExisting (id))));
-      }
-
-      public IDisposable CreateScope ()
-      {
-        return RootClientTransactionComponentFactoryMixin.CreatePersistenceStrategyScope (Mock);
-      }
-
-      public static PersistenceStrategyMockFacade CreateWithStrictMock ()
-      {
-        var persistenceStrategyMock = MockRepository.GenerateStrictMock<IFetchEnabledPersistenceStrategy>();
-        var facade = new PersistenceStrategyMockFacade (persistenceStrategyMock);
-        return facade;
-      }
     }
   }
 }

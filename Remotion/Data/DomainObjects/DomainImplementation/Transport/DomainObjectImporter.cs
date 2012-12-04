@@ -55,8 +55,13 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Transport
       var dataContainerMapping = GetTargetDataContainersForSourceObjects (bindingTargetTransaction);
 
       // grab enlisted objects _before_ properties are synchronized, as synchronizing might load some additional objects
-      var transportedObjects = new List<DomainObject> (bindingTargetTransaction.GetEnlistedDomainObjects());
+      var transportedObjects = bindingTargetTransaction.GetEnlistedDomainObjects().ToList();
       SynchronizeData (bindingTargetTransaction, dataContainerMapping);
+
+      foreach (var transportedObject in transportedObjects.OfType<IDomainObjectImporterCallback>())
+      {
+        transportedObject.OnDomainObjectImported (bindingTargetTransaction);
+      }
 
       return new TransportedDomainObjects (bindingTargetTransaction, transportedObjects);
     }
