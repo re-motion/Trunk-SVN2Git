@@ -207,8 +207,8 @@
     </PropertyGroup>
 
     <MSBuild.ExtensionPack.Framework.AssemblyInfo AssemblyInfoFiles="%(_assemblyInfos.Identity)"
-                                                  AssemblyVersion="$(_fullVersion)"
-                                                  AssemblyFileVersion="$(_fullVersion)"
+                                                  AssemblyVersion="$(Version)"
+                                                  AssemblyFileVersion="$(Version)"
                                                   AssemblyConfiguration="$(_configuration)"
                                                   AssemblyCopyright="%(_assemblyInfos.Copyright)"
                                                   AssemblyCompany="%(_assemblyInfos.CompanyName)"
