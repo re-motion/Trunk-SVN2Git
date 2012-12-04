@@ -57,11 +57,11 @@
   
   <Target Name="CreateDependDBProperties" DependsOnTargets="CreatePackageProperties">
     <PropertyGroup>
+      <DependDBOutputDirectory>$(OutputDirectory)DependDB\</DependDBOutputDirectory>
       <DependDBProjectDirectory>$(TempDirectory)DependDB\$([System.Guid]::NewGuid())\</DependDBProjectDirectory>
       <DependDBConfigurationTemplate>$(MSBuildProjectDirectory)\DependDB.ConfigurationTemplate.xml</DependDBConfigurationTemplate>
       <DependDBConfigurationFile>$(DependDBProjectDirectory)DependDB.Configuration.xml</DependDBConfigurationFile>
       <DependDBBinariesDirectory>$(DependDBProjectDirectory)Temp\</DependDBBinariesDirectory>
-      <DependDBProjectOutputDirectory>$(DependDBProjectDirectory)Output\</DependDBProjectOutputDirectory>
     </PropertyGroup>
   </Target>
   
@@ -158,13 +158,13 @@
       <_configAttributes Include="DependDBFileSenderOutputPath">
         <XPath>$(BaseXPath)/c:Senders/c:Sender[@name='FileSender']/c:StringParameter[@name='outputPath']</XPath>
         <Key>value</Key>
-        <Value>$(DependDBProjectOutputDirectory)</Value>
+        <Value>$(DependDBOutputDirectory)</Value>
       </_configAttributes>
     </ItemGroup>
     
     <!-- Ensure DependDB temp directory is present and empty -->
-    <RemoveDir Directories="$(DependDBProjectOutputDirectory)"/>
-    <MakeDir Directories="$(DependDBProjectOutputDirectory)"/>
+    <RemoveDir Directories="$(DependDBOutputDirectory)"/>
+    <MakeDir Directories="$(DependDBOutputDirectory)"/>
                     
     <!-- Create configuration file from template -->
     <Copy SourceFiles="$(DependDBConfigurationTemplate)" DestinationFiles="$(DependDBConfigurationFile)"/>
@@ -218,14 +218,14 @@
   <!-- Internal targets: Uploading -->
   <Target Name="UploadToDependDBInternal" DependsOnTargets="CreatePackageProperties;CreateDependDBProperties" Condition="$(UploadToDependDB) == 'True'">
     <Error Text="The property 'DependDBProjectName' is not set." Condition="'$(DependDBProjectName)' == ''" />
-    <Error Text="The property 'DependDBProjectOutputDirectory' is not set." Condition="'$(DependDBProjectOutputDirectory)' == ''" />
+    <Error Text="The property 'DependDBOutputDirectory' is not set." Condition="'$(DependDBOutputDirectory)' == ''" />
     <Error Text="The property 'DependDBUploadPath' is not set." Condition="'$(DependDBUploadPath)' == ''" />
     
     <Message Text="Uploading to DependDB, ProjectName=$(DependDBProjectName)" Importance="High"/>
     
     <!-- Copy build processor output to upload path -->
     <ItemGroup>
-      <SourceFiles Include="$(DependDBProjectOutputDirectory)*.xml" Exclude="$(DependDBConfigurationFile)"/>
+      <SourceFiles Include="$(DependDBOutputDirectory)*.xml" Exclude="$(DependDBConfigurationFile)"/>
     </ItemGroup>
     <Copy SourceFiles="@(SourceFiles)" DestinationFolder="$(DependDBUploadPath)"/>
     
