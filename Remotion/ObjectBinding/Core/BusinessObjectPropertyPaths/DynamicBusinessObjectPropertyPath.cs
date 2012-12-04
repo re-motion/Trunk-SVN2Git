@@ -18,7 +18,6 @@
 using System;
 using System.Collections.ObjectModel;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators;
-using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
@@ -41,12 +40,12 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 
     public override string Identifier
     {
-      get { return string.Empty; }
+      get { return _propertyPathIdentifier; }
     }
 
     public override ReadOnlyCollection<IBusinessObjectProperty> Properties
     {
-      get { throw new NotSupportedException(); }
+      get { throw new NotSupportedException ("Properties collection cannot be retrieved for dynamic property paths."); }
     }
 
     protected override IBusinessObjectPropertyPathPropertyEnumerator GetResultPropertyEnumerator ()

@@ -17,15 +17,55 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.ObjectBinding.BindableObject;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 using Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.TestDomain;
+using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
 {
   [TestFixture]
   public class StaticBusinessObjectPropertyPathTest
   {
+    [Test]
+    public void GetIdentifier_ReturnsIdentifier ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
+      var typeOneClass = provider.GetBindableObjectClass (typeof (TypeOne));
+      var path = new StaticBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
+
+      Assert.That (path.Identifier, Is.EqualTo ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue"));
+    }
+
+    [Test]
+    public void GetIsDynamic_ReturnsTrue ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
+      var typeOneClass = provider.GetBindableObjectClass (typeof (TypeOne));
+      var path = new StaticBusinessObjectPropertyPath ("TypeTwoValue", typeOneClass);
+
+      Assert.That (path.IsDynamic, Is.False);
+    }
+
+    [Test]
+    public void GetProperties_ThrowsNotSupportedException ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
+      var typeOneClass = provider.GetBindableObjectClass (typeof (TypeOne));
+
+      var expectedProperties = new[]
+                               {
+                                   typeOneClass.GetPropertyDefinition ("TypeTwoValue"),
+                                   provider.GetBindableObjectClass (typeof (TypeTwo)).GetPropertyDefinition ("TypeThreeValue"),
+                                   provider.GetBindableObjectClass (typeof (TypeThree)).GetPropertyDefinition ("TypeFourValue"),
+                                   provider.GetBindableObjectClass (typeof (TypeFour)).GetPropertyDefinition ("IntValue"),
+                               };
+      var path = new StaticBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
+
+      Assert.That (() => path.Properties, Is.EqualTo (expectedProperties));
+    }
+
     [Test]
     public void GetResult_ValidPropertyPath_EndsWithInt ()
     {
@@ -64,6 +104,24 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
       Assert.That (result, Is.InstanceOf<EvaluatedBusinessObjectPropertyPathResult>());
       Assert.That (result.ResultObject, Is.SameAs (root.TypeTwoValue.TypeThreeValue));
       Assert.That (result.ResultProperty.Identifier, Is.EqualTo ("TypeFourValue"));
+    }
+
+    [Test]
+    public void Initialize_InvalidPropertyPath_PropertyNotFound_ThrowsParseException ()
+    {
+      var root = TypeOne.Create();
+      Assert.That (
+          () => new StaticBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue1", ((IBusinessObject) root).BusinessObjectClass),
+          Throws.TypeOf<ParseException>());
+    }
+
+    [Test]
+    public void Initialize_InvalidPropertyPath_NonLastPropertyNotReferenceProperty_ThrowsParseException ()
+    {
+      var root = TypeOne.Create();
+      Assert.That (
+          () => new StaticBusinessObjectPropertyPath ("TypeTwoValue.IntValue.TypeFourValue", ((IBusinessObject) root).BusinessObjectClass),
+          Throws.TypeOf<ParseException>());
     }
   }
 }
