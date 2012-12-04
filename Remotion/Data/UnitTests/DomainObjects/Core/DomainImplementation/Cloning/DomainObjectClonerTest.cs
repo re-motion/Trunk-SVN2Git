@@ -19,9 +19,11 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Collections;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.DomainImplementation.Cloning;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Reflection;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Cloning
@@ -35,6 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     private Order _order1;
     private Computer _computer1;
     private ClassWithAllDataTypes _boundSource;
+    private ClassWithClonerCallback _classWithClonerCallback;
 
     public override void SetUp ()
     {
@@ -50,6 +53,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
         _boundSource = ClassWithAllDataTypes.NewObject ();
         _boundSource.Int32Property = 123;
       }
+
+      _classWithClonerCallback =
+          (ClassWithClonerCallback) LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithClonerCallback), ParamList.Empty);
     }
 
     [Test]
@@ -152,6 +158,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
     }
 
     [Test]
+    public void CreateCloneHull_DoesNotInvokeClonerCallback ()
+    {
+      var clone = _cloner.CreateCloneHull (_classWithClonerCallback);
+      Assert.That (clone.CallbackInvoked, Is.False);
+    }
+
+    [Test]
     public void CreateValueClone_SimpleProperties ()
     {
       ClassWithAllDataTypes clone = _cloner.CreateValueClone (_classWithAllDataTypes);
@@ -194,6 +207,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       Assert.That (clone.Properties[typeof (Computer), "Employee"].GetOriginalValue<Employee> (), Is.Null);
     }
 
+    [Test]
+    public void CreateValueClone_InvokesClonerCallback ()
+    {
+      var cloneTransaction = ClientTransaction.CreateRootTransaction();
+      _cloner.CloneTransaction = cloneTransaction;
+      _classWithClonerCallback.Property = 42;
+
+      var clone = _cloner.CreateValueClone (_classWithClonerCallback);
+
+      Assert.That (clone.CallbackInvoked, Is.True);
+      Assert.That (clone.CallbackOriginal, Is.SameAs (_classWithClonerCallback));
+      Assert.That (clone.CallbackCloneTransaction, Is.SameAs (cloneTransaction));
+      Assert.That (clone.CallbackCurrentTransaction, Is.SameAs (ClientTransaction.Current));
+      Assert.That (clone.PropertyValueInCallback, Is.EqualTo (42));
+    }
+    
     [Test]
     public void SourceTransaction_IsRespected ()
     {
@@ -357,6 +386,53 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
       _mockRepository.VerifyAll ();
     }
 
+    [Test]
+    public void CreateClone_InvokesClonerCallback ()
+    {
+      var cloneTransaction = ClientTransaction.CreateRootTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      _classWithClonerCallback.Property = 42;
+
+      var clone = _cloner.CreateClone (_classWithClonerCallback, new CompleteCloneStrategy());
+
+      Assert.That (clone.CallbackInvoked, Is.True);
+      Assert.That (clone.CallbackOriginal, Is.SameAs (_classWithClonerCallback));
+      Assert.That (clone.CallbackCloneTransaction, Is.SameAs (cloneTransaction));
+      Assert.That (clone.CallbackCurrentTransaction, Is.SameAs (ClientTransaction.Current));
+      Assert.That (clone.PropertyValueInCallback, Is.EqualTo (42));
+    }
+
+    [Test]
+    public void CreateClone_InvokesClonerCallback_OnReferencedObjects ()
+    {
+      var cloneTransaction = ClientTransaction.CreateRootTransaction ();
+      _cloner.CloneTransaction = cloneTransaction;
+      
+      var referencedObject = (ClassWithClonerCallback) LifetimeService.NewObject (TestableClientTransaction, typeof (ClassWithClonerCallback), ParamList.Empty);
+      referencedObject.Property = 42;
+      _classWithClonerCallback.ReferencedObject = referencedObject;
+
+      var clone = _cloner.CreateClone (_classWithClonerCallback, new CompleteCloneStrategy ());
+      var clonedReferencedObject = cloneTransaction.Execute (() => clone.ReferencedObject);
+
+      Assert.That (clonedReferencedObject.CallbackInvoked, Is.True);
+      Assert.That (clonedReferencedObject.CallbackOriginal, Is.SameAs (referencedObject));
+      Assert.That (clonedReferencedObject.CallbackCloneTransaction, Is.SameAs (cloneTransaction));
+      Assert.That (clonedReferencedObject.CallbackCurrentTransaction, Is.SameAs (ClientTransaction.Current));
+      Assert.That (clonedReferencedObject.PropertyValueInCallback, Is.EqualTo (42));
+    }
+
+    [Test]
+    public void CreateClone_WithInvalidContext ()
+    {
+      Assert.That (() => _cloner.CreateClone (_classWithAllDataTypes, new CompleteCloneStrategy(), new CloneContext (_cloner)), Throws.Nothing);
+      var otherCloner = new DomainObjectCloner();
+      Assert.That (
+          () => _cloner.CreateClone (_classWithAllDataTypes, new CompleteCloneStrategy(), new CloneContext (otherCloner)),
+          Throws.ArgumentException.With.Message.EqualTo (
+              "The given CloneContext must have been created for this DomainObjectCloner.\r\nParameter name: context"));
+    }
+
     private void ExpectHandleReference (ICloneStrategy strategyMock, TestDomainBase original, TestDomainBase clone, string propertyName,
         ClientTransaction sourceTransaction, ClientTransaction cloneTransaction)
     {
@@ -365,6 +441,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation.Clonin
           Rhino.Mocks.Constraints.Is.Equal (original.Properties[original.GetPublicDomainObjectType (), propertyName, sourceTransaction]),
           Rhino.Mocks.Constraints.Is.Equal (clone.Properties[clone.GetPublicDomainObjectType (), propertyName, cloneTransaction]),
           Rhino.Mocks.Constraints.Is.Anything ());
+    }
+
+    [DBTable]
+    public class ClassWithClonerCallback : DomainObject, IClonerCallback
+    {
+      public virtual int Property { get; set; }
+      public virtual ClassWithClonerCallback ReferencedObject { get; set; }
+
+      [StorageClassNone]
+      public bool CallbackInvoked { get; private set; }
+      [StorageClassNone]
+      public ClientTransaction CallbackCloneTransaction { get; private set; }
+      [StorageClassNone]
+      public ClientTransaction CallbackCurrentTransaction { get; private set; }
+      [StorageClassNone]
+      public DomainObject CallbackOriginal { get; private set; }
+      [StorageClassNone]
+      public int PropertyValueInCallback { get; private set; }
+      
+      public void OnObjectCreatedAsClone (ClientTransaction cloneTransaction, DomainObject original)
+      {
+        CallbackInvoked = true;
+        CallbackCloneTransaction = cloneTransaction;
+        CallbackCurrentTransaction = ClientTransaction.Current;
+        CallbackOriginal = original;
+        PropertyValueInCallback = cloneTransaction.Execute (() => Property);
+      }
     }
   }
 }

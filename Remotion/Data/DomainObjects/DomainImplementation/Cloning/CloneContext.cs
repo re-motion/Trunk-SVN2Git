@@ -32,6 +32,11 @@ namespace Remotion.Data.DomainObjects.DomainImplementation.Cloning
       _cloner = cloner;
     }
 
+    public DomainObjectCloner Cloner
+    {
+      get { return _cloner; }
+    }
+
     public virtual Queue<Tuple<DomainObject, DomainObject>> CloneHulls
     {
       get { return _cloneHulls; }

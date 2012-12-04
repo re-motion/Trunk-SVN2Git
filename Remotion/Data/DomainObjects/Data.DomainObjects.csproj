@@ -160,6 +160,7 @@
     <Compile Include="DomainImplementation\Cloning\CloneContext.cs" />
     <Compile Include="DomainImplementation\Cloning\CompleteCloneStrategy.cs" />
     <Compile Include="DomainImplementation\Cloning\DomainObjectCloner.cs" />
+    <Compile Include="DomainImplementation\Cloning\IClonerCallback.cs" />
     <Compile Include="DomainImplementation\Cloning\ICloneStrategy.cs" />
     <Compile Include="ConfigurationLoader\IMappingValidatorFactory.cs" />
     <Compile Include="ConfigurationLoader\ReflectionBasedConfigurationLoader\AllMappingPropertiesFinder.cs" />
