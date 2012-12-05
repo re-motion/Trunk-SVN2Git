@@ -41,9 +41,6 @@ namespace Remotion.Mixins.UnitTests.Core
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (MixinTypeUtility.GetConcreteMixedType (typeof (string))), Is.False);
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (MixinTypeUtility.GetConcreteMixedType (typeof (int))), Is.False);
       Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1))), Is.True);
-
-      Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration)), Is.True);
-      Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration)), Is.True);
     }
 
     [Test]
@@ -73,9 +70,6 @@ namespace Remotion.Mixins.UnitTests.Core
       Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (MixinTypeUtility.GetConcreteMixedType (typeof (string))), Is.False);
       Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (MixinTypeUtility.GetConcreteMixedType (typeof (int))), Is.False);
       Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (MixinTypeUtility.GetConcreteMixedType (typeof (BaseType1))), Is.True);
-
-      Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration)), Is.True);
-      Assert.That (MixinTypeUtility.IsGeneratedByMixinEngine (TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration)), Is.True);
     }
 
     [Test]
@@ -256,7 +250,8 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void HasMixinsOnGeneratedTypesWithoutMixins ()
     {
-      Assert.That (MixinTypeUtility.HasMixins (TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration)), Is.False);
+      var generatedType = TypeGenerationHelper.ForceTypeGeneration (typeof (object));
+      Assert.That (MixinTypeUtility.HasMixins (generatedType), Is.False);
     }
 
     [Test]

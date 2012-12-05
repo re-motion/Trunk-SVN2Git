@@ -84,47 +84,6 @@ namespace Remotion.Mixins.UnitTests.Core.MixinConfigurationTests
     }
 
     [Test]
-    public void GetContextForce_Configured ()
-    {
-      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (BaseType1)), Is.True);
-
-      var context = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
-      Assert.That (context, Is.SameAs (MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1))));
-    }
-
-    [Test]
-    public void GetContextForce_ReturnsNew_IfNotConfigured ()
-    {
-      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
-
-      var context = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (object));
-      Assert.That (context, Is.Not.Null);
-      Assert.That (context.Type, Is.SameAs (typeof (object)));
-    }
-
-    [Test]
-    public void GetContextForce_NewContext_GeneratedForGeneratedType ()
-    {
-      Type generatedType = TypeFactory.GetConcreteType (typeof (BaseType1));
-      var newContext = MixinConfiguration.ActiveConfiguration.GetContextForce (generatedType);
-      var baseContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1));
-
-      Assert.That (newContext, Is.Not.EqualTo (baseContext));
-      Assert.That (newContext.Type, Is.SameAs (generatedType));
-    }
-
-    [Test]
-    public void GetContextForce_ResultNotCached ()
-    {
-      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
-      var context1 = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (object));
-      var context2 = MixinConfiguration.ActiveConfiguration.GetContext (typeof (object));
-
-      Assert.That (context1, Is.Not.Null);
-      Assert.That (context2, Is.Null);
-    }
-
-    [Test]
     public void SetMasterConfiguration ()
     {
       var mixinConfiguration = new MixinConfiguration ();

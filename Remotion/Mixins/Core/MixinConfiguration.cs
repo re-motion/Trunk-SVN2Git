@@ -16,13 +16,10 @@
 // 
 using System;
 using System.Linq;
-using Microsoft.Practices.ServiceLocation;
 using Remotion.Context;
 using Remotion.Logging;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Definitions.Building;
-using Remotion.Mixins.Utilities;
 using Remotion.Mixins.Validation;
 using Remotion.Utilities;
 
@@ -142,10 +139,6 @@ namespace Remotion.Mixins
     /// context is empty, and returns <see langword="null" /> if so.
     /// </para>
     /// <para>
-    /// Use the <see cref="GetContextForce(System.Type)"/> method to reveive an empty but valid <see cref="ClassContext"/> for types that do not have 
-    /// a mixin configuration instead of <see langword="null" />.
-    /// </para>
-    /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, the <see cref="ClassContext"/> used for its generation is returned.
     /// </para>
     /// </remarks>
@@ -159,39 +152,6 @@ namespace Remotion.Mixins
       ClassContext context = ClassContexts.GetWithInheritance (targetOrConcreteType);
       if (context == null || context.IsEmpty())
         return null;
-      else
-        return context;
-    }
-
-    /// <summary>
-    /// Returns a <see cref="ClassContext"/> for the given target type, generating a trivial default <see cref="ClassContext"/> for types that are
-    /// not configured in this <see cref="MixinConfiguration"/>.
-    /// </summary>
-    /// <param name="targetOrConcreteType">Base type for which a context should be returned or a concrete mixed type.</param>
-    /// <returns>A <see cref="ClassContext"/> for the a given target type.</returns>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
-    /// <remarks>
-    /// <para>
-    /// Use this to extract a class context for a given target type from an <see cref="MixinConfiguration"/> as it would be used to create the
-    /// <see cref="TargetClassDefinition"/> object for the target type. Besides looking up the target type in the given mixin configuration, this
-    /// includes generating a default context if necessary.
-    /// </para>
-    /// <para>
-    /// Use the <see cref="GetContext(System.Type)"/> method to avoid generating an empty default <see cref="ClassContext"/> for non-configured
-    /// instances.
-    /// </para>
-    /// <para>
-    /// If <paramref name="targetOrConcreteType"/> is already a generated type, a new <see cref="ClassContext"/> is nevertheless generated.
-    /// </para>
-    /// </remarks>
-    public ClassContext GetContextForce (Type targetOrConcreteType)
-    {
-      ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
-
-      ClassContext context = ClassContexts.GetWithInheritance (targetOrConcreteType);
-
-      if (context == null)
-        return new ClassContext (targetOrConcreteType, Enumerable.Empty<MixinContext>(), Enumerable.Empty<Type>());
       else
         return context;
     }

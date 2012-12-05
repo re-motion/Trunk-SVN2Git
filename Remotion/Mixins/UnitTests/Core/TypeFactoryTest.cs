@@ -25,35 +25,17 @@ namespace Remotion.Mixins.UnitTests.Core
   public class TypeFactoryTest
   {
     [Test]
-    public void GetConcreteType_NoTypeGeneratedIfNoConfig_ByDefault ()
+    public void GetConcreteType_NoTypeGeneratedIfNoConfig ()
     {
       Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
       Assert.That (TypeFactory.GetConcreteType (typeof (object)), Is.SameAs (typeof (object)));
     }
 
     [Test]
-    public void GetConcreteType_NoTypeGenerated_IfGeneratedTypeIsGivenByDefault ()
+    public void GetConcreteType_NoTypeGenerated_IfGeneratedTypeIsGiven ()
     {
       Type concreteType = TypeFactory.GetConcreteType (typeof (BaseType1));
       Assert.That (TypeFactory.GetConcreteType (concreteType), Is.SameAs (concreteType));
-    }
-
-    [Test]
-    public void GetConcreteType_TypeGeneratedIfNoConfigViaPolicy ()
-    {
-      Assert.That (MixinConfiguration.ActiveConfiguration.ClassContexts.ContainsWithInheritance (typeof (object)), Is.False);
-      Type concreteType = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
-      Assert.That (concreteType, Is.Not.SameAs (typeof (object)));
-      Assert.That (concreteType.BaseType, Is.SameAs (typeof (object)));
-    }
-
-    [Test]
-    public void GetConcreteType_TypeGeneratedIfGeneratedTypeIsGivenViaPolicy ()
-    {
-      Type concreteType = TypeFactory.GetConcreteType (typeof (BaseType1));
-      Type concreteType2 = TypeFactory.GetConcreteType (concreteType, GenerationPolicy.ForceGeneration);
-      Assert.That (concreteType2, Is.Not.SameAs (concreteType));
-      Assert.That (concreteType2.BaseType, Is.SameAs (concreteType));
     }
 
     [Test]

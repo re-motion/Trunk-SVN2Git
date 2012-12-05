@@ -104,7 +104,7 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
     public void BuildDefault_DoesNotLockPersistedFile ()
     {
       ConcreteTypeBuilder.SetCurrent (null);
-      TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
+      TypeGenerationHelper.ForceTypeGeneration (typeof (object));
       string[] paths = ConcreteTypeBuilder.Current.SaveGeneratedConcreteTypes();
       try
       {
@@ -153,8 +153,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       var assemblyFinder = GetAssemblyFinder(service);
       var filter = ((FilteringAssemblyLoader) assemblyFinder.AssemblyLoader).Filter;
 
-      Assembly signedAssembly = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration).Assembly;
-      Assembly unsignedAssembly = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration).Assembly;
+      Assembly signedAssembly = TypeGenerationHelper.ForceTypeGeneration (typeof (object)).Assembly;
+      Assembly unsignedAssembly = TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1)).Assembly;
 
       Assert.That (ReflectionUtility.IsAssemblySigned (signedAssembly), Is.True);
       Assert.That (ReflectionUtility.IsAssemblySigned (unsignedAssembly), Is.False);
@@ -198,8 +198,8 @@ namespace Remotion.Mixins.UnitTests.Core.Context.DeclarativeConfigurationBuilder
       var designerHostMock = repository.StrictMock<IDesignerHost>();
       var designerServiceMock = repository.StrictMock<ITypeDiscoveryService> ();
 
-      Expect.Call (designModeHelperMock.DesignerHost).Return (designerHostMock);
-      Expect.Call (designerHostMock.GetService (typeof (ITypeDiscoveryService))).Return (designerServiceMock);
+      designModeHelperMock.Expect (mock => mock.DesignerHost).Return (designerHostMock);
+      designerHostMock.Expect (mock => mock.GetService (typeof (ITypeDiscoveryService))).Return (designerServiceMock);
 
       repository.ReplayAll();
       

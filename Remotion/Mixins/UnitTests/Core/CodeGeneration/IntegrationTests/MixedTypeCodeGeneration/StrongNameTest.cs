@@ -31,8 +31,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (object)).Clear().EnterScope())
       {
-        Type concreteType = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
-        Assert.IsTrue (ReflectionUtility.IsAssemblySigned (concreteType.Assembly));
+        Type concreteType = TypeGenerationHelper.ForceTypeGeneration (typeof (object));
+        Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (concreteType), Is.True);
+        Assert.That (ReflectionUtility.IsAssemblySigned (concreteType.Assembly), Is.True);
       }
     }
 
@@ -41,8 +42,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (BaseType1)).Clear().EnterScope())
       {
-        Type concreteType = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-        Assert.IsFalse (ReflectionUtility.IsAssemblySigned (concreteType.Assembly));
+        Type concreteType = TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1));
+        Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (concreteType), Is.True);
+        Assert.That (ReflectionUtility.IsAssemblySigned (concreteType.Assembly), Is.False);
       }
     }
 
@@ -51,8 +53,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       using (MixinConfiguration.BuildFromActive().ForClass (typeof (List<int>)).Clear().AddMixins (typeof (object)).EnterScope())
       {
-        Type concreteType = TypeFactory.GetConcreteType (typeof (List<int>), GenerationPolicy.ForceGeneration);
-        Assert.IsTrue (ReflectionUtility.IsAssemblySigned (concreteType.Assembly));
+        Type concreteType = TypeGenerationHelper.ForceTypeGeneration (typeof (List<int>));
+        Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (concreteType), Is.True);
+        Assert.That (ReflectionUtility.IsAssemblySigned (concreteType.Assembly), Is.True);
       }
     }
 
@@ -61,8 +64,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (BT1Mixin1)).EnterScope())
       {
-        Type concreteType = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-        Assert.IsFalse (ReflectionUtility.IsAssemblySigned (concreteType.Assembly));
+        Type concreteType = TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1));
+        Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (concreteType), Is.True);
+        Assert.That (ReflectionUtility.IsAssemblySigned (concreteType.Assembly), Is.False);
       }
     }
 
@@ -71,8 +75,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       using (MixinConfiguration.BuildFromActive().ForClass<BaseType1> ().Clear().AddMixins (typeof (object)).EnterScope())
       {
-        Type concreteType = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-        Assert.IsFalse (ReflectionUtility.IsAssemblySigned (concreteType.Assembly));
+        Type concreteType = TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1));
+        Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (concreteType), Is.True);
+        Assert.That (ReflectionUtility.IsAssemblySigned (concreteType.Assembly), Is.False);
       }
     }
 
@@ -81,8 +86,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       using (MixinConfiguration.BuildFromActive().ForClass<NullTarget> ().Clear().AddMixins (typeof (NullMixin)).EnterScope())
       {
-        Type concreteType = TypeFactory.GetConcreteType (typeof (NullTarget), GenerationPolicy.ForceGeneration);
-        Assert.IsFalse (ReflectionUtility.IsAssemblySigned (concreteType.Assembly));
+        Type concreteType = TypeGenerationHelper.ForceTypeGeneration (typeof (NullTarget));
+        Assert.That (MixinTypeUtility.IsGeneratedConcreteMixedType (concreteType), Is.True);
+        Assert.That (ReflectionUtility.IsAssemblySigned (concreteType.Assembly), Is.False);
       }
     }
 
@@ -92,7 +98,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
       using (MixinConfiguration.BuildFromActive().ForClass<ClassOverridingToString> ().Clear().AddMixins (typeof (MixinOverridingToString)).EnterScope())
       {
         object instance = ObjectFactory.Create<ClassOverridingToString>(ParamList.Empty);
-        Assert.AreEqual ("Overridden: ClassOverridingToString", instance.ToString());
+        Assert.That (instance.ToString(), Is.EqualTo ("Overridden: ClassOverridingToString"));
       }
     }
   }

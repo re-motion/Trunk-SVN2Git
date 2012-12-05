@@ -80,10 +80,8 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
-    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
-    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
-    /// generation.
+    /// Mixed types are only created for instances which do have an active mixin configuration. All other types passed to this method are directly 
+    /// instantiated, without code generation.
     /// </para>
     /// </remarks>
     public static T Create<T> ()
@@ -127,63 +125,13 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
-    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
-    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
-    /// generation.
+    /// Mixed types are only created for instances which do have an active mixin configuration. All other types passed to this method are directly 
+    /// instantiated, without code generation.
     /// </para>
     /// </remarks>
     public static T Create<T> (ParamList constructorParameters, params object[] preparedMixins)
     {
       return Create<T> (false, constructorParameters, preparedMixins);
-    }
-
-    /// <summary>
-    /// Creates a mixed instance of the given base type <typeparamref name="T"/> with a public constructor.
-    /// </summary>
-    /// <typeparam name="T">The target type a mixed instance of which should be created.</typeparam>
-    /// <param name="constructorParameters">A <see cref="ParamList"/> object holding the parameters to be passed to the constructor.</param>
-    /// <param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param>
-    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
-    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
-    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
-    /// <para>
-    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
-    /// a mixed type.
-    /// </para>
-    /// </exception>
-    /// <exception cref="Exception">
-    /// <para>
-    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
-    /// target class definition object impossible.
-    /// </para>
-    /// <para>- or -</para>
-    /// <para>
-    /// The constructor of the mixed object threw an exception.
-    /// </para>
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <para>
-    /// -or-
-    /// </para>
-    /// <para>
-    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
-    /// defined as a mixin for the target type in the current thread's mixin configuration.
-    /// </para>
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
-    /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
-    /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
-    /// non-mixed objects with this policy.
-    /// </para>
-    /// </remarks>
-    public static T Create<T> (ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
-    {
-      return Create<T> (false, constructorParameters, generationPolicy, preparedMixins);
     }
 
     /// <summary>
@@ -211,10 +159,8 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
-    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
-    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
-    /// generation.
+    /// Mixed types are only created for instances which do have an active mixin configuration. All other types passed to this method are directly 
+    /// instantiated, without code generation.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
@@ -262,10 +208,8 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
-    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
-    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
-    /// generation.
+    /// Mixed types are only created for instances which do have an active mixin configuration. All other types passed to this method are directly 
+    /// instantiated, without code generation.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
@@ -274,60 +218,6 @@ namespace Remotion.Mixins
     public static object Create (Type targetOrConcreteType, ParamList constructorParameters, params object[] preparedMixins)
     {
       return Create (false, targetOrConcreteType, constructorParameters, preparedMixins);
-    }
-
-    /// <summary>
-    /// Creates a mixed instance of the given <paramref name="targetOrConcreteType"/> with a public constructor.
-    /// </summary>
-    /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
-    /// <param name="constructorParameters">A <see cref="ParamList"/> object holding the parameters to be passed to the constructor.</param>
-    /// <param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param>
-    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
-    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
-    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
-    /// <para>
-    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
-    /// a mixed type.
-    /// </para>
-    /// </exception>
-    /// <exception cref="Exception">
-    /// <para>
-    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
-    /// target class definition object impossible.
-    /// </para>
-    /// <para>- or -</para>
-    /// <para>
-    /// The constructor of the mixed object threw an exception.
-    /// </para>
-    /// </exception>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">
-    /// <para>
-    /// -or-
-    /// </para>
-    /// <para>
-    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
-    /// defined as a mixin for the target type in the current thread's mixin configuration.
-    /// </para>
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
-    /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
-    /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
-    /// non-mixed objects with this policy.
-    /// </para>
-    /// <para>
-    /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will only subclass it again when
-    /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
-    /// </para>
-    /// </remarks>
-    public static object Create (
-        Type targetOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
-    {
-      return Create (false, targetOrConcreteType, constructorParameters, generationPolicy, preparedMixins);
     }
 
     #endregion
@@ -372,68 +262,15 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
-    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
-    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
-    /// generation.
+    /// Mixed types are only created for instances which do have an active mixin configuration. All other types passed to this method are directly 
+    /// instantiated, without code generation.
     /// </para>
     /// </remarks>
     public static T Create<T> (bool allowNonPublicConstructors, ParamList constructorParameters, params object[] preparedMixins)
     {
-      return Create<T> (allowNonPublicConstructors, constructorParameters, GenerationPolicy.GenerateOnlyIfConfigured, preparedMixins);
+      return (T) Create (allowNonPublicConstructors, typeof (T), constructorParameters, preparedMixins);
     }
-
-    /// <summary>
-    /// Creates a mixed instance of the given base type <typeparamref name="T"/>.
-    /// </summary>
-    /// <typeparam name="T">The target type a mixed instance of which should be created.</typeparam>
-    /// <param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
-    /// unless a public constructor is available.</param>
-    /// <param name="constructorParameters">A <see cref="ParamList"/> object holding the parameters to be passed to the constructor.</param>
-    /// <param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param>
-    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <typeparamref name="T"/>. Those mixins for which no
-    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>A mixed instance of a type derived from <typeparamref name="T"/>.</returns>
-    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
-    /// <para>
-    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
-    /// a mixed type.
-    /// </para>
-    /// </exception>
-    /// <exception cref="Exception">
-    /// <para>
-    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
-    /// target class definition object impossible.
-    /// </para>
-    /// <para>- or -</para>
-    /// <para>
-    /// The constructor of the mixed object threw an exception.
-    /// </para>
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <para>
-    /// -or-
-    /// </para>
-    /// <para>
-    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
-    /// defined as a mixin for the target type in the current thread's mixin configuration.
-    /// </para>
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
-    /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
-    /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
-    /// non-mixed objects with this policy.
-    /// </para>
-    /// </remarks>
-    public static T Create<T> (
-        bool allowNonPublicConstructors, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins)
-    {
-      return (T) Create (allowNonPublicConstructors, typeof (T), constructorParameters, generationPolicy, preparedMixins);
-    }
-
+    
     /// <summary>
     /// Creates a mixed instance of the given <paramref name="targetOrConcreteType"/>.
     /// </summary>
@@ -473,10 +310,8 @@ namespace Remotion.Mixins
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/> with
-    /// <see cref="GenerationPolicy.GenerateOnlyIfConfigured"/>. This means that mixed types are only created for
-    /// instances which do have an active mixin configuration. All other types passed to this method are directly instantiated, without code
-    /// generation.
+    /// Mixed types are only created for instances which do have an active mixin configuration. All other types passed to this method are directly 
+    /// instantiated, without code generation.
     /// </para>
     /// <para>
     /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will not subclass it again.
@@ -485,69 +320,8 @@ namespace Remotion.Mixins
     public static object Create (
         bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, params object[] preparedMixins)
     {
-      return Create (
-          allowNonPublicConstructors, targetOrConcreteType, constructorParameters, GenerationPolicy.GenerateOnlyIfConfigured, preparedMixins);
-    }
-
-    /// <summary>
-    /// Creates a mixed instance of the given <paramref name="targetOrConcreteType"/>.
-    /// </summary>
-    /// <param name="allowNonPublicConstructors">If true, the factory will also construct objects without a public constructor. If false, an exception is thrown
-    /// unless a public constructor is available.</param>
-    /// <param name="targetOrConcreteType">The target type a mixed instance of which should be created or a concrete mixed type.</param>
-    /// <param name="constructorParameters">A <see cref="ParamList"/> object holding the parameters to be passed to the constructor.</param>
-    /// <param name="generationPolicy">Indicates whether a derived class should be generated even for types that do not have an active mixin configuration.</param>
-    /// <param name="preparedMixins">The pre-instantiated mixin instances to integrate into the mixed instance. You can specify all, none, or a subset
-    /// of the mixins currently configured with <paramref name="targetOrConcreteType"/>. Those mixins for which no
-    /// prepared instances are given will be automatically created when the mixed object is constructed.</param>
-    /// <returns>A mixed instance of a type derived from <paramref name="targetOrConcreteType"/>.</returns>
-    /// <exception cref="T:Remotion.Mixins.Validation.ValidationException">
-    /// <para>
-    /// The current mixin configuration for the target type violates at least one validation rule, which makes it impossible to crate
-    /// a mixed type.
-    /// </para>
-    /// </exception>
-    /// <exception cref="Exception">
-    /// <para>
-    /// The current mixin configuration for the target type contains severe configuration problems that make generation of a 
-    /// target class definition object impossible.
-    /// </para>
-    /// <para>- or -</para>
-    /// <para>
-    /// The constructor of the mixed object threw an exception.
-    /// </para>
-    /// </exception>
-    /// <exception cref="ArgumentNullException">The <paramref name="targetOrConcreteType"/> parameter is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">
-    /// <para>
-    /// -or-
-    /// </para>
-    /// <para>
-    /// The <paramref name="preparedMixins"/> parameter contains at least one mixin instance which is not
-    /// defined as a mixin for the target type in the current thread's mixin configuration.
-    /// </para>
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method internally uses <see cref="TypeFactory.GetConcreteType(Type, GenerationPolicy)"/>. This means that mixed types might
-    /// be created even for instances which do not have an active mixin configuration, as specified with the <paramref name="generationPolicy"/>
-    /// parameter. In that case, all objects created via this method can be treated in the same way, but it might be inefficient to create arbitrary
-    /// non-mixed objects with this policy.
-    /// </para>
-    /// <para>
-    /// If <paramref name="targetOrConcreteType"/> is already a generated type, this method will only subclass it again when
-    /// <see cref="GenerationPolicy.ForceGeneration"/> is specified.
-    /// </para>
-    /// </remarks>
-    public static object Create (
-        bool allowNonPublicConstructors,
-        Type targetOrConcreteType,
-        ParamList constructorParameters,
-        GenerationPolicy generationPolicy,
-        params object[] preparedMixins)
-    {
       return LazyStaticFields.ObjectFactoryImplementation.CreateInstance (
-              allowNonPublicConstructors, targetOrConcreteType, constructorParameters, generationPolicy, preparedMixins);
+          allowNonPublicConstructors, targetOrConcreteType, constructorParameters, preparedMixins);
     }
 
     #endregion

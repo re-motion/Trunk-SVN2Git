@@ -73,6 +73,7 @@
     <Compile Include="CoreComponentIntegration\TestDomain\MixinSuppressingNonInheritedAttribute.cs" />
     <Compile Include="Core\AdditionalMixinDependencyAttributeTest.cs" />
     <Compile Include="Core\ClassContextObjectMother.cs" />
+    <Compile Include="Core\TypeGenerationHelper.cs" />
     <Compile Include="Core\CodeGenerationStatisticsTest.cs" />
     <Compile Include="Core\CodeGenerationTypeMother.cs" />
     <Compile Include="Core\CodeGeneration\AttributeBasedMetadataImporterTest.cs" />

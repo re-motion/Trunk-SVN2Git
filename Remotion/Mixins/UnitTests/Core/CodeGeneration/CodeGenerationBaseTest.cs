@@ -18,6 +18,7 @@ using System;
 using NUnit.Framework;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Reflection;
+using Remotion.Utilities;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 {
@@ -47,14 +48,31 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
     public Type CreateMixedType (Type targetType, params Type[] mixinTypes)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
+      
+      // TODO 3213: Inconsistent - cleared here, but not in CreateMixedObject?
       using (MixinConfiguration.BuildFromActive().ForClass (targetType).Clear().AddMixins (mixinTypes).EnterScope())
-        return TypeFactory.GetConcreteType (targetType, GenerationPolicy.ForceGeneration);
+        return TypeFactory.GetConcreteType (targetType);
     }
 
     public T CreateMixedObject<T> (params Type[] mixinTypes)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
+
       using (MixinConfiguration.BuildNew().ForClass<T> ().AddMixins (mixinTypes).EnterScope())
-        return ObjectFactory.Create<T> (ParamList.Empty, GenerationPolicy.ForceGeneration);
+        return ObjectFactory.Create<T> (ParamList.Empty);
+    }
+
+    public Type CreateGeneratedTypeWithoutMixins (Type targetType)
+    {
+      using (MixinConfiguration.BuildNew ().ForClass (targetType).Clear ().EnterScope ())
+        return TypeGenerationHelper.ForceTypeGeneration (targetType);
+    }
+
+    public T CreateGeneratedTypeInstanceWithoutMixins<T> ()
+    {
+      using (MixinConfiguration.BuildNew ().ForClass<T> ().Clear ().EnterScope ())
+        return TypeGenerationHelper.ForceTypeGenerationAndCreateInstance<T> ();
     }
 
     /// <summary>

@@ -24,6 +24,6 @@ namespace Remotion.Mixins.CodeGeneration
     Lifetime = LifetimeKind.Singleton)]
   public interface IObjectFactoryImplementation
   {
-    object CreateInstance (bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, GenerationPolicy generationPolicy, params object[] preparedMixins);
+    object CreateInstance (bool allowNonPublicConstructors, Type targetOrConcreteType, ParamList constructorParameters, params object[] preparedMixins);
   }
 }

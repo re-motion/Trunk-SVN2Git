@@ -79,7 +79,7 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void CurrentSignedAssemblyBuilder_NotNull ()
     {
-      ObjectFactory.Create<object> (ParamList.Empty, GenerationPolicy.ForceGeneration);
+      TypeGenerationHelper.ForceTypeGeneration (typeof (object));
       Assert.That (CodeGenerationStatistics.CurrentSignedAssemblyBuilder, Is.Not.Null);
       Assert.That (CodeGenerationStatistics.CurrentSignedAssemblyBuilder,
           Is.SameAs (ConcreteTypeBuilderTestHelper.GetModuleManager (ConcreteTypeBuilder.Current).Scope.StrongNamedModule.Assembly));
@@ -94,8 +94,8 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void GetTypesInCurrentUnsignedBuilder_NonNullBuilder ()
     {
-      Type t1 = TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
-      Type t2 = TypeFactory.GetConcreteType (typeof (BaseType2), GenerationPolicy.ForceGeneration);
+      Type t1 = TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1));
+      Type t2 = TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType2));
       Assert.That (CodeGenerationStatistics.GetTypesInCurrentUnsignedBuilder (), Has.Member(t1));
       Assert.That (CodeGenerationStatistics.GetTypesInCurrentUnsignedBuilder (), Has.Member(t2));
     }
@@ -109,8 +109,8 @@ namespace Remotion.Mixins.UnitTests.Core
     [Test]
     public void GetTypesInCurrentSignedBuilder_NonNullBuilder ()
     {
-      Type t1 = TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
-      Type t2 = TypeFactory.GetConcreteType (typeof (List<int>), GenerationPolicy.ForceGeneration);
+      Type t1 = TypeGenerationHelper.ForceTypeGeneration (typeof (object));
+      Type t2 = TypeGenerationHelper.ForceTypeGeneration (typeof (List<int>));
       Assert.That (CodeGenerationStatistics.GetTypesInCurrentSignedBuilder (), Has.Member(t1));
       Assert.That (CodeGenerationStatistics.GetTypesInCurrentSignedBuilder (), Has.Member(t2));
     }
@@ -125,9 +125,9 @@ namespace Remotion.Mixins.UnitTests.Core
             {
               ConcreteTypeBuilder.SetCurrent (null);
               int countBefore = CodeGenerationStatistics.CreatedAssemblyCount;
-              TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
+              TypeGenerationHelper.ForceTypeGeneration (typeof (object));
               Assert.That (CodeGenerationStatistics.CreatedAssemblyCount, Is.EqualTo (countBefore + 1));
-              TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
+              TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1));
               Assert.That (CodeGenerationStatistics.CreatedAssemblyCount, Is.EqualTo (countBefore + 2));
             }
           });
@@ -143,9 +143,9 @@ namespace Remotion.Mixins.UnitTests.Core
             {
               ConcreteTypeBuilder.SetCurrent (null);
               int countBefore = CodeGenerationStatistics.GetBuiltTypeCount();
-              TypeFactory.GetConcreteType (typeof (object), GenerationPolicy.ForceGeneration);
+              TypeGenerationHelper.ForceTypeGeneration (typeof (object));
               Assert.That (CodeGenerationStatistics.GetBuiltTypeCount (), Is.EqualTo (countBefore + 2)); // generated type + base call proxy
-              TypeFactory.GetConcreteType (typeof (BaseType1), GenerationPolicy.ForceGeneration);
+              TypeGenerationHelper.ForceTypeGeneration (typeof (BaseType1));
               Assert.That (CodeGenerationStatistics.GetBuiltTypeCount (), Is.EqualTo (countBefore + 4)); // generated type + base call proxy
             }
           });

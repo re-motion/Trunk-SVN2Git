@@ -91,8 +91,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
         UnsignedModulePath = c_unsignedAssemblyFileName
       };
 
-      _signedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (object));
-      _unsignedSavedContext = MixinConfiguration.ActiveConfiguration.GetContextForce (typeof (BaseType1));
+      _signedSavedContext = ClassContextObjectMother.Create (typeof (object));
+      _unsignedSavedContext = MixinConfiguration.ActiveConfiguration.GetContext (typeof (BaseType1));
 
       _signedSavedType = GetConcreteType (_savedModuleManager, _signedSavedContext);
       _unsignedSavedType = GetConcreteType (_savedModuleManager, _unsignedSavedContext);

@@ -21,10 +21,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.Context;
 using Remotion.Mixins.Definitions;
-using Remotion.Mixins.Definitions.Building;
 using Remotion.Mixins.UnitTests.Core.TestDomain;
-using Remotion.ServiceLocation;
-using Remotion.TypePipe.MutableReflection;
 using Remotion.TypePipe.MutableReflection.Implementation;
 using Remotion.Utilities;
 using Rhino.Mocks;
@@ -258,7 +255,7 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       ArgumentUtility.CheckNotNull ("type", type);
 
-      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContextForce (type);
+      ClassContext classContext = MixinConfiguration.ActiveConfiguration.GetContext (type) ?? new ClassContext (type, Enumerable.Empty<MixinContext>(), Enumerable.Empty<Type>());
       return GetTargetClassDefinition(classContext);
     }
 

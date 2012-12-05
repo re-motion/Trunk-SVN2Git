@@ -40,12 +40,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.Seriali
     [Test]
     public void BeginDeserialization_Transformer ()
     {
-      NullTarget mixedObject = ObjectFactory.Create<NullTarget> (ParamList.Empty, GenerationPolicy.ForceGeneration);
+      NullTarget mixedObject = TypeGenerationHelper.ForceTypeGenerationAndCreateInstance<NullTarget> ();
       SerializationInfo info = new SerializationInfo (mixedObject.GetType (), new FormatterConverter ());
       StreamingContext context = new StreamingContext ();
 
       ((ISerializable) mixedObject).GetObjectData (info, context);
-      Type derivedType = TypeFactory.GetConcreteType (typeof (DerivedNullTarget), GenerationPolicy.ForceGeneration);
+      Type derivedType = TypeGenerationHelper.ForceTypeGeneration (typeof (DerivedNullTarget));
 
       Func<Type, Type> transformer = delegate (Type t)
       {

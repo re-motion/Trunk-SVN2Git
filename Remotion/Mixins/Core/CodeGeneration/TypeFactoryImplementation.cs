@@ -21,13 +21,10 @@ namespace Remotion.Mixins.CodeGeneration
 {
   public class TypeFactoryImplementation : ITypeFactoryImplementation
   {
-    public Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy)
+    public Type GetConcreteType (Type targetOrConcreteType)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
-      var classContext = 
-          generationPolicy == GenerationPolicy.ForceGeneration 
-              ? MixinConfiguration.ActiveConfiguration.GetContextForce (targetOrConcreteType)
-              : MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
 
       if (classContext == null)
         return targetOrConcreteType;

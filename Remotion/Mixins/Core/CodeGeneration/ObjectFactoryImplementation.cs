@@ -27,7 +27,6 @@ namespace Remotion.Mixins.CodeGeneration
         bool allowNonPublicConstructors, 
         Type targetOrConcreteType, 
         ParamList constructorParameters, 
-        GenerationPolicy generationPolicy, 
         params object[] preparedMixins)
     {
       ArgumentUtility.CheckNotNull ("targetOrConcreteType", targetOrConcreteType);
@@ -39,10 +38,7 @@ namespace Remotion.Mixins.CodeGeneration
         throw new ArgumentException (message, "targetOrConcreteType");
       }
 
-      var classContext =
-          generationPolicy == GenerationPolicy.ForceGeneration
-              ? MixinConfiguration.ActiveConfiguration.GetContextForce (targetOrConcreteType)
-              : MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
+      var classContext = MixinConfiguration.ActiveConfiguration.GetContext (targetOrConcreteType);
 
       IConstructorLookupInfo constructorLookupInfo;
       if (classContext == null)

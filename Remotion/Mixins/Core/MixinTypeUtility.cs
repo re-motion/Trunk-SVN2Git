@@ -83,7 +83,7 @@ namespace Remotion.Mixins
       if (IsGeneratedConcreteMixedType (targetOrConcreteType))
         return targetOrConcreteType;
 
-      return TypeFactory.GetConcreteType (targetOrConcreteType, GenerationPolicy.GenerateOnlyIfConfigured);
+      return TypeFactory.GetConcreteType (targetOrConcreteType);
     }
 
     /// <summary>
@@ -275,7 +275,7 @@ namespace Remotion.Mixins
     /// specified <paramref name="args"/>.</returns>
     /// <remarks>
     /// This is just a wrapper around 
-    /// <see cref="ObjectFactory.Create(bool,System.Type,Remotion.Reflection.ParamList,Remotion.Mixins.GenerationPolicy,object[])"/>
+    /// <see cref="ObjectFactory.Create(bool,System.Type,Remotion.Reflection.ParamList,object[])"/>
     /// with a Reflection-like interface.
     /// </remarks>
     public static object CreateInstance (Type type, params object[] args)
@@ -283,7 +283,7 @@ namespace Remotion.Mixins
       ArgumentUtility.CheckNotNull ("type", type);
       ArgumentUtility.CheckNotNull ("args", args);
 
-      return ObjectFactory.Create (false, type, ParamList.CreateDynamic (args), GenerationPolicy.GenerateOnlyIfConfigured);
+      return ObjectFactory.Create (false, type, ParamList.CreateDynamic (args));
     }
 
     /// <summary>

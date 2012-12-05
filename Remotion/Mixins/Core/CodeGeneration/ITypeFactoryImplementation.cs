@@ -23,7 +23,7 @@ namespace Remotion.Mixins.CodeGeneration
     Lifetime = LifetimeKind.Singleton)]
   public interface ITypeFactoryImplementation
   {
-    Type GetConcreteType (Type targetOrConcreteType, GenerationPolicy generationPolicy);
+    Type GetConcreteType (Type targetOrConcreteType);
     void InitializeUnconstructedInstance (object mixinTarget);
   }
 }

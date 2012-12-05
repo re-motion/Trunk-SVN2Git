@@ -101,10 +101,10 @@ namespace Remotion.Mixins.UnitTests.Core
       object complete = ObjectFactory.Create<BaseType6> (ParamList.Empty);
 
       Assert.That (complete, Is.Not.Null);
-      Assert.That (complete is BaseType6, Is.True);
-      Assert.That (complete is ICBT6Mixin1, Is.True);
-      Assert.That (complete is ICBT6Mixin2, Is.True);
-      Assert.That (complete is ICBT6Mixin3, Is.True);
+      Assert.That (complete, Is.InstanceOf<BaseType6>());
+      Assert.That (complete, Is.InstanceOf<ICBT6Mixin1>());
+      Assert.That (complete, Is.InstanceOf<ICBT6Mixin2>());
+      Assert.That (complete, Is.InstanceOf<ICBT6Mixin3>());
     }
 
     [Test]
@@ -128,24 +128,12 @@ namespace Remotion.Mixins.UnitTests.Core
     }
 
     [Test]
-    public void GenerationPolicyForce ()
+    public void TypesAreGeneratedOnlyIfNecessary ()
     {
-      object o = ObjectFactory.Create (typeof (object), ParamList.Empty, GenerationPolicy.ForceGeneration);
-      Assert.That (o.GetType(), Is.Not.EqualTo (typeof (object)));
-      Assert.That (o.GetType().BaseType, Is.EqualTo (typeof (object)));
-
-      o = ObjectFactory.Create<object> (ParamList.Empty, GenerationPolicy.ForceGeneration);
-      Assert.That (o.GetType(), Is.Not.EqualTo (typeof (object)));
-      Assert.That (o.GetType().BaseType, Is.EqualTo (typeof (object)));
-    }
-
-    [Test]
-    public void GenerationPolicyOnlyIfNecessary ()
-    {
-      object o = ObjectFactory.Create (typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
+      object o = ObjectFactory.Create (typeof (object), ParamList.Empty);
       Assert.That (o.GetType(), Is.EqualTo (typeof (object)));
 
-      o = ObjectFactory.Create<object> (ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
+      o = ObjectFactory.Create<object> (ParamList.Empty);
       Assert.That (o.GetType(), Is.EqualTo (typeof (object)));
     }
 
@@ -162,8 +150,8 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       object o = ObjectFactory.Create<BaseType3> (ParamList.Empty);
       Assert.That (o, Is.Not.Null);
-      Assert.That (o is BaseType3, Is.True);
-      Assert.That (o is IMixinTarget, Is.True);
+      Assert.That (o, Is.InstanceOf<BaseType3>());
+      Assert.That (o, Is.InstanceOf<IMixinTarget>());
 
       Assert.That (((IMixinTarget) o).Mixins[0], Is.Not.Null);
     }
@@ -173,8 +161,8 @@ namespace Remotion.Mixins.UnitTests.Core
     {
       object o = ObjectFactory.Create<BaseType3> ();
       Assert.That (o, Is.Not.Null);
-      Assert.That (o is BaseType3, Is.True);
-      Assert.That (o is IMixinTarget, Is.True);
+      Assert.That (o, Is.InstanceOf <BaseType3>());
+      Assert.That (o, Is.InstanceOf<IMixinTarget>());
 
       Assert.That (((IMixinTarget) o).Mixins[0], Is.Not.Null);
     }

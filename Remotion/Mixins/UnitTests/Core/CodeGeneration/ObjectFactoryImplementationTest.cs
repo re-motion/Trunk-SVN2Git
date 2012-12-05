@@ -36,7 +36,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void CreateInstance_UsesConcreteType ()
     {
-      object instance = _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
+      object instance = _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty);
       Assert.That (instance, Is.Not.SameAs (typeof (BaseType1)));
       Assert.That (instance, Is.InstanceOf (typeof (BaseType1)));
       Assert.That (instance, Is.InstanceOf (TypeFactory.GetConcreteType (typeof (BaseType1))));
@@ -45,7 +45,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [Test]
     public void CreateInstance_UsesTargetType_ForUnmixedType ()
     {
-      object instance = _implementation.CreateInstance (false, typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured);
+      object instance = _implementation.CreateInstance (false, typeof (object), ParamList.Empty);
       Assert.That (instance.GetType(), Is.SameAs (typeof (object)));
     }
 
@@ -53,7 +53,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void CreateInstance_PassesPreparedMixinInstances ()
     {
       var mixin = new BT1Mixin1();
-      object instance = _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, mixin);
+      object instance = _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, mixin);
 
       Assert.That (Mixin.Get<BT1Mixin1> (instance), Is.SameAs (mixin));
     }
@@ -63,7 +63,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void CreateInstance_InvalidPreparedMixinInstances ()
     {
       var mixin = new object ();
-      _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, mixin);
+      _implementation.CreateInstance (false, typeof (BaseType1), ParamList.Empty, mixin);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void CreateInstance_InvalidPreparedMixinInstances_UnmixedObject ()
     {
       var mixin = new object ();
-      _implementation.CreateInstance (false, typeof (object), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, false, mixin);
+      _implementation.CreateInstance (false, typeof (object), ParamList.Empty, false, mixin);
     }
 
     [Test]
@@ -80,7 +80,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
         "Cannot instantiate type 'System.IServiceProvider', it's an interface.\r\nParameter name: targetOrConcreteType")]
     public void CreateInstance_Interface ()
     {
-      _implementation.CreateInstance (false, typeof (IServiceProvider), ParamList.Empty, GenerationPolicy.GenerateOnlyIfConfigured, false);
+      _implementation.CreateInstance (false, typeof (IServiceProvider), ParamList.Empty, false);
     }
 
     public class TestServiceProvider : IServiceProvider
