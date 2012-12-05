@@ -21,9 +21,9 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
   public class NullBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {
-    public bool IsEvaluated
+    public bool IsNull
     {
-      get { return false; }
+      get { return true; }
     }
 
     public object GetValue ()
@@ -38,12 +38,12 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 
     public IBusinessObjectProperty ResultProperty
     {
-      get { throw new NotSupportedException(); }
+      get { return null; }
     }
 
     public IBusinessObject ResultObject
     {
-      get { throw new NotSupportedException(); }
+      get { return null; }
     }
   }
 }

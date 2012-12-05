@@ -19,9 +19,8 @@ using System;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
-  public interface IBusinessObjectPropertyPathResult
+  public interface IBusinessObjectPropertyPathResult : INullObject
   {
-    bool IsEvaluated { get; }
     object GetValue ();
     string GetString (string format);
     IBusinessObjectProperty ResultProperty { get; }

@@ -26,7 +26,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Resu
   public class EvaluatedBusinessObjectPropertyPathResultTest
   {
     private BusinessObjectPropertyPathTestHelper _testHelper;
-    private EvaluatedBusinessObjectPropertyPathResult _result;
+    private IBusinessObjectPropertyPathResult _result;
 
     [SetUp]
     public void SetUp ()
@@ -107,6 +107,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Resu
     public void GeResultObject ()
     {
       Assert.That (_result.ResultObject, Is.SameAs (_testHelper.BusinessObjectWithIdentity));
+    }
+
+    [Test]
+    public void GetIsNull ()
+    {
+      Assert.That (_result.IsNull, Is.False);
     }
 
     private void ExpectOnceOnPropertyIsAccessible (bool returnValue)

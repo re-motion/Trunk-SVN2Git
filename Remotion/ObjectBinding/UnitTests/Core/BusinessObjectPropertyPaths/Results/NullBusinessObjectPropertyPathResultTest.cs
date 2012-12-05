@@ -16,41 +16,50 @@
 // 
 
 using System;
+using NUnit.Framework;
+using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 
-namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
+namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Results
 {
-  public class NotAccessibleBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
+  [TestFixture]
+  public class NullBusinessObjectPropertyPathResultTest
   {
-    private readonly IBusinessObjectProvider _businessObjectProvider;
+    private IBusinessObjectPropertyPathResult _result;
 
-    public NotAccessibleBusinessObjectPropertyPathResult (IBusinessObjectProvider businessObjectProvider)
+    [SetUp]
+    public void SetUp ()
     {
-      _businessObjectProvider = businessObjectProvider;
+      _result = new NullBusinessObjectPropertyPathResult();
     }
 
-    public object GetValue ()
+    [Test]
+    public void GetValue ()
     {
-      return null;
+      Assert.That (_result.GetValue(), Is.Null);
     }
 
-    public string GetString (string format)
+    [Test]
+    public void GetString ()
     {
-      return _businessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
+      Assert.That (_result.GetString (string.Empty), Is.Empty);
     }
 
-    public IBusinessObjectProperty ResultProperty
+    [Test]
+    public void GetResultObject ()
     {
-      get { return null; }
+      Assert.That (_result.ResultObject, Is.Null);
+    }
+ 
+    [Test]
+    public void GetResulProperty ()
+    {
+      Assert.That (_result.ResultProperty, Is.Null);
     }
 
-    public IBusinessObject ResultObject
+    [Test]
+    public void GetIsNull ()
     {
-      get { return null; }
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return true; }
+      Assert.That (_result.IsNull, Is.True);
     }
   }
 }

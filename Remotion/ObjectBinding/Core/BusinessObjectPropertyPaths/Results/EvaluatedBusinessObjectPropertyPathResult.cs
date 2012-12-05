@@ -34,9 +34,9 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
       _resultProperty = resultProperty;
     }
 
-    public bool IsEvaluated
+    bool INullObject.IsNull
     {
-      get { return true; }
+      get { return false; }
     }
 
     public object GetValue ()
