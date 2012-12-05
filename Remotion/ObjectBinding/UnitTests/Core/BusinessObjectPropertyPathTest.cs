@@ -228,7 +228,10 @@ namespace Remotion.ObjectBinding.UnitTests.Core
     public void BusinessObjectProvider_CreatePropertyPath ()
     {
       IBusinessObjectProvider provider = null;
-      IBusinessObjectProperty[] properties = new[] { MockRepository.GenerateStub<IBusinessObjectProperty>() };
+      var propertyStub = MockRepository.GenerateStub<IBusinessObjectProperty>();
+      propertyStub.Stub (_ => _.ReflectedClass).Return (MockRepository.GenerateStub<IBusinessObjectClass>());
+      propertyStub.ReflectedClass.Stub (_ => _.GetPropertyDefinition (Arg<string>.Is.Anything)).Return (propertyStub);
+      IBusinessObjectProperty[] properties = new[] { propertyStub };
 
       var path = provider.CreatePropertyPath (properties);
 
