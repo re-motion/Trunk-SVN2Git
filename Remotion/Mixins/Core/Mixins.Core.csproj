@@ -101,6 +101,7 @@
     <Compile Include="CodeGeneration\DynamicProxy\TypeGenerator.cs" />
     <Compile Include="CodeGeneration\ExtensionFieldAttribute.cs" />
     <Compile Include="CodeGeneration\GuidNameProvider.cs" />
+    <Compile Include="CodeGeneration\ICodeGenerationCache.cs" />
     <Compile Include="CodeGeneration\ICodeGenerationModule.cs" />
     <Compile Include="CodeGeneration\IConcreteMixinTypeNameProvider.cs" />
     <Compile Include="CodeGeneration\IConcreteMixinTypeProvider.cs" />

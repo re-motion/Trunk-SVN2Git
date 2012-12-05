@@ -30,19 +30,20 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   [TestFixture]
   public class CodeGenerationCacheTest
   {
-    private CodeGenerationCache _cache;
-
     private MockRepository _mockRepository;
     private IModuleManager _moduleManagerMock;
     private ITypeGenerator _typeGeneratorMock;
     private IMixinTypeGenerator _mixinTypeGeneratorMock;
 
-    private ClassContext _targetClassContext;
-    private ConcreteMixinTypeIdentifier _concreteMixinTypeIdentifier;
     private IConcreteMixedTypeNameProvider _mixedTypeNameProvider;
     private IConcreteMixinTypeNameProvider _mixinTypeNameProvider;
-    private ConcreteMixinType _concreteMixinTypeFake;
     private IConcreteMixinTypeProvider _concreteMixinTypeProvider;
+
+    private CodeGenerationCache _cache;
+
+    private ClassContext _targetClassContext;
+    private ConcreteMixinTypeIdentifier _concreteMixinTypeIdentifier;
+    private ConcreteMixinType _concreteMixinTypeFake;
 
     [SetUp]
     public void SetUp()
@@ -52,17 +53,18 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       _typeGeneratorMock = _mockRepository.StrictMock<ITypeGenerator>();
       _mixinTypeGeneratorMock = _mockRepository.StrictMock<IMixinTypeGenerator>();
 
-      _cache = new CodeGenerationCache ();
+      _mixedTypeNameProvider = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
+      _mixinTypeNameProvider = MockRepository.GenerateStub<IConcreteMixinTypeNameProvider> ();
+
+      _concreteMixinTypeProvider = MockRepository.GenerateStub<IConcreteMixinTypeProvider> ();
+
+      _cache = new CodeGenerationCache (_moduleManagerMock, _mixedTypeNameProvider, _mixinTypeNameProvider, _concreteMixinTypeProvider);
+
       _targetClassContext = ClassContextObjectMother.Create (typeof (BaseType1), typeof (BT1Mixin1));
 
       var mixinDefinition = DefinitionObjectMother.CreateTargetClassDefinition (typeof (BaseType1), typeof (BT1Mixin1)).Mixins[0];
       _concreteMixinTypeIdentifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
-
-      _mixedTypeNameProvider = MockRepository.GenerateStub<IConcreteMixedTypeNameProvider> ();
-      _mixinTypeNameProvider = MockRepository.GenerateStub<IConcreteMixinTypeNameProvider> ();
-
       _concreteMixinTypeFake = CreateConcreteMixinTypeFake (_concreteMixinTypeIdentifier);
-      _concreteMixinTypeProvider = MockRepository.GenerateStub<IConcreteMixinTypeProvider> ();
     }
 
     private ConcreteMixinType CreateConcreteMixinTypeFake (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
@@ -86,7 +88,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      Type result = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider);
+      Type result = _cache.GetOrCreateConcreteType (_targetClassContext);
       Assert.That (result, Is.SameAs (typeof (string)));
 
       _mockRepository.VerifyAll();
@@ -104,8 +106,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      Type result1 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider);
-      Type result2 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider);
+      Type result1 = _cache.GetOrCreateConcreteType (_targetClassContext);
+      Type result2 = _cache.GetOrCreateConcreteType (_targetClassContext);
       Assert.That (result2, Is.SameAs (result1));
 
       _mockRepository.VerifyAll();
@@ -122,8 +124,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll ();
 
-      var result = _cache.GetOrCreateConstructorLookupInfo (
-          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider, true);
+      var result = _cache.GetOrCreateConstructorLookupInfo (_targetClassContext, true);
       Assert.That (result, Is.TypeOf (typeof (MixedTypeConstructorLookupInfo)));
       Assert.That (result.DefiningType, Is.SameAs (typeof (string)));
       Assert.That (((MixedTypeConstructorLookupInfo) result).TargetType, Is.SameAs (_targetClassContext.Type));
@@ -143,10 +144,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll ();
 
-      var result1 = _cache.GetOrCreateConstructorLookupInfo (
-          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider, true);
-      var result2 = _cache.GetOrCreateConstructorLookupInfo (
-          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider, true);
+      var result1 = _cache.GetOrCreateConstructorLookupInfo (_targetClassContext, true);
+      var result2 = _cache.GetOrCreateConstructorLookupInfo (_targetClassContext, true);
 
       Assert.That (result2, Is.SameAs (result1));
 
@@ -164,10 +163,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll ();
 
-      var result1 = _cache.GetOrCreateConstructorLookupInfo (
-          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider, true);
-      var result2 = _cache.GetOrCreateConstructorLookupInfo (
-          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider, false);
+      var result1 = _cache.GetOrCreateConstructorLookupInfo (_targetClassContext, true);
+      var result2 = _cache.GetOrCreateConstructorLookupInfo (_targetClassContext, false);
 
       Assert.That (result2, Is.Not.SameAs (result1));
       Assert.That (((MixedTypeConstructorLookupInfo) result1).AllowNonPublic, Is.True);
@@ -185,7 +182,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      var result = _cache.GetOrCreateConcreteMixinType (_moduleManagerMock, _concreteMixinTypeIdentifier, _mixinTypeNameProvider);
+      var result = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier);
       Assert.That (result, Is.SameAs (_concreteMixinTypeFake));
 
       _mockRepository.VerifyAll();
@@ -200,8 +197,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll();
 
-      var result1 = _cache.GetOrCreateConcreteMixinType (_moduleManagerMock, _concreteMixinTypeIdentifier, _mixinTypeNameProvider);
-      var result2 = _cache.GetOrCreateConcreteMixinType (_moduleManagerMock, _concreteMixinTypeIdentifier, _mixinTypeNameProvider);
+      var result1 = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier);
+      var result2 = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier);
       Assert.That (result2, Is.SameAs (result1));
 
       _mockRepository.VerifyAll();
@@ -220,9 +217,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll ();
 
-      Type result1 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider);
+      Type result1 = _cache.GetOrCreateConcreteType (_targetClassContext);
       _cache.Clear ();
-      Type result2 = _cache.GetOrCreateConcreteType (_moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider);
+      Type result2 = _cache.GetOrCreateConcreteType (_targetClassContext);
       Assert.That (result2, Is.Not.SameAs (result1));
 
       _mockRepository.VerifyAll ();
@@ -240,13 +237,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll ();
 
-      var result1 = _cache.GetOrCreateConstructorLookupInfo (
-          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider, true);
+      var result1 = _cache.GetOrCreateConstructorLookupInfo (_targetClassContext, true);
 
       _cache.Clear();
 
-      var result2 = _cache.GetOrCreateConstructorLookupInfo (
-          _moduleManagerMock, _targetClassContext, _mixedTypeNameProvider, _concreteMixinTypeProvider, true);
+      var result2 = _cache.GetOrCreateConstructorLookupInfo (_targetClassContext, true);
 
       Assert.That (result2, Is.Not.SameAs (result1));
 
@@ -264,11 +259,11 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _mockRepository.ReplayAll ();
 
-      var result1 = _cache.GetOrCreateConcreteMixinType (_moduleManagerMock, _concreteMixinTypeIdentifier, _mixinTypeNameProvider);
+      var result1 = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier);
 
       _cache.Clear();
 
-      var result2 = _cache.GetOrCreateConcreteMixinType (_moduleManagerMock, _concreteMixinTypeIdentifier, _mixinTypeNameProvider);
+      var result2 = _cache.GetOrCreateConcreteMixinType (_concreteMixinTypeIdentifier);
       Assert.That (result2, Is.Not.SameAs (result1));
 
       _mockRepository.VerifyAll ();
@@ -292,10 +287,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, classContext1, _mixedTypeNameProvider, _concreteMixinTypeProvider), 
-          Is.SameAs (typeof (BaseType1)));
-      Assert.That (_cache.GetOrCreateConcreteType (_moduleManagerMock, classContext2, _mixedTypeNameProvider, _concreteMixinTypeProvider), 
-          Is.SameAs (typeof (BaseType2)));
+      Assert.That (_cache.GetOrCreateConcreteType (classContext1), Is.SameAs (typeof (BaseType1)));
+      Assert.That (_cache.GetOrCreateConcreteType (classContext2), Is.SameAs (typeof (BaseType2)));
     }
 
     [Test]
@@ -328,8 +321,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       
       _cache.ImportTypes (typesToImport, metadataImporterStub);
 
-      Assert.That (_cache.GetOrCreateConcreteMixinType (_moduleManagerMock, identifier1, _mixinTypeNameProvider), Is.SameAs (type1));
-      Assert.That (_cache.GetOrCreateConcreteMixinType (_moduleManagerMock, identifier2, _mixinTypeNameProvider), Is.SameAs (type2));
+      Assert.That (_cache.GetOrCreateConcreteMixinType (identifier1), Is.SameAs (type1));
+      Assert.That (_cache.GetOrCreateConcreteMixinType (identifier2), Is.SameAs (type2));
     }
   }
 }
