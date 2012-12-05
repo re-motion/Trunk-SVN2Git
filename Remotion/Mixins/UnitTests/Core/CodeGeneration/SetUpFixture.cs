@@ -30,7 +30,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   public class SetUpFixture
   {
     private static ConcreteTypeBuilder s_savedTypeBuilder;
-    private static ConcreteTypeBuilder s_alternativeTypeBuilder;
 
     private static bool _skipDeletion = false;
 
@@ -48,7 +47,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     {
       ResetGeneratedAssemblies ();
       s_savedTypeBuilder = new ConcreteTypeBuilder (new ResetCheckingModuleManager(false), new GuidNameProvider(), new GuidNameProvider());
-      s_alternativeTypeBuilder = new ConcreteTypeBuilder (new ModuleManager(), new GuidNameProvider (), new GuidNameProvider ());
     }
 
     [TearDown]
@@ -81,7 +79,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
         Console.WriteLine ("Assemblies saved to: " + Environment.NewLine + SeparatedStringBuilder.Build (Environment.NewLine, paths));
       
       s_savedTypeBuilder = null;
-      s_alternativeTypeBuilder = null;
     }
 
     public static ConcreteTypeBuilder SavedTypeBuilder
@@ -91,16 +88,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
         if (s_savedTypeBuilder == null)
           throw new InvalidOperationException ("SetUp must be executed first.");
         return s_savedTypeBuilder;
-      }
-    }
-
-    public static ConcreteTypeBuilder AlternativeTypeBuilder
-    {
-      get
-      {
-        if (s_alternativeTypeBuilder == null)
-          throw new InvalidOperationException ("SetUp must be executed first.");
-        return s_alternativeTypeBuilder;
       }
     }
 

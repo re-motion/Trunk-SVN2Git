@@ -36,43 +36,45 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       ConcreteTypeBuilder.SetCurrent (null);
     }
 
-    public ConcreteTypeBuilder SavedTypeBuilder
+    protected ConcreteTypeBuilder SavedTypeBuilder
     {
       get { return SetUpFixture.SavedTypeBuilder; }
     }
 
-    public ConcreteTypeBuilder AlternativeTypeBuilder
-    {
-      get { return SetUpFixture.AlternativeTypeBuilder; }
-    }
-
-    public Type CreateMixedType (Type targetType, params Type[] mixinTypes)
+    protected Type CreateMixedType (Type targetType, params Type[] mixinTypes)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
       
-      // TODO 3213: Inconsistent - cleared here, but not in CreateMixedObject?
-      using (MixinConfiguration.BuildFromActive().ForClass (targetType).Clear().AddMixins (mixinTypes).EnterScope())
+      using (MixinConfiguration.BuildNew().ForClass (targetType).AddMixins (mixinTypes).EnterScope())
+      {
         return TypeFactory.GetConcreteType (targetType);
+      }
     }
 
-    public T CreateMixedObject<T> (params Type[] mixinTypes)
+    protected T CreateMixedObject<T> (params Type[] mixinTypes)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("mixinTypes", mixinTypes);
 
       using (MixinConfiguration.BuildNew().ForClass<T> ().AddMixins (mixinTypes).EnterScope())
+      {
         return ObjectFactory.Create<T> (ParamList.Empty);
+      }
     }
 
-    public Type CreateGeneratedTypeWithoutMixins (Type targetType)
+    protected Type CreateGeneratedTypeWithoutMixins (Type targetType)
     {
       using (MixinConfiguration.BuildNew ().ForClass (targetType).Clear ().EnterScope ())
+      {
         return TypeGenerationHelper.ForceTypeGeneration (targetType);
+      }
     }
 
-    public T CreateGeneratedTypeInstanceWithoutMixins<T> ()
+    protected T CreateGeneratedTypeInstanceWithoutMixins<T> ()
     {
-      using (MixinConfiguration.BuildNew ().ForClass<T> ().Clear ().EnterScope ())
-        return TypeGenerationHelper.ForceTypeGenerationAndCreateInstance<T> ();
+      using (MixinConfiguration.BuildNew().ForClass<T>().Clear().EnterScope())
+      {
+        return TypeGenerationHelper.ForceTypeGenerationAndCreateInstance<T>();
+      }
     }
 
     /// <summary>
