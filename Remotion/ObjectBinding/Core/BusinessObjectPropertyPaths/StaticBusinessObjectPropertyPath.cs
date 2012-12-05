@@ -23,6 +23,11 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 {
+  /// <summary>
+  /// Implements <see cref="IBusinessObjectPropertyPath"/> for static binding of the property path identifier. 
+  /// If the specified property path cannot be parsed for the specified root <see cref="IBusinessObjectClass"/>, 
+  /// a <see cref="ParseException"/> is thrown during initialization of the object.
+  /// </summary>
   public sealed class StaticBusinessObjectPropertyPath : BusinessObjectPropertyPathBase
   {
     private readonly string _propertyPathIdentifier;

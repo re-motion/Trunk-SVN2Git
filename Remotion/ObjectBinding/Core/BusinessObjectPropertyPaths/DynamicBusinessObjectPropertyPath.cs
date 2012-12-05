@@ -22,6 +22,11 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 {
+  /// <summary>
+  /// Implements <see cref="IBusinessObjectPropertyPath"/> for late binding of the property path identifier. 
+  /// If the specified property path cannot be parsed in the context of the individual <see cref="IBusinessObject"/>, 
+  /// a corresponding null-object is returned by <see cref="BusinessObjectPropertyPathBase.GetResult"/>.
+  /// </summary>
   public sealed class DynamicBusinessObjectPropertyPath : BusinessObjectPropertyPathBase
   {
     private readonly string _propertyPathIdentifier;

@@ -25,7 +25,11 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 {
-  public abstract class BusinessObjectPropertyPathBase
+  /// <summary>
+  /// Base-implemention of <see cref="IBusinessObjectPropertyPath"/>. 
+  /// See <see cref="StaticBusinessObjectPropertyPath"/> and <see cref="DynamicBusinessObjectPropertyPath"/> concrete implementations.
+  /// </summary>
+  public abstract class BusinessObjectPropertyPathBase // : IBusinessObjectPropertyPath
   {
     protected BusinessObjectPropertyPathBase ()
     {
