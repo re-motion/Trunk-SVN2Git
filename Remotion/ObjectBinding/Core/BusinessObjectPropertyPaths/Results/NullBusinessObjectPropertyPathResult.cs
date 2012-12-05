@@ -24,7 +24,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
   /// e.g. contained a <see langword="null" />-value within its path, a missing property, etc.
   /// </summary>
   /// <remarks><see cref="ResultProperty"/> and <see cref="ResultObject"/> will always be <see langword="null" />.</remarks>
-  public class NullBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
+  public sealed class NullBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {
     public bool IsNull
     {

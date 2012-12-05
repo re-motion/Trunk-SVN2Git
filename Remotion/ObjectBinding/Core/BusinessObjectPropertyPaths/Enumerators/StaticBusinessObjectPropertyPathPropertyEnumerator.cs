@@ -20,6 +20,11 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
+  /// <summary>
+  /// Impelements <see cref="IBusinessObjectPropertyPathPropertyEnumerator"/> 
+  /// and throws a <see cref="ParseException"/> when the property path cannot be resolved. 
+  /// </summary>
+  /// <remarks>Used by <see cref="StaticBusinessObjectPropertyPath"/> for resolving the property path identifier.</remarks>
   public sealed class StaticBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
   {
     public StaticBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)

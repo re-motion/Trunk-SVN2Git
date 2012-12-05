@@ -20,12 +20,15 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
-  public sealed class EvaluatedBusinessObjectPropertyPathPropertyEnumerator : IBusinessObjectPropertyPathPropertyEnumerator
+  /// <summary>
+  /// Implements the <see cref="IBusinessObjectPropertyPathPropertyEnumerator"/> for a sequence of <see cref="IBusinessObjectProperty"/> objects.
+  /// </summary>
+  public sealed class ResolvedBusinessObjectPropertyPathPropertyEnumerator : IBusinessObjectPropertyPathPropertyEnumerator
   {
     private readonly IBusinessObjectProperty[] _properties;
     private int _index = -1;
 
-    public EvaluatedBusinessObjectPropertyPathPropertyEnumerator (IBusinessObjectProperty[] properties)
+    public ResolvedBusinessObjectPropertyPathPropertyEnumerator (IBusinessObjectProperty[] properties)
     {
       ArgumentUtility.CheckNotNull ("properties", properties);
 

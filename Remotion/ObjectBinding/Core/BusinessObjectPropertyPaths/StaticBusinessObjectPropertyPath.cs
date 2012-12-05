@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
 
     protected override IBusinessObjectPropertyPathPropertyEnumerator GetResultPropertyEnumerator ()
     {
-      return new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (_properties);
+      return new ResolvedBusinessObjectPropertyPathPropertyEnumerator (_properties);
     }
   }
 }

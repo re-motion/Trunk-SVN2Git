@@ -19,6 +19,12 @@ using System;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
+  /// <summary>
+  /// Impelements <see cref="IBusinessObjectPropertyPathPropertyEnumerator"/> 
+  /// and sets <see cref="BusinessObjectPropertyPathPropertyEnumeratorBase.Current"/> to <see langword="null" /> 
+  /// when the property path cannot be resolved. 
+  /// </summary>
+  /// <remarks>Used by <see cref="DynamicBusinessObjectPropertyPath"/> for resolving the property path identifier.</remarks>
   public sealed class DynamicBusinessObjectPropertyPathPropertyEnumerator : BusinessObjectPropertyPathPropertyEnumeratorBase
   {
     public DynamicBusinessObjectPropertyPathPropertyEnumerator (string propertyPathIdentifier)

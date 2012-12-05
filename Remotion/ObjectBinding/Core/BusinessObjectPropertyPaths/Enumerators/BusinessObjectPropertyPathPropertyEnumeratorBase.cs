@@ -20,6 +20,11 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators
 {
+  /// <summary>
+  /// Implements the property path parsing logic as specified by <see cref="IBusinessObjectPropertyPathPropertyEnumerator"/> 
+  /// but allows for customization when handling invalid property path information via the template methods <see cref="HandlePropertyNotFound"/> and
+  /// <see cref="HandlePropertyNotLastPropertyAndNotReferenceProperty"/>.
+  /// </summary>
   public abstract class BusinessObjectPropertyPathPropertyEnumeratorBase : IBusinessObjectPropertyPathPropertyEnumerator
   {
     private string _remainingPropertyPathIdentifier;

@@ -23,7 +23,7 @@ using Rhino.Mocks;
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enumerators
 {
   [TestFixture]
-  public class EvaluatedBusinessObjectPropertyPathPropertyEnumeratorTest : BusinessObjectPropertyPathPropertyEnumeratorTestBase
+  public class ResolvedBusinessObjectPropertyPathPropertyEnumeratorTest : BusinessObjectPropertyPathPropertyEnumeratorTestBase
   {
     [Test]
     public void MoveNext_NeverWithSingleProperty_CurrentThrows_HasNextIsTrue ()
@@ -31,7 +31,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
       var classStub = CreateClassStub();
       var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
 
-      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
+      var enumerator = new ResolvedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
 
       Assert.That (() => enumerator.Current, Throws.InvalidOperationException.With.Message.EqualTo ("Enumeration has not started. Call MoveNext."));
       Assert.That (enumerator.HasNext, Is.True);
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
       var classStub = CreateClassStub();
       var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
 
-      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
+      var enumerator = new ResolvedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
 
       Assert.That (enumerator.MoveNext (classStub), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (propertyStub));
@@ -56,7 +56,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
       var classStub = CreateClassStub();
       var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
 
-      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
+      var enumerator = new ResolvedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
 
       Assert.That (enumerator.MoveNext (classStub), Is.True);
 
@@ -71,7 +71,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
       var classStub = CreateClassStub();
       var propertyStub = CreatePropertyStub (classStub, "FirstProperty");
 
-      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
+      var enumerator = new ResolvedBusinessObjectPropertyPathPropertyEnumerator (new[] { propertyStub });
 
       Assert.That (enumerator.MoveNext (classStub), Is.True);
 
@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Enum
       var firstPropertyStub = CreateReferencePropertyStub (firstClassStub, "FirstProperty", secondClassStub);
       var secondPropertyStub = CreatePropertyStub (secondClassStub, "SecondProperty");
 
-      var enumerator = new EvaluatedBusinessObjectPropertyPathPropertyEnumerator (new[] { firstPropertyStub, secondPropertyStub });
+      var enumerator = new ResolvedBusinessObjectPropertyPathPropertyEnumerator (new[] { firstPropertyStub, secondPropertyStub });
 
       Assert.That (enumerator.MoveNext (firstClassStub), Is.True);
       Assert.That (enumerator.Current, Is.SameAs (firstPropertyStub));

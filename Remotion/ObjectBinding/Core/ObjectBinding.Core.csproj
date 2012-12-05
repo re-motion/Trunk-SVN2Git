@@ -176,7 +176,7 @@
     <Compile Include="BusinessObjectPropertyPaths\Enumerators\BusinessObjectPropertyPathPropertyEnumeratorBase.cs" />
     <Compile Include="BusinessObjectPropertyPaths\Enumerators\DynamicBusinessObjectPropertyPathPropertyEnumerator.cs" />
     <Compile Include="BusinessObjectPropertyPaths\Enumerators\StaticBusinessObjectPropertyPathPropertyEnumerator.cs" />
-    <Compile Include="BusinessObjectPropertyPaths\Enumerators\EvaluatedBusinessObjectPropertyPathPropertyEnumerator.cs" />
+    <Compile Include="BusinessObjectPropertyPaths\Enumerators\ResolvedBusinessObjectPropertyPathPropertyEnumerator.cs" />
     <Compile Include="DefaultSearchArguments.cs" />
     <Compile Include="IBusinessObject.cs" />
     <Compile Include="IBusinessObjectBooleanProperty.cs" />

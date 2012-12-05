@@ -28,7 +28,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
   /// <see cref="GetValue"/> and <see cref="GetString"/> may still not return the actual value if the <see cref="ResultProperty"/> is not accessible
   /// for the <see cref="ResultObject"/>.
   /// </remarks>
-  public class EvaluatedBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
+  public sealed class EvaluatedBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {
     private readonly IBusinessObject _resultObject;
     private readonly IBusinessObjectProperty _resultProperty;
