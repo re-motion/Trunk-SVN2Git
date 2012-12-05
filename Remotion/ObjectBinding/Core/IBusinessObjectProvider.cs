@@ -74,11 +74,6 @@ namespace Remotion.ObjectBinding
     /// <returns> A <see cref="Char"/> that is not used by the property's identifier. </returns>
     char GetPropertyPathSeparator ();
 
-    /// <summary>Creates a <see cref="IBusinessObjectPropertyPath"/> from the passed <see cref="IBusinessObjectProperty"/> list.</summary>
-    /// <param name="properties"> An array of <see cref="IBusinessObjectProperty"/> instances. </param>
-    /// <returns> A new instance of the <see cref="IBusinessObjectPropertyPath"/> type. </returns>
-    IBusinessObjectPropertyPath CreatePropertyPath (IBusinessObjectProperty[] properties);
-
     /// <summary> Returns a <see cref="String"/> to be used instead of the actual value if the property is not accessible. </summary>
     /// <returns> A <see cref="String"/> that can be easily distinguished from typical property values. </returns>
     string GetNotAccessiblePropertyStringPlaceHolder ();

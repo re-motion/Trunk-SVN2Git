@@ -23,7 +23,7 @@ namespace Remotion.ObjectBinding.Design
 {
   /// <summary>
   ///   Editor applied to the string property used to set the 
-  ///   <see cref="BusinessObjectPropertyPath.Identifier">BusinessObjectPropertyPath.Identifier</see>.
+  ///   <see cref="IBusinessObjectPropertyPath.Identifier">IBusinessObjectPropertyPath.Identifier</see>.
   /// </summary>
   public class PropertyPathPickerEditor : DropDownEditorBase
   {

@@ -29,21 +29,21 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     [Test]
     public void GetIdentifier_ReturnsIdentifier ()
     {
-      var path = new DynamicBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
+      var path = DynamicBusinessObjectPropertyPath.Create("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
       Assert.That (path.Identifier, Is.EqualTo ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue"));
     }
 
     [Test]
     public void GetIsDynamic_ReturnsTrue ()
     {
-      var path = new DynamicBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
+      var path = DynamicBusinessObjectPropertyPath.Create("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
       Assert.That (path.IsDynamic, Is.True);
     }
 
     [Test]
     public void GetProperties_ThrowsNotSupportedException ()
     {
-      var path = new DynamicBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
+      var path = DynamicBusinessObjectPropertyPath.Create("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
       Assert.That (
           () => path.Properties,
           Throws.TypeOf<NotSupportedException>().With.Message.EqualTo ("Properties collection cannot be retrieved for dynamic property paths."));
@@ -53,7 +53,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     public void GetResult_ValidPropertyPath_EndsWithInt ()
     {
       var root = TypeOne.Create();
-      var path = new DynamicBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
+      var path = DynamicBusinessObjectPropertyPath.Create("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue");
 
       var result = path.GetResult (
           (IBusinessObject) root,
@@ -72,7 +72,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     public void GetResult_ValidPropertyPath_EndsWithReferenceProperty ()
     {
       var root = TypeOne.Create();
-      var path = new DynamicBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue");
+      var path = DynamicBusinessObjectPropertyPath.Create("TypeTwoValue.TypeThreeValue.TypeFourValue");
 
       var result = path.GetResult (
           (IBusinessObject) root,
@@ -89,7 +89,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     public void GetResult_InvalidPropertyPath_PropertyNotFound_ReturnsNullPath ()
     {
       var root = TypeOne.Create();
-      var path = new DynamicBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue1.IntValue");
+      var path = DynamicBusinessObjectPropertyPath.Create("TypeTwoValue.TypeThreeValue.TypeFourValue1.IntValue");
 
       var result = path.GetResult (
           (IBusinessObject) root,
@@ -104,7 +104,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     public void GetResult_InvalidPropertyPath_NonLastPropertyNotReferenceProperty_ReturnsNullPath ()
     {
       var root = TypeOne.Create();
-      var path = new DynamicBusinessObjectPropertyPath ("TypeTwoValue.IntValue.TypeFourValue");
+      var path = DynamicBusinessObjectPropertyPath.Create("TypeTwoValue.IntValue.TypeFourValue");
 
       var result = path.GetResult (
           (IBusinessObject) root,

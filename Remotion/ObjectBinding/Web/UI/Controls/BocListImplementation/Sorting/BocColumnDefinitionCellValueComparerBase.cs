@@ -81,7 +81,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
     {
       try
       {
-        return propertyPath.GetValue (row.BusinessObject, false, true);
+        var result = propertyPath.GetResult (
+            row.BusinessObject,
+            BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
+            BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
+
+        return result.GetValue();
       }
       catch (Exception e)
       {

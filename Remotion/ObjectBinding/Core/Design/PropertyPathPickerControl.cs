@@ -316,9 +316,9 @@ namespace Remotion.ObjectBinding.Design
           IBusinessObjectPropertyPath propertyPath = null;
           try
           {
-            propertyPath = BusinessObjectPropertyPath.ParseStatic (_classSource.BusinessObjectClass, (string)value);
+            propertyPath = BusinessObjectPropertyPath.CreateStatic (_classSource.BusinessObjectClass, (string) value);
           }
-          catch (ArgumentException)
+          catch (ParseException)
           {
             //  PropertyPath invalid. 
             //  Do nothing since the editor's task is to create a valid propertypath in the first place.

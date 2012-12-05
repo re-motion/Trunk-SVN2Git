@@ -70,10 +70,15 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       else
         propertyPath = _propertyPathBinding.GetDynamicPropertyPath (obj.BusinessObjectClass);
 
+      var result = propertyPath.GetResult (
+          obj,
+          BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
+          BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
+
       string formatString = _formatString;
       if (string.IsNullOrEmpty (formatString))
       {
-        var lastProperty = propertyPath.Properties.LastOrDefault() as IBusinessObjectDateTimeProperty;
+        var lastProperty = result.ResultProperty as IBusinessObjectDateTimeProperty;
         if (lastProperty != null)
         {
           if (lastProperty.Type == DateTimeType.Date)
@@ -83,7 +88,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         }
       }
 
-      return propertyPath.GetString (obj, StringUtility.EmptyToNull (formatString));
+      return result.GetString (formatString);
     }
 
     /// <summary>

@@ -203,12 +203,6 @@ namespace Remotion.ObjectBinding
       return '.';
     }
 
-    /// <summary>Creates a <see cref="BusinessObjectPropertyPath"/> from the passed <see cref="IBusinessObjectProperty"/> list.</summary>
-    public virtual IBusinessObjectPropertyPath CreatePropertyPath (IBusinessObjectProperty[] properties)
-    {
-      return new BusinessObjectPropertyPath (properties);
-    }
-
     /// <summary> Returns a <see cref="String"/> to be used instead of the actual value if the property is not accessible. </summary>
     /// <returns> A <see cref="String"/> that can be easily distinguished from typical property values. </returns>
     public virtual string GetNotAccessiblePropertyStringPlaceHolder ()

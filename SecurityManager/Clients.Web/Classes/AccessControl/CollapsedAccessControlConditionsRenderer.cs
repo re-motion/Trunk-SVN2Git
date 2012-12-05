@@ -156,16 +156,20 @@ namespace Remotion.SecurityManager.Clients.Web.Classes.AccessControl
     private void RenderPropertyPathString (HtmlTextWriter writer, string propertyPathIdentifier)
     {
       IBusinessObject businessObject = _accessControlEntry;
-      var propertyPath = BusinessObjectPropertyPath.ParseStatic (businessObject.BusinessObjectClass, propertyPathIdentifier);
-      writer.WriteEncodedText (propertyPath.GetString (businessObject, null));
+      var propertyPath = BusinessObjectPropertyPath.CreateStatic (businessObject.BusinessObjectClass, propertyPathIdentifier);
+      var result = propertyPath.GetResult (
+          businessObject,
+          BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
+          BusinessObjectPropertyPath.ListValueBehavior.FailForListProperties);
+      writer.WriteEncodedText (result.GetString (null));
     }
 
     private string GetPropertyDisplayName (string propertyPathIdentifier)
     {
       IBusinessObject businessObject = _accessControlEntry;
-      var propertyPath = BusinessObjectPropertyPath.ParseStatic (businessObject.BusinessObjectClass, propertyPathIdentifier);
-      Assertion.IsTrue (propertyPath.Properties.Length >= 2);
-      return propertyPath.Properties[propertyPath.Properties.Length - 2].DisplayName;
+      var propertyPath = BusinessObjectPropertyPath.CreateStatic (businessObject.BusinessObjectClass, propertyPathIdentifier);
+      Assertion.IsTrue (propertyPath.Properties.Count >= 2);
+      return propertyPath.Properties[propertyPath.Properties.Count - 2].DisplayName;
     }
 
     private void RenderTenantHierarchyIcon (HtmlTextWriter writer, IControl container)

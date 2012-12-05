@@ -86,7 +86,12 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
         else
           propertyPath = renderingContext.ColumnDefinition.GetPropertyPath();
 
-        IBusinessObject value = propertyPath.GetValue (businessObject, false, true) as IBusinessObject;
+        var result = propertyPath.GetResult (
+            businessObject,
+            BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
+            BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
+
+        IBusinessObject value = result.GetValue() as IBusinessObject;
         if (value != null)
           RenderCellIcon (renderingContext, value);
       }
@@ -95,14 +100,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
     private void RenderEditModeControl (
         BocColumnRenderingContext<BocSimpleColumnDefinition> renderingContext, IBusinessObject businessObject, IEditableRow editableRow)
     {
-      EditModeValidator editModeValidator = null;
-      for (int i = 0; i < renderingContext.Control.Validators.Count; i++)
-      {
-        BaseValidator validator = (BaseValidator) renderingContext.Control.Validators[i];
-        if (validator is EditModeValidator)
-          editModeValidator = (EditModeValidator) validator;
-      }
-
       if (renderingContext.Control.HasClientScript)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);
       renderingContext.Writer.RenderBeginTag (HtmlTextWriterTag.Span); // Begin span

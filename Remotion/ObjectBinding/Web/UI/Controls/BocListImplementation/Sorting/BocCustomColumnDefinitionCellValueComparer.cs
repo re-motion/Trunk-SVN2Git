@@ -67,7 +67,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       {
         //TODO: Support DynamicPropertyPaths
         IBusinessObjectPropertyPath propertyPath = _column.GetPropertyPath();
-        return propertyPath.GetString (row.BusinessObject, string.Empty);
+        var result = propertyPath.GetResult (
+            row.BusinessObject,
+            BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
+            BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
+
+        return result.GetString (string.Empty);
       }
       catch (Exception e)
       {

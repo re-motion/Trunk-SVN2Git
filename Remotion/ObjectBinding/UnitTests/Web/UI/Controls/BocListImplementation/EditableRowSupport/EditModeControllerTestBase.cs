@@ -83,8 +83,8 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       _class = BindableObjectProviderTestHelper.GetBindableObjectClass(typeof (TypeWithAllDataTypes));
 
-      _stringValuePath = BusinessObjectPropertyPath.ParseStatic (_class, "String");
-      _int32ValuePath = BusinessObjectPropertyPath.ParseStatic (_class, "Int32");
+      _stringValuePath = BusinessObjectPropertyPath.CreateStatic (_class, "String");
+      _int32ValuePath = BusinessObjectPropertyPath.CreateStatic (_class, "Int32");
 
       _stringValueSimpleColumn = new BocSimpleColumnDefinition();
       _stringValueSimpleColumn.SetPropertyPath (_stringValuePath);

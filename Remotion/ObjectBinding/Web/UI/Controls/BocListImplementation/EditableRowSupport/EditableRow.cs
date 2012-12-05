@@ -155,7 +155,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
       if (column.IsDynamic)
         return false;
       IBusinessObjectPropertyPath propertyPath = column.GetPropertyPath ();
-      if (propertyPath.Properties.Length > 1)
+      if (propertyPath.Properties.Count > 1)
         return false;
       return true;
     }

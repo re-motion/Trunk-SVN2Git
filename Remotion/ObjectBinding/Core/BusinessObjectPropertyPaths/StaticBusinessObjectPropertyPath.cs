@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators;
 using Remotion.Utilities;
 
@@ -33,7 +34,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
     private readonly string _propertyPathIdentifier;
     private readonly IBusinessObjectProperty[] _properties;
 
-    public StaticBusinessObjectPropertyPath (string propertyPathIdentifier, IBusinessObjectClass root)
+    public static StaticBusinessObjectPropertyPath Parse (string propertyPathIdentifier, IBusinessObjectClass root)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyPathIdentifier", propertyPathIdentifier);
       ArgumentUtility.CheckNotNull ("root", root);
@@ -55,8 +56,20 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
           currentClass = null;
       }
 
+      return new StaticBusinessObjectPropertyPath (properties.ToArray(), propertyPathIdentifier);
+    }
+
+    public static StaticBusinessObjectPropertyPath Create (IBusinessObjectProperty[] properties)
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("properties", properties);
+
+      return new StaticBusinessObjectPropertyPath (properties, properties.Single().Identifier);
+    }
+
+    private StaticBusinessObjectPropertyPath (IBusinessObjectProperty[] properties, string propertyPathIdentifier)
+    {
+      _properties = properties;
       _propertyPathIdentifier = propertyPathIdentifier;
-      _properties = properties.ToArray();
     }
 
     public override bool IsDynamic

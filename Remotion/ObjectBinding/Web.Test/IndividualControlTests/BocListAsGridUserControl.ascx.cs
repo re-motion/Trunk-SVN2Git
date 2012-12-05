@@ -126,25 +126,25 @@ public class BocListAsGridUserControl : BaseUserControl
 
     BocSimpleColumnDefinition birthdayColumnDefinition = new BocSimpleColumnDefinition();
     birthdayColumnDefinition.ColumnTitle = "Birthday";
-    birthdayColumnDefinition.SetPropertyPath (dateOfBirth.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[]{dateOfBirth}));
+    birthdayColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new []{dateOfBirth}));
 
     BocSimpleColumnDefinition dayofDeathColumnDefinition = new BocSimpleColumnDefinition();
     dayofDeathColumnDefinition.ColumnTitle = "Day of Death";
-    dayofDeathColumnDefinition.SetPropertyPath (dateOfDeath.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[] { dateOfDeath }));
+    dayofDeathColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new [] { dateOfDeath }));
     dayofDeathColumnDefinition.Width = Unit.Parse ("8em");
     dayofDeathColumnDefinition.EnforceWidth = true;
 
     BocSimpleColumnDefinition heightColumnDefinition = new BocSimpleColumnDefinition();
-    heightColumnDefinition.SetPropertyPath (height.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[] { height }));
+    heightColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new [] { height }));
 
     BocSimpleColumnDefinition genderColumnDefinition = new BocSimpleColumnDefinition();
-    genderColumnDefinition.SetPropertyPath (gender.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[] { gender }));
+    genderColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new [] { gender }));
 
     BocSimpleColumnDefinition cvColumnDefinition = new BocSimpleColumnDefinition();
-    cvColumnDefinition.SetPropertyPath (cv.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[] { cv }));
+    cvColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new [] { cv }));
 
     BocSimpleColumnDefinition incomeColumnDefinition = new BocSimpleColumnDefinition();
-    incomeColumnDefinition.SetPropertyPath (cv.BusinessObjectProvider.CreatePropertyPath (new IBusinessObjectProperty[] { income }));
+    incomeColumnDefinition.SetPropertyPath (BusinessObjectPropertyPath.CreateStatic (new [] { income }));
 
     BocListView datesView = new BocListView();
     datesView.Title = "Dates";

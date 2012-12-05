@@ -29,7 +29,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
   /// Base-implemention of <see cref="IBusinessObjectPropertyPath"/>. 
   /// See <see cref="StaticBusinessObjectPropertyPath"/> and <see cref="DynamicBusinessObjectPropertyPath"/> concrete implementations.
   /// </summary>
-  public abstract class BusinessObjectPropertyPathBase // : IBusinessObjectPropertyPath
+  public abstract class BusinessObjectPropertyPathBase : IBusinessObjectPropertyPath
   {
     protected BusinessObjectPropertyPathBase ()
     {

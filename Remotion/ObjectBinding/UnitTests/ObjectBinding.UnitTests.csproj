@@ -298,11 +298,6 @@
     <Compile Include="Core\TestDomain\SimpleValueType.cs" />
     <Compile Include="Core\BindableObject\UndefinedEnumValueAttributeTest.cs" />
     <Compile Include="Core\BusinessObjectDataSourceTest.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPathTests\BusinessObjectPropertyPathTestHelper.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPathTests\CascadedListPropertyPathTest.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPathTests\CascadedPropertyPathTest.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPathTests\SingleValuePropertyPathTest.cs" />
-    <Compile Include="Core\BusinessObjectPropertyPathTests\TestBusinessObjectPropertyPath.cs" />
     <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithList.cs" />
     <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithNotSupportedProperty.cs" />
     <Compile Include="Core\BusinessObjectStringFormatterServiceTests\GetPropertyString_WithStringProperty.cs" />

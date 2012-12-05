@@ -29,12 +29,17 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
   /// </summary>
   public sealed class DynamicBusinessObjectPropertyPath : BusinessObjectPropertyPathBase
   {
-    private readonly string _propertyPathIdentifier;
-
-    public DynamicBusinessObjectPropertyPath (string propertyPathIdentifier)
+    public static DynamicBusinessObjectPropertyPath Create (string propertyPathIdentifier)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("propertyPathIdentifier", propertyPathIdentifier);
-      
+
+      return new DynamicBusinessObjectPropertyPath (propertyPathIdentifier);
+    }
+
+    private readonly string _propertyPathIdentifier;
+
+    private DynamicBusinessObjectPropertyPath (string propertyPathIdentifier)
+    {
       _propertyPathIdentifier = propertyPathIdentifier;
     }
 

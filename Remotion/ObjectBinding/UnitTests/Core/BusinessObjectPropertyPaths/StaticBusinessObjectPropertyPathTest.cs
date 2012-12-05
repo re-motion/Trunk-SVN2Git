@@ -33,7 +33,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     {
       var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
       var typeOneClass = provider.GetBindableObjectClass (typeof (TypeOne));
-      var path = new StaticBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
+      var path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
 
       Assert.That (path.Identifier, Is.EqualTo ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue"));
     }
@@ -43,7 +43,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     {
       var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
       var typeOneClass = provider.GetBindableObjectClass (typeof (TypeOne));
-      var path = new StaticBusinessObjectPropertyPath ("TypeTwoValue", typeOneClass);
+      var path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue", typeOneClass);
 
       Assert.That (path.IsDynamic, Is.False);
     }
@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
                                    provider.GetBindableObjectClass (typeof (TypeThree)).GetPropertyDefinition ("TypeFourValue"),
                                    provider.GetBindableObjectClass (typeof (TypeFour)).GetPropertyDefinition ("IntValue"),
                                };
-      var path = new StaticBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
+      var path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
 
       Assert.That (() => path.Properties, Is.EqualTo (expectedProperties));
     }
@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     public void GetResult_ValidPropertyPath_EndsWithInt ()
     {
       var root = TypeOne.Create();
-      var path = new StaticBusinessObjectPropertyPath (
+      var path = StaticBusinessObjectPropertyPath.Parse (
           "TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue",
           ((IBusinessObject) root).BusinessObjectClass);
 
@@ -91,7 +91,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     public void GetResult_ValidPropertyPath_EndsWithReferenceProperty ()
     {
       var root = TypeOne.Create();
-      var path = new StaticBusinessObjectPropertyPath (
+      var path = StaticBusinessObjectPropertyPath.Parse (
           "TypeTwoValue.TypeThreeValue.TypeFourValue",
           ((IBusinessObject) root).BusinessObjectClass);
 
@@ -107,20 +107,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     }
 
     [Test]
-    public void Initialize_InvalidPropertyPath_PropertyNotFound_ThrowsParseException ()
+    public void Parse_InvalidPropertyPath_PropertyNotFound_ThrowsParseException ()
     {
       var root = TypeOne.Create();
       Assert.That (
-          () => new StaticBusinessObjectPropertyPath ("TypeTwoValue.TypeThreeValue.TypeFourValue1", ((IBusinessObject) root).BusinessObjectClass),
+          () => StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.TypeThreeValue.TypeFourValue1", ((IBusinessObject) root).BusinessObjectClass),
           Throws.TypeOf<ParseException>());
     }
 
     [Test]
-    public void Initialize_InvalidPropertyPath_NonLastPropertyNotReferenceProperty_ThrowsParseException ()
+    public void Parse_InvalidPropertyPath_NonLastPropertyNotReferenceProperty_ThrowsParseException ()
     {
       var root = TypeOne.Create();
       Assert.That (
-          () => new StaticBusinessObjectPropertyPath ("TypeTwoValue.IntValue.TypeFourValue", ((IBusinessObject) root).BusinessObjectClass),
+          () => StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.IntValue.TypeFourValue", ((IBusinessObject) root).BusinessObjectClass),
           Throws.TypeOf<ParseException>());
     }
   }
