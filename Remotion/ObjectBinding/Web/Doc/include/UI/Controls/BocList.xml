@@ -244,11 +244,7 @@
       </para><para>
         In order to prevent the rendering of the menu in a specific row, simply provide no menu items for this row
         in the <see cref="InitializeRowMenuItems"/> method.
-      </para><note type="caution">
-        Changing the business object of the row with a menu item that is currently executing an event can result in 
-        the change of the menu items for that row. To prevent side effects, do not modify the list while handling 
-        the event of a row menu item.
-      </note>
+      </para>
             
       <h4 class="dtH4">Sorting</h4>
       <para>
@@ -526,7 +522,7 @@
       The <see cref="IBusinessObject"/> of the row in which the command was clicked. 
     </param>
     <param name="listIndex"> 
-      The index of the row in which the command was clicked. 
+      The index of the row in which the command was clicked or -1 if the <paramref name="businessObject"/> is no longer part of the list.
     </param>
   </OnRowMenuItemEventCommandClick>
   <OnRowMenuItemWxeFunctionCommandClick>
@@ -536,8 +532,8 @@
     <param name="businessObject"> 
       The <see cref="IBusinessObject"/> of the row in which the command was clicked. 
     </param>
-    <param name="listIndex"> 
-      The index of the row in which the command was clicked. 
+    <param name="listIndex">
+      The index of the row in which the command was clicked or -1 if the <paramref name="businessObject"/> is no longer part of the list.
     </param>
   </OnRowMenuItemWxeFunctionCommandClick>
 </BocList>
