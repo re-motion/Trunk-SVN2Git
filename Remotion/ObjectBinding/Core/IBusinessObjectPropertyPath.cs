@@ -28,8 +28,7 @@ namespace Remotion.ObjectBinding
   ///   </para><para>
   ///     In its string representation, the property path uses the <see cref="char"/> returned by the 
   ///     <see cref="IBusinessObjectProvider.GetPropertyPathSeparator"/> method as the separator. The 
-  ///     <see cref="IBusinessObjectClass"/> for which the current property has been resolved is used to get the
-  ///     <see cref="IBusinessObjectProvider"/>.
+  ///     current property supplies the <see cref="IBusinessObjectProvider"/>.
   ///   </para>
   /// </remarks>
   public interface IBusinessObjectPropertyPath

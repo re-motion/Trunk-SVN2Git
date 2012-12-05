@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators;
 using Remotion.Utilities;
 
@@ -63,7 +64,42 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
     {
       ArgumentUtility.CheckNotNullOrEmpty ("properties", properties);
 
-      return new StaticBusinessObjectPropertyPath (properties, properties.Single().Identifier);
+      var identifierBuilder = new StringBuilder();
+      var currentClass = properties[0].ReflectedClass;
+      for (int index = 0; index < properties.Length; index++)
+      {
+        var property = properties[index];
+
+        if (!property.Equals (currentClass.GetPropertyDefinition (property.Identifier)))
+        {
+          throw new ArgumentException (
+              string.Format (
+                  "Property #{0} ('{1}') is not part of the previous business object class '{2}'. The property path must form a continuous chain.",
+                  index,
+                  property.Identifier,
+                  currentClass.Identifier));
+        }
+
+        identifierBuilder.Append (property.Identifier);
+
+        if (index < properties.Length - 1)
+        {
+          var referenceProperty = property as IBusinessObjectReferenceProperty;
+          if (referenceProperty == null)
+          {
+            throw new ArgumentException (
+                string.Format (
+                    "Property #{0} ('{1}') is not of type {2}. Every property except the last property must be a reference property.",
+                    index, property.Identifier, typeof (IBusinessObjectReferenceProperty).Name),
+                "properties");
+          }
+
+          identifierBuilder.Append (currentClass.BusinessObjectProvider.GetPropertyPathSeparator());
+          currentClass = referenceProperty.ReferenceClass;
+        }
+      }
+
+      return new StaticBusinessObjectPropertyPath (properties, identifierBuilder.ToString());
     }
 
     private StaticBusinessObjectPropertyPath (IBusinessObjectProperty[] properties, string propertyPathIdentifier)

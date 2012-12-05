@@ -123,5 +123,76 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
           () => StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.IntValue.TypeFourValue", ((IBusinessObject) root).BusinessObjectClass),
           Throws.TypeOf<ParseException>());
     }
+
+    [Test]
+    public void Create_FromProperties ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
+
+      var properties = new[]
+                       {
+                           provider.GetBindableObjectClass (typeof (TypeOne)).GetPropertyDefinition ("TypeTwoValue"),
+                           provider.GetBindableObjectClass (typeof (TypeTwo)).GetPropertyDefinition ("TypeThreeValue"),
+                           provider.GetBindableObjectClass (typeof (TypeThree)).GetPropertyDefinition ("TypeFourValue"),
+                           provider.GetBindableObjectClass (typeof (TypeFour)).GetPropertyDefinition ("IntValue"),
+                       };
+
+      var path = StaticBusinessObjectPropertyPath.Create (properties);
+
+      Assert.That (path.Properties, Is.EqualTo (properties));
+      Assert.That (path.Identifier, Is.EqualTo ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue"));
+    }
+
+    [Test]
+    public void Create_FromSingleProperty ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
+
+      var properties = new[] { provider.GetBindableObjectClass (typeof (TypeOne)).GetPropertyDefinition ("TypeTwoValue") };
+
+      var path = StaticBusinessObjectPropertyPath.Create (properties);
+
+      Assert.That (path.Properties, Is.EqualTo (properties));
+      Assert.That (path.Identifier, Is.EqualTo ("TypeTwoValue"));
+    }
+
+    [Test]
+    public void Create_ContainsNonReferenceProperty_ThrowsArgumentException ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
+
+      var properties = new[]
+                       {
+                           provider.GetBindableObjectClass (typeof (TypeOne)).GetPropertyDefinition ("TypeTwoValue"),
+                           provider.GetBindableObjectClass (typeof (TypeTwo)).GetPropertyDefinition ("IntValue"),
+                           provider.GetBindableObjectClass (typeof (TypeThree)).GetPropertyDefinition ("TypeFourValue"),
+                           provider.GetBindableObjectClass (typeof (TypeFour)).GetPropertyDefinition ("IntValue"),
+                       };
+
+      Assert.That (
+          () => StaticBusinessObjectPropertyPath.Create (properties),
+          Throws.ArgumentException.With.Message.StartsWith (
+              "Property #1 ('IntValue') is not of type IBusinessObjectReferenceProperty. Every property except the last property must be a reference property."));
+    }
+
+    [Test]
+    public void Create_NextPropertyNotPartOfClass_ThrowsArgumentException ()
+    {
+      var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
+
+      var properties = new[]
+                       {
+                           provider.GetBindableObjectClass (typeof (TypeOne)).GetPropertyDefinition ("TypeTwoValue"),
+                           provider.GetBindableObjectClass (typeof (TypeThree)).GetPropertyDefinition ("TypeFourValue"),
+                           provider.GetBindableObjectClass (typeof (TypeFour)).GetPropertyDefinition ("IntValue"),
+                       };
+
+      Assert.That (
+          () => StaticBusinessObjectPropertyPath.Create (properties),
+          Throws.ArgumentException.With.Message.StartsWith (
+              "Property #1 ('TypeFourValue') is not part of the previous business object class "
+              + "'Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.TestDomain.TypeTwo, Remotion.ObjectBinding.UnitTests'."
+              + " The property path must form a continuous chain."));
+    }
   }
 }
