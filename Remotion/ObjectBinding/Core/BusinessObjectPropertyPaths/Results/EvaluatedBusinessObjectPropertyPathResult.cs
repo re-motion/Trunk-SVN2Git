@@ -20,6 +20,13 @@ using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
+  /// <summary>
+  /// Implements <see cref="IBusinessObjectPropertyPathResult"/> for a successfully evaluated property path.
+  /// </summary>
+  /// <remarks>
+  /// <see cref="GetValue"/> and <see cref="GetString"/> may still not return the actual value if the <see cref="ResultProperty"/> is not accessible
+  /// for the <see cref="ResultObject"/>.
+  /// </remarks>
   public class EvaluatedBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {
     private readonly IBusinessObject _resultObject;

@@ -19,6 +19,10 @@ using System;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
+  /// <summary>
+  /// Implements <see cref="IBusinessObjectPropertyPathResult"/> for a property path where the <see cref="ResultObject"/> was not be accessible.
+  /// </summary>
+  /// <remarks><see cref="ResultProperty"/> and <see cref="ResultObject"/> will always be <see langword="null" />.</remarks>
   public class NotAccessibleBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
   {
     private readonly IBusinessObjectProvider _businessObjectProvider;

@@ -19,11 +19,37 @@ using System;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
+  /// <summary>
+  /// Represents the result of an evaluated <see cref="IBusinessObjectPropertyPath"/>.
+  /// </summary>
   public interface IBusinessObjectPropertyPathResult : INullObject
   {
+    /// <summary>
+    /// Gets the value of the property path.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="Object"/> returned for the <see cref="ResultProperty"/> of the <see cref="ResultObject"/>
+    /// or <see langword="null" /> if there is no value.
+    /// </returns>
     object GetValue ();
+
+    /// <summary>
+    /// Gets the string-representation of value of the property path.
+    /// </summary>
+    /// <returns>
+    /// The <see cref="String"/>-representation of the value returned for the <see cref="ResultProperty"/> of the <see cref="ResultObject"/> 
+    /// or an empty string if there is no value.
+    /// </returns>
     string GetString (string format);
+
+    /// <summary>
+    /// Gets the last property of the property path, i.e. the property used to access the value.
+    /// </summary>
     IBusinessObjectProperty ResultProperty { get; }
+    
+    /// <summary>
+    /// Gets the <see cref="IBusinessObject"/> that holds the value of the property path.
+    /// </summary>
     IBusinessObject ResultObject { get; }
   }
 }
