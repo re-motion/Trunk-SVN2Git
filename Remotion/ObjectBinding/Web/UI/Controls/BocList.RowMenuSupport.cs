@@ -24,6 +24,7 @@ using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
+using Remotion.FunctionalProgramming;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -119,7 +120,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     private void RowMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
     {
-      var rowMenuTuple = _rowMenus.Single (t => t.Item3 == (DropDownMenu) sender);
+      var rowMenuTuple = _rowMenus.Single (
+          t => t.Item3 == (DropDownMenu) sender,
+          () =>
+          new InvalidOperationException (
+              "The BocList Value was set by the menu item click-handler of the row-menu."
+              + "This is not supported because it could result in dropped event notifications."));
 
       IBusinessObject businessObject = rowMenuTuple.Item1;
       int listIndex = rowMenuTuple.Item2;
