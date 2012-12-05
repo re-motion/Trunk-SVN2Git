@@ -66,7 +66,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering
         return;
       }
 
-      DropDownMenu dropDownMenu = renderingContext.Control.RowMenus[rowIndex].Item3;
+      var dropDownMenu = renderingContext.Control.RowMenus[rowIndex];
 
       if (renderingContext.Control.HasClientScript)
         renderingContext.Writer.AddAttribute (HtmlTextWriterAttribute.Onclick, c_onCommandClickScript);

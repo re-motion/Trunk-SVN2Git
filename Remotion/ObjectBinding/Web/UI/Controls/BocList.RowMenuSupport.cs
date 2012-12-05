@@ -24,7 +24,6 @@ using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine;
 using Remotion.Web.UI;
 using Remotion.Web.UI.Controls;
-using Remotion.FunctionalProgramming;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -32,7 +31,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   {
     private bool _rowMenusInitialized;
 
-    private readonly List<BocListRowMenuTuple> _rowMenus = new List<BocListRowMenuTuple>();
+    private BocListRowMenu[] _rowMenus = new BocListRowMenu[0];
 
     private readonly PlaceHolder _rowMenusPlaceHolder = new PlaceHolder();
 
@@ -43,7 +42,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     private void ResetRowMenus ()
     {
-      _rowMenus.Clear();
+      _rowMenus = new BocListRowMenu[0];
       _rowMenusPlaceHolder.Controls.Clear();
       _rowMenusInitialized = false;
     }
@@ -63,22 +62,25 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         return;
       EnsureChildControls();
 
-      Assertion.IsTrue (_rowMenus.Count == 0);
+      Assertion.IsTrue (_rowMenus.Length == 0);
       Assertion.IsTrue (_rowMenusPlaceHolder.Controls.Count == 0);
 
+      var rowMenus = new List<BocListRowMenu>();
       foreach (var row in EnsureBocListRowsForCurrentPageGot())
       {
-        DropDownMenu dropDownMenu = new DropDownMenu (this);
-        dropDownMenu.ID = GetRowMenuID (row.ValueRow);
-        dropDownMenu.EventCommandClick += RowMenu_EventCommandClick;
-        dropDownMenu.WxeFunctionCommandClick += RowMenu_WxeFunctionCommandClick;
+        var rowMenu = new BocListRowMenu (this, row.ValueRow);
+        rowMenu.ID = GetRowMenuID (row.ValueRow);
+        rowMenu.EventCommandClick += (sender, e) => HandleRowMenuItemClick (sender, e, OnRowMenuItemEventCommandClick);
+        rowMenu.WxeFunctionCommandClick += (sender, e) => HandleRowMenuItemClick (sender, e, OnRowMenuItemWxeFunctionCommandClick);
 
-        _rowMenusPlaceHolder.Controls.Add (dropDownMenu);
+        _rowMenusPlaceHolder.Controls.Add (rowMenu);
         WebMenuItem[] menuItems = InitializeRowMenuItems (row.ValueRow.BusinessObject, row.ValueRow.Index);
-        dropDownMenu.MenuItems.AddRange (menuItems);
+        rowMenu.MenuItems.AddRange (menuItems);
 
-        _rowMenus.Add (new BocListRowMenuTuple (row.ValueRow.BusinessObject, row.ValueRow.Index, dropDownMenu));
+        rowMenus.Add (rowMenu);
       }
+
+      _rowMenus = rowMenus.ToArray();
     }
 
     /// <summary> Creates the menu items for a data row. </summary>
@@ -95,13 +97,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> PreRenders the menu items for all row menus. </summary>
     private void PreRenderRowMenusItems ()
     {
-      foreach (var rowMenuTuple in _rowMenus)
+      foreach (var rowMenu in _rowMenus)
       {
-        IBusinessObject businessObject = rowMenuTuple.Item1;
-        int listIndex = rowMenuTuple.Item2;
-        DropDownMenu dropDownMenu = rowMenuTuple.Item3;
-        PreRenderRowMenuItems (dropDownMenu.MenuItems, businessObject, listIndex);
-        dropDownMenu.Visible = dropDownMenu.MenuItems.Cast<WebMenuItem>().Any (item => item.EvaluateVisible());
+        PreRenderRowMenuItems (rowMenu.MenuItems, rowMenu.Row.BusinessObject, rowMenu.Row.Index);
+        rowMenu.Visible = rowMenu.MenuItems.Cast<WebMenuItem>().Any (item => item.EvaluateVisible());
       }
     }
 
@@ -115,21 +114,23 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
     }
 
-    /// <summary> 
-    ///   Event handler for the <see cref="MenuBase.EventCommandClick"/> of the <b>RowMenu</b>.
-    /// </summary>
-    private void RowMenu_EventCommandClick (object sender, WebMenuItemClickEventArgs e)
+    private void HandleRowMenuItemClick (object sender, WebMenuItemClickEventArgs e, Action<WebMenuItem, IBusinessObject, int> handler)
     {
-      var rowMenuTuple = _rowMenus.Single (
-          t => t.Item3 == (DropDownMenu) sender,
-          () =>
-          new InvalidOperationException (
-              "The BocList Value was set by the menu item click-handler of the row-menu."
-              + "This is not supported because it could result in dropped event notifications."));
+      var rowMenu = ArgumentUtility.CheckNotNullAndType<BocListRowMenu> ("sender", sender);
 
-      IBusinessObject businessObject = rowMenuTuple.Item1;
-      int listIndex = rowMenuTuple.Item2;
-      OnRowMenuItemEventCommandClick (e.Item, businessObject, listIndex);
+      int listIndex;
+      if (!HasValue)
+        listIndex = -1;
+      else if (rowMenu.Row.Index >= Value.Count)
+        listIndex = -1;
+      else if (Value[rowMenu.Row.Index].Equals (rowMenu.Row.BusinessObject))
+        listIndex = rowMenu.Row.Index;
+      else
+        listIndex = Value.IndexOf (rowMenu.Row.BusinessObject);
+
+      var businessObject = rowMenu.Row.BusinessObject;
+
+      handler (e.Item, businessObject, listIndex);
     }
 
     /// <summary> Handles the click on an Event command of a row menu. </summary>
@@ -143,18 +144,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         else
           menuItem.Command.OnClick();
       }
-    }
-
-    /// <summary> 
-    ///   Event handler for the <see cref="MenuBase.WxeFunctionCommandClick"/> of the <b>RowMenu</b>.
-    /// </summary>
-    private void RowMenu_WxeFunctionCommandClick (object sender, WebMenuItemClickEventArgs e)
-    {
-      var rowMenuTuple = _rowMenus.Single (t => t.Item3 == (DropDownMenu) sender);
-
-      IBusinessObject businessObject = rowMenuTuple.Item1;
-      int listIndex = rowMenuTuple.Item2;
-      OnRowMenuItemWxeFunctionCommandClick (e.Item, businessObject, listIndex);
     }
 
     /// <summary> Handles the click to a WXE function command or a row menu. </summary>

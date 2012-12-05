@@ -1,4 +1,4 @@
-// This file is part of the re-motion Core Framework (www.re-motion.org)
+﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,20 +14,26 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
-using Remotion.Collections;
+
 using Remotion.Utilities;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 {
-  public class BocListRowMenuTuple : Tuple<IBusinessObject, int, DropDownMenu>
+  public class BocListRowMenu : DropDownMenu
   {
-    public BocListRowMenuTuple (IBusinessObject businessObject, int originalRowIndex, DropDownMenu control)
-        : base (ArgumentUtility.CheckNotNull ("businessObject", businessObject),
-                originalRowIndex,
-                ArgumentUtility.CheckNotNull ("control", control))
+    private readonly BocListRow _row;
+
+    public BocListRowMenu (IBocList owner, BocListRow row)
+      :base (owner)
     {
+      ArgumentUtility.CheckNotNull ("row", row);
+      _row = row;
+    }
+
+    public BocListRow Row
+    {
+      get { return _row; }
     }
   }
 }

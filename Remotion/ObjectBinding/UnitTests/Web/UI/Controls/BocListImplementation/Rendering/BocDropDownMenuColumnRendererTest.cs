@@ -19,7 +19,6 @@ using System.Collections.ObjectModel;
 using System.Web.UI;
 using NUnit.Framework;
 using Remotion.ObjectBinding.Web.UI.Controls;
-using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
 using Remotion.Web;
 using Remotion.Web.UI.Controls;
@@ -109,12 +108,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
     private void InitializeRowMenus ()
     {
-      var rowMenus = new ReadOnlyCollection<BocListRowMenuTuple> (
-          new[]
-          {
-              new BocListRowMenuTuple (BusinessObject, 0, Menu),
-              new BocListRowMenuTuple (BusinessObject, 1, Menu)
-          });
+      var rowMenus = new ReadOnlyCollection<DropDownMenu> (new[] { Menu, Menu });
       List.Stub (mock => mock.RowMenus).Return (rowMenus);
     }
   }

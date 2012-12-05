@@ -23,6 +23,7 @@ using Remotion.Collections;
 using Remotion.Globalization;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableRowSupport;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
+using Remotion.Web.UI.Controls;
 using Remotion.Web.UI.Controls.DropDownMenuImplementation;
 using Remotion.Web.UI.Controls.ListMenuImplementation;
 
@@ -117,7 +118,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation
 
     IEditModeController EditModeController { get; }
     ReadOnlyCollection<IValidator> Validators { get; }
-    ReadOnlyCollection<BocListRowMenuTuple> RowMenus { get; }
+    ReadOnlyCollection<DropDownMenu> RowMenus { get; }
     ReadOnlyDictionary<BocCustomColumnDefinition, BocListCustomColumnTuple[]> CustomColumns { get; }
     bool HasListMenu { get; }
     bool IsClientSideSortingEnabled { get; }

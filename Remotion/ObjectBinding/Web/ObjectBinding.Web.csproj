@@ -186,6 +186,7 @@
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\BocEnumValueRenderingContext.cs" />
     <Compile Include="UI\Controls\BocEnumValueImplementation\Rendering\IBocEnumValueRenderer.cs" />
     <Compile Include="UI\Controls\BocList.RowMenuSupport.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\BocListRowMenu.cs" />
     <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\IEditModeHost.cs" />
     <Compile Include="UI\Controls\BocListImplementation\IndexBasedRowIDProvider.cs" />
     <Compile Include="UI\Controls\BocListImplementation\IRowIDProvider.cs" />
@@ -352,7 +353,6 @@
     <Compile Include="UI\Controls\IDataEditControl.cs" />
     <Compile Include="UI\Controls\BocBooleanValueImplementation\BocBooleanValueResourceSet.cs" />
     <Compile Include="UI\Controls\BocDateTimeValueImplementation\DateTimeFormatter.cs" />
-    <Compile Include="UI\Controls\BocListImplementation\BocListRowMenuTuple.cs" />
     <Compile Include="UI\Controls\BocListImplementation\EditableRowSupport\EditableRow.cs">
       <SubType>Code</SubType>
     </Compile>

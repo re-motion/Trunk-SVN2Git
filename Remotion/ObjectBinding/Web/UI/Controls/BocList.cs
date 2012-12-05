@@ -3457,9 +3457,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       get { return _validators.AsReadOnly(); }
     }
 
-    ReadOnlyCollection<BocListRowMenuTuple> IBocList.RowMenus
+    ReadOnlyCollection<DropDownMenu> IBocList.RowMenus
     {
-      get { return new ReadOnlyCollection<BocListRowMenuTuple> (_rowMenus); }
+      get { return new ReadOnlyCollection<DropDownMenu> (_rowMenus.ToArray()); }
     }
 
     ReadOnlyDictionary<BocCustomColumnDefinition, BocListCustomColumnTuple[]> IBocList.CustomColumns
