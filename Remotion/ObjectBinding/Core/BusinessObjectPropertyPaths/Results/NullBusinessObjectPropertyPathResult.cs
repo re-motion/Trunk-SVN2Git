@@ -21,7 +21,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
 {
   /// <summary>
   /// Implements <see cref="IBusinessObjectPropertyPathResult"/> for a property path that could not be evaluated up to the <see cref="ResultObject"/>,
-  /// e.g. contained a <see langword="null" />-value within it's path, a missing property, etc.
+  /// e.g. contained a <see langword="null" />-value within its path, a missing property, etc.
   /// </summary>
   /// <remarks><see cref="ResultProperty"/> and <see cref="ResultObject"/> will always be <see langword="null" />.</remarks>
   public class NullBusinessObjectPropertyPathResult : IBusinessObjectPropertyPathResult
