@@ -19,94 +19,108 @@ using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 using Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests;
+using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Results
 {
   [TestFixture]
   public class EvaluatedBusinessObjectPropertyPathResultTest
   {
-    private BusinessObjectPropertyPathTestHelper _testHelper;
+    private MockRepository _mockRepository;
+
+    private IBusinessObjectProperty _propertyMock;
+
+    private IBusinessObjectWithIdentity _businessObjectWithIdentityMock;
+
     private IBusinessObjectPropertyPathResult _result;
+    private IBusinessObjectClassWithIdentity _businessObjectClassWithIdentityStub;
 
     [SetUp]
     public void SetUp ()
     {
-      _testHelper = new BusinessObjectPropertyPathTestHelper();
-      _result = new EvaluatedBusinessObjectPropertyPathResult (_testHelper.BusinessObjectWithIdentity, _testHelper.Property);
+      _mockRepository = new MockRepository();
+
+      var businessObjectProviderStub = MockRepository.GenerateStub<IBusinessObjectProvider>();
+      businessObjectProviderStub.Stub (_=>_.GetNotAccessiblePropertyStringPlaceHolder ()).Return ("X");
+
+      _businessObjectClassWithIdentityStub = MockRepository.GenerateStub<IBusinessObjectClassWithIdentity>();
+      _businessObjectClassWithIdentityStub.Stub (_=>_.BusinessObjectProvider).Return (businessObjectProviderStub);
+
+      _businessObjectWithIdentityMock = _mockRepository.StrictMock<IBusinessObjectWithIdentity>();
+      _businessObjectWithIdentityMock.Stub (_=>_.BusinessObjectClass).Return (_businessObjectClassWithIdentityStub);
+
+      _propertyMock = _mockRepository.StrictMock<IBusinessObjectProperty>();
+      _propertyMock.Stub (_=>_.Identifier).Return ("Property");
+
+      _result = new EvaluatedBusinessObjectPropertyPathResult (_businessObjectWithIdentityMock, _propertyMock);
     }
 
     [Test]
     public void GetValue ()
     {
-      using (_testHelper.Ordered())
+      using (_mockRepository.Ordered())
       {
         ExpectOnceOnPropertyIsAccessible (true);
         ExpectOnceOnBusinessObjectWithIdentityGetProperty (100);
       }
-      _testHelper.ReplayAll();
+      _mockRepository.ReplayAll();
 
       object actual = _result.GetValue();
 
-      _testHelper.VerifyAll();
+      _mockRepository.VerifyAll();
       Assert.That (actual, Is.EqualTo (100));
     }
 
     [Test]
     public void GetValue_WithAccessDenied ()
     {
-      using (_testHelper.Ordered())
-      {
-        ExpectOnceOnPropertyIsAccessible (false);
-      }
-      _testHelper.ReplayAll();
+      ExpectOnceOnPropertyIsAccessible (false);
+      _mockRepository.ReplayAll();
 
       object actualObject = _result.GetValue();
 
-      _testHelper.VerifyAll();
+      _mockRepository.VerifyAll();
       Assert.That (actualObject, Is.Null);
     }
 
     [Test]
     public void GetPropertyString ()
     {
-      using (_testHelper.Ordered())
+      using (_mockRepository.Ordered())
       {
         ExpectOnceOnPropertyIsAccessible (true);
         ExpectOnceOnBusinessObjectWithIdentityGetPropertyString ("value", "format");
       }
-      _testHelper.ReplayAll();
+      _mockRepository.ReplayAll();
 
       string actual = _result.GetString ("format");
 
-      _testHelper.VerifyAll();
+      _mockRepository.VerifyAll();
       Assert.That (actual, Is.EqualTo ("value"));
     }
 
     [Test]
     public void GetString_WithAccessDenied ()
     {
-      using (_testHelper.Ordered())
-      {
-        ExpectOnceOnPropertyIsAccessible (false);
-      }
-      _testHelper.ReplayAll();
+      ExpectOnceOnPropertyIsAccessible (false);
+      _mockRepository.ReplayAll();
 
       string actual = _result.GetString (string.Empty);
 
-      _testHelper.VerifyAll();
-      Assert.That (actual, Is.EqualTo (BusinessObjectPropertyPathTestHelper.NotAccessible));
+      _mockRepository.VerifyAll();
+      Assert.That (actual, Is.EqualTo ("X"));
     }
 
     [Test]
     public void GeResultProperty ()
     {
-      Assert.That (_result.ResultProperty, Is.SameAs (_testHelper.Property));
+      Assert.That (_result.ResultProperty, Is.SameAs (_propertyMock));
     }
 
     [Test]
     public void GeResultObject ()
     {
-      Assert.That (_result.ResultObject, Is.SameAs (_testHelper.BusinessObjectWithIdentity));
+      Assert.That (_result.ResultObject, Is.SameAs (_businessObjectWithIdentityMock));
     }
 
     [Test]
@@ -117,19 +131,20 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Resu
 
     private void ExpectOnceOnPropertyIsAccessible (bool returnValue)
     {
-      _testHelper.ExpectOnceOnIsAccessible (_testHelper.BusinessObjectClassWithIdentity,
-          _testHelper.BusinessObjectWithIdentity,
-          _testHelper.Property, returnValue);
+      _propertyMock.Expect (_ => _.IsAccessible (_businessObjectClassWithIdentityStub, _businessObjectWithIdentityMock))
+                   .Return (returnValue);
     }
 
     private void ExpectOnceOnBusinessObjectWithIdentityGetProperty (int returnValue)
     {
-      _testHelper.ExpectOnceOnGetProperty (_testHelper.BusinessObjectWithIdentity, _testHelper.Property, returnValue);
+      _businessObjectWithIdentityMock.Expect (_ => _.GetProperty (_propertyMock))
+                                     .Return (returnValue);
     }
 
     private void ExpectOnceOnBusinessObjectWithIdentityGetPropertyString (string returnValue, string format)
     {
-      _testHelper.ExpectOnceOnGetPropertyString (_testHelper.BusinessObjectWithIdentity, _testHelper.Property, format, returnValue);
+      _businessObjectWithIdentityMock.Expect (_ => _.GetPropertyString (_propertyMock, format))
+                                     .Return (returnValue);
     }
   }
 }
