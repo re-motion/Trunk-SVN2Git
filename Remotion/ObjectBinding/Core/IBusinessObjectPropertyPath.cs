@@ -39,8 +39,14 @@ namespace Remotion.ObjectBinding
     /// <summary> Gets the list of properties in this path. </summary>
     ReadOnlyCollection<IBusinessObjectProperty> Properties { get; }
 
+    /// <summary> Get a flag that indicates whether the property path will be resolved anew for each call to <see cref="GetResult"/>. </summary>
     bool IsDynamic { get; }
 
+    /// <summary>Evaluates the property path for the supplied <paramref name="root"/> object.</summary>
+    /// <param name="root">The starting point for evaluating the property path. Must not be <see langword="null" />.</param>
+    /// <param name="unreachableValueBehavior">Defines the behavior when the property path cannot be evaluated due to a <see langword="null" /> value.</param>
+    /// <param name="listValueBehavior">Defines the behavior when the property path has to resolve a list-property. </param>
+    /// <returns>The result object that can be used to get the actual value of the evaluated property path. Is never <see langword="null" />. </returns>
     IBusinessObjectPropertyPathResult GetResult (
         IBusinessObject root,
         BusinessObjectPropertyPath.UnreachableValueBehavior unreachableValueBehavior,

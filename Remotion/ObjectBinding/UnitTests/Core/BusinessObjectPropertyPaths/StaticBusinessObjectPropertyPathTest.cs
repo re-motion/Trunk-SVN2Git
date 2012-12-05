@@ -33,17 +33,17 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     {
       var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
       var typeOneClass = provider.GetBindableObjectClass (typeof (TypeOne));
-      var path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
+      IBusinessObjectPropertyPath path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
 
       Assert.That (path.Identifier, Is.EqualTo ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue"));
     }
 
     [Test]
-    public void GetIsDynamic_ReturnsTrue ()
+    public void GetIsDynamic_ReturnsFalse ()
     {
       var provider = BindableObjectProvider.GetProviderForBindableObjectType (typeof (TypeOne));
       var typeOneClass = provider.GetBindableObjectClass (typeof (TypeOne));
-      var path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue", typeOneClass);
+      IBusinessObjectPropertyPath path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue", typeOneClass);
 
       Assert.That (path.IsDynamic, Is.False);
     }
@@ -61,7 +61,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
                                    provider.GetBindableObjectClass (typeof (TypeThree)).GetPropertyDefinition ("TypeFourValue"),
                                    provider.GetBindableObjectClass (typeof (TypeFour)).GetPropertyDefinition ("IntValue"),
                                };
-      var path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
+      IBusinessObjectPropertyPath path = StaticBusinessObjectPropertyPath.Parse ("TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue", typeOneClass);
 
       Assert.That (() => path.Properties, Is.EqualTo (expectedProperties));
     }
@@ -70,7 +70,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths
     public void GetResult_ValidPropertyPath_EndsWithInt ()
     {
       var root = TypeOne.Create();
-      var path = StaticBusinessObjectPropertyPath.Parse (
+      IBusinessObjectPropertyPath path = StaticBusinessObjectPropertyPath.Parse (
           "TypeTwoValue.TypeThreeValue.TypeFourValue.IntValue",
           ((IBusinessObject) root).BusinessObjectClass);
 

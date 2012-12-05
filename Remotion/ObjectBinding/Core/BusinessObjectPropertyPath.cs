@@ -14,12 +14,17 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
+using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding
 {
+  /// <summary>
+  /// Facade for creating and working with business object property paths.
+  /// </summary>
   public static class BusinessObjectPropertyPath
   {
     #region Obsolete
@@ -105,7 +110,8 @@ namespace Remotion.ObjectBinding
     ///   Thrown if any but the last property in the path is <see langword="null"/>, or is not a single-value reference property. 
     /// </exception>
     [Obsolete ("Use GetResult(...).GetString(...) to retrieve the property path's string value. (1.13.178.0)")]
-    public static IBusinessObject GetBusinessObject (this IBusinessObjectPropertyPath propertyPath, IBusinessObject obj, bool throwExceptionIfNotReachable, bool getFirstListEntry)
+    public static IBusinessObject GetBusinessObject (
+        this IBusinessObjectPropertyPath propertyPath, IBusinessObject obj, bool throwExceptionIfNotReachable, bool getFirstListEntry)
     {
       ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
       var result = propertyPath.GetResult (
@@ -123,21 +129,41 @@ namespace Remotion.ObjectBinding
     public static IBusinessObjectPropertyPath CreatePropertyPath (this IBusinessObjectProvider provider, IBusinessObjectProperty[] properties)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("properties", properties);
-      
+
       return StaticBusinessObjectPropertyPath.Create (properties);
     }
 
     #endregion
 
+    /// <summary>
+    /// Defines the behavior when the property path has to resolve a list-property.
+    /// </summary>
     public enum ListValueBehavior
     {
+      /// <summary>
+      /// Evaluates the property path by traversing the first item of a list-property.
+      /// </summary>
       GetResultForFirstListEntry,
+
+      /// <summary>
+      /// Throws an exception when reaching a list-property.
+      /// </summary>
       FailForListProperties
     }
 
+    /// <summary>
+    /// Defines the behavior when the property path cannot be evaluated due to a <see langword="null" /> value.
+    /// </summary>
     public enum UnreachableValueBehavior
     {
+      /// <summary>
+      /// Returns from the evaluation of the property path proving a corresponding null-object for the <see cref="IBusinessObjectPropertyPathResult"/>.
+      /// </summary>
       ReturnNullForUnreachableValue,
+
+      /// <summary>
+      /// Throws an exception when the object graph is broken.
+      /// </summary>
       FailForUnreachableValue
     }
 
@@ -168,7 +194,7 @@ namespace Remotion.ObjectBinding
       }
     }
 
-    /// <summary>  </summary>
+    /// <summary> Creates a static property path from the <paramref name="objectClass"/> and the <paramref name="propertyPathIdentifier"/>. </summary>
     /// <param name="objectClass"> The <see cref="IBusinessObjectClass"/> containing the first property in the path. Must no be <see langword="null"/>. </param>
     /// <param name="propertyPathIdentifier"> A string with a valid property path syntax. Must no be <see langword="null"/> or empty. </param>
     /// <returns> 
@@ -180,7 +206,7 @@ namespace Remotion.ObjectBinding
       return StaticBusinessObjectPropertyPath.Parse (propertyPathIdentifier, objectClass);
     }
 
-    /// <summary> . </summary>
+    /// <summary> Creates a static property path from the list of <paramref name="properties"/>. </summary>
     /// <param name="properties"> An array of <see cref="IBusinessObjectProperty"/> instances. </param>
     /// <returns>
     /// An instance of type <see cref="IBusinessObjectPropertyPath"/> where <see cref="IBusinessObjectPropertyPath.IsDynamic"/>
@@ -191,7 +217,7 @@ namespace Remotion.ObjectBinding
       return StaticBusinessObjectPropertyPath.Create (properties);
     }
 
-    /// <summary>  </summary>
+    /// <summary> Creates a dynamic property path based on the <paramref name="propertyPathIdentifier"/>.  </summary>
     /// <param name="propertyPathIdentifier"> A string with a valid property path syntax. Must no be <see langword="null"/> or empty. </param>
     /// <returns>
     /// An instance of type <see cref="IBusinessObjectPropertyPath"/> where <see cref="IBusinessObjectPropertyPath.IsDynamic"/>
@@ -199,7 +225,7 @@ namespace Remotion.ObjectBinding
     /// </returns>
     public static IBusinessObjectPropertyPath CreateDynamic (string propertyPathIdentifier)
     {
-      return DynamicBusinessObjectPropertyPath.Create(propertyPathIdentifier);
+      return DynamicBusinessObjectPropertyPath.Create (propertyPathIdentifier);
     }
   }
 }
