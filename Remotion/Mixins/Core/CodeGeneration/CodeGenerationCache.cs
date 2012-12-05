@@ -120,20 +120,6 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
-    private Type GenerateConcreteType (ClassContext classContext)
-    {
-      s_log.InfoFormat ("Generating concrete type for {0}.", classContext);
-
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete type: {elapsed}."))
-      using (new CodeGenerationTimer ())
-      {
-        var targetClassDefinition = TargetClassDefinitionFactory.CreateAndValidate (classContext);
-        var generator = _moduleManager.CreateTypeGenerator (targetClassDefinition, _nameProvider, _concreteMixinTypeProvider);
-
-        return generator.GetBuiltType();
-      }
-    }
-
     public IConstructorLookupInfo GetOrCreateConstructorLookupInfo (ClassContext classContext, bool allowNonPublic)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
@@ -174,15 +160,6 @@ namespace Remotion.Mixins.CodeGeneration
       }
     }
 
-    private ConcreteMixinType GenerateConcreteMixinType (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
-    {
-      s_log.InfoFormat ("Generating concrete mixin type for {0}.", concreteMixinTypeIdentifier.MixinType);
-      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {elapsed}."))
-      {
-        return _moduleManager.CreateMixinTypeGenerator (concreteMixinTypeIdentifier, _mixinNameProvider).GetBuiltType ();
-      }
-    }
-
     public void ImportTypes (IEnumerable<Type> types, IConcreteTypeMetadataImporter metadataImporter)
     {
       ArgumentUtility.CheckNotNull ("types", types);
@@ -198,6 +175,29 @@ namespace Remotion.Mixins.CodeGeneration
             ImportConcreteMixinType (metadataImporter, type);
           }
         }
+      }
+    }
+
+    private Type GenerateConcreteType (ClassContext classContext)
+    {
+      s_log.InfoFormat ("Generating concrete type for {0}.", classContext);
+
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete type: {elapsed}."))
+      using (new CodeGenerationTimer ())
+      {
+        var targetClassDefinition = TargetClassDefinitionFactory.CreateAndValidate (classContext);
+        var generator = _moduleManager.CreateTypeGenerator (targetClassDefinition, _nameProvider, _concreteMixinTypeProvider);
+
+        return generator.GetBuiltType();
+      }
+    }
+
+    private ConcreteMixinType GenerateConcreteMixinType (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
+    {
+      s_log.InfoFormat ("Generating concrete mixin type for {0}.", concreteMixinTypeIdentifier.MixinType);
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to generate concrete mixin type: {elapsed}."))
+      {
+        return _moduleManager.CreateMixinTypeGenerator (concreteMixinTypeIdentifier, _mixinNameProvider).GetBuiltType ();
       }
     }
 
