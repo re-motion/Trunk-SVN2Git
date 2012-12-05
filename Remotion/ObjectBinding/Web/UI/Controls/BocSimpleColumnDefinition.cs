@@ -64,11 +64,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
 
-      IBusinessObjectPropertyPath propertyPath;
-      if (!_propertyPathBinding.IsDynamic)
-        propertyPath = _propertyPathBinding.GetPropertyPath ();
-      else
-        propertyPath = _propertyPathBinding.GetDynamicPropertyPath (obj.BusinessObjectClass);
+      var propertyPath = _propertyPathBinding.GetPropertyPath ();
 
       var result = propertyPath.GetResult (
           obj,
@@ -112,11 +108,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public IBusinessObjectPropertyPath GetPropertyPath ()
     {
       return _propertyPathBinding.GetPropertyPath ();
-    }
-
-    public IBusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
-    {
-      return _propertyPathBinding.GetDynamicPropertyPath (businessObjectClass);
     }
 
     public void SetPropertyPath (IBusinessObjectPropertyPath propertyPath)
@@ -227,17 +218,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
         if (!isTitleEmpty)
           return ColumnTitle;
 
-        if (_propertyPathBinding.IsDynamic)
-          return string.Empty;
-
         IBusinessObjectPropertyPath propertyPath;
         try
         {
           propertyPath = _propertyPathBinding.GetPropertyPath();
         }
-        catch (ArgumentException)
+        catch (ParseException)
         {
-          // TODO: find a better solution than an ArgumentException
           // gracefully recover in column header
           return string.Empty;
         }

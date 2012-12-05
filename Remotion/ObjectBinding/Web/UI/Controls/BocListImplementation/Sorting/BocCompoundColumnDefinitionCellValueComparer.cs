@@ -39,22 +39,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       for (int idxBindings = 0; idxBindings < _column.PropertyPathBindings.Count; idxBindings++)
       {
         PropertyPathBinding propertyPathBinding = _column.PropertyPathBindings[idxBindings];
-        IBusinessObjectPropertyPath propertyPathRowA;
-        IBusinessObjectPropertyPath propertyPathRowB;
 
-        if (propertyPathBinding.IsDynamic)
-        {
-          // TODO: UnitTests
-          // TODO: ComparePropertyPathValues also caches based on property path.
-          //       This does not work with dynamic property path and causes a temporary memory leak until the current sort operation has completed.
-          propertyPathRowA = propertyPathBinding.GetDynamicPropertyPath (rowA.BusinessObject.BusinessObjectClass);
-          propertyPathRowB = propertyPathBinding.GetDynamicPropertyPath (rowB.BusinessObject.BusinessObjectClass);
-        }
-        else
-        {
-          propertyPathRowA = propertyPathBinding.GetPropertyPath();
-          propertyPathRowB = propertyPathBinding.GetPropertyPath();
-        }
+        var propertyPathRowA = propertyPathBinding.GetPropertyPath();
+        var propertyPathRowB = propertyPathBinding.GetPropertyPath();
 
         var compareResult = ComparePropertyPathValues (propertyPathRowA, rowA, propertyPathRowB, rowB);
 

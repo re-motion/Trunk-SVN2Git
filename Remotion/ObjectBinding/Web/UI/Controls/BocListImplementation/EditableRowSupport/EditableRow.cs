@@ -150,13 +150,18 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.EditableR
     {
       if (column == null)
         return false;
+
       if (column.IsReadOnly)
         return false;
-      if (column.IsDynamic)
+
+      var propertyPath = column.GetPropertyPath();
+
+      if (propertyPath.IsDynamic)
         return false;
-      IBusinessObjectPropertyPath propertyPath = column.GetPropertyPath ();
+
       if (propertyPath.Properties.Count > 1)
         return false;
+
       return true;
     }
 

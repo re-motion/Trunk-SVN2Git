@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web.UI;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Rendering;
@@ -53,14 +54,9 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       ArgumentUtility.CheckNotNull ("obj", obj);
 
-      BusinessObjectPropertyPath.Formatter[] formatters = new BusinessObjectPropertyPath.Formatter[_propertyPathBindings.Count];
-      for (int i = 0; i < _propertyPathBindings.Count; ++i)
-      {
-        if (_propertyPathBindings[i].IsDynamic)
-          formatters[i] = new BusinessObjectPropertyPath.Formatter (obj, _propertyPathBindings[i].GetDynamicPropertyPath (obj.BusinessObjectClass));
-        else
-          formatters[i] = new BusinessObjectPropertyPath.Formatter (obj, _propertyPathBindings[i].GetPropertyPath());
-      }
+      var formatters = _propertyPathBindings.Cast<PropertyPathBinding>()
+                                            .Select (b => new BusinessObjectPropertyPath.Formatter (obj, b.GetPropertyPath()))
+                                            .ToArray();
 
       return string.Format (_formatString, formatters);
     }

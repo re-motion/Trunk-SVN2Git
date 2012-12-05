@@ -85,7 +85,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
       _typeWithAllDataTypesStringValueSimpleColumn.SetPropertyPath (_typeWithAllDataTypesStringValuePath);
 
       _typeWithAllDataTypesStringValueSimpleColumnAsDynamic = new BocSimpleColumnDefinition ();
-      _typeWithAllDataTypesStringValueSimpleColumnAsDynamic.PropertyPathIdentifier = "StringValue";
+      _typeWithAllDataTypesStringValueSimpleColumnAsDynamic.SetPropertyPath (BusinessObjectPropertyPath.CreateDynamic("StringValue"));
       _typeWithAllDataTypesStringValueSimpleColumnAsDynamic.IsDynamic = true;
 
       _typeWithAllDataTypesInt32ValueSimpleColumn = new BocSimpleColumnDefinition();

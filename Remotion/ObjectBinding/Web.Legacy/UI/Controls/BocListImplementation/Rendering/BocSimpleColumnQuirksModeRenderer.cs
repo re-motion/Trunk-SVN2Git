@@ -68,9 +68,6 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
     /// <summary>
     /// Renders the icon of the <see cref="IBusinessObject"/> determined by the column's property path.
-    /// <seealso cref="BocSimpleColumnDefinition.GetPropertyPath"/>
-    /// <seealso cref="BocSimpleColumnDefinition.GetDynamicPropertyPath"/>
-    /// <seealso cref="BocSimpleColumnDefinition.IsDynamic"/>
     /// </summary>
     /// <param name="renderingContext">The <see cref="HtmlTextWriter"/>.</param>
     /// <param name="businessObject">The <see cref="IBusinessObject"/> that acts as a starting point for the property path.</param>
@@ -80,20 +77,19 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
 
       if (renderingContext.ColumnDefinition.EnableIcon)
       {
-        IBusinessObjectPropertyPath propertyPath;
-        if (renderingContext.ColumnDefinition.IsDynamic)
-          propertyPath = renderingContext.ColumnDefinition.GetDynamicPropertyPath (businessObject.BusinessObjectClass);
-        else
-          propertyPath = renderingContext.ColumnDefinition.GetPropertyPath();
+        var propertyPath = renderingContext.ColumnDefinition.GetPropertyPath();
 
         var result = propertyPath.GetResult (
             businessObject,
             BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
             BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
 
-        IBusinessObject value = result.GetValue() as IBusinessObject;
-        if (value != null)
-          RenderCellIcon (renderingContext, value);
+        if (result.ResultProperty is IBusinessObjectReferenceProperty)
+        {
+          var value = (IBusinessObject) result.GetValue();
+          if (value != null)
+            RenderCellIcon (renderingContext, value);
+        }
       }
     }
 

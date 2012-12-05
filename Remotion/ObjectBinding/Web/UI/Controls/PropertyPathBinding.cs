@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web.UI;
+using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 using Remotion.ObjectBinding.Design;
 using Remotion.Utilities;
 
@@ -30,8 +31,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   /// </summary>
   public class PropertyPathBinding : BusinessObjectControlItem, IBusinessObjectClassSource
   {
-    /// <summary> <see langword="true"/> once the <see cref="IBusinessObjectPropertyPath"/> has been set. </summary>
-    private bool _isPropertyPathEvaluated;
     /// <summary> 
     ///   The <see cref="IBusinessObjectPropertyPath"/> mananged by this 
     ///   <see cref="PropertyPathBinding"/>.
@@ -96,60 +95,42 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       }
     }
 
-    // TODO: merge with GetDynamicPropertyPath
     // TODO: UnitTests
     /// <summary> 
     ///   Gets the <see cref="IBusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
     /// </summary>
     public IBusinessObjectPropertyPath GetPropertyPath ()
     {
-      if (_isPropertyPathEvaluated)
+      if (_propertyPath != null)
         return _propertyPath;
-
-      if (_isDynamic)
-        throw new InvalidOperationException ("Dynamic property paths must be resolved using the GetDynamicPropertyPath method.");
 
       if (OwnerControl == null)
         throw new InvalidOperationException ("The property path could not be resolved because the object is not part of an IBusinessObjectBoundControl.");
 
-      bool isDesignMode = Remotion.Web.Utilities.ControlHelper.IsDesignMode (OwnerControl);
-      bool isDataSourceNull = DataSource == null;
-      bool isBusinessObjectClassNull = BusinessObjectClass == null;
-
-      if (isDesignMode && isBusinessObjectClassNull)
-        return null;
-
       if (StringUtility.IsNullOrEmpty (_propertyPathIdentifier))
       {
-        _propertyPath = null;
+        _propertyPath = new NullBusinessObjectPropertyPath();
+      }
+      else if (_isDynamic)
+      {
+        _propertyPath = BusinessObjectPropertyPath.CreateDynamic (_propertyPathIdentifier);
       }
       else
       {
-        if (isDataSourceNull)
-          throw new InvalidOperationException ("The property path could not be resolved because the DataSource is not set.");
-
-        _propertyPath = BusinessObjectPropertyPath.CreateStatic (BusinessObjectClass, _propertyPathIdentifier);
+        if (BusinessObjectClass == null)
+        {
+          if (Remotion.Web.Utilities.ControlHelper.IsDesignMode (OwnerControl))
+            return new NullBusinessObjectPropertyPath();
+          else
+            throw new InvalidOperationException ("The property path could not be resolved because the Business Object Class is not set.");
+        }
+        else
+        {
+          _propertyPath = BusinessObjectPropertyPath.CreateStatic (BusinessObjectClass, _propertyPathIdentifier);
+        }
       }
-      _isPropertyPathEvaluated = true;
 
       return _propertyPath;
-    }
-
-    // TODO: merge with GetPropertyPath
-    // TODO: UnitTests
-    public IBusinessObjectPropertyPath GetDynamicPropertyPath (IBusinessObjectClass businessObjectClass)
-    {
-      ArgumentUtility.CheckNotNull ("businessObjectClass", businessObjectClass);
-
-      IBusinessObjectPropertyPath propertyPath = null;
-
-      if (!StringUtility.IsNullOrEmpty (_propertyPathIdentifier))
-        propertyPath = BusinessObjectPropertyPath.CreateDynamic (_propertyPathIdentifier);
-
-      _propertyPath = null;
-      _isPropertyPathEvaluated = false;
-
-      return propertyPath;
     }
 
     /// <summary> 
@@ -159,8 +140,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     {
       _propertyPath = propertyPath;
       _propertyPathIdentifier = (propertyPath == null) ? string.Empty : propertyPath.Identifier;
-      _isPropertyPathEvaluated = true;
-      _isDynamic = false;
+      _isDynamic = (propertyPath == null) ? false : propertyPath.IsDynamic;
     }
 
     [DefaultValue (false)]
@@ -168,7 +148,14 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     public bool IsDynamic
     {
       get { return _isDynamic; }
-      set { _isDynamic = value; }
+      set
+      {
+        if (_isDynamic != value)
+        {
+          _isDynamic = value;
+          _propertyPath = null;
+        }
+      }
     }
 
     /// <summary> 
@@ -193,7 +180,6 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         _propertyPathIdentifier = value;
         _propertyPath = null;
-        _isPropertyPathEvaluated = false;
       }
     }
 
