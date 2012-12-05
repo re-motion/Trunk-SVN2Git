@@ -36,7 +36,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     }
 
     [Test]
-    public void GetValue ()
+    public void GetValue_ListProperty_ReturnsFirstItem ()
     {
       using (_testHelper.Ordered())
       {
@@ -58,48 +58,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     }
 
     [Test]
-    public void GetValue_WithUnreachableObject ()
-    {
-      IBusinessObjectWithIdentity[] businessObjects = new IBusinessObjectWithIdentity[0];
-      using (_testHelper.Ordered())
-      {
-        ExpectOnceOnReferenceListPropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (businessObjects);
-      }
-      _testHelper.ReplayAll();
-
-      var actual = _path.GetResult (
-          _testHelper.BusinessObject,
-          BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
-          BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
-
-      _testHelper.VerifyAll();
-
-      Assert.That (actual, Is.InstanceOf<NullBusinessObjectPropertyPathResult>());
-    }
-
-    [Test]
-    public void GetValue_WithUnreachableObject_ThrowsInvalidOperationException ()
-    {
-      using (_testHelper.Ordered())
-      {
-        ExpectOnceOnReferenceListPropertyIsAccessible (true);
-        ExpectOnceOnBusinessObjectGetProperty (new IBusinessObjectWithIdentity[0]);
-      }
-      _testHelper.ReplayAll();
-
-      Assert.That (
-          () =>
-          _path.GetResult (
-              _testHelper.BusinessObject,
-              BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
-              BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry),
-          Throws.InvalidOperationException.With.Message
-                .EqualTo ("A null value was detected in element 0 of property path 'Identifier'. Cannot evaluate rest of path."));
-    }
-
-    [Test]
-    public void GetValue_ThrowsInvalidOperationExceptionBecauseOfListProperty ()
+    public void GetValue_ListProperty_ThrowsInvalidOperationException ()
     {
       using (_testHelper.Ordered())
       {
@@ -115,26 +74,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
               BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
               BusinessObjectPropertyPath.ListValueBehavior.FailForListProperties),
           Throws.InvalidOperationException.With.Message
-                .EqualTo ("Element 0 of property path 'Identifier' is not a single-value property."));
-    }
-
-    [Test]
-    public void GetValue_WithAccessDenied ()
-    {
-      using (_testHelper.Ordered())
-      {
-        ExpectOnceOnReferenceListPropertyIsAccessible (false);
-      }
-      _testHelper.ReplayAll();
-
-      var actual = _path.GetResult (
-          _testHelper.BusinessObject,
-          BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
-          BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
-
-      _testHelper.VerifyAll();
-
-      Assert.That (actual, Is.InstanceOf<NotAccessibleBusinessObjectPropertyPathResult>());
+                .EqualTo ("Property #0 of property path 'Identifier' is not a single-value property."));
     }
 
     private void ExpectOnceOnReferenceListPropertyIsAccessible (bool returnValue)

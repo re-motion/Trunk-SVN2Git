@@ -19,6 +19,7 @@ using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
+using Remotion.Security;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests
 {
@@ -58,7 +59,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     }
 
     [Test]
-    public void GetResult_WithUnreachableObject ()
+    public void GetResult_WithUnreachableObject_ReturnsNull ()
     {
       using (_testHelper.Ordered())
       {
@@ -94,11 +95,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
               BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
               BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry),
           Throws.InvalidOperationException.With.Message
-                .EqualTo ("A null value was detected in element 0 of property path 'Identifier'. Cannot evaluate rest of path."));
+                .EqualTo ("A null value was returned for property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
     }
 
     [Test]
-    public void GetResult_WithAccessDenied ()
+    public void GetResult_WithAccessDenied_ReturnsNull ()
     {
       using (_testHelper.Ordered())
       {
@@ -108,11 +109,69 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
 
       var actual = _path.GetResult (
           _testHelper.BusinessObject,
-          BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
+          BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
           BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
 
       _testHelper.VerifyAll();
       Assert.That (actual, Is.InstanceOf<NotAccessibleBusinessObjectPropertyPathResult>());
+    }
+
+    [Test]
+    public void GetResult_WithAccessDenied_ThrowsInvalidOperationException ()
+    {
+      using (_testHelper.Ordered())
+      {
+        ExpectOnceOnReferencePropertyIsAccessible (false);
+      }
+      _testHelper.ReplayAll();
+
+      Assert.That (
+          () =>
+          _path.GetResult (
+              _testHelper.BusinessObject,
+              BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
+              BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry),
+          Throws.InvalidOperationException.With.Message
+                .EqualTo ("Accass was denied to property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
+    }
+
+    [Test]
+    public void GetResult_WithPermissionDeniedException_ReturnsNull ()
+    {
+      using (_testHelper.Ordered())
+      {
+        ExpectOnceOnReferencePropertyIsAccessible (true);
+        ExpectThrowPermissionDeniedExceptionOnBusinessObjectGetProperty();
+      }
+      _testHelper.ReplayAll();
+
+      var actual = _path.GetResult (
+          _testHelper.BusinessObject,
+          BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
+          BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
+
+      _testHelper.VerifyAll();
+      Assert.That (actual, Is.InstanceOf<NotAccessibleBusinessObjectPropertyPathResult>());
+    }
+
+    [Test]
+    public void GetResult_WithPermissionDeniedException_ThrowsInvalidOperationException ()
+    {
+      using (_testHelper.Ordered())
+      {
+        ExpectOnceOnReferencePropertyIsAccessible (true);
+        ExpectThrowPermissionDeniedExceptionOnBusinessObjectGetProperty();
+      }
+      _testHelper.ReplayAll();
+
+      Assert.That (
+          () =>
+          _path.GetResult (
+              _testHelper.BusinessObject,
+              BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue,
+              BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry),
+          Throws.InvalidOperationException.With.Message
+                .EqualTo ("Accass was denied to property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
     }
 
     private void ExpectOnceOnReferencePropertyIsAccessible (bool returnValue)
@@ -126,6 +185,11 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
     private void ExpectOnceOnBusinessObjectGetProperty (IBusinessObjectWithIdentity businessObejctWithIdentity)
     {
       _testHelper.ExpectOnceOnGetProperty (_testHelper.BusinessObject, _testHelper.ReferenceProperty, businessObejctWithIdentity);
+    }
+
+    private void ExpectThrowPermissionDeniedExceptionOnBusinessObjectGetProperty ()
+    {
+      _testHelper.ExpectThrowOnGetProperty (_testHelper.BusinessObject, _testHelper.ReferenceProperty, new PermissionDeniedException());
     }
   }
 }

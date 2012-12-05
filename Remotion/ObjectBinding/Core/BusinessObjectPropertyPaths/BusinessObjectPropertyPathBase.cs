@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Enumerators;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
+using Remotion.Security;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
@@ -57,9 +58,20 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
           return new EvaluatedBusinessObjectPropertyPathResult (currentObject, currentProperty);
 
         if (!currentProperty.IsAccessible (currentObject.BusinessObjectClass, currentObject))
+        {
+          HandlePropertyAccessDenied (unreachableValueBehavior, propertyIndex);
           return new NotAccessibleBusinessObjectPropertyPathResult (currentObject.BusinessObjectClass.BusinessObjectProvider);
+        }
 
-        currentObject = GetPropertyValue (currentObject, (IBusinessObjectReferenceProperty) currentProperty, listValueBehavior, propertyIndex);
+        try
+        {
+          currentObject = GetPropertyValue (currentObject, (IBusinessObjectReferenceProperty) currentProperty, listValueBehavior, propertyIndex);
+        }
+        catch (PermissionDeniedException)
+        {
+          HandlePropertyAccessDenied (unreachableValueBehavior, propertyIndex);
+          return new NotAccessibleBusinessObjectPropertyPathResult (currentObject.BusinessObjectClass.BusinessObjectProvider);
+        }
 
         if (currentObject == null)
         {
@@ -84,7 +96,7 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
         if (listValueBehavior == BusinessObjectPropertyPath.ListValueBehavior.FailForListProperties)
         {
           throw new InvalidOperationException (
-              string.Format ("Element {0} of property path '{1}' is not a single-value property.", propertyIndex, Identifier));
+              string.Format ("Property #{0} of property path '{1}' is not a single-value property.", propertyIndex, Identifier));
         }
 
         var list = (IList) currentObject.GetProperty (currentProperty);
@@ -99,13 +111,21 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
       }
     }
 
+    private void HandlePropertyAccessDenied (BusinessObjectPropertyPath.UnreachableValueBehavior unreachableValueBehavior, int propertyIndex)
+    {
+      if (unreachableValueBehavior == BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue)
+        throw new InvalidOperationException (
+            string.Format (
+                "Accass was denied to property #{0} of property path '{1}'. Cannot evaluate rest of path.", propertyIndex, Identifier));
+    }
+
     private void HandlePropertyValueNull (BusinessObjectPropertyPath.UnreachableValueBehavior unreachableValueBehavior, int propertyIndex)
     {
       if (unreachableValueBehavior == BusinessObjectPropertyPath.UnreachableValueBehavior.FailForUnreachableValue)
       {
         throw new InvalidOperationException (
             string.Format (
-                "A null value was detected in element {0} of property path '{1}'. Cannot evaluate rest of path.", propertyIndex, Identifier));
+            "A null value was returned for property #{0} of property path '{1}'. Cannot evaluate rest of path.", propertyIndex, Identifier));
       }
     }
   }

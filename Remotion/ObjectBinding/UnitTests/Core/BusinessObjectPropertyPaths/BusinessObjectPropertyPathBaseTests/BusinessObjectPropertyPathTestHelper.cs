@@ -60,7 +60,7 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
 
       _mockBusinessObject = _mocks.StrictMock<IBusinessObject> ();
       _mockBusinessObjectWithIdentity = _mocks.StrictMock<IBusinessObjectWithIdentity> ();
-      _businessObjectWithIdentityList = new IBusinessObjectWithIdentity[] { _mockBusinessObjectWithIdentity };
+      _businessObjectWithIdentityList = new[] { _mockBusinessObjectWithIdentity, _mocks.StrictMock<IBusinessObjectWithIdentity>() };
 
       _mockBusinessObjectProvider = _mocks.StrictMock<IBusinessObjectProvider> ();
 
@@ -146,9 +146,9 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
       Expect.Call (businessObject.GetProperty (property)).Return (returnValue);
     }
 
-    public void ExpectOnceOnGetPropertyString (IBusinessObject businessObject, IBusinessObjectProperty property, string format, string returnValue)
+    public void ExpectThrowOnGetProperty (IBusinessObject businessObject, IBusinessObjectProperty property, Exception exception)
     {
-      Expect.Call (businessObject.GetPropertyString (property, format)).Return (returnValue);
+      Expect.Call (businessObject.GetProperty (property)).Throw (exception);
     }
 
     public void ExpectOnceOnIsAccessible (

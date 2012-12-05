@@ -16,6 +16,7 @@
 // 
 
 using System;
+using Remotion.Security;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
@@ -51,7 +52,14 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
       if (!_resultProperty.IsAccessible (_resultObject.BusinessObjectClass, _resultObject))
         return null;
 
-      return _resultObject.GetProperty (_resultProperty);
+      try
+      {
+        return _resultObject.GetProperty (_resultProperty);
+      }
+      catch (PermissionDeniedException)
+      {
+        return null;
+      }
     }
 
     public string GetString (string format)
@@ -59,7 +67,14 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results
       if (!_resultProperty.IsAccessible (_resultObject.BusinessObjectClass, _resultObject))
         return _resultObject.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
 
-      return _resultObject.GetPropertyString (_resultProperty, format);
+      try
+      {
+        return _resultObject.GetPropertyString (_resultProperty, format);
+      }
+      catch (PermissionDeniedException)
+      {
+        return _resultObject.BusinessObjectClass.BusinessObjectProvider.GetNotAccessiblePropertyStringPlaceHolder();
+      }
     }
 
     public IBusinessObjectProperty ResultProperty

@@ -18,7 +18,7 @@
 using System;
 using NUnit.Framework;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
-using Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.BusinessObjectPropertyPathBaseTests;
+using Remotion.Security;
 using Rhino.Mocks;
 
 namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Results
@@ -84,6 +84,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Resu
     }
 
     [Test]
+    public void GetValue_WithPermissionDeniedException ()
+    {
+      using (_mockRepository.Ordered())
+      {
+        ExpectOnceOnPropertyIsAccessible (true);
+        ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetProperty();
+      }
+      _mockRepository.ReplayAll();
+
+      object actualObject = _result.GetValue();
+
+      _mockRepository.VerifyAll();
+      Assert.That (actualObject, Is.Null);
+    }
+
+    [Test]
     public void GetPropertyString ()
     {
       using (_mockRepository.Ordered())
@@ -106,6 +122,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Resu
       _mockRepository.ReplayAll();
 
       string actual = _result.GetString (string.Empty);
+
+      _mockRepository.VerifyAll();
+      Assert.That (actual, Is.EqualTo ("X"));
+    }
+
+    [Test]
+    public void GetString_WithPermissionDeniedException ()
+    {
+      using (_mockRepository.Ordered())
+      {
+        ExpectOnceOnPropertyIsAccessible (true);
+        ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetPropertyString ("format");
+      }
+      _mockRepository.ReplayAll();
+
+      string actual = _result.GetString ("format");
 
       _mockRepository.VerifyAll();
       Assert.That (actual, Is.EqualTo ("X"));
@@ -141,10 +173,22 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Resu
                                      .Return (returnValue);
     }
 
+    private void ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetProperty ()
+    {
+      _businessObjectWithIdentityMock.Expect (_ => _.GetProperty (_propertyMock))
+                                     .Throw (new PermissionDeniedException());
+    }
+
     private void ExpectOnceOnBusinessObjectWithIdentityGetPropertyString (string returnValue, string format)
     {
       _businessObjectWithIdentityMock.Expect (_ => _.GetPropertyString (_propertyMock, format))
                                      .Return (returnValue);
+    }
+
+    private void ExpectThrowPermissionDeniedExceptionOnBusinessObjectWithIdentityGetPropertyString (string format)
+    {
+      _businessObjectWithIdentityMock.Expect (_ => _.GetPropertyString (_propertyMock, format))
+                                     .Throw (new PermissionDeniedException());
     }
   }
 }
