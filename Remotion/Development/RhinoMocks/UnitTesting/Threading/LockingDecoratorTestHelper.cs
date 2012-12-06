@@ -49,17 +49,22 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
       ArgumentUtility.CheckNotNull ("action", action);
       ArgumentUtility.CheckNotNull ("fakeResult", fakeResult);
 
-      _innerMock.BackToRecord ();
+      ExpectSynchronizedDelegation (action, fakeResult, r => Assert.That (r, Is.EqualTo (fakeResult)));
+    }
+
+    public void ExpectSynchronizedDelegation<TResult> (Func<T, TResult> action, TResult fakeResult, Action<TResult> resultChecker)
+    {
+      _innerMock.BackToRecord();
       _innerMock
           .Expect (mock => action (mock))
           .Return (fakeResult)
           .WhenCalled (mi => LockTestHelper.CheckLockIsHeld (_lockObject));
-      _innerMock.Replay ();
+      _innerMock.Replay();
 
       var actualResult = action (_lockingDecorator);
 
       _innerMock.VerifyAllExpectations();
-      Assert.That (actualResult, Is.EqualTo (fakeResult));
+      resultChecker (actualResult);
     }
 
     public void ExpectSynchronizedDelegation (Action<T> action)

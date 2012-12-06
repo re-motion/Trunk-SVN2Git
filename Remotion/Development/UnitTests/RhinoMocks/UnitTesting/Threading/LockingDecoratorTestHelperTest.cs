@@ -89,6 +89,17 @@ namespace Remotion.Development.UnitTests.RhinoMocks.UnitTesting.Threading
     }
 
     [Test]
+    public void ExpectSynchronizedDelegation_Func_WithResultChecker ()
+    {
+      Assert.That (
+          () => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Get(), "Abc", s => Assert.That (s, Is.EqualTo ("Abc"))),
+          Throws.Nothing);
+      Assert.That (
+          () => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Get (), "Abc", s => Assert.That (s, Is.EqualTo ("Expected"))),
+          Throws.TypeOf<AssertionException> ());
+    }
+
+    [Test]
     public void ExpectSynchronizedDelegation_Action ()
     {
       Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Do ("Abc")), Throws.Nothing);
