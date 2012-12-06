@@ -49,7 +49,7 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly IModuleManager _scope;
     private readonly IConcreteMixedTypeNameProvider _mixedTypeNameProvider;
     private readonly IConcreteMixinTypeNameProvider _mixinTypeNameProvider;
-    private readonly CodeGenerationCache _cache;
+    private readonly ICodeGenerationCache _cache;
 
     private readonly object _scopeLockObject = new object ();
 
@@ -65,7 +65,8 @@ namespace Remotion.Mixins.CodeGeneration
       _scope = moduleManager;
       _mixedTypeNameProvider = mixedTypeNameProvider;
       _mixinTypeNameProvider = mixinTypeNameProvider;
-      _cache = new CodeGenerationCache (_scope, _mixedTypeNameProvider, _mixinTypeNameProvider, this);
+      var innerCache = new CodeGenerationCache (_scope, _mixedTypeNameProvider, _mixinTypeNameProvider, this);
+      _cache = new LockingCodeGenerationCacheDecorator (innerCache, new object());
     }
 
     /// <summary>

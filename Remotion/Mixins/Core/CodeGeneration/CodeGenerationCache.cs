@@ -61,7 +61,6 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly IConcreteMixinTypeNameProvider _mixinNameProvider;
     private readonly IConcreteMixinTypeProvider _concreteMixinTypeProvider;
 
-    private readonly object _lockObject = new object();
     private readonly Cache<ClassContext, Type> _typeCache = new Cache<ClassContext, Type> ();
     private readonly Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> _mixinTypeCache = 
         new Cache<ConcreteMixinTypeIdentifier, ConcreteMixinType> ();
@@ -96,68 +95,56 @@ namespace Remotion.Mixins.CodeGeneration
 
     public void Clear()
     {
-      lock (_lockObject)
-      {
-        _typeCache.Clear();
-        _mixinTypeCache.Clear();
-        _constructorLookupInfos.Clear();
-      }
+      _typeCache.Clear();
+      _mixinTypeCache.Clear();
+      _constructorLookupInfos.Clear();
     }
 
     public Type GetOrCreateConcreteType (ClassContext classContext)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
 
-      lock (_lockObject)
+      // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
+      Type result;
+      if (!_typeCache.TryGetValue (classContext, out result))
       {
-        // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
-        Type result;
-        if (!_typeCache.TryGetValue (classContext, out result))
-        {
-          result = _typeCache.GetOrCreateValue (classContext, GenerateConcreteType);
-        }
-        return result;
+        result = _typeCache.GetOrCreateValue (classContext, GenerateConcreteType);
       }
+      return result;
     }
 
     public IConstructorLookupInfo GetOrCreateConstructorLookupInfo (ClassContext classContext, bool allowNonPublic)
     {
       ArgumentUtility.CheckNotNull ("classContext", classContext);
 
-      lock (_lockObject)
-      {
-        var key = new CtorLookupInfoKey (classContext, allowNonPublic);
+      var key = new CtorLookupInfoKey (classContext, allowNonPublic);
 
-        // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
-        IConstructorLookupInfo result;
-        if (!_constructorLookupInfos.TryGetValue (key, out result))
+      // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
+      IConstructorLookupInfo result;
+      if (!_constructorLookupInfos.TryGetValue (key, out result))
+      {
+        result = _constructorLookupInfos.GetOrCreateValue (key, cc =>
         {
-          result = _constructorLookupInfos.GetOrCreateValue (key, cc =>
-          {
-            var concreteType = GetOrCreateConcreteType (classContext);
-            return new MixedTypeConstructorLookupInfo (concreteType, classContext.Type, allowNonPublic);
-          });
-        }
-        return result;
+          var concreteType = GetOrCreateConcreteType (classContext);
+          return new MixedTypeConstructorLookupInfo (concreteType, classContext.Type, allowNonPublic);
+        });
       }
+      return result;
     }
 
     public ConcreteMixinType GetOrCreateConcreteMixinType (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier)
     {
       ArgumentUtility.CheckNotNull ("concreteMixinTypeIdentifier", concreteMixinTypeIdentifier);
 
-      lock (_lockObject)
+      // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
+      ConcreteMixinType result;
+      if (!_mixinTypeCache.TryGetValue (concreteMixinTypeIdentifier, out result))
       {
-        // Use TryGetValue before GetOrCreateValue to avoid creation of closure.
-        ConcreteMixinType result;
-        if (!_mixinTypeCache.TryGetValue (concreteMixinTypeIdentifier, out result))
-        {
-          result = _mixinTypeCache.GetOrCreateValue (
-              concreteMixinTypeIdentifier,
-              key => GenerateConcreteMixinType (concreteMixinTypeIdentifier));
-        }
-        return result;
+        result = _mixinTypeCache.GetOrCreateValue (
+            concreteMixinTypeIdentifier,
+            key => GenerateConcreteMixinType (concreteMixinTypeIdentifier));
       }
+      return result;
     }
 
     public void ImportTypes (IEnumerable<Type> types, IConcreteTypeMetadataImporter metadataImporter)
@@ -165,15 +152,12 @@ namespace Remotion.Mixins.CodeGeneration
       ArgumentUtility.CheckNotNull ("types", types);
       s_log.InfoFormat ("Importing types...");
 
-      lock (_lockObject)
+      using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to import types: {elapsed}."))
       {
-        using (StopwatchScope.CreateScope (s_log, LogLevel.Info, "Time needed to import types: {elapsed}."))
+        foreach (Type type in types)
         {
-          foreach (Type type in types)
-          {
-            ImportConcreteMixedType (metadataImporter, type);
-            ImportConcreteMixinType (metadataImporter, type);
-          }
+          ImportConcreteMixedType (metadataImporter, type);
+          ImportConcreteMixinType (metadataImporter, type);
         }
       }
     }

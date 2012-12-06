@@ -59,6 +59,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     [Test]
+    public void Cache_IsGuardedByLock ()
+    {
+      Assert.That (_builder.Cache, Is.TypeOf<LockingCodeGenerationCacheDecorator>());
+    }
+
+    [Test]
     public void GetConcreteType_TypesAreCached ()
     {
       Type t1 = _builder.GetConcreteType (ClassContextObjectMother.Create(typeof (BaseType1)));
