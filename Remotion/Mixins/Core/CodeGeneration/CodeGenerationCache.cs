@@ -68,9 +68,6 @@ namespace Remotion.Mixins.CodeGeneration
     private readonly LockingCacheDecorator<CtorLookupInfoKey, IConstructorLookupInfo> _constructorLookupInfos =
         CacheFactory.CreateWithLocking<CtorLookupInfoKey, IConstructorLookupInfo>();
 
-    // TODO 4566: Remove ConcreteMixinTypeProvider, implement interface on this class and pass in "this" (any maybe remove the interface from ConcreterTypeBuilder)
-    // - or -
-    // TODO 4566: Split CodeGenerationCache into multiple objects.
     public CodeGenerationCache (
         IModuleManager moduleManager,
         IConcreteMixedTypeNameProvider nameProvider,
