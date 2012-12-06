@@ -118,6 +118,7 @@
     <Compile Include="CodeGeneration\ITypeFactoryImplementation.cs" />
     <Compile Include="CodeGeneration\ITypeGenerator.cs" />
     <Compile Include="CodeGeneration\LockingCodeGenerationCacheDecorator.cs" />
+    <Compile Include="CodeGeneration\LockingModuleManagerDecorator.cs" />
     <Compile Include="CodeGeneration\MixinArrayInitializer.cs" />
     <Compile Include="CodeGeneration\NamespaceChangingNameProvider.cs" />
     <Compile Include="CodeGeneration\ObjectFactoryImplementation.cs" />
@@ -286,7 +287,6 @@
     <Compile Include="TypeExtensions.cs" />
     <Compile Include="TypeFactory.cs" />
     <Compile Include="UsesAttribute.cs" />
-    <Compile Include="Utilities\CodeGenerationStatistics.cs" />
     <Compile Include="Utilities\ConstraintBasedGenericParameterInstantiator.cs" />
     <Compile Include="Utilities\DependencySort\CircularDependenciesException.cs" />
     <Compile Include="Utilities\DependencySort\DependencyKind.cs" />

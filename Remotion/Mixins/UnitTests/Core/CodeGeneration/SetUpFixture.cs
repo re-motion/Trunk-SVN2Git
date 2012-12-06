@@ -19,7 +19,6 @@ using System.IO;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
-using Remotion.Mixins.Utilities;
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Text;
 using Remotion.Utilities;
@@ -52,8 +51,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     [TearDown]
     public void TearDown()
     {
-      Console.WriteLine (CodeGenerationStatistics.GetStatisticsString());
-
 #if !NO_PEVERIFY
       string[] paths;
       try

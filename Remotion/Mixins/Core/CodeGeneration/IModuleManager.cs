@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
 using Remotion.Mixins.Definitions;
@@ -34,9 +33,6 @@ namespace Remotion.Mixins.CodeGeneration
 
     string SignedModulePath { get; set; }
     string UnsignedModulePath { get; set; }
-
-    ModuleBuilder SignedModule { get; }
-    ModuleBuilder UnsignedModule { get; }
 
     bool HasAssemblies { get; }
     bool HasSignedAssembly { get; }

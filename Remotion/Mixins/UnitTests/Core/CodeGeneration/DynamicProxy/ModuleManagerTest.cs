@@ -357,13 +357,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     }
 
     [Test]
-    public void CreatedAssemblyBuilders ()
-    {
-      Assert.That (ModuleManager.CreatedAssemblies.Contains (_signedSavedType.Assembly), Is.True);
-      Assert.That (ModuleManager.CreatedAssemblies.Contains (_unsignedSavedType.Assembly), Is.True);
-    }
-
-    [Test]
     public void CreateClassEmitter ()
     {
       IClassEmitter emitter = _unsavedModuleManager.CreateClassEmitter ("X", typeof (BaseType2), new[] { typeof (IMarkerInterface) }, TypeAttributes.Public, true);

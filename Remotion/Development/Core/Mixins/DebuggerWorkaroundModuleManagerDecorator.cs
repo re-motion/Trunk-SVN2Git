@@ -185,16 +185,6 @@ namespace Remotion.Development.Mixins
       set { _innerModuleManager.UnsignedModulePath = value; }
     }
 
-    ModuleBuilder IModuleManager.SignedModule
-    {
-      get { return _innerModuleManager.SignedModule; }
-    }
-
-    ModuleBuilder IModuleManager.UnsignedModule
-    {
-      get { return _innerModuleManager.UnsignedModule; }
-    }
-
     bool IModuleManager.HasSignedAssembly
     {
       get { return _innerModuleManager.HasSignedAssembly; }
