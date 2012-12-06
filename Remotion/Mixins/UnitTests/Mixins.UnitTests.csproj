@@ -73,6 +73,9 @@
     <Compile Include="CoreComponentIntegration\TestDomain\MixinSuppressingNonInheritedAttribute.cs" />
     <Compile Include="Core\AdditionalMixinDependencyAttributeTest.cs" />
     <Compile Include="Core\ClassContextObjectMother.cs" />
+    <Compile Include="Core\CodeGeneration\ConcreteMixinTypeIdentifierObjectMother.cs" />
+    <Compile Include="Core\CodeGeneration\ConcreteMixinTypeObjectMother.cs" />
+    <Compile Include="Core\CodeGeneration\LockingCodeGenerationCacheDecoratorTest.cs" />
     <Compile Include="Core\TypeGenerationHelper.cs" />
     <Compile Include="Core\CodeGenerationStatisticsTest.cs" />
     <Compile Include="Core\CodeGenerationTypeMother.cs" />
@@ -662,6 +665,10 @@
     <ProjectReference Include="..\..\Development\Core\Development.Core.csproj">
       <Project>{B719A305-0493-4C72-88FE-9A2FC6964578}</Project>
       <Name>Development.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Development\RhinoMocks\Development.RhinoMocks.csproj">
+      <Project>{2177143e-345f-4faa-9958-1ae2b5eed242}</Project>
+      <Name>Development.RhinoMocks</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\TypePipe\Core\TypePipe.Core.csproj">
       <Project>{98e7f7aa-12b2-4a6b-8922-52c8e53b378e}</Project>

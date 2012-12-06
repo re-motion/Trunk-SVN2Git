@@ -117,6 +117,7 @@
     <Compile Include="CodeGeneration\IObjectFactoryImplementation.cs" />
     <Compile Include="CodeGeneration\ITypeFactoryImplementation.cs" />
     <Compile Include="CodeGeneration\ITypeGenerator.cs" />
+    <Compile Include="CodeGeneration\LockingCodeGenerationCacheDecorator.cs" />
     <Compile Include="CodeGeneration\MixinArrayInitializer.cs" />
     <Compile Include="CodeGeneration\NamespaceChangingNameProvider.cs" />
     <Compile Include="CodeGeneration\ObjectFactoryImplementation.cs" />
