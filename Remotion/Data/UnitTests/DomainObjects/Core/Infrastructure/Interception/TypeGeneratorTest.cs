@@ -58,7 +58,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.Interception
       // setup mixin builder to generate files into the same directory
       ConcreteTypeBuilder.SetCurrent (null); // reinitialize ConcreteTypeBuilder
       
-      var scope = ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).Scope;
+      var scope = ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).ModuleInfo;
       scope.SignedModulePath = Path.Combine (AssemblyDirectory, scope.SignedAssemblyName + ".dll");
       scope.UnsignedModulePath = Path.Combine (AssemblyDirectory, scope.UnsignedAssemblyName + ".dll");
     }

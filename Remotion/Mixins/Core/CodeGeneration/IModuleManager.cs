@@ -23,20 +23,10 @@ using Remotion.ServiceLocation;
 namespace Remotion.Mixins.CodeGeneration
 {
   [ConcreteImplementation (typeof (ModuleManager))]
-  public interface IModuleManager : ICodeGenerationModule
+  public interface IModuleManager : ICodeGenerationModule, ICodeGenerationModuleInfo
   {
     ITypeGenerator CreateTypeGenerator (TargetClassDefinition configuration, IConcreteMixedTypeNameProvider nameProvider, IConcreteMixinTypeProvider concreteMixinTypeProvider);
     IMixinTypeGenerator CreateMixinTypeGenerator (ConcreteMixinTypeIdentifier concreteMixinTypeIdentifier, IConcreteMixinTypeNameProvider mixinNameProvider);
-
-    string SignedAssemblyName { get; set; }
-    string UnsignedAssemblyName { get; set; }
-
-    string SignedModulePath { get; set; }
-    string UnsignedModulePath { get; set; }
-
-    bool HasAssemblies { get; }
-    bool HasSignedAssembly { get; }
-    bool HasUnsignedAssembly { get; }
 
     string[] SaveAssemblies ();
     void Reset ();

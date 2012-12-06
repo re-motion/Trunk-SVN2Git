@@ -32,7 +32,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       var someAssembly = GetType().Assembly;
       var referenceContextOrigin = new MixinContextOrigin ("some kind", someAssembly, "some location");
 
-      var module = ((ModuleManager) (SavedTypeBuilder.Scope)).Scope.ObtainDynamicModuleWithWeakName ();
+      var module = ConcreteTypeBuilderTestHelper.GetModuleManager (SavedTypeBuilder).Scope.ObtainDynamicModuleWithWeakName ();
       var type = module.DefineType ("CodeGenerationMixinContextOriginSerializerTest.IntegrationTest");
       var method =
           type.DefineMethod ("Test", MethodAttributes.Public | MethodAttributes.Static, typeof (MixinContextOrigin), Type.EmptyTypes);

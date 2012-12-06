@@ -22,6 +22,7 @@ namespace Remotion.Mixins.CodeGeneration
   /// <summary>
   /// Defines an interface for classes providing a mechanism to retrieve a name for a generated concrete mixin type.
   /// </summary>
+  /// <remarks>Must be implemented in a thread-safe way.</remarks>
   [ConcreteImplementation (typeof (GuidNameProvider), Lifetime = LifetimeKind.Singleton)]
   public interface IConcreteMixinTypeNameProvider
   {

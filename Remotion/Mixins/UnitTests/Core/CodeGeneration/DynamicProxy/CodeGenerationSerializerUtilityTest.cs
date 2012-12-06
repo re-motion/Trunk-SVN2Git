@@ -30,7 +30,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     {
       var array = new[] { "1", "2", "3" };
 
-      var module = ((ModuleManager) (SavedTypeBuilder.Scope)).Scope.ObtainDynamicModuleWithWeakName();
+      var module = ConcreteTypeBuilderTestHelper.GetModuleManager (SavedTypeBuilder).Scope.ObtainDynamicModuleWithWeakName ();
       var type = module.DefineType ("CodeGenerationSerializerUtilityTest.DeclareAndFillArrayLocal");
       var method = 
           type.DefineMethod ("Test", MethodAttributes.Public | MethodAttributes.Static, typeof (string[]), Type.EmptyTypes);

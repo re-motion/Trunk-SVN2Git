@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
 using NUnit.Framework;
@@ -35,7 +34,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       var referenceMixinContext2 = MixinContextObjectMother.Create (mixinType: typeof (BT1Mixin2));
       var referenceClassContext = new ClassContext (typeof (BaseType1), new[] { referenceMixinContext1, referenceMixinContext2 }, new[] { typeof (DateTime) });
 
-      var module = ((ModuleManager) (SavedTypeBuilder.Scope)).Scope.ObtainDynamicModuleWithWeakName ();
+      var module = ConcreteTypeBuilderTestHelper.GetModuleManager (SavedTypeBuilder).Scope.ObtainDynamicModuleWithWeakName ();
       var type = module.DefineType ("CodeGenerationClassContextSerializerTest.IntegrationTest");
       var method =
           type.DefineMethod ("Test", MethodAttributes.Public | MethodAttributes.Static, typeof (ClassContext), Type.EmptyTypes);

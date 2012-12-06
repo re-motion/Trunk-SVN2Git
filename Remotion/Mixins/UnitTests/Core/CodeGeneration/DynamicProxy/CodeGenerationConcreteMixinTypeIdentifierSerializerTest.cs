@@ -107,7 +107,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
 
     private TypeBuilder DefineType (string testName)
     {
-      var module = ((ModuleManager) (SavedTypeBuilder.Scope)).Scope.ObtainDynamicModuleWithWeakName ();
+      var module = ConcreteTypeBuilderTestHelper.GetModuleManager (SavedTypeBuilder).Scope.ObtainDynamicModuleWithWeakName ();
       return module.DefineType ("CodeGenerationConcreteMixinTypeIdentifierSerializerTest." + testName);
     }
 

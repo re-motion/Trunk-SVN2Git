@@ -189,11 +189,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixedTypeNameProvider> ();
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetIModuleManager (SavedTypeBuilder);
 
-      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (moduleManager, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      Expect.Call (nameProviderMock.GetNameForConcreteMixedType (Arg<TargetClassDefinition>.Matches (tcd => tcd.Type == typeof (BaseType1)))).Return ("Foo");
+      nameProviderMock.Expect (mock => mock.GetNameForConcreteMixedType (Arg<TargetClassDefinition>.Matches (tcd => tcd.Type == typeof (BaseType1)))).Return ("Foo");
 
       repository.ReplayAll ();
 
@@ -209,8 +210,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixedTy
     {
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixedTypeNameProvider> ();
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetIModuleManager (SavedTypeBuilder);
 
-      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (moduleManager, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
       Expect.Call (nameProviderMock.GetNameForConcreteMixedType (Arg<TargetClassDefinition>.Matches (tcd => tcd.Type == typeof (BaseType1)))).Return ("Foo+Bar");

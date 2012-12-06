@@ -50,11 +50,13 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
 
     private Type _signedSavedType;
     private Type _unsignedSavedType;
-    
+    private ModuleManager _savedTypeBuildersModuleManager;
+
     [SetUp]
     public override void SetUp ()
     {
       _emptyModuleManager = new ModuleManager ();
+      _savedTypeBuildersModuleManager = ConcreteTypeBuilderTestHelper.GetModuleManager (SavedTypeBuilder);
     }
 
     [TearDown]
@@ -114,7 +116,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     {
       TargetClassDefinition bt1 = DefinitionObjectMother.GetActiveTargetClassDefinition (typeof (BaseType1));
 
-      ITypeGenerator generator = SavedTypeBuilder.Scope.CreateTypeGenerator (bt1, new GuidNameProvider(), ConcreteTypeBuilder.Current);
+      ITypeGenerator generator = _savedTypeBuildersModuleManager.CreateTypeGenerator (bt1, new GuidNameProvider(), ConcreteTypeBuilder.Current);
       Assert.IsNotNull (generator);
       Assert.IsTrue (bt1.Type.IsAssignableFrom (generator.GetBuiltType()));
     }
@@ -124,7 +126,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
     {
       var configuration = new TargetClassDefinition (ClassContextObjectMother.Create(typeof (IServiceProvider)));
       Assert.That (
-          () => SavedTypeBuilder.Scope.CreateTypeGenerator (configuration, new GuidNameProvider(), ConcreteTypeBuilder.Current),
+          () => _savedTypeBuildersModuleManager.CreateTypeGenerator (configuration, new GuidNameProvider(), ConcreteTypeBuilder.Current),
           Throws.ArgumentException.With.Message.EqualTo (
               "Cannot generate a mixed type for type 'System.IServiceProvider' because it's an interface.\r\nParameter name: configuration"));
     }
@@ -137,7 +139,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
                  typeof (MixinWithAbstractMembers))).Mixins[0];
       var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
 
-      var generator = SavedTypeBuilder.Scope.CreateMixinTypeGenerator (identifier, new GuidNameProvider());
+      var generator = _savedTypeBuildersModuleManager.CreateMixinTypeGenerator (identifier, new GuidNameProvider());
       Assert.IsNotNull (generator);
       Assert.IsTrue (identifier.MixinType.IsAssignableFrom (generator.GetBuiltType ().GeneratedType));
     }
@@ -150,7 +152,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.DynamicProxy
       var identifier = mixinDefinition.GetConcreteMixinTypeIdentifier ();
 
       Assert.That (
-          () => SavedTypeBuilder.Scope.CreateMixinTypeGenerator (identifier, new GuidNameProvider()),
+          () => _savedTypeBuildersModuleManager.CreateMixinTypeGenerator (identifier, new GuidNameProvider()),
           Throws.ArgumentException.With.Message.EqualTo (
               "Cannot generate a mixin type for type 'System.IServiceProvider' because it's an interface.\r\nParameter name: concreteMixinTypeIdentifier"));
     }

@@ -31,6 +31,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     private static ConcreteTypeBuilder s_savedTypeBuilder;
 
     private static bool _skipDeletion = false;
+    private ResetCheckingModuleManager _moduleManager;
 
     /// <summary>
     /// Signals that the <see cref="SetUpFixture"/> should not delete the files it generates. Call this ad-hoc in a test to keep the files and inspect
@@ -45,7 +46,8 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void SetUp()
     {
       ResetGeneratedAssemblies ();
-      s_savedTypeBuilder = new ConcreteTypeBuilder (new ResetCheckingModuleManager(false), new GuidNameProvider(), new GuidNameProvider());
+      _moduleManager = new ResetCheckingModuleManager (false);
+      s_savedTypeBuilder = new ConcreteTypeBuilder (_moduleManager, new GuidNameProvider(), new GuidNameProvider());
     }
 
     [TearDown]
@@ -55,8 +57,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       string[] paths;
       try
       {
-        ((ResetCheckingModuleManager) s_savedTypeBuilder.Scope).AllowReset = true;
-
+        _moduleManager.AllowReset = true;
         paths = s_savedTypeBuilder.SaveGeneratedConcreteTypes ();
       }
       catch (Exception ex)

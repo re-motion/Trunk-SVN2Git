@@ -59,9 +59,14 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     [Test]
-    public void Cache_IsGuardedByLock ()
+    public void CacheAndModuleInfo_AreGuardedByLock ()
     {
-      Assert.That (_builder.Cache, Is.TypeOf<LockingCodeGenerationCacheDecorator>());
+      Assert.That (_builder.Cache, Is.TypeOf<LockingCodeGenerationCacheDecorator> ());
+      Assert.That (_builder.ModuleInfo, Is.TypeOf<LockingCodeGenerationModuleInfoDecorator> ());
+
+      var codeGenerationLockObject = PrivateInvoke.GetNonPublicField (_builder, "_codeGenerationLockObject");
+      Assert.That (PrivateInvoke.GetNonPublicField (_builder.Cache, "_lockObject"), Is.SameAs (codeGenerationLockObject));
+      Assert.That (PrivateInvoke.GetNonPublicField (_builder.ModuleInfo, "_lockObject"), Is.SameAs (codeGenerationLockObject));
     }
 
     [Test]
@@ -139,13 +144,6 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     [Test]
-    public void LockAndAccessScope()
-    {
-      IModuleManager scope = _builder.Scope;
-      _builder.LockAndAccessScope (lockedScope => Assert.That (lockedScope, Is.SameAs (scope)));
-    }
-
-    [Test]
     public void DefaultNameProviderIsGuid ()
     {
       Assert.That (_builder.TypeNameProvider, Is.TypeOf<GuidNameProvider>());
@@ -189,14 +187,14 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     public void SaveAndResetDynamicScope_ResetsScopeWhenSaving ()
     {
       var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder();
-      var signedAssemblyNameBefore = builder.Scope.SignedAssemblyName;
-      var unsignedAssemblyNameBefore = builder.Scope.UnsignedAssemblyName;
+      var signedAssemblyNameBefore = builder.ModuleInfo.SignedAssemblyName;
+      var unsignedAssemblyNameBefore = builder.ModuleInfo.UnsignedAssemblyName;
 
       builder.SaveGeneratedConcreteTypes();
 
-      Assert.That (builder.Scope.HasAssemblies, Is.False);
-      Assert.That (builder.Scope.SignedAssemblyName, Is.Not.EqualTo (signedAssemblyNameBefore));
-      Assert.That (builder.Scope.UnsignedAssemblyName, Is.Not.EqualTo (unsignedAssemblyNameBefore));
+      Assert.That (builder.ModuleInfo.HasAssemblies, Is.False);
+      Assert.That (builder.ModuleInfo.SignedAssemblyName, Is.Not.EqualTo (signedAssemblyNameBefore));
+      Assert.That (builder.ModuleInfo.UnsignedAssemblyName, Is.Not.EqualTo (unsignedAssemblyNameBefore));
     }
 
     [Test]
@@ -233,29 +231,26 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Cannot load assembly 'Remotion.Mixins.Generated.Signed.*' into the cache "
-                                                                      +
-                                                                      "because it has the same name as one of the dynamic assemblies used by the mixin engine. Having two assemblies with the same name loaded "
-                                                                      +
-                                                                      "into one AppDomain can cause strange and sporadic TypeLoadExceptions.\r\nParameter name: assembly"
-        , MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ArgumentException),
+        ExpectedMessage =
+            "Cannot load assembly 'Remotion.Mixins.Generated.Signed.*' into the cache "
+            + "because it has the same name as one of the dynamic assemblies used by the mixin engine. Having two assemblies with the same name loaded "
+            + "into one AppDomain can cause strange and sporadic TypeLoadExceptions.\r\nParameter name: assembly", MatchType = MessageMatch.Regex)]
     public void LoadAssemblyIntoCache_ThrowsWhenLoadedAssemblyHasSameName_AsSigned ()
     {
-      var moduleManager = (ModuleManager) _builder.Scope;
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetModuleManager (_builder);
       moduleManager.Scope.ObtainDynamicModule (true);
       _builder.LoadConcreteTypes (moduleManager.Scope.StrongNamedModule.Assembly);
     }
 
     [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage = "Cannot load assembly 'Remotion.Mixins.Generated.Unsigned.*' into the cache "
-                                                                      +
-                                                                      "because it has the same name as one of the dynamic assemblies used by the mixin engine. Having two assemblies with the same name loaded "
-                                                                      +
-                                                                      "into one AppDomain can cause strange and sporadic TypeLoadExceptions.\r\nParameter name: assembly"
-        , MatchType = MessageMatch.Regex)]
+    [ExpectedException (typeof (ArgumentException), ExpectedMessage = 
+      "Cannot load assembly 'Remotion.Mixins.Generated.Unsigned.*' into the cache "
+      + "because it has the same name as one of the dynamic assemblies used by the mixin engine. Having two assemblies with the same name loaded "
+      + "into one AppDomain can cause strange and sporadic TypeLoadExceptions.\r\nParameter name: assembly", MatchType = MessageMatch.Regex)]
     public void LoadAssemblyIntoCache_ThrowsWhenLoadedAssemblyHasSameName_AsUnsigned ()
     {
-      var moduleManager = (ModuleManager) _builder.Scope;
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetModuleManager (_builder);
       moduleManager.Scope.ObtainDynamicModule (false);
       _builder.LoadConcreteTypes (moduleManager.Scope.WeakNamedModule.Assembly);
     }
@@ -428,16 +423,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     [Test]
-    public void Scope ()
-    {
-      var fakeScope = MockRepository.GenerateStub<IModuleManager>();
-      var builder = new ConcreteTypeBuilder (fakeScope, new GuidNameProvider (), new GuidNameProvider ());
-
-      Assert.That (builder.Scope, Is.SameAs (fakeScope));
-    }
-
-    [Test]
-    public void Scope_NewEstablished_AfterConcreteTypeBuilderSetNull ()
+    public void ModuleManager_NewEstablished_AfterConcreteTypeBuilderSetNull ()
     {
       var oldModuleManager = ConcreteTypeBuilderTestHelper.GetIModuleManager (ConcreteTypeBuilder.Current);
       Assert.That (oldModuleManager != null);
@@ -448,7 +434,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
     }
 
     [Test]
-    public void Scope_NewScopeHasNewAssemblyNames_AfterConcreteTypeBuilderSetNull ()
+    public void ModuleManager_NewScopeHasNewAssemblyNames_AfterConcreteTypeBuilderSetNull ()
     {
       string oldSignedName = ConcreteTypeBuilderTestHelper.GetIModuleManager (ConcreteTypeBuilder.Current).SignedAssemblyName;
       string oldUnsignedName = ConcreteTypeBuilderTestHelper.GetIModuleManager (ConcreteTypeBuilder.Current).UnsignedAssemblyName;
@@ -491,7 +477,7 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
       var instance = new DefaultServiceLocator().GetInstance<IConcreteTypeBuilder>();
 
       Assert.That (instance, Is.TypeOf<ConcreteTypeBuilder> ());
-      Assert.That (((ConcreteTypeBuilder) instance).Scope, Is.TypeOf<ModuleManager> ());
+      Assert.That (((LockingCodeGenerationModuleInfoDecorator) ((ConcreteTypeBuilder) instance).ModuleInfo).InnerCodeGenerationModuleInfo, Is.TypeOf<ModuleManager> ());
       Assert.That (((ConcreteTypeBuilder) instance).TypeNameProvider, Is.TypeOf<GuidNameProvider> ());
       Assert.That (((ConcreteTypeBuilder) instance).MixinTypeNameProvider, Is.TypeOf<GuidNameProvider> ());
     }

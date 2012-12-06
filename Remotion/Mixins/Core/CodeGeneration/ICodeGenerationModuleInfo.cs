@@ -1,4 +1,4 @@
-﻿// This file is part of the re-motion Core Framework (www.re-motion.org)
+// This file is part of the re-motion Core Framework (www.re-motion.org)
 // Copyright (c) rubicon IT GmbH, www.rubicon.eu
 // 
 // The re-motion Core Framework is free software; you can redistribute it 
@@ -14,14 +14,23 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+using System;
+
 namespace Remotion.Mixins.CodeGeneration
 {
-  // TODO 4566
-  ///// <summary>
-  ///// Decorates a given instance of <see cref="IModuleManager"/>, making it thread-safe by synchronizing all access to its members with a lock.
-  ///// </summary>
-  //public class LockingModuleManagerDecorator : IModuleManager
-  //{
-     
-  //}
+  /// <summary>
+  /// Provides information about, and allows configuration of, the modules created by code generation.
+  /// </summary>
+  public interface ICodeGenerationModuleInfo
+  {
+    string SignedAssemblyName { get; set; }
+    string UnsignedAssemblyName { get; set; }
+
+    string SignedModulePath { get; set; }
+    string UnsignedModulePath { get; set; }
+
+    bool HasAssemblies { get; }
+    bool HasSignedAssembly { get; }
+    bool HasUnsignedAssembly { get; }
+  }
 }

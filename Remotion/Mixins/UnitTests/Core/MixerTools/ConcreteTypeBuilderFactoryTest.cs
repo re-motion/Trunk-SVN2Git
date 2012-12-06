@@ -41,11 +41,11 @@ namespace Remotion.Mixins.UnitTests.Core.MixerTools
 
       Assert.That (builder.TypeNameProvider, Is.SameAs (_typeNameProviderStub));
       
-      Assert.That (builder.Scope.SignedAssemblyName, Is.EqualTo ("Signed"));
-      Assert.That (builder.Scope.SignedModulePath, Is.EqualTo (@"c:\directory\Signed.dll"));
+      Assert.That (builder.ModuleInfo.SignedAssemblyName, Is.EqualTo ("Signed"));
+      Assert.That (builder.ModuleInfo.SignedModulePath, Is.EqualTo (@"c:\directory\Signed.dll"));
 
-      Assert.That (builder.Scope.UnsignedAssemblyName, Is.EqualTo ("Unsigned"));
-      Assert.That (builder.Scope.UnsignedModulePath, Is.EqualTo (@"c:\directory\Unsigned.dll"));
+      Assert.That (builder.ModuleInfo.UnsignedAssemblyName, Is.EqualTo ("Unsigned"));
+      Assert.That (builder.ModuleInfo.UnsignedModulePath, Is.EqualTo (@"c:\directory\Unsigned.dll"));
     }
 
     [Test]

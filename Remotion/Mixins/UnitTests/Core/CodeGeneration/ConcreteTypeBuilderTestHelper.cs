@@ -16,6 +16,7 @@
 // 
 using Remotion.Mixins.CodeGeneration;
 using Remotion.Mixins.CodeGeneration.DynamicProxy;
+using Remotion.Mixins.Utilities.Singleton;
 
 namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
 {
@@ -23,18 +24,18 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration
   {
     public static ModuleManager GetCurrentModuleManager ()
     {
-      var concreteTypeBuilder = ConcreteTypeBuilder.Current;
+      var concreteTypeBuilder = ThreadSafeSingletonBase<IConcreteTypeBuilder, ServiceLocatorInstanceCreator<IConcreteTypeBuilder>>.Current;
       return GetModuleManager(concreteTypeBuilder);
     }
 
     public static ModuleManager GetModuleManager (IConcreteTypeBuilder concreteTypeBuilder)
     {
-      return (ModuleManager) ((ConcreteTypeBuilder) concreteTypeBuilder).Scope;
+      return (ModuleManager) GetIModuleManager (concreteTypeBuilder);
     }
 
     public static IModuleManager GetIModuleManager (IConcreteTypeBuilder concreteTypeBuilder)
     {
-      return ((ConcreteTypeBuilder) concreteTypeBuilder).Scope;
+      return (IModuleManager) ((LockingCodeGenerationModuleInfoDecorator) ((ConcreteTypeBuilder) concreteTypeBuilder).ModuleInfo).InnerCodeGenerationModuleInfo;
     }
   }
 }

@@ -161,41 +161,41 @@ namespace Remotion.Development.Mixins
       return _innerModuleManager.CreateClassEmitter (typeName, baseType, interfaces, typeAttributes, forceUnsigned);
     }
 
-    string IModuleManager.SignedAssemblyName
+    string ICodeGenerationModuleInfo.SignedAssemblyName
     {
       get { return _innerModuleManager.SignedAssemblyName; }
       set { _innerModuleManager.SignedAssemblyName = value; }
     }
 
-    string IModuleManager.UnsignedAssemblyName
+    string ICodeGenerationModuleInfo.UnsignedAssemblyName
     {
       get { return _innerModuleManager.UnsignedAssemblyName; }
       set { _innerModuleManager.UnsignedAssemblyName = value; }
     }
 
-    string IModuleManager.SignedModulePath
+    string ICodeGenerationModuleInfo.SignedModulePath
     {
       get { return _innerModuleManager.SignedModulePath; }
       set { _innerModuleManager.SignedModulePath = value; }
     }
 
-    string IModuleManager.UnsignedModulePath
+    string ICodeGenerationModuleInfo.UnsignedModulePath
     {
       get { return _innerModuleManager.UnsignedModulePath; }
       set { _innerModuleManager.UnsignedModulePath = value; }
     }
 
-    bool IModuleManager.HasSignedAssembly
+    bool ICodeGenerationModuleInfo.HasSignedAssembly
     {
       get { return _innerModuleManager.HasSignedAssembly; }
     }
 
-    bool IModuleManager.HasUnsignedAssembly
+    bool ICodeGenerationModuleInfo.HasUnsignedAssembly
     {
       get { return _innerModuleManager.HasUnsignedAssembly; }
     }
 
-    bool IModuleManager.HasAssemblies
+    bool ICodeGenerationModuleInfo.HasAssemblies
     {
       get { return _innerModuleManager.HasAssemblies; }
     }

@@ -103,6 +103,7 @@
     <Compile Include="CodeGeneration\GuidNameProvider.cs" />
     <Compile Include="CodeGeneration\ICodeGenerationCache.cs" />
     <Compile Include="CodeGeneration\ICodeGenerationModule.cs" />
+    <Compile Include="CodeGeneration\ICodeGenerationModuleInfo.cs" />
     <Compile Include="CodeGeneration\IConcreteMixinTypeNameProvider.cs" />
     <Compile Include="CodeGeneration\IConcreteMixinTypeProvider.cs" />
     <Compile Include="CodeGeneration\IConcreteTypeBuilder.cs" />
@@ -118,7 +119,7 @@
     <Compile Include="CodeGeneration\ITypeFactoryImplementation.cs" />
     <Compile Include="CodeGeneration\ITypeGenerator.cs" />
     <Compile Include="CodeGeneration\LockingCodeGenerationCacheDecorator.cs" />
-    <Compile Include="CodeGeneration\LockingModuleManagerDecorator.cs" />
+    <Compile Include="CodeGeneration\LockingCodeGenerationModuleInfoDecorator.cs" />
     <Compile Include="CodeGeneration\MixinArrayInitializer.cs" />
     <Compile Include="CodeGeneration\NamespaceChangingNameProvider.cs" />
     <Compile Include="CodeGeneration\ObjectFactoryImplementation.cs" />

@@ -63,7 +63,9 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
-      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetIModuleManager (SavedTypeBuilder);
+
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (moduleManager, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
       nameProviderMock.Expect (mock => mock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra");
@@ -83,10 +85,12 @@ namespace Remotion.Mixins.UnitTests.Core.CodeGeneration.IntegrationTests.MixinTy
     {
       var repository = new MockRepository ();
       var nameProviderMock = repository.StrictMock<IConcreteMixinTypeNameProvider> ();
-      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (SavedTypeBuilder.Scope, nameProviderMock);
+      var moduleManager = ConcreteTypeBuilderTestHelper.GetIModuleManager (SavedTypeBuilder);
+
+      var builder = ConcreteTypeBuilderObjectMother.CreateConcreteTypeBuilder (moduleManager, nameProviderMock);
       ConcreteTypeBuilder.SetCurrent (builder);
 
-      Expect.Call (nameProviderMock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra+Oof");
+      nameProviderMock.Expect (mock => mock.GetNameForConcreteMixinType (Arg<ConcreteMixinTypeIdentifier>.Is.Anything)).Return ("Bra+Oof");
 
       repository.ReplayAll ();
 
