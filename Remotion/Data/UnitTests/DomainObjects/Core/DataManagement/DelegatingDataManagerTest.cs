@@ -22,7 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
-using Remotion.Data.UnitTests.UnitTesting;
+using Remotion.Development.RhinoMocks.UnitTesting;
 using Remotion.Development.UnitTesting.ObjectMothers;
 using Rhino.Mocks;
 

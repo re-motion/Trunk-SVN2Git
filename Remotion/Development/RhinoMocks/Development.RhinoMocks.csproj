@@ -57,6 +57,7 @@
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTesting\DecoratorTestHelper.cs" />
     <Compile Include="UnitTesting\Threading\LockingDecoratorTestHelper.cs" />
     <Compile Include="UnitTesting\Threading\LockTestHelper.cs" />
   </ItemGroup>

@@ -20,7 +20,7 @@ using System.Threading;
 using NUnit.Framework;
 using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 
-namespace Remotion.Development.UnitTests.RhinoMocks.Threading
+namespace Remotion.Development.UnitTests.RhinoMocks.UnitTesting.Threading
 {
   [TestFixture]
   public class LockTestHelperTest

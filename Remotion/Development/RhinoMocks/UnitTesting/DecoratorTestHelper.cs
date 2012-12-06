@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using NUnit.Framework;
 using Remotion.Utilities;
 using Rhino.Mocks;
 
-namespace Remotion.Data.UnitTests.UnitTesting
+namespace Remotion.Development.RhinoMocks.UnitTesting
 {
   /// <summary>
   /// Provides functionality for testing decorator methods that do nothing else but forward to the equivalent methods on a decorated object.

@@ -21,7 +21,7 @@ using Remotion.Development.RhinoMocks.UnitTesting.Threading;
 using Rhino.Mocks;
 using Rhino.Mocks.Exceptions;
 
-namespace Remotion.Development.UnitTests.RhinoMocks.Threading
+namespace Remotion.Development.UnitTests.RhinoMocks.UnitTesting.Threading
 {
   [TestFixture]
   public class LockingDecoratorTestHelperTest
