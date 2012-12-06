@@ -16,6 +16,7 @@
 // 
 
 using System;
+using JetBrains.Annotations;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 using Remotion.Utilities;
@@ -201,6 +202,7 @@ namespace Remotion.ObjectBinding
     /// An instance of type <see cref="IBusinessObjectPropertyPath"/> where <see cref="IBusinessObjectPropertyPath.IsDynamic"/> 
     /// evaluates <see langword="false" />.
     /// </returns>
+    [NotNull]
     public static IBusinessObjectPropertyPath CreateStatic (IBusinessObjectClass objectClass, string propertyPathIdentifier)
     {
       return StaticBusinessObjectPropertyPath.Parse (propertyPathIdentifier, objectClass);
@@ -212,6 +214,7 @@ namespace Remotion.ObjectBinding
     /// An instance of type <see cref="IBusinessObjectPropertyPath"/> where <see cref="IBusinessObjectPropertyPath.IsDynamic"/>
     /// evaluates <see langword="false" />. 
     /// </returns>
+    [NotNull]
     public static IBusinessObjectPropertyPath CreateStatic (IBusinessObjectProperty[] properties)
     {
       return StaticBusinessObjectPropertyPath.Create (properties);
@@ -223,6 +226,7 @@ namespace Remotion.ObjectBinding
     /// An instance of type <see cref="IBusinessObjectPropertyPath"/> where <see cref="IBusinessObjectPropertyPath.IsDynamic"/>
     /// evaluates <see langword="true" />.
     /// </returns>
+    [NotNull]
     public static IBusinessObjectPropertyPath CreateDynamic (string propertyPathIdentifier)
     {
       return DynamicBusinessObjectPropertyPath.Create (propertyPathIdentifier);

@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.ObjectModel;
+using JetBrains.Annotations;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 
 namespace Remotion.ObjectBinding
@@ -34,9 +36,11 @@ namespace Remotion.ObjectBinding
   public interface IBusinessObjectPropertyPath
   {
     /// <summary> Gets the string representation of this property path. </summary>
+    [NotNull]
     string Identifier { get; }
 
     /// <summary> Gets the list of properties in this path. </summary>
+    [NotNull]
     ReadOnlyCollection<IBusinessObjectProperty> Properties { get; }
 
     /// <summary> Get a flag that indicates whether the property path will be resolved anew for each call to <see cref="GetResult"/>. </summary>
@@ -47,8 +51,9 @@ namespace Remotion.ObjectBinding
     /// <param name="unreachableValueBehavior">Defines the behavior when the property path cannot be evaluated due to a <see langword="null" /> value.</param>
     /// <param name="listValueBehavior">Defines the behavior when the property path has to resolve a list-property. </param>
     /// <returns>The result object that can be used to get the actual value of the evaluated property path. Is never <see langword="null" />. </returns>
+    [NotNull]
     IBusinessObjectPropertyPathResult GetResult (
-        IBusinessObject root,
+        [NotNull] IBusinessObject root,
         BusinessObjectPropertyPath.UnreachableValueBehavior unreachableValueBehavior,
         BusinessObjectPropertyPath.ListValueBehavior listValueBehavior);
   }
