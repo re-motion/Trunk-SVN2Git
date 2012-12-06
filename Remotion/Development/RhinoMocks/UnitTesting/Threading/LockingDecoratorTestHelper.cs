@@ -49,10 +49,12 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
       ArgumentUtility.CheckNotNull ("action", action);
       ArgumentUtility.CheckNotNull ("fakeResult", fakeResult);
 
+      _innerMock.BackToRecord ();
       _innerMock
           .Expect (mock => action (mock))
           .Return (fakeResult)
           .WhenCalled (mi => LockTestHelper.CheckLockIsHeld (_lockObject));
+      _innerMock.Replay ();
 
       var actualResult = action (_lockingDecorator);
 
@@ -64,9 +66,11 @@ namespace Remotion.Development.RhinoMocks.UnitTesting.Threading
     {
       ArgumentUtility.CheckNotNull ("action", action);
 
+      _innerMock.BackToRecord();
       _innerMock
           .Expect (action)
           .WhenCalled (mi => LockTestHelper.CheckLockIsHeld (_lockObject));
+      _innerMock.Replay ();
 
       action (_lockingDecorator);
 

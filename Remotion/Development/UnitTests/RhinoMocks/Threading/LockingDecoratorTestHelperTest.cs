@@ -37,28 +37,28 @@ namespace Remotion.Development.UnitTests.RhinoMocks.Threading
       var lockObject = new object();
 
       _helperForLockingDecorator = CreateLockingDecoratorTestHelper (
-          inner => () =>
+          inner =>
           {
             lock (lockObject)
               return inner.Get();
           },
-          inner => s =>
+          (inner, s) =>
           {
             lock (lockObject)
               inner.Do (s);
           },
           lockObject);
 
-      _helperForNonLockingDecorator = CreateLockingDecoratorTestHelper (inner => () => inner.Get(), inner => s => inner.Do (s), lockObject);
-      _helperForNonDelegatingDecorator = CreateLockingDecoratorTestHelper (inner => () => "Abc", inner => s => { }, lockObject);
+      _helperForNonLockingDecorator = CreateLockingDecoratorTestHelper (inner => inner.Get(), (inner, s) => inner.Do (s), lockObject);
+      _helperForNonDelegatingDecorator = CreateLockingDecoratorTestHelper (inner => "Abc", (inner, s) => { }, lockObject);
       _helperForFaultyDecorator = CreateLockingDecoratorTestHelper (
-          inner => () =>
+          inner =>
           {
             lock (lockObject)
               inner.Get();
             return "faulty";
           },
-          inner => s =>
+          (inner, s) =>
           {
             lock (lockObject)
               inner.Do ("faulty");
@@ -82,6 +82,13 @@ namespace Remotion.Development.UnitTests.RhinoMocks.Threading
     }
 
     [Test]
+    public void ExpectSynchronizedDelegation_Func_MultipleCallsForSameMock ()
+    {
+      Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Get (), "Abc"), Throws.Nothing);
+      Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Get (), "Abc"), Throws.Nothing);
+    }
+
+    [Test]
     public void ExpectSynchronizedDelegation_Action ()
     {
       Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Do ("Abc")), Throws.Nothing);
@@ -97,22 +104,58 @@ namespace Remotion.Development.UnitTests.RhinoMocks.Threading
               "IMyInterface.Do(\"faulty\"); Expected #0, Actual #1.\r\nIMyInterface.Do(\"Abc\"); Expected #1, Actual #0."));
     }
 
-    private LockingDecoratorTestHelper<IMyInterface> CreateLockingDecoratorTestHelper (
-        Func<IMyInterface, Func<string>> getMethodProvider, Func<IMyInterface, Action<string>> doMethodProvider, object lockObject)
+    [Test]
+    public void ExpectSynchronizedDelegation_Action_MultipleCallsForSameMock ()
     {
-      var decoratorMock = MockRepository.GenerateStrictMock<IMyInterface>();
-      var innerMock = MockRepository.GenerateStrictMock<IMyInterface>();
+      Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Do ("Abc")), Throws.Nothing);
+      Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Do ("Abc")), Throws.Nothing);
+      Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Do ("Abc")), Throws.Nothing);
+    }
 
-      decoratorMock.Expect (d => d.Get()).Do (getMethodProvider (innerMock));
-      decoratorMock.Expect (d => d.Do (Arg<string>.Is.Anything)).Do (doMethodProvider (innerMock));
+    [Test]
+    public void ExpectSynchronizedDelegation_Mixed_MultipleCallsForSameMock ()
+    {
+      Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Do ("Abc")), Throws.Nothing);
+      Assert.That (() => _helperForLockingDecorator.ExpectSynchronizedDelegation (d => d.Get (), "test"), Throws.Nothing);
+    }
 
-      return new LockingDecoratorTestHelper<IMyInterface> (decoratorMock, lockObject, innerMock);
+    private LockingDecoratorTestHelper<IMyInterface> CreateLockingDecoratorTestHelper (
+        Func<IMyInterface, string> getMethod, Action<IMyInterface, string> doMethod, object lockObject)
+    {
+      var innerMock = MockRepository.GenerateStrictMock<IMyInterface> ();
+      var decorator = new Decorator (innerMock, getMethod, doMethod);
+
+      return new LockingDecoratorTestHelper<IMyInterface> (decorator, lockObject, innerMock);
     }
 
     public interface IMyInterface
     {
       string Get ();
       void Do (string s);
+    }
+
+    private class Decorator : IMyInterface
+    {
+      private readonly IMyInterface _inner;
+      private readonly Func<IMyInterface, string> _getMethod;
+      private readonly Action<IMyInterface, string> _doMethod;
+
+      public Decorator (IMyInterface inner, Func<IMyInterface, string> getMethod, Action<IMyInterface, string> doMethod)
+      {
+        _inner = inner;
+        _getMethod = getMethod;
+        _doMethod = doMethod;
+      }
+
+      public string Get ()
+      {
+        return _getMethod (_inner);
+      }
+
+      public void Do (string s)
+      {
+        _doMethod (_inner, s);
+      }
     }
   }
 }
