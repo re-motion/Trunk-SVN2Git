@@ -40,6 +40,11 @@ namespace Remotion.Mixins.CodeGeneration
       _lockObject = lockObject;
     }
 
+    public ICodeGenerationCache InnerCache
+    {
+      get { return _innerCache; }
+    }
+
     public void Clear ()
     {
       lock (_lockObject)
