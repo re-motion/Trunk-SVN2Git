@@ -39,10 +39,13 @@ namespace Remotion.Development.UnitTesting
       return defaultServiceLocator;
     }
 
-    private static DefaultServiceLocator CreateServiceLocator (Type serviceType, Func<object> creator)
+    private static DefaultServiceLocator CreateServiceLocator (Type serviceType, params Func<object>[] creators)
     {
-      var defaultServiceLocator = CreateServiceLocator (Enumerable.Empty<ServiceConfigurationEntry>());
-      defaultServiceLocator.Register (serviceType, creator);
+      ArgumentUtility.CheckNotNull ("serviceType", serviceType);
+      ArgumentUtility.CheckNotNullOrEmpty ("creators", creators);
+
+      var defaultServiceLocator = CreateServiceLocator (Enumerable.Empty<ServiceConfigurationEntry> ());
+      defaultServiceLocator.Register (serviceType, creators);
       return defaultServiceLocator;
     }
 
@@ -75,8 +78,8 @@ namespace Remotion.Development.UnitTesting
     {
     }
 
-    public ServiceLocatorScope (Type serviceType, Func<object> creator)
-      : this (CreateServiceLocator (serviceType, creator))
+    public ServiceLocatorScope (Type serviceType, params Func<object>[] creators)
+        : this (CreateServiceLocator (serviceType, creators))
     {
     }
 

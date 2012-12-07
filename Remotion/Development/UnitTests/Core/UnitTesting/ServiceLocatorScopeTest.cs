@@ -148,8 +148,26 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
       using (new ServiceLocatorScope (typeof (object), () => obj))
       {
         Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
-        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator> ());
+        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator>());
         Assert.That (ServiceLocator.Current.GetInstance (typeof (object)), Is.SameAs (obj));
+      }
+
+      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
+    }
+
+    [Test]
+    public void Initialization_AndDispose_ServiceLocator_TypeAndFuncs ()
+    {
+      ServiceLocator.SetLocatorProvider (() => _locator1);
+      Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
+
+      var obj1 = new object();
+      var obj2 = new object();
+      using (new ServiceLocatorScope (typeof (object), () => obj1, () => obj2))
+      {
+        Assert.That (ServiceLocator.Current, Is.Not.SameAs (_locator1));
+        Assert.That (ServiceLocator.Current, Is.TypeOf<DefaultServiceLocator>());
+        Assert.That (ServiceLocator.Current.GetAllInstances (typeof (object)), Is.EqualTo (new[] { obj1, obj2 }));
       }
 
       Assert.That (ServiceLocator.Current, Is.SameAs (_locator1));
