@@ -14,29 +14,28 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-
 using System;
 using System.Runtime.Serialization;
-using Remotion.TypePipe.Serialization.Implementation;
+using Remotion.Reflection;
 
-namespace Remotion.TypePipe.UnitTests.Serialization.Implementation
+namespace Remotion.TypePipe.Serialization.Implementation
 {
-  public class TestableSerializationSurrogateBase : SerializationSurrogateBase
+  /// <summary>
+  /// Acts as a helper for the .NET deserialization process of modified types that implement <see cref="ISerializable"/> and declare a
+  /// deserialization constructor.
+  /// </summary>
+  [Serializable]
+  public class DeserializationSurrogate : DeserializationSurrogateBase
   {
-    private readonly Func<IObjectFactory, Type, StreamingContext, object> _createRealObjectAssertions;
-
-    public TestableSerializationSurrogateBase (
-        SerializationInfo serializationInfo,
-        StreamingContext streamingContext,
-        Func<IObjectFactory, Type, StreamingContext, object> createRealObjectAssertions)
+    public DeserializationSurrogate (SerializationInfo serializationInfo, StreamingContext streamingContext)
         : base (serializationInfo, streamingContext)
     {
-      _createRealObjectAssertions = createRealObjectAssertions;
     }
 
     protected override object CreateRealObject (IObjectFactory objectFactory, Type underlyingType, StreamingContext context)
     {
-      return _createRealObjectAssertions (objectFactory, underlyingType, context);
+      var paramList = ParamList.Create (SerializationInfo, context);
+      return objectFactory.CreateObject (underlyingType, paramList, allowNonPublicConstructor: true);
     }
   }
 }
