@@ -23,9 +23,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
   {
     protected void CompareEqualValues (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
     {
-      BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
-      sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Ascending);
-
       BocListRow rowLeft = new BocListRow (0, left);
       BocListRow rowRight = new BocListRow (0, right);
 
@@ -39,9 +36,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
     protected void CompareAscendingValues (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
     {
-      BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
-      sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Ascending);
-
       BocListRow rowLeft = new BocListRow (0, left);
       BocListRow rowRight = new BocListRow (0, right);
 
@@ -55,9 +49,6 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
     protected void CompareDescendingValues (IBocSortableColumnDefinition column, IBusinessObject left, IBusinessObject right)
     {
-      BocListSortingOrderEntry[] sortingOrder = new BocListSortingOrderEntry[1];
-      sortingOrder[0] = new BocListSortingOrderEntry (column, SortingDirection.Descending);
-
       BocListRow rowLeft = new BocListRow (0, left);
       BocListRow rowRight = new BocListRow (0, right);
 

@@ -211,6 +211,7 @@
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocCustomColumnDefinitionCellValueComparer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocListRowSortExtension.cs" />
     <Compile Include="UI\Controls\BocListImplementation\Sorting\BocSimpleColumnDefinitionCellValueComparer.cs" />
+    <Compile Include="UI\Controls\BocListImplementation\Sorting\BusinessObjectPropertyPathBasedComparer.cs" />
     <Compile Include="UI\Controls\BocListImplementation\UniqueIdentifierBasedRowIDProvider.cs" />
     <Compile Include="UI\Controls\BocListImplementation\SortedRow.cs" />
     <Compile Include="UI\Controls\BocReferenceValueImplementation\BocAutoCompleteReferenceValueInvalidDisplayNameValidator.cs" />
