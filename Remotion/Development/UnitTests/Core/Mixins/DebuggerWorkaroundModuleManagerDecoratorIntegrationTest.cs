@@ -61,7 +61,9 @@ namespace Remotion.Development.UnitTests.Core.Mixins
     [Test]
     public void ScopeInitialization ()
     {
-      Assert.That (((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).ModuleInfo, Is.TypeOf<DebuggerWorkaroundModuleManagerDecorator> ());
+      var moduleInfo = ((ConcreteTypeBuilder) ConcreteTypeBuilder.Current).ModuleInfo;
+      Assert.That (moduleInfo, Is.TypeOf<LockingCodeGenerationModuleInfoDecorator> ());
+      Assert.That (((LockingCodeGenerationModuleInfoDecorator) moduleInfo).InnerCodeGenerationModuleInfo, Is.TypeOf<DebuggerWorkaroundModuleManagerDecorator>());
     }
 
     [Test]
@@ -187,7 +189,7 @@ namespace Remotion.Development.UnitTests.Core.Mixins
       get
       {
         var concreteTypeBuilder = (ConcreteTypeBuilder) ConcreteTypeBuilder.Current;
-        return (DebuggerWorkaroundModuleManagerDecorator) concreteTypeBuilder.ModuleInfo;
+        return (DebuggerWorkaroundModuleManagerDecorator) ((LockingCodeGenerationModuleInfoDecorator) concreteTypeBuilder.ModuleInfo).InnerCodeGenerationModuleInfo;
       }
     }
   }
