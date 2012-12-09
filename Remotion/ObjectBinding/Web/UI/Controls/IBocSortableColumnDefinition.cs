@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Remotion.Web.UI.Controls;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
@@ -23,6 +25,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
   public interface IBocSortableColumnDefinition : IControlItem
   {
     bool IsSortable { get; }
+
+    /// <summary>
+    /// Creates an implementation of <see cref="IComparer{T}"/> that can be used to comparere two <see cref="BocListRow"/> instances 
+    /// based on the this column definition.
+    /// </summary>
+    /// <returns>An implementation of <see cref="IComparer{T}"/>, typed to <see cref="BocListRow"/>. Does not return <see langword="null" />.</returns>
+    [NotNull]
     IComparer<BocListRow> CreateCellValueComparer ();
   }
 }
