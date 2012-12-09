@@ -174,6 +174,12 @@ namespace Remotion.ObjectBinding.UnitTests.Core.BusinessObjectPropertyPaths.Busi
                 .EqualTo ("Accass was denied to property #0 of property path 'Identifier'. Cannot evaluate rest of path."));
     }
 
+    [Test]
+    public void Test_ToString ()
+    {
+      Assert.That (_path.ToString(), Is.EqualTo (_path.Identifier));
+    }
+
     private void ExpectOnceOnReferencePropertyIsAccessible (bool returnValue)
     {
       _testHelper.ExpectOnceOnIsAccessible (
