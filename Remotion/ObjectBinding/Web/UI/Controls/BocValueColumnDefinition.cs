@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using JetBrains.Annotations;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls
 {
@@ -41,7 +42,8 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// Creates an implementation of <see cref="IComparer{T}"/> that can be used to comparere two <see cref="BocListRow"/> instances based on the this
     /// column definition.
     /// </summary>
-    /// <returns>An implementation of <see cref="IComparer{T}"/>, typed to <see cref="BocListRow"/>.</returns>
+    /// <returns>An implementation of <see cref="IComparer{T}"/>, typed to <see cref="BocListRow"/>. Does not return <see langword="null" />.</returns>
+    [NotNull]
     protected abstract IComparer<BocListRow> CreateCellValueComparer ();
 
     /// <summary> 
