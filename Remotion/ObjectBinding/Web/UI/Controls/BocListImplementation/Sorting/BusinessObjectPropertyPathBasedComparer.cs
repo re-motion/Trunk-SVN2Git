@@ -29,6 +29,31 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
   public sealed class BusinessObjectPropertyPathBasedComparer : IComparer<BocListRow>
   {
+    public struct MyStruct<T>
+    {
+      private readonly Func<T> _valueFactory;
+      private bool _isEvaluated;
+      private T _value;
+      public MyStruct (Func<T> valueFactory)
+      {
+        _valueFactory = valueFactory;
+        _isEvaluated = false;
+        _value = default(T);
+      }
+
+      public T Value {
+        get
+        {
+          if (!_isEvaluated)
+          {
+            _value = _valueFactory();
+            _isEvaluated = true;
+          }
+          return _value;
+        }
+      }
+    }
+
     private static readonly ILog s_log = LogManager.GetLogger (typeof (BusinessObjectPropertyPathBasedComparer));
 
     private readonly IBusinessObjectPropertyPath _propertyPath;
@@ -39,6 +64,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
       ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
 
       _propertyPath = propertyPath;
+    }
+
+    public IBusinessObjectPropertyPath PropertyPath
+    {
+      get { return _propertyPath; }
     }
 
     public int Compare (BocListRow rowA, BocListRow rowB)
