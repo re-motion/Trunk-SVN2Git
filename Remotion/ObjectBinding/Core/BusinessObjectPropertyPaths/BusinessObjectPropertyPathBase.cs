@@ -89,6 +89,11 @@ namespace Remotion.ObjectBinding.BusinessObjectPropertyPaths
       throw new InvalidOperationException ("Property path enumeration can never fall through.");
     }
 
+    public override string ToString ()
+    {
+      return Identifier;
+    }
+
     private IBusinessObject GetPropertyValue (
         IBusinessObject currentObject,
         IBusinessObjectReferenceProperty currentProperty,

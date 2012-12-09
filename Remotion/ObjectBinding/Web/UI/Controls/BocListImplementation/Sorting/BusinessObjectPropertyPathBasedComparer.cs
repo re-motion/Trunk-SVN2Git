@@ -18,18 +18,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+using Remotion.Collections;
 using Remotion.Logging;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths.Results;
 using Remotion.Utilities;
 
 namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 {
+  using CacheValue = Tuple<DoubleCheckedLockingContainer<object>, DoubleCheckedLockingContainer<string>>;
+
   public sealed class BusinessObjectPropertyPathBasedComparer : IComparer<BocListRow>
   {
     private static readonly ILog s_log = LogManager.GetLogger (typeof (BusinessObjectPropertyPathBasedComparer));
 
     private readonly IBusinessObjectPropertyPath _propertyPath;
+    private readonly ICache<BocListRow, CacheValue> _cache = CacheFactory.Create<BocListRow, CacheValue>();
 
     public BusinessObjectPropertyPathBasedComparer (IBusinessObjectPropertyPath propertyPath)
     {
@@ -87,48 +90,60 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
 
     private object GetPropertyPathValueFromCache (BocListRow row)
     {
-      return GetPropertyPathValue (row);
+      return _cache.GetOrCreateValue (row, GetPropertyPathResult).Item1.Value;
     }
 
-    private object GetPropertyPathValue (BocListRow row)
+    private string GetPropertyPathStringValueFromCache (BocListRow row)
     {
+      return _cache.GetOrCreateValue (row, GetPropertyPathResult).Item2.Value;
+    }
+
+    private CacheValue GetPropertyPathResult (BocListRow row)
+    {
+      IBusinessObjectPropertyPathResult result;
       try
       {
-        var result = _propertyPath.GetResult (
+        result = _propertyPath.GetResult (
             row.BusinessObject,
             BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
             BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
+      }
+      catch (Exception e)
+      {
+        s_log.ErrorFormat (
+            e, "Exception thrown while evaluating the result for property path '{0}' in row {1} of BocList.", _propertyPath.Identifier, row.Index);
+        return null;
+      }
 
+      return Tuple.Create (
+          new DoubleCheckedLockingContainer<object> (() => GetResultValue (result, row)),
+          new DoubleCheckedLockingContainer<string> (() => GetResultString (result, row)));
+    }
+
+    private object GetResultValue (IBusinessObjectPropertyPathResult result, BocListRow row)
+    {
+      try
+      {
         return result.GetValue();
       }
       catch (Exception e)
       {
         s_log.ErrorFormat (
-            e, "Exception thrown while reading the value for property path '{0}' in row {1} of BocList.", _propertyPath, row.Index);
+            e, "Exception thrown while reading the value for property path '{0}' in row {1} of BocList.", _propertyPath.Identifier, row.Index);
         return null;
       }
     }
 
-    private string GetPropertyPathStringValueFromCache (BocListRow row)
-    {
-      return GetPropertyPathStringValue (row);
-    }
-
-    private string GetPropertyPathStringValue (BocListRow row)
+    private string GetResultString (IBusinessObjectPropertyPathResult result, BocListRow row)
     {
       try
       {
-        var result = _propertyPath.GetResult (
-            row.BusinessObject,
-            BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
-            BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
-
-        return result.GetString (GetPropertyPathResultFormatString(result));
+        return result.GetString (GetPropertyPathResultFormatString (result));
       }
       catch (Exception e)
       {
         s_log.ErrorFormat (
-            e, "Exception thrown while reading string value for property path '{0}' in row {1} of BocList.", _propertyPath, row.Index);
+            e, "Exception thrown while reading string value for property path '{0}' in row {1} of BocList.", _propertyPath.Identifier, row.Index);
         return null;
       }
     }
