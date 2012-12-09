@@ -573,6 +573,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Utilities\NullableTypeUtilityTest.cs" />
+    <Compile Include="Utilities\NullComparerTest.cs" />
     <Compile Include="Utilities\NullValueConverterTest.cs" />
     <Compile Include="Utilities\PostActionDisposableDecoratorTest.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparerTest.cs" />

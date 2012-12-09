@@ -472,6 +472,7 @@
     <Compile Include="Utilities\MemberInfoEqualityComparer.cs" />
     <Compile Include="Utilities\MemberInfoFromExpressionUtility.cs" />
     <Compile Include="Utilities\NullableTypeUtility.cs" />
+    <Compile Include="Utilities\NullComparer.cs" />
     <Compile Include="Utilities\NullValueConverter.cs" />
     <Compile Include="Utilities\PostActionDisposableDecorator.cs" />
     <Compile Include="Utilities\ReferenceEqualityComparer.cs" />
