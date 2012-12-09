@@ -245,7 +245,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override IComparer<BocListRow> CreateCellValueComparer ()
     {
-      return new BocSimpleColumnDefinitionCellValueComparer (this);
+      return GetPropertyPath().CreateComparer();
     }
 
     IBusinessObjectClass IBusinessObjectClassSource.BusinessObjectClass

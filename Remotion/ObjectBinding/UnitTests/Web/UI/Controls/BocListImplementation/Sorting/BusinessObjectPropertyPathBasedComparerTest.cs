@@ -26,7 +26,7 @@ using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting;
 namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation.Sorting
 {
   [TestFixture]
-  public class BusinessObjectPropertyPathBasedComparerTest : BusinessObjectPropertyPathBasedComparerTestBase
+  public class BusinessObjectPropertyPathBasedComparerTest
   {
     [Test]
     public void Compare_StringValues ()

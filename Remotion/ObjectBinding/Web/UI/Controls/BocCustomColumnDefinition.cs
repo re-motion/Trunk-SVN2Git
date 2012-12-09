@@ -440,11 +440,12 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// instances based on this <see cref="BocCustomColumnDefinitionCell"/>.
     /// </summary>
     /// <returns>An implementation of <see cref="IComparer{T}"/>, typed to <see cref="BocListRow"/>.</returns>
-    /// <remarks>The default type created is <see cref="BocCustomColumnDefinitionCellValueComparer"/>.</remarks>
+    /// <remarks>The default type created is <see cref="BusinessObjectPropertyPathBasedComparer"/>.</remarks>
     protected virtual IComparer<BocListRow> CreateCellValueComparer (BocCustomCellArguments arguments)
     {
       ArgumentUtility.CheckNotNull ("arguments", arguments);
-      return new BocCustomColumnDefinitionCellValueComparer (arguments.ColumnDefinition);
+
+      return arguments.ColumnDefinition.GetPropertyPath().CreateComparer();
     }
 
     private void InitArguments (BocCustomCellArguments arguments)

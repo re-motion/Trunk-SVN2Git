@@ -132,7 +132,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
 
     protected override IComparer<BocListRow> CreateCellValueComparer ()
     {
-      return new BocCompoundColumnDefinitionCellValueComparer (this);
+      return new CompoundComparer<BocListRow> (
+          _propertyPathBindings
+              .Cast<PropertyPathBinding>()
+              .Select (b => b.GetPropertyPath().CreateComparer()));
     }
   }
 }
