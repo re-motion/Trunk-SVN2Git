@@ -30,15 +30,13 @@ namespace Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation.Sorting
     /// <summary>
     /// Creates a <see cref="IComparer{T}"/> for the <paramref name="propertyPath"/>.
     /// </summary>
-    /// <returns>
-    /// <see cref="BusinessObjectPropertyPathBasedComparer"/> or a <see cref="NullComparer{T}"/>
-    ///  if <paramref name="propertyPath"/> is <see langword="null" />.
-    /// </returns>
+    /// <param name="propertyPath">
+    /// The <see cref="IBusinessObjectPropertyPath"/> for which the comparer will be created. Must not be <see langword="null" />.
+    /// </param>
     [NotNull]
-    public static IComparer<BocListRow> CreateComparer (this IBusinessObjectPropertyPath propertyPath)
+    public static IComparer<BocListRow> CreateComparer ([NotNull] this IBusinessObjectPropertyPath propertyPath)
     {
-      if (propertyPath == null)
-        return new NullComparer<BocListRow>();
+      ArgumentUtility.CheckNotNull ("propertyPath", propertyPath);
 
       return new BusinessObjectPropertyPathBasedComparer (propertyPath);
     }

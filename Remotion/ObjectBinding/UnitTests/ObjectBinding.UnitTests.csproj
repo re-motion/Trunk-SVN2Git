@@ -109,6 +109,8 @@
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeThree.cs" />
     <Compile Include="Core\BusinessObjectPropertyPaths\TestDomain\TypeTwo.cs" />
     <Compile Include="Core\BusinessObjectPropertyPathTest.cs" />
+    <Compile Include="Web\UI\Controls\BocCompundColumnDefinitionTest.cs" />
+    <Compile Include="Web\UI\Controls\BocCustomColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\BocListRowTest.cs" />
     <Compile Include="Web\UI\Controls\BocListImplementation\ListUtilityTest.cs" />
     <Compile Include="Web.Legacy\BocLegacyServiceConfigurationServiceTest.cs" />
@@ -434,6 +436,7 @@
     <Compile Include="Web\UI\Controls\BocReferenceValueImplementation\Rendering\TestableBocReferenceValueRenderer.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocReferenceValueTest.cs" />
+    <Compile Include="Web\UI\Controls\BocSimpleColumnDefinitionTest.cs" />
     <Compile Include="Web\UI\Controls\BocTest.cs" />
     <Compile Include="Web\UI\Controls\BocTextBoxValueMock.cs" />
     <Compile Include="Web\UI\Controls\BocTextValueImplementation\Rendering\IBocMultilineTextValueRendererTest.cs" />

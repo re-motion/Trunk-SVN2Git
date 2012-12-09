@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Microsoft.Practices.ServiceLocation;
 using Remotion.ObjectBinding.Design;
 using Remotion.ObjectBinding.Web.UI.Controls.BocListImplementation;
@@ -110,6 +111,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       set { _customCellArgument = StringUtility.NullToEmpty (value); }
     }
 
+    [NotNull]
     public IBusinessObjectPropertyPath GetPropertyPath()
     {
       return _propertyPathBinding.GetPropertyPath();
@@ -429,6 +431,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
               BocCustomColumnDefinitionMode.ControlInEditedRow));
     }
     
+    [NotNull]
     internal IComparer<BocListRow> CreateCellValueComparerInternal (BocCustomCellArguments arguments)
     {
       InitArguments (arguments);
@@ -441,6 +444,7 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// </summary>
     /// <returns>An implementation of <see cref="IComparer{T}"/>, typed to <see cref="BocListRow"/>.</returns>
     /// <remarks>The default type created is <see cref="BusinessObjectPropertyPathBasedComparer"/>.</remarks>
+    [NotNull]
     protected virtual IComparer<BocListRow> CreateCellValueComparer (BocCustomCellArguments arguments)
     {
       ArgumentUtility.CheckNotNull ("arguments", arguments);

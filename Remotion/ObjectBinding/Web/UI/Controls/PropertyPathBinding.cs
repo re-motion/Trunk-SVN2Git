@@ -18,6 +18,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.ObjectBinding.BusinessObjectPropertyPaths;
 using Remotion.ObjectBinding.Design;
 using Remotion.Utilities;
@@ -99,13 +100,11 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
     /// <summary> 
     ///   Gets the <see cref="IBusinessObjectPropertyPath"/> mananged by this <see cref="PropertyPathBinding"/>.
     /// </summary>
+    [NotNull]
     public IBusinessObjectPropertyPath GetPropertyPath ()
     {
       if (_propertyPath != null)
         return _propertyPath;
-
-      if (OwnerControl == null)
-        throw new InvalidOperationException ("The property path could not be resolved because the object is not part of an IBusinessObjectBoundControl.");
 
       if (StringUtility.IsNullOrEmpty (_propertyPathIdentifier))
       {
@@ -119,10 +118,10 @@ namespace Remotion.ObjectBinding.Web.UI.Controls
       {
         if (BusinessObjectClass == null)
         {
-          if (Remotion.Web.Utilities.ControlHelper.IsDesignMode (OwnerControl))
-            return new NullBusinessObjectPropertyPath();
-          else
+          if (!Remotion.Web.Utilities.ControlHelper.IsDesignMode (OwnerControl))
             throw new InvalidOperationException ("The property path could not be resolved because the Business Object Class is not set.");
+
+          return new NullBusinessObjectPropertyPath();
         }
         else
         {
