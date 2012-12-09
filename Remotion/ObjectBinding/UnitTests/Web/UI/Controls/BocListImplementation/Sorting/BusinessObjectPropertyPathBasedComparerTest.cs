@@ -196,7 +196,7 @@ namespace Remotion.ObjectBinding.UnitTests.Web.UI.Controls.BocListImplementation
 
       var resultThrows = MockRepository.GenerateStub<IBusinessObjectPropertyPathResult>();
       resultThrows.Stub (_ => _.GetValue()).Return (new object());
-      resultA.Stub (_ => _.GetString (null)).Throw (new Exception());
+      resultThrows.Stub (_ => _.GetString (null)).Throw (new Exception());
 
       var propertyPathStub = MockRepository.GenerateStub<IBusinessObjectPropertyPath>();
 
