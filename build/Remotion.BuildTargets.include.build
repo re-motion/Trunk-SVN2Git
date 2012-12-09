@@ -142,7 +142,12 @@
     <MSBuild.ExtensionPack.Science.Maths TaskAction="Add" Numbers="@(NumberOfTestErrorsPerProject)">
       <Output PropertyName="_errors" TaskParameter="Result"/>
     </MSBuild.ExtensionPack.Science.Maths>
-      
+
+    <!-- NUnit-Task output error compensation. Remove when implementing RM-5154 (update of MSBuild Extension Pack) -->
+    <MSBuild.ExtensionPack.Science.Maths TaskAction="Subtract" Numbers="$(_failures);$(_errors)">
+      <Output PropertyName="_failures" TaskParameter="Result"/>
+    </MSBuild.ExtensionPack.Science.Maths>
+
     <Error
       Text="Running Unit-Tests failed because of $(_failures) failures and/or $(_errors) errors."
       Condition="$(_failures) &gt; 0 or $(_errors) &gt; 0"/>
