@@ -43,10 +43,10 @@
   <Import Project="Remotion.Tasks.include.build" />
   <Import Project="Remotion.DependDB.include.build" />
 
-  <Target Name="CreatePackages" DependsOnTargets="CreateZipPackages;CreateDependDBPackages"/>
+  <Target Name="CreatePackages" DependsOnTargets="CreateZipPackages;CreateDependDBPackages;CreateAndAddReleaseNotes"/>
   <Target Name="CreateZipPackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage"/>
 
-  <Target Name="DeployPackages" DependsOnTargets="CreateReleaseNotes;AddReleaseNotesToBinaryPackage;UploadToShares;UploadToCodePlex;UploadToDependDB" />
+  <Target Name="DeployPackages" DependsOnTargets="UploadReleaseNotes;UploadToShares;UploadToCodePlex;UploadToDependDB" />
     
   <!-- Source Package -->
   
@@ -114,8 +114,46 @@
   </Target>
 
   <!-- Release Notes -->
+  
+  <Target Name="CreateAndAddReleaseNotes" DependsOnTargets="CopyReleaseNotesFromShareToTemp;CreateReleaseNotes;AddReleaseNotesToBinaryPackage;CopyNewReleaseNotesFromTempToOutput"/>
 
-  <Target Name="CreateReleaseNotes" DependsOnTargets="CreateReleaseNotesDirectoryProperty">
+  <Target Name="CopyReleaseNotesFromShareToTemp" DependsOnTargets="CreateReleaseNotesProperties">
+    <Message Text="Copy release notes from share to local temp directory..." Importance="High"/>
+    
+    <PropertyGroup>
+      <_regexVersionPatten>v(?&lt;version&gt;\d+\.\d+\.\d+(\.\d+)?)$</_regexVersionPatten>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <_releaseNoteFiles Remove="@(_releaseNoteFiles)"/>
+      <_releaseNoteFiles Include="$(ReleaseNotesRemoteShareDirectory)*.*" />
+      <_releaseNoteFiles>
+        <Version>$([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Groups[&quot;version&quot;].Value)</Version>
+      </_releaseNoteFiles>
+
+      <_emptyReleaseNoteFiles Remove="@(_emptyReleaseNoteFiles)"/>
+      <_emptyReleaseNoteFiles Include="@(_releaseNoteFiles)"
+                              Condition="$([System.IO.File]::ReadAllText (%(Identity)).Length) == 0"/>
+
+      <_futureReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)"/>
+      <_futureReleaseNoteFiles Include="@(_releaseNoteFiles)"
+                               Condition="$( [System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse (%(Version))) ) ) &lt; 0"/>
+
+      <_releaseNoteFiles Remove="@(_emptyReleaseNoteFiles)" />
+      <_releaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_releaseNoteFiles)" DestinationFolder="$(ReleaseNotesLocalTempDirectory)"/>
+
+    <ItemGroup>
+      <OldReleaseNoteFiles Remove="@(OldReleaseNoteFiles)"/>
+      <OldReleaseNoteFiles Include="$(ReleaseNotesLocalTempDirectory)*.*"/>
+    </ItemGroup>
+
+    <Message Text="Done copy release notes from share to local temp directory." Importance="High"/>
+  </Target>
+
+  <Target Name="CreateReleaseNotes" DependsOnTargets="CreateReleaseNotesProperties">
     <Message Text="Creating release notes, PackageName=$(PackageName)" Importance="High"/>
 
     <PropertyGroup>
@@ -123,68 +161,65 @@
       <_jiraComponent Condition="$(ReleaseNotesComponentName) != ''">component='$(ReleaseNotesComponentName)'</_jiraComponent>
     </PropertyGroup>
 
-    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesDirectory) $(_jiraComponent)"
+    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesLocalTempDirectory) $(_jiraComponent)"
           WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
-
+    
     <Message Text="Done creating release notes, PackageName=$(PackageName)" Importance="High"/>
   </Target>
-  
-  <Target Name="AddReleaseNotesToBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateReleaseNotesDirectoryProperty">
-    <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
 
-    <PropertyGroup>
-      <_regexVersionPatten>v(?&lt;version&gt;\d+\.\d+\.\d+(\.\d+)?)$</_regexVersionPatten>
-    </PropertyGroup>
+  <Target Name="AddReleaseNotesToBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateReleaseNotesProperties">
+    <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
+    
+    <ItemGroup>
+      <_tempReleaseNoteFiles Remove="@(_tempReleaseNoteFiles)"/>
+      <_tempReleaseNoteFiles Include="$(ReleaseNotesLocalTempDirectory)**" />
+    </ItemGroup>
+
+    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
+                                             ZipFileName="$(BinaryZipFile)"
+                                             RemoveRoot="$(ReleaseNotesLocalTempDirectoryRoot)"
+                                             CompressFiles="@(_tempReleaseNoteFiles)"
+                                             Condition="@(_tempReleaseNoteFiles) != ''"/>
+  </Target>
+
+  <Target Name="CopyNewReleaseNotesFromTempToOutput" DependsOnTargets="CreateReleaseNotesProperties">
+    <Message Text="Copy new release notes from local temp directory to local output directory..." Importance="High"/>
+    
+    <ItemGroup>
+      <_newReleaseNoteFiles Remove="@(_newReleaseNoteFiles)"/>
+      <_newReleaseNoteFiles Include="$(ReleaseNotesLocalTempDirectory)*.*"/>
+      <_newReleaseNoteFiles Remove="@(OldReleaseNoteFiles)"/>
+    </ItemGroup>
+    
+    <Message Text="New release note files: '@(_newReleaseNoteFiles)'" Importance="High"/>
+    <Copy SourceFiles="@(_newReleaseNoteFiles)" DestinationFolder="$(ReleaseNotesLocalOutputDirectory)"/>
+
+    <Message Text="Done copy new release notes from local temp directory to local output directory." Importance="High"/>
+  </Target>
+  
+  <Target Name="UploadReleaseNotes" DependsOnTargets="CreatePackageProperties;CreateReleaseNotesProperties">
+    <Message Text="Uploading release notes, PackageName=$(PackageName)" Importance="High"/>
 
     <ItemGroup>
       <_releaseNoteFiles Remove="@(_releaseNoteFiles)"/>
-      <_releaseNoteFiles Include="$(ReleaseNotesDirectory)*.*" />
-      <_releaseNoteFiles>
-          <Version>$([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Groups[&quot;version&quot;].Value)</Version>
-      </_releaseNoteFiles>
-
-      <_emptyReleaseNoteFiles Remove="@(_emptyReleaseNoteFiles)"/>
-      <_emptyReleaseNoteFiles Include="@(_releaseNoteFiles)" 
-                              Condition="$([System.IO.File]::ReadAllText (%(Identity)).Length) == 0"/>
-
-      <_futureReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)"/>
-      <_futureReleaseNoteFiles Include="@(_releaseNoteFiles)" 
-                               Condition="$( [System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse (%(Version))) ) ) &lt; 0"/>
-
-      <_releaseNoteFiles Remove="@(_emptyReleaseNoteFiles)" />
-      <_releaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
+      <_releaseNoteFiles Include="$(ReleaseNotesLocalOutputDirectory)**" />
     </ItemGroup>
 
-    <PropertyGroup>
-      <_tempReleaseNotesDirectory>$(TempDirectory)$([System.Guid]::NewGuid())\</_tempReleaseNotesDirectory>
-    </PropertyGroup>
+    <Copy SourceFiles="@(_releaseNoteFiles)" DestinationFolder="$(ReleaseNotesRemoteShareDirectory)"/>
     
-    <Copy DestinationFolder="$(_tempReleaseNotesDirectory)release-notes" SourceFiles="@(_releaseNoteFiles)" />
-
-    <ItemGroup>
-      <_tempReleaseNoteFiles Remove="@(_tempReleaseNoteFiles)"/>
-      <_tempReleaseNoteFiles Include="$(_tempReleaseNotesDirectory)**" />
-    </ItemGroup>
-    
-    <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
-                                             ZipFileName="$(BinaryZipFile)"
-                                             RemoveRoot="$(_tempReleaseNotesDirectory)"
-                                             CompressFiles="@(_tempReleaseNoteFiles)" 
-                                             Condition="@(_tempReleaseNoteFiles) != ''"/>
-
-    <PropertyGroup>
-      <_releaseNotesFile>$(ReleaseNotesDirectory)ReleaseNotes_v$(Version).html</_releaseNotesFile>
-      <_hasResolvedIssues Condition="Exists ($(_releaseNotesFile)) AND $([System.IO.File]::ReadAllText ($(_releaseNotesFile)).Length) > 0">True</_hasResolvedIssues>
-      <UploadToCodePlex Condition="$(UploadToCodePlex) == 'True' AND $(_hasResolvedIssues) != 'True'">False</UploadToCodePlex>
-    </PropertyGroup>
+    <Message Text="Done uploading release notes, PackageName=$(PackageName)" Importance="High"/>
   </Target>
 
-  <Target Name="CreateReleaseNotesDirectoryProperty" DependsOnTargets="CreatePackageProperties">
+  <Target Name="CreateReleaseNotesProperties" DependsOnTargets="CreatePackageProperties">
     <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
 
     <PropertyGroup>
       <_releaseNotesVersionDirectory>$([System.Version]::Parse ($(Version)).ToString (2))</_releaseNotesVersionDirectory>
-      <ReleaseNotesDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\$(_releaseNotesVersionDirectory)\</ReleaseNotesDirectory>
+
+      <ReleaseNotesLocalTempDirectoryRoot>$(TempDirectory)\$([System.Guid]::NewGuid())\</ReleaseNotesLocalTempDirectoryRoot>
+      <ReleaseNotesLocalTempDirectory>$(ReleaseNotesLocalTempDirectoryRoot)release-notes\</ReleaseNotesLocalTempDirectory>
+      <ReleaseNotesLocalOutputDirectory>$(OutputDirectory)ReleaseNotes\</ReleaseNotesLocalOutputDirectory>
+      <ReleaseNotesRemoteShareDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\$(_releaseNotesVersionDirectory)\</ReleaseNotesRemoteShareDirectory>
     </PropertyGroup>
   </Target>
 
@@ -222,7 +257,15 @@
     <Message Text="Done uploading to shares, PackageName=$(PackageName)" Importance="High"/>
   </Target>
 
-  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties;UploadToCodePlexInternal" />
+  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties;CheckUploadToCodePlex;UploadToCodePlexInternal" />
+  
+  <Target Name="CheckUploadToCodePlex" DependsOnTargets="CreateReleaseNotesProperties">
+    <PropertyGroup>
+      <_releaseNotesFile>$(ReleaseNotesLocalTempDirectory)ReleaseNotes_v$(Version).html</_releaseNotesFile>
+      <_hasResolvedIssues Condition="Exists ($(_releaseNotesFile)) AND $([System.IO.File]::ReadAllText ($(_releaseNotesFile)).Length) > 0">True</_hasResolvedIssues>
+      <UploadToCodePlex Condition="$(UploadToCodePlex) == 'True' AND $(_hasResolvedIssues) != 'True'">False</UploadToCodePlex>
+    </PropertyGroup>
+  </Target>
   
   <Target Name="UploadToCodePlexInternal"
           DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty"
