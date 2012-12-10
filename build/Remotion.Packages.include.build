@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <!-- Important: Keep list order! Core depends on Relinq, so Relinq should be
-	     ordered first. Especially required for DependDB import (DependDB.Receiver) -->
+         ordered first. Especially required for DependDB import (DependDB.Receiver) -->
     
     <AllPackages Include="Relinq">
       <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
@@ -75,6 +75,12 @@
       <ProductName>re-motion core framework (www.re-motion.org)</ProductName>
       <ProductNameShort>re-mix</ProductNameShort>
     </AllPackages>
+  </ItemGroup>
+
+  <ItemGroup>
+    <NuGetPackages Include="Relinq.Frontend">
+      <PackageDeclaration>Remotion.NuGet.Packaging.Relinq.Frontend.build</PackageDeclaration>
+    </NuGetPackages>
   </ItemGroup>
 
 </Project>
