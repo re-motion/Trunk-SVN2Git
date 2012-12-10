@@ -18,8 +18,8 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <ItemGroup>
-    <!-- Important: Keep list order, Core depends on Relinq and should be done
-         first. Especially required for DependDB import by DependDB.Receiver -->
+    <!-- Important: Keep list order! Core depends on Relinq, so Relinq should be
+	     ordered first. Especially required for DependDB import (DependDB.Receiver) -->
     
     <AllPackages Include="Relinq">
       <PackageDeclaration>Remotion.Packaging.Relinq.build</PackageDeclaration>
