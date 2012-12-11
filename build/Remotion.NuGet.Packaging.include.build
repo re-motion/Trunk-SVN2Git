@@ -17,8 +17,13 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
+  </PropertyGroup>
+  
   <Target Name="CreateNuGetProperties">
     <PropertyGroup>
+      <NuGetToolPath>$(SolutionDirectory)prereq\Tools\NuGet\</NuGetToolPath>
       <NuGetTempDirectory>$(TempDirectory)$([System.Guid]::NewGuid())\NuGet\package\</NuGetTempDirectory>
       <NuGetTempLibDirectory>$(NuGetTempDirectory)lib\net35\</NuGetTempLibDirectory>
       <NuGetTempSrcDirectory>$(NuGetTempDirectory)src\</NuGetTempSrcDirectory>
@@ -34,7 +39,9 @@
     <Error Text="The target 'CreateNuGetStructureProperties' is not implemented." />
   </Target>
 
-  <Import Project="Remotion.Tasks.include.build" />
+  <!--<Import Project="Remotion.Tasks.include.build" />-->
+  <!-- Remotion.Packaging.include required for CheckUploadToCodePlexAndNuGet -->
+  <Import Project="Remotion.Packaging.include.build"/>
   
   <Target Name="CreateNuGetStructure" DependsOnTargets="CreateNuGetProperties;CreateNuGetStructureProperties">
     <MakeDir Directories="$(NuGetTempDirectory)"/>
@@ -49,19 +56,24 @@
   
   <Target Name="CreateNuGetPackage" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties;CreateNuGetStructure">
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
-    
-    <NuGetPack NuSpecFile="$(NuGetTempDirectory)$(NuSpecFileName)"
+
+    <MakeDir Directories="$(NuGetOutputDirectory)"/>
+    <NuGetPack ToolPath="$(NuGetToolPath)"
+               NuSpecFile="$(NuGetTempDirectory)$(NuSpecFileName)"
                Version="$(Version)"
-               OutputDirectory="$(NuGetOutputDirectory)"/>
+               OutputDirectory="$(NuGetOutputDirectory.TrimEnd('\'))"/>
   </Target>
+
+  <Target Name="UploadNuGetPackage" DependsOnTargets="CheckUploadToCodePlexAndNuGet;UploadNuGetPackageInternal" />
   
-  <Target Name="UploadNuGetPackage" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties;CreateNuGetApiKey">
+  <Target Name="UploadNuGetPackageInternal" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties;CreateNuGetApiKey" Condition="$(UploadToNuGet) == 'True'">
     <ItemGroup>
         <_packageFile Remove="@(_packageFile)"/>
         <_packageFile Include="$(NuGetOutputDirectory)*.nupkg"/>
     </ItemGroup>
   
-    <NuGetPush PackageFile="@(_packageFile)"
+    <NuGetPush ToolPath="$(NuGetToolPath)"
+               PackageFile="@(_packageFile)"
                ApiKey="$(NuGetApiKey)"/>
   </Target>
 
