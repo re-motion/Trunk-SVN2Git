@@ -17,7 +17,6 @@
 using System;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using System.Reflection;
 using Remotion.Utilities;
 
 namespace Remotion.Development.UnitTests.Core.UnitTesting
@@ -54,7 +53,13 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting
     public void AppDomainIsCreated ()
     {
       AppDomain current = AppDomain.CurrentDomain;
-      AppDomainRunner.Run (delegate (object[] args) { Assert.AreNotSame (args[0], AppDomain.CurrentDomain); }, current);
+      AppDomainRunner.Run (
+          delegate (object[] args)
+          {
+            Assert.That (AppDomain.CurrentDomain.FriendlyName, Is.EqualTo ("AppDomainRunner - AppDomain"));
+            Assert.AreNotSame (args[0], AppDomain.CurrentDomain);
+          },
+          current);
     }
 
     [Test]

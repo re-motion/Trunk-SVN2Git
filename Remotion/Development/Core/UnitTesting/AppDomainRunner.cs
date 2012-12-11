@@ -16,7 +16,6 @@
 // 
 using System;
 using Remotion.Utilities;
-using System.IO;
 
 namespace Remotion.Development.UnitTesting
 {
@@ -32,6 +31,7 @@ namespace Remotion.Development.UnitTesting
     {
       AppDomainSetup setup = AppDomain.CurrentDomain.SetupInformation;
       setup.ApplicationBase = applicationBase;
+      setup.ApplicationName = "AppDomainRunner - AppDomain";
       var runner = new AppDomainRunner (setup, action, args);
       runner.Run ();
     }
