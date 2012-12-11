@@ -463,6 +463,7 @@
     <Content Include="Database\SecurityManagerSetupConstraints.sql">
     </Content>
     <None Include="Database\SecurityManagerTearDownDB.sql" />
+    <Content Include="Database\SecurityManagerTearDownDBSpecialTables.sql" />
     <Content Include="Doc\Whats_New.Remotion.SecurityManager.txt" />
   </ItemGroup>
   <ItemGroup>
