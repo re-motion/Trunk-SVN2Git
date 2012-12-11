@@ -78,8 +78,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <NuGetPackages Include="Relinq.Frontend">
-      <PackageDeclaration>Remotion.NuGet.Packaging.Relinq.Frontend.build</PackageDeclaration>
+    <NuGetPackages Include="Relinq.Core">
+      <PackageDeclaration>Remotion.NuGet.Packaging.Relinq.Core.build</PackageDeclaration>
     </NuGetPackages>
   </ItemGroup>
 

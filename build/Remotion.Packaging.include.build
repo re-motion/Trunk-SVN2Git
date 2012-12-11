@@ -40,8 +40,18 @@
     <CodeplexTasksPath>$(SolutionDirectory)prereq\Tools\Codeplex.MSBuildTasks\</CodeplexTasksPath>
   </PropertyGroup>
 
+  <Import Project="Remotion.Packaging.base.build" />
   <Import Project="Remotion.Tasks.include.build" />
   <Import Project="Remotion.DependDB.include.build" />
+  
+  <!-- Overridden Targets -->
+  <Target Name="CreateRequiresUploadProperties" DependsOnTargets="CreatePackageProperties">
+    <PropertyGroup>
+      <MasterPackageName>$(PackageName)</MasterPackageName>
+    </PropertyGroup>
+  </Target>
+  
+  <!-- Main Targets -->
 
   <Target Name="CreatePackages" DependsOnTargets="CreateZipPackages;CreateDependDBPackages;CreateAndAddReleaseNotes"/>
   <Target Name="CreateZipPackages" DependsOnTargets="CreateSourcePackage;CreateBinaryPackage"/>
@@ -177,7 +187,7 @@
 
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
                                              ZipFileName="$(BinaryZipFile)"
-                                             RemoveRoot="$(ReleaseNotesLocalTempDirectoryRoot)"
+                                             RemoveRoot="$(ReleaseNotesLocalTempDirectoryZipRoot)"
                                              CompressFiles="@(_tempReleaseNoteFiles)"
                                              Condition="@(_tempReleaseNoteFiles) != ''"/>
   </Target>
@@ -212,13 +222,14 @@
 
   <Target Name="CreateReleaseNotesProperties" DependsOnTargets="CreatePackageProperties">
     <Error Text="The property 'ArchiveDirectory' is not set." Condition="'$(ArchiveDirectory)' == ''" />
+    <Error Text="The property 'PackageName' is not set." Condition="'$(PackageName)' == ''" />
 
     <PropertyGroup>
       <_releaseNotesVersionDirectory>$([System.Version]::Parse ($(Version)).ToString (2))</_releaseNotesVersionDirectory>
 
-      <ReleaseNotesLocalTempDirectoryRoot>$(TempDirectory)\$([System.Guid]::NewGuid())\</ReleaseNotesLocalTempDirectoryRoot>
-      <ReleaseNotesLocalTempDirectory>$(ReleaseNotesLocalTempDirectoryRoot)release-notes\</ReleaseNotesLocalTempDirectory>
-      <ReleaseNotesLocalOutputDirectory>$(OutputDirectory)ReleaseNotes\</ReleaseNotesLocalOutputDirectory>
+      <ReleaseNotesLocalTempDirectoryZipRoot>$(TempDirectory)\ReleaseNotes\$([System.Guid]::NewGuid())\</ReleaseNotesLocalTempDirectoryZipRoot>
+      <ReleaseNotesLocalTempDirectory>$(ReleaseNotesLocalTempDirectoryZipRoot)release-notes\</ReleaseNotesLocalTempDirectory>
+      <ReleaseNotesLocalOutputDirectory>$(OutputDirectory)ReleaseNotes\$(PackageName)\</ReleaseNotesLocalOutputDirectory>
       <ReleaseNotesRemoteShareDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\$(_releaseNotesVersionDirectory)\</ReleaseNotesRemoteShareDirectory>
     </PropertyGroup>
   </Target>
@@ -257,15 +268,7 @@
     <Message Text="Done uploading to shares, PackageName=$(PackageName)" Importance="High"/>
   </Target>
 
-  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties;CheckUploadToCodePlex;UploadToCodePlexInternal" />
-  
-  <Target Name="CheckUploadToCodePlex" DependsOnTargets="CreateReleaseNotesProperties">
-    <PropertyGroup>
-      <_releaseNotesFile>$(ReleaseNotesLocalTempDirectory)ReleaseNotes_v$(Version).html</_releaseNotesFile>
-      <_hasResolvedIssues Condition="Exists ($(_releaseNotesFile)) AND $([System.IO.File]::ReadAllText ($(_releaseNotesFile)).Length) > 0">True</_hasResolvedIssues>
-      <UploadToCodePlex Condition="$(UploadToCodePlex) == 'True' AND $(_hasResolvedIssues) != 'True'">False</UploadToCodePlex>
-    </PropertyGroup>
-  </Target>
+  <Target Name="UploadToCodePlex" DependsOnTargets="CreatePackageProperties;CreateRequiresUpload;UploadToCodePlexInternal" />
   
   <Target Name="UploadToCodePlexInternal"
           DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty"

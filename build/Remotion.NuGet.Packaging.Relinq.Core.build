@@ -21,6 +21,7 @@
 
   <Target Name="CreateNuGetPackageProperties">
     <PropertyGroup>
+      <BelongsToPackage>Relinq</BelongsToPackage>
       <NuSpecFileName>Linq.Core.nuspec</NuSpecFileName>
       <NuSpecFile>$(SolutionDirectory)Relinq\Core\$(NuSpecFileName)</NuSpecFile>
     </PropertyGroup>

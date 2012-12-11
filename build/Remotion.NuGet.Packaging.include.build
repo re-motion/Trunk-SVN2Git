@@ -17,10 +17,29 @@
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Target Name="CreateNuGetPackageProperties">
+    <Error Text="The target 'CreateNuGetPackageProperties' is not implemented." />
+  </Target>
+
+  <Target Name="CreateNuGetStructureProperties">
+    <Error Text="The target 'CreateNuGetStructureProperties' is not implemented." />
+  </Target>
+
   <PropertyGroup>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
-  
+
+  <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.Packaging.base.build" />
+
+  <!-- Overridden Targets -->
+  <Target Name="CreateRequiresUploadProperties" DependsOnTargets="CreateNuGetPackageProperties">
+    <PropertyGroup>
+      <MasterPackageName>$(BelongsToPackage)</MasterPackageName>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Main Targets -->
   <Target Name="CreateNuGetProperties">
     <PropertyGroup>
       <NuGetToolPath>$(SolutionDirectory)prereq\Tools\NuGet\</NuGetToolPath>
@@ -30,18 +49,6 @@
       <NuGetOutputDirectory>$(OutputDirectory)NuGet\</NuGetOutputDirectory>
     </PropertyGroup>
   </Target>
-
-  <Target Name="CreateNuGetPackageProperties">
-    <Error Text="The target 'CreateNuGetPackageProperties' is not implemented." />
-  </Target>
-
-  <Target Name="CreateNuGetStructureProperties">
-    <Error Text="The target 'CreateNuGetStructureProperties' is not implemented." />
-  </Target>
-
-  <!--<Import Project="Remotion.Tasks.include.build" />-->
-  <!-- Remotion.Packaging.include required for CheckUploadToCodePlexAndNuGet -->
-  <Import Project="Remotion.Packaging.include.build"/>
   
   <Target Name="CreateNuGetStructure" DependsOnTargets="CreateNuGetProperties;CreateNuGetStructureProperties">
     <MakeDir Directories="$(NuGetTempDirectory)"/>
@@ -56,25 +63,35 @@
   
   <Target Name="CreateNuGetPackage" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties;CreateNuGetStructure">
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
+    
+    <Message Text="Creating NuGet package for '$(NuSpecFileName)'..." Importance="High"/>
 
     <MakeDir Directories="$(NuGetOutputDirectory)"/>
     <NuGetPack ToolPath="$(NuGetToolPath)"
                NuSpecFile="$(NuGetTempDirectory)$(NuSpecFileName)"
                Version="$(Version)"
-               OutputDirectory="$(NuGetOutputDirectory.TrimEnd('\'))"/>
+               OutputDirectory="$(NuGetOutputDirectory)"/>
+
+    <Message Text=" Done creating NuGet package for '$(NuSpecFileName)'." Importance="High"/>
   </Target>
 
-  <Target Name="UploadNuGetPackage" DependsOnTargets="CheckUploadToCodePlexAndNuGet;UploadNuGetPackageInternal" />
+  <Target Name="UploadNuGetPackage" DependsOnTargets="CreateRequiresUpload;UploadNuGetPackageInternal" />
   
-  <Target Name="UploadNuGetPackageInternal" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties;CreateNuGetApiKey" Condition="$(UploadToNuGet) == 'True'">
+  <Target Name="UploadNuGetPackageInternal" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties" Condition="$(UploadToNuGet) == 'True'">
+    <Error Text="The property 'NuGetApiKey' is not set." Condition="'$(NuGetApiKey)' == ''" />
+    
     <ItemGroup>
         <_packageFile Remove="@(_packageFile)"/>
         <_packageFile Include="$(NuGetOutputDirectory)*.nupkg"/>
     </ItemGroup>
-  
+
+    <Message Text="Uploading NuGet package for '$(NuSpecFileName)' (belongs to: '$(BelongsToPackage)')..." Importance="High"/>
+
     <NuGetPush ToolPath="$(NuGetToolPath)"
-               PackageFile="@(_packageFile)"
+               PackageFile="%(_packageFile.Identity)"
                ApiKey="$(NuGetApiKey)"/>
+
+    <Message Text="Done uploading NuGet package for '$(NuSpecFileName)' (belongs to: '$(BelongsToPackage)')." Importance="High"/>
   </Target>
 
 </Project>

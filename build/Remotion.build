@@ -42,6 +42,8 @@
     <CodePlexUsername></CodePlexUsername>
     <CodePlexPassword></CodePlexPassword>
 
+    <NuGetApiKey></NuGetApiKey>
+
     <DependDBProjectBranch></DependDBProjectBranch>
     <DependDBProjectVersion></DependDBProjectVersion>
     <DependDBProjectVCSUrlTemplate></DependDBProjectVCSUrlTemplate>
@@ -85,7 +87,7 @@
                  Version=$(Version);"/>
   </Target>
 
-  <Target Name="PackageAll">  
+  <Target Name="PackageAll">
     <MSBuild Projects="%(AllPackages.PackageDeclaration)"
              BuildInParallel="false"
              Targets="CreatePackages"
@@ -99,6 +101,15 @@
                  DependDBProjectVersion=$(DependDBProjectVersion);
                  DependDBProjectVCSUrlTemplate=$(DependDBProjectVCSUrlTemplate);
                  DependDBProjectImportNotificationMailAddress=$(DependDBProjectImportNotificationMailAddress);"/>
+
+    <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
+             BuildInParallel="false"
+             Targets="CreateNuGetPackage"
+             Properties="SolutionDirectory=$(SolutionDirectory);
+                         BinariesDirectory=$(BinariesDirectory);
+                         OutputDirectory=$(OutputDirectory);
+                         TempDirectory=$(TempDirectory);
+                         Version=$(Version)"/>
   </Target>
   
   <Target Name="ZipPackageAll">
@@ -128,6 +139,13 @@
                  CodeplexUserName=$(CodePlexUsername);
                  CodeplexPassword=$(CodePlexPassword);
                  DependDBUploadPath=$(DependDBUploadPath);"/>
+
+    <MSBuild Projects="%(NuGetPackages.PackageDeclaration)"
+         BuildInParallel="false"
+         Targets="UploadNuGetPackage"
+         Properties="SolutionDirectory=$(SolutionDirectory);
+                     OutputDirectory=$(OutputDirectory);
+                     NuGetApiKey=$(NuGetApiKey)"/>
   </Target>
 
   <Target Name="FullBuild" DependsOnTargets="BuildAll;RunMixinXRefTest;DocumentAll;PackageAll" />
