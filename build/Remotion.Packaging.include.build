@@ -232,6 +232,11 @@
       <ReleaseNotesLocalOutputDirectory>$(OutputDirectory)ReleaseNotes\$(PackageName)\</ReleaseNotesLocalOutputDirectory>
       <ReleaseNotesRemoteShareDirectory>$(ArchiveDirectory)$(PackageName)\release-notes\$(_releaseNotesVersionDirectory)\</ReleaseNotesRemoteShareDirectory>
     </PropertyGroup>
+
+    <Message Text="CreateReleaseNotesProperties, ReleaseNotesLocalTempDirectoryZipRoot: $(ReleaseNotesLocalTempDirectoryZipRoot)" Importance="High" />
+    <Message Text="CreateReleaseNotesProperties, ReleaseNotesLocalTempDirectory: $(ReleaseNotesLocalTempDirectory)" Importance="High" />
+    <Message Text="CreateReleaseNotesProperties, ReleaseNotesLocalOutputDirectory: $(ReleaseNotesLocalOutputDirectory)" Importance="High" />
+    <Message Text="CreateReleaseNotesProperties, ReleaseNotesRemoteShareDirectory: $(ReleaseNotesRemoteShareDirectory)" Importance="High" />
   </Target>
 
   <!-- Publishing -->
