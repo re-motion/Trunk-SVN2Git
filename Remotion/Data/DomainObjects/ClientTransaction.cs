@@ -1336,6 +1336,8 @@ public class ClientTransaction
 
   public virtual ITransaction ToITransation ()
   {
+    // See  RM-5278 when thinking about removing the ToITransation method.
+
     return new ClientTransactionWrapper (this);
   }
 
