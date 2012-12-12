@@ -18,19 +18,21 @@ using System;
 using System.Runtime.Serialization;
 using NUnit.Framework;
 using Remotion.Development.UnitTesting;
-using Remotion.Reflection;
 using Remotion.TypePipe.Serialization.Implementation;
 using Rhino.Mocks;
 
 namespace Remotion.TypePipe.UnitTests.Serialization.Implementation
 {
   [TestFixture]
-  public class DeserializationSurrogateTest
+  public class ObjectWithoutDeserializationConstructorProxyTest
   {
     private Type _underlyingType;
     private SerializationInfo _serializationInfo;
 
-    private DeserializationSurrogate _surrogate;
+    private ObjectWithoutDeserializationConstructorProxy _proxy;
+
+    private IObjectFactory _objectFactoryMock;
+    private StreamingContext _context;
 
     [SetUp]
     public void SetUp ()
@@ -38,25 +40,29 @@ namespace Remotion.TypePipe.UnitTests.Serialization.Implementation
       _underlyingType = ReflectionObjectMother.GetSomeType();
       _serializationInfo = new SerializationInfo (ReflectionObjectMother.GetSomeDifferentType(), new FormatterConverter());
 
-      _surrogate = new DeserializationSurrogate (_serializationInfo, new StreamingContext (StreamingContextStates.File));
+      _proxy = new ObjectWithoutDeserializationConstructorProxy (_serializationInfo, new StreamingContext (StreamingContextStates.File));
+
+      _objectFactoryMock = MockRepository.GenerateStrictMock<IObjectFactory>();
+      _context = new StreamingContext (StreamingContextStates.Persistence);
     }
 
     [Test]
     public void CreateRealObject ()
     {
-      var context = new StreamingContext (StreamingContextStates.Persistence);
-      var objectFactoryMock = MockRepository.GenerateStrictMock<IObjectFactory>();
-      var fakeObject = new object();
-      objectFactoryMock
-          .Expect (mock => mock.CreateObject (Arg.Is (_underlyingType), Arg<ParamList>.Is.Anything, Arg.Is (true)))
-          .WhenCalled (
-              mi => Assert.That (((ParamList) mi.Arguments[1]).GetParameterValues(), Is.EqualTo (new object[] { _serializationInfo, context })))
-          .Return (fakeObject);
+      _serializationInfo.AddValue ("<tp>IntField", 7);
+      _objectFactoryMock.Expect (mock => mock.GetAssembledType (_underlyingType)).Return (typeof (DomainType));
 
-      var result = PrivateInvoke.InvokeNonPublicMethod (_surrogate, "CreateRealObject", objectFactoryMock, _underlyingType, context);
+      var result = PrivateInvoke.InvokeNonPublicMethod (_proxy, "CreateRealObject", _objectFactoryMock, _underlyingType, _context);
 
-      objectFactoryMock.VerifyAllExpectations();
-      Assert.That (result, Is.SameAs (fakeObject));
+      _objectFactoryMock.VerifyAllExpectations();
+      Assert.That (result, Is.TypeOf<DomainType>());
+      Assert.That (((DomainType) result).IntField, Is.EqualTo (7));
+    }
+
+    [Serializable]
+    class DomainType
+    {
+      public int IntField = 0;
     }
   }
 }
