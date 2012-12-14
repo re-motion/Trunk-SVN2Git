@@ -17,8 +17,10 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Linq;
 using Remotion.Data.DomainObjects.Queries;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
@@ -301,6 +303,60 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
           .Select (c => new { c.Name })
           .FetchOne (x => x.Name)
           .ToArray();
+    }
+
+    [Test]
+    [Ignore ("TODO 5283")]
+    public void EagerFetching_RedirectedProperty ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
+                   where o.OrderNumber == 1
+                   select o).FetchMany (o => o.RedirectedOrderItems);
+
+      CheckQueryResult (query, DomainObjectIDs.Order1);
+
+      CheckDataContainersRegistered (DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+      CheckCollectionRelationRegistered (DomainObjectIDs.Order1, "OrderItems", false, DomainObjectIDs.OrderItem1, DomainObjectIDs.OrderItem2);
+    }
+
+    [Test]
+    [Ignore ("TODO 5284")]
+    public void EagerFetching_MixedProperty_ViaCastInSelector ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin>()
+                   where o.ID == DomainObjectIDs.TargetClassForPersistentMixins2
+                   select o)
+                   .FetchOne (o => ((IMixinAddingPersistentProperties) o).CollectionProperty1Side);
+
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins2);
+
+      CheckDataContainersRegistered (DomainObjectIDs.RelationTargetForPersistentMixin3);
+      CheckCollectionRelationRegistered (
+          DomainObjectIDs.TargetClassForPersistentMixins2,
+          typeof (IMixinAddingPersistentProperties),
+          "CollectionProperty1Side",
+          false,
+          DomainObjectIDs.RelationTargetForPersistentMixin3);
+    }
+
+    [Test]
+    [Ignore ("TODO 5284")]
+    public void EagerFetching_MixedProperty_ViaCastInSelect ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+                   where o.ID == DomainObjectIDs.TargetClassForPersistentMixins2
+                   select (IMixinAddingPersistentProperties) o)
+                   .FetchOne (o => o.CollectionProperty1Side);
+
+      CheckQueryResult (query.AsEnumerable().Cast<DomainObject>(), DomainObjectIDs.TargetClassForPersistentMixins2);
+
+      CheckDataContainersRegistered (DomainObjectIDs.RelationTargetForPersistentMixin3);
+      CheckCollectionRelationRegistered (
+          DomainObjectIDs.TargetClassForPersistentMixins2,
+          typeof (IMixinAddingPersistentProperties),
+          "CollectionProperty1Side",
+          false,
+          DomainObjectIDs.RelationTargetForPersistentMixin3);
     }
   }
 }

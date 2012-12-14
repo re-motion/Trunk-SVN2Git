@@ -74,17 +74,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
         Assert.That (TestableClientTransaction.DataManager.DataContainers[id], Is.Not.Null);
     }
 
-    protected void CheckCollectionRelationRegistered (ObjectID originatingObjectID, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)
+    protected void CheckCollectionRelationRegistered (
+        ObjectID originatingObjectID, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)
+    {
+      var declaringType = originatingObjectID.ClassDefinition.ClassType;
+      CheckCollectionRelationRegistered(originatingObjectID, declaringType, shortPropertyName, checkOrdering, expectedRelatedObjectIDs);
+    }
+
+    protected void CheckCollectionRelationRegistered (
+        ObjectID originatingObjectID, Type declaringType, string shortPropertyName, bool checkOrdering, params ObjectID[] expectedRelatedObjectIDs)
     {
       var relationEndPointDefinition =
           originatingObjectID.ClassDefinition.GetMandatoryRelationEndPointDefinition (
-              originatingObjectID.ClassDefinition.ClassType.FullName + "." + shortPropertyName);
+              declaringType.FullName + "." + shortPropertyName);
 
-      var endPointID = RelationEndPointID.Create(originatingObjectID, relationEndPointDefinition);
+      var endPointID = RelationEndPointID.Create (originatingObjectID, relationEndPointDefinition);
       var collectionEndPoint = (ICollectionEndPoint) TestableClientTransaction.DataManager.GetRelationEndPointWithoutLoading (endPointID);
       Assert.That (collectionEndPoint, Is.Not.Null);
 
-      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (TestableClientTransaction, id, false)).ToArray ();
+      var expectedRelatedObjects = expectedRelatedObjectIDs.Select (id => LifetimeService.GetObject (TestableClientTransaction, id, false)).ToArray();
       if (checkOrdering)
         Assert.That (collectionEndPoint.Collection, Is.EqualTo (expectedRelatedObjects));
       else
