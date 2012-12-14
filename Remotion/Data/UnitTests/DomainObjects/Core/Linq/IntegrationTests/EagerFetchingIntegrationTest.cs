@@ -321,7 +321,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
     [Test]
     [Ignore ("TODO 5284")]
-    public void EagerFetching_MixedProperty_ViaCastInSelector ()
+    public void EagerFetching_MixedProperty_ViaCastInFetchClause ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin>()
                    where o.ID == DomainObjectIDs.TargetClassForPersistentMixins2
