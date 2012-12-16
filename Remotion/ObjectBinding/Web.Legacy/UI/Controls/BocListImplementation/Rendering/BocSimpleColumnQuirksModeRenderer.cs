@@ -84,7 +84,7 @@ namespace Remotion.ObjectBinding.Web.Legacy.UI.Controls.BocListImplementation.Re
             BusinessObjectPropertyPath.UnreachableValueBehavior.ReturnNullForUnreachableValue,
             BusinessObjectPropertyPath.ListValueBehavior.GetResultForFirstListEntry);
 
-        if (result.ResultProperty is IBusinessObjectReferenceProperty)
+        if (result.ResultProperty is IBusinessObjectReferenceProperty && !result.ResultProperty.IsList)
         {
           var value = (IBusinessObject) result.GetValue();
           if (value != null)
