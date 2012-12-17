@@ -140,17 +140,6 @@
       <_releaseNoteFiles>
         <Version>$([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Groups[&quot;version&quot;].Value)</Version>
       </_releaseNoteFiles>
-
-      <_emptyReleaseNoteFiles Remove="@(_emptyReleaseNoteFiles)"/>
-      <_emptyReleaseNoteFiles Include="@(_releaseNoteFiles)"
-                              Condition="$([System.IO.File]::ReadAllText (%(Identity)).Length) == 0"/>
-
-      <_futureReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)"/>
-      <_futureReleaseNoteFiles Include="@(_releaseNoteFiles)"
-                               Condition="$( [System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse (%(Version))) ) ) &lt; 0"/>
-
-      <_releaseNoteFiles Remove="@(_emptyReleaseNoteFiles)" />
-      <_releaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
     </ItemGroup>
 
     <Error Text="Item group '_releaseNoteFiles' is empty - probably remote directory ('$(ReleaseNotesRemoteShareDirectory)') not reachable?" Condition="@(_releaseNoteFiles) == ''"/>
@@ -185,6 +174,17 @@
     <ItemGroup>
       <_tempReleaseNoteFiles Remove="@(_tempReleaseNoteFiles)"/>
       <_tempReleaseNoteFiles Include="$(ReleaseNotesLocalTempDirectory)**" />
+
+      <_emptyReleaseNoteFiles Remove="@(_emptyReleaseNoteFiles)"/>
+      <_emptyReleaseNoteFiles Include="@(_tempReleaseNoteFiles)"
+                              Condition="$([System.IO.File]::ReadAllText (%(Identity)).Length) == 0"/>
+
+      <_futureReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)"/>
+      <_futureReleaseNoteFiles Include="@(_tempReleaseNoteFiles)"
+                               Condition="$( [System.Version]::Parse ($(Version)).CompareTo ( $([System.Version]::Parse (%(Version))) ) ) &lt; 0"/>
+
+      <_tempReleaseNoteFiles Remove="@(_emptyReleaseNoteFiles)" />
+      <_tempReleaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
     </ItemGroup>
 
     <MSBuild.ExtensionPack.Compression.DNZip TaskAction="AddFiles"
