@@ -142,7 +142,7 @@
       </_releaseNoteFiles>
     </ItemGroup>
 
-    <Error Text="Item group '_releaseNoteFiles' is empty - probably remote directory ('$(ReleaseNotesRemoteShareDirectory)') not reachable?" Condition="@(_releaseNoteFiles) == ''"/>
+    <Error Text="Item group '_releaseNoteFiles' is empty - probably remote directory not reachable? (remote directory: '$(ReleaseNotesRemoteShareDirectory)')" Condition="@(_releaseNoteFiles) == ''"/>
     
     <Copy SourceFiles="@(_releaseNoteFiles)" DestinationFolder="$(ReleaseNotesLocalTempDirectory)"/>
 
@@ -160,11 +160,11 @@
     <PropertyGroup>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) == ''"></_jiraComponent>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) != ''">component='$(ReleaseNotesComponentName)'</_jiraComponent>
-      <_htmlTitle Condition="$(PackageName) != 'Remotion'">Release notes for Remotion $(PackageName)</htmlTitle>
-      <_htmlTitle Condition="$(PackageName) == 'Remotion'">Release notes for Remotion Core</htmlTitle>
+      <_htmlTitle Condition="$(PackageName) != 'Remotion'">Release notes for Remotion $(PackageName)</_htmlTitle>
+      <_htmlTitle Condition="$(PackageName) == 'Remotion'">Release notes for Remotion Core</_htmlTitle>
     </PropertyGroup>
 
-    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesLocalTempDirectory) t:$(_htmlTitle) $(_jiraComponent)"
+    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesLocalTempDirectory) &quot;t:$(_htmlTitle)&quot; $(_jiraComponent)"
           WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
     
     <Message Text="Done creating release notes, PackageName=$(PackageName)" Importance="High"/>
