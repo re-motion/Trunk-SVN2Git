@@ -153,6 +153,8 @@
       <_releaseNoteFiles Remove="@(_futureReleaseNoteFiles)" />
     </ItemGroup>
 
+    <Error Text="Item group '_releaseNoteFiles' is empty - probably remote directory ('$(ReleaseNotesRemoteShareDirectory)') not reachable?" Condition="@(_releaseNoteFiles) == ''"/>
+    
     <Copy SourceFiles="@(_releaseNoteFiles)" DestinationFolder="$(ReleaseNotesLocalTempDirectory)"/>
 
     <ItemGroup>
