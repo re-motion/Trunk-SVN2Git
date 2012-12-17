@@ -26,7 +26,6 @@
   <!-- use the extension pack task once NUnit is upgraded to 2.5 -->
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.CodeQuality.NUnit" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Compression.DNZip" />
-  <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Computer.EnvironmentVariable" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Framework.AssemblyInfo" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.FileSystem.File" />
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Science.Maths" />
@@ -41,8 +40,5 @@
   <!-- Use tasks of the Codeplex Tasks library-->
   <UsingTask AssemblyFile="$(CodeplexTasksPath)CodePlex.WebServices.Client.dll" TaskName="CreateRelease" />
   <UsingTask AssemblyFile="$(CodeplexTasksPath)CodePlex.WebServices.Client.dll" TaskName="UploadFiles" />
-  
-  <!-- Set up necessary environment for tasks -->
-  <MSBuild.ExtensionPack.Computer.EnvironmentVariable TaskAction="Set" Variable="EnableNuGetPackageRestore" Value="true"/>
 
 </Project>
