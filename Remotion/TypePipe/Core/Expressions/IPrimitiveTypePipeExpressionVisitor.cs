@@ -20,9 +20,9 @@ using Microsoft.Scripting.Ast;
 namespace Remotion.TypePipe.Expressions
 {
   /// <summary>
-  /// Defines an interface for classes handling <see cref="ITypePipeExpression"/> instances.
+  /// Defines an interface for classes handling <see cref="IPrimitiveTypePipeExpression"/> instances.
   /// </summary>
-  public interface ITypePipeExpressionVisitor
+  public interface IPrimitiveTypePipeExpressionVisitor
   {
     Expression VisitThis (ThisExpression expression);
     Expression VisitOriginalBody (OriginalBodyExpression expression);

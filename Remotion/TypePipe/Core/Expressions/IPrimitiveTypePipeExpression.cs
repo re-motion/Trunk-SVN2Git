@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -16,32 +16,20 @@
 // 
 using System;
 using Microsoft.Scripting.Ast;
-using Remotion.Utilities;
 
 namespace Remotion.TypePipe.Expressions
 {
   /// <summary>
-  /// Represents the "this" instance within an instance method body.
+  /// Identifies a primitive custom expressions, i.e., an <see cref="Expression"/> that cannot be reduced to a standard expression and must be
+  /// handled during code generation.
+  /// Implementations of this interface must return <see cref="PrimitiveTypePipeExpressionBase.TypePipeExpressionType"/> from 
+  /// <see cref="Expression.NodeType"/>.
+  /// Expressions of this type can be handled using an <see cref="IPrimitiveTypePipeExpressionVisitor"/>.
   /// </summary>
-  public class ThisExpression : PrimitiveTypePipeExpressionBase
+  /// <seealso cref="PrimitiveTypePipeExpressionBase"/>
+  /// <seealso cref="PrimitiveTypePipeExpressionVisitorBase"/>
+  public interface IPrimitiveTypePipeExpression
   {
-    public ThisExpression (Type type)
-      : base (ArgumentUtility.CheckNotNull ("type", type))
-    {
-    }
-
-    public override Expression Accept (IPrimitiveTypePipeExpressionVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      return visitor.VisitThis (this);
-    }
-
-    protected internal override Expression VisitChildren (ExpressionVisitor visitor)
-    {
-      ArgumentUtility.CheckNotNull ("visitor", visitor);
-
-      return this;
-    }
+    Expression Accept (IPrimitiveTypePipeExpressionVisitor visitor);
   }
 }
