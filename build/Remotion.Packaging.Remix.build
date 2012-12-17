@@ -26,7 +26,7 @@
       <UploadToWebShare>False</UploadToWebShare>
       <UploadToCodePlex>True</UploadToCodePlex>
       <CodePlexProjectName>remix</CodePlexProjectName>
-      <CodePlexDescription>This is build $(Version) of re-mix. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D'$(ReleaseNotesComponentName)'+AND+issuetype+in+%28Bug%2C+'New+Feature'%2C+'Breaking+Change'%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D'$(Version)'++ORDER+BY+issuetype%2Ccomponent]</CodePlexDescription>
+      <CodePlexDescription>This is build $(Version) of re-mix. Find the complete release notes for the build here: [url:Release Notes|https://www.re-motion.org/jira/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+RM+AND+component%3D'$(ReleaseNotesComponentName)'+AND+issuetype+in+%28Bug%2C+'New+Feature'%2C+'Breaking+Change'%2C+Performance%2C+Sub-Feature%29+AND+FixVersion%3D'$(Version)'+AND+resolution%3DFixed+ORDER+BY+issuetype%2Ccomponent]</CodePlexDescription>
       <!-- Do not upload Remotion.Remix to DependDB, it's part of Remotion.Core! -->
       <UploadToDependDB>False</UploadToDependDB>
       <DependDBProjectName></DependDBProjectName>
