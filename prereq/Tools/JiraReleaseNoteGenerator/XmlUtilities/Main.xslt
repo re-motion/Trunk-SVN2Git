@@ -198,47 +198,49 @@
     <xsl:param name="title" />
 
     <xsl:if test="count(functx:value-intersect($issues/status, $root//issueVisibility/visibleStatus)) > 0 or count($root//rss/channel/item[parent = $issues/key and ru:contains($root//issueVisibility/visibleStatus, status)]) > 0">
-      <h3>
-        <xsl:value-of select="$title"/>
-      </h3>
-
-      <div class="listEntryGroup">
-
-        <xsl:for-each select="$issues">
-          <!-- select="functx:is-value-in-sequence(current()/status, $root//rss/channel/item[parent = current()/key]/status)" -->
-
-          <xsl:variable name="hasValidChildren" select="count($root//rss/channel/item[parent = current()/key and ru:contains($root//issueVisibility/visibleStatus, status)]) > 0" />
-
-          <div class="listEntry">
-            <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = true() and exists(invisible) = false()">
-              <a href="#{key}">
-                <b>
-                  [<xsl:value-of select="key"/>] <xsl:value-of select="component"/>:
-                </b>
-                <xsl:value-of select="summary"/>
-              </a>
-            </xsl:if>
-            <xsl:if test="(functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = false() or  exists(invisible) = true() )and $hasValidChildren = true()">
-              <span class="notVisible">
+      <xsl:if test="count(functx:value-intersect($issues/resolution, $root//issueVisibility/visibleResolution)) > 0 or count($root//rss/channel/item[parent = $issues/key and ru:contains($root//issueVisibility/visibleResolution, resolution)]) > 0">
+        <h3>
+          <xsl:value-of select="$title"/>
+        </h3>
+        
+        <div class="listEntryGroup">
+        
+          <xsl:for-each select="$issues">
+            <!-- select="functx:is-value-in-sequence(current()/status, $root//rss/channel/item[parent = current()/key]/status)" -->
+        
+            <xsl:variable name="hasValidChildren" select="count($root//rss/channel/item[parent = current()/key and ru:contains($root//issueVisibility/visibleStatus, status) and ru:contains($root//issueVisibility//visibleResolution, resolution)]) > 0" />
+        
+            <div class="listEntry">
+              <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = true() and functx:is-value-in-sequence(resolution, $root//issueVisibility/visibleResolution) = true() and exists(invisible) = false()">
                 <a href="#{key}">
                   <b>
                     [<xsl:value-of select="key"/>] <xsl:value-of select="component"/>:
                   </b>
                   <xsl:value-of select="summary"/>
                 </a>
-              </span>
+              </xsl:if>
+              <xsl:if test="(functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = false() or functx:is-value-in-sequence(resolution, $root//issueVisibility/visibleResolution) = false() or  exists(invisible) = true() )and $hasValidChildren = true()">
+                <span class="notVisible">
+                  <a href="#{key}">
+                    <b>
+                      [<xsl:value-of select="key"/>] <xsl:value-of select="component"/>:
+                    </b>
+                    <xsl:value-of select="summary"/>
+                  </a>
+                </span>
+              </xsl:if>
+            </div>
+        
+            <xsl:if test="$hasValidChildren = true()">
+              <xsl:call-template name="listChildren">
+                <xsl:with-param name="root" select="$root" />
+                <xsl:with-param name="key" select="key" />
+              </xsl:call-template>
             </xsl:if>
-          </div>
-
-          <xsl:if test="$hasValidChildren = true()">
-            <xsl:call-template name="listChildren">
-              <xsl:with-param name="root" select="$root" />
-              <xsl:with-param name="key" select="key" />
-            </xsl:call-template>
-          </xsl:if>
-
-        </xsl:for-each>
-      </div>
+        
+          </xsl:for-each>
+        </div>
+      </xsl:if>
     </xsl:if>
   </xsl:template>
 
@@ -249,10 +251,10 @@
     <xsl:param name="visibleStatus" />
 
     <xsl:for-each select="$issues">
-      <xsl:variable name="hasValidChildren" select="count($root//rss/channel/item[parent = current()/key and ru:contains($root//issueVisibility/visibleStatus, status)]) > 0" />
-      <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = true() or $hasValidChildren = true()">
+      <xsl:variable name="hasValidChildren" select="count($root//rss/channel/item[parent = current()/key and ru:contains($root//issueVisibility/visibleStatus, status) and ru:contains($root//issueVisibility/visibleResolution, resolution)]) > 0" />
+      <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = true() or functx:is-value-in-sequence(resolution, $root//issueVisibility/visibleResolution) = true() or $hasValidChildren = true()">
         <xsl:variable name="visibilityTag">
-          <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = false() or exists(invisible) = true()">
+          <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = false() or functx:is-value-in-sequence(resolution, $root//issueVisibility/visibleResolution) = false() or exists(invisible) = true()">
             detailNotVisible
           </xsl:if>
         </xsl:variable>
@@ -297,7 +299,7 @@
           </xsl:if>
           -->
 
-          <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = false() or exists(invisible) = true()">
+          <xsl:if test="functx:is-value-in-sequence(status, $root//issueVisibility/visibleStatus) = false() or functx:is-value-in-sequence(resolution, $root//issueVisibility/visibleResolution) = false() or exists(invisible) = true()">
             <div class="fixVersion">
               <span class="label">FixVersion: </span>
               <span class="value">
