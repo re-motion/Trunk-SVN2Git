@@ -28,6 +28,7 @@
   </issueOrder>
   <issueVisibility>
     <visibleStatus>Closed</visibleStatus>
+    <visibleResolution>Fixed</visibleResolution>
   </issueVisibility>
   <projectTitle>Release notes for re-motion</projectTitle>
 </outputConfiguration>
