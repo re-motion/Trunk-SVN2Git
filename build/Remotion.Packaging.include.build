@@ -160,9 +160,11 @@
     <PropertyGroup>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) == ''"></_jiraComponent>
       <_jiraComponent Condition="$(ReleaseNotesComponentName) != ''">component='$(ReleaseNotesComponentName)'</_jiraComponent>
+      <_htmlTitle Condition="$(PackageName) != 'Remotion'">Release notes for Remotion $(PackageName)</htmlTitle>
+      <_htmlTitle Condition="$(PackageName) == 'Remotion'">Release notes for Remotion Core</htmlTitle>
     </PropertyGroup>
 
-    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesLocalTempDirectory) $(_jiraComponent)"
+    <Exec Command="JiraReleaseNoteGenerator.exe $(Version) $(ReleaseNotesLocalTempDirectory) t:$(_htmlTitle) $(_jiraComponent)"
           WorkingDirectory="$(JiraReleaseNoteGeneratorPath)" />
     
     <Message Text="Done creating release notes, PackageName=$(PackageName)" Importance="High"/>
