@@ -37,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       base.SetUp();
 
-      _transaction = TestableClientTransaction.ToITransation();
+      _transaction = TestableClientTransaction.ToITransaction();
     }
 
     [Test]
@@ -106,7 +106,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void EnterScope ()
     {
-      ITransaction transaction = ClientTransaction.CreateRootTransaction().ToITransation();
+      ITransaction transaction = ClientTransaction.CreateRootTransaction().ToITransaction();
 
       ClientTransactionScope.ResetActiveScope();
       Assert.That (ClientTransactionScope.ActiveScope, Is.Null);
@@ -128,7 +128,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var domainObject2 = LifetimeService.GetObject (firstClientTransaction, DomainObjectIDs.Partner1, false);
 
       var secondClientTransaction = TestableClientTransaction;
-      ITransaction secondTransaction = secondClientTransaction.ToITransation();
+      ITransaction secondTransaction = secondClientTransaction.ToITransaction();
       Assert.That (secondClientTransaction.IsEnlisted (domainObject1), Is.False);
       Assert.That (secondClientTransaction.IsEnlisted (domainObject2), Is.False);
 
@@ -149,7 +149,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var domainObject = LifetimeService.NewObject (firstClientTransaction, typeof (Partner), ParamList.Empty);
 
       var secondClientTransaction = TestableClientTransaction;
-      ITransaction secondTransaction = secondClientTransaction.ToITransation();
+      ITransaction secondTransaction = secondClientTransaction.ToITransaction();
 
       secondTransaction.RegisterObjects (new object[] { domainObject });
 
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void Reset ()
     {
       var clientTransactionBefore = ClientTransaction.CreateRootTransaction();
-      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransation();
+      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransaction();
 
       Order order = clientTransactionBefore.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       clientTransactionBefore.Execute (() => order.OrderNumber = 7);
@@ -181,7 +181,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void Reset_InvalidObjectsStayInvalid ()
     {
       var clientTransactionBefore = ClientTransaction.CreateRootTransaction ();
-      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransation ();
+      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransaction ();
 
       var invalidObject = clientTransactionBefore.Execute (() => Order.NewObject ());
       clientTransactionBefore.Execute (invalidObject.Delete);
@@ -198,7 +198,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var rootTransaction = ClientTransaction.CreateRootTransaction ();
       var clientTransactionBefore = rootTransaction.CreateSubTransaction();
-      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransation ();
+      var clientTransactionWrapper = (ClientTransactionWrapper) clientTransactionBefore.ToITransaction ();
 
       Order order = clientTransactionBefore.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
       clientTransactionBefore.Execute (() => order.OrderNumber = 7);
@@ -237,7 +237,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
       rootTransaction.CreateSubTransaction();
-      ITransaction transaction = rootTransaction.ToITransation ();
+      ITransaction transaction = rootTransaction.ToITransaction ();
       transaction.Reset();
     }
 
@@ -247,7 +247,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     public void Reset_HasChanged_Throws ()
     {
       ClientTransaction rootTransaction = ClientTransaction.CreateRootTransaction();
-      ITransaction transaction = rootTransaction.ToITransation();
+      ITransaction transaction = rootTransaction.ToITransaction();
       using (rootTransaction.EnterNonDiscardingScope())
       {
         Order.NewObject();

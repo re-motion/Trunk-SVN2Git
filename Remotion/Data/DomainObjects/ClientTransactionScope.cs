@@ -174,7 +174,7 @@ namespace Remotion.Data.DomainObjects
     /// <value>The scoped transaction.</value>
     ITransaction ITransactionScope.ScopedTransaction
     {
-      get { return ScopedTransaction.ToITransation(); }
+      get { return ScopedTransaction.ToITransaction(); }
     }
 
     /// <summary>

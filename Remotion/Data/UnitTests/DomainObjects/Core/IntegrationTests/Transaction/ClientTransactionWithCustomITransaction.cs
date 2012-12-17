@@ -29,7 +29,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       _wrapper = wrapper;
     }
 
-    public override ITransaction ToITransation ()
+    public override ITransaction ToITransaction ()
     {
       return _wrapper;
     }

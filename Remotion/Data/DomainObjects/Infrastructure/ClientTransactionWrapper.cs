@@ -79,7 +79,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </exception>
     public virtual ITransaction CreateChild ()
     {
-      return _wrappedInstance.CreateSubTransaction().ToITransation();
+      return _wrappedInstance.CreateSubTransaction().ToITransaction();
     }
 
     /// <summary> Allows the transaction to implement clean up logic. </summary>
@@ -96,7 +96,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     /// </value>
     public virtual ITransaction Parent
     {
-      get { return _wrappedInstance.ParentTransaction.ToITransation(); }
+      get { return _wrappedInstance.ParentTransaction.ToITransaction(); }
     }
 
     /// <summary>Gets a flag describing whether the transaction is a child transaction.</summary>

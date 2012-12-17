@@ -32,7 +32,7 @@ namespace Remotion.Data.DomainObjects
 
       OnTransactionCreated (transaction);
 
-      return transaction.ToITransation ();
+      return transaction.ToITransaction ();
     }
 
     protected virtual void OnTransactionCreated (ClientTransaction transaction)

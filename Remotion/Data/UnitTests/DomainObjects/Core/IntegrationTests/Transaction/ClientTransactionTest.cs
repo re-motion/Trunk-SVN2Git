@@ -609,7 +609,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     [Test]
     public void ToITransaction ()
     {
-      ITransaction transaction = TestableClientTransaction.ToITransation();
+      ITransaction transaction = TestableClientTransaction.ToITransaction();
 
       Assert.That (((ClientTransactionWrapper) transaction).WrappedInstance, Is.SameAs (TestableClientTransaction));
     }
@@ -619,7 +619,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     {
       var wrapperStub = MockRepository.GenerateMock<ITransaction> ();
       var transaction = new ClientTransactionWithCustomITransaction (wrapperStub);
-      Assert.That (transaction.ToITransation (), Is.SameAs (wrapperStub));
+      Assert.That (transaction.ToITransaction (), Is.SameAs (wrapperStub));
     }
 
     [Test]

@@ -1334,9 +1334,9 @@ public class ClientTransaction
     get { return _applicationData; }
   }
 
-  public virtual ITransaction ToITransation ()
+  public virtual ITransaction ToITransaction ()
   {
-    // See  RM-5278 when thinking about removing the ToITransation method.
+    // See  RM-5278 when thinking about removing the ToITransaction method.
 
     return new ClientTransactionWrapper (this);
   }
