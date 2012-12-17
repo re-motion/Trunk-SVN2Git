@@ -1,4 +1,4 @@
-// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,23 +14,33 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+
 using System;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using Microsoft.Scripting.Ast;
-using Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation;
+using Remotion.TypePipe.MutableReflection;
+using Remotion.Utilities;
 
 namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
 {
   /// <summary>
-  /// Defines a common interface for <see cref="MethodBuilder"/> and <see cref="ConstructorBuilder"/>.
+  /// A base for classes implementing <see cref="ICustomAttributeTargetBuilder"/>.
   /// </summary>
-  [CLSCompliant (false)]
-  public interface IMethodBaseBuilder : ICustomAttributeTargetBuilder
+  public abstract class CustomAttributeTargetBuilderBase : ICustomAttributeTargetBuilder
   {
-    void DefineParameter (int iSequence, ParameterAttributes attributes, string strParamName);
+    private readonly Action<CustomAttributeBuilder> _setCustomAttributeMethod;
 
-    void SetBody (LambdaExpression body, IILGeneratorFactory ilGeneratorFactory, DebugInfoGenerator debugInfoGeneratorOrNull);
+    protected CustomAttributeTargetBuilderBase (Action<CustomAttributeBuilder> setCustomAttributeMethod)
+    {
+      ArgumentUtility.CheckNotNull ("setCustomAttributeMethod", setCustomAttributeMethod);
+
+      _setCustomAttributeMethod = setCustomAttributeMethod;
+    }
+
+    public void SetCustomAttribute (CustomAttributeDeclaration customBuilder)
+    {
+      ArgumentUtility.CheckNotNull ("customBuilder", customBuilder);
+
+      // TODO
+    }
   }
 }

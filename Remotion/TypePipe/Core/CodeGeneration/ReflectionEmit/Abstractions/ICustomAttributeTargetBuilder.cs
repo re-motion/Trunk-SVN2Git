@@ -15,22 +15,15 @@
 // under the License.
 // 
 using System;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using Microsoft.Scripting.Ast;
-using Remotion.TypePipe.CodeGeneration.ReflectionEmit.LambdaCompilation;
+using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
 {
   /// <summary>
-  /// Defines a common interface for <see cref="MethodBuilder"/> and <see cref="ConstructorBuilder"/>.
+  /// Defines a common interface for builders that create elements which can be used as targets for custom attributes.
   /// </summary>
-  [CLSCompliant (false)]
-  public interface IMethodBaseBuilder : ICustomAttributeTargetBuilder
+  public interface ICustomAttributeTargetBuilder
   {
-    void DefineParameter (int iSequence, ParameterAttributes attributes, string strParamName);
-
-    void SetBody (LambdaExpression body, IILGeneratorFactory ilGeneratorFactory, DebugInfoGenerator debugInfoGeneratorOrNull);
+    void SetCustomAttribute (CustomAttributeDeclaration customBuilder);
   }
 }

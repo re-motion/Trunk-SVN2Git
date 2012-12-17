@@ -23,10 +23,8 @@ namespace Remotion.TypePipe.CodeGeneration.ReflectionEmit.Abstractions
   /// <summary>
   /// Defines an interface for <see cref="FieldBuilder"/>.
   /// </summary>
-  public interface IFieldBuilder
+  public interface IFieldBuilder : ICustomAttributeTargetBuilder
   {
     void RegisterWith (IEmittableOperandProvider emittableOperandProvider, MutableFieldInfo field);
-
-    void SetCustomAttribute (CustomAttributeBuilder customBuilder);
   }
 }
