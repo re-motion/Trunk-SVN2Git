@@ -70,7 +70,8 @@
     <NuGetPack ToolPath="$(NuGetToolPath)"
                NuSpecFile="$(NuGetTempDirectory)$(NuSpecFileName)"
                Version="$(Version)"
-               OutputDirectory="$(NuGetOutputDirectory)"/>
+               OutputDirectory="$(NuGetOutputDirectory)"
+               Properties=""/>
 
     <Message Text=" Done creating NuGet package for '$(NuSpecFileName)'." Importance="High"/>
   </Target>
