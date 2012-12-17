@@ -111,7 +111,7 @@
                          OutputDirectory=$(OutputDirectory);
                          ArchiveDirectory=$(ArchiveDirectory);
                          TempDirectory=$(TempDirectory);
-                         Version=$(Version)"/>
+                         Version=$(Version);"/>
   </Target>
   
   <Target Name="ZipPackageAll">

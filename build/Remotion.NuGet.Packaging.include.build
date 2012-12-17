@@ -30,6 +30,7 @@
   </PropertyGroup>
 
   <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.Packages.include.build" />
   <Import Project="Remotion.Packaging.base.build" />
 
   <!-- Overridden Targets -->
@@ -40,19 +41,42 @@
   </Target>
 
   <!-- Main Targets -->
-  <Target Name="CreateNuGetProperties">
+  <Target Name="CreateNuGetProperties" DependsOnTargets="CreateNuGetPackageProperties">
+    <Error Text="The property 'PackageID' is not set." Condition="'$(PackageID)' == ''" />
+      
     <PropertyGroup>
       <NuGetToolPath>$(SolutionDirectory)prereq\Tools\NuGet\</NuGetToolPath>
+
       <NuGetTempDirectory>$(TempDirectory)$([System.Guid]::NewGuid())\NuGet\package\</NuGetTempDirectory>
       <NuGetTempLibDirectory>$(NuGetTempDirectory)lib\net35\</NuGetTempLibDirectory>
       <NuGetTempSrcDirectory>$(NuGetTempDirectory)src\</NuGetTempSrcDirectory>
       <NuGetOutputDirectory>$(OutputDirectory)NuGet\</NuGetOutputDirectory>
+      
+      <NuSpecTemplateFile>$(SolutionDirectory)build\NuGet.ConfigurationTemplate.nuspec</NuSpecTemplateFile>
+      <NuSpecFileName>NuGet.nuspec</NuSpecFileName>
+      <NuSpecFile>$(NuGetTempDirectory)$(NuSpecFileName)</NuSpecFile>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <_activePackage Include="@(NuGetPackages)" Condition="%(NuGetPackages.Identity) == $(PackageID)"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <ID>%(_activePackage.ID)</ID>
+      <Title>%(_activePackage.Title)</Title>
+      <Authors>%(_activePackage.Authors)</Authors>
+      <Owners>%(_activePackage.Owners)</Owners>
+      <LicenseUrl>%(_activePackage.LicenseUrl)</LicenseUrl>
+      <ProjectUrl>%(_activePackage.ProjectUrl)</ProjectUrl>
+      <Description>%(_activePackage.Description)</Description>
+      <Copyright>%(_activePackage.Copyright)</Copyright>
+      <Tags>%(_activePackage.Tags)</Tags>
     </PropertyGroup>
   </Target>
   
   <Target Name="CreateNuGetStructure" DependsOnTargets="CreateNuGetProperties;CreateNuGetStructureProperties">
     <MakeDir Directories="$(NuGetTempDirectory)"/>
-    <Copy SourceFiles="$(NuSpecFile)" DestinationFolder="$(NuGetTempDirectory)"/>
+    <Copy SourceFiles="$(NuSpecTemplateFile)" DestinationFiles="$(NuSpecFile)"/>
 
     <MakeDir Directories="$(NuGetTempLibDirectory)"/>
     <Copy SourceFiles="@(NuGetLibFiles)" DestinationFolder="$(NuGetTempLibDirectory)"/>
@@ -61,19 +85,27 @@
     <Copy SourceFiles="@(NuGetSrcFiles)" DestinationFiles="@(NuGetSrcFiles -> '$(NuGetTempSrcDirectory)%(RecursiveDir)%(Filename)%(Extension)')"/>
   </Target>
   
-  <Target Name="CreateNuGetPackage" DependsOnTargets="CreateNuGetProperties;CreateNuGetPackageProperties;CreateNuGetStructure">
+  <Target Name="CreateNuGetPackage" DependsOnTargets="CreateNuGetPackageProperties;CreateNuGetProperties;CreateNuGetStructure">
     <Error Text="The property 'Version' is not set." Condition="'$(Version)' == ''" />
     
-    <Message Text="Creating NuGet package for '$(NuSpecFileName)'..." Importance="High"/>
+    <Message Text="Creating NuGet package for '$(PackageID)'..." Importance="High"/>
 
     <MakeDir Directories="$(NuGetOutputDirectory)"/>
     <NuGetPack ToolPath="$(NuGetToolPath)"
-               NuSpecFile="$(NuGetTempDirectory)$(NuSpecFileName)"
+               NuSpecFile="$(NuSpecFile)"
                Version="$(Version)"
                OutputDirectory="$(NuGetOutputDirectory)"
-               Properties=""/>
+               Properties="ID=$(ID);
+                           Title=$(Title);
+                           Authors=$(Authors);
+                           Owners=$(Owners);
+                           LicenseUrl=$(LicenseUrl);
+                           ProjectUrl=$(ProjectUrl);
+                           Description=$(Description);
+                           Copyright=$(Copyright);
+                           Tags=$(Tags)"/>
 
-    <Message Text=" Done creating NuGet package for '$(NuSpecFileName)'." Importance="High"/>
+    <Message Text=" Done creating NuGet package for '$(PackageID)'." Importance="High"/>
   </Target>
 
   <Target Name="UploadNuGetPackage" DependsOnTargets="CreateRequiresUpload;UploadNuGetPackageInternal" />
@@ -86,13 +118,13 @@
         <_packageFile Include="$(NuGetOutputDirectory)*.nupkg"/>
     </ItemGroup>
 
-    <Message Text="Uploading NuGet package for '$(NuSpecFileName)' (belongs to: '$(BelongsToPackage)')..." Importance="High"/>
+    <Message Text="Uploading NuGet package for '$(PackageID)' (belongs to: '$(BelongsToPackage)')..." Importance="High"/>
 
     <NuGetPush ToolPath="$(NuGetToolPath)"
                PackageFile="%(_packageFile.Identity)"
                ApiKey="$(NuGetApiKey)"/>
 
-    <Message Text="Done uploading NuGet package for '$(NuSpecFileName)' (belongs to: '$(BelongsToPackage)')." Importance="High"/>
+    <Message Text="Done uploading NuGet package for '$(PackageID)' (belongs to: '$(BelongsToPackage)')." Importance="High"/>
   </Target>
 
 </Project>
