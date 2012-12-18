@@ -37,8 +37,4 @@
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.NuGetPack" />
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.NuGetPush" />
 
-  <!-- Use tasks of the Codeplex Tasks library-->
-  <UsingTask AssemblyFile="$(CodeplexTasksPath)CodePlex.WebServices.Client.dll" TaskName="CreateRelease" />
-  <UsingTask AssemblyFile="$(CodeplexTasksPath)CodePlex.WebServices.Client.dll" TaskName="UploadFiles" />
-
 </Project>

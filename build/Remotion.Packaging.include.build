@@ -37,7 +37,6 @@
     <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <JiraReleaseNoteGeneratorPath>$(SolutionDirectory)\prereq\Tools\JiraReleaseNoteGenerator\</JiraReleaseNoteGeneratorPath>
     <CodeplexReleaseToolPath>$(SolutionDirectory)\prereq\Tools\CodeplexReleaseTool\</CodeplexReleaseToolPath>
-    <CodeplexTasksPath>$(SolutionDirectory)prereq\Tools\Codeplex.MSBuildTasks\</CodeplexTasksPath>
   </PropertyGroup>
 
   <Import Project="Remotion.Packaging.base.build" />
@@ -300,39 +299,6 @@
 
     <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(SourceZipFile))) /fileDataPath:$(SourceZipFile) /fileType:SourceCode /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
           WorkingDirectory="$(CodeplexReleaseToolPath)" />
-
-    <!--<ItemGroup>
-      <_releaseFiles Remove="@(_releaseFiles)"/>
-      <_releaseFiles Include="$(BinaryZipFile)">
-        <Name>$([System.IO.Path]::GetFileName($(BinaryZipFile)))</Name>
-        <FileType>RuntimeBinary</FileType>
-      </_releaseFiles>
-      <_releaseFiles Include="$(SourceZipFile)">
-        <Name>$([System.IO.Path]::GetFileName($(SourceZipFile)))</Name>
-        <FileType>SourceCode</FileType>
-      </_releaseFiles>
-    </ItemGroup>
-    
-    <CreateRelease
-      ProjectName="$(CodePlexProjectName)"  
-      ReleaseName="$(Version)"
-      Description="$(CodePlexDescription)"
-      ReleaseDate="$(_releaseDate)"
-      ReleaseStatus="Released"
-      ShowToPublic="false"
-      IsDefaultRelease="false"
-      ShowOnHomepage="false"
-      Username="$(CodeplexUsername)"
-      Password="$(CodeplexPassword)" >
-    </CreateRelease>
-
-    <UploadFiles
-      ProjectName="$(CodePlexProjectName)"
-      ReleaseName="$(Version)"
-      ReleaseFiles="@(_releaseFiles)"
-      Username="$(CodeplexUsername)"
-      Password="$(CodeplexPassword)" >
-    </UploadFiles>-->
 
     <Message Text="Done uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
   </Target>

@@ -1,1 +1,0 @@
-http://codeplex.codeplex.com/wikipage?title=CodePlexMSBuildTasks&referringTitle=CodePlexAPI
