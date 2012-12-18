@@ -35,6 +35,7 @@
 
   <PropertyGroup>
     <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
+    <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
     <JiraReleaseNoteGeneratorPath>$(SolutionDirectory)\prereq\Tools\JiraReleaseNoteGenerator\</JiraReleaseNoteGeneratorPath>
     <CodeplexReleaseToolPath>$(SolutionDirectory)\prereq\Tools\CodeplexReleaseTool\</CodeplexReleaseToolPath>
   </PropertyGroup>
@@ -282,7 +283,7 @@
           DependsOnTargets="CreateSourceZipFileProperty;CreateBinaryZipFileProperty"
           Condition="$(UploadToCodePlex) == 'True'">
 
-    <Message Text="Uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
+    <Message Text="Creating CodePlex release, PackageName=$(PackageName)" Importance="High"/>
 
     <Error Text="The property 'CodePlexProjectName' is not set." Condition="'$(CodePlexProjectName)' == ''" />
     <Error Text="The property 'CodePlexDescription' is not set." Condition="'$(CodePlexDescription)' == ''" />
@@ -291,14 +292,38 @@
       <_releaseDate>$([System.DateTime]::Now.ToString('yyyy-MM-dd'))</_releaseDate>
     </PropertyGroup>
 
-    <Exec Command="CodeplexReleaseTool.exe createRelease /projectName:$(CodePlexProjectName) /releaseName:$(Version) /description:&quot;$(CodePlexDescription)&quot; /releaseDate:$(_releaseDate) /status:Stable /showToPublic:+ /isDefaultRelease:+ /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />
+    <CodeplexCreateRelease ToolPath="$(CodeplexReleaseToolPath)"
+                           ProjectName="$(CodePlexProjectName)"
+                           ReleaseName="$(Version)"
+                           Username="$(CodeplexUsername)"
+                           Password="$(CodeplexPassword)"
+                           Description="$(CodePlexDescription)"
+                           IsDefaultRelease="false"
+                           ReleaseDate="$(_releaseDate)"
+                           ReleaseStatus="Stable"
+                           ShowToPublic="false"/>
+    <Message Text="Done creating CodePlex release, PackageName=$(PackageName)" Importance="High"/>
 
-    <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(BinaryZipFile))) /fileDataPath:$(BinaryZipFile) /fileType:RuntimeBinary /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />
-
-    <Exec Command="CodeplexReleaseTool.exe uploadReleaseFiles /projectName:$(CodePlexProjectName) /releaseName:$(Version) /fileDisplayName:$([System.IO.Path]::GetFileName($(SourceZipFile))) /fileDataPath:$(SourceZipFile) /fileType:SourceCode /username:$(CodeplexUsername) /password:$(CodeplexPassword)"
-          WorkingDirectory="$(CodeplexReleaseToolPath)" />
+    <Message Text="Uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
+    <ItemGroup>
+      <_uploadFiles Include="$([System.IO.Path]::GetFileName($(BinaryZipFile)))">
+        <File>$(BinaryZipFile)</File>
+        <FileType>RuntimeBinary</FileType>
+      </_uploadFiles>
+      <_uploadFiles Include="$([System.IO.Path]::GetFileName($(SourceZipFile)))">
+        <File>$(SourceZipFile)</File>
+        <FileType>SourceCode</FileType>
+      </_uploadFiles>
+    </ItemGroup>
+    
+    <CodeplexUploadFiles ToolPath="$(CodeplexReleaseToolPath)"
+                         ProjectName="$(CodePlexProjectName)"
+                         ReleaseName="$(Version)"
+                         Username="$(CodeplexUsername)"
+                         Password="$(CodeplexPassword)"
+                         FileDisplayName="%(_uploadFiles.Identity)"
+                         File="%(_uploadFiles.File)"
+                         FileType="%(_uploadFiles.FileType)"/>
 
     <Message Text="Done uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
   </Target>

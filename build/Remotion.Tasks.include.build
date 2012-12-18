@@ -32,6 +32,8 @@
   <UsingTask AssemblyFile="$(MSBuildExtensionPackPath)MSBuild.ExtensionPack.dll" TaskName="MSBuild.ExtensionPack.Xml.XmlFile" />
 
   <!-- Use tasks of the re-motion BuildTools MSBuild Tasks library -->
+  <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.CodeplexCreateRelease" />
+  <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.CodeplexUploadFiles" />
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.NDocProjectBuilder" />
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.SandcastleProjectBuilder" />
   <UsingTask AssemblyFile="$(RemotionBuildTasksPath)Remotion.BuildTools.MSBuildTasks.dll" TaskName="Remotion.BuildTools.MSBuildTasks.NuGetPack" />
