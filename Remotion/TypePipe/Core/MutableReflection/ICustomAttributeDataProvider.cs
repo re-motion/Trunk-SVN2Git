@@ -1,4 +1,4 @@
-﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+// Copyright (c) rubicon IT GmbH, www.rubicon.eu
 //
 // See the NOTICE file distributed with this work for additional information
 // regarding copyright ownership.  rubicon licenses this file to you under 
@@ -14,16 +14,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
+using System;
 using System.Collections.Generic;
 
 namespace Remotion.TypePipe.MutableReflection
 {
-  // TODO Review: Rename to IOwnCustomAttributeDataProvider
   /// <summary>
-  /// Provides access to the <see cref="ICustomAttributeData"/>s of a member or parameter.
+  /// Provides access to the declared and inherited <see cref="ICustomAttributeData"/>s of a member or parameter.
   /// </summary>
-  public interface ITypePipeCustomAttributeProvider : System.Reflection.ICustomAttributeProvider
+  public interface ICustomAttributeDataProvider : IOwnCustomAttributeDataProvider
   {
-    IEnumerable<ICustomAttributeData> GetCustomAttributeData ();
+    IEnumerable<ICustomAttributeData> GetCustomAttributeData (bool inherit);
   }
 }
