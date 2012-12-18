@@ -298,10 +298,10 @@
                            Username="$(CodeplexUsername)"
                            Password="$(CodeplexPassword)"
                            Description="$(CodePlexDescription)"
-                           IsDefaultRelease="false"
+                           IsDefaultRelease="true"
                            ReleaseDate="$(_releaseDate)"
                            ReleaseStatus="Stable"
-                           ShowToPublic="false"/>
+                           ShowToPublic="true"/>
     <Message Text="Done creating CodePlex release, PackageName=$(PackageName)" Importance="High"/>
 
     <Message Text="Uploading to CodePlex, PackageName=$(PackageName)" Importance="High"/>
