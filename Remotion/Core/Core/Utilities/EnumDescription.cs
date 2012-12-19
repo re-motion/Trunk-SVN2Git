@@ -29,6 +29,10 @@ namespace Remotion.Utilities
   /// <summary>
   /// Use this class to get the clear text representations of enumeration values.
   /// </summary>
+  /// <remarks>
+  /// Use the <see cref="EnumDescriptionResourceAttribute"/> to provide globalization support for the enum type
+  /// or the <see cref="EnumDescriptionAttribute"/> to only provide friendly names for the individual enum values.
+  /// </remarks>
   public static class EnumDescription
   {
     /// <summary>This is for enums with the EnumDescriptionAttribute on values. </summary>
