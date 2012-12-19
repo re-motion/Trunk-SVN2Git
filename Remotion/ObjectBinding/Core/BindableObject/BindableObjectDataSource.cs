@@ -27,8 +27,8 @@ namespace Remotion.ObjectBinding.BindableObject
   {
     private IBusinessObject _businessObject;
     private string _typeName;
-    private Type _type;
     private DataSourceMode _mode = DataSourceMode.Edit;
+    private BindableObjectClass _bindableObjectClass;
 
     public BindableObjectDataSource ()
     {
@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.BindableObject
 
     public override IBusinessObjectClass BusinessObjectClass
     {
-      get { return GetBusinessObjectClass(); }
+      get { return GetBindableObjectClass(); }
     }
 
     [Category ("Data")]
@@ -59,42 +59,56 @@ namespace Remotion.ObjectBinding.BindableObject
     {
       get
       {
-        if (_type != null)
-          return _type;
-
-        if (_typeName == null)
+        var bindableObjectClass = GetBindableObjectClass();
+        if (bindableObjectClass == null)
           return null;
 
-        if (IsDesignMode)
-          return TypeUtility.GetDesignModeType (_typeName, false);
-
-        _type = TypeUtility.GetType (_typeName, true);
-        return _type;
+        return bindableObjectClass.TargetType;
       }
       set
       {
-        _type = null;
         if (value == null)
           _typeName = null;
         else
           _typeName = TypeUtility.GetPartialAssemblyQualifiedName (value);
+
+        _bindableObjectClass = null;
       }
     }
 
-    private IBusinessObjectClass GetBusinessObjectClass ()
+    private new Type GetType ()
     {
-      if (Type == null)
+      if (_typeName == null)
         return null;
 
-      if (!BindableObjectProvider.IsBindableObjectImplementation (Type))
+      if (IsDesignMode)
+        return TypeUtility.GetDesignModeType (_typeName, false);
+
+      return TypeUtility.GetType (_typeName, true);
+    }
+
+    private BindableObjectClass GetBindableObjectClass ()
+    {
+      var type = GetType();
+      if (type == null)
+        return null;
+
+      if (_bindableObjectClass == null)
       {
-        var message = string.Format ("The type '{0}' is not a bindable object implementation. It must either have an BindableObject mixin or be " 
-            + "derived from a BindableObject base class to be used with this data source.", Type.FullName);
-        throw new InvalidOperationException (message);
+        if (!BindableObjectProvider.IsBindableObjectImplementation (type))
+        {
+          var message = string.Format (
+              "The type '{0}' is not a bindable object implementation. It must either have an BindableObject mixin or be "
+              + "derived from a BindableObject base class to be used with this data source.",
+              type.FullName);
+          throw new InvalidOperationException (message);
+        }
+
+        var provider = BindableObjectProvider.GetProviderForBindableObjectType (type);
+        _bindableObjectClass = provider.GetBindableObjectClass (type);
       }
 
-      var provider = BindableObjectProvider.GetProviderForBindableObjectType (Type);
-      return provider.GetBindableObjectClass (Type);
+      return _bindableObjectClass;
     }
 
     private bool IsDesignMode
