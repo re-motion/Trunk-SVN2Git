@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Remotion.Collections;
 using Remotion.Utilities;
 
 namespace Remotion.Security
@@ -25,6 +26,9 @@ namespace Remotion.Security
   [Serializable]
   public sealed class SecurityContext : ISecurityContext, IEquatable<SecurityContext>
   {
+    private static readonly ICache<Type, bool> s_validAbstractRoleTypeCache = CacheFactory.CreateWithLocking<Type, bool>();
+    private static readonly ICache<Type, bool> s_validSecurityStateTypeCache = CacheFactory.CreateWithLocking<Type, bool>();
+
     /// <summary>
     /// Creates a new instance of the <see cref="SecurityContext"/> type initialized for a stateless scenario, i.e. before an actual instance of the
     /// specified <paramref name="type"/> is available to supply state information. One such occurance would be the creation of a new instance of 
@@ -118,7 +122,7 @@ namespace Remotion.Security
       foreach (Enum abstractRole in abstractRoles)
       {
         Type roleType = abstractRole.GetType();
-        if (!AttributeUtility.IsDefined<AbstractRoleAttribute> (roleType, false))
+        if (!s_validAbstractRoleTypeCache.GetOrCreateValue (roleType, key => AttributeUtility.IsDefined<AbstractRoleAttribute> (key, false)))
         {
           string message = string.Format (
               "Enumerated Type '{0}' cannot be used as an abstract role. Valid abstract roles must have the {1} applied.",
@@ -140,7 +144,7 @@ namespace Remotion.Security
       foreach (KeyValuePair<string, Enum> valuePair in states)
       {
         Type stateType = valuePair.Value.GetType();
-        if (!AttributeUtility.IsDefined<SecurityStateAttribute> (stateType, false))
+        if (!s_validSecurityStateTypeCache.GetOrCreateValue (stateType, key => AttributeUtility.IsDefined<SecurityStateAttribute> (key, false)))
         {
           string message = string.Format (
               "Enumerated Type '{0}' cannot be used as a security state. Valid security states must have the {1} applied.",
