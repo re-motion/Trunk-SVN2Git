@@ -24,63 +24,6 @@ using Remotion.Collections;
 namespace Remotion.Utilities
 {
   /// <summary>
-  /// Use this attribute to specify a clear text representation of a certain enumeration value.
-  /// </summary>
-  [AttributeUsage (AttributeTargets.Field, AllowMultiple = false)]
-  public class EnumDescriptionAttribute: Attribute
-  {
-    private readonly string _description;
-
-    public EnumDescriptionAttribute (string description)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("description", description);
-      
-      _description = description;
-    }
-
-    public string Description
-    {
-      get { return _description; }
-    }
-  }
-
-  [AttributeUsage (AttributeTargets.Enum, AllowMultiple = false)]
-  public class EnumDescriptionResourceAttribute: Attribute
-  {
-    private readonly string _baseName;
-
-    public EnumDescriptionResourceAttribute (string baseName)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("baseName", baseName);
-      
-      _baseName = baseName;
-    }
-
-    public string BaseName
-    {
-      get { return _baseName; }
-    }
-  }
-
-  public struct EnumValue
-  {
-    public readonly Enum Value;
-    public readonly string Description;
-    public long NumericValue
-    {
-      get { return Convert.ToInt64 (Value); }
-    }
-
-    public EnumValue (Enum value, string description)
-    {
-      ArgumentUtility.CheckNotNullOrEmpty ("description", description);
-      
-      Value = value;
-      Description = description;
-    }
-  }
-
-  /// <summary>
   /// Use this class to get the clear text representations of enumeration values.
   /// </summary>
   public static class EnumDescription
