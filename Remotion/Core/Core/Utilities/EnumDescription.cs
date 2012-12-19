@@ -73,6 +73,8 @@ namespace Remotion.Utilities
 
     public EnumValue (Enum value, string description)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("description", description);
+      
       Value = value;
       Description = description;
     }
