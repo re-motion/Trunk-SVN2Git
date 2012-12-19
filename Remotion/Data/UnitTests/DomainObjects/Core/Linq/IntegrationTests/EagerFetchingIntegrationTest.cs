@@ -320,40 +320,38 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5284")]
     public void EagerFetching_MixedProperty_ViaCastInFetchClause ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin>()
                    where o.ID == DomainObjectIDs.TargetClassForPersistentMixins2
                    select o)
-                   .FetchOne (o => ((IMixinAddingPersistentProperties) o).CollectionProperty1Side);
+                   .FetchMany (o => ((IMixinAddingPersistentProperties) o).CollectionProperty1Side);
 
       CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins2);
 
       CheckDataContainersRegistered (DomainObjectIDs.RelationTargetForPersistentMixin3);
       CheckCollectionRelationRegistered (
           DomainObjectIDs.TargetClassForPersistentMixins2,
-          typeof (IMixinAddingPersistentProperties),
+          typeof (MixinAddingPersistentProperties),
           "CollectionProperty1Side",
           false,
           DomainObjectIDs.RelationTargetForPersistentMixin3);
     }
 
     [Test]
-    [Ignore ("TODO 5284")]
     public void EagerFetching_MixedProperty_ViaCastInSelect ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
                    where o.ID == DomainObjectIDs.TargetClassForPersistentMixins2
                    select (IMixinAddingPersistentProperties) o)
-                   .FetchOne (o => o.CollectionProperty1Side);
+                   .FetchMany (o => o.CollectionProperty1Side);
 
       CheckQueryResult (query.AsEnumerable().Cast<DomainObject>(), DomainObjectIDs.TargetClassForPersistentMixins2);
 
       CheckDataContainersRegistered (DomainObjectIDs.RelationTargetForPersistentMixin3);
       CheckCollectionRelationRegistered (
           DomainObjectIDs.TargetClassForPersistentMixins2,
-          typeof (IMixinAddingPersistentProperties),
+          typeof (MixinAddingPersistentProperties),
           "CollectionProperty1Side",
           false,
           DomainObjectIDs.RelationTargetForPersistentMixin3);

@@ -122,13 +122,19 @@ namespace Remotion.Data.UnitTests.DomainObjects
       return GetEndPointDefinition (typeof (Order), "OrderItems");
     }
 
-    protected IRelationEndPointDefinition GetEndPointDefinition (Type declaringType, string shortPropertyName)
+    protected IRelationEndPointDefinition GetEndPointDefinition (Type classType, string shortPropertyName)
     {
-      var endPointDefinition = GetTypeDefinition (declaringType)
+      return GetEndPointDefinition (classType, classType, shortPropertyName);
+    }
+
+    protected IRelationEndPointDefinition GetEndPointDefinition (Type classType, Type propertyDeclaringType, string shortPropertyName)
+    {
+      var endPointDefinition = GetTypeDefinition (classType)
           .PropertyAccessorDataCache
-          .GetMandatoryPropertyAccessorData (declaringType, shortPropertyName)
+          .GetMandatoryPropertyAccessorData (propertyDeclaringType, shortPropertyName)
           .RelationEndPointDefinition;
-      Assertion.IsNotNull (endPointDefinition, "Property '{0}.{1}' is not a relation end-point.", declaringType, shortPropertyName);
+      Assertion.IsNotNull (
+          endPointDefinition, "Property '{0}.{1}' is not a relation end-point on '{2}'.", propertyDeclaringType, shortPropertyName, classType.Name);
       return endPointDefinition;
     }
 

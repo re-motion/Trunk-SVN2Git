@@ -25,6 +25,7 @@ using Remotion.Data.DomainObjects.Persistence.Rdbms.Model.Building;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.DomainObjects.Queries.Configuration;
 using Remotion.Data.DomainObjects.Queries.EagerFetching;
+using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting.Reflection;
 using Remotion.Linq;
@@ -192,6 +193,33 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
 
       _sqlQueryGeneratorMock.VerifyAllExpectations ();
       CheckSingleFetchRequest (result.EagerFetchQueries, typeof (Company), "Ceo", "FETCH");
+    }
+
+    [Test]
+    public void CreateSequenceQuery_EntityQuery_WithMixinFetchRequest ()
+    {
+      var fakeSqlQuery = CreateSqlQueryGeneratorResult (selectedEntityType: typeof (TargetClassForPersistentMixin));
+      _sqlQueryGeneratorMock.Stub (stub => stub.CreateSqlQuery (_customerQueryModel)).Return (fakeSqlQuery);
+
+      var fetchQueryModelBuilder = CreateFetchOneQueryModelBuilder ((IMixinAddingPersistentProperties o) => o.RelationProperty);
+      var fakeFetchSqlQueryResult = CreateSqlQueryGeneratorResult ("FETCH");
+
+      _sqlQueryGeneratorMock
+          .Expect (mock => mock.CreateSqlQuery (Arg<QueryModel>.Is.Anything))
+          .Return (fakeFetchSqlQueryResult)
+          .WhenCalled (mi =>
+          {
+            var actualQueryModel = (QueryModel) mi.Arguments[0];
+            var fetchQueryModel = fetchQueryModelBuilder.GetOrCreateFetchQueryModel ();
+            CheckActualFetchQueryModel (actualQueryModel, fetchQueryModel);
+          });
+
+      var result = _generator.CreateSequenceQuery<int> ("id", TestDomainStorageProviderDefinition, _customerQueryModel, new[] { fetchQueryModelBuilder });
+
+      _sqlQueryGeneratorMock.VerifyAllExpectations ();
+      var expectedEndPointDefinition = GetEndPointDefinition (
+          typeof (TargetClassForPersistentMixin), typeof (MixinAddingPersistentProperties), "RelationProperty");
+      CheckSingleFetchRequest (result.EagerFetchQueries, expectedEndPointDefinition, "FETCH");
     }
 
     [Test]
@@ -408,9 +436,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq
     private void CheckSingleFetchRequest (
         EagerFetchQueryCollection fetchQueryCollection, Type sourceType, string fetchedProperty, string expectedFetchQueryText)
     {
+      var relationEndPointDefinition = GetEndPointDefinition (sourceType, fetchedProperty);
+      CheckSingleFetchRequest (fetchQueryCollection, relationEndPointDefinition, expectedFetchQueryText);
+    }
+
+    private static void CheckSingleFetchRequest (
+        EagerFetchQueryCollection fetchQueryCollection, IRelationEndPointDefinition relationEndPointDefinition, string expectedFetchQueryText)
+    {
       Assert.That (fetchQueryCollection.Count, Is.EqualTo (1));
-      var fetchQuery = fetchQueryCollection.Single ();
-      Assert.That (fetchQuery.Key, Is.EqualTo (GetEndPointDefinition (sourceType, fetchedProperty)));
+      var fetchQuery = fetchQueryCollection.Single();
+      Assert.That (fetchQuery.Key, Is.EqualTo (relationEndPointDefinition));
       Assert.That (fetchQuery.Value.Statement, Is.EqualTo (expectedFetchQueryText));
     }
 

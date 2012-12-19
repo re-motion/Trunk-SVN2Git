@@ -219,18 +219,18 @@ namespace Remotion.Data.DomainObjects.Linq
         throw new NotSupportedException (message);
       }
 
-      var propertyName = MappingConfiguration.NameResolver.GetPropertyName (PropertyInfoAdapter.Create (propertyInfo));
-      try
+      var endPoint = classDefinition.ResolveRelationEndPoint (PropertyInfoAdapter.Create (propertyInfo));
+      if (endPoint == null)
       {
-        return classDefinition.GetMandatoryRelationEndPointDefinition (propertyName);
-      }
-      catch (MappingException ex)
-      {
+        Assertion.IsNotNull (propertyInfo.DeclaringType);
         var message = string.Format (
-            "The property '{0}' is not a relation end point. Fetching it is not supported by this LINQ provider.",
-            propertyName);
-        throw new NotSupportedException (message, ex);
+            "The property '{0}.{1}' is not a relation end point. Fetching it is not supported by this LINQ provider.",
+            propertyInfo.DeclaringType.FullName,
+            propertyInfo.Name);
+        throw new NotSupportedException (message);
       }
+
+      return endPoint;
     }
 
     private Ordering GetOrdering (QueryModel queryModel, SortedPropertySpecification sortedPropertySpecification)
