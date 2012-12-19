@@ -38,7 +38,13 @@ namespace Remotion.Development.UnitTesting.Configuration
       }
     }
 
-    public static void DeserializeSection (ConfigurationSection configurationSection, string xmlFragment)
+    /// <summary>
+    /// Deserializes a configuration section and optionally validates the supplied <paramref name="xmlFragment"/> against a XML schema.
+    /// </summary>
+    /// <param name="configurationSection">The configuration to populate from the fragment.</param>
+    /// <param name="xmlFragment">The XML fragment.</param>
+    /// <param name="xsdPath">The path of the XSD file, or <see langword="null"/> for no validation.</param>
+    public static void DeserializeSection (ConfigurationSection configurationSection, string xmlFragment, string xsdPath = null)
     {
       ArgumentUtility.CheckNotNull ("configurationSection", configurationSection);
       ArgumentUtility.CheckNotNullOrEmpty ("xmlFragment", xmlFragment);
@@ -48,6 +54,9 @@ namespace Remotion.Development.UnitTesting.Configuration
         reader.WhitespaceHandling = WhitespaceHandling.None;
         PrivateInvoke.InvokeNonPublicMethod (configurationSection, "DeserializeSection", reader);
       }
+
+      if (xsdPath != null)
+        XmlSchemaValidation.Validate (xmlFragment, xsdPath);
     }
   }
 }
