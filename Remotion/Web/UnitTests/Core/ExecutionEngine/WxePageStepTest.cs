@@ -101,7 +101,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxeContextMock.SetCurrent (_wxeContext);
 
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
-      WxeRepostOptions repostOptions = WxeRepostOptions.SuppressRepost1 (MockRepository.GenerateStub<Control>(), true);
+      WxeRepostOptions repostOptions = WxeRepostOptions.SuppressRepost (MockRepository.GenerateStub<Control>(), true);
 
       using (_mockRepository.Ordered())
       {

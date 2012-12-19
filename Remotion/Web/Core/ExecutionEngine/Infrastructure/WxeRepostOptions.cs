@@ -30,7 +30,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
   [Serializable]
   public class WxeRepostOptions
   {
-    public static WxeRepostOptions SuppressRepost1 ([NotNull] Control sender, bool usesEventTarget)
+    public static WxeRepostOptions SuppressRepost ([NotNull] Control sender, bool usesEventTarget)
     {
       return new WxeRepostOptions (sender, usesEventTarget);
     }
@@ -42,7 +42,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
     private readonly Control _sender;
     private readonly bool _usesEventTarget;
-    private readonly bool _suppressRepost;
+    private readonly bool _suppressesRepost;
 
     private WxeRepostOptions (Control sender, bool usesEventTarget)
     {
@@ -56,14 +56,14 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       _sender = sender;
       _usesEventTarget = usesEventTarget;
-      _suppressRepost = true;
+      _suppressesRepost = true;
     }
 
     private WxeRepostOptions (Control sender)
     {
       _sender = sender;
       _usesEventTarget = false;
-      _suppressRepost = false;
+      _suppressesRepost = false;
     }
 
     public Control Sender
@@ -76,9 +76,9 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
       get { return _usesEventTarget; }
     }
 
-    public bool SuppressRepost
+    public bool SuppressesRepost
     {
-      get { return _suppressRepost; }
+      get { return _suppressesRepost; }
     }
   }
 }

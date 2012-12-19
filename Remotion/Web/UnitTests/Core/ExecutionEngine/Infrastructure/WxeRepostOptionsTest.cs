@@ -30,10 +30,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     public void SuppressRepost_UsesEventTargetTrue ()
     {
       var sender = new Control();
-      var options = WxeRepostOptions.SuppressRepost1 (sender, true);
+      var options = WxeRepostOptions.SuppressRepost (sender, true);
 
       Assert.That (options.Sender, Is.SameAs (sender));
-      Assert.That (options.SuppressRepost, Is.True);
+      Assert.That (options.SuppressesRepost, Is.True);
       Assert.That (options.UsesEventTarget, Is.True);
     }
 
@@ -41,10 +41,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     public void SuppressRepost_SenderImplementsIPostBackEventHandler ()
     {
       var sender = MockRepository.GenerateMock<Control, IPostBackEventHandler>();
-      var options = WxeRepostOptions.SuppressRepost1 (sender, false);
+      var options = WxeRepostOptions.SuppressRepost (sender, false);
 
       Assert.That (options.Sender, Is.SameAs (sender));
-      Assert.That (options.SuppressRepost, Is.True);
+      Assert.That (options.SuppressesRepost, Is.True);
       Assert.That (options.UsesEventTarget, Is.False);
     }
 
@@ -52,10 +52,10 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     public void SuppressRepost_SenderImplementsIPostBackDataHandler ()
     {
       var sender = MockRepository.GenerateMock<Control, IPostBackDataHandler>();
-      var options = WxeRepostOptions.SuppressRepost1 (sender, false);
+      var options = WxeRepostOptions.SuppressRepost (sender, false);
 
       Assert.That (options.Sender, Is.SameAs (sender));
-      Assert.That (options.SuppressRepost, Is.True);
+      Assert.That (options.SuppressesRepost, Is.True);
       Assert.That (options.UsesEventTarget, Is.False);
     }
 
@@ -64,7 +64,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
         "The 'sender' must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.")]
     public void SuppressRepost_SenderNotIPostBackDataHandler_And_SenderNotIPostBackDataHandler_ThrowsArgumentException ()
     {
-      WxeRepostOptions.SuppressRepost1 (new Control(), false);
+      WxeRepostOptions.SuppressRepost (new Control(), false);
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
     public void SuppressRepost_NoSender_ThrowsArgumentNullException ()
     {
       // ReSharper disable AssignNullToNotNullAttribute
-      WxeRepostOptions.SuppressRepost1 (null, false);
+      WxeRepostOptions.SuppressRepost (null, false);
       // ReSharper restore AssignNullToNotNullAttribute
     }
 
@@ -82,7 +82,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       var options = WxeRepostOptions.DoRepost (null);
 
       Assert.That (options.Sender, Is.Null);
-      Assert.That (options.SuppressRepost, Is.False);
+      Assert.That (options.SuppressesRepost, Is.False);
       Assert.That (options.UsesEventTarget, Is.False);
     }
 
@@ -93,7 +93,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure
       var options = WxeRepostOptions.DoRepost (sender);
 
       Assert.That (options.Sender, Is.SameAs (sender));
-      Assert.That (options.SuppressRepost, Is.False);
+      Assert.That (options.SuppressesRepost, Is.False);
       Assert.That (options.UsesEventTarget, Is.False);
     }
   }

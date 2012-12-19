@@ -231,7 +231,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
       IExecutionState executionState = new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
-          WxeRepostOptions.SuppressRepost1 (senderMock, true));
+          WxeRepostOptions.SuppressRepost (senderMock, true));
 
       using (MockRepository.Ordered())
       {
@@ -300,7 +300,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
-          WxeRepostOptions.SuppressRepost1 (sender, false));
+          WxeRepostOptions.SuppressRepost (sender, false));
     }
 
     private PreProcessingSubFunctionState CreateExecutionStateForSupressRepost (bool usesEventTarget)
@@ -308,7 +308,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
-          WxeRepostOptions.SuppressRepost1 (MockRepository.Stub<Control>(), usesEventTarget));
+          WxeRepostOptions.SuppressRepost (MockRepository.Stub<Control>(), usesEventTarget));
     }
   }
 }

@@ -82,7 +82,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure
 
       bool usesEventTarget = options.UsesEventTarget ?? UsesEventTarget;
       WxePermaUrlOptions permaUrlOptions = options.PermaUrlOptions;
-      WxeRepostOptions repostOptions = WxeRepostOptions.SuppressRepost1 (sender, usesEventTarget);
+      WxeRepostOptions repostOptions = WxeRepostOptions.SuppressRepost (sender, usesEventTarget);
       _wxePageInfo.CurrentPageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), repostOptions);
     }
 

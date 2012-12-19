@@ -68,7 +68,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
     {
       var postBackCollection = Parameters.Page.GetPostBackCollection().Clone();
 
-      if (_repostOptions.SuppressRepost)
+      if (_repostOptions.SuppressesRepost)
       {
         if (_repostOptions.UsesEventTarget)
         {
@@ -83,7 +83,7 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
 
     private void EnsureSenderPostBackRegistration (NameValueCollection postBackCollection)
     {
-      if (_repostOptions.SuppressRepost)
+      if (_repostOptions.SuppressesRepost)
         return;
 
       if (_repostOptions.Sender is IPostBackDataHandler && postBackCollection[_repostOptions.Sender.UniqueID] == null)
