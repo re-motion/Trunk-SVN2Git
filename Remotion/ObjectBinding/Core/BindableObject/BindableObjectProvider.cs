@@ -72,6 +72,9 @@ namespace Remotion.ObjectBinding.BindableObject
     /// 	<see cref="BindableObjectMixinBase{TBindableObject}"/> applied or is itself derived from a bindable object base class; otherwise 
     /// 	<see langword="false"/>.
     /// </returns>
+    /// <remarks>
+    /// <note type="caution">This check is not cached by the implemention. The result should be cached.</note>
+    /// </remarks>
     public static bool IsBindableObjectImplementation (Type type)
     {
       ArgumentUtility.CheckNotNull ("type", type);
