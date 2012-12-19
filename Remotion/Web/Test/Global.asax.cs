@@ -17,6 +17,7 @@
 using System;
 using System.ComponentModel;
 using System.Web;
+using Remotion.Logging;
 using log4net.Config;
 
 namespace Remotion.Web.Test
@@ -38,7 +39,7 @@ namespace Remotion.Web.Test
 
     protected void Application_Start (Object sender, EventArgs e)
     {
-      XmlConfigurator.Configure();
+      LogManager.Initialize();
     }
 
     protected void Session_Start (Object sender, EventArgs e)
