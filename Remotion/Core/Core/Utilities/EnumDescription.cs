@@ -15,9 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
@@ -31,12 +29,14 @@ namespace Remotion.Utilities
   [AttributeUsage (AttributeTargets.Field, AllowMultiple = false)]
   public class EnumDescriptionAttribute: Attribute
   {
-    private string _description;
+    private readonly string _description;
 
     public EnumDescriptionAttribute (string description)
-	  {
+    {
+      ArgumentUtility.CheckNotNullOrEmpty ("description", description);
+      
       _description = description;
-	  }
+    }
 
     public string Description
     {
@@ -47,10 +47,12 @@ namespace Remotion.Utilities
   [AttributeUsage (AttributeTargets.Enum, AllowMultiple = false)]
   public class EnumDescriptionResourceAttribute: Attribute
   {
-    private string _baseName;
+    private readonly string _baseName;
 
     public EnumDescriptionResourceAttribute (string baseName)
     {
+      ArgumentUtility.CheckNotNullOrEmpty ("baseName", baseName);
+      
       _baseName = baseName;
     }
 
@@ -83,11 +85,11 @@ namespace Remotion.Utilities
   {
     /// <summary>This is for enums with the EnumDescriptionAttribute on values. </summary>
     /// <remarks> This is for enums with the EnumDescriptionAttribute on values. </remarks>
-    private static readonly LockingCacheDecorator<Type, IDictionary<Enum, string>> s_typeDescriptions =
+    private static readonly ICache<Type, IDictionary<Enum, string>> s_typeDescriptions =
         CacheFactory.CreateWithLocking<Type, IDictionary<Enum, string>>();
 
     /// <summary> This is for enums with the EnumDescriptionResourceAttribute.  </summary>
-    private static readonly LockingCacheDecorator<Tuple<string, Assembly>, ResourceManager> s_enumResourceManagers =
+    private static readonly ICache<Tuple<string, Assembly>, ResourceManager> s_enumResourceManagers =
         CacheFactory.CreateWithLocking<Tuple<string, Assembly>, ResourceManager>();
 
     public static EnumValue[] GetAllValues (Type enumType)
