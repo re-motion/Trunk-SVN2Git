@@ -757,15 +757,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     }
 
     [Test]
-    public void CreateUnloadAllCommand_EmptyDataManager ()
-    {
-      Assert.That (_dataManagerWithMocks.DataContainers, Is.Empty);
-
-      var command = _dataManagerWithMocks.CreateUnloadAllCommand ();
-      Assert.That (command, Is.TypeOf<NopCommand> ());
-    }
-
-    [Test]
     public void HasRelationChanged_True ()
     {
       var dataContainer = DataContainer.CreateNew (DomainObjectIDs.Order1);
@@ -820,7 +811,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
         RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderItem2, "Order"),
         RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.OrderTicket1, "Order"),
         RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Official1, "Orders"),
-        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders"),
+        RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Customer1, "Orders")
       };
       var expectedEndPoints = expectedIDs.Select (id => _dataManager.GetRelationEndPointWithLazyLoad (id)).ToArray();
       Assert.That (endPoints, Is.EquivalentTo (expectedEndPoints));
@@ -835,8 +826,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
       
       var endPoints = _dataManager.GetOppositeRelationEndPoints (dataContainer).ToArray ();
 
-      var nullEndPoint = endPoints.OfType<NullObjectEndPoint>().SingleOrDefault();
-      Assert.That (nullEndPoint, Is.Not.Null);
+      var nullEndPoint = endPoints.OfType<NullObjectEndPoint>().Single();
       var expectedEndPointDefinition = 
           Configuration.GetTypeDefinition (typeof (OrderTicket)).GetRelationEndPointDefinition (typeof (OrderTicket).FullName + ".Order");
       Assert.That (nullEndPoint.Definition, Is.EqualTo (expectedEndPointDefinition));

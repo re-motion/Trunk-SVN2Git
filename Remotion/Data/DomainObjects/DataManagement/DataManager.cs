@@ -444,11 +444,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
 
     public IDataManagementCommand CreateUnloadAllCommand ()
     {
-      var domainObjects = DataContainers.Select (dc => dc.DomainObject).ConvertToCollection();
-      if (domainObjects.Count == 0)
-        return new NopCommand();
-      else
-        return new UnloadAllCommand (_relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _transactionEventSink);
+      return new UnloadAllCommand (_relationEndPointManager, _dataContainerMap, _invalidDomainObjectManager, _transactionEventSink);
     }
 
     private ClientTransactionsDifferException CreateClientTransactionsDifferException (string message, params object[] args)

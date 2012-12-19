@@ -289,6 +289,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
+    public void TransactionWithoutDataContainers_ButRelations ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      customer.EnsureDataAvailable ();
+      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (customer, o => o.Orders));
+
+      UnloadService.UnloadData (TestableClientTransaction, customer.ID);
+
+      CheckVirtualEndPointExistsAndComplete (customer, "Orders", true, true);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers, Is.Empty);
+
+      UnloadService.UnloadAll (TestableClientTransaction);
+
+      CheckTransactionIsEmpty ();
+    }
+
+    [Test]
     public void Events ()
     {
       var order1 = LoadOrderWithRelations (DomainObjectIDs.Order1);
@@ -572,30 +589,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       mockRepository.VerifyAll ();
     }
 
+    [Test]
+    public void Events_EmptyTransaction ()
+    {
+      var mockRepository = new MockRepository ();
+      // Actual events are more comprehensive, since all opposite objects are also unloaded. We only test for some of them, so use a dynamic mock.
+      var clientTransactionListener = mockRepository.DynamicMock<IClientTransactionListener> ();
+      mockRepository.ReplayAll ();
+
+      TestableClientTransaction.AddListener (clientTransactionListener);
+      try
+      {
+        UnloadService.UnloadAll (TestableClientTransaction);
+      }
+      finally
+      {
+        TestableClientTransaction.RemoveListener (clientTransactionListener);
+      }
+
+      clientTransactionListener.AssertWasNotCalled (
+          mock => mock.ObjectsUnloading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      clientTransactionListener.AssertWasNotCalled (
+          mock => mock.ObjectsUnloaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+    }
+
     private void CheckDataAndEndPoints (Order order, bool shouldBePresent)
     {
       CheckDataContainerExists (order, shouldBePresent);
       CheckVirtualEndPointExistsAndComplete (order, "OrderItems", shouldBePresent, shouldBePresent);
       CheckVirtualEndPointExistsAndComplete (order, "OrderTicket", shouldBePresent, shouldBePresent);
       CheckEndPointExists (order, "Customer", shouldBePresent);
-    }
-
-    [Test]
-    [Ignore ("TODO 5267")]
-    public void TransactionWithoutDataContainers_ButRelations ()
-    {
-      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
-      customer.EnsureDataAvailable ();
-      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (customer, o => o.Orders));
-
-      UnloadService.UnloadData (TestableClientTransaction, customer.ID);
-
-      CheckVirtualEndPointExistsAndComplete (customer, "Orders", true, true);
-      Assert.That (TestableClientTransaction.DataManager.DataContainers, Is.Empty);
-
-      UnloadService.UnloadAll (TestableClientTransaction);
-
-      CheckTransactionIsEmpty ();
     }
 
     private Order LoadOrderWithRelations (ObjectID objectID)
