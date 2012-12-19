@@ -580,6 +580,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
       CheckEndPointExists (order, "Customer", shouldBePresent);
     }
 
+    [Test]
+    [Ignore ("TODO 5267")]
+    public void TransactionWithoutDataContainers_ButRelations ()
+    {
+      var customer = Customer.GetObject (DomainObjectIDs.Customer2);
+      customer.EnsureDataAvailable ();
+      ClientTransaction.Current.EnsureDataComplete (RelationEndPointID.Resolve (customer, o => o.Orders));
+
+      UnloadService.UnloadData (TestableClientTransaction, customer.ID);
+
+      CheckVirtualEndPointExistsAndComplete (customer, "Orders", true, true);
+      Assert.That (TestableClientTransaction.DataManager.DataContainers, Is.Empty);
+
+      UnloadService.UnloadAll (TestableClientTransaction);
+
+      CheckTransactionIsEmpty ();
+    }
+
     private Order LoadOrderWithRelations (ObjectID objectID)
     {
       var order = Order.GetObject (objectID);
