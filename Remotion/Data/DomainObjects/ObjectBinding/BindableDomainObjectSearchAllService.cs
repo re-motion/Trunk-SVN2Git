@@ -16,12 +16,14 @@
 // 
 using System;
 using System.Linq;
-using Remotion.Data.DomainObjects.Infrastructure;
+using JetBrains.Annotations;
+using Remotion.Collections;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.ObjectBinding;
 using Remotion.ObjectBinding.BindableObject;
 using System.Reflection;
 using Remotion.Utilities;
+using Remotion.Utilities.ReSharperAnnotations;
 
 namespace Remotion.Data.DomainObjects.ObjectBinding
 {
@@ -30,6 +32,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     private static readonly QueryCache s_queryCache = new QueryCache ();
     private static readonly MethodInfo s_getQueryMethod = 
         typeof (BindableDomainObjectSearchAllService).GetMethod ("GetQuery", BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
+
+    private readonly ICache<Type, bool> _bindableObjectTypeCache = CacheFactory.CreateWithLocking<Type, bool>();
 
     public bool SupportsProperty (IBusinessObjectReferenceProperty property)
     {
@@ -82,7 +86,8 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
     {
       if (!ReflectionUtility.IsDomainObject (type))
         throw new ArgumentException ("This service only supports queries for DomainObject types.", "type");
-      if (!BindableDomainObjectProvider.IsBindableObjectImplementation (type))
+
+      if (!_bindableObjectTypeCache.GetOrCreateValue (type, BindableObjectProvider.IsBindableObjectImplementation))
       {
         var message = string.Format ("This service only supports queries for bindable DomainObject types, the given type '{0}' is not a bindable "
             + "type. Derive from BindableDomainObject or apply the BindableDomainObjectAttribute.", type.FullName);
@@ -94,11 +99,10 @@ namespace Remotion.Data.DomainObjects.ObjectBinding
       return (IQuery) s_getQueryMethod.MakeGenericMethod (type).Invoke (this, null);
     }
 
-// ReSharper disable UnusedPrivateMember
+    [ReflectionAPI]
     private IQuery GetQuery<T> () where T : DomainObject
     {
       return s_queryCache.GetQuery<T> (typeof (T).AssemblyQualifiedName, source => from x in source select x);
     }
-// ReSharper restore UnusedPrivateMember
   }
 }
