@@ -14,12 +14,33 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
-using System;
 
-namespace Remotion.Web.ExecutionEngine
+using System;
+using System.Web.UI;
+using JetBrains.Annotations;
+
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
-  public interface IWxePageExecutor
+  public interface IWxeExecutor
   {
-    void ExecutePage (WxeContext context, string page, bool isPostBack);
+    void ExecuteFunction (
+        [NotNull] WxeFunction function,
+        [CanBeNull] Control sender,
+        [NotNull] WxeCallOptions options);
+
+    void ExecuteFunctionNoRepost (
+        [NotNull] WxeFunction function,
+        [NotNull] Control sender,
+        [NotNull] WxeCallOptionsNoRepost options);
+
+    void ExecuteFunctionExternalByRedirect (
+        [NotNull] WxeFunction function,
+        [NotNull] Control sender,
+        [NotNull] WxeCallOptionsExternalByRedirect options);
+
+    void ExecuteFunctionExternal (
+        [NotNull] WxeFunction function,
+        [NotNull] Control sender,
+        [NotNull] WxeCallOptionsExternal options);
   }
 }

@@ -141,6 +141,9 @@
     <Compile Include="Context\HttpContextStorageProvider.cs" />
     <Compile Include="Design\DesignTimeThemedResourceUrl.cs" />
     <Compile Include="Design\DesignTimeResourceUrl.cs" />
+    <Compile Include="ExecutionEngine\IWxeCallOptions.cs" />
+    <Compile Include="ExecutionEngine\WxeCallArgumentsWithoutSender.cs" />
+    <Compile Include="ExecutionEngine\WxeCallOptionsBase.cs" />
     <Compile Include="Infrastructure\IBuildManager.cs" />
     <Compile Include="Services\IconProxy.cs" />
     <Compile Include="Services\IWebServiceFactory.cs" />
@@ -278,13 +281,13 @@
     <Compile Include="Utilities\ControlState.cs" />
     <Compile Include="Utilities\IInternalControlMemberCaller.cs" />
     <Compile Include="Utilities\InternalControlMemberCaller.cs" />
-    <Compile Include="ExecutionEngine\IWxePageExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\IWxePageExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObject.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\ResourceObjectWithVarRef.cs" />
     <Compile Include="ExecutionEngine\WxeExecuteUserControlNextStepException.cs" />
     <Compile Include="ExecutionEngine\WxeExecutionControlExceptionBase.cs" />
-    <Compile Include="ExecutionEngine\WxePageExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxePageExecutor.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PostProcessingSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreparingRedirectToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\PreProcessingSubFunctionState.cs" />
@@ -295,7 +298,7 @@
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecuteExternalByRedirect\RedirectingToSubFunctionState.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithoutPermaUrlState.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\NullExecutionState.cs" />
-    <Compile Include="ExecutionEngine\WxeRepostOptions.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeRepostOptions.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\ExecutionStateBase.cs" />
     <Compile Include="ExecutionEngine\Infrastructure\WxePageStepExecutionStates\Execute\ExecutingSubFunctionWithPermaUrlState.cs">
       <SubType>Code</SubType>
@@ -320,7 +323,7 @@
     <Compile Include="ExecutionEngine\WxeUserControl.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="ExecutionEngine\IWxeExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\IWxeExecutor.cs" />
     <Compile Include="ExecutionEngine\WxeCallArgumentsBase.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsExternalByRedirect.cs" />
     <Compile Include="ExecutionEngine\IWxeCallArguments.cs" />
@@ -328,7 +331,7 @@
     <Compile Include="ExecutionEngine\WxeCallOptions.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsExternal.cs" />
     <Compile Include="ExecutionEngine\WxeCallOptionsNoRepost.cs" />
-    <Compile Include="ExecutionEngine\WxeExecutor.cs" />
+    <Compile Include="ExecutionEngine\Infrastructure\WxeExecutor.cs" />
     <Compile Include="ExecutionEngine\WxeIgnorableException.cs" />
     <Compile Include="ExecutionEngine\IWxePage.cs" />
     <Compile Include="ExecutionEngine\WxeCallArguments.cs" />

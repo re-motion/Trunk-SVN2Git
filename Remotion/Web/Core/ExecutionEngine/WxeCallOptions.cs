@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -25,33 +27,25 @@ namespace Remotion.Web.ExecutionEngine
   /// Use the derived types if you require additional control over the <see cref="WxeFunction"/>'s execution.
   /// </summary>
   [Serializable]
-  public class WxeCallOptions
+  public sealed class WxeCallOptions : WxeCallOptionsBase
   {
-    private readonly WxePermaUrlOptions _permaUrlOptions;
-
     public WxeCallOptions ()
         : this (WxePermaUrlOptions.Null)
     {
     }
 
     public WxeCallOptions (WxePermaUrlOptions permaUrlOptions)
+        : base(permaUrlOptions)
     {
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
-
-      _permaUrlOptions = permaUrlOptions;
     }
 
-    public virtual void Dispatch (IWxeExecutor executor, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (IWxeExecutor executor, WxeFunction function, Control sender)
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("sender", sender);
 
-      executor.ExecuteFunction (function, _permaUrlOptions);
-    }
-
-    public WxePermaUrlOptions PermaUrlOptions
-    {
-      get { return _permaUrlOptions; }
+      executor.ExecuteFunction (function, sender, this);
     }
   }
 }

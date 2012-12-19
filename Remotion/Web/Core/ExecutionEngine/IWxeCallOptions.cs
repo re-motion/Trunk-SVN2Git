@@ -18,39 +18,12 @@
 using System;
 using System.Web.UI;
 using JetBrains.Annotations;
-using Remotion.Utilities;
 using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  [Serializable]
-  public abstract class WxeCallArgumentsBase : IWxeCallArguments
+  public interface IWxeCallOptions
   {
-    private readonly IWxeCallOptions _options;
-
-    protected WxeCallArgumentsBase (IWxeCallOptions options)
-    {
-      ArgumentUtility.CheckNotNull ("options", options);
-
-      _options = options;
-    }
-
-    public IWxeCallOptions Options
-    {
-      get { return _options; }
-    }
-
-    protected virtual void Dispatch (IWxeExecutor executor, WxeFunction function)
-    {
-      ArgumentUtility.CheckNotNull ("executor", executor);
-      ArgumentUtility.CheckNotNull ("function", function);
-
-      //_options.Dispatch (executor, function, _sender);
-    }
-
-    void IWxeCallArguments.Dispatch (IWxeExecutor executor, WxeFunction function)
-    {
-      Dispatch (executor, function);
-    }
+    void Dispatch ([NotNull] IWxeExecutor executor, [NotNull] WxeFunction function, [NotNull] Control sender);
   }
 }

@@ -18,6 +18,7 @@ using System;
 using System.Web.UI;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute;
 using Remotion.Web.Utilities;
@@ -230,7 +231,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
       IExecutionState executionState = new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
-          new WxeRepostOptions (senderMock, true));
+          WxeRepostOptions.SuppressRepost1 (senderMock, true));
 
       using (MockRepository.Ordered())
       {
@@ -261,7 +262,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, permaUrlOptions),
-          WxeRepostOptions.Null);
+          WxeRepostOptions.DoRepost (null));
     }
 
     private PreProcessingSubFunctionState CreateExecutionState (Control sender)
@@ -269,7 +270,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
-          new WxeRepostOptions (sender, false));
+          WxeRepostOptions.SuppressRepost1 (sender, false));
     }
 
     private PreProcessingSubFunctionState CreateExecutionState (bool usesEventTarget)
@@ -277,7 +278,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.Infrastructure.WxePageStep
       return new PreProcessingSubFunctionState (
           ExecutionStateContextMock,
           new PreProcessingSubFunctionStateParameters (_pageMock, SubFunction, WxePermaUrlOptions.Null),
-          new WxeRepostOptions (MockRepository.Stub<Control>(), usesEventTarget));
+          WxeRepostOptions.SuppressRepost1 (MockRepository.Stub<Control>(), usesEventTarget));
     }
   }
 }

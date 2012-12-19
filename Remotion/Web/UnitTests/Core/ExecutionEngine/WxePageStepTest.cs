@@ -21,6 +21,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates.Execute;
@@ -100,7 +101,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       WxeContextMock.SetCurrent (_wxeContext);
 
       WxePermaUrlOptions permaUrlOptions = new WxePermaUrlOptions();
-      WxeRepostOptions repostOptions = new WxeRepostOptions (MockRepository.GenerateStub<Control>(), true);
+      WxeRepostOptions repostOptions = WxeRepostOptions.SuppressRepost1 (MockRepository.GenerateStub<Control>(), true);
 
       using (_mockRepository.Ordered())
       {
@@ -140,13 +141,13 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine
       try
       {
         _pageStep.ExecuteFunction (
-            new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeRepostOptions.Null);
+            new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeRepostOptions.DoRepost (null));
       }
       catch (ApplicationException)
       {
       }
       _pageStep.ExecuteFunction (
-          new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeRepostOptions.Null);
+          new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, WxePermaUrlOptions.Null), WxeRepostOptions.DoRepost (null));
     }
 
     [Test]

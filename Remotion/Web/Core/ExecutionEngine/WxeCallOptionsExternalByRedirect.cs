@@ -16,7 +16,9 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -25,7 +27,7 @@ namespace Remotion.Web.ExecutionEngine
   /// same window.The <see cref="WxeFunction"/> will be initialized on the server and then opened via a HTTP-redirect request.
   /// </summary>
   [Serializable]
-  public class WxeCallOptionsExternalByRedirect : WxeCallOptions
+  public sealed class WxeCallOptionsExternalByRedirect : WxeCallOptionsBase
   {
     private readonly bool _returnToCaller;
     private readonly NameValueCollection _callerUrlParameters;
@@ -47,12 +49,13 @@ namespace Remotion.Web.ExecutionEngine
       _callerUrlParameters = callerUrlParameters;
     }
 
-    public override void Dispatch (IWxeExecutor executor, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (IWxeExecutor executor, WxeFunction function, Control sender)
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("sender", sender);
 
-      executor.ExecuteFunctionExternalByRedirect (function, this);
+      executor.ExecuteFunctionExternalByRedirect (function, sender, this);
 
       throw new WxeCallExternalException();
     }

@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -24,7 +26,7 @@ namespace Remotion.Web.ExecutionEngine
   /// the re-post to the postback-handler after the execution has returned to the caller function.
   /// </summary>
   [Serializable]
-  public class WxeCallOptionsNoRepost : WxeCallOptions
+  public sealed class WxeCallOptionsNoRepost : WxeCallOptionsBase
   {
     private readonly bool? _usesEventTarget;
 
@@ -49,13 +51,13 @@ namespace Remotion.Web.ExecutionEngine
       _usesEventTarget = usesEventTarget;
     }
 
-    public override void Dispatch (IWxeExecutor executor, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (IWxeExecutor executor, WxeFunction function, Control sender)
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("handler", handler);
+      ArgumentUtility.CheckNotNull ("sender", sender);
 
-      executor.ExecuteFunctionNoRepost (function, handler.Sender, this);
+      executor.ExecuteFunctionNoRepost (function, sender, this);
     }
 
     public bool? UsesEventTarget

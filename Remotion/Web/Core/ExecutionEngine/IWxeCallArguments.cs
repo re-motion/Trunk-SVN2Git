@@ -14,7 +14,10 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using JetBrains.Annotations;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -30,7 +33,7 @@ namespace Remotion.Web.ExecutionEngine
   /// </para>
   /// <para>
   ///   Use the <see cref="WxeCallArguments.Default"/> instance exposed on the <see cref="WxeCallArguments"/> type if your usecase is to simply
-  ///   invoke a sub-function on your page. If you whish to execute the function with more advanced <see cref="WxeCallOptions"/>, isntantiate an 
+  ///   invoke a sub-function on your page. If you whish to execute the function with more advanced <see cref="WxeCallOptions"/>, instantiate an 
   ///   instance of the <see cref="WxeCallArguments"/> type. Finally, the <see cref="WxePermaUrlCallArguments"/> type is used if simply wish to
   ///   display a perma-URL in the browser's location-bar.
   /// </para>
@@ -38,6 +41,7 @@ namespace Remotion.Web.ExecutionEngine
   ///   The <b>WxeGen</b> also allows for a simplified syntax by providing static <b>Call</b> methods on each page that will accept all required 
   ///   parameters (the <see cref="IWxePage"/>, the <see cref="IWxeCallArguments"/>, and additional arguments required by the specific function).
   /// </para>
+  /// <note type="inotes">Implement the <see cref="Dispatch"/> method to control the execution of the <see cref="WxeFunction"/>.</note>
   /// </remarks>
   /// <example>
   /// <code escaped="true" lang="C#">
@@ -63,6 +67,6 @@ namespace Remotion.Web.ExecutionEngine
   /// </example>
   public interface IWxeCallArguments
   {
-    void Dispatch (IWxeExecutor executor, WxeFunction function);
+    void Dispatch ([NotNull]IWxeExecutor executor, [NotNull]WxeFunction function);
   }
 }

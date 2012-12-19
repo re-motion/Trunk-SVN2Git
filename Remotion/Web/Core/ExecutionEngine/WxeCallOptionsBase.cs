@@ -14,17 +14,33 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
-using Remotion.Web.UI.Controls;
+using JetBrains.Annotations;
+using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
-  public interface IWxeExecutor
+  [Serializable]
+  public abstract class WxeCallOptionsBase : IWxeCallOptions
   {
-    void ExecuteFunction (WxeFunction function, WxePermaUrlOptions permaUrlOptions);
-    void ExecuteFunctionNoRepost (WxeFunction function, Control sender, WxeCallOptionsNoRepost options);
-    void ExecuteFunctionExternalByRedirect (WxeFunction function, WxeCallOptionsExternalByRedirect options);
-    void ExecuteFunctionExternal (WxeFunction function, Control sender, WxeCallOptionsExternal options);
+    private readonly WxePermaUrlOptions _permaUrlOptions;
+
+    protected WxeCallOptionsBase ([NotNull] WxePermaUrlOptions permaUrlOptions)
+    {
+      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+
+      _permaUrlOptions = permaUrlOptions;
+    }
+
+    public abstract void Dispatch (IWxeExecutor executor, WxeFunction function, Control sender);
+
+    [NotNull]
+    public WxePermaUrlOptions PermaUrlOptions
+    {
+      get { return _permaUrlOptions; }
+    }
   }
 }

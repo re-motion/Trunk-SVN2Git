@@ -43,6 +43,8 @@ namespace Remotion.Web.Test.ExecutionEngine
     protected System.Web.UI.WebControls.LinkButton LinkButton1;
     protected Remotion.Web.UI.Controls.WebButton OpenSelfButton;
     protected System.Web.UI.WebControls.Button Button1;
+    protected System.Web.UI.WebControls.ImageButton ImageButton;
+    protected Label ImageButtonLabel;
     protected Remotion.Web.UI.Controls.WebButton Button1Button;
     protected Remotion.Web.UI.Controls.WebButton Submit1Button;
     protected Remotion.Web.UI.Controls.WebButton Button2Button;
@@ -124,6 +126,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       this.ExecuteButton.Click += new System.EventHandler(this.ExecuteButton_Click);
       this.ExecuteNoRepostButton.Click += new System.EventHandler(this.ExecuteNoRepostButton_Click);
       this.Button2Button.Click += new System.EventHandler(this.Button2Button_Click);
+      this.ImageButton.Click += new ImageClickEventHandler (this.ImageButton_Click);
       this.OpenSampleFunctionButton.Click += new System.EventHandler(this.OpenSampleFunctionButton_Click);
       this.OpenSampleFunctionWithPermanentUrlButton.Click += new System.EventHandler(this.OpenSampleFunctionWithPermanentUrlButton_Click);
       this.OpenSampleFunctionInNewWindowButton.Click += new System.EventHandler(this.OpenSampleFunctionInNewWindowButton_Click);
@@ -196,6 +199,14 @@ namespace Remotion.Web.Test.ExecutionEngine
     private void Button2Button_Click(object sender, System.EventArgs e)
     {
   
+    }
+    
+    private void ImageButton_Click(object sender, System.EventArgs e)
+    {
+      if (!IsReturningPostBack)
+        ExecuteFunction (new SampleWxeFunction(), new WxeCallArguments ((Control) sender, new WxeCallOptions()));
+      else
+        ImageButtonLabel.Text = "returning postback";
     }
 
     private void ExecuteButton_Click(object sender, System.EventArgs e)
@@ -271,7 +282,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         NameValueCollection queryString = new NameValueCollection();
         queryString.Add ("Parameter", "Hello World!");
-        this.ExecuteFunctionExternal (new SampleWxeFunction (), false, true, queryString, true, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), (Control) sender, false, true, queryString, true, null);
       }
     }
 
@@ -281,7 +292,7 @@ namespace Remotion.Web.Test.ExecutionEngine
       {
         NameValueCollection queryString = new NameValueCollection();
         queryString.Add ("Parameter", "Hello World!");
-        this.ExecuteFunctionExternal (new SampleWxeFunction (), false, true, queryString, false, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), (Control) sender, false, true, queryString, false, null);
       }
     }
 
@@ -289,7 +300,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
       if (!IsReturningPostBack)
       {
-        this.ExecuteFunctionExternal (new SampleWxeFunction (), true, true, null, true, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), (Control) sender, true, true, null, true, null);
       }
     }
 
@@ -297,7 +308,7 @@ namespace Remotion.Web.Test.ExecutionEngine
     {
       if (!IsReturningPostBack)
       {
-        this.ExecuteFunctionExternal (new SampleWxeFunction (), true, true, null, false, null);
+        this.ExecuteFunctionExternal (new SampleWxeFunction (), (Control) sender, true, true, null, false, null);
       }
     }
 

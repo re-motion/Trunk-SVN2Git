@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using NUnit.Framework;
 using Remotion.Web.ExecutionEngine;
 using System.Web;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.UnitTests.Core.ExecutionEngine.TestFunctions;
 using Rhino.Mocks;
 

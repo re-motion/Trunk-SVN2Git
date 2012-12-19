@@ -14,12 +14,13 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Web.UI;
+using JetBrains.Annotations;
 using Remotion.Utilities;
-using Remotion.Web.UI.Controls;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   /// <summary>
   /// The <see cref="WxeRepostOptions"/> determine if and how the calling page is notified after a <see cref="WxeFunction"/> executed with the 
@@ -27,15 +28,23 @@ namespace Remotion.Web.ExecutionEngine
   /// methods has returned to the caller.
   /// </summary>
   [Serializable]
-  public class WxeRepostOptions : INullObject
+  public class WxeRepostOptions
   {
-    public static readonly WxeRepostOptions Null = new WxeRepostOptions();
+    public static WxeRepostOptions SuppressRepost1 ([NotNull] Control sender, bool usesEventTarget)
+    {
+      return new WxeRepostOptions (sender, usesEventTarget);
+    }
+
+    public static WxeRepostOptions DoRepost ([CanBeNull] Control sender)
+    {
+      return new WxeRepostOptions (sender);
+    }
 
     private readonly Control _sender;
     private readonly bool _usesEventTarget;
     private readonly bool _suppressRepost;
 
-    public WxeRepostOptions (Control sender, bool usesEventTarget)
+    private WxeRepostOptions (Control sender, bool usesEventTarget)
     {
       ArgumentUtility.CheckNotNull ("sender", sender);
 
@@ -50,8 +59,10 @@ namespace Remotion.Web.ExecutionEngine
       _suppressRepost = true;
     }
 
-    private WxeRepostOptions ()
+    private WxeRepostOptions (Control sender)
     {
+      _sender = sender;
+      _usesEventTarget = false;
       _suppressRepost = false;
     }
 
@@ -68,11 +79,6 @@ namespace Remotion.Web.ExecutionEngine
     public bool SuppressRepost
     {
       get { return _suppressRepost; }
-    }
-
-    bool INullObject.IsNull
-    {
-      get { return !_suppressRepost; }
     }
   }
 }

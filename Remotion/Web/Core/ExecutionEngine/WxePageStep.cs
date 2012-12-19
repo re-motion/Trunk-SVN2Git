@@ -174,7 +174,6 @@ namespace Remotion.Web.ExecutionEngine
       Execute();
     }
 
-    //TODO: Remove CodeDuplication with WxePageStep
     [EditorBrowsable (EditorBrowsableState.Never)]
     public void ExecuteFunction (WxeUserControl userControl, WxeFunction subFunction, Control sender, bool usesEventTarget)
     {

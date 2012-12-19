@@ -15,29 +15,28 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Web.UI;
-using NUnit.Framework;
-using Remotion.Web.ExecutionEngine;
-using Rhino.Mocks;
+using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
-namespace Remotion.Web.UnitTests.Core.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine
 {
-  [TestFixture]
-  public class WxeRepostOptionsTest
+  internal sealed class WxeCallArgumentsWithoutSender : IWxeCallArguments
   {
-    [Test]
-    [ExpectedException (typeof (ArgumentException), ExpectedMessage =
-        "The 'sender' must implement either IPostBackEventHandler or IPostBackDataHandler. Provide the control that raised the post back event.")]
-    public void Inititalize_IsNot_IPostBackDataHandler_Or_IPostBackDataHandler ()
+    private readonly WxePermaUrlOptions _permaUrlOptions;
+
+    public WxeCallArgumentsWithoutSender (WxePermaUrlOptions permaUrlOptions)
     {
-      new WxeRepostOptions (MockRepository.GenerateStub<Control>(), false);
+      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+
+      _permaUrlOptions = permaUrlOptions;
     }
 
-    [Test]
-    [ExpectedException (typeof (ArgumentNullException), ExpectedMessage = "Parameter name: sender", MatchType = MessageMatch.Contains)]
-    public void Inititalize_NotUsesEventTarget_NotSuppressSender ()
+    void IWxeCallArguments.Dispatch (IWxeExecutor executor, WxeFunction function)
     {
-      new WxeRepostOptions (null, false);
+      ArgumentUtility.CheckNotNull ("executor", executor);
+      ArgumentUtility.CheckNotNull ("function", function);
+
+      executor.ExecuteFunction (function, null, new WxeCallOptions (_permaUrlOptions));
     }
   }
 }

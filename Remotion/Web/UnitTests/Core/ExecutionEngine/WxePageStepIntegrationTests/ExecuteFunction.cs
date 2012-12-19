@@ -22,6 +22,7 @@ using NUnit.Framework;
 using Remotion.Development.UnitTesting;
 using Remotion.Development.Web.UnitTesting.ExecutionEngine;
 using Remotion.Web.ExecutionEngine;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 using Remotion.Web.ExecutionEngine.UrlMapping;
 using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using System.Web;
@@ -110,7 +111,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
       _mockRepository.ReplayAll();
 
       WxePermaUrlOptions permaUrlOptions = WxePermaUrlOptions.Null;
-      WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+      WxeRepostOptions repostOptions = WxeRepostOptions.DoRepost (null);
       _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
 
       _mockRepository.VerifyAll();
@@ -140,7 +141,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
       try
       {
         WxePermaUrlOptions permaUrlOptions = WxePermaUrlOptions.Null;
-        WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+        WxeRepostOptions repostOptions = WxeRepostOptions.DoRepost (null);
         _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
         Assert.Fail();
       }
@@ -179,7 +180,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
       try
       {
         WxePermaUrlOptions permaUrlOptions = WxePermaUrlOptions.Null;
-        WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+        WxeRepostOptions repostOptions = WxeRepostOptions.DoRepost (null);
         _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
         Assert.Fail();
       }
@@ -256,7 +257,7 @@ namespace Remotion.Web.UnitTests.Core.ExecutionEngine.WxePageStepIntegrationTest
       try
       {
         //Redirect to subfunction
-        WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+        WxeRepostOptions repostOptions = WxeRepostOptions.DoRepost (null);
         _pageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_pageMock, _subFunction, permaUrlOptions), repostOptions);
         Assert.Fail();
       }

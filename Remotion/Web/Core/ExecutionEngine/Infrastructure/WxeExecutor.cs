@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.Specialized;
 using System.Web;
@@ -23,7 +24,7 @@ using Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates;
 using Remotion.Web.Utilities;
 using Remotion.Web.UI;
 
-namespace Remotion.Web.ExecutionEngine
+namespace Remotion.Web.ExecutionEngine.Infrastructure
 {
   /// <summary>
   /// Encapsulates execute logic for WXE functions.
@@ -62,12 +63,14 @@ namespace Remotion.Web.ExecutionEngine
       get { return _httpContext; }
     }
 
-    public void ExecuteFunction (WxeFunction function, WxePermaUrlOptions permaUrlOptions)
+    public void ExecuteFunction (WxeFunction function, Control sender, WxeCallOptions options)
     {
       ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("permaUrlOptions", permaUrlOptions);
+      // sender can be null
+      ArgumentUtility.CheckNotNull ("options", options);
 
-      WxeRepostOptions repostOptions = WxeRepostOptions.Null;
+      WxePermaUrlOptions permaUrlOptions = options.PermaUrlOptions;
+      WxeRepostOptions repostOptions = WxeRepostOptions.DoRepost (sender);
       _wxePageInfo.CurrentPageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), repostOptions);
     }
 
@@ -79,13 +82,14 @@ namespace Remotion.Web.ExecutionEngine
 
       bool usesEventTarget = options.UsesEventTarget ?? UsesEventTarget;
       WxePermaUrlOptions permaUrlOptions = options.PermaUrlOptions;
-      WxeRepostOptions repostOptions = new WxeRepostOptions (sender, usesEventTarget);
+      WxeRepostOptions repostOptions = WxeRepostOptions.SuppressRepost1 (sender, usesEventTarget);
       _wxePageInfo.CurrentPageStep.ExecuteFunction (new PreProcessingSubFunctionStateParameters (_page, function, permaUrlOptions), repostOptions);
     }
 
-    public void ExecuteFunctionExternalByRedirect (WxeFunction function, WxeCallOptionsExternalByRedirect options)
+    public void ExecuteFunctionExternalByRedirect (WxeFunction function, Control sender, WxeCallOptionsExternalByRedirect options)
     {
       ArgumentUtility.CheckNotNull ("function", function);
+      ArgumentUtility.CheckNotNull ("sender", sender);
       ArgumentUtility.CheckNotNull ("options", options);
 
       WxeReturnOptions returnOptions;
@@ -126,7 +130,7 @@ namespace Remotion.Web.ExecutionEngine
     ///   Gets a flag describing whether the post back was most likely caused by the ASP.NET post back mechanism.
     /// </summary>
     /// <value> <see langword="true"/> if the post back collection contains the <b>__EVENTTARGET</b> field. </value>
-    //TODO: Code duplication with WxeExecutor.UsesEventTarget
+    //TODO: Remove CodeDuplication with WxeUserControl.UsesEventTarget
     private bool UsesEventTarget
     {
       get

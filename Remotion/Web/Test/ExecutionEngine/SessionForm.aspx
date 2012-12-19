@@ -62,6 +62,8 @@
 <remotion:webbutton id="ExecuteNoRepostButton" runat="server" Text="Execute, No Repost"></remotion:webbutton>
 </p><p>
 <remotion:webbutton id="Button2Button" runat="server" Text="Button 2" UseSubmitBehavior="False"></remotion:webbutton>
+</p><p>
+<asp:ImageButton id="ImageButton" runat="server"></asp:ImageButton> (Image Button) <asp:Label runat="server" ID="ImageButtonLabel" EnableViewState="False"/>
 </p>
       <p><remotion:WebButton id="OpenSampleFunctionButton" runat="server" Text="Open Sample Function"></remotion:WebButton><br>
 <remotion:WebButton id="OpenSampleFunctionWithPermanentUrlButton" runat="server" Text="Open Sample Function with Permant URL"></remotion:WebButton><br>

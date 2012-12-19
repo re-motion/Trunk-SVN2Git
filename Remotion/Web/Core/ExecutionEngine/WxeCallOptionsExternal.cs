@@ -15,7 +15,9 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Web.UI;
 using Remotion.Utilities;
+using Remotion.Web.ExecutionEngine.Infrastructure;
 
 namespace Remotion.Web.ExecutionEngine
 {
@@ -24,7 +26,7 @@ namespace Remotion.Web.ExecutionEngine
   /// typically in a new window. The <see cref="WxeFunction"/> will be initialized on the server and then opened via a Javascript call.
   /// </summary>
   [Serializable]
-  public class WxeCallOptionsExternal : WxeCallOptions
+  public sealed class WxeCallOptionsExternal : WxeCallOptionsBase
   {
     private readonly string _target;
     private readonly string _features;
@@ -55,13 +57,13 @@ namespace Remotion.Web.ExecutionEngine
       _returningPostback = returningPostback;
     }
 
-    public override void Dispatch (IWxeExecutor executor, WxeFunction function, WxeCallArguments handler)
+    public override void Dispatch (IWxeExecutor executor, WxeFunction function, Control sender)
     {
       ArgumentUtility.CheckNotNull ("executor", executor);
       ArgumentUtility.CheckNotNull ("function", function);
-      ArgumentUtility.CheckNotNull ("handler", handler);
+      ArgumentUtility.CheckNotNull ("sender", sender);
 
-      executor.ExecuteFunctionExternal (function, handler.Sender, this);
+      executor.ExecuteFunctionExternal (function, sender, this);
 
       throw new WxeCallExternalException();
     }
