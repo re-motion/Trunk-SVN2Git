@@ -499,6 +499,7 @@
     <Compile Include="Utilities\ReSharperAnnotations\PathReferenceAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\PublicAPIAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\PureAttribute.cs" />
+    <Compile Include="Utilities\ReSharperAnnotations\ReflectionAPIAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\StringFormatMethodAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\TerminatesProgramAttribute.cs" />
     <Compile Include="Utilities\ReSharperAnnotations\UsedImplicitlyAttribute.cs" />
