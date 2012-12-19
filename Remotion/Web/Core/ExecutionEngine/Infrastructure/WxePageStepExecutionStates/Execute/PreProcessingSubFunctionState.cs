@@ -16,6 +16,7 @@
 // 
 using System;
 using System.Collections.Specialized;
+using System.Web.UI;
 using Remotion.Utilities;
 using Remotion.Web.Utilities;
 
@@ -38,10 +39,17 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
       _repostOptions = repostOptions;
     }
 
+    public WxeRepostOptions RepostOptions
+    {
+      get { return _repostOptions; }
+    }
+
     public override void ExecuteSubFunction (WxeContext context)
     {
       Parameters.SubFunction.SetParentStep (ExecutionStateContext.CurrentStep);
       NameValueCollection postBackCollection = BackupPostBackCollection();
+      EnsureSenderPostBackRegistration (postBackCollection);
+
       Parameters.Page.SaveAllState ();
 
       if (Parameters.PermaUrlOptions.UsePermaUrl)
@@ -54,11 +62,6 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
         var parameters = new ExecutionStateParameters (Parameters.SubFunction, postBackCollection);
         ExecutionStateContext.SetExecutionState (new ExecutingSubFunctionWithoutPermaUrlState (ExecutionStateContext, parameters));
       }
-    }
-
-    public WxeRepostOptions RepostOptions
-    {
-      get { return _repostOptions; }
     }
 
     private NameValueCollection BackupPostBackCollection ()
@@ -75,8 +78,16 @@ namespace Remotion.Web.ExecutionEngine.Infrastructure.WxePageStepExecutionStates
         else
           postBackCollection.Remove (_repostOptions.Sender.UniqueID);
       }
-
       return postBackCollection;
+    }
+
+    private void EnsureSenderPostBackRegistration (NameValueCollection postBackCollection)
+    {
+      if (_repostOptions.SuppressRepost)
+        return;
+
+      if (_repostOptions.Sender is IPostBackDataHandler && postBackCollection[_repostOptions.Sender.UniqueID] == null)
+        Parameters.Page.RegisterRequiresPostBack (_repostOptions.Sender);
     }
   }
 }
