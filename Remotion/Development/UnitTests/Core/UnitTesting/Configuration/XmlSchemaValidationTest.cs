@@ -56,10 +56,10 @@ namespace Remotion.Development.UnitTests.Core.UnitTesting.Configuration
     public void Validate_InvalidSchema ()
     {
       var invalidSchema = @"<xs:invalid xmlns:xs=""http://www.w3.org/2001/XMLSchema"" />";
-      Check (xsdContent: invalidSchema);
+      Check (invalidSchema, xmlFragment: "does not matter");
     }
 
-    private void Check (string xsdContent, string xmlFragment = "")
+    private void Check (string xsdContent, string xmlFragment)
     {
       var xsdPath = Path.GetTempFileName();
       File.WriteAllText (xsdPath, xsdContent);
