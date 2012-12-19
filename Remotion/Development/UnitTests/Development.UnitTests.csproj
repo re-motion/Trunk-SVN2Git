@@ -169,6 +169,7 @@
     <Compile Include="Core\Mixins\TestDomain\MixedClass2.cs" />
     <Compile Include="Core\Mixins\TestDomain\MixedClass1.cs" />
     <Compile Include="Core\Mixins\TestDomain\NullMixin.cs" />
+    <Compile Include="Core\UnitTesting\Configuration\XmlSchemaValidationTest.cs" />
     <Compile Include="Core\UnitTesting\Enumerables\EnumerableExtensionsTest.cs" />
     <Compile Include="Core\UnitTesting\Enumerables\OneTimeEnumerableTest.cs" />
     <Compile Include="Core\UnitTesting\Reflection\NormalizingMemberInfoFromExpressionUtilityTest.cs" />
