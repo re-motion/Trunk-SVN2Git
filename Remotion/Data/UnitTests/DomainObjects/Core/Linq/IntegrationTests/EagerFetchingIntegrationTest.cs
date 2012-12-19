@@ -306,7 +306,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5283")]
+    [Ignore ("TODO 5284")]
     public void EagerFetching_RedirectedProperty ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
