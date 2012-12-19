@@ -48,7 +48,7 @@ namespace Remotion.ObjectBinding.BindableObject
     public string GetEnumerationValueDisplayName (Enum value)
     {
       ArgumentUtility.CheckNotNull ("value", value);
-      return EnumDescription.GetDescription (value) ?? value.ToString();
+      return EnumDescription.GetDescription (value);
     }
 
     public string GetExtensibleEnumerationValueDisplayName (IExtensibleEnum value)

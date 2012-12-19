@@ -14,14 +14,19 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
+using JetBrains.Annotations;
 
 namespace Remotion.Utilities
 {
   public struct EnumValue
   {
     public readonly Enum Value;
+
+    [NotNull]
     public readonly string Description;
+
     public long NumericValue
     {
       get { return Convert.ToInt64 (Value); }
@@ -30,7 +35,7 @@ namespace Remotion.Utilities
     public EnumValue (Enum value, string description)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("description", description);
-      
+
       Value = value;
       Description = description;
     }
