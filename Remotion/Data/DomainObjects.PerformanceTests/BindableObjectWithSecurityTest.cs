@@ -47,7 +47,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_Property_IsAccessible ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~3.6 탎 (release build), ~6.7 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_Property_IsAccessible on reference system: ~2.5 탎 (release build), ~6.7 탎 (debug build)");
 
       base.BusinessObject_Property_IsAccessible();
 
@@ -58,7 +58,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_GetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_GetProperty on reference system: ~9.7 탎 (release build), ~20.0 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_GetProperty on reference system: ~8.6 탎 (release build), ~20.0 탎 (debug build)");
 
       base.BusinessObject_GetProperty ();
 
@@ -69,7 +69,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void DynamicMethod_GetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for DynamicMethod_GetProperty on reference system: ~7.2 탎 (release build), ~13.7 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for DynamicMethod_GetProperty on reference system: ~6.3 탎 (release build), ~13.7 탎 (debug build)");
 
       base.DynamicMethod_GetProperty ();
 
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void DomainObject_GetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for DomainObject_GetProperty on reference system: ~7.1 탎 (release build), ~13.6 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for DomainObject_GetProperty on reference system: ~6.2 탎 (release build), ~13.6 탎 (debug build)");
 
       base.DomainObject_GetProperty ();
 
@@ -91,7 +91,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void BusinessObject_SetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_SetProperty on reference system: ~9.0 탎 (release build), ~17.4 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for BusinessObject_SetProperty on reference system: ~8.2 탎 (release build), ~17.4 탎 (debug build)");
 
       base.BusinessObject_SetProperty ();
 
@@ -102,7 +102,7 @@ namespace Remotion.Data.DomainObjects.PerformanceTests
     public override void DomainObject_SetProperty ()
     {
       Console.WriteLine (
-          "Expected average duration of BindableObjectWithSecurityTest for DomainObject_SetProperty on reference system: ~8.5 탎 (release build), ~17.1 탎 (debug build)");
+          "Expected average duration of BindableObjectWithSecurityTest for DomainObject_SetProperty on reference system: ~7.6 탎 (release build), ~17.1 탎 (debug build)");
 
       base.DomainObject_SetProperty ();
 
