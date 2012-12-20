@@ -21,7 +21,7 @@ using Remotion.Utilities;
 
 namespace Remotion.TypePipe.StrongNaming
 {
-  public class StrongNamedAssemblyVerifier : IStrongNamedAssemblyVerifier
+  public class StrongNameAssemblyVerifier : IStrongNameAssemblyVerifier
   {
     public bool IsStrongNamed (Assembly assembly)
     {

@@ -15,7 +15,6 @@
 // under the License.
 // 
 using System;
-using System.Reflection;
 using Remotion.ServiceLocation;
 
 namespace Remotion.TypePipe.StrongNaming
@@ -23,9 +22,9 @@ namespace Remotion.TypePipe.StrongNaming
   /// <summary>
   /// Determines wheter <see cref="Type"/> is strong-named.
   /// </summary>
-  [ConcreteImplementation (typeof (StrongNamedAssemblyVerifier))]
-  public interface IStrongNamedAssemblyVerifier
+  [ConcreteImplementation (typeof (StrongNameTypeVerifier))]
+  public interface IStrongNameTypeVerifier
   {
-    bool IsStrongNamed (Assembly assembly);
+    bool IsStrongNamed (Type type);
   }
 }

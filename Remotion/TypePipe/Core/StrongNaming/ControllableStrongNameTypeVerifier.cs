@@ -21,16 +21,16 @@ using Remotion.Utilities;
 
 namespace Remotion.TypePipe.StrongNaming
 {
-  public class ControllableStrongNamedTypeVerifier : IControllableStrongNamedTypeVerifier
+  public class ControllableStrongNameTypeVerifier : IControllableStrongNameTypeVerifier
   {
-    private readonly IStrongNamedTypeVerifier _strongNamedTypeVerifier;
+    private readonly IStrongNameTypeVerifier _strongNameTypeVerifier;
     private readonly Dictionary<Type, bool> _cache = new Dictionary<Type, bool>();
 
-    public ControllableStrongNamedTypeVerifier (IStrongNamedTypeVerifier strongNamedTypeVerifier)
+    public ControllableStrongNameTypeVerifier (IStrongNameTypeVerifier strongNameTypeVerifier)
     {
-      ArgumentUtility.CheckNotNull ("strongNamedTypeVerifier", strongNamedTypeVerifier);
+      ArgumentUtility.CheckNotNull ("strongNameTypeVerifier", strongNameTypeVerifier);
 
-      _strongNamedTypeVerifier = strongNamedTypeVerifier;
+      _strongNameTypeVerifier = strongNameTypeVerifier;
     }
 
     public bool IsStrongNamed (Type type)
@@ -41,7 +41,7 @@ namespace Remotion.TypePipe.StrongNaming
 
       if (!_cache.TryGetValue(type, out strongNamed))
       {
-        strongNamed = _strongNamedTypeVerifier.IsStrongNamed (type);
+        strongNamed = _strongNameTypeVerifier.IsStrongNamed (type);
         _cache.Add (type, strongNamed);
       }
 

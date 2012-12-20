@@ -22,13 +22,13 @@ using Remotion.Utilities;
 
 namespace Remotion.TypePipe.StrongNaming
 {
-  public class StrongNamedTypeVerifier : IStrongNamedTypeVerifier
+  public class StrongNameTypeVerifier : IStrongNameTypeVerifier
   {
-    private readonly IStrongNamedAssemblyVerifier _assemblyVerifier;
+    private readonly IStrongNameAssemblyVerifier _assemblyVerifier;
 
     private readonly Dictionary<Assembly, bool> _cache = new Dictionary<Assembly, bool>();
 
-    public StrongNamedTypeVerifier (IStrongNamedAssemblyVerifier assemblyVerifier)
+    public StrongNameTypeVerifier (IStrongNameAssemblyVerifier assemblyVerifier)
     {
       ArgumentUtility.CheckNotNull ("assemblyVerifier", assemblyVerifier);
 
