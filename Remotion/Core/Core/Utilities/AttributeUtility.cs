@@ -108,21 +108,9 @@ namespace Remotion.Utilities
       return (object[]) ArrayUtility.Convert (attributeInstances.ToArray (), attributeType);
     }
 
-    private static readonly LockingCacheDecorator<Tuple<Type, bool>, AttributeWithMetadata[]> s_attributesWithMetadataCache =
-        CacheFactory.CreateWithLocking<Tuple<Type, bool>, AttributeWithMetadata[]>();
-
     public static AttributeWithMetadata[] GetCustomAttributesWithMetadata (Type type, bool inherit)
     {
       ArgumentUtility.CheckNotNull ("type", type);
-
-      return s_attributesWithMetadataCache.GetOrCreateValue(
-        new Tuple<Type, bool>(type, inherit),
-        tuple => GetCustomAttributesWithMetadataInternal (tuple.Item1, tuple.Item2));
-    }
-
-    private static AttributeWithMetadata[] GetCustomAttributesWithMetadataInternal(Type type, bool inherit)
-    {
-      ArgumentUtility.CheckNotNull("type", type);
 
       var result = new List<AttributeWithMetadata>();
 

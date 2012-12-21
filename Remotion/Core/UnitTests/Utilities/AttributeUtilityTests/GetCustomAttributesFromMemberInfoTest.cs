@@ -15,6 +15,7 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain;
@@ -165,5 +166,13 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
       Assert.That (attributes, Is.InstanceOf (typeof (BaseInheritedAttribute[])));
     }
 
+    [Test]
+    public void Test_ReturnsNewInstance ()
+    {
+      var attribute1 = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), false).Single();
+      var attribute2 = AttributeUtility.GetCustomAttributes (_basePropertyWithSingleAttribute, typeof (InheritedAttribute), false).Single();
+
+      Assert.That (attribute1, Is.Not.SameAs (attribute2));
+    }
   }
 }

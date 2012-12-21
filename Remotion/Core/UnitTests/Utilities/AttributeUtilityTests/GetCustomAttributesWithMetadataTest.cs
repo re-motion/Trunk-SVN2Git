@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Remotion.UnitTests.Utilities.AttributeUtilityTests.TestDomain;
@@ -101,6 +100,14 @@ namespace Remotion.UnitTests.Utilities.AttributeUtilityTests
       AttributeWithMetadata[] attributes =
         AttributeUtility.GetCustomAttributesWithMetadata (typeof (object), true).ToArray ();
       Assert.That (attributes.Length, Is.EqualTo (typeof (object).GetCustomAttributes (false).Length));
+    }
+
+    [Test]
+    public void Type_ReturnsNewInstance ()
+    {
+      var attributeMetadata1 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), false).Single();
+      var attributeMetadata2 = AttributeUtility.GetCustomAttributesWithMetadata (typeof (SampleClass), false).Single();
+      Assert.That (attributeMetadata1.AttributeInstance, Is.Not.SameAs (attributeMetadata2.AttributeInstance));
     }
   }
 }
