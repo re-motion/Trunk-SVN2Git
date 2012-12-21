@@ -17,31 +17,26 @@
 
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
-using NUnit.Framework;
-using Remotion.TypePipe.StrongNaming;
+using Remotion.Collections;
+using Remotion.Utilities;
 
-namespace Remotion.TypePipe.UnitTests.StrongNaming
+namespace Remotion.TypePipe.StrongNaming
 {
-  [TestFixture]
-  public class StrongNameAssemblyVerifierTest
+  public class AssemblyAnalyzer : IAssemblyAnalyzer
   {
-    private StrongNameAssemblyVerifier _verifier;
+    private readonly ICache<Assembly, bool> _cache = CacheFactory.Create<Assembly, bool>();
 
-    [SetUp]
-    public void SetUp ()
+    public bool IsStrongNamed (Assembly assembly)
     {
-      _verifier = new StrongNameAssemblyVerifier();
+      ArgumentUtility.CheckNotNull ("assembly", assembly);
+
+      return _cache.GetOrCreateValue (assembly, CalculateIsStrongNamed);
     }
 
-    [Test]
-    public void IsStrongNamed ()
+    private bool CalculateIsStrongNamed (Assembly assembly)
     {
-      var assembly1 = typeof (StrongNameAssemblyVerifierTest).Assembly;
-      var assembly2 = AppDomain.CurrentDomain.DefineDynamicAssembly (new AssemblyName ("test1"), AssemblyBuilderAccess.Run);
-
-      Assert.That (_verifier.IsStrongNamed (assembly1), Is.True);
-      Assert.That (_verifier.IsStrongNamed (assembly2), Is.False);
+      var token = assembly.GetName().GetPublicKeyToken();
+      return token != null && token.Length > 0;
     }
   }
 }

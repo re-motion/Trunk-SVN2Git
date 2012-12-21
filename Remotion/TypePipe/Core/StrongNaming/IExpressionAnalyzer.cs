@@ -15,17 +15,17 @@
 // under the License.
 // 
 using System;
+using Microsoft.Scripting.Ast;
 using Remotion.ServiceLocation;
-using Remotion.TypePipe.MutableReflection;
 
 namespace Remotion.TypePipe.StrongNaming
 {
   /// <summary>
-  /// Determines whether a <see cref="MutableType"/> can be generated into a a strong-named assembly.
+  /// Determines if an <see cref="Expression"/> is compatible with strong-naming, i.e., only contains types that reside in strong-named assemblies.
   /// </summary>
-  [ConcreteImplementation (typeof (StrongNameAnalyzer))]
-  public interface IStrongNameAnalyzer
+  [ConcreteImplementation (typeof (ExpressionAnalyzer))]
+  public interface IExpressionAnalyzer
   {
-    bool IsStrongNameCompatible (MutableType mutableType);
+    bool IsStrongNameCompatible (Expression expression);
   }
 }

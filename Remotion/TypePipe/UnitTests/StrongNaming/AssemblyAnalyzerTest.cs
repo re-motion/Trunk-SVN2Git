@@ -14,18 +14,34 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 // 
-using System;
-using Microsoft.Scripting.Ast;
-using Remotion.ServiceLocation;
 
-namespace Remotion.TypePipe.StrongNaming
+using System;
+using System.Reflection;
+using System.Reflection.Emit;
+using NUnit.Framework;
+using Remotion.TypePipe.StrongNaming;
+
+namespace Remotion.TypePipe.UnitTests.StrongNaming
 {
-  /// <summary>
-  /// Determines if an <see cref="Expression"/> is compatible with strong-naming, i.e., only contains types that reside in strong-named assemblies.
-  /// </summary>
-  [ConcreteImplementation (typeof (StrongNameExpressionVerifier))]
-  public interface IStrongNameExpressionVerifier
+  [TestFixture]
+  public class AssemblyAnalyzerTest
   {
-    bool IsStrongNameCompatible (Expression expression);
+    private AssemblyAnalyzer _analyzer;
+
+    [SetUp]
+    public void SetUp ()
+    {
+      _analyzer = new AssemblyAnalyzer();
+    }
+
+    [Test]
+    public void IsStrongNamed ()
+    {
+      var assembly1 = typeof (AssemblyAnalyzerTest).Assembly;
+      var assembly2 = AppDomain.CurrentDomain.DefineDynamicAssembly (new AssemblyName ("test1"), AssemblyBuilderAccess.Run);
+
+      Assert.That (_analyzer.IsStrongNamed (assembly1), Is.True);
+      Assert.That (_analyzer.IsStrongNamed (assembly2), Is.False);
+    }
   }
 }

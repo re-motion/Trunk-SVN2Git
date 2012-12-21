@@ -15,19 +15,17 @@
 // under the License.
 // 
 using System;
+using System.Reflection;
 using Remotion.ServiceLocation;
 
 namespace Remotion.TypePipe.StrongNaming
 {
   /// <summary>
-  /// Determines wheter a given <see cref="Type"/> resides in a strong-named assembly.
-  /// Also allows to explicitly set or override the strong-name compatibility status of a type in the internal lookup structure.
+  /// Determines wheter a given <see cref="Type"/> is strong-named.
   /// </summary>
-  [ConcreteImplementation (typeof (StrongNameTypeVerifier))]
-  public interface IStrongNameTypeVerifier
+  [ConcreteImplementation (typeof (AssemblyAnalyzer))]
+  public interface IAssemblyAnalyzer
   {
-    bool IsStrongNamed (Type type);
-
-    void SetStrongNamed (Type type, bool isStrongNamed);
+    bool IsStrongNamed (Assembly assembly);
   }
 }
