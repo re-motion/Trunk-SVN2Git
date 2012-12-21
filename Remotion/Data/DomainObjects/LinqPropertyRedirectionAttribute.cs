@@ -37,7 +37,7 @@ namespace Remotion.Data.DomainObjects
   /// That way, a public unmapped property that acts as a wrapper for a protected mapped property can still be used in queries.
   /// </remarks>
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-  public class LinqPropertyRedirectionAttribute : Attribute, AttributeEvaluatingExpressionTransformer.IMethodCallExpressionTransformerProvider
+  public class LinqPropertyRedirectionAttribute : Attribute, AttributeEvaluatingExpressionTransformer.IMethodCallExpressionTransformerAttribute
   {
     /// <summary>
     /// Implements the transformations required to map a member onto another property.

@@ -63,7 +63,7 @@ namespace Remotion.Data.DomainObjects
   /// The <see cref="LinqCastMethodAttribute"/> will ensure that those properties or methods can also be used from within a LINQ database query.
   /// </example>
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-  public class LinqCastMethodAttribute : Attribute, AttributeEvaluatingExpressionTransformer.IMethodCallExpressionTransformerProvider
+  public class LinqCastMethodAttribute : Attribute, AttributeEvaluatingExpressionTransformer.IMethodCallExpressionTransformerAttribute
   {
     /// <summary>
     /// Implements the transformation that allows the SQL generator to regard a property or method as a cast.

@@ -78,10 +78,9 @@ namespace Remotion.Data.DomainObjects.Queries
     protected virtual IMethodCallTransformerProvider CreateMethodCallTransformerProvider ()
     {
       var methodInfoBasedRegistry = RegistryBase<MethodInfoBasedMethodCallTransformerRegistry, MethodInfo, IMethodCallTransformer>.CreateDefault();
-      var attributeBaseProvider = new AttributeBasedMethodCallTransformerProvider();
       var nameBasedRegistry = RegistryBase<NameBasedMethodCallTransformerRegistry, string, IMethodCallTransformer>.CreateDefault();
 
-      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, attributeBaseProvider, nameBasedRegistry);
+      return new CompoundMethodCallTransformerProvider (methodInfoBasedRegistry, nameBasedRegistry);
     }
 
     protected virtual ResultOperatorHandlerRegistry CreateResultOperatorHandlerRegistry ()

@@ -133,11 +133,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       var toStringMethod = ToStringMethodCallTransformer.SupportedMethods[0];
       
-      Assert.That (provider.Providers.Length, Is.EqualTo (3));
+      Assert.That (provider.Providers.Length, Is.EqualTo (2));
 
       Assert.That (provider.Providers[0], Is.TypeOf (typeof (MethodInfoBasedMethodCallTransformerRegistry)));
-      Assert.That (provider.Providers[1], Is.TypeOf (typeof (AttributeBasedMethodCallTransformerProvider)));
-      Assert.That (provider.Providers[2], Is.TypeOf (typeof (NameBasedMethodCallTransformerRegistry)));
+      Assert.That (provider.Providers[1], Is.TypeOf (typeof (NameBasedMethodCallTransformerRegistry)));
 
       Assert.That (((MethodInfoBasedMethodCallTransformerRegistry) provider.Providers[0]).GetItem (toStringMethod),
           Is.TypeOf (typeof (ToStringMethodCallTransformer)));
