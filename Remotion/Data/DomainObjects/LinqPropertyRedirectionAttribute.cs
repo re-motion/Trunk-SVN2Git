@@ -15,12 +15,13 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
-using Remotion.Linq.SqlBackend.SqlPreparation;
-using Remotion.Linq.SqlBackend.SqlPreparation.MethodCallTransformers;
+using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
+using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation.PredefinedTransformations;
 using Remotion.Utilities;
 
 namespace Remotion.Data.DomainObjects
@@ -36,12 +37,12 @@ namespace Remotion.Data.DomainObjects
   /// That way, a public unmapped property that acts as a wrapper for a protected mapped property can still be used in queries.
   /// </remarks>
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = true)]
-  public class LinqPropertyRedirectionAttribute : Attribute, IMethodCallTransformerAttribute
+  public class LinqPropertyRedirectionAttribute : Attribute, AttributeEvaluatingExpressionTransformer.IMethodCallExpressionTransformerProvider
   {
     /// <summary>
     /// Implements the transformations required to map a member onto another property.
     /// </summary>
-    public class MethodCallTransformer : IMethodCallTransformer
+    public class MethodCallTransformer : IExpressionTransformer<MethodCallExpression>
     {
       private readonly PropertyInfo _mappedProperty;
 
@@ -56,20 +57,23 @@ namespace Remotion.Data.DomainObjects
         get { return _mappedProperty; }
       }
 
+      public ExpressionType[] SupportedExpressionTypes
+      {
+        get { return new[] { ExpressionType.Call }; }
+      }
+
       public Expression Transform (MethodCallExpression methodCallExpression)
       {
         ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
-        MethodCallTransformerUtility.CheckInstanceMethod (methodCallExpression);
+
+        if (methodCallExpression.Method.IsStatic)
+          throw CreateNotSupportedException (methodCallExpression, "Only instance methods can be redirected, but the method is static.");
+
+        if (methodCallExpression.Arguments.Any())
+          throw CreateNotSupportedException (methodCallExpression, "Only methods without parameters can be redirected.");
 
         if (methodCallExpression.Method.Equals (MappedProperty.GetGetMethod (true)))
-        {
-          var message = string.Format (
-              "The method call '{0}' cannot be redirected to the property '{1}.{2}'. The method would redirect to itself.",
-                FormattingExpressionTreeVisitor.Format (methodCallExpression),
-                MappedProperty.DeclaringType,
-                MappedProperty.Name);
-          throw new NotSupportedException (message);
-        }
+          throw CreateNotSupportedException (methodCallExpression, "The method would redirect to itself.");
 
         Expression instance;
         try
@@ -80,28 +84,26 @@ namespace Remotion.Data.DomainObjects
         }
         catch (InvalidOperationException ex)
         {
-          var message = string.Format (
-              "The method call '{0}' cannot be redirected to the property '{1}.{2}'. {3}",
-              FormattingExpressionTreeVisitor.Format (methodCallExpression),
-              MappedProperty.DeclaringType,
-              MappedProperty.Name,
-              ex.Message);
-          throw new NotSupportedException (message, ex);
+          throw CreateNotSupportedException (methodCallExpression, ex.Message, ex);
         }
 
         var memberAccess = Expression.MakeMemberAccess (instance, MappedProperty);
 
         if (!methodCallExpression.Type.IsAssignableFrom (memberAccess.Type))
-        {
-          var message = string.Format (
-              "The method call '{0}' cannot be redirected to the property '{1}.{2}'. The property has an incompatible return type.",
-                FormattingExpressionTreeVisitor.Format (methodCallExpression),
-                MappedProperty.DeclaringType,
-                MappedProperty.Name);
-          throw new NotSupportedException (message);
-        }
+          throw CreateNotSupportedException (methodCallExpression, "The property has an incompatible return type.");
 
         return memberAccess;
+      }
+
+      private NotSupportedException CreateNotSupportedException (MethodCallExpression methodCallExpression, string specificMessage, Exception inner = null)
+      {
+        var message = string.Format (
+            "The method call '{0}' cannot be redirected to the property '{1}.{2}'. {3}",
+            FormattingExpressionTreeVisitor.Format (methodCallExpression),
+            MappedProperty.DeclaringType,
+            MappedProperty.Name,
+            specificMessage);
+        return new NotSupportedException (message, inner);
       }
     }
 
@@ -157,7 +159,7 @@ namespace Remotion.Data.DomainObjects
       return mappedProperty;
     }
 
-    public IMethodCallTransformer GetTransformer ()
+    public IExpressionTransformer<MethodCallExpression> GetExpressionTransformer (MethodCallExpression expression)
     {
       PropertyInfo mappedProperty;
       try

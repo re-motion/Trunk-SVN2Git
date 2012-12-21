@@ -27,12 +27,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
   public class LinqCastMethodAttributeTest
   {
     [Test]
-    public void GetTransformer ()
+    public void GetExpressionTransformer ()
     {
       var attribute = new LinqCastMethodAttribute();
-      var transformer = attribute.GetTransformer ();
+      var transformer = attribute.GetExpressionTransformer (null);
 
       Assert.That (transformer, Is.TypeOf (typeof (LinqCastMethodAttribute.MethodCallTransformer)));
+    }
+
+    [Test]
+    public void MethodCallTransformer_SupportedExpressionTypes ()
+    {
+      Assert.That (new LinqCastMethodAttribute.MethodCallTransformer().SupportedExpressionTypes, Is.EqualTo (new[] { ExpressionType.Call }));
     }
 
     [Test]

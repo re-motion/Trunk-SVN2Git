@@ -17,6 +17,8 @@
 using System;
 using System.Linq.Expressions;
 using Remotion.Linq.Clauses.ExpressionTreeVisitors;
+using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation;
+using Remotion.Linq.Parsing.ExpressionTreeVisitors.Transformation.PredefinedTransformations;
 using Remotion.Linq.SqlBackend.SqlPreparation;
 using Remotion.Utilities;
 
@@ -61,13 +63,18 @@ namespace Remotion.Data.DomainObjects
   /// The <see cref="LinqCastMethodAttribute"/> will ensure that those properties or methods can also be used from within a LINQ database query.
   /// </example>
   [AttributeUsage (AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-  public class LinqCastMethodAttribute : Attribute, IMethodCallTransformerAttribute
+  public class LinqCastMethodAttribute : Attribute, AttributeEvaluatingExpressionTransformer.IMethodCallExpressionTransformerProvider
   {
     /// <summary>
     /// Implements the transformation that allows the SQL generator to regard a property or method as a cast.
     /// </summary>
-    public class MethodCallTransformer : IMethodCallTransformer
+    public class MethodCallTransformer : IExpressionTransformer<MethodCallExpression>
     {
+      public ExpressionType[] SupportedExpressionTypes
+      {
+        get { return new[] { ExpressionType.Call }; }
+      }
+
       public Expression Transform (MethodCallExpression methodCallExpression)
       {
         ArgumentUtility.CheckNotNull ("methodCallExpression", methodCallExpression);
@@ -97,7 +104,7 @@ namespace Remotion.Data.DomainObjects
       }
     }
 
-    public IMethodCallTransformer GetTransformer ()
+    public IExpressionTransformer<MethodCallExpression> GetExpressionTransformer (MethodCallExpression expression)
     {
       return new MethodCallTransformer();
     }

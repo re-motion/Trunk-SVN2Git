@@ -306,7 +306,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
     }
 
     [Test]
-    [Ignore ("TODO 5284")]
     public void EagerFetching_RedirectedProperty ()
     {
       var query = (from o in QueryFactory.CreateLinqQuery<Order> ()
@@ -329,13 +328,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins2);
 
-      CheckDataContainersRegistered (DomainObjectIDs.RelationTargetForPersistentMixin3);
-      CheckCollectionRelationRegistered (
-          DomainObjectIDs.TargetClassForPersistentMixins2,
-          typeof (MixinAddingPersistentProperties),
-          "CollectionProperty1Side",
-          false,
-          DomainObjectIDs.RelationTargetForPersistentMixin3);
+      CheckFetchedCollectionProperty1SideForTargetClass2();
     }
 
     [Test]
@@ -348,6 +341,37 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Linq.IntegrationTests
 
       CheckQueryResult (query.AsEnumerable().Cast<DomainObject>(), DomainObjectIDs.TargetClassForPersistentMixins2);
 
+      CheckFetchedCollectionProperty1SideForTargetClass2 ();
+    }
+
+    [Test]
+    public void EagerFetching_MixedProperty_ViaRedirection ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+                   where o.ID == DomainObjectIDs.TargetClassForPersistentMixins2
+                   select o)
+                   .FetchMany (o => o.RedirectedCollectionProperty1Side);
+
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins2);
+
+      CheckFetchedCollectionProperty1SideForTargetClass2 ();
+    }
+
+    [Test]
+    public void EagerFetching_MixedProperty_ViaLinqCast ()
+    {
+      var query = (from o in QueryFactory.CreateLinqQuery<TargetClassForPersistentMixin> ()
+                   where o.ID == DomainObjectIDs.TargetClassForPersistentMixins2
+                   select o)
+                   .FetchMany (o => o.MixedMembers.CollectionProperty1Side);
+
+      CheckQueryResult (query, DomainObjectIDs.TargetClassForPersistentMixins2);
+
+      CheckFetchedCollectionProperty1SideForTargetClass2 ();
+    }
+
+    private void CheckFetchedCollectionProperty1SideForTargetClass2 ()
+    {
       CheckDataContainersRegistered (DomainObjectIDs.RelationTargetForPersistentMixin3);
       CheckCollectionRelationRegistered (
           DomainObjectIDs.TargetClassForPersistentMixins2,

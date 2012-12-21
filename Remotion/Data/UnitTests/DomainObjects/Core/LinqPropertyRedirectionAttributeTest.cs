@@ -17,12 +17,14 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using JetBrains.Annotations;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.Linq;
 using Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
+using Remotion.Development.UnitTesting.Reflection;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core
 {
@@ -56,11 +58,18 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void MethodCallTransformer_SupportedExpressionTypes ()
+    {
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));
+      Assert.That (transformer.SupportedExpressionTypes, Is.EqualTo (new[] { ExpressionType.Call }));
+    }
+
+    [Test]
     public void GetTransformer ()
     {
       var attribute = new LinqPropertyRedirectionAttribute (typeof (Order), "OrderNumber");
 
-      var transformer = attribute.GetTransformer ();
+      var transformer = attribute.GetExpressionTransformer (null);
 
       Assert.That (transformer, Is.TypeOf (typeof (LinqPropertyRedirectionAttribute.MethodCallTransformer)));
       Assert.That (((LinqPropertyRedirectionAttribute.MethodCallTransformer) transformer).MappedProperty, 
@@ -73,7 +82,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public void GetTransformer_NonExistingProperty ()
     {
       var attribute = new LinqPropertyRedirectionAttribute (typeof (Order), "Hugo");
-      attribute.GetTransformer ();
+      attribute.GetExpressionTransformer (null);
     }
 
     [Test]
@@ -155,6 +164,41 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));
       transformer.Transform (call);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The method call 'StaticMethod()' cannot be redirected to the property 'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. "
+        + "Only instance methods can be redirected, but the method is static.")]
+    public void MethodCallTransformer_Transform_StaticMethod ()
+    {
+      var call = Expression.Call (NormalizingMemberInfoFromExpressionUtility.GetMethod (() => StaticMethod()));
+
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));
+      transformer.Transform (call);
+    }
+
+    [Test]
+    [ExpectedException (typeof (NotSupportedException), ExpectedMessage =
+        "The method call 'null.MethodWithArguments(null)' cannot be redirected to the property "
+        + "'Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.OrderNumber'. Only methods without parameters can be redirected.")]
+    public void MethodCallTransformer_Transform_MethodWithArguments ()
+    {
+      var call = Expression.Call (
+          Expression.Constant (null, typeof (LinqPropertyRedirectionAttributeTest)),
+          NormalizingMemberInfoFromExpressionUtility.GetMethod (() => MethodWithArguments (null)),
+          Expression.Constant (null));
+
+      var transformer = new LinqPropertyRedirectionAttribute.MethodCallTransformer (typeof (Order).GetProperty ("OrderNumber"));
+      transformer.Transform (call);
+    }
+
+    private static void StaticMethod ()
+    {
+    }
+
+    private void MethodWithArguments ([UsedImplicitly] object o)
+    {
     }
   }
 }

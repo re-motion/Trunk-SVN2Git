@@ -45,6 +45,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.MixedDomains.TestDomain
     }
 
     [StorageClassNone]
+    public ObjectList<RelationTargetForPersistentMixin> RedirectedCollectionProperty1Side
+    {
+      [LinqPropertyRedirection (typeof (IMixinAddingPersistentProperties), "CollectionProperty1Side")]
+      get { return ((IMixinAddingPersistentProperties) this).CollectionProperty1Side; }
+    }
+
+    [StorageClassNone]
     public IMixinAddingPersistentProperties MixedMembers
     {
       [LinqCastMethod]

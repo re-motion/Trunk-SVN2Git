@@ -83,9 +83,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Relinq\SqlBackend\Linq.SqlBackend.csproj">
-      <Project>{EBA04D26-8D5B-4EF5-9898-C2D90373149C}</Project>
-      <Name>Linq.SqlBackend</Name>
+    <ProjectReference Include="..\..\..\Relinq\Core\Linq.Core.csproj">
+      <Project>{028e7899-0d5f-49c8-9eb6-8b051e02f1e0}</Project>
+      <Name>Linq.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Core\Core.Core.csproj">
       <Project>{2AA369EC-A4E7-4D75-9101-EFA90E902625}</Project>
