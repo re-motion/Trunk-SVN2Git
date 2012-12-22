@@ -129,17 +129,10 @@
 
   <Target Name="CopyReleaseNotesFromShareToTemp" DependsOnTargets="CreateReleaseNotesProperties">
     <Message Text="Copy release notes from share to local temp directory..." Importance="High"/>
-    
-    <PropertyGroup>
-      <_regexVersionPatten>v(?&lt;version&gt;\d+\.\d+\.\d+(\.\d+)?)$</_regexVersionPatten>
-    </PropertyGroup>
-    
+
     <ItemGroup>
       <_releaseNoteFiles Remove="@(_releaseNoteFiles)"/>
       <_releaseNoteFiles Include="$(ReleaseNotesRemoteShareDirectory)*.*" />
-      <_releaseNoteFiles>
-        <Version>$([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Groups[&quot;version&quot;].Value)</Version>
-      </_releaseNoteFiles>
     </ItemGroup>
 
     <Error Text="Item group '_releaseNoteFiles' is empty - probably remote directory not reachable? (remote directory: '$(ReleaseNotesRemoteShareDirectory)')" Condition="@(_releaseNoteFiles) == ''"/>
@@ -172,11 +165,18 @@
 
   <Target Name="AddReleaseNotesToBinaryPackage" DependsOnTargets="CreateBinaryZipFileProperty;CreateReleaseNotesProperties">
     <Error Text="Binary zip-file $(BinaryZipFile) is missing." Condition="!Exists('$(BinaryZipFile)')"  />
+
+    <PropertyGroup>
+      <_regexVersionPatten>v(?&lt;version&gt;\d+\.\d+\.\d+(\.\d+)?)$</_regexVersionPatten>
+    </PropertyGroup>
     
     <ItemGroup>
       <_tempReleaseNoteFiles Remove="@(_tempReleaseNoteFiles)"/>
       <_tempReleaseNoteFiles Include="$(ReleaseNotesLocalTempDirectory)**" />
-
+      <_tempReleaseNoteFiles>
+        <Version>$([System.Text.RegularExpressions.Regex]::Match (%(FileName), $(_regexVersionPatten)).Groups[&quot;version&quot;].Value)</Version>
+      </_tempReleaseNoteFiles>
+      
       <_emptyReleaseNoteFiles Remove="@(_emptyReleaseNoteFiles)"/>
       <_emptyReleaseNoteFiles Include="@(_tempReleaseNoteFiles)"
                               Condition="$([System.IO.File]::ReadAllText (%(Identity)).Length) == 0"/>
