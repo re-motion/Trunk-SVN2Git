@@ -26,7 +26,7 @@
   </Target>
 
   <PropertyGroup>
-    <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
+    <RemotionBuildTasksPath>$(SolutionDirectory)\prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
   </PropertyGroup>
 
   <Import Project="Remotion.Tasks.include.build" />

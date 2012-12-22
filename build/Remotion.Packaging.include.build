@@ -34,14 +34,14 @@
   </Target>
 
   <PropertyGroup>
-    <MSBuildExtensionPackPath>$(SolutionDirectory)\prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
+    <MSBuildExtensionPackPath>$(SolutionDirectory)prereq\Tools\MSBuildExtensionPack\</MSBuildExtensionPackPath>
     <RemotionBuildTasksPath>$(SolutionDirectory)prereq\Tools\Remotion.BuildTools.MSBuildTasks\</RemotionBuildTasksPath>
-    <JiraReleaseNoteGeneratorPath>$(SolutionDirectory)\prereq\Tools\JiraReleaseNoteGenerator\</JiraReleaseNoteGeneratorPath>
-    <CodeplexReleaseToolPath>$(SolutionDirectory)\prereq\Tools\CodeplexReleaseTool\</CodeplexReleaseToolPath>
+    <JiraReleaseNoteGeneratorPath>$(SolutionDirectory)prereq\Tools\JiraReleaseNoteGenerator\</JiraReleaseNoteGeneratorPath>
+    <CodeplexReleaseToolPath>$(SolutionDirectory)prereq\Tools\CodeplexReleaseTool\</CodeplexReleaseToolPath>
   </PropertyGroup>
 
-  <Import Project="Remotion.Packaging.base.build" />
   <Import Project="Remotion.Tasks.include.build" />
+  <Import Project="Remotion.Packaging.base.build" />
   <Import Project="Remotion.DependDB.include.build" />
   
   <!-- Overridden Targets -->
