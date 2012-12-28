@@ -43,7 +43,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     public void VirtualEndPointStateUpdated (RelationEndPointID endPointID, bool? newChangedState)
     {
       ArgumentUtility.CheckNotNull ("endPointID", endPointID);
-      _transactionEventSink.RaiseEvent ((tx, l) => l.VirtualRelationEndPointStateUpdated (tx, endPointID, newChangedState));
+      _transactionEventSink.RaiseVirtualRelationEndPointStateUpdatedEvent (endPointID, newChangedState);
     }
   }
 }

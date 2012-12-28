@@ -101,7 +101,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
       }
 
       _invalidObjects.Add (domainObject.ID, domainObject);
-      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectMarkedInvalid (tx, domainObject));
+      _transactionEventSink.RaiseObjectMarkedInvalidEvent (domainObject);
       return true;
     }
 
@@ -114,7 +114,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.InvalidObjects
         return false;
 
       _invalidObjects.Remove (objectID);
-      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectMarkedNotInvalid (tx, domainObject));
+      _transactionEventSink.RaiseObjectMarkedNotInvalidEvent (domainObject);
       return true;
     }
   }

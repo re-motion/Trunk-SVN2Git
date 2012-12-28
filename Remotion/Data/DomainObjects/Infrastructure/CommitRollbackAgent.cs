@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void CommitData ()
     {
       var persistableDataItems = BeginCommit ();
-      _eventSink.RaiseEvent ((tx, l) => l.TransactionCommitValidate (tx, new ReadOnlyCollection<PersistableData> (persistableDataItems)));
+      _eventSink.RaiseTransactionCommitValidateEvent (new ReadOnlyCollection<PersistableData> (persistableDataItems));
 
       _persistenceStrategy.PersistData (persistableDataItems);
       _dataManager.Commit ();
@@ -127,7 +127,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       {
         var eventArgReadOnlyCollection = ListAdapter.AdaptReadOnly (committingEventNotRaised, item => item.DomainObject);
         var committingEventRegistrar = new CommittingEventRegistrar (_clientTransaction);
-        _eventSink.RaiseEvent ((tx, l) => l.TransactionCommitting (tx, eventArgReadOnlyCollection, committingEventRegistrar));
+        _eventSink.RaiseTransactionCommittingEvent (eventArgReadOnlyCollection, committingEventRegistrar);
 
         // Remember which objects have got the event right now.
         committingEventRaised.UnionWith (committingEventNotRaised.Select (item => item.DomainObject.ID));
@@ -146,7 +146,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void EndCommit (ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
-      _eventSink.RaiseEvent ((tx, l) => l.TransactionCommitted (tx, changedDomainObjects));
+      _eventSink.RaiseTransactionCommittedEvent (changedDomainObjects);
     }
 
     private IList<PersistableData> BeginRollback ()
@@ -167,7 +167,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       while (true)
       {
         var eventArgReadOnlyCollection = ListAdapter.AdaptReadOnly (rollingBackEventNotRaised, item => item.DomainObject);
-        _eventSink.RaiseEvent ((tx, l) => l.TransactionRollingBack (tx, eventArgReadOnlyCollection));
+        _eventSink.RaiseTransactionRollingBackEvent (eventArgReadOnlyCollection);
 
         // Remember which objects have got the event right now.
         rollingBackEventRaised.UnionWith (rollingBackEventNotRaised.Select (item => item.DomainObject.ID));
@@ -183,7 +183,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     private void EndRollback (ReadOnlyCollection<DomainObject> changedDomainObjects)
     {
-      _eventSink.RaiseEvent ((tx, l) => l.TransactionRolledBack (tx, changedDomainObjects));
+      _eventSink.RaiseTransactionRolledBackEvent (changedDomainObjects);
     }
   }
 }

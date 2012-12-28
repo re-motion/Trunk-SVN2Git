@@ -123,13 +123,12 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModificati
 
     protected void RaiseClientTransactionBeginNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationChanging (
-          tx, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject));
+      _transactionEventSink.RaiseRelationChangingEvent (_domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject);
     }
 
     protected void RaiseClientTransactionEndNotification (DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
-      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationChanged (tx, _domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject));
+      _transactionEventSink.RaiseRelationChangedEvent (_domainObject, _modifiedEndPoint.Definition, oldRelatedObject, newRelatedObject);
     }
 
     protected IRelationEndPoint GetOppositeEndPoint (

@@ -81,7 +81,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
     {
       ArgumentUtility.CheckNotNull ("endPoint", endPoint);
 
-      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationEndPointMapRegistering (tx, endPoint));
+      _transactionEventSink.RaiseRelationEndPointMapRegisteringEvent (endPoint);
       var id = endPoint.ID;
       try
       {
@@ -104,7 +104,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.RelationEndPoints
         throw new ArgumentException (message, "endPointID");
       }
 
-      _transactionEventSink.RaiseEvent ((tx, l) => l.RelationEndPointMapUnregistering (tx, endPointID));
+      _transactionEventSink.RaiseRelationEndPointMapUnregisteringEvent (endPointID);
       _relationEndPoints.Remove (endPointID);
     }
 

@@ -73,7 +73,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     {
       this.EnsureCanExecute ();
 
-      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, Array.AsReadOnly (_domainObjects)));
+      _transactionEventSink.RaiseObjectsUnloadingEvent ( Array.AsReadOnly (_domainObjects));
       _unloadDataCommand.Begin ();
     }
 
@@ -89,7 +89,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
       this.EnsureCanExecute ();
 
       _unloadDataCommand.End ();
-      _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, Array.AsReadOnly (_domainObjects)));
+      _transactionEventSink.RaiseObjectsUnloadedEvent (Array.AsReadOnly (_domainObjects));
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

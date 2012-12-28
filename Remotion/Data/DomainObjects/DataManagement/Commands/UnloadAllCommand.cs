@@ -78,7 +78,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
 
     public void Begin ()
     {
-      RaiseRecurringBeginEvent (domainObjects => _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloading (tx, domainObjects)));
+      RaiseRecurringBeginEvent (domainObjects => _transactionEventSink.RaiseObjectsUnloadingEvent (domainObjects));
     }
 
     public void Perform ()
@@ -103,7 +103,7 @@ namespace Remotion.Data.DomainObjects.DataManagement.Commands
     public void End ()
     {
       if (_unloadedDataContainers.Count > 0)
-        _transactionEventSink.RaiseEvent ((tx, l) => l.ObjectsUnloaded (tx, _unloadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly()));
+        _transactionEventSink.RaiseObjectsUnloadedEvent (_unloadedDataContainers.Select (dc => dc.DomainObject).ToList().AsReadOnly());
     }
 
     public ExpandedCommand ExpandToAllRelatedObjects ()

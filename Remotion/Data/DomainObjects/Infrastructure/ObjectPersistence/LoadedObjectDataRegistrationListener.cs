@@ -57,7 +57,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       ArgumentUtility.CheckNotNull ("loadedObjectIDs", loadedObjectIDs);
 
       _hierarchyManager.OnBeforeObjectRegistration (loadedObjectIDs);
-      _eventSink.RaiseEvent ((tx, l) => l.ObjectsLoading (tx, loadedObjectIDs));
+      _eventSink.RaiseObjectsLoadingEvent (loadedObjectIDs);
     }
 
     public void OnAfterObjectRegistration (ReadOnlyCollection<ObjectID> objectIDsToBeLoaded, ReadOnlyCollection<DomainObject> actuallyLoadedDomainObjects)
@@ -68,7 +68,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
       try
       {
         if (actuallyLoadedDomainObjects.Count > 0)
-          _eventSink.RaiseEvent ((tx, l) => l.ObjectsLoaded (tx, actuallyLoadedDomainObjects));
+          _eventSink.RaiseObjectsLoadedEvent (actuallyLoadedDomainObjects);
       }
       finally
       {
@@ -80,7 +80,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence
     {
       ArgumentUtility.CheckNotNull ("notFoundObjectIDs", notFoundObjectIDs);
 
-      _eventSink.RaiseEvent ((tx, l) => l.ObjectsNotFound (tx, notFoundObjectIDs));
+      _eventSink.RaiseObjectsNotFoundEvent (notFoundObjectIDs);
     }
   }
 }

@@ -154,8 +154,7 @@ namespace Remotion.Data.DomainObjects.Queries
           .GetOrLoadCollectionQueryResult (query)
           .Select (data => ConvertLoadedDomainObject<T> (data.GetDomainObjectReference())).ToArray();
       var queryResult = new QueryResult<T> (query, resultArray);
-      _transactionEventSink.RaiseEvent ((tx, l) => queryResult = l.FilterQueryResult (tx, queryResult));
-      return queryResult;
+      return _transactionEventSink.RaiseFilterQueryResultEvent (queryResult);
     }
 
     /// <summary>
@@ -186,8 +185,7 @@ namespace Remotion.Data.DomainObjects.Queries
         throw new ArgumentException ("A custom query cannot have eager fetch queries defined.", "query");
 
       var queryResult = _persistenceStrategy.ExecuteCustomQuery (query).Select(rowReader);
-      _transactionEventSink.RaiseEvent ((tx, l) => queryResult = l.FilterCustomQueryResult (tx, query, queryResult));
-      return queryResult;
+      return _transactionEventSink.RaiseFilterCustomQueryResultEvent (query, queryResult);
     }
 
     private T ConvertLoadedDomainObject<T> (DomainObject domainObject) where T : DomainObject

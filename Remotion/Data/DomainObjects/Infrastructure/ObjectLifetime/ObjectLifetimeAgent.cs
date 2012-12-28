@@ -122,7 +122,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.ObjectLifetime
                 "Cannot instantiate type '{0}' because it is abstract. For classes with automatic properties, InstantiableAttribute must be used.",
                 classDefinition.ClassType));
 
-      _eventSink.RaiseEvent ((tx, l) => l.NewObjectCreating (tx, classDefinition.ClassType));
+      _eventSink.RaiseNewObjectCreatingEvent (classDefinition.ClassType);
 
       var previousInitializationContext = _currentInitializationContext;
 

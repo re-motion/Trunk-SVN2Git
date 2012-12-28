@@ -155,7 +155,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
     public void OnBeforeTransactionInitialize ()
     {
       if (_parentTransaction != null)
-        _parentEventSink.RaiseEvent ((tx, l) => l.SubTransactionInitialize (tx, _thisTransaction));
+        _parentEventSink.RaiseSubTransactionInitializeEvent (_thisTransaction);
     }
 
     public void OnTransactionDiscard ()
@@ -198,7 +198,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 
     public ClientTransaction CreateSubTransaction (Func<ClientTransaction, ClientTransaction> subTransactionFactory)
     {
-      _thisEventSink.RaiseEvent ((tx, l) => l.SubTransactionCreating (tx));
+      _thisEventSink.RaiseSubTransactionCreatingEvent ();
 
       _isActive = false;
 
@@ -217,7 +217,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement
 
       _subTransaction = subTransaction;
 
-      _thisEventSink.RaiseEvent ((tx, l) => l.SubTransactionCreated (tx, subTransaction));
+      _thisEventSink.RaiseSubTransactionCreatedEvent (subTransaction);
       return subTransaction;
     }
 

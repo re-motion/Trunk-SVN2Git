@@ -71,7 +71,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
     public void Register (DataContainer dataContainer)
     {
       ArgumentUtility.CheckNotNull ("dataContainer", dataContainer);
-      _transactionEventSink.RaiseEvent ((tx, l) => l.DataContainerMapRegistering (tx, dataContainer));
+      _transactionEventSink.RaiseDataContainerMapRegisteringEvent (dataContainer);
       _dataContainers.Add (dataContainer);
     }
 
@@ -86,7 +86,7 @@ namespace Remotion.Data.DomainObjects.DataManagement
         throw new ArgumentException (message, "id");
       }
 
-      _transactionEventSink.RaiseEvent ((tx, l) => l.DataContainerMapUnregistering (tx, dataContainer));
+      _transactionEventSink.RaiseDataContainerMapUnregisteringEvent (dataContainer);
       _dataContainers.Remove (dataContainer);
     }
 
