@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
 using System;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.Mapping;
@@ -33,23 +34,26 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("subTransaction", subTransaction);
 
-      clientTransaction.Execute (() => clientTransaction.OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction)));
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        clientTransaction.OnSubTransactionCreated (new SubTransactionCreatedEventArgs (subTransaction));
+      }
+
       base.SubTransactionCreated (clientTransaction, subTransaction);
     }
 
-    public override void ObjectsLoaded (ClientTransaction clientTransaction, System.Collections.ObjectModel.ReadOnlyCollection<DomainObject> domainObjects)
+    public override void ObjectsLoaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
-      clientTransaction.Execute (
-          () =>
-          {
-            foreach (var domainObject in domainObjects)
-              domainObject.OnLoaded();
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        foreach (var domainObject in domainObjects)
+          domainObject.OnLoaded();
 
-            clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
-          });
+        clientTransaction.OnLoaded (new ClientTransactionEventArgs (domainObjects));
+      }
 
       base.ObjectsLoaded (clientTransaction, domainObjects);
     }
@@ -60,18 +64,17 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
 
       base.ObjectsUnloading (clientTransaction, unloadedDomainObjects);
-      clientTransaction.Execute (
-          () =>
-          {
-            // This is a for loop for symmetry with ObjectsUnloaded
-            // ReSharper disable ForCanBeConvertedToForeach
-            for (int i = 0; i < unloadedDomainObjects.Count; i++)
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        // This is a for loop for symmetry with ObjectsUnloaded
+        // ReSharper disable ForCanBeConvertedToForeach
+        for (int i = 0; i < unloadedDomainObjects.Count; i++)
             // ReSharper restore ForCanBeConvertedToForeach
-            {
-              var domainObject = unloadedDomainObjects[i];
-              domainObject.OnUnloading();
-            }
-          });
+        {
+          var domainObject = unloadedDomainObjects[i];
+          domainObject.OnUnloading();
+        }
+      }
     }
 
     public override void ObjectsUnloaded (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> unloadedDomainObjects)
@@ -79,15 +82,14 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("unloadedDomainObjects", unloadedDomainObjects);
 
-      clientTransaction.Execute (
-         () =>
-         {
-           for (int i = unloadedDomainObjects.Count - 1; i >= 0; i--)
-           {
-             var domainObject = unloadedDomainObjects[i];
-             domainObject.OnUnloaded();
-           }
-         });
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        for (int i = unloadedDomainObjects.Count - 1; i >= 0; i--)
+        {
+          var domainObject = unloadedDomainObjects[i];
+          domainObject.OnUnloaded();
+        }
+      }
       base.ObjectsUnloaded (clientTransaction, unloadedDomainObjects);
     }
 
@@ -97,7 +99,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
       base.ObjectDeleting (clientTransaction, domainObject);
-      clientTransaction.Execute (() => domainObject.OnDeleting (EventArgs.Empty));
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        domainObject.OnDeleting (EventArgs.Empty);
+      }
     }
 
     public override void ObjectDeleted (ClientTransaction clientTransaction, DomainObject domainObject)
@@ -105,29 +110,39 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      clientTransaction.Execute (() => domainObject.OnDeleted (EventArgs.Empty));
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        domainObject.OnDeleted (EventArgs.Empty);
+      }
       base.ObjectDeleted (clientTransaction, domainObject);
     }
 
-    public override void PropertyValueChanging (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanging (
+        ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
       base.PropertyValueChanging (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
-
-      clientTransaction.Execute (() => domainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        domainObject.OnPropertyChanging (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue));
+      }
     }
 
-    public override void PropertyValueChanged (ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public override void PropertyValueChanged (
+        ClientTransaction clientTransaction, DomainObject domainObject, PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("propertyDefinition", propertyDefinition);
 
-      clientTransaction.Execute (() => domainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue)));
-      
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        domainObject.OnPropertyChanged (new PropertyChangeEventArgs (propertyDefinition, oldValue, newValue));
+      }
+
       base.PropertyValueChanged (clientTransaction, domainObject, propertyDefinition, oldValue, newValue);
     }
 
@@ -143,8 +158,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
       base.RelationChanging (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
-      clientTransaction.Execute (
-          () => domainObject.OnRelationChanging (new RelationChangingEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject)));
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        domainObject.OnRelationChanging (new RelationChangingEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject));
+      }
     }
 
     public override void RelationChanged (
@@ -158,8 +175,10 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
       ArgumentUtility.CheckNotNull ("relationEndPointDefinition", relationEndPointDefinition);
 
-      clientTransaction.Execute (
-            () => domainObject.OnRelationChanged (new RelationChangedEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject)));
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        domainObject.OnRelationChanged (new RelationChangedEventArgs (relationEndPointDefinition, oldRelatedObject, newRelatedObject));
+      }
       base.RelationChanged (clientTransaction, domainObject, relationEndPointDefinition, oldRelatedObject, newRelatedObject);
     }
 
@@ -171,19 +190,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("eventRegistrar", eventRegistrar);
 
       base.TransactionCommitting (clientTransaction, domainObjects, eventRegistrar);
-      clientTransaction.Execute (
-          () =>
-          {
-            clientTransaction.OnCommitting (new ClientTransactionCommittingEventArgs (domainObjects, eventRegistrar));
-            // ReSharper disable ForCanBeConvertedToForeach
-            for (int i = 0; i < domainObjects.Count; i++)
-            {
-              var domainObject = domainObjects[i];
-              if (!domainObject.IsInvalid)
-                domainObject.OnCommitting (new DomainObjectCommittingEventArgs (eventRegistrar));
-            }
-            // ReSharper restore ForCanBeConvertedToForeach
-          });
+      using (EnterScopeOnDemand (clientTransaction))
+
+      {
+        clientTransaction.OnCommitting (new ClientTransactionCommittingEventArgs (domainObjects, eventRegistrar));
+        // ReSharper disable ForCanBeConvertedToForeach
+        for (int i = 0; i < domainObjects.Count; i++)
+        {
+          var domainObject = domainObjects[i];
+          if (!domainObject.IsInvalid)
+            domainObject.OnCommitting (new DomainObjectCommittingEventArgs (eventRegistrar));
+        }
+        // ReSharper restore ForCanBeConvertedToForeach
+      }
     }
 
     public override void TransactionCommitted (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
@@ -191,14 +210,13 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
-      clientTransaction.Execute (
-          () =>
-          {
-            for (int i = domainObjects.Count - 1; i >= 0; i--)
-              domainObjects[i].OnCommitted (EventArgs.Empty);
-            clientTransaction.OnCommitted (new ClientTransactionEventArgs (domainObjects));
-          });
-      
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        for (int i = domainObjects.Count - 1; i >= 0; i--)
+          domainObjects[i].OnCommitted (EventArgs.Empty);
+        clientTransaction.OnCommitted (new ClientTransactionEventArgs (domainObjects));
+      }
+
       base.TransactionCommitted (clientTransaction, domainObjects);
     }
 
@@ -208,19 +226,19 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
       base.TransactionRollingBack (clientTransaction, domainObjects);
-      clientTransaction.Execute (
-          () =>
-          {
-            clientTransaction.OnRollingBack (new ClientTransactionEventArgs (domainObjects));
-            // ReSharper disable ForCanBeConvertedToForeach
-            for (int i = 0; i < domainObjects.Count; i++)
-            {
-              var domainObject = domainObjects[i];
-              if (!domainObject.IsInvalid)
-                domainObject.OnRollingBack (EventArgs.Empty);
-            }
-            // ReSharper restore ForCanBeConvertedToForeach
-          });
+      using (EnterScopeOnDemand (clientTransaction))
+
+      {
+        clientTransaction.OnRollingBack (new ClientTransactionEventArgs (domainObjects));
+        // ReSharper disable ForCanBeConvertedToForeach
+        for (int i = 0; i < domainObjects.Count; i++)
+        {
+          var domainObject = domainObjects[i];
+          if (!domainObject.IsInvalid)
+            domainObject.OnRollingBack (EventArgs.Empty);
+        }
+        // ReSharper restore ForCanBeConvertedToForeach
+      }
     }
 
     public override void TransactionRolledBack (ClientTransaction clientTransaction, ReadOnlyCollection<DomainObject> domainObjects)
@@ -228,15 +246,21 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
       ArgumentUtility.CheckNotNull ("domainObjects", domainObjects);
 
-      clientTransaction.Execute (
-          () =>
-          {
-            for (int i = domainObjects.Count - 1; i >= 0; i--)
-              domainObjects[i].OnRolledBack (EventArgs.Empty);
-            clientTransaction.OnRolledBack (new ClientTransactionEventArgs (domainObjects));
-          });
+      using (EnterScopeOnDemand (clientTransaction))
+      {
+        for (int i = domainObjects.Count - 1; i >= 0; i--)
+          domainObjects[i].OnRolledBack (EventArgs.Empty);
+        clientTransaction.OnRolledBack (new ClientTransactionEventArgs (domainObjects));
+      }
 
       base.TransactionRolledBack (clientTransaction, domainObjects);
+    }
+
+    private ClientTransactionScope EnterScopeOnDemand (ClientTransaction clientTransaction)
+    {
+      if (ClientTransaction.Current != clientTransaction)
+        return clientTransaction.EnterNonDiscardingScope();
+      return null;
     }
   }
 }
