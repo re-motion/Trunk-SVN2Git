@@ -181,7 +181,7 @@ public class ClientTransaction
     AddListener (new ExtensionClientTransactionListener (_extensions));
 
     _hierarchyManager.OnBeforeTransactionInitialize();
-    RaiseListenerEvent ((tx, l) => l.TransactionInitialize (tx));
+    _eventBroker.RaiseTransactionInitializeEvent ();
   }
 
   internal ITransactionHierarchyManager HierarchyManager
@@ -365,12 +365,6 @@ public class ClientTransaction
     _eventBroker.RemoveListener (listener);
   }
 
-  protected void RaiseListenerEvent (Action<ClientTransaction, IClientTransactionListener> eventRaiser)
-  {
-    ArgumentUtility.CheckNotNull ("eventRaiser", eventRaiser);
-    _eventBroker.RaiseEvent (eventRaiser);
-  }
-
   /// <summary>
   /// Discards this transaction (rendering it unusable) and, if this transaction is a subtransaction, returns control to the parent transaction.
   /// </summary>
@@ -393,7 +387,7 @@ public class ClientTransaction
   {
     if (!_isDiscarded)
     {
-      RaiseListenerEvent ((tx, l) => l.TransactionDiscard (tx));
+      _eventBroker.RaiseTransactionDiscardEvent ();
       _hierarchyManager.OnTransactionDiscard();
 
       _isDiscarded = true;
@@ -1117,11 +1111,12 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      RaiseListenerEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Current));
+      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
 
       var objectEndPoint = (IObjectEndPoint) DataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       DomainObject relatedObject = objectEndPoint.GetOppositeObject ();
-      RaiseListenerEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current));
+
+      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Current);
 
       return relatedObject;
     }
@@ -1145,10 +1140,12 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      RaiseListenerEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Original));
+      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
+
       var objectEndPoint = (IObjectEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       DomainObject relatedObject = objectEndPoint.GetOriginalOppositeObject ();
-      RaiseListenerEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original));
+
+      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, relatedObject, ValueAccess.Original);
 
       return relatedObject;
     }
@@ -1172,12 +1169,13 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      RaiseListenerEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Current));
+      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Current);
 
       var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       var relatedObjects = collectionEndPoint.Collection;
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
-      RaiseListenerEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current));
+
+      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Current);
 
       return relatedObjects;
     }
@@ -1201,11 +1199,13 @@ public class ClientTransaction
     {
       DomainObject domainObject = GetObject (relationEndPointID.ObjectID, true);
 
-      RaiseListenerEvent ((tx, l) => l.RelationReading (tx, domainObject, relationEndPointID.Definition, ValueAccess.Original));
+      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointID.Definition, ValueAccess.Original);
+
       var collectionEndPoint = (ICollectionEndPoint) _dataManager.GetRelationEndPointWithLazyLoad (relationEndPointID);
       var relatedObjects = collectionEndPoint.GetCollectionWithOriginalData();
       var readOnlyRelatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (relatedObjects);
-      RaiseListenerEvent ((tx, l) => l.RelationRead (tx, domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original));
+
+      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointID.Definition, readOnlyRelatedObjects, ValueAccess.Original);
 
       return relatedObjects;
     }

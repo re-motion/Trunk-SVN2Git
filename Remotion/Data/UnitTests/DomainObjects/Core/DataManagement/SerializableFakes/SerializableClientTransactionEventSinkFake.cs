@@ -30,10 +30,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
   [Serializable]
   public class SerializableClientTransactionEventSinkFake : IClientTransactionEventSink
   {
-    public void RaiseEvent (Action<ClientTransaction, IClientTransactionListener> action)
-    {
-    }
-
     public void RaiseRelationChangingEvent (
         DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
@@ -199,6 +195,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Serializable
     public IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results)
     {
       return null;
+    }
+
+    public void RaiseTransactionInitializeEvent ()
+    {
+    
+    }
+
+    public void RaiseTransactionDiscardEvent ()
+    {
+      
+    }
+
+    public void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    {
+    }
+
+
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+    
+    }
+
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
+        ValueAccess valueAccess)
+    {
+    
     }
   }
 }

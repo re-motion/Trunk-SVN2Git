@@ -218,11 +218,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
         _hierarchyManagerMock.Expect (mock => mock.OnBeforeTransactionInitialize());
         _eventBrokerMock
-            .Expect (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything))
-            .WhenCalled (
-                mi => CheckRaisedEvent (
-                    (Action<ClientTransaction, IClientTransactionListener>)mi.Arguments[0], 
-                    (tx, l) => l.TransactionInitialize (tx)));
+            .Expect (mock => mock.RaiseTransactionInitializeEvent());
       }
 
       _mockRepository.ReplayAll();
@@ -779,8 +775,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     {
       using (_mockRepository.Ordered ())
       {
-        var listenerMock = SetupEventForwardingToListenerMock (_eventBrokerMock, _transactionWithMocks);
-        listenerMock.Expect (mock => mock.TransactionDiscard (_transactionWithMocks));
+        _eventBrokerMock.RaiseTransactionDiscardEvent();
         _hierarchyManagerMock.Expect (mock => mock.OnTransactionDiscard());
         _eventBrokerMock.Expect (mock => mock.AddListener (Arg<InvalidatedTransactionListener>.Is.TypeOf));
       }
@@ -801,7 +796,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       ClientTransactionTestHelper.SetIsActive (parentTransaction, false);
       ClientTransactionTestHelper.SetActiveSubTransaction (parentTransaction, _transactionWithMocks);
 
-      _eventBrokerMock.Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
+      _eventBrokerMock.Stub (stub => stub.RaiseTransactionDiscardEvent());
       _hierarchyManagerMock.Stub (mock => mock.OnTransactionDiscard ());
       
       _transactionWithMocks.Discard();
@@ -811,7 +806,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
 
       _transactionWithMocks.Discard ();
 
-      _eventBrokerMock.AssertWasNotCalled (mock => mock.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything));
+      _eventBrokerMock.AssertWasNotCalled (mock => mock.RaiseTransactionDiscardEvent());
       _hierarchyManagerMock.AssertWasNotCalled (mock => mock.OnTransactionDiscard ());
     }
 
@@ -1027,28 +1022,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var deserializedDiscardedTransaction = Serializer.SerializeAndDeserialize (clientTransaction);
 
       Assert.That (deserializedDiscardedTransaction.IsDiscarded, Is.True);
-    }
-
-    private void CheckRaisedEvent (Action<ClientTransaction, IClientTransactionListener> raiseAction, Action<ClientTransaction, IClientTransactionListener> expectedEvent)
-    {
-      var clientTransaction = ClientTransaction.CreateRootTransaction();
-
-      var listenerMock = MockRepository.GenerateStrictMock<IClientTransactionListener>();
-      listenerMock.Expect (mock => expectedEvent (clientTransaction, mock));
-      listenerMock.Replay();
-
-      raiseAction (clientTransaction, listenerMock);
-
-      listenerMock.VerifyAllExpectations();
-    }
-
-    private IClientTransactionListener SetupEventForwardingToListenerMock (IClientTransactionEventBroker eventBrokerMock, TestableClientTransaction expectedClientTransaction)
-    {
-      var listenerMock = _mockRepository.StrictMock<IClientTransactionListener> ();
-      eventBrokerMock
-          .Stub (stub => stub.RaiseEvent (Arg<Action<ClientTransaction, IClientTransactionListener>>.Is.Anything))
-          .WhenCalled (mi => ((Action<ClientTransaction, IClientTransactionListener>) mi.Arguments[0]) (expectedClientTransaction, listenerMock));
-      return listenerMock;
     }
   }
 }

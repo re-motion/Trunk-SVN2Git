@@ -95,17 +95,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void RaiseEvent ()
-    {
-      _eventDistributor.Expect (mock => mock.TransactionInitialize (_clientTransaction));
-      _eventDistributor.Replay();
-
-      _eventBroker.RaiseEvent ((tx, l) => l.TransactionInitialize (tx));
-
-      _eventDistributor.VerifyAllExpectations();
-    }
-
-    [Test]
     public void RaiseRelationChangingEvent ()
     {
       var relatedObject = Order.NewObject();
@@ -708,6 +697,103 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _eventDistributor.VerifyAllExpectations();
 
       Assert.That (actual, Is.SameAs (expected));
+    }
+
+    [Test]
+    public void RaiseTransactionDiscardEvent ()
+    {
+      _eventDistributor.Expect (
+          mock =>
+          mock.TransactionDiscard (
+              _clientTransaction));
+
+      _eventDistributor.Replay();
+
+      _eventBroker.RaiseTransactionDiscardEvent();
+
+      _eventDistributor.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RaiseTransactionInitializeEvent ()
+    {
+      _eventDistributor.Expect (
+          mock =>
+          mock.TransactionInitialize (
+              _clientTransaction));
+
+      _eventDistributor.Replay();
+
+      _eventBroker.RaiseTransactionInitializeEvent();
+
+      _eventDistributor.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RaiseRelationReadingEvent ()
+    {
+      var domainObject = Order.NewObject();
+      var valueAccess = ValueAccess.Original;
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition>();
+
+      _eventDistributor.Expect (
+          mock =>
+          mock.RelationReading (
+              _clientTransaction,
+              domainObject,
+              relationEndPointDefinition,
+              valueAccess));
+
+      _eventDistributor.Replay();
+      _eventBroker.RaiseRelationReadingEvent (domainObject, relationEndPointDefinition, valueAccess);
+
+      _eventDistributor.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RaiseRelationReadEvent ()
+    {
+      var domainObject = Order.NewObject();
+      var relatedObject = Order.NewObject();
+      var valueAccess = ValueAccess.Original;
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition>();
+
+      _eventDistributor.Expect (
+          mock =>
+          mock.RelationRead (
+              _clientTransaction,
+              domainObject,
+              relationEndPointDefinition,
+              relatedObject,
+              valueAccess));
+
+      _eventDistributor.Replay();
+      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointDefinition, relatedObject, valueAccess);
+
+      _eventDistributor.VerifyAllExpectations();
+    }
+
+    [Test]
+    public void RaiseRelationReadEvent_WithRelatedObjectsCollection ()
+    {
+      var domainObject = Order.NewObject();
+      var valueAccess = ValueAccess.Original;
+      var relationEndPointDefinition = MockRepository.GenerateStub<IRelationEndPointDefinition>();
+      var relatedObjects = new ReadOnlyDomainObjectCollectionAdapter<DomainObject> (new DomainObjectCollection());
+
+      _eventDistributor.Expect (
+          mock =>
+          mock.RelationRead (
+              _clientTransaction,
+              domainObject,
+              relationEndPointDefinition,
+              relatedObjects,
+              valueAccess));
+
+      _eventDistributor.Replay();
+      _eventBroker.RaiseRelationReadEvent (domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
+
+      _eventDistributor.VerifyAllExpectations();
     }
 
     [Test]

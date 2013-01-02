@@ -74,12 +74,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       _eventDistributor.RemoveListener (listener);
     }
 
-    public void RaiseEvent (Action<ClientTransaction, IClientTransactionListener> action)
-    {
-      ArgumentUtility.CheckNotNull ("action", action);
-      action (_clientTransaction, _eventDistributor);
-    }
-
     public void RaiseRelationChangingEvent (
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -251,6 +245,36 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results)
     {
      return _eventDistributor.FilterCustomQueryResult (_clientTransaction, query, results);
+    }
+
+    public void RaiseTransactionInitializeEvent ()
+    {
+      _eventDistributor.TransactionInitialize (_clientTransaction);
+    }
+
+    public void RaiseTransactionDiscardEvent ()
+    {
+      _eventDistributor.TransactionDiscard (_clientTransaction);
+    }
+
+    public void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    {
+      _eventDistributor.RelationReading (_clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
+    }
+
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
+    }
+
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
+        ValueAccess valueAccess)
+    {
+      _eventDistributor.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
   }
 }

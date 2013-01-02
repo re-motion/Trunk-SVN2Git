@@ -72,11 +72,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       get { return _mock; }
     }
 
-    public void RaiseEvent (Action<ClientTransaction, IClientTransactionListener> action)
-    {
-      action (_clientTransaction, _mock);
-    }
-
     public void RaiseRelationChangingEvent (
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -248,6 +243,36 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results)
     {
       return _mock.FilterCustomQueryResult (_clientTransaction, query, results);
+    }
+
+    public void RaiseTransactionInitializeEvent ()
+    {
+      _mock.TransactionInitialize (_clientTransaction);
+    }
+
+    public void RaiseTransactionDiscardEvent ()
+    {
+      _mock.TransactionDiscard (_clientTransaction);
+    }
+
+    public void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess)
+    {
+      _mock.RelationReading (_clientTransaction, domainObject, relationEndPointDefinition, valueAccess);
+    }
+
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess)
+    {
+      _mock.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObject, valueAccess);
+    }
+
+    public void RaiseRelationReadEvent (
+        DomainObject domainObject,
+        IRelationEndPointDefinition relationEndPointDefinition,
+        ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects,
+        ValueAccess valueAccess)
+    {
+      _mock.RelationRead (_clientTransaction, domainObject, relationEndPointDefinition, relatedObjects, valueAccess);
     }
 
     public void ReplayMock ()

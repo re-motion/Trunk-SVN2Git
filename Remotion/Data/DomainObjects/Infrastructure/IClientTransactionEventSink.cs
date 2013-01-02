@@ -31,8 +31,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
   /// </summary>
   public interface IClientTransactionEventSink
   {
-    void RaiseEvent (Action<ClientTransaction, IClientTransactionListener> action);
-
     void RaiseRelationChangingEvent (
         DomainObject domainObject,
         IRelationEndPointDefinition relationEndPointDefinition,
@@ -107,5 +105,15 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     QueryResult<T> RaiseFilterQueryResultEvent<T> (QueryResult<T> queryResult) where T : DomainObject;
 
     IEnumerable<T> RaiseFilterCustomQueryResultEvent<T> (IQuery query, IEnumerable<T> results);
+
+    void RaiseTransactionInitializeEvent ();
+
+    void RaiseTransactionDiscardEvent ();
+ 
+    void RaiseRelationReadingEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ValueAccess valueAccess);
+
+    void RaiseRelationReadEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, DomainObject relatedObject, ValueAccess valueAccess);
+
+    void RaiseRelationReadEvent (DomainObject domainObject, IRelationEndPointDefinition relationEndPointDefinition, ReadOnlyDomainObjectCollectionAdapter<DomainObject> relatedObjects, ValueAccess valueAccess);
   }
 }
