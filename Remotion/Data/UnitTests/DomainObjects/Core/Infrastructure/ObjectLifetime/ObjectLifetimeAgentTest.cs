@@ -42,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
   public class ObjectLifetimeAgentTest : StandardMappingTest
   {
     private ClientTransaction _transaction;
-    private ClientTransactionEventSinkWithMock _eventSinkWithMock;
+    private IClientTransactionEventSink _eventSinkWithMock;
     private IInvalidDomainObjectManager _invalidDomainObjectManagerMock;
     private IDataManager _dataManagerMock;
     private IEnlistedDomainObjectManager _enlistedDomainObjectManagerMock;
@@ -68,7 +68,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       base.SetUp ();
 
       _transaction = ClientTransactionObjectMother.Create();
-      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock();
+      _eventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
       _invalidDomainObjectManagerMock = MockRepository.GenerateStrictMock<IInvalidDomainObjectManager> ();
       _dataManagerMock = MockRepository.GenerateStrictMock<IDataManager> ();
       _enlistedDomainObjectManagerMock = MockRepository.GenerateStrictMock<IEnlistedDomainObjectManager> ();
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       var constructorParameters = ParamList.Create ("Some Product");
 
-      _eventSinkWithMock.ExpectMock (mock => mock.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
+      _eventSinkWithMock.Expect (mock => mock.RaiseNewObjectCreatingEvent ( _typeDefinitionWithCreatorMock.ClassType));
       _persistenceStrategyMock.Expect (mock => mock.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
       _initializationContextProviderMock.Expect (mock => mock.CreateContext (_objectID1, null)).Return (_initializationContextStub);
 
@@ -126,7 +126,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
       Assert.That (ClientTransaction.Current, Is.Not.SameAs (_transaction));
       Assert.That (_agent.CurrentInitializationContext, Is.Null);
 
-      _eventSinkWithMock.VerifyMock();
+      _eventSinkWithMock.VerifyAllExpectations();
       _persistenceStrategyMock.VerifyAllExpectations();
       _initializationContextProviderMock.VerifyAllExpectations();
       _domainObjectCreatorMock.VerifyAllExpectations();
@@ -148,7 +148,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
           _persistenceStrategyMock,
           _initializationContextProviderMock);
 
-      _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
+      _eventSinkWithMock.Stub (mock => mock.RaiseNewObjectCreatingEvent ( Arg<Type>.Is.Anything));
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything)).Return (_objectID1);
       _initializationContextProviderMock.Expect (mock => mock.CreateContext (_objectID1, bindingTransaction)).Return (_initializationContextStub);
       _domainObjectCreatorMock.Stub (mock => mock.CreateNewObject (_typeDefinitionWithCreatorMock.ClassType, ParamList.Empty)).Return (_domainObject1);
@@ -161,7 +161,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     [Test]
     public void NewObject_InitializationContextIsThreadLocal()
     {
-      _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
+      _eventSinkWithMock.Stub (mock => mock.RaiseNewObjectCreatingEvent ( Arg<Type>.Is.Anything));
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (Arg<ClassDefinition>.Is.Anything)).Return (_objectID1);
       _initializationContextProviderMock
           .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))
@@ -185,7 +185,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     public void NewObject_RecursiveContexts ()
     {
       var typeDefinitionWithCreatorMock2 = ClassDefinitionObjectMother.CreateClassDefinition (instanceCreator: _domainObjectCreatorMock);
-      _eventSinkWithMock.StubMock (mock => mock.NewObjectCreating (Arg<ClientTransaction>.Is.Anything, Arg<Type>.Is.Anything));
+      _eventSinkWithMock.Stub (mock => mock.RaiseNewObjectCreatingEvent ( Arg<Type>.Is.Anything));
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
       _persistenceStrategyMock.Stub (mock => mock.CreateNewObjectID (typeDefinitionWithCreatorMock2)).Return (_objectID2);
 
@@ -233,7 +233,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       var constructorParameters = ParamList.Empty;
 
-      _eventSinkWithMock.StubMock (stub => stub.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
+      _eventSinkWithMock.Stub (stub => stub.RaiseNewObjectCreatingEvent ( _typeDefinitionWithCreatorMock.ClassType));
       _persistenceStrategyMock.Stub (stub => stub.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
       _initializationContextProviderMock
           .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))
@@ -266,7 +266,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       var constructorParameters = ParamList.Empty;
 
-      _eventSinkWithMock.StubMock (stub => stub.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
+      _eventSinkWithMock.Stub (stub => stub.RaiseNewObjectCreatingEvent ( _typeDefinitionWithCreatorMock.ClassType));
       _persistenceStrategyMock.Stub (stub => stub.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
       _initializationContextProviderMock
           .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))
@@ -310,7 +310,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectLifeti
     {
       var constructorParameters = ParamList.Empty;
 
-      _eventSinkWithMock.StubMock (stub => stub.NewObjectCreating (_eventSinkWithMock.ClientTransaction, _typeDefinitionWithCreatorMock.ClassType));
+      _eventSinkWithMock.Stub (stub => stub.RaiseNewObjectCreatingEvent ( _typeDefinitionWithCreatorMock.ClassType));
       _persistenceStrategyMock.Stub (stub => stub.CreateNewObjectID (_typeDefinitionWithCreatorMock)).Return (_objectID1);
       _initializationContextProviderMock
           .Stub (stub => stub.CreateContext (Arg<ObjectID>.Is.Anything, Arg<BindingClientTransaction>.Is.Anything))

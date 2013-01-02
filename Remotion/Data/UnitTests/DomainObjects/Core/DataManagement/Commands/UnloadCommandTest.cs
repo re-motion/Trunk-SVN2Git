@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 
@@ -33,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
     private Order _domainObject1;
     private Order _domainObject2;
 
-    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+    private IClientTransactionEventSink _transactionEventSinkWithMock;
 
     private IDataManagementCommand _unloadDataCommandMock;
 
@@ -50,7 +51,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       _domainObject1 = DomainObjectMother.CreateFakeObject<Order>();
       _domainObject2 = DomainObjectMother.CreateFakeObject<Order> ();
 
-      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
 
       _unloadDataCommandMock = _mockRepository.StrictMock<IDataManagementCommand>();
 
@@ -79,11 +80,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
 
       using (_mockRepository.Ordered())
       {
-        _transactionEventSinkWithMock
-            .ExpectMock (
-                mock => mock.ObjectsUnloading (
-                    Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _domainObject1, _domainObject2 })));
+        _transactionEventSinkWithMock.Expect (mock => mock.RaiseObjectsUnloadingEvent (
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _domainObject1, _domainObject2 })));
         _unloadDataCommandMock.Expect (mock => mock.Begin());
       }
       _mockRepository.ReplayAll();
@@ -138,11 +136,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands
       using (_mockRepository.Ordered ())
       {
         _unloadDataCommandMock.Expect (mock => mock.End ());
-        _transactionEventSinkWithMock
-            .ExpectMock (
-                mock => mock.ObjectsUnloaded (
-                    Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
-                    Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _domainObject1, _domainObject2 })));
+        _transactionEventSinkWithMock.Expect (mock => mock.RaiseObjectsUnloadedEvent (
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equal (new[] { _domainObject1, _domainObject2 })));
       }
       _mockRepository.ReplayAll ();
 

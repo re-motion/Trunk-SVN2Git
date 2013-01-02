@@ -40,7 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
   {
     private MockRepository _mockRepository;
 
-    private ClientTransactionEventSinkWithMock _eventSinkWithMock;
+    private IClientTransactionEventSink _eventSinkWithMock;
     private IPersistenceStrategy _persistenceStrategyMock;
     private IDataManager _dataManagerMock;
     private ClientTransaction _clientTransaction;
@@ -60,8 +60,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       base.SetUp ();
 
       _mockRepository = new MockRepository();
-      
-      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock (mockRepository: _mockRepository);
+
+      _eventSinkWithMock = _mockRepository.StrictMock<IClientTransactionEventSink>();
       _persistenceStrategyMock = _mockRepository.StrictMock<IPersistenceStrategy> ();
       _dataManagerMock = _mockRepository.StrictMock<IDataManager> ();
       _clientTransaction = ClientTransactionObjectMother.Create();
@@ -244,21 +244,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private IMethodOptions<RhinoMocksExtensions.VoidType> ExpectTransactionCommitting (params DomainObject[] domainObjects)
     {
-      return _eventSinkWithMock
-          .ExpectMock (
-              mock => mock.TransactionCommitting (
-                  Arg.Is (_eventSinkWithMock.ClientTransaction),
-                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects),
-                  Arg<CommittingEventRegistrar>.Is.TypeOf))
-          .WhenCalled (mi => Assert.That (((CommittingEventRegistrar) mi.Arguments[2]).ClientTransaction, Is.SameAs (_clientTransaction)));
+      return _eventSinkWithMock.Expect (mock => mock.RaiseTransactionCommittingEvent (
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects),
+          Arg<CommittingEventRegistrar>.Is.TypeOf))
+          .WhenCalled (mi => Assert.That (((CommittingEventRegistrar) mi.Arguments[1]).ClientTransaction, Is.SameAs (_clientTransaction)));
     }
 
     private void ExpectTransactionCommitValidate (params PersistableData[] persistableData)
     {
-      _eventSinkWithMock.ExpectMock (
-          mock => mock.TransactionCommitValidate (
-              Arg.Is (_eventSinkWithMock.ClientTransaction),
-              Arg<ReadOnlyCollection<PersistableData>>.List.Equivalent (persistableData)));
+      _eventSinkWithMock.Expect (mock => mock.RaiseTransactionCommitValidateEvent (
+          Arg<ReadOnlyCollection<PersistableData>>.List.Equivalent (persistableData)));
     }
 
     private void ExpectPersistData (params PersistableData[] persistableDatas)
@@ -268,32 +263,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     private void ExpectTransactionCommitted (params DomainObject[] domainObjects)
     {
-      _eventSinkWithMock.ExpectMock (
-          mock => mock.TransactionCommitted (
-              Arg.Is (_eventSinkWithMock.ClientTransaction),
-              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects)));
+      _eventSinkWithMock.Expect (mock => mock.RaiseTransactionCommittedEvent (
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects)));
     }
 
     private void ExpectTransactionRollingBack (params DomainObject[] domainObjects)
     {
-      _eventSinkWithMock.ExpectMock (
-          mock =>
-          mock.TransactionRollingBack (
-              Arg.Is (_eventSinkWithMock.ClientTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects)));
+      _eventSinkWithMock.Expect (mock => mock.RaiseTransactionRollingBackEvent (
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects)));
     }
 
     private void ExpectTransactionRolledBack (params DomainObject[] domainObjects)
     {
-      _eventSinkWithMock.ExpectMock (
-          mock =>
-          mock.TransactionRolledBack (
-              Arg.Is (_eventSinkWithMock.ClientTransaction), Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects)));
+      _eventSinkWithMock.Expect (mock => mock.RaiseTransactionRolledBackEvent (
+          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (domainObjects)));
     }
 
 
     private ICommittingEventRegistrar GetEventRegistrar (MethodInvocation mi)
     {
-      return ((ICommittingEventRegistrar) mi.Arguments[2]);
+      return ((ICommittingEventRegistrar) mi.Arguments[1]);
     }
 
   }

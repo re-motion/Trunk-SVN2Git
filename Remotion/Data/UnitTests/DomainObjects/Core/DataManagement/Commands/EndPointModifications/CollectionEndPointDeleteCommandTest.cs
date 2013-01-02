@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Rhino.Mocks;
 
@@ -58,18 +59,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin()
     {
-      TransactionEventSinkWithMock.ReplayMock();
-      
+      TransactionEventSinkWithMock.Replay();
+
       _command.Begin();
 
-      TransactionEventSinkWithMock.AssertWasNotCalledMock (
-          mock =>
-          mock.RelationChanging (
-              Arg<ClientTransaction>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<IRelationEndPointDefinition>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<DomainObject>.Is.Anything));
+      TransactionEventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseRelationChangingEvent (
+          Arg<DomainObject>.Is.Anything,
+          Arg<IRelationEndPointDefinition>.Is.Anything,
+          Arg<DomainObject>.Is.Anything,
+          Arg<DomainObject>.Is.Anything));
 
       Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.True);
       Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.False);
@@ -78,18 +76,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End ()
     {
-      TransactionEventSinkWithMock.ReplayMock ();
+      TransactionEventSinkWithMock.Replay();
 
       _command.End ();
 
-      TransactionEventSinkWithMock.AssertWasNotCalledMock (
-          mock =>
-          mock.RelationChanged (
-              Arg<ClientTransaction>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<IRelationEndPointDefinition>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<DomainObject>.Is.Anything));
+      TransactionEventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseRelationChangedEvent (
+          Arg<DomainObject>.Is.Anything,
+          Arg<IRelationEndPointDefinition>.Is.Anything,
+          Arg<DomainObject>.Is.Anything,
+          Arg<DomainObject>.Is.Anything));
 
       Assert.That (CollectionEventReceiver.HasDeletingEventBeenCalled, Is.False);
       Assert.That (CollectionEventReceiver.HasDeletedEventBeenCalled, Is.True);
@@ -113,7 +108,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       Assert.That (CollectionEndPoint.HasBeenTouched, Is.True);
     }
 
-    [Test]
+    [Test] 
     public void ExpandToAllRelatedObjects ()
     {
       var bidirectionalModification = _command.ExpandToAllRelatedObjects ();

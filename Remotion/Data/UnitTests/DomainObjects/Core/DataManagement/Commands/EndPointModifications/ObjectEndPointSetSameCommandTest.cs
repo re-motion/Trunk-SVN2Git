@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     private RelationEndPointID _endPointID;
     private ObjectEndPoint _endPoint;
-    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+    private IClientTransactionEventSink _transactionEventSinkWithMock;
 
     private ObjectEndPointSetSameCommand _command;
 
@@ -48,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _endPointID = RelationEndPointID.Resolve (_domainObject, c => c.Employee);
       _endPoint = RelationEndPointObjectMother.CreateObjectEndPoint (_endPointID, _relatedObject.ID);
-      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(TestableClientTransaction);
+      _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
 
       _command = new ObjectEndPointSetSameCommand (_endPoint, _transactionEventSinkWithMock);
     }
@@ -72,33 +73,29 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin ()
     {
-      _transactionEventSinkWithMock.ReplayMock();
+      _transactionEventSinkWithMock.Replay();
 
       _command.Begin();
 
-      _transactionEventSinkWithMock.AssertWasNotCalledMock (
-          mock => mock.RelationChanging (
-              Arg<ClientTransaction>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<IRelationEndPointDefinition>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<DomainObject>.Is.Anything));
+      _transactionEventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseRelationChangingEvent (
+          Arg<DomainObject>.Is.Anything,
+          Arg<IRelationEndPointDefinition>.Is.Anything,
+          Arg<DomainObject>.Is.Anything,
+          Arg<DomainObject>.Is.Anything));
     }
 
     [Test]
     public void End ()
     {
-      _transactionEventSinkWithMock.ReplayMock ();
+      _transactionEventSinkWithMock.Replay();
 
       _command.Begin();
 
-      _transactionEventSinkWithMock.AssertWasNotCalledMock (
-          mock => mock.RelationChanged (
-              Arg<ClientTransaction>.Is.Anything,
-              Arg<DomainObject>.Is.Anything,
-              Arg<IRelationEndPointDefinition>.Is.Anything, 
-              Arg<DomainObject>.Is.Anything,
-              Arg<DomainObject>.Is.Anything));
+      _transactionEventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseRelationChangedEvent (
+          Arg<DomainObject>.Is.Anything,
+          Arg<IRelationEndPointDefinition>.Is.Anything, 
+          Arg<DomainObject>.Is.Anything,
+          Arg<DomainObject>.Is.Anything));
     }
 
     [Test]

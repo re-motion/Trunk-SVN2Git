@@ -17,44 +17,26 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.Infrastructure;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
   public abstract class ForwardingEventListenerTestBase<TEventListener> : StandardMappingTest
   {
-    private ClientTransactionEventSinkWithMock _eventSinkWithMock;
+    private IClientTransactionEventSink _eventSinkWithMock;
 
     public override void SetUp ()
     {
       base.SetUp ();
 
-      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock (ClientTransaction.CreateRootTransaction ());
+      _eventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
     }
 
     protected abstract TEventListener EventListener { get; }
 
-    public ClientTransactionEventSinkWithMock EventSinkWithMock
+    public IClientTransactionEventSink EventSinkWithMock
     {
       get { return _eventSinkWithMock; }
-    }
-
-    protected void CheckEventDelegated (Action<TEventListener> action, Action<ClientTransaction, IClientTransactionListener> expectedEvent)
-    {
-      _eventSinkWithMock.ExpectMock (mock => expectedEvent (_eventSinkWithMock.ClientTransaction, mock));
-      _eventSinkWithMock.ReplayMock ();
-
-      action (EventListener);
-
-      _eventSinkWithMock.VerifyMock ();
-    }
-
-    protected void CheckEventNotDelegated (Action<TEventListener> action)
-    {
-      _eventSinkWithMock.ReplayMock ();
-
-      action (EventListener);
-
-      _eventSinkWithMock.VerifyMock ();
     }
   }
 }

@@ -19,9 +19,11 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -64,30 +66,26 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin ()
     {
-      TransactionEventSinkWithMock
-          .ExpectMock (
-              mock => mock.RelationChanging (TestableClientTransaction, DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
+      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
           .WhenCalled (
               mock => Assert.That (CollectionEventReceiver.AddingDomainObject, Is.SameAs (_insertedRelatedObject))); // collection got event first
 
       _command.Begin ();
 
-      TransactionEventSinkWithMock.VerifyMock ();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
     }
 
     [Test]
     public void End ()
     {
-      TransactionEventSinkWithMock
-          .ExpectMock (
-              mock => mock.RelationChanged (TestableClientTransaction, DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
+      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (DomainObject, CollectionEndPoint.Definition, null, _insertedRelatedObject))
           .WhenCalled (
               mock => Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null)); // collection gets event later
 
       _command.End ();
 
-      TransactionEventSinkWithMock.VerifyMock ();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.SameAs (_insertedRelatedObject)); // collection got event later
       Assert.That (CollectionEventReceiver.AddingDomainObject, Is.Null); // operation was not started
     }

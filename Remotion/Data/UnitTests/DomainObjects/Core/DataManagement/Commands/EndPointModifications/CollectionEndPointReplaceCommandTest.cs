@@ -18,8 +18,10 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -65,10 +67,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin ()
     {
-      TransactionEventSinkWithMock
-          .ExpectMock (
-              mock => mock.RelationChanging (
-                  TestableClientTransaction, DomainObject, CollectionEndPoint.Definition, _replacedRelatedObject, _replacementRelatedObject))
+      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (
+          DomainObject, CollectionEndPoint.Definition, _replacedRelatedObject, _replacementRelatedObject))
           .WhenCalled (
               mock =>
               {
@@ -78,7 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _command.Begin ();
 
-      TransactionEventSinkWithMock.VerifyMock ();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.Null); // operation was not finished
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.Empty); // operation was not finished
     }
@@ -86,11 +86,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void End ()
     {
-      TransactionEventSinkWithMock
-          .ExpectMock (
-              mock =>
-              mock.RelationChanged (
-                  TestableClientTransaction, DomainObject, CollectionEndPoint.Definition, _replacedRelatedObject, _replacementRelatedObject))
+      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (
+          DomainObject, CollectionEndPoint.Definition, _replacedRelatedObject, _replacementRelatedObject))
           .WhenCalled (
               mock =>
               {
@@ -100,7 +97,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
       _command.End ();
 
-      TransactionEventSinkWithMock.VerifyMock ();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (CollectionEventReceiver.RemovedDomainObjects, Is.EqualTo (new[] { _replacedRelatedObject })); // collection got event later
       Assert.That (CollectionEventReceiver.AddedDomainObject, Is.SameAs (_replacementRelatedObject)); // collection got event later
       Assert.That (CollectionEventReceiver.RemovingDomainObjects, Is.Empty); // operation was not started

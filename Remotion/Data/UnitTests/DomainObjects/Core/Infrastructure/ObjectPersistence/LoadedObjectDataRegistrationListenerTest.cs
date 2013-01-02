@@ -18,11 +18,13 @@ using System;
 using System.Collections.ObjectModel;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.HierarchyManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersistence
 {
@@ -30,7 +32,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
   public class LoadedObjectDataRegistrationListenerTest : StandardMappingTest
   {
     private MockRepository _mockRepository;
-    private ClientTransactionEventSinkWithMock _eventSinkWithMock;
+    private IClientTransactionEventSink _eventSinkWithMock;
     private ITransactionHierarchyManager _hierarchyManagerMock;
 
     private LoadedObjectDataRegistrationListener _decorator;
@@ -40,7 +42,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       base.SetUp ();
 
       _mockRepository = new MockRepository();
-      _eventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock (mockRepository: _mockRepository);
+      _eventSinkWithMock = _mockRepository.StrictMock<IClientTransactionEventSink>();
       _hierarchyManagerMock = _mockRepository.StrictMock<ITransactionHierarchyManager> ();
 
       _decorator = new LoadedObjectDataRegistrationListener (_eventSinkWithMock, _hierarchyManagerMock);
@@ -53,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       using (_mockRepository.Ordered ())
       {
         _hierarchyManagerMock.Expect (mock => mock.OnBeforeObjectRegistration (loadedObjectIDs));
-        _eventSinkWithMock.ExpectMock (mock => mock.ObjectsLoading (_eventSinkWithMock.ClientTransaction, loadedObjectIDs));
+        _eventSinkWithMock.Expect (mock => mock.RaiseObjectsLoadingEvent ( loadedObjectIDs));
       }
       _mockRepository.ReplayAll();
 
@@ -76,8 +78,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       Assert.That (() => _decorator.OnBeforeObjectRegistration (loadedObjectIDs), Throws.Exception.SameAs (exception));
 
-      _eventSinkWithMock
-          .AssertWasNotCalledMock (mock => mock.ObjectsLoading (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
+      _eventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseObjectsLoadingEvent ( Arg<ReadOnlyCollection<ObjectID>>.Is.Anything));
       _hierarchyManagerMock.VerifyAllExpectations ();
     }
 
@@ -89,7 +90,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       
       using (_mockRepository.Ordered ())
       {
-        _eventSinkWithMock.ExpectMock (mock => mock.ObjectsLoaded (_eventSinkWithMock.ClientTransaction, actuallyLoadedDomainObjects));
+        _eventSinkWithMock.Expect (mock => mock.RaiseObjectsLoadedEvent ( actuallyLoadedDomainObjects));
         _hierarchyManagerMock.Expect (mock => mock.OnAfterObjectRegistration (loadedObjectIDs));
       }
       _mockRepository.ReplayAll ();
@@ -108,8 +109,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
       var exception = new Exception ("Test");
       using (_mockRepository.Ordered ())
       {
-        _eventSinkWithMock
-            .ExpectMock (mock => mock.ObjectsLoaded (_eventSinkWithMock.ClientTransaction, actuallyLoadedDomainObjects))
+        _eventSinkWithMock.Expect (mock => mock.RaiseObjectsLoadedEvent ( actuallyLoadedDomainObjects))
             .Throw (exception);
         _hierarchyManagerMock.Expect (mock => mock.OnAfterObjectRegistration (loadedObjectIDs));
       }
@@ -131,8 +131,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
 
       _decorator.OnAfterObjectRegistration (loadedObjectIDs, actuallyLoadedDomainObjects);
 
-      _eventSinkWithMock
-          .AssertWasNotCalledMock (mock => mock.ObjectsLoaded (Arg<ClientTransaction>.Is.Anything, Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
+      _eventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseObjectsLoadedEvent ( Arg<ReadOnlyCollection<DomainObject>>.Is.Anything));
       _hierarchyManagerMock.VerifyAllExpectations ();
     }
 
@@ -141,7 +140,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure.ObjectPersis
     {
       var notFoundObjectIDs = Array.AsReadOnly (new[] { DomainObjectIDs.Order1, DomainObjectIDs.Order2 });
       
-      _eventSinkWithMock.ExpectMock (mock => mock.ObjectsNotFound (_eventSinkWithMock.ClientTransaction, notFoundObjectIDs));
+      _eventSinkWithMock.Expect (mock => mock.RaiseObjectsNotFoundEvent ( notFoundObjectIDs));
       _mockRepository.ReplayAll();
 
       _decorator.OnObjectsNotFound (notFoundObjectIDs);

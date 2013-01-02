@@ -19,18 +19,20 @@ using System.Collections;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Collections.Generic;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
   [TestFixture]
   public class RelationEndPointMapTest : StandardMappingTest
   {
-    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+    private IClientTransactionEventSink _transactionEventSinkWithMock;
     private RelationEndPointMap _map;
 
     private RelationEndPointID _endPointID1;
@@ -43,7 +45,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp ();
 
-      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
       _map = new RelationEndPointMap (_transactionEventSinkWithMock);
 
       _endPointID1 = RelationEndPointID.Create (DomainObjectIDs.Order1, typeof (Order), "Customer");
@@ -164,12 +166,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     [Test]
     public void AddEndPoint ()
     {
-      _transactionEventSinkWithMock.ExpectMock (l => l.RelationEndPointMapRegistering (_transactionEventSinkWithMock.ClientTransaction, _endPointMock1));
-      _transactionEventSinkWithMock.ReplayMock ();
+      _transactionEventSinkWithMock.Expect (l => l.RaiseRelationEndPointMapRegisteringEvent ( _endPointMock1));
+      _transactionEventSinkWithMock.Replay();
 
       _map.AddEndPoint (_endPointMock1);
 
-      _transactionEventSinkWithMock.VerifyMock ();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (_map[_endPointID1], Is.SameAs (_endPointMock1));
     }
 
@@ -177,8 +179,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void AddEndPoint_KeyAlreadyExists ()
     {
       // Note: We'll get an event even when an exception is thrown. This is more an optimization than a feature.
-      _transactionEventSinkWithMock
-          .StubMock (l => l.RelationEndPointMapRegistering (Arg<ClientTransaction>.Is.Anything, Arg<IRelationEndPoint>.Is.Anything))
+      _transactionEventSinkWithMock.Stub (l => l.RaiseRelationEndPointMapRegisteringEvent ( Arg<IRelationEndPoint>.Is.Anything))
           .Repeat.Twice();
 
       _map.AddEndPoint (_endPointMock1);
@@ -191,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           + "'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' "
           + "has already been registered."));
 
-      _transactionEventSinkWithMock.VerifyMock ();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -202,13 +203,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _map.AddEndPoint (_endPointMock1);
       Assert.That (_map[_endPointID1], Is.Not.Null);
 
-      _transactionEventSinkWithMock.BackToRecordMock();
-      _transactionEventSinkWithMock.ExpectMock (l => l.RelationEndPointMapUnregistering (_transactionEventSinkWithMock.ClientTransaction, _endPointID1));
-      _transactionEventSinkWithMock.ReplayMock ();
+      _transactionEventSinkWithMock.BackToRecord();
+      _transactionEventSinkWithMock.Expect (l => l.RaiseRelationEndPointMapUnregisteringEvent ( _endPointID1));
+      _transactionEventSinkWithMock.Replay();
 
       _map.RemoveEndPoint (_endPointID1);
 
-      _transactionEventSinkWithMock.VerifyMock ();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (_map[_endPointID1], Is.Null);
     }
 
@@ -216,8 +217,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     public void RemoveEndPoint_KeyNotExists ()
     {
       // Note: We'll get an event even when an exception is thrown. This is more an optimization than a feature.
-      _transactionEventSinkWithMock
-          .StubMock (l => l.RelationEndPointMapUnregistering (_transactionEventSinkWithMock.ClientTransaction, _endPointID1));
+      _transactionEventSinkWithMock.Stub (l => l.RaiseRelationEndPointMapUnregisteringEvent ( _endPointID1));
 
       Assert.That (() => _map.RemoveEndPoint (_endPointID1), Throws.ArgumentException.With.Message.EqualTo (
           "End point 'Order|5682f032-2f0b-494b-a31c-c97f02b89c36|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Order.Customer' is not "
@@ -240,10 +240,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
     private void StubEvents ()
     {
-      _transactionEventSinkWithMock
-          .StubMock (l => l.RelationEndPointMapRegistering (Arg<ClientTransaction>.Is.Anything, Arg<IRelationEndPoint>.Is.Anything)).Repeat.Any();
-      _transactionEventSinkWithMock
-          .StubMock (l => l.RelationEndPointMapUnregistering (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything)).Repeat.Any();
+      _transactionEventSinkWithMock.Stub (l => l.RaiseRelationEndPointMapRegisteringEvent ( Arg<IRelationEndPoint>.Is.Anything)).Repeat.Any();
+      _transactionEventSinkWithMock.Stub (l => l.RaiseRelationEndPointMapUnregisteringEvent ( Arg<RelationEndPointID>.Is.Anything)).Repeat.Any();
     }
   }
 }

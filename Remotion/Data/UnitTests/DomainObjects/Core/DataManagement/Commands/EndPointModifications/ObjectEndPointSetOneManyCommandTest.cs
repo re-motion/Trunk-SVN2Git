@@ -19,6 +19,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
@@ -128,35 +129,31 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public virtual void Begin ()
     {
-      TransactionEventSinkWithMock.ExpectMock (
-          mock => mock.RelationChanging (
-              TestableClientTransaction,
-              _endPoint.GetDomainObject(),
-              _endPoint.Definition,
-              _oldRelatedObject,
-              _newRelatedObject));
-      TransactionEventSinkWithMock.ReplayMock();
+      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (
+          _endPoint.GetDomainObject(),
+          _endPoint.Definition,
+          _oldRelatedObject,
+          _newRelatedObject));
+      TransactionEventSinkWithMock.Replay();
 
       _command.Begin();
 
-      TransactionEventSinkWithMock.VerifyMock();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
     public virtual void End ()
     {
-      TransactionEventSinkWithMock.ExpectMock (
-          mock => mock.RelationChanged (
-              TestableClientTransaction,
-              _endPoint.GetDomainObject(),
-              _endPoint.Definition,
-              _oldRelatedObject,
-              _newRelatedObject));
-      TransactionEventSinkWithMock.ReplayMock();
+      TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (
+          _endPoint.GetDomainObject(),
+          _endPoint.Definition,
+          _oldRelatedObject,
+          _newRelatedObject));
+      TransactionEventSinkWithMock.Replay();
 
       _command.End();
 
-      TransactionEventSinkWithMock.VerifyMock();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]

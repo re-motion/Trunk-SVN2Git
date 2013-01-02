@@ -20,6 +20,7 @@ using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints.CollectionEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using System.Collections.Generic;
@@ -96,26 +97,22 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
-        TransactionEventSinkWithMock.ExpectMock (
-            mock => mock.RelationChanging (
-                TestableClientTransaction,
-                DomainObject,
-                CollectionEndPoint.Definition,
-                _orderWithoutOrderItem,
-                null));
-        TransactionEventSinkWithMock.ExpectMock (
-            mock => mock.RelationChanging (
-                TestableClientTransaction,
-                DomainObject,
-                CollectionEndPoint.Definition,
-                null,
-                _order2));
+        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (
+            DomainObject,
+            CollectionEndPoint.Definition,
+            _orderWithoutOrderItem,
+            null));
+        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangingEvent (
+            DomainObject,
+            CollectionEndPoint.Definition,
+            null,
+            _order2));
       }
-      TransactionEventSinkWithMock.ReplayMock ();
+      TransactionEventSinkWithMock.Replay();
 
       _command.Begin ();
 
-      TransactionEventSinkWithMock.VerifyMock ();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -123,27 +120,23 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     {
       using (TransactionEventSinkWithMock.GetMockRepository ().Ordered ())
       {
-        TransactionEventSinkWithMock.ExpectMock (
-            mock => mock.RelationChanged (
-                TestableClientTransaction,
-                DomainObject,
-                CollectionEndPoint.Definition,
-                null,
-                _order2));
-        TransactionEventSinkWithMock.ExpectMock (
-            mock => mock.RelationChanged (
-                TestableClientTransaction,
-                DomainObject,
-                CollectionEndPoint.Definition,
-                _orderWithoutOrderItem,
-                null));
+        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (
+            DomainObject,
+            CollectionEndPoint.Definition,
+            null,
+            _order2));
+        TransactionEventSinkWithMock.Expect (mock => mock.RaiseRelationChangedEvent (
+            DomainObject,
+            CollectionEndPoint.Definition,
+            _orderWithoutOrderItem,
+            null));
       }
 
-      TransactionEventSinkWithMock.ReplayMock ();
+      TransactionEventSinkWithMock.Replay();
 
       _command.End();
 
-      TransactionEventSinkWithMock.VerifyMock ();
+      TransactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]

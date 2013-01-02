@@ -20,6 +20,7 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints.VirtualEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Serialization;
@@ -35,7 +36,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     private IVirtualEndPoint<object> _virtualEndPointMock;
     private IVirtualEndPointDataManager _dataManagerMock;
     private IRelationEndPointProvider _endPointProviderStub;
-    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+    private IClientTransactionEventSink _transactionEventSinkWithMock;
 
     private TestableCompleteVirtualEndPointLoadState _loadState;
 
@@ -54,7 +55,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock = MockRepository.GenerateStrictMock<IVirtualEndPointDataManager>();
       _dataManagerMock.Stub (stub => stub.EndPointID).Return (RelationEndPointID.Create (DomainObjectIDs.Customer1, _definition));
       _endPointProviderStub = MockRepository.GenerateStub<IRelationEndPointProvider>();
-      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
 
       _loadState = new TestableCompleteVirtualEndPointLoadState (_dataManagerMock, _endPointProviderStub, _transactionEventSinkWithMock);
 
@@ -116,14 +117,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
 
       _loadState.StubOriginalOppositeEndPoints (new IRealObjectEndPoint[0]);
 
-      _transactionEventSinkWithMock.ExpectMock (mock => mock.RelationEndPointBecomingIncomplete (_transactionEventSinkWithMock.ClientTransaction, endPointID));
-      _transactionEventSinkWithMock.ReplayMock();
+      _transactionEventSinkWithMock.Expect (mock => mock.RaiseRelationEndPointBecomingIncompleteEvent ( endPointID));
+      _transactionEventSinkWithMock.Replay();
 
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => { });
 
       _virtualEndPointMock.VerifyAllExpectations();
       _dataManagerMock.VerifyAllExpectations();
-      _transactionEventSinkWithMock.VerifyMock();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
@@ -154,7 +155,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (false);
       _dataManagerMock.Replay ();
 
-      _transactionEventSinkWithMock.StubMock (mock => mock.RelationEndPointBecomingIncomplete (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
+      _transactionEventSinkWithMock.Stub (mock => mock.RaiseRelationEndPointBecomingIncompleteEvent ( Arg<RelationEndPointID>.Is.Anything));
 
       _loadState.MarkDataIncomplete (_virtualEndPointMock, () => stateSetterCalled = true);
 
@@ -177,7 +178,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
       _dataManagerMock.Stub (stub => stub.HasDataChanged ()).Return (true);
       _dataManagerMock.Replay ();
 
-      _transactionEventSinkWithMock.ReplayMock();
+      _transactionEventSinkWithMock.Replay();
 
       Assert.That (
           () =>_loadState.MarkDataIncomplete (_virtualEndPointMock, () => Assert.Fail ("Must not be called.")),
@@ -186,8 +187,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
           + "'Customer|55b52e75-514b-4e82-a91b-8f0bb59b80ad|System.Guid/Remotion.Data.UnitTests.DomainObjects.TestDomain.Customer.Orders' incomplete "
           + "because it has been changed."));
 
-      _transactionEventSinkWithMock.AssertWasNotCalledMock (
-          mock => mock.RelationEndPointBecomingIncomplete (Arg<ClientTransaction>.Is.Anything, Arg<RelationEndPointID>.Is.Anything));
+      _transactionEventSinkWithMock.AssertWasNotCalled (mock => mock.RaiseRelationEndPointBecomingIncompleteEvent ( Arg<RelationEndPointID>.Is.Anything));
     }
 
     [Test]

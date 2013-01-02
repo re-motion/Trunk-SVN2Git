@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.DomainObjects.Queries;
@@ -25,6 +26,7 @@ using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Remotion.Development.UnitTesting;
 using Rhino.Mocks;
 using System.Linq;
+using Rhino.Mocks.Interfaces;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 {
@@ -35,7 +37,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
     private IPersistenceStrategy _persistenceStrategyMock;
     private IObjectLoader _objectLoaderMock;
-    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+    private IClientTransactionEventSink _transactionEventSinkWithMock;
     
     private IQuery _collectionQuery;
     private IQuery _scalarQuery;
@@ -54,7 +56,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
 
       _persistenceStrategyMock = MockRepository.GenerateStrictMock<IPersistenceStrategy> ();
       _objectLoaderMock = MockRepository.GenerateStrictMock<IObjectLoader> ();
-      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(ClientTransaction.CreateRootTransaction());
+      _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
 
       _queryManager = new QueryManager (
           _persistenceStrategyMock,
@@ -99,11 +101,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _loadedObjectDataStub1.Stub (stub => stub.GetDomainObjectReference ()).Return (_fakeOrder1);
       _loadedObjectDataStub2.Stub (stub => stub.GetDomainObjectReference ()).Return (_fakeOrder2);
 
-      _transactionEventSinkWithMock
-          .StubMock (stub => stub.FilterQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<QueryResult<Order>>.Is.Anything))
+      _transactionEventSinkWithMock.Stub (stub => stub.RaiseFilterQueryResultEvent (Arg<QueryResult<Order>>.Is.Anything))
           .Return (null)
-          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[1]);
-      _transactionEventSinkWithMock.ReplayMock ();
+          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
+      _transactionEventSinkWithMock.Replay();
 
       _objectLoaderMock
           .Expect (mock => mock.GetOrLoadCollectionQueryResult (_collectionQuery))
@@ -122,11 +123,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _loadedObjectDataStub1.Stub (stub => stub.GetDomainObjectReference ()).Return (_fakeOrder1);
       _loadedObjectDataStub2.Stub (stub => stub.GetDomainObjectReference ()).Return (null);
 
-      _transactionEventSinkWithMock
-          .StubMock (stub => stub.FilterQueryResult (Arg<ClientTransaction>.Is.Anything, Arg<QueryResult<Order>>.Is.Anything))
+      _transactionEventSinkWithMock.Stub (stub => stub.RaiseFilterQueryResultEvent (Arg<QueryResult<Order>>.Is.Anything))
           .Return (null)
-          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[1]);
-      _transactionEventSinkWithMock.ReplayMock();
+          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[0]);
+      _transactionEventSinkWithMock.Replay();
 
       _objectLoaderMock
           .Expect (mock => mock.GetOrLoadCollectionQueryResult (_collectionQuery))
@@ -168,16 +168,14 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _objectLoaderMock.Replay ();
 
       var filteredResult = new QueryResult<Order> (_collectionQuery, new[] { _fakeOrder2 });
-      _transactionEventSinkWithMock
-          .ExpectMock (mock => mock.FilterQueryResult (
-              Arg.Is (_transactionEventSinkWithMock.ClientTransaction), 
-              Arg<QueryResult<Order>>.Matches (qr => qr.ToArray().SequenceEqual (new[] { _fakeOrder1 }))))
+      _transactionEventSinkWithMock.Expect (mock => mock.RaiseFilterQueryResultEvent (
+          Arg<QueryResult<Order>>.Matches (qr => qr.ToArray().SequenceEqual (new[] { _fakeOrder1 }))))
           .Return (filteredResult);
-      _transactionEventSinkWithMock.ReplayMock ();
+      _transactionEventSinkWithMock.Replay();
 
       var result = _queryManager.GetCollection<Order> (_collectionQuery);
 
-      _transactionEventSinkWithMock.VerifyMock ();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (result, Is.SameAs (filteredResult));
     }
 
@@ -200,17 +198,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
       _objectLoaderMock.Replay ();
 
       var filteredResult = new QueryResult<DomainObject> (_collectionQuery, new[] { _fakeOrder2 });
-      _transactionEventSinkWithMock
-          .ExpectMock (mock => mock.FilterQueryResult (
-              Arg.Is (_transactionEventSinkWithMock.ClientTransaction), 
-              Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray().SequenceEqual (new[] { _fakeOrder1, _fakeOrder2 }))))
+      _transactionEventSinkWithMock.Expect (mock => mock.RaiseFilterQueryResultEvent (
+          Arg<QueryResult<DomainObject>>.Matches (qr => qr.ToArray().SequenceEqual (new[] { _fakeOrder1, _fakeOrder2 }))))
           .Return (filteredResult);
-      _transactionEventSinkWithMock.ReplayMock ();
+      _transactionEventSinkWithMock.Replay();
 
       var result = _queryManager.GetCollection (_collectionQuery);
 
       _objectLoaderMock.VerifyAllExpectations ();
-      _transactionEventSinkWithMock.VerifyMock ();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
 
       Assert.That (result, Is.SameAs (filteredResult));
     }
@@ -248,19 +244,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Queries
           .Expect (mock => mock.ExecuteCustomQuery (_customQuery))
           .Return (fakeResult);
 
-      _transactionEventSinkWithMock
-          .ExpectMock (
-              stub => stub.FilterCustomQueryResult (
-                  Arg.Is (_transactionEventSinkWithMock.ClientTransaction),
-                  Arg.Is (_customQuery),
-                  Arg<IEnumerable<object>>.List.Equal (new[] { "Fake1", "Fake2" })))
+      _transactionEventSinkWithMock.Expect (stub => stub.RaiseFilterCustomQueryResultEvent (
+          Arg.Is (_customQuery),
+          Arg<IEnumerable<object>>.List.Equal (new[] { "Fake1", "Fake2" })))
           .Return (null)
-          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[2]);
+          .WhenCalled (mi => mi.ReturnValue = mi.Arguments[1]);
 
       var result = _queryManager.GetCustom (_customQuery, _rowConversion);
 
       _persistenceStrategyMock.VerifyAllExpectations();
-      _transactionEventSinkWithMock.VerifyMock();
+      _transactionEventSinkWithMock.VerifyAllExpectations();
       Assert.That (result.ToArray(), Is.EqualTo (new[] { "Fake1", "Fake2" }));
     }
 

@@ -19,7 +19,9 @@ using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.Commands.EndPointModifications;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
 {
@@ -32,7 +34,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
 
     private bool _oppositeObjectNullSetterCalled;
     private Action _oppositeObjectNullSetter;
-    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+    private IClientTransactionEventSink _transactionEventSinkWithMock;
 
     private ObjectEndPointDeleteCommand _command;
 
@@ -50,7 +52,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         _oppositeObjectNullSetterCalled = true;
       };
 
-      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(TestableClientTransaction);
+      _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
       _command = new ObjectEndPointDeleteCommand (_endPoint, _oppositeObjectNullSetter, _transactionEventSinkWithMock);
     }
 
@@ -74,15 +76,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     [Test]
     public void Begin_NoEvents()
     {
-      _transactionEventSinkWithMock.ReplayMock();
-      
+      _transactionEventSinkWithMock.Replay();
+
       _command.Begin();
     }
 
     [Test]
     public void End_NoEvents ()
     {
-      _transactionEventSinkWithMock.ReplayMock();
+      _transactionEventSinkWithMock.Replay();
 
       _command.End ();
     }

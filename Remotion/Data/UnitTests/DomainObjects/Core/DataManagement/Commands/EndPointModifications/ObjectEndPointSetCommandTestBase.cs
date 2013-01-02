@@ -17,6 +17,7 @@
 using System;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.EndPointModifications
@@ -27,7 +28,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
     private bool _oppositeObjectSetterCalled;
     private DomainObject _oppositeObjectSetterObject;
     private Action<DomainObject> _oppositeObjectSetter;
-    private ClientTransactionEventSinkWithMock _transactionEventSinkWithMock;
+    private IClientTransactionEventSink _transactionEventSinkWithMock;
 
     protected IRelationEndPointProvider EndPointProviderStub
     {
@@ -49,7 +50,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
       get { return _oppositeObjectSetter; }
     }
 
-    public ClientTransactionEventSinkWithMock TransactionEventSinkWithMock
+    public IClientTransactionEventSink TransactionEventSinkWithMock
     {
       get { return _transactionEventSinkWithMock; }
     }
@@ -65,7 +66,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.Commands.End
         _oppositeObjectSetterCalled = true;
         _oppositeObjectSetterObject = id;
       };
-      _transactionEventSinkWithMock = ClientTransactionEventSinkWithMock.CreateWithStrictMock(TestableClientTransaction);
+      _transactionEventSinkWithMock = MockRepository.GenerateStrictMock<IClientTransactionEventSink>();
     }
   }
 }

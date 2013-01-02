@@ -14,17 +14,21 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
+
+using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects.DataManagement.RelationEndPoints;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndPoints
 {
   [TestFixture]
   public class VirtualEndPointStateUpdateListenerTest : StandardMappingTest
   {
-    private ClientTransactionEventSinkWithMock _eventSinkWithWock;
+    private IClientTransactionEventSink _eventSinkWithWock;
     private RelationEndPointID _endPointID;
 
     private VirtualEndPointStateUpdateListener _stateUpdateListener;
@@ -34,7 +38,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       base.SetUp();
 
-      _eventSinkWithWock = ClientTransactionEventSinkWithMock.CreateWithDynamicMock();
+      _eventSinkWithWock = MockRepository.GenerateMock<IClientTransactionEventSink>();
       _endPointID = RelationEndPointObjectMother.CreateRelationEndPointID (DomainObjectIDs.Order1, "OrderItems");
 
       _stateUpdateListener = new VirtualEndPointStateUpdateListener (_eventSinkWithWock);
@@ -45,7 +49,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _stateUpdateListener.VirtualEndPointStateUpdated (_endPointID, null);
 
-      _eventSinkWithWock.AssertWasCalledMock (mock => mock.VirtualRelationEndPointStateUpdated (_eventSinkWithWock.ClientTransaction, _endPointID, null));
+      _eventSinkWithWock.AssertWasCalled (mock => mock.RaiseVirtualRelationEndPointStateUpdatedEvent ( _endPointID, null));
     }
 
     [Test]
@@ -53,7 +57,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _stateUpdateListener.VirtualEndPointStateUpdated (_endPointID, true);
 
-      _eventSinkWithWock.AssertWasCalledMock (mock => mock.VirtualRelationEndPointStateUpdated (_eventSinkWithWock.ClientTransaction, _endPointID, true));
+      _eventSinkWithWock.AssertWasCalled (mock => mock.RaiseVirtualRelationEndPointStateUpdatedEvent ( _endPointID, true));
     }
 
     [Test]
@@ -61,7 +65,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.RelationEndP
     {
       _stateUpdateListener.VirtualEndPointStateUpdated (_endPointID, false);
 
-      _eventSinkWithWock.AssertWasCalledMock (mock => mock.VirtualRelationEndPointStateUpdated (_eventSinkWithWock.ClientTransaction, _endPointID, false));
+      _eventSinkWithWock.AssertWasCalled (mock => mock.RaiseVirtualRelationEndPointStateUpdatedEvent ( _endPointID, false));
     }
 
     [Test]

@@ -18,10 +18,12 @@ using System;
 using NUnit.Framework;
 using Remotion.Data.DomainObjects;
 using Remotion.Data.DomainObjects.DataManagement;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Mapping;
 using Remotion.Data.UnitTests.DomainObjects.Core.DataManagement.SerializableFakes;
 using Remotion.Data.UnitTests.DomainObjects.Core.Mapping;
 using Remotion.Development.UnitTesting;
+using Rhino.Mocks;
 
 namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
 {
@@ -53,55 +55,78 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DataManagement
     [Test]
     public void PropertyValueReading ()
     {
-      CheckEventDelegated (
-          l => l.PropertyValueReading (_dataContainer, _propertyDefinition, ValueAccess.Original), 
-          (tx, mock) => mock.PropertyValueReading (tx, _domainObject, _propertyDefinition, ValueAccess.Original));
+      EventSinkWithMock.Expect (mock => mock.RaisePropertyValueReadingEvent ( _domainObject, _propertyDefinition, ValueAccess.Original));
+      EventSinkWithMock.Replay();
+
+      EventListener.PropertyValueReading (_dataContainer, _propertyDefinition, ValueAccess.Original);
+
+      EventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
     public void PropertyValueRead ()
     {
-      CheckEventDelegated (
-          l => l.PropertyValueRead (_dataContainer, _propertyDefinition, "value", ValueAccess.Original),
-          (tx, mock) => mock.PropertyValueRead (tx, _domainObject, _propertyDefinition, "value", ValueAccess.Original));
+      EventSinkWithMock.Expect (mock => mock.RaisePropertyValueReadEvent ( _domainObject, _propertyDefinition, "value", ValueAccess.Original));
+      EventSinkWithMock.Replay();
+
+      EventListener.PropertyValueRead (_dataContainer, _propertyDefinition, "value", ValueAccess.Original);
+
+      EventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
     public void PropertyValueChanging ()
     {
-      CheckEventDelegated (
-          l => l.PropertyValueChanging (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
-          (tx, mock) => mock.PropertyValueChanging (tx, _domainObject, _propertyDefinition, "oldValue", "newValue"));
+      EventSinkWithMock.Expect (mock1 => mock1.RaisePropertyValueChangingEvent ( _domainObject, _propertyDefinition, "oldValue", "newValue"));
+      EventSinkWithMock.Replay();
+
+      EventListener.PropertyValueChanging (_dataContainer, _propertyDefinition, "oldValue", "newValue");
+
+      EventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void PropertyValueChanging_WithObjectIDProperty ()
+    public void PropertyValueChanging_WithObjectIDProperty_DoesNotRaiseEvent ()
     {
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID ();
-      CheckEventNotDelegated (l => l.PropertyValueChanging (_dataContainer, propertyDefinition, "oldValue", "newValue"));
+      EventSinkWithMock.Replay();
+
+      EventListener.PropertyValueChanging (_dataContainer, propertyDefinition, "oldValue", "newValue");
+
+      EventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
     public void PropertyValueChanged ()
     {
-      CheckEventDelegated (
-          l => l.PropertyValueChanged (_dataContainer, _propertyDefinition, "oldValue", "newValue"),
-          (tx, mock) => mock.PropertyValueChanged (tx, _domainObject, _propertyDefinition, "oldValue", "newValue"));
+      EventSinkWithMock.Expect (mock => mock.RaisePropertyValueChangedEvent ( _domainObject, _propertyDefinition, "oldValue", "newValue"));
+      EventSinkWithMock.Replay();
+
+      EventListener.PropertyValueChanged (_dataContainer, _propertyDefinition, "oldValue", "newValue");
+
+      EventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
-    public void PropertyValueChanged_WithObjectIDProperty ()
+    public void PropertyValueChanged_WithObjectIDProperty_DoesNotRaiseEvent ()
     {
       var propertyDefinition = PropertyDefinitionObjectMother.CreateForFakePropertyInfo_ObjectID ();
-      CheckEventNotDelegated (l => l.PropertyValueChanged (_dataContainer, propertyDefinition, "oldValue", "newValue"));
+      EventSinkWithMock.Replay();
+
+      EventListener.PropertyValueChanged (_dataContainer, propertyDefinition, "oldValue", "newValue");
+
+      EventSinkWithMock.VerifyAllExpectations();
     }
 
     [Test]
     public void StateUpdated ()
     {
-      CheckEventDelegated (
-          l => l.StateUpdated (_dataContainer, StateType.New),
-          (tx, mock) => mock.DataContainerStateUpdated (tx, _dataContainer, StateType.New));
+      EventSinkWithMock.Expect (mock => mock.RaiseDataContainerStateUpdatedEvent ( _dataContainer, StateType.New));
+      EventSinkWithMock.Replay();
+
+      EventListener.StateUpdated (_dataContainer, StateType.New);
+
+      EventSinkWithMock.VerifyAllExpectations();
     }
     
     [Test]
