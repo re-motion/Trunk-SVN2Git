@@ -36,14 +36,23 @@ using Remotion.Reflection.TypeDiscovery.AssemblyFinding;
 using Remotion.Reflection.TypeDiscovery.AssemblyLoading;
 using Remotion.SecurityManager.Domain;
 using Remotion.SecurityManager.Persistence;
+using Remotion.SecurityManager.UnitTests.Properties;
+using Remotion.Utilities;
 
 namespace Remotion.SecurityManager.UnitTests
 {
   [SetUpFixture]
   public class SetUpFixture
   {
-    private const string c_testDomainConnectionString = "Integrated Security=SSPI;Initial Catalog=RemotionSecurityManager;Data Source=localhost";
-    private const string c_masterConnectionString = "Integrated Security=SSPI;Initial Catalog=master;Data Source=localhost";
+    public static string TestDomainConnectionString
+    {
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=RemotionSecurityManager;Data Source={0}", Settings.Default.DataSource); }
+    }
+
+    public static string MasterConnectionString
+    {
+      get { return string.Format ("Integrated Security=SSPI;Initial Catalog=master;Data Source={0}", Settings.Default.DataSource); }
+    }
 
     [SetUp]
     public void SetUp ()
@@ -53,7 +62,7 @@ namespace Remotion.SecurityManager.UnitTests
         ServiceLocator.SetLocatorProvider (() => null);
 
         ProviderCollection<StorageProviderDefinition> providers = new ProviderCollection<StorageProviderDefinition>();
-        providers.Add (new RdbmsProviderDefinition ("SecurityManager", new SecurityManagerSqlStorageObjectFactory(), c_testDomainConnectionString));
+        providers.Add (new RdbmsProviderDefinition ("SecurityManager", new SecurityManagerSqlStorageObjectFactory(), TestDomainConnectionString));
         StorageConfiguration storageConfiguration = new StorageConfiguration (providers, providers["SecurityManager"]);
         storageConfiguration.StorageGroups.Add (new StorageGroupElement (new SecurityManagerStorageGroupAttribute(), "SecurityManager"));
 
@@ -73,9 +82,9 @@ namespace Remotion.SecurityManager.UnitTests
 
         SqlConnection.ClearAllPools();
 
-        DatabaseAgent masterAgent = new DatabaseAgent (c_masterConnectionString);
-        masterAgent.ExecuteBatchFile ("SecurityManagerCreateDB.sql", false);
-        DatabaseAgent databaseAgent = new DatabaseAgent (c_testDomainConnectionString);
+        DatabaseAgent masterAgent = new DatabaseAgent (MasterConnectionString);
+        masterAgent.ExecuteBatchFile ("SecurityManagerCreateDB.sql", false, Settings.Default.DatabaseDirectory);
+        DatabaseAgent databaseAgent = new DatabaseAgent (TestDomainConnectionString);
         databaseAgent.ExecuteBatchFile ("SecurityManagerSetupDB.sql", true);
         databaseAgent.ExecuteBatchFile ("SecurityManagerSetupConstraints.sql", true);
         databaseAgent.ExecuteBatchFile ("SecurityManagerSetupDBSpecialTables.sql", true);

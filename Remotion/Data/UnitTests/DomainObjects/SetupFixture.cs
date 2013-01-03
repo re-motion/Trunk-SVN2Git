@@ -16,6 +16,8 @@
 // 
 using System;
 using System.Data.SqlClient;
+using Remotion.Data.UnitTests.Properties;
+using Remotion.Utilities;
 using log4net;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
@@ -50,13 +52,15 @@ namespace Remotion.Data.UnitTests.DomainObjects
         SqlConnection.ClearAllPools();
 
         var masterAgent = new DatabaseAgent (DatabaseTest.MasterConnectionString);
-        masterAgent.ExecuteBatchFile ("DataDomainObjects_CreateDB.sql", false);
+        masterAgent.ExecuteBatchFile ("DataDomainObjects_CreateDB.sql", false, Settings.Default.DatabaseDirectory);
         var testDomainAgent = new DatabaseAgent (DatabaseTest.TestDomainConnectionString);
-        testDomainAgent.ExecuteBatchFile ("DataDomainObjects_SetupDB.sql", true);
+        testDomainAgent.ExecuteBatchFile ("DataDomainObjects_SetupDB.sql", true, Settings.Default.DatabaseDirectory);
 
         _standardMappingDatabaseAgent = new StandardMappingDatabaseAgent (DatabaseTest.TestDomainConnectionString);
-        _standardMappingDatabaseAgent.ExecuteBatchFile (StandardMappingTest.CreateTestDataFileName, true);
-        _standardMappingDatabaseAgent.ExecuteBatchFile (TableInheritanceMappingTest.CreateTestDataFileName, true);
+        string sqlFileName = StandardMappingTest.CreateTestDataFileName;
+        _standardMappingDatabaseAgent.ExecuteBatchFile (sqlFileName, true, Settings.Default.DatabaseDirectory);
+        string sqlFileName1 = TableInheritanceMappingTest.CreateTestDataFileName;
+        _standardMappingDatabaseAgent.ExecuteBatchFile (sqlFileName1, true, Settings.Default.DatabaseDirectory);
         _standardMappingDatabaseAgent.SetDatabaseReadOnly (DatabaseTest.DatabaseName);
 
         // We don't want the tests to initialize a default mapping; therefore, modify MappingConfiguration.s_mappingConfiguration so that it will 

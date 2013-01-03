@@ -213,6 +213,11 @@
     <Compile Include="DomainObjects\Core\DataManagement\SerializableFakes\SerializableTransactionHierarchyManagerFake.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\ResurrectionServiceTest.cs" />
     <Compile Include="DomainObjects\Core\IntegrationTests\RegisterForCommitTest.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="UnitTesting\RootPersistenceStrategyMockFacade.cs" />
     <Compile Include="DomainObjects\Core\DomainImplementation\Transport\PostActionDisposableDecorator.cs" />
     <Compile Include="DomainObjects\Core\EventReceiver\ILoadEventReceiver.cs" />
@@ -2002,6 +2007,7 @@
     <None Include="..\..\Remotion LGPL.licenseheader">
       <Link>Remotion LGPL.licenseheader</Link>
     </None>
+    <None Include="app.config" />
     <None Include="DomainObjects\TestDomain\TableInheritance\AbstractClassWithHierarchy.cd" />
     <None Include="DomainObjects\TestDomain\TableInheritance\TestDomain.cd" />
     <None Include="DomainObjects\TestDomain\TableInheritance\FileSystem.cd" />
@@ -2063,6 +2069,10 @@
     <EmbeddedResource Include="DomainObjects\Core\Resources\Image1.png" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\Image2.png" />
     <EmbeddedResource Include="DomainObjects\Core\Resources\ImageLarger1MB.bmp" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />

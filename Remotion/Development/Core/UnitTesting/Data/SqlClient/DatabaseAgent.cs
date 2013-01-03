@@ -56,7 +56,7 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
       ExecuteCommand (string.Format ("ALTER DATABASE [{0}] SET READ_ONLY WITH ROLLBACK IMMEDIATE", database));
     }
 
-    public int ExecuteBatchFile (string sqlFileName, bool useTransaction)
+    public int ExecuteBatchFile (string sqlFileName, bool useTransaction, string databaseDirectory = null)
     {
       ArgumentUtility.CheckNotNullOrEmpty ("sqlFileName", sqlFileName);
 
@@ -67,12 +67,14 @@ namespace Remotion.Development.UnitTesting.Data.SqlClient
         Uri uri = new Uri (assemblyUrl);
         sqlFileName = Path.Combine (Path.GetDirectoryName (uri.LocalPath), sqlFileName);
       }
-      return ExecuteBatchString (File.ReadAllText (sqlFileName, Encoding.Default), useTransaction);
+      return ExecuteBatchString (File.ReadAllText (sqlFileName, Encoding.Default), useTransaction, databaseDirectory);
     }
 
-    public int ExecuteBatchString (string commandBatch, bool useTransaction)
+    public int ExecuteBatchString (string commandBatch, bool useTransaction, string databaseDirectory = null)
     {
       ArgumentUtility.CheckNotNull ("commandBatch", commandBatch);
+
+      commandBatch = commandBatch.Replace ("'C:\\Databases", "'" + databaseDirectory);
 
       var count = 0;
       using (IDbConnection connection = CreateConnection ())
