@@ -24,31 +24,25 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {
   public abstract class DomainObjectMockEventReceiver
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
+    private readonly DomainObject _domainObject;
 
     protected DomainObjectMockEventReceiver (DomainObject domainObject)
     {
       ArgumentUtility.CheckNotNull ("domainObject", domainObject);
 
-      domainObject.Committed += Committed;
-      domainObject.Committing += Committing;
-      domainObject.RolledBack += RolledBack;
-      domainObject.RollingBack += RollingBack;
-      domainObject.Deleted += Deleted;
-      domainObject.Deleting += Deleting;
-      domainObject.PropertyChanged += PropertyChanged;
-      domainObject.PropertyChanging += PropertyChanging;
-      domainObject.RelationChanged += RelationChanged;
-      domainObject.RelationChanging += RelationChanging;
-    }
+      _domainObject = domainObject;
 
-    // abstract methods and properties
+      _domainObject.Committed += Committed;
+      _domainObject.Committing += Committing;
+      _domainObject.RolledBack += RolledBack;
+      _domainObject.RollingBack += RollingBack;
+      _domainObject.Deleted += Deleted;
+      _domainObject.Deleting += Deleting;
+      _domainObject.PropertyChanged += PropertyChanged;
+      _domainObject.PropertyChanging += PropertyChanging;
+      _domainObject.RelationChanged += RelationChanged;
+      _domainObject.RelationChanging += RelationChanging;
+    }
 
     public abstract void RelationChanging (object sender, RelationChangingEventArgs args);
     public abstract void RelationChanged (object sender, RelationChangedEventArgs args);
@@ -61,70 +55,68 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     public abstract void RollingBack (object sender, EventArgs e);
     public abstract void RolledBack (object sender, EventArgs e);
 
-    // methods and properties
-
-    public void RelationChanging (object sender, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public void RelationChanging (IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       this.Expect (
           mock => RelationChanging (
-              Arg.Is (sender),
+              Arg.Is (_domainObject),
               Arg<RelationChangingEventArgs>.Matches (args =>
                   args.RelationEndPointDefinition == relationEndPointDefinition 
                       && args.OldRelatedObject == oldRelatedObject
                       && args.NewRelatedObject == newRelatedObject)));
     }
 
-    public void RelationChanged (object sender, IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
+    public void RelationChanged (IRelationEndPointDefinition relationEndPointDefinition, DomainObject oldRelatedObject, DomainObject newRelatedObject)
     {
       this.Expect (
           mock => RelationChanged (
-              Arg.Is (sender),
+              Arg.Is (_domainObject),
               Arg<RelationChangedEventArgs>.Matches (args =>
                   args.RelationEndPointDefinition == relationEndPointDefinition 
                       && args.OldRelatedObject == oldRelatedObject
                       && args.NewRelatedObject == newRelatedObject)));
     }
 
-    public void PropertyChanging (object sender, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public void PropertyChanging (PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       this.Expect (
           mock => mock.PropertyChanging (
-              Arg.Is (sender),
+              Arg.Is (_domainObject),
               Arg<PropertyChangeEventArgs>.Matches (
                   args => args.PropertyDefinition == propertyDefinition
                           && args.OldValue == oldValue
                           && args.NewValue == newValue)));
     }
 
-    public void PropertyChanged (object sender, PropertyDefinition propertyDefinition, object oldValue, object newValue)
+    public void PropertyChanged (PropertyDefinition propertyDefinition, object oldValue, object newValue)
     {
       this.Expect (
           mock => mock.PropertyChanged (
-              Arg.Is (sender),
+              Arg.Is (_domainObject),
               Arg<PropertyChangeEventArgs>.Matches (
                   args => args.PropertyDefinition == propertyDefinition
                           && args.OldValue == oldValue
                           && args.NewValue == newValue)));
     }
 
-    public void Committing (object sender)
+    public void Committing ()
     {
-      this.Expect (mock => mock.Committing (Arg.Is (sender), Arg<DomainObjectCommittingEventArgs>.Is.Anything));
+      this.Expect (mock => mock.Committing (Arg.Is (_domainObject), Arg<DomainObjectCommittingEventArgs>.Is.Anything));
     }
 
-    public void Committed (object sender)
+    public void Committed ()
     {
-      this.Expect (mock => mock.Committed (Arg.Is (sender), Arg<EventArgs>.Is.Anything));
+      this.Expect (mock => mock.Committed (Arg.Is (_domainObject), Arg<EventArgs>.Is.Anything));
     }
 
-    public void RollingBack (object sender)
+    public void RollingBack ()
     {
-      this.Expect (mock => mock.RollingBack (Arg.Is (sender), Arg<EventArgs>.Is.Anything));
+      this.Expect (mock => mock.RollingBack (Arg.Is (_domainObject), Arg<EventArgs>.Is.Anything));
     }
 
-    public void RolledBack (object sender)
+    public void RolledBack ()
     {
-      this.Expect (mock => mock.RolledBack (Arg.Is (sender), Arg<EventArgs>.Is.Anything));
+      this.Expect (mock => mock.RolledBack (Arg.Is (_domainObject), Arg<EventArgs>.Is.Anything));
     }
   }
 }

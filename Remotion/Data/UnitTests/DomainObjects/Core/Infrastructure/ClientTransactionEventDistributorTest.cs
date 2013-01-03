@@ -192,7 +192,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       CheckEventWithListenersFirst (
           l => l.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
           () => _order1EventReceiverMock
-              .Expect (mock => mock.PropertyChanging (_order1, propertyDefinition, oldValue, newValue))
+              .Expect (mock => mock.PropertyChanging (propertyDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -206,7 +206,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       CheckEventWithListenersFirst (
           l => l.PropertyValueChanging (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
           () => _order1EventReceiverMock
-                    .Expect (mock => mock.PropertyChanging (_order1, propertyDefinition, oldValue, newValue))
+                    .Expect (mock => mock.PropertyChanging (propertyDefinition, oldValue, newValue))
                     .WithCurrentTransaction (_clientTransaction));
     }
     
@@ -221,7 +221,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           l => l.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.PropertyChanged (_order1, propertyDefinition, oldValue, newValue))
+              .Expect (mock => mock.PropertyChanged (propertyDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -235,7 +235,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       CheckEventWithListenersLast (
           l => l.PropertyValueChanged (_clientTransaction, _order1, propertyDefinition, oldValue, newValue),
           () => _order1EventReceiverMock
-                    .Expect (mock => mock.PropertyChanged (_order1, propertyDefinition, oldValue, newValue))
+                    .Expect (mock => mock.PropertyChanged (propertyDefinition, oldValue, newValue))
                     .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -250,7 +250,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           l => l.RelationChanging (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.RelationChanging (_order1, endPointDefinition, oldValue, newValue))
+              .Expect (mock => mock.RelationChanging (endPointDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -265,7 +265,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           l => l.RelationChanging (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.RelationChanging (_order1, endPointDefinition, oldValue, newValue))
+              .Expect (mock => mock.RelationChanging (endPointDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -280,7 +280,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           l => l.RelationChanged (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.RelationChanged (_order1, endPointDefinition, oldValue, newValue))
+              .Expect (mock => mock.RelationChanged (endPointDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -295,7 +295,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           l => l.RelationChanged (_clientTransaction, _order1, endPointDefinition, oldValue, newValue),
           () =>
           _order1EventReceiverMock
-              .Expect (mock => mock.RelationChanged (_order1, endPointDefinition, oldValue, newValue))
+              .Expect (mock => mock.RelationChanged (endPointDefinition, oldValue, newValue))
               .WithCurrentTransaction (_clientTransaction));
     }
 
@@ -337,7 +337,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           () =>
           {
             _transactionEventReceiverMock
-                .Expect (mock => mock.Committing (_clientTransaction, _invalidObject))
+                .Expect (mock => mock.Committing (_invalidObject))
                 .WithCurrentTransaction (_clientTransaction);
             _invalidObjectEventReceiverMock
                 .Expect (mock => mock.Committing (Arg<object>.Is.Anything, Arg<DomainObjectCommittingEventArgs>.Is.Anything))
@@ -360,7 +360,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                 .Expect (mock => mock.Committed (_order1, EventArgs.Empty))
                 .WithCurrentTransaction (_clientTransaction);
             _transactionEventReceiverMock
-                .Expect (mock => mock.Committed (_clientTransaction, _order1, _order2))
+                .Expect (mock => mock.Committed (_order1, _order2))
                 .WithCurrentTransaction (_clientTransaction);
           });
     }
@@ -373,7 +373,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           () =>
           {
             _transactionEventReceiverMock
-                .Expect (mock => mock.RollingBack (_clientTransaction, _order1, _order2))
+                .Expect (mock => mock.RollingBack (_order1, _order2))
                 .WithCurrentTransaction (_clientTransaction);
             _order1EventReceiverMock
                 .Expect (mock => mock.RollingBack (_order1, EventArgs.Empty))
@@ -392,7 +392,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           () =>
           {
             _transactionEventReceiverMock
-                .Expect (mock => mock.RollingBack (_clientTransaction, _invalidObject))
+                .Expect (mock => mock.RollingBack (_invalidObject))
                 .WithCurrentTransaction (_clientTransaction);
             _invalidObjectEventReceiverMock
                 .Expect (mock => mock.RollingBack (Arg<DomainObject>.Is.Anything, Arg<EventArgs>.Is.Anything))
@@ -415,7 +415,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
                 .Expect (mock => mock.RolledBack (_order1, EventArgs.Empty))
                 .WithCurrentTransaction (_clientTransaction);
             _transactionEventReceiverMock
-                .Expect (mock => mock.RolledBack (_clientTransaction, _order1, _order2))
+                .Expect (mock => mock.RolledBack (_order1, _order2))
                 .WithCurrentTransaction (_clientTransaction);
           });
     }

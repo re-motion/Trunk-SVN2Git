@@ -194,12 +194,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .Expect (mock => mock.Committing (Arg.Is (_transaction), ArgIsDomainObjectSet (domainObjects), Arg<CommittingEventRegistrar>.Is.TypeOf));
         ListenerMock
             .Expect (mock => mock.TransactionCommitting (Arg.Is (_transaction), ArgIsDomainObjectSet (domainObjects), Arg<CommittingEventRegistrar>.Is.TypeOf));
-        var transactionOptions = TransactionMockEventReceiver.Expect (mock => mock.Committing (_transaction, domainObjects));
+        var transactionOptions = TransactionMockEventReceiver.Expect (mock => mock.Committing (domainObjects));
 
         IMethodOptions<RhinoMocksExtensions.VoidType>[] domainObjectOptions;
         using (_mockRepository.Unordered ())
         {
-          domainObjectOptions = domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.Committing (t.Item1))).ToArray();
+          domainObjectOptions = domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.Committing ())).ToArray();
         }
         return new AllMethodOptions(extensionOptions, transactionOptions, domainObjectOptions);
       }
@@ -222,12 +222,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         var domainObjectOptions = new List<IMethodOptions<RhinoMocksExtensions.VoidType>> (domainObjectsAndMocks.Length);
         using (_mockRepository.Unordered ())
         {
-            domainObjectOptions.AddRange (domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.Committed (t.Item1))));
+            domainObjectOptions.AddRange (domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.Committed ())));
         }
 
         var domainObjects = domainObjectsAndMocks.Select (t => t.Item1).ToArray();
 
-        var transactionOptions = TransactionMockEventReceiver.Expect (mock => mock.Committed (_transaction, domainObjects));
+        var transactionOptions = TransactionMockEventReceiver.Expect (mock => mock.Committed (domainObjects));
         var extensionOptions = ExtensionMock.Expect (mock => mock.Committed (Arg.Is (_transaction), ArgIsDomainObjectSet (domainObjects)));
         ListenerMock.Expect (mock => mock.TransactionCommitted (Arg.Is (_transaction), ArgIsDomainObjectSet (domainObjects)));
 
@@ -266,13 +266,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         _listenerMock
             .Expect (mock => mock.TransactionRollingBack (Arg.Is (Transaction), ArgIsDomainObjectSet (domainObjects)));
         var transactionOptions = TransactionMockEventReceiver
-            .Expect (mock => mock.RollingBack (Transaction, domainObjects))
+            .Expect (mock => mock.RollingBack (domainObjects))
             .WithCurrentTransaction (Transaction);
 
         IMethodOptions<RhinoMocksExtensions.VoidType>[] domainObjectOptions;
         using (_mockRepository.Unordered ())
         {
-          domainObjectOptions = domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.RollingBack (t.Item1))).ToArray ();
+          domainObjectOptions = domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.RollingBack ())).ToArray ();
         }
         return new AllMethodOptions (extensionOptions, transactionOptions, domainObjectOptions);
       }
@@ -295,13 +295,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
         IMethodOptions<RhinoMocksExtensions.VoidType>[] domainObjectOptions;
         using (_mockRepository.Unordered ())
         {
-          domainObjectOptions = domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.RolledBack (t.Item1))).ToArray ();
+          domainObjectOptions = domainObjectsAndMocks.Select (t => t.Item2.Expect (mock => mock.RolledBack ())).ToArray ();
         }
 
         var domainObjects = domainObjectsAndMocks.Select (t => t.Item1).ToArray ();
 
         var transactionOptions = TransactionMockEventReceiver
-            .Expect (mock => mock.RolledBack (Transaction, domainObjects))
+            .Expect (mock => mock.RolledBack (domainObjects))
             .WithCurrentTransaction (Transaction);
         var extensionOptions = _extensionMock
             .Expect (mock => mock.RolledBack (Arg.Is (Transaction), ArgIsDomainObjectSet (domainObjects)));

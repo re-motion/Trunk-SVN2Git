@@ -24,27 +24,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 {
   public abstract class ClientTransactionMockEventReceiver
   {
-    // types
-
-    // static members and constants
-
-    // member fields
-
-    // construction and disposing
+    private readonly ClientTransaction _clientTransaction;
 
     protected ClientTransactionMockEventReceiver (ClientTransaction clientTransaction)
     {
       ArgumentUtility.CheckNotNull ("clientTransaction", clientTransaction);
 
-      clientTransaction.Loaded += Loaded;
-      clientTransaction.Committing += Committing;
-      clientTransaction.Committed += Committed;
-      clientTransaction.RollingBack += RollingBack;
-      clientTransaction.RolledBack += RolledBack;
-      clientTransaction.SubTransactionCreated += SubTransactionCreated;
-    }
+      _clientTransaction = clientTransaction;
 
-    // abstract methods and properties
+      _clientTransaction.Loaded += Loaded;
+      _clientTransaction.Committing += Committing;
+      _clientTransaction.Committed += Committed;
+      _clientTransaction.RollingBack += RollingBack;
+      _clientTransaction.RolledBack += RolledBack;
+      _clientTransaction.SubTransactionCreated += SubTransactionCreated;
+    }
 
     public abstract void Loaded (object sender, ClientTransactionEventArgs args);
     public abstract void Committing (object sender, ClientTransactionCommittingEventArgs args);
@@ -53,28 +47,24 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
     public abstract void RolledBack (object sender, ClientTransactionEventArgs args);
     public abstract void SubTransactionCreated (object sender, SubTransactionCreatedEventArgs args);
 
-    // methods and properties
-
-    // TODO 1961: Remove sender parameter, here and in DomainObjectMockEventReceiver
-
-    public void RollingBack (object sender, params DomainObject[] domainObjects)
+    public void RollingBack (params DomainObject[] domainObjects)
     {
-      RollingBack (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+      RollingBack (Arg.Is (_clientTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
     }
 
-    public void RolledBack (object sender, params DomainObject[] domainObjects)
+    public void RolledBack (params DomainObject[] domainObjects)
     {
-      RolledBack (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+      RolledBack (Arg.Is (_clientTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
     }
 
-    public void Committing (object sender, params DomainObject[] domainObjects)
+    public void Committing (params DomainObject[] domainObjects)
     {
-      Committing (Arg.Is (sender), Arg<ClientTransactionCommittingEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+      Committing (Arg.Is (_clientTransaction), Arg<ClientTransactionCommittingEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
     }
 
-    public void Committed (object sender, params DomainObject[] domainObjects)
+    public void Committed (params DomainObject[] domainObjects)
     {
-      Committed (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
+      Committed (Arg.Is (_clientTransaction), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));
     }
   }
 }

@@ -95,8 +95,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
 
       using (mockRepository.Ordered ())
       {
-        clientTransactionMockEventReceiver.RollingBack (TestableClientTransaction, _newCustomer);
-        clientTransactionMockEventReceiver.RolledBack (TestableClientTransaction);
+        clientTransactionMockEventReceiver.RollingBack (_newCustomer);
+        clientTransactionMockEventReceiver.RolledBack ();
       }
 
       mockRepository.ReplayAll ();
