@@ -192,32 +192,33 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
     public void Commit_DeletedStateCombination ()
     {
       SecurableClassDefinition orderClass = _testHelper.CreateOrderClassDefinition();
-      StateCombination combination = _testHelper.CreateStateCombination (orderClass);
-      combination.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
-
       using (_testHelper.Transaction.CreateSubTransaction().EnterDiscardingScope())
       {
-        Assert.AreEqual (StateType.Unchanged, GetStateFromDataContainer (orderClass));
+        orderClass.EnsureDataAvailable();
+        Assert.AreEqual (StateType.Unchanged, orderClass.State);
+
         using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
         {
-          Assert.AreEqual (StateType.Unchanged, GetStateFromDataContainer (orderClass));
-          combination.AccessControlList.Delete();
-          Assert.IsNull (combination.Class);
+          StateCombination combination = _testHelper.CreateStateCombination (orderClass, ClientTransaction.Current);
+          combination.AccessControlList.AccessControlEntries.Add (AccessControlEntry.NewObject());
 
-          Assert.AreEqual (StateType.Unchanged, GetStateFromDataContainer (orderClass));
+          using (ClientTransaction.Current.CreateSubTransaction().EnterDiscardingScope())
+          {
+            orderClass.EnsureDataAvailable();
+            Assert.AreEqual (StateType.Unchanged, orderClass.State);
+
+            combination.AccessControlList.Delete();
+            Assert.IsNull (combination.Class);
+
+            Assert.AreEqual (StateType.Changed, orderClass.State);
+            ClientTransaction.Current.Commit();
+          }
+
           ClientTransaction.Current.Commit();
         }
-        Assert.AreEqual (StateType.Unchanged, GetStateFromDataContainer (orderClass));
+
+        Assert.AreEqual (StateType.Changed, orderClass.State);
       }
-    }
-
-    private StateType GetStateFromDataContainer (DomainObject orderClass)
-    {
-      var transaction = orderClass.HasBindingTransaction ? orderClass.GetBindingTransaction () : ClientTransaction.Current;
-
-      var dataManager = DataManagementService.GetDataManager (transaction);
-      var dataContainer = dataManager.GetDataContainerWithLazyLoad (orderClass.ID, true);
-      return dataContainer.State;
     }
 
     [Test]

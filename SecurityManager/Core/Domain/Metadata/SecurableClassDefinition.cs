@@ -122,8 +122,7 @@ namespace Remotion.SecurityManager.Domain.Metadata
 
     public void Touch ()
     {
-      if (State == StateType.Unchanged || State == StateType.NotLoadedYet)
-        RegisterForCommit();
+      RegisterForCommit();
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
