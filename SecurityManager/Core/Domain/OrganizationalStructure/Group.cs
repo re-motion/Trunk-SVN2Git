@@ -301,7 +301,7 @@ namespace Remotion.SecurityManager.Domain.OrganizationalStructure
         return g.GetParentObjectReference();
       };
 
-      foreach (var group in GetParentObjectReference().CreateSequence (parentResolver).Where (g => g.State != StateType.New))
+      foreach (var group in GetParentObjectReference().CreateSequence (parentResolver))
         group.RegisterForCommit();
     }
 
