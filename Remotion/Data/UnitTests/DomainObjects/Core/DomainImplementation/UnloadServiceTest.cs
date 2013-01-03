@@ -759,7 +759,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainImplementation
       var parentOrdersEndPoint = DomainObjectCollectionDataTestHelper.GetAssociatedEndPoint (customer.Orders);
       EnsureEndPointLoadedAndComplete (parentOrdersEndPoint.ID);
 
-      customer.Orders[0].MarkAsChanged ();
+      customer.Orders[0].RegisterForCommit();
 
       Assert.That (parentOrdersEndPoint.Collection[0].State, Is.EqualTo (StateType.Changed));
 

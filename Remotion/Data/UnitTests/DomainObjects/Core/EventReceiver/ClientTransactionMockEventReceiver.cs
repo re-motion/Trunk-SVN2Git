@@ -55,6 +55,8 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver
 
     // methods and properties
 
+    // TODO 1961: Remove sender parameter, here and in DomainObjectMockEventReceiver
+
     public void RollingBack (object sender, params DomainObject[] domainObjects)
     {
       RollingBack (Arg.Is (sender), Arg<ClientTransactionEventArgs>.Matches (args => args.DomainObjects.SetEquals (domainObjects)));

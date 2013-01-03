@@ -61,7 +61,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
         {
           var message = string.Format (
               "The given DomainObject '{0}' cannot be registered due to its state ({1}). Only objects that are part of the commit set can be "
-              + "registered. Use MarkAsChanged to add an unchanged object to the commit set.",
+              + "registered. Use RegisterForCommit to add an unchanged object to the commit set.",
               domainObject.ID,
               state);
           throw new ArgumentException (message, "domainObjects");

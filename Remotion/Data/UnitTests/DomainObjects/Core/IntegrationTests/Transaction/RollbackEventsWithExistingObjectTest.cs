@@ -125,40 +125,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void RollbackWithMarkAsChanged ()
-    {
-      _order1.MarkAsChanged();
-      
-      _mockRepository.BackToRecord (_order1MockEventReceiver);
-      _mockRepository.BackToRecord (_clientTransactionExtensionMock);
-
-      using (_mockRepository.Ordered ())
-      {
-        _clientTransactionExtensionMock.RollingBack (null, null);
-        LastCall.Constraints (Is.Same (TestableClientTransaction), Property.Value ("Count", 1) & List.IsIn (_order1));
-
-        _clientTransactionMockEventReceiver.RollingBack (TestableClientTransaction, _order1);
-
-        _order1MockEventReceiver.RollingBack (null, null);
-        LastCall.Constraints (Is.Same (_order1), Is.NotNull ());
-
-        _order1MockEventReceiver.RolledBack (null, null);
-        LastCall.Constraints (Is.Same (_order1), Is.NotNull ());
-
-        _clientTransactionMockEventReceiver.RolledBack (TestableClientTransaction, _order1);
-
-        _clientTransactionExtensionMock.RolledBack (null, null);
-        LastCall.Constraints (Is.Same (TestableClientTransaction), Property.Value ("Count", 1) & List.IsIn (_order1));
-      }
-
-      _mockRepository.ReplayAll ();
-
-      TestableClientTransaction.Rollback ();
-
-      _mockRepository.VerifyAll ();
-    }
-
-    [Test]
     public void ModifyOtherObjectInDomainObjectRollingBack ()
     {
       _order1.DeliveryDate = DateTime.Now;

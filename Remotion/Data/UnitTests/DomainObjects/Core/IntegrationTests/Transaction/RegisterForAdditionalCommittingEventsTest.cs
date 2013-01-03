@@ -148,18 +148,21 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
             .ExtensionOptions
             // This triggers _one_ (not two) additional run for _unchangedObject
-            .WhenCalled (mi => Transaction.Execute (() =>
-            {
-              Assert.That (
-                  () => ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (UnchangedObject),
-                  Throws.ArgumentException.With.Message.EqualTo (
-                      string.Format (
-                          "The given DomainObject '{0}' cannot be registered due to its state (Unchanged). Only objects that are part of the commit set "
-                          + "can be registered. Use MarkAsChanged to add an unchanged object to the commit set.\r\nParameter name: domainObjects",
-                          UnchangedObject.ID)));
-               UnchangedObject.MarkAsChanged();
-               ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (UnchangedObject);
-            }));
+            .WhenCalled (
+                mi => Transaction.Execute (
+                    () =>
+                    {
+                      Assert.That (
+                          () => ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (UnchangedObject),
+                          Throws.ArgumentException.With.Message.EqualTo (
+                              string.Format (
+                                  "The given DomainObject '{0}' cannot be registered due to its state (Unchanged). "
+                                  + "Only objects that are part of the commit set can be registered. Use RegisterForCommit to add an unchanged "
+                                  + "object to the commit set.\r\nParameter name: domainObjects",
+                                  UnchangedObject.ID)));
+                      UnchangedObject.RegisterForCommit();
+                      ((ICommittingEventRegistrar) mi.Arguments[2]).RegisterForAdditionalCommittingEvents (UnchangedObject);
+                    }));
 
         // No more additional runs
         ExpectCommittingEvents (Tuple.Create (UnchangedObject, UnchangedObjectEventReceiverMock));

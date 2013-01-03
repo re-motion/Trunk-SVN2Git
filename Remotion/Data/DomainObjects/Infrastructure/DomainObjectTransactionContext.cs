@@ -95,21 +95,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       dataContainer.MarkAsChanged();
     }
 
-    // TODO 1961: Obsolete
-    public void MarkAsChanged ()
-    {
-      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
-      DataContainer dataContainer = ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true);
-      try
-      {
-        dataContainer.MarkAsChanged ();
-      }
-      catch (InvalidOperationException ex)
-      {
-        throw new InvalidOperationException ("Only existing DomainObjects can be marked as changed.", ex);
-      }
-    }
-
     public void EnsureDataAvailable ()
     {
       DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
@@ -140,6 +125,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       ArgumentUtility.CheckNotNull ("action", action);
       ClientTransaction.Execute (() => action (_domainObject, _associatedTransaction));
+    }
+
+    [Obsolete ("This method has been replaced by RegisterForCommit. (1.13.181.0)", true)]
+    public void MarkAsChanged ()
+    {
+      throw new NotImplementedException();
     }
   }
 }

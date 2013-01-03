@@ -557,7 +557,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
     }
 
     [Test]
-    public void MarkAsChanged_ReloadsObject ()
+    public void RegisterForCommit_ReloadsObject ()
     {
       var order1 = Order.GetObject (DomainObjectIDs.Order1);
       UnloadService.UnloadData (TestableClientTransaction, order1.ID);
@@ -565,7 +565,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Unload
 
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
 
-      order1.MarkAsChanged ();
+      order1.RegisterForCommit();
 
       AssertObjectWasLoaded (listenerMock, order1);
       Assert.That (order1.State, Is.EqualTo (StateType.Changed));

@@ -284,11 +284,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl.AccessControlE
       {
         bool commitOnClassWasCalled = false;
         classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
-        ace.MarkAsChanged();
+        ace.RegisterForCommit();
 
         ClientTransaction.Current.Commit();
 
-        Assert.IsTrue (commitOnClassWasCalled);
+        Assert.That (commitOnClassWasCalled, Is.True);
       }
     }
   }

@@ -419,34 +419,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
-    public void MarkAsChanged ()
-    {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Unchanged)));
-
-      _transaction.Execute (order.MarkAsChanged);
-      
-      _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Changed)));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
-    public void MarkAsChangedThrowsWhenNew ()
-    {
-      Order order = _transaction.Execute (() => Order.NewObject ());
-      _transaction.Execute (order.MarkAsChanged);
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
-    public void MarkAsChangedThrowsWhenDeleted ()
-    {
-      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
-      _transaction.Execute (order.Delete);
-      _transaction.Execute (order.MarkAsChanged);
-    }
-
-    [Test]
     [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "No ClientTransaction has been associated with the current thread.")]
     public void NewObject_WithoutTransaction ()
     {

@@ -54,11 +54,11 @@ namespace Remotion.SecurityManager.UnitTests.Domain.AccessControl
       {
         bool commitOnClassWasCalled = false;
         classDefinition.Committing += delegate { commitOnClassWasCalled = true; };
-        acl.MarkAsChanged();
+        acl.RegisterForCommit();
 
         ClientTransaction.Current.Commit();
 
-        Assert.IsTrue (commitOnClassWasCalled);
+        Assert.That (commitOnClassWasCalled, Is.True);
       }
     }
   }

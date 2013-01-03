@@ -247,32 +247,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       Assert.That (committedDomainObjects.Count, Is.EqualTo (0));
     }
 
-    [Test]
-    public void CommittedEventForMarkAsChanged ()
-    {
-      _customer.MarkAsChanged();
-
-      var customerEventReceiver = new DomainObjectEventReceiver (_customer);
-      var clientTransactionEventReceiver = new ClientTransactionEventReceiver (TestableClientTransaction);
-
-      TestableClientTransaction.Commit();
-
-      Assert.That (customerEventReceiver.HasCommittingEventBeenCalled, Is.True);
-      Assert.That (customerEventReceiver.HasCommittedEventBeenCalled, Is.True);
-
-      Assert.That (clientTransactionEventReceiver.CommittingDomainObjectLists.Count, Is.EqualTo (1));
-      Assert.That (clientTransactionEventReceiver.CommittedDomainObjectLists.Count, Is.EqualTo (1));
-
-      var committingDomainObjects = clientTransactionEventReceiver.CommittingDomainObjectLists[0];
-      var committedDomainObjects = clientTransactionEventReceiver.CommittedDomainObjectLists[0];
-
-      Assert.That (committingDomainObjects.Count, Is.EqualTo (1));
-      Assert.That (committedDomainObjects.Count, Is.EqualTo (1));
-
-      Assert.Contains (_customer, committedDomainObjects);
-      Assert.Contains (_customer, committingDomainObjects);
-    }
-
     private void ClientTransaction_CommittingForModifyOtherObjectInClientTransactionCommitting (object sender, ClientTransactionEventArgs args)
     {
       var customer = args.DomainObjects[0] as Customer;

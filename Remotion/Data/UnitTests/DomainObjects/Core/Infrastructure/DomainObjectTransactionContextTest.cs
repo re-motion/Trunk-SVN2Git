@@ -218,58 +218,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
-    public void MarkAsChanged_Unchanged()
-    {
-      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Unchanged));
-      _loadedOrder1Context.MarkAsChanged ();
-      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
-    }
-
-    [Test]
-    public void MarkAsChanged_Changed ()
-    {
-      _loadedOrder1.OrderNumber = 2;
-
-      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
-      _loadedOrder1Context.MarkAsChanged ();
-      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
-    public void MarkAsChanged_New ()
-    {
-      Assert.That (_newOrderContext.State, Is.EqualTo (StateType.New));
-      _newOrderContext.MarkAsChanged ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (InvalidOperationException), ExpectedMessage = "Only existing DomainObjects can be marked as changed.")]
-    public void MarkAsChanged_Deleted ()
-    {
-      DeleteOrder (_loadedOrder1);
-
-      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Deleted));
-      _loadedOrder1Context.MarkAsChanged ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ObjectInvalidException))]
-    public void MarkAsChanged_Invalid ()
-    {
-      _newOrder.Delete ();
-
-      _newOrderContext.MarkAsChanged ();
-    }
-
-    [Test]
-    [ExpectedException (typeof (ClientTransactionsDifferException))]
-    public void MarkAsChanged_InvalidTransaction ()
-    {
-      _invalidContext.MarkAsChanged ();
-    }
-
-    [Test]
     public void Timestamp_LoadedObject()
     {
       var timestamp = _loadedOrder1Context.Timestamp;

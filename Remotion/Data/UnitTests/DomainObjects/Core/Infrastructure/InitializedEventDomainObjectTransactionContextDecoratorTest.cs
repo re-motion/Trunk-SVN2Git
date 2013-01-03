@@ -41,7 +41,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       CheckForbidden (ctx => Dev.Null = ctx.State);
       CheckForbidden (ctx => Dev.Null = ctx.Timestamp);
       CheckForbidden (ctx => ctx.RegisterForCommit ());
-      CheckForbidden (ctx => ctx.MarkAsChanged ());
       CheckForbidden (ctx => ctx.EnsureDataAvailable ());
       CheckForbidden (ctx => ctx.TryEnsureDataAvailable ());
     }

@@ -52,17 +52,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     }
 
     [Test]
-    public void ConcurrencyViolationException_WhenSomebodyElseMarksAsChanged ()
+    public void ConcurrencyViolationException_WhenSomebodyElseRegistersForCommit ()
     {
       SetDatabaseModifyable ();
 
       var computer = Computer.GetObject (DomainObjectIDs.Computer1);
-      computer.MarkAsChanged ();
+      computer.RegisterForCommit ();
 
       using (ClientTransaction.CreateRootTransaction ().EnterDiscardingScope ())
       {
         var computerInOtherTransaction = Computer.GetObject (DomainObjectIDs.Computer1);
-        computerInOtherTransaction.MarkAsChanged ();
+        computerInOtherTransaction.RegisterForCommit ();
         ClientTransaction.Current.Commit ();
       }
 

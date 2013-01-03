@@ -74,7 +74,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     public static DomainObject GetChangedObject (ClientTransaction transaction, ObjectID objectID)
     {
       var changedInstance = LifetimeService.GetObject (transaction, objectID, false);
-      changedInstance.MarkAsChanged();
+      changedInstance.RegisterForCommit();
       Assert.That (changedInstance.State, Is.EqualTo (StateType.Changed));
       Assert.That (ClientTransactionTestHelper.GetDataManager (transaction).DataContainers[objectID].State, Is.EqualTo (StateType.Changed));
       return changedInstance;

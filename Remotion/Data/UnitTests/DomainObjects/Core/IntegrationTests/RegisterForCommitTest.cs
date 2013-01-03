@@ -22,6 +22,7 @@ using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.DomainImplementation;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
 using Remotion.Data.DomainObjects.Persistence;
+using Remotion.Data.UnitTests.DomainObjects.Core.EventReceiver;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
 using Remotion.Data.UnitTests.UnitTesting;
@@ -162,22 +163,27 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (unchangedObject.State, Is.EqualTo (StateType.Changed));
       CheckMarkedAsChanged (unchangedObject);
 
+      var objectEventReceiverMock = MockRepository.GenerateMock<DomainObjectMockEventReceiver> (newObject);
+      var transactionEventReceiverMock = MockRepository.GenerateMock<ClientTransactionMockEventReceiver> (TestableClientTransaction);
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
-      listenerMock.Expect (
+      
+      SetDatabaseModifyable ();
+      CommitTransactionAndCheckTimestamps (newObject, changedObject, unchangedObject);
+
+      listenerMock.AssertWasCalled (
           mock => mock.TransactionCommitting (
               Arg.Is (TestableClientTransaction),
               Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { newObject, changedObject, unchangedObject }),
               Arg<ICommittingEventRegistrar>.Is.Anything));
-      listenerMock.Expect (
+      listenerMock.AssertWasCalled (
           mock => mock.TransactionCommitValidate (
               Arg.Is (TestableClientTransaction),
               Arg<ReadOnlyCollection<PersistableData>>.Matches (
                   x => x.Select (d => d.DomainObject).SetEquals (new[] { newObject, changedObject, unchangedObject }))));
-
-      SetDatabaseModifyable ();
-      CommitTransactionAndCheckTimestamps (newObject, changedObject, unchangedObject);
-
-      listenerMock.VerifyAllExpectations();
+      objectEventReceiverMock.AssertWasCalled (mock => mock.Committing (newObject));
+      objectEventReceiverMock.AssertWasCalled (mock => mock.Committed (newObject));
+      transactionEventReceiverMock.AssertWasCalled (mock => mock.Committing (TestableClientTransaction, newObject, changedObject, unchangedObject));
+      transactionEventReceiverMock.AssertWasCalled (mock => mock.Committed (TestableClientTransaction, newObject, changedObject, unchangedObject));
 
       Assert.That (newObject.State, Is.EqualTo (StateType.Unchanged));
       CheckNotMarkedAsChanged (newObject);
@@ -229,20 +235,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
         Assert.That (unchangedObject.State, Is.EqualTo (StateType.Changed));
         CheckMarkedAsChanged (unchangedObject);
 
+        var objectEventReceiverMock = MockRepository.GenerateMock<DomainObjectMockEventReceiver> (newObject);
+        var transactionEventReceiverMock = MockRepository.GenerateMock<ClientTransactionMockEventReceiver> (ClientTransaction.Current);
         var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (ClientTransaction.Current);
         try
         {
-          listenerMock.Expect (
-              mock => mock.TransactionCommitting (
-                  Arg.Is (ClientTransaction.Current),
-                  Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { newObject, changedObject, unchangedObject }),
-                  Arg<ICommittingEventRegistrar>.Is.Anything));
-          listenerMock.Expect (
-              mock => mock.TransactionCommitValidate (
-                  Arg.Is (ClientTransaction.Current),
-                  Arg<ReadOnlyCollection<PersistableData>>.Matches (
-                      x => x.Select (d => d.DomainObject).SetEquals (new[] { newObject, changedObject, unchangedObject }))));
-
           ClientTransaction.Current.Commit();
         }
         finally
@@ -250,7 +247,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
           ClientTransactionTestHelper.RemoveListener (ClientTransaction.Current, listenerMock);
         }
 
-        listenerMock.VerifyAllExpectations();
+        listenerMock.AssertWasCalled (
+                      mock => mock.TransactionCommitting (
+                          Arg.Is (ClientTransaction.Current),
+                          Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { newObject, changedObject, unchangedObject }),
+                          Arg<ICommittingEventRegistrar>.Is.Anything));
+        listenerMock.AssertWasCalled (
+            mock => mock.TransactionCommitValidate (
+                Arg.Is (ClientTransaction.Current),
+                Arg<ReadOnlyCollection<PersistableData>>.Matches (
+                    x => x.Select (d => d.DomainObject).SetEquals (new[] { newObject, changedObject, unchangedObject }))));
+        objectEventReceiverMock.AssertWasCalled (mock => mock.Committing (newObject));
+        objectEventReceiverMock.AssertWasCalled (mock => mock.Committed (newObject));
+        transactionEventReceiverMock.AssertWasCalled (mock => mock.Committing (ClientTransaction.Current, newObject, changedObject, unchangedObject));
+        transactionEventReceiverMock.AssertWasCalled (mock => mock.Committed (ClientTransaction.Current, newObject, changedObject, unchangedObject));
 
         Assert.That (newObject.State, Is.EqualTo (StateType.Unchanged));
         CheckNotMarkedAsChanged (newObject);
@@ -266,6 +276,88 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       CheckMarkedAsChanged (changedObject);
       Assert.That (unchangedObject.State, Is.EqualTo (StateType.Changed));
       CheckMarkedAsChanged (unchangedObject);
+    }
+
+    [Test]
+    public void CommitSub_Nested ()
+    {
+      var domainObject = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
+      CheckNotMarkedAsChanged (domainObject);
+      Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        CheckNotMarkedAsChanged (domainObject);
+        Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
+
+        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+        {
+          domainObject.RegisterForCommit();
+
+          CheckMarkedAsChanged (domainObject);
+          Assert.That (domainObject.State, Is.EqualTo (StateType.Changed));
+
+          using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+          {
+            CheckNotMarkedAsChanged (domainObject);
+            Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
+
+            ++domainObject.Int32Property;
+
+            CheckNotMarkedAsChanged (domainObject);
+            Assert.That (domainObject.State, Is.EqualTo (StateType.Changed));
+
+            ClientTransaction.Current.Commit ();
+
+            CheckNotMarkedAsChanged (domainObject);
+            Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
+          }
+          CheckMarkedAsChanged (domainObject);
+
+          ClientTransaction.Current.Commit ();
+
+          CheckNotMarkedAsChanged (domainObject);
+          Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
+        }
+
+        CheckMarkedAsChanged (domainObject);
+        Assert.That (domainObject.State, Is.EqualTo (StateType.Changed));
+
+        ClientTransaction.Current.Commit ();
+
+        CheckNotMarkedAsChanged (domainObject);
+        Assert.That (domainObject.State, Is.EqualTo (StateType.Unchanged));
+      }
+
+      CheckMarkedAsChanged (domainObject);
+      Assert.That (domainObject.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void CommitSub_ObjectNewInParent ()
+    {
+      var newObject = ClassWithAllDataTypes.NewObject();
+      CheckNotMarkedAsChanged (newObject);
+      Assert.That (newObject.State, Is.EqualTo (StateType.New));
+
+      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
+      {
+        CheckNotMarkedAsChanged (newObject);
+        Assert.That (newObject.State, Is.EqualTo (StateType.Unchanged));
+
+        newObject.RegisterForCommit();
+
+        CheckMarkedAsChanged (newObject);
+        Assert.That (newObject.State, Is.EqualTo (StateType.Changed));
+
+        ClientTransaction.Current.Commit ();
+
+        CheckNotMarkedAsChanged (newObject);
+        Assert.That (newObject.State, Is.EqualTo (StateType.Unchanged));
+      }
+
+      CheckNotMarkedAsChanged (newObject);
+      Assert.That (newObject.State, Is.EqualTo (StateType.New));
     }
 
     [Test]
@@ -292,15 +384,20 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
       Assert.That (unchangedObject.State, Is.EqualTo (StateType.Changed));
       CheckMarkedAsChanged (unchangedObject);
 
+      var objectEventReceiverMock = MockRepository.GenerateMock<DomainObjectMockEventReceiver> (unchangedObject);
+      var transactionEventReceiverMock = MockRepository.GenerateMock<ClientTransactionMockEventReceiver> (TestableClientTransaction);
       var listenerMock = ClientTransactionTestHelper.CreateAndAddListenerMock (TestableClientTransaction);
-      listenerMock.Expect (
-          mock => mock.TransactionRollingBack (
-              Arg.Is (TestableClientTransaction),
-              Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { newObject, changedObject, unchangedObject })));
 
       TestableClientTransaction.Rollback();
 
-      listenerMock.VerifyAllExpectations ();
+      listenerMock.AssertWasCalled (
+          mock => mock.TransactionRollingBack (
+            Arg.Is (TestableClientTransaction),
+            Arg<ReadOnlyCollection<DomainObject>>.List.Equivalent (new[] { newObject, changedObject, unchangedObject })));
+      objectEventReceiverMock.AssertWasCalled (mock => mock.RollingBack (unchangedObject));
+      objectEventReceiverMock.AssertWasCalled (mock => mock.RolledBack (unchangedObject));
+      transactionEventReceiverMock.AssertWasCalled (mock => mock.RollingBack (TestableClientTransaction, newObject, changedObject, unchangedObject));
+      transactionEventReceiverMock.AssertWasCalled (mock => mock.RolledBack (TestableClientTransaction, changedObject, unchangedObject));
 
       Assert.That (newObject.State, Is.EqualTo (StateType.Invalid));
       Assert.That (changedObject.State, Is.EqualTo (StateType.Unchanged));

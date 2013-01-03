@@ -107,17 +107,6 @@ namespace Remotion.Data.DomainObjects
     /// </remarks>
     void RegisterForCommit ();
 
-    // TODO 1961: Obsolete
-    /// <summary>
-    /// Marks the <see cref="DomainObject"/> as changed. If the object's previous <see cref="DomainObject.State"/> was <see cref="StateType.Unchanged"/>, it
-    /// will be <see cref="StateType.Changed"/> after this method has been called.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
-    /// New or deleted objects cannot be marked as changed.</exception>
-    /// <exception cref="ObjectInvalidException">The object is invalid in the associated <see cref="ClientTransaction"/>.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the associated transaction.</exception>
-    void MarkAsChanged ();
-
     /// <summary>
     /// Ensures that the <see cref="DomainObject"/>'s data has been loaded. If it hasn't, this method causes the object's data to be loaded.
     /// If the object's data can't be found, an exception is thrown.
@@ -158,5 +147,8 @@ namespace Remotion.Data.DomainObjects
     /// <param name="action">The delegate to be executed. The delegate gets the <see cref="DomainObject"/> and the <see cref="ClientTransaction"/>
     /// associated with this <see cref="IDomainObjectTransactionContext"/> as its parameters.</param>
     void Execute (Action<DomainObject, ClientTransaction> action);
+
+    [Obsolete ("This method has been replaced by RegisterForCommit. (1.13.181.0)", true)]
+    void MarkAsChanged ();
   }
 }

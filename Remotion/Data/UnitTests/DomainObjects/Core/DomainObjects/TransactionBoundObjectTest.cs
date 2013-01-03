@@ -177,12 +177,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.DomainObjects
     }
 
     [Test]
-    public void MarkAsChanged ()
+    public void RegisterForCommit ()
     {
       Order order = GetBound<Order> (DomainObjectIDs.Order1);
-      Assert.AreEqual (StateType.Unchanged, order.State);
-      order.MarkAsChanged();
-      Assert.AreEqual (StateType.Changed, order.State);
+      Assert.That (order.State, Is.EqualTo (StateType.Unchanged));
+      order.RegisterForCommit();
+      Assert.That (order.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]

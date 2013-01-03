@@ -69,12 +69,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       throw CreateInvalidOperationException();
     }
 
-    // TODO 1961: Obsolete
-    public void MarkAsChanged()
-    {
-      throw CreateInvalidOperationException();
-    }
-
     public void EnsureDataAvailable ()
     {
       throw CreateInvalidOperationException();
@@ -98,6 +92,12 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     private InvalidOperationException CreateInvalidOperationException ()
     {
       return new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
+    }
+
+    [Obsolete ("This method has been replaced by RegisterForCommit. (1.13.181.0)", true)]
+    public void MarkAsChanged ()
+    {
+      throw new NotImplementedException ();
     }
   }
 }

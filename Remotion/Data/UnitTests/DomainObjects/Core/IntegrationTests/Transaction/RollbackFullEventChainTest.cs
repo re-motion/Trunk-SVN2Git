@@ -60,13 +60,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
             .ExtensionOptions
           // This triggers one additional run
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged ()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectRollingBackEventsWithCustomOptions (
             Tuple.Create (UnchangedObject, UnchangedObjectEventReceiverMock))
             .ExtensionOptions
           // This does not trigger an additional run because the object is no longer new to the Rollback set
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged ()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectRolledBackEvents (
             Tuple.Create (ChangedObject, ChangedObjectEventReceiverMock),
@@ -91,13 +91,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
             .TransactionOptions
           // This triggers one additional run
-            .WhenCalled (mi => MarkAsChangedWithDisabledListener (UnchangedObject));
+            .WhenCalled (mi => RegisterForCommitWithDisabledListener (UnchangedObject));
 
         ExpectRollingBackEventsWithCustomOptions (
             Tuple.Create (UnchangedObject, UnchangedObjectEventReceiverMock))
             .TransactionOptions
           // This does not trigger an additional run because the object is no longer new to the Rollback set
-            .WhenCalled (mi => MarkAsChangedWithDisabledListener (UnchangedObject));
+            .WhenCalled (mi => RegisterForCommitWithDisabledListener (UnchangedObject));
 
         ExpectRolledBackEvents (
             Tuple.Create (ChangedObject, ChangedObjectEventReceiverMock),
@@ -122,13 +122,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
             .DomainObjectOptions[1]
           // This triggers one additional run
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged ()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectRollingBackEventsWithCustomOptions (
             Tuple.Create (UnchangedObject, UnchangedObjectEventReceiverMock))
             .DomainObjectOptions[0]
           // This does not trigger an additional run because the object is no longer new to the Rollback set
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged ()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectRolledBackEvents (
             Tuple.Create (ChangedObject, ChangedObjectEventReceiverMock),

@@ -99,7 +99,7 @@ namespace Remotion.Data.DomainObjects
   ///   <item>the domain model should be programmed in such a way that all changes to the collection always cause that object to be included in the 
   ///   respective commit set as well.</item>
   /// </list>
-  /// This can be achieved by calling the <see cref="DomainObject.MarkAsChanged"/> method in the respective places. That way, a 
+  /// This can be achieved by calling the <see cref="DomainObject.RegisterForCommit"/> method in the respective places. That way, a 
   /// <see cref="ConcurrencyViolationException"/> will be raised on <see cref="ClientTransaction.Commit"/> if the collection changes while the value 
   /// is being calculated.
   /// </para>

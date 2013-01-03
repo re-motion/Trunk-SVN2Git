@@ -47,7 +47,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       _changedObject = _clientTransaction.Execute (() =>
       {
         var instance = Order.GetObject (DomainObjectIDs.Order1);
-        instance.MarkAsChanged();
+        instance.RegisterForCommit();
         return instance;
       });
       _deletedObject = _clientTransaction.Execute (() =>
@@ -96,7 +96,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           Throws.ArgumentException.With.Message.EqualTo (
               string.Format (
                   "The given DomainObject '{0}' cannot be registered due to its state (Invalid). Only objects that are part of the commit "
-                  + "set can be registered. Use MarkAsChanged to add an unchanged object to the commit set.\r\nParameter name: domainObjects",
+                  + "set can be registered. Use RegisterForCommit to add an unchanged object to the commit set.\r\nParameter name: domainObjects",
                   _invalidObject.ID)));
 
       Assert.That (
@@ -104,7 +104,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           Throws.ArgumentException.With.Message.EqualTo (
             string.Format (
                   "The given DomainObject '{0}' cannot be registered due to its state (Unchanged). Only objects that are part of the commit "
-                  + "set can be registered. Use MarkAsChanged to add an unchanged object to the commit set.\r\nParameter name: domainObjects", 
+                  + "set can be registered. Use RegisterForCommit to add an unchanged object to the commit set.\r\nParameter name: domainObjects", 
                   _unchangedObject.ID)));
 
       Assert.That (
@@ -112,7 +112,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
           Throws.ArgumentException.With.Message.EqualTo (
             string.Format (
                   "The given DomainObject '{0}' cannot be registered due to its state (NotLoadedYet). Only objects that are part of the commit "
-                  + "set can be registered. Use MarkAsChanged to add an unchanged object to the commit set.\r\nParameter name: domainObjects", 
+                  + "set can be registered. Use RegisterForCommit to add an unchanged object to the commit set.\r\nParameter name: domainObjects", 
                   _notLoadedYetObject.ID)));
     }
   }

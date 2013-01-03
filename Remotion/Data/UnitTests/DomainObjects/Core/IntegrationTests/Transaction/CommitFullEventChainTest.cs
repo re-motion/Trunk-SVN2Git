@@ -62,12 +62,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
             // This triggers one additional run
             .ExtensionOptions
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectCommittingEventsWithCustomOptions (Tuple.Create (UnchangedObject, UnchangedObjectEventReceiverMock))
             // This does not trigger an additional run because the object is no longer new to the commit set
             .ExtensionOptions
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged ()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectCommitValidateEvents (ChangedObject, NewObject, DeletedObject, UnchangedObject);
 
@@ -94,12 +94,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
           // This triggers one additional run
             .TransactionOptions
-            .WhenCalled (mi => MarkAsChangedWithDisabledListener(UnchangedObject));
+            .WhenCalled (mi => RegisterForCommitWithDisabledListener(UnchangedObject));
 
         ExpectCommittingEventsWithCustomOptions (Tuple.Create (UnchangedObject, UnchangedObjectEventReceiverMock))
           // This does not trigger an additional run because the object is no longer new to the commit set
             .TransactionOptions
-            .WhenCalled (mi => MarkAsChangedWithDisabledListener(UnchangedObject));
+            .WhenCalled (mi => RegisterForCommitWithDisabledListener(UnchangedObject));
 
         ExpectCommitValidateEvents (ChangedObject, NewObject, DeletedObject, UnchangedObject);
 
@@ -126,12 +126,12 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             Tuple.Create (DeletedObject, DeletedObjectEventReceiverMock))
           // This triggers one additional run
             .DomainObjectOptions[1]
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged ()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectCommittingEventsWithCustomOptions (Tuple.Create (UnchangedObject, UnchangedObjectEventReceiverMock))
           // This does not trigger an additional run because the object is no longer new to the commit set
             .DomainObjectOptions[0]
-            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.MarkAsChanged ()));
+            .WhenCalled (mi => Transaction.Execute (() => UnchangedObject.RegisterForCommit()));
 
         ExpectCommitValidateEvents (ChangedObject, NewObject, DeletedObject, UnchangedObject);
 

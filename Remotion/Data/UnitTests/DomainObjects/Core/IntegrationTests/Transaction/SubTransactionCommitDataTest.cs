@@ -449,49 +449,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
     }
 
     [Test]
-    public void HasBeenMarkedChangedHandling_WithNestedSubTransactions ()
-    {
-      SetDatabaseModifyable ();
-
-      ClassWithAllDataTypes cwadt = ClassWithAllDataTypes.GetObject (DomainObjectIDs.ClassWithAllDataTypes1);
-      Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
-
-      using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-      {
-        Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
-
-        using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-        {
-          cwadt.MarkAsChanged ();
-          Assert.AreEqual (StateType.Changed, cwadt.InternalDataContainer.State);
-
-          using (ClientTransaction.Current.CreateSubTransaction ().EnterDiscardingScope ())
-          {
-            Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
-            ++cwadt.Int32Property;
-            Assert.AreEqual (StateType.Changed, cwadt.InternalDataContainer.State);
-            ClientTransaction.Current.Commit ();
-            Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
-          }
-
-          ClientTransaction.Current.Commit ();
-
-          Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
-        }
-
-        Assert.AreEqual (StateType.Changed, cwadt.InternalDataContainer.State);
-        ClientTransaction.Current.Commit ();
-        Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
-      }
-
-      Assert.AreEqual (StateType.Changed, cwadt.InternalDataContainer.State);
-
-      TestableClientTransaction.Commit ();
-
-      Assert.AreEqual (StateType.Unchanged, cwadt.InternalDataContainer.State);
-    }
-
-    [Test]
     public void PropertyValue_HasChangedHandling_WithNestedSubTransactions ()
     {
       SetDatabaseModifyable ();

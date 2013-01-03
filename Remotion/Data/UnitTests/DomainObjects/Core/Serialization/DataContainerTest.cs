@@ -74,15 +74,15 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Serialization
     public void DataContainer_MarkAsChanged_Contents()
     {
       Employee employee = Employee.GetObject (DomainObjectIDs.Employee3);
-
       Computer computer = employee.Computer;
-      computer.MarkAsChanged ();
-
       DataContainer dataContainer = computer.InternalDataContainer;
+      dataContainer.MarkAsChanged();
+
       DataContainer deserializedDataContainer = FlattenedSerializer.SerializeAndDeserialize (dataContainer);
 
-      Assert.AreEqual (dataContainer.ID, deserializedDataContainer.ID);
-      Assert.AreEqual (StateType.Changed, deserializedDataContainer.State);
+      Assert.That (deserializedDataContainer.ID, Is.EqualTo (dataContainer.ID));
+      Assert.That (deserializedDataContainer.HasBeenMarkedChanged, Is.True);
+      Assert.That (deserializedDataContainer.State, Is.EqualTo (StateType.Changed));
     }
 
     [Test]

@@ -625,21 +625,6 @@ namespace Remotion.Data.DomainObjects
       DefaultTransactionContext.RegisterForCommit();
     }
 
-    // TODO 1961: Make obsolete
-    /// <summary>
-    /// Marks the <see cref="DomainObject"/> as changed in the default transaction, ie. in its binding transaction or - if
-    /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If the object's previous <see cref="State"/> was <see cref="StateType.Unchanged"/>, it
-    /// will be <see cref="StateType.Changed"/> after this method has been called.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">This object is not in state <see cref="StateType.Changed"/> or <see cref="StateType.Unchanged"/>.
-    /// New or deleted objects cannot be marked as changed.</exception>
-    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
-    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the current transaction.</exception>
-    public void MarkAsChanged ()
-    {
-      DefaultTransactionContext.MarkAsChanged ();
-    }
-
     /// <summary>
     /// Ensures that this <see cref="DomainObject"/>'s data has been loaded into the default transaction, ie. in its binding transaction or - if
     /// none - <see cref="DomainObjects.ClientTransaction.Current"/>. If it hasn't, this method causes the object's data to be loaded.
@@ -764,9 +749,9 @@ namespace Remotion.Data.DomainObjects
     /// <para>
     /// While this method is being executed, it is not possible to access any properties or methods of the DomainObject that read or modify the state 
     /// or data of the object in a <see cref="ClientTransaction"/>. All automatically implemented properties, <see cref="CurrentProperty"/>, 
-    /// <see cref="Properties"/>, <see cref="State"/>, <see cref="Timestamp"/>, <see cref="MarkAsChanged"/>, <see cref="EnsureDataAvailable"/>, etc. 
-    /// will throw <see cref="InvalidOperationException"/>. It is possible to call <see cref="GetBindingTransaction"/> on the object (if the object 
-    /// is bound), and the object is guaranteed to be enlisted in the <see cref="ClientTransaction.Current"/> transaction.
+    /// <see cref="Properties"/>, <see cref="State"/>, <see cref="Timestamp"/>, <see cref="RegisterForCommit"/>, <see cref="EnsureDataAvailable"/>, 
+    /// etc. will throw <see cref="InvalidOperationException"/>. It is possible to call <see cref="GetBindingTransaction"/> on the object (if the 
+    /// object is bound), and the object is guaranteed to be enlisted in the <see cref="ClientTransaction.Current"/> transaction.
     /// </para>
     /// <para>The reason why it is explicitly disallowed to access mapped properties from the notification method is that 
     /// <see cref="OnReferenceInitializing"/> is usually called when no data has yet been loaded for the object. Accessing a property would cause the 
@@ -939,6 +924,12 @@ namespace Remotion.Data.DomainObjects
     {
       if (_isReferenceInitializeEventExecuting)
         throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
+    }
+
+    [Obsolete ("This method has been replaced by RegisterForCommit. (1.13.181.0)", true)]
+    public void MarkAsChanged ()
+    {
+      throw new NotImplementedException ();
     }
   }
 }

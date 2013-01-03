@@ -334,7 +334,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
           () =>
           {
             var instance = Order.GetObject (DomainObjectIDs.Order1);
-            instance.MarkAsChanged ();
+            instance.RegisterForCommit();
             return instance;
           });
     }
@@ -359,13 +359,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       return _mockRepository.StrictMock<DomainObjectMockEventReceiver> (changedObject);
     }
 
-    protected void MarkAsChangedWithDisabledListener (DomainObject domainObject)
+    protected void RegisterForCommitWithDisabledListener (DomainObject domainObject)
     {
-      // WORKAROUND: Remove listener before calling MarkAsChanged to avoid the event triggering mocked methods.
+      // WORKAROUND: Remove listener before calling RegisterForCommit to avoid the event triggering mocked methods.
       // (Yes, the listener is a dynamic mock, but due to a bug in Rhino.Mocks, triggering an unexpected mocked method method will destroy the
       // MockRepository's replay state...)
       ClientTransactionTestHelper.RemoveListener (Transaction, ListenerMock);
-      Transaction.Execute (domainObject.MarkAsChanged);
+      Transaction.Execute (domainObject.RegisterForCommit);
       ClientTransactionTestHelper.AddListener (Transaction, ListenerMock);
     }
   }
