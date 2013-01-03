@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Remotion.Data.DomainObjects;
+using Remotion.Data.DomainObjects.Infrastructure;
 using Remotion.Data.DomainObjects.Queries;
 using Remotion.Data.UnitTests.DomainObjects.TestDomain;
 using Rhino.Mocks;
@@ -87,7 +87,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
                   BoolValue = false,
                   EnumValue = ClassWithAllDataTypes.EnumType.Value1,
                   ExtensibleEnumValue = Color.Values.Red()
-              },
+              }
           };
 
       Assert.That (result, Is.EquivalentTo (expected));
@@ -96,18 +96,16 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Queries
     [Test]
     public void InvokesFilterQueryResultEvent ()
     {
-      var transactionExtensionMock = MockRepository.GenerateMock<IClientTransactionExtension>();
+      var listenerMock = MockRepository.GenerateMock<IClientTransactionListener>();
       
       var fakeResult = new[] { new object[0] };
-      transactionExtensionMock.Stub (stub => stub.Key).Return ("CustomQueryExtension");
-      transactionExtensionMock
+      listenerMock
           .Expect (
               mock => mock.FilterCustomQueryResult (
                   Arg.Is (TestableClientTransaction), Arg.Is(_query), Arg<IEnumerable<object[]>>.Matches(e=>e.Count()==2)))
           .Return (fakeResult);
-      transactionExtensionMock.Replay ();
 
-      TestableClientTransaction.Extensions.Add (transactionExtensionMock);
+      TestableClientTransaction.AddListener (listenerMock);
       
       var result = QueryManager.GetCustom (_query, QueryResultRowTestHelper.ExtractRawValues);
 

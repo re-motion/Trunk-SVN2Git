@@ -96,9 +96,9 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
       var fakeQueryResultRow2 = MockRepository.GenerateStub<IQueryResultRow> ();
       var fakeQueryResultRow3 = MockRepository.GenerateStub<IQueryResultRow> ();
 
-      using (ExtensionStrictMock.GetMockRepository ().Ordered ())
+      using (ListenerDynamicMock.GetMockRepository ().Ordered ())
       {
-        ExtensionStrictMock
+        ListenerDynamicMock
             .Expect (
                 mock => mock.FilterCustomQueryResult (
                     Arg.Is (InactiveRootTransaction),
@@ -107,7 +107,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .Return (new[] { fakeQueryResultRow1 })
             .WhenCalled (mi => Assert.That (InactiveRootTransaction.IsActive, Is.False));
 
-        ExtensionStrictMock
+        ListenerDynamicMock
             .Expect (
                 mock => mock.FilterCustomQueryResult (
                     Arg.Is (InactiveMiddleTransaction),
@@ -116,7 +116,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .Return (new[] { fakeQueryResultRow2 })
             .WhenCalled (mi => Assert.That (InactiveMiddleTransaction.IsActive, Is.False));
 
-        ExtensionStrictMock
+        ListenerDynamicMock
             .Expect (
                 mock => mock.FilterCustomQueryResult (
                     Arg.Is (ActiveSubTransaction),
@@ -125,11 +125,13 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests.Transactio
             .Return (new[] { fakeQueryResultRow3 })
             .WhenCalled (mi => Assert.That (ActiveSubTransaction.IsActive, Is.True));
       }
-      ExtensionStrictMock.Replay();
+      ListenerDynamicMock.Replay ();
+
+      InstallListenerMock();
 
       var result = ActiveSubTransaction.QueryManager.GetCustom (query, qrr => qrr).ToList();
 
-      ExtensionStrictMock.VerifyAllExpectations ();
+      ListenerDynamicMock.VerifyAllExpectations ();
       Assert.That (result, Is.EqualTo (new[] { fakeQueryResultRow3 }));
     }
   }

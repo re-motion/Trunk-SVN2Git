@@ -282,7 +282,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       if (s_log.IsDebugEnabled)
       {
         s_log.DebugFormat (
-            "{0} FilterCustomQueryResult: {1} ({2}): lazy results of custom query cannot be logged",
+            "{0} FilterCustomQueryResult: {1} ({2})",
             clientTransaction.ID,
             query.ID,
             query.Statement);

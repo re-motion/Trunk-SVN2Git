@@ -67,9 +67,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
       var fakeResult = new QueryResult<DomainObject> (MockRepository.GenerateStub<IQuery>(), new DomainObject[0]);
       CheckNopEvent (e => e.FilterQueryResult (null, fakeResult), fakeResult);
 
-      var fakeCustomResult = new[] { new object() };
-      CheckNopEvent (e => e.FilterCustomQueryResult (null, null, fakeCustomResult), fakeCustomResult);
-
       CheckNopEvent (e => e.Committing (null, null, null));
       CheckNopEvent (e => e.CommitValidate (null, null));
       CheckNopEvent (e => e.Committed (null, null));

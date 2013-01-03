@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Remotion.Data.DomainObjects.DataManagement;
 using Remotion.Data.DomainObjects.Infrastructure.ObjectPersistence;
@@ -154,11 +153,6 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public override QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult)
     {
       return _extension.FilterQueryResult (clientTransaction, queryResult);
-    }
-
-    public override IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
-    {
-      return _extension.FilterCustomQueryResult (clientTransaction, query, results);
     }
 
     public override void TransactionCommitting (

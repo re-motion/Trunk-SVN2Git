@@ -160,7 +160,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     // User event
     QueryResult<T> FilterQueryResult<T> (ClientTransaction clientTransaction, QueryResult<T> queryResult) where T : DomainObject;
-    // User event
+    // Infrastructure event, may become user event if needed
     IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results);
 
     // User event

@@ -338,7 +338,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var results = new[] { "item" };
       CheckLoggingMethod (
           () => _listener.FilterCustomQueryResult (_clientTransaction, queryStub, results),
-          string.Format ("{0} FilterCustomQueryResult: a_query (SELECT SMTH): lazy results of custom query cannot be logged", _clientTransaction.ID));
+          string.Format ("{0} FilterCustomQueryResult: a_query (SELECT SMTH)", _clientTransaction.ID));
     }
 
     [Test]

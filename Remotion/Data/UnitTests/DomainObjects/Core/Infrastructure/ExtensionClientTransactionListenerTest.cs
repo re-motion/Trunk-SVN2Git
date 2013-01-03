@@ -103,13 +103,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
       var queryResult = new QueryResult<Order> (queryStub, new Order[0]);
       var fakeQueryResult = new QueryResult<Order> (queryStub, new[] { DomainObjectMother.CreateFakeObject<Order>() });
       ExpectDelegation (l => l.FilterQueryResult (_clientTransaction, queryResult), e => e.FilterQueryResult (_clientTransaction, queryResult), fakeQueryResult);
-
-      var customResult = new[] { new object() };
-      var fakeCustomResult = new[] { new object (), new object() };
-      ExpectDelegation (
-          l => l.FilterCustomQueryResult (_clientTransaction, queryStub, customResult),
-          e => e.FilterCustomQueryResult (_clientTransaction, queryStub, customResult),
-          fakeCustomResult);
     }
 
     private void ExpectDelegation (Action<IClientTransactionListener> listenerAction, Action<IClientTransactionExtension> expectedExtensionAction)

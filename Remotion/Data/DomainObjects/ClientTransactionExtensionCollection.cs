@@ -15,7 +15,6 @@
 // along with re-motion; if not, see http://www.gnu.org/licenses.
 // 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -347,16 +346,6 @@ namespace Remotion.Data.DomainObjects
       return this
           .Cast<IClientTransactionExtension>()
           .Aggregate (queryResult, (current, extension) => extension.FilterQueryResult (clientTransaction, current));
-    }
-
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    public IEnumerable<T> FilterCustomQueryResult<T> (ClientTransaction clientTransaction, IQuery query, IEnumerable<T> results)
-    {
-      ArgumentUtility.CheckNotNull ("results", results);
-
-      return this
-          .Cast<IClientTransactionExtension> ()
-          .Aggregate (results, (current, extension) => extension.FilterCustomQueryResult (clientTransaction, query, current));
     }
 
     [EditorBrowsable (EditorBrowsableState.Never)]
