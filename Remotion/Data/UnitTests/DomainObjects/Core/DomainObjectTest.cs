@@ -408,6 +408,17 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core
     }
 
     [Test]
+    public void RegisterForCommit ()
+    {
+      Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));
+      _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Unchanged)));
+
+      _transaction.Execute (order.RegisterForCommit);
+
+      _transaction.Execute (() => Assert.That (order.State, Is.EqualTo (StateType.Changed)));
+    }
+
+    [Test]
     public void MarkAsChanged ()
     {
       Order order = _transaction.Execute (() => Order.GetObject (DomainObjectIDs.Order1));

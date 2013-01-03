@@ -81,7 +81,22 @@ namespace Remotion.Data.DomainObjects.Infrastructure
       }
     }
 
-    public void MarkAsChanged()
+    public void RegisterForCommit ()
+    {
+      DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
+
+      var dataContainer = ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true);
+      if (dataContainer.State == StateType.Deleted)
+        throw new ObjectDeletedException (DomainObject.ID);
+
+      if (dataContainer.State == StateType.New)
+        return;
+
+      dataContainer.MarkAsChanged();
+    }
+
+    // TODO 1961: Obsolete
+    public void MarkAsChanged ()
     {
       DomainObjectCheckUtility.CheckIfRightTransaction (DomainObject, ClientTransaction);
       DataContainer dataContainer = ClientTransaction.DataManager.GetDataContainerWithLazyLoad (DomainObject.ID, throwOnNotFound: true);

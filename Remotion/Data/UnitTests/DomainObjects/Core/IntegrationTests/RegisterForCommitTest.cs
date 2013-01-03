@@ -31,7 +31,6 @@ using Remotion.FunctionalProgramming;
 namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
 {
   [TestFixture]
-  [Ignore ("TODO 1961")]
   public class RegisterForCommitTest : ClientTransactionBaseTest
   {
     [Test]
@@ -336,20 +335,6 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.IntegrationTests
     private void CheckNotMarkedAsChanged (ClassWithAllDataTypes domainObject)
     {
       Assert.That (domainObject.InternalDataContainer.HasBeenMarkedChanged, Is.False);
-    }
-  }
-
-  public static class Temp
-  {
-    public static void RegisterForCommit (this DomainObject domainObject)
-    {
-      // TODO 1961
-      //domainObject.EnsureDataAvailable ();
-      //if (domainObject.State == StateType.Deleted)
-      //  throw new ObjectDeletedException (domainObject.ID);
-
-      //if (domainObject.State != StateType.New)
-      //  domainObject.MarkAsChanged();
     }
   }
 }

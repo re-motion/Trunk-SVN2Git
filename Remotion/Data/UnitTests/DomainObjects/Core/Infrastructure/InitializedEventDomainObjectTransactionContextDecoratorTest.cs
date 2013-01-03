@@ -40,6 +40,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       CheckForbidden (ctx => Dev.Null = ctx.State);
       CheckForbidden (ctx => Dev.Null = ctx.Timestamp);
+      CheckForbidden (ctx => ctx.RegisterForCommit ());
       CheckForbidden (ctx => ctx.MarkAsChanged ());
       CheckForbidden (ctx => ctx.EnsureDataAvailable ());
       CheckForbidden (ctx => ctx.TryEnsureDataAvailable ());
@@ -72,17 +73,10 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     {
       var contextMock = MockRepository.GenerateMock<IDomainObjectTransactionContext> ();
 
-      try
-      {
-        action (new InitializedEventDomainObjectTransactionContextDecorator (contextMock));
-        Assert.Fail ("Expected exception.");
-      }
-      catch (InvalidOperationException ex)
-      {
-        Assert.That (
-            ex.Message, 
-            Is.EqualTo ("While the OnReferenceInitializing event is executing, this member cannot be used."), "Invalid exception message.");
-      }
+      Assert.That (
+          () => action (new InitializedEventDomainObjectTransactionContextDecorator (contextMock)), 
+          Throws.InvalidOperationException.With.Message.EqualTo (
+              "While the OnReferenceInitializing event is executing, this member cannot be used."));
 
       contextMock.AssertWasNotCalled (action);
     }

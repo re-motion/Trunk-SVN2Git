@@ -58,6 +58,57 @@ namespace Remotion.Data.DomainObjects
     object Timestamp { get; }
 
     /// <summary>
+    /// Ensures that the <see cref="DomainObject"/> is included in the commit set of the <see cref="ClientTransaction"/>. 
+    /// The object may not be in state <see cref="StateType.Deleted"/>, and if
+    /// its state is <see cref="StateType.NotLoadedYet"/>, this method loads the object's data.
+    /// </summary>
+    /// <exception cref="ObjectDeletedException">The object has already been deleted.</exception>
+    /// <exception cref="ObjectInvalidException">The object is invalid in the transaction.</exception>
+    /// <exception cref="ClientTransactionsDifferException">The object cannot be used in the transaction.</exception>
+    /// <remarks>
+    /// <para>
+    /// This operation affects the <see cref="DomainObject"/> as follows (in the default transaction):
+    /// <list type="table">
+    /// <item>
+    /// <term><see cref="StateType.NotLoadedYet"/></term>
+    /// <description>The object is loaded and then handled according to its new state, see below.</description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="StateType.Unchanged"/></term>
+    /// <description>The object's state is modified to be <see cref="StateType.Changed"/>, even though no property value is actually changed. The 
+    /// object will then behave like any <see cref="StateType.Changed"/> object. On commit (of a root transaction), it is checked for concurrency 
+    /// violations, and its timestamp is updated.</description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="StateType.Changed"/></term>
+    /// <description>The object's state is modified so that even when all changed properties are reset to their original values (so that it would
+    /// usually become <see cref="StateType.Unchanged"/> again), it still remains <see cref="StateType.Changed"/>. In that case, the object will 
+    /// behave like in the <see cref="StateType.Unchanged"/> case above.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="StateType.New"/></term>
+    /// <description>The method has no effect.</description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="StateType.Deleted"/></term>
+    /// <description>An <see cref="ObjectDeletedException"/> is thrown.</description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="StateType.Invalid"/></term>
+    /// <description>An <see cref="ObjectInvalidException"/> is thrown.</description>
+    /// </item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// When the <see cref="ClientTransaction"/> affected by this operation is rolled back (before being committed), any modifications made by this 
+    /// API are also rolled back.
+    /// </para>
+    /// </remarks>
+    void RegisterForCommit ();
+
+    // TODO 1961: Obsolete
+    /// <summary>
     /// Marks the <see cref="DomainObject"/> as changed. If the object's previous <see cref="DomainObject.State"/> was <see cref="StateType.Unchanged"/>, it
     /// will be <see cref="StateType.Changed"/> after this method has been called.
     /// </summary>

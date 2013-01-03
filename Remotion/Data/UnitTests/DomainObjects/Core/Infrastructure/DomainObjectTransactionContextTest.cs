@@ -138,6 +138,86 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
     }
 
     [Test]
+    public void RegisterForCommit_Unchanged ()
+    {
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Unchanged));
+      _loadedOrder1Context.RegisterForCommit ();
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
+      Assert.That (GetDataContainer (_loadedOrder1Context).HasBeenMarkedChanged, Is.True);
+    }
+
+    [Test]
+    public void RegisterForCommit_Changed ()
+    {
+      _loadedOrder1.OrderNumber = 2;
+
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
+      _loadedOrder1Context.RegisterForCommit ();
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
+      Assert.That (GetDataContainer (_loadedOrder1Context).HasBeenMarkedChanged, Is.True);
+
+      _loadedOrder1.OrderNumber = _loadedOrder1.Properties[typeof (Order), "OrderNumber"].GetOriginalValue<int>();
+
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
+    }
+
+    [Test]
+    public void RegisterForCommit_New ()
+    {
+      Assert.That (_newOrderContext.State, Is.EqualTo (StateType.New));
+      _newOrderContext.RegisterForCommit ();
+
+      Assert.That (_newOrderContext.State, Is.EqualTo (StateType.New));
+      Assert.That (GetDataContainer (_newOrderContext).HasBeenMarkedChanged, Is.False);
+    }
+
+    [Test]
+    public void RegisterForCommit_Deleted ()
+    {
+      DeleteOrder (_loadedOrder1);
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Deleted));
+
+      Assert.That (
+          () => _loadedOrder1Context.RegisterForCommit(),
+          Throws.TypeOf<ObjectDeletedException>().With.Message.StringContaining (_loadedOrder1.ID.ToString()));
+
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Deleted));
+      Assert.That (GetDataContainer (_loadedOrder1Context).HasBeenMarkedChanged, Is.False);
+    }
+
+    [Test]
+    public void RegisterForCommit_Invalid ()
+    {
+      _newOrder.Delete ();
+
+      Assert.That (
+          () => _newOrderContext.RegisterForCommit(), 
+          Throws.TypeOf<ObjectInvalidException>().With.Message.StringContaining (_newOrder.ID.ToString()));
+      Assert.That (_newOrderContext.State, Is.EqualTo (StateType.Invalid));
+    }
+
+    [Test]
+    public void RegisterForCommit_NotLoadedYet ()
+    {
+      UnloadService.UnloadData (_loadedOrder1Context.ClientTransaction, _loadedOrder1.ID);
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.NotLoadedYet));
+
+      _loadedOrder1Context.RegisterForCommit();
+
+      Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Changed));
+      var dataContainer = GetDataContainer (_loadedOrder1Context);
+      Assert.That (dataContainer, Is.Not.Null);
+      Assert.That (dataContainer.HasBeenMarkedChanged, Is.True);
+    }
+
+    [Test]
+    [ExpectedException (typeof (ClientTransactionsDifferException))]
+    public void RegisterForCommit_InvalidTransaction ()
+    {
+      _invalidContext.RegisterForCommit ();
+    }
+
+    [Test]
     public void MarkAsChanged_Unchanged()
     {
       Assert.That (_loadedOrder1Context.State, Is.EqualTo (StateType.Unchanged));
@@ -175,7 +255,7 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
     [Test]
     [ExpectedException (typeof (ObjectInvalidException))]
-    public void MarkAsChanged_Discarded ()
+    public void MarkAsChanged_Invalid ()
     {
       _newOrder.Delete ();
 
@@ -375,6 +455,11 @@ namespace Remotion.Data.UnitTests.DomainObjects.Core.Infrastructure
 
       order.OrderTicket.Delete ();
       order.Delete ();
+    }
+
+    private DataContainer GetDataContainer (DomainObjectTransactionContext transactionContext)
+    {
+      return ClientTransactionTestHelper.GetIDataManager (transactionContext.ClientTransaction).DataContainers[transactionContext.DomainObject.ID];
     }
   }
 }

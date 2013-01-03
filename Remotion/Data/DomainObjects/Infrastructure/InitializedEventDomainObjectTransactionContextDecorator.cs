@@ -44,7 +44,7 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     {
       get
       {
-        throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
+        throw CreateInvalidOperationException();
       }
     }
 
@@ -61,25 +61,28 @@ namespace Remotion.Data.DomainObjects.Infrastructure
 
     public object Timestamp
     {
-      get
-      {
-        throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
-      }
+      get { throw CreateInvalidOperationException(); }
     }
 
+    public void RegisterForCommit ()
+    {
+      throw CreateInvalidOperationException();
+    }
+
+    // TODO 1961: Obsolete
     public void MarkAsChanged()
     {
-      throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
+      throw CreateInvalidOperationException();
     }
 
     public void EnsureDataAvailable ()
     {
-      throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
+      throw CreateInvalidOperationException();
     }
 
     public bool TryEnsureDataAvailable ()
     {
-      throw new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
+      throw CreateInvalidOperationException();
     }
 
     public T Execute<T> (Func<DomainObject, ClientTransaction, T> func)
@@ -90,6 +93,11 @@ namespace Remotion.Data.DomainObjects.Infrastructure
     public void Execute (Action<DomainObject, ClientTransaction> action)
     {
       _actualContext.Execute (action);
+    }
+
+    private InvalidOperationException CreateInvalidOperationException ()
+    {
+      return new InvalidOperationException ("While the OnReferenceInitializing event is executing, this member cannot be used.");
     }
   }
 }
